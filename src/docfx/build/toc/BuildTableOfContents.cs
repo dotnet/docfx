@@ -39,6 +39,14 @@ namespace Microsoft.Docs.Build
 
             if (!context.Config.DryRun)
             {
+                if (errors.Any(x => x.Level == ErrorLevel.Error))
+                {
+                    // TODO: Add experimental and experiment_id to publish item for TOC
+                    var publishItem = context.PublishModelBuilder.GetPublishItem(file.FilePath);
+                    publishItem.HasError = true;
+                    return errors;
+                }
+
                 if (context.Config.OutputType == OutputType.Html)
                 {
                     // Just for current PDF build. toc.json is used for generate PDF outline

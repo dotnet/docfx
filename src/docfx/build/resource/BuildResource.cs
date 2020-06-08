@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Microsoft.Docs.Build
 {
@@ -27,6 +28,7 @@ namespace Microsoft.Docs.Build
             {
                 context.Output.Copy(outputPath, file.FilePath);
             }
+
             return new List<Error>();
         }
     }

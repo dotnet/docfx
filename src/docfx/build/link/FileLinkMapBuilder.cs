@@ -12,17 +12,13 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
-        private PublishModelBuilder _publishModelBuilder;
+        private readonly PublishModelBuilder _publishModelBuilder;
 
-        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
+        public FileLinkMapBuilder(ErrorLog errorLog, MonikerProvider monikerProvider, ContributionProvider contributionProvider, PublishModelBuilder publishModelBuilder)
         {
             _errorLog = errorLog;
             _monikerProvider = monikerProvider;
             _contributionProvider = contributionProvider;
-        }
-
-        public void Configure(PublishModelBuilder publishModelBuilder)
-        {
             _publishModelBuilder = publishModelBuilder;
         }
 

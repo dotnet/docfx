@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
         private static void Run(Context context)
         {
-            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
+            var (publishModel, fileManifests) = context.PublishModelBuilder.Build(context.TocMap);
 
             using (Progress.Start("Building files"))
             {
@@ -94,8 +94,6 @@ namespace Microsoft.Docs.Build
                 () => context.RepositoryProvider.Save(),
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
-
-            context.PublishModelBuilder.ExcludeErrorFiles();
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();

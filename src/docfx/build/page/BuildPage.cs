@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
 
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
+                publishItem.HasError = true;
                 return errors;
             }
 

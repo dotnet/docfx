@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -21,6 +22,7 @@ namespace Microsoft.Docs.Build
             var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
             errors.AddIfNotNull(redirectError);
             publishItem.RedirectUrl = redirectUrl;
+
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
             publishItem.ExtensionData = new JObject
             {
@@ -31,6 +33,11 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.Legacy && context.DocumentProvider.GetOutputPath(file.FilePath) != null && !context.Config.DryRun)
             {
+                if (errors.Any(x => x.Level == ErrorLevel.Error))
+                {
+                    publishItem.HasError = true;
+                    return errors;
+                }
                 var metadataPath = publishItem.Path!.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
                 {

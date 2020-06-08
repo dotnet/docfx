@@ -91,11 +91,12 @@ namespace Microsoft.Docs.Build
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
+            PublishModelBuilder = new PublishModelBuilder(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, Input, SourceMap, BuildOptions);
             GitHubAccessor = new GitHubAccessor(Config);
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
-            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, ContributionProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, ContributionProvider, PublishModelBuilder);
             XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder, errorLog);
 
             LinkResolver = new LinkResolver(
@@ -115,8 +116,6 @@ namespace Microsoft.Docs.Build
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
-            PublishModelBuilder = new PublishModelBuilder(this);
-            FileLinkMapBuilder.Configure(PublishModelBuilder);
         }
 
         public void Dispose()
