@@ -49,9 +49,10 @@ namespace Microsoft.Docs.Build
 
         public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
         {
-            var level = isCanonicalVersion != null && customRule.CanonicalVersionOnly
-                ? (isCanonicalVersion.Value ? customRule.Severity ?? Level : ErrorLevel.Off)
-                : customRule.Severity ?? Level;
+            var level = customRule.Severity ?? Level;
+            level = isCanonicalVersion != null && customRule.CanonicalVersionOnly
+                ? (isCanonicalVersion.Value ? level : ErrorLevel.Off)
+                : level;
 
             return new Error(
                 level,
