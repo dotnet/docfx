@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomError> CustomErrors { get; } = new Dictionary<string, CustomError>();
+        public Dictionary<string, CustomRule> CustomRules { get; } = new Dictionary<string, CustomRule>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.

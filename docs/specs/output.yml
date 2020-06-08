@@ -248,7 +248,7 @@ outputs:
 # Manifest includes files with errors
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       file-not-found: error
   docs/a.md: |
     a [](b)
