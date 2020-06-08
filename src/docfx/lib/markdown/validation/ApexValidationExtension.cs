@@ -9,7 +9,7 @@ using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class ContentValidationExtension
+    internal static class ApexValidationExtension
     {
         public static MarkdownPipelineBuilder UseApexValidation(
             this MarkdownPipelineBuilder builder,
