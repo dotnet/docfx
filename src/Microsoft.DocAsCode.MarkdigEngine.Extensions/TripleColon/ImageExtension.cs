@@ -121,7 +121,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                 }
 
-                if(!string.IsNullOrEmpty(currentLink))
+                if (currentBorder)
+                {
+                    renderer.WriteLine("<p class=\"mx-imgBorder\">");
+                } else
+                {
+                    renderer.WriteLine("<p>");
+                }
+                if (!string.IsNullOrEmpty(currentLink))
                 {
                     var linkHtmlAttributes = new HtmlAttributes();
                     currentLink = _context.GetLink(currentLink, obj);
@@ -134,10 +141,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
                     lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                     renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
-                }
-                if(currentBorder)
-                {
-                    renderer.WriteLine("<div class=\"mx-imgBorder\"><p>");
                 }
                 if(currentType != "complex")
                 {
@@ -155,16 +158,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.WriteChildren(obj);
                     renderer.WriteLine("</div>");
                 }
-
-                if (currentBorder)
-                {
-                    renderer.WriteLine("</p></div>");
-                }
                 if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
                 {
                     renderer.WriteLine($"</a>");
                 }
-
+                renderer.WriteLine("</p>");
                 return true;
             };
 
