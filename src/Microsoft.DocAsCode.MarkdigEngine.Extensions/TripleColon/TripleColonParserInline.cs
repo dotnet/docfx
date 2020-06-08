@@ -14,12 +14,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
         private readonly MarkdownContext _context;
-        private readonly IDictionary<string, ITripleColonExtensionInlineInfo> _extensions;
+        private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
 
         private readonly string[] StartStrings = { ":::image", ":::video", ":::code" };
         private const string EndString = "\":::";
 
-        public TripleColonParserInline(MarkdownContext context, IDictionary<string, ITripleColonExtensionInlineInfo> extensions)
+        public TripleColonParserInline(MarkdownContext context, IDictionary<string, ITripleColonExtensionInfo> extensions)
         {
             OpeningCharacters = new[] { ':' };
             _context = context;
