@@ -186,6 +186,8 @@ inputs:
   docs/b.md: |
     another [!INCLUDE[](a.md)]
 outputs:
+  docs/a.json:
+  docs/b.json:
   .dependencymap.json: |
     {  
        "dependencies":{
@@ -199,6 +201,8 @@ outputs:
           ]
        }
     }
+  .publish.json: |
+    {"files": [{"url": "/docs/a", "source_path": "docs/a.md", "has_error": true}, {"url": "/docs/b", "source_path": "docs/b.md", "has_error": true}]}
   .errors.log: |
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/b.md' --> 'docs/a.md' --> 'docs/b.md'","file":"docs/a.md","line":1,"column":5}
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/b.md' --> 'docs/a.md'","file":"docs/b.md","line":1,"column":9}
@@ -592,47 +596,59 @@ outputs:
     {
       "links": [
         {
-          "source_url": "/docs/a",
-          "target_url": "/docs/breadcrumbs/toc.json",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
-          "source_line": 3,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
+            "source_line": 3,
+            "source_url": "/docs/a",
+            "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-          "source_url": "/docs/b",
-          "target_url": "/docs/breadcrumbs/toc.json",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
-          "source_line": 3,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
+            "source_line": 4,
+            "source_url": "/docs/a/toc.json",
+            "target_url": "/docs/a"
         },
         {
-          "source_url": "/docs/breadcrumbs/toc.json",
-          "target_url": "/",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/breadcrumbs/TOC.yml",
-          "source_line":3,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
+            "source_line": 2,
+            "source_url": "/docs/a/toc.json",
+            "target_url": "/docs/b"
         },
         {
-          "source_url": "/docs/c",
-          "target_url": "/docs/breadcrumbs/toc.json",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
-          "source_line": 3,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
+            "source_line": 3,
+            "source_url": "/docs/b",
+            "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-          "source_url": "/docs/toc.json",
-          "target_url": "/docs/a",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
-          "source_line": 4,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/breadcrumbs/TOC.yml",
+            "source_line": 3,
+            "source_url": "/docs/breadcrumbs/toc.json",
+            "target_url": "/"
         },
         {
-          "source_url": "/docs/toc.json",
-          "target_url": "/docs/b",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
-          "source_line": 2,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
+            "source_line": 3,
+            "source_url": "/docs/c",
+            "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-          "source_url": "/docs/toc.json",
-          "target_url": "/docs/c",
-          "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/TOC.yml",
-          "source_line": 4,
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
+            "source_line": 4,
+            "source_url": "/docs/toc.json",
+            "target_url": "/docs/a"
         },
+        {
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
+            "source_line": 2,
+            "source_url": "/docs/toc.json",
+            "target_url": "/docs/b"
+        },
+        {
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/TOC.yml",
+            "source_line": 4,
+            "source_url": "/docs/toc.json",
+            "target_url": "/docs/c"
+        }
       ]
     }
   docs/a.json:
@@ -640,7 +656,8 @@ outputs:
   docs/c.json:
   docs/toc.json:
   docs/breadcrumbs/toc.json:
-  .errors.log: 
+  .errors.log:
+  docs/filewithinvalidbookmark.json:
 ---
 # Raw external link in .md file
 repos:

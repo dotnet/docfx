@@ -419,7 +419,10 @@ inputs:
     [link to b](b.md#bookmark)
   docs/b.md:
 outputs:
+  docs/a.json:
   docs/b.json:
+  .publish.json: |
+    {"files":[{"url": "/docs/a", "source_path": "docs/a.md", "has_error": true},{"url": "/docs/b", "source_path": "docs/b.md"}]}
   .errors.log: |
     {"message_severity":"error","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/b.md'","file":"docs/a.md","line":1,"column":1}
 ---
