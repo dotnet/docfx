@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly SourceMap _sourceMap;
         private readonly string _locale;
         private readonly string _outputPath;
+        private readonly ContentValidator _contentValidator;
 
         private Dictionary<PublishItem, FilePath> _outputMapping = new Dictionary<PublishItem, FilePath>();
         private ConcurrentDictionary<FilePath, PublishItem> _publishItems = new ConcurrentDictionary<FilePath, PublishItem>();
@@ -33,7 +35,8 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             Input input,
             SourceMap sourceMap,
-            BuildOptions buildOptions)
+            BuildOptions buildOptions,
+            ContentValidator contentValidator)
         {
             _config = config;
             _errorLog = errorLog;
@@ -45,6 +48,7 @@ namespace Microsoft.Docs.Build
             _sourceMap = sourceMap;
             _locale = buildOptions.Locale;
             _outputPath = PathUtility.NormalizeFolder(buildOptions.OutputPath);
+            _contentValidator = contentValidator;
         }
 
         public IEnumerable<FilePath> GetFiles()
@@ -78,8 +82,10 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve output path conflicts
-            var groupByOutputPath = builder.ToList().GroupBy(x => x.item.Path, PathUtility.PathComparer);
-            var temp = groupByOutputPath.Where(g => g.Count() == 1).SelectMany(g => g)
+            var publishMap = builder.ToList();
+            var groupByOutputPath = publishMap.Where(x => x.item.Path != null).GroupBy(x => x.item.Path, PathUtility.PathComparer);
+            var temp = publishMap.Where(x => x.item.Path is null)
+                .Concat(groupByOutputPath.Where(g => g.Count() == 1).SelectMany(g => g))
                 .Concat(groupByOutputPath.Where(g => g.Count() > 1).Select(g => ResolveOutputPathConflicts(g.ToArray())));
 
             // resolve publish url conflicts
@@ -88,6 +94,12 @@ namespace Microsoft.Docs.Build
                             .Concat(groupByPublishUrl.Where(g => g.Count() > 1).Select(g => ResolvePublishUrlConflicts(g.ToArray())))
                             .ToDictionary(g => g.Item1, g => g.Item2.FilePath);
             _publishItems = new ConcurrentDictionary<FilePath, PublishItem>(_outputMapping.ToDictionary(kvp => kvp.Value, kvp => kvp.Key));
+
+            foreach (var (filePath, publishItem) in _publishItems)
+            {
+                Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
+                _contentValidator.ValidateManifest(filePath, publishItem);
+            }
 
             var publishItems = (
                    from item in _publishItems.Values
@@ -131,10 +143,10 @@ namespace Microsoft.Docs.Build
             var redirectionFiles = conflicts.Where(x => x.file.ContentType == ContentType.Redirection).Select(x => x.file);
             if (redirectionFiles.Any())
             {
-                return (publishItem, redirectionFiles.OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+                return (publishItem, redirectionFiles.OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
             }
 
-            return (publishItem, conflicts.Select(x => x.file).OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+            return (publishItem, conflicts.Select(x => x.file).OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
         }
 
         private (PublishItem, Document) ResolvePublishUrlConflicts((PublishItem item, Document file)[] conflicts)
@@ -150,8 +162,18 @@ namespace Microsoft.Docs.Build
             var conflictingFiles = conflicts.ToDictionary(x => x.file.FilePath, x => x.item.Monikers);
             _errorLog.Write(Errors.UrlPath.PublishUrlConflict(publishItem.Url, conflictingFiles, conflictMonikers));
 
-            var lastestMonikerGroup = conflicts.OrderBy(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
-            var itemsWithChosenMonikerGroup = conflicts.Where(x => x.item.MonikerGroup == lastestMonikerGroup);
+            var itemsWithoutMoniker = conflicts.Where(x => x.item.MonikerGroup is null);
+            if (itemsWithoutMoniker.Count() == 1)
+            {
+                return itemsWithoutMoniker.First();
+            }
+            else if (itemsWithoutMoniker.Count() > 1)
+            {
+                return itemsWithoutMoniker.OrderByDescending(x => x.file.FilePath.Path, PathUtility.PathComparer).First();
+            }
+
+            var latestMonikerGroup = conflicts.OrderByDescending(x => x.item.MonikerGroup, PathUtility.PathComparer).First().item.MonikerGroup;
+            var itemsWithChosenMonikerGroup = conflicts.Where(x => x.item.MonikerGroup == latestMonikerGroup);
             if (itemsWithChosenMonikerGroup.Count() == 1)
             {
                 return itemsWithChosenMonikerGroup.First();
@@ -160,10 +182,10 @@ namespace Microsoft.Docs.Build
             var redirectionFiles = itemsWithChosenMonikerGroup.Where(x => x.file.ContentType == ContentType.Redirection).Select(x => x.file);
             if (redirectionFiles.Any())
             {
-                return (publishItem, redirectionFiles.OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+                return (publishItem, redirectionFiles.OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
             }
 
-            return (publishItem, itemsWithChosenMonikerGroup.Select(x => x.file).OrderBy(x => x.FilePath.Path, PathUtility.PathComparer).First());
+            return (publishItem, itemsWithChosenMonikerGroup.Select(x => x.file).OrderByDescending(x => x.FilePath.Path, PathUtility.PathComparer).First());
         }
 
         private void AddToPublishMapping(ListBuilder<(PublishItem item, Document file)> outputMapping, FilePath path)
