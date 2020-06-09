@@ -87,9 +87,9 @@ namespace Microsoft.Docs.Build
         public bool Write(Error error, ErrorLevel? overwriteLevel = null)
         {
             var config = _config;
-            if (config != null && config.CustomErrors.TryGetValue(error.Code, out var customError))
+            if (config != null && config.CustomRules.TryGetValue(error.Code, out var customRule))
             {
-                error = error.WithCustomError(customError);
+                error = error.WithCustomRule(customRule);
             }
 
             var level = overwriteLevel ?? error.Level;

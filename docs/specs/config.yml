@@ -338,7 +338,7 @@ outputs:
 # Adjust error level using custom errors
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       file-not-found: off
   docs/a.md: |
     [b](b.md)
@@ -349,7 +349,7 @@ outputs:
 # Adjust error message using custom errors
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       file-not-found:
         severity: error
         additionalMessage: 'NOTE:'
@@ -361,7 +361,7 @@ outputs:
 # log with default log level when docfx crashes, even the corresponding rule is turned off
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       file-not-found: off
     xref: xref.json
   a.md: '@System.String'

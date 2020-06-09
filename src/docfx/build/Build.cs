@@ -41,13 +41,15 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            using var errorLog = new ErrorLog(outputPath);
             var stopwatch = Stopwatch.StartNew();
+
+            using var errorLog = new ErrorLog(outputPath);
+            using var disposables = new DisposableCollector();
 
             try
             {
                 var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options, fetchOptions);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
                     return true;

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -17,7 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
-        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)> _metadataBuilder;
+        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> _metadataBuilder;
+        private static readonly ThreadLocal<bool?> t_isCanonicalVersion = new ThreadLocal<bool?>();
 
         public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
         {
@@ -25,26 +27,34 @@ namespace Microsoft.Docs.Build
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
-            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)>();
+            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)>();
         }
 
-        public List<Error> Validate(JToken token)
+        public List<Error> Validate(JToken token, bool? isCanonicalVersion = null)
         {
-            return Validate(_schema, token);
+            try
+            {
+                t_isCanonicalVersion.Value = isCanonicalVersion;
+                return Validate(_schema, token);
+            }
+            finally
+            {
+                t_isCanonicalVersion.Value = null;
+            }
         }
 
         public List<Error> PostValidate()
         {
-            var errors = new List<Error>();
+            var errors = new List<(Error error, bool? isCanonicalVersion)>();
             PostValidateDocsetUnique(errors);
-            return errors.Select(error => GetError(_schema, error)).ToList();
+            return errors.Select(e => GetError(_schema, e.error, e.isCanonicalVersion)).ToList();
         }
 
         private List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
             Validate(schema, "", token, errors);
-            return errors.Select(error => GetError(_schema, error)).ToList();
+            return errors.Select(error => GetError(_schema, error, t_isCanonicalVersion.Value)).ToList();
         }
 
         private void Validate(JsonSchema schema, string name, JToken token, List<Error> errors)
@@ -501,12 +511,12 @@ namespace Microsoft.Docs.Build
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
                 {
-                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value)));
+                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value), t_isCanonicalVersion.Value));
                 }
             }
         }
 
-        private void PostValidateDocsetUnique(List<Error> errors)
+        private void PostValidateDocsetUnique(List<(Error, bool?)> errors)
         {
             var validatedMetadata = _metadataBuilder.ToList();
             var validatedMetadataGroups = validatedMetadata
@@ -517,13 +527,19 @@ namespace Microsoft.Docs.Build
 
             foreach (var group in validatedMetadataGroups)
             {
-                if (group.Count() > 1)
+                IEnumerable<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> items = group;
+                var (metadataValue, (metadataKey, _)) = group.Key;
+                if (CanonicalVersionOnly(metadataKey, Errors.JsonSchema.DuplicateAttributeCode))
                 {
-                    var (metadataValue, (metadataKey, _)) = group.Key;
-                    var metadataSources = (from g in @group where g.source != null select g.source).ToArray();
-                    foreach (var file in group)
+                    items = items.Where(i => i.isCanonicalVersion ?? true);
+                }
+
+                if (items.Count() > 1)
+                {
+                    var metadataSources = (from g in items where g.source != null select g.source).ToArray();
+                    foreach (var file in items)
                     {
-                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
+                        errors.Add((Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources), file.isCanonicalVersion));
                     }
                 }
             }
@@ -621,7 +637,7 @@ namespace Microsoft.Docs.Build
             return (name, 0);
         }
 
-        private Error GetError(JsonSchema schema, Error error)
+        private Error GetError(JsonSchema schema, Error error, bool? isCanonicalVersion)
         {
             if (_forceError)
             {
@@ -629,10 +645,10 @@ namespace Microsoft.Docs.Build
             }
 
             if (!string.IsNullOrEmpty(error.Name) &&
-                schema.CustomErrors.TryGetValue(error.Name, out var attributeCustomErrors) &&
-                attributeCustomErrors.TryGetValue(error.Code, out var customError))
+                schema.CustomRules.TryGetValue(error.Name, out var attributeCustomRules) &&
+                attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
-                return error.WithCustomError(customError);
+                return error.WithCustomRule(customRule, isCanonicalVersion);
             }
 
             return error;
@@ -659,6 +675,13 @@ namespace Microsoft.Docs.Build
                 default:
                     return true;
             }
+        }
+
+        private bool CanonicalVersionOnly(string key, string code)
+        {
+            return _schema.CustomRules.TryGetValue(key, out var customRules) &&
+                customRules.TryGetValue(code, out var customRule) &&
+                customRule.CanonicalVersionOnly;
         }
     }
 }

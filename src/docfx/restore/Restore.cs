@@ -34,44 +34,39 @@ namespace Microsoft.Docs.Build
 
         public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            // Restore has to use Config directly, it cannot depend on Docset,
-            // because Docset assumes the repo to physically exist on disk.
-            using (var errorLog = new ErrorLog(outputPath))
-            using (Progress.Start("Restore dependencies"))
+            var stopwatch = Stopwatch.StartNew();
+
+            using var disposables = new DisposableCollector();
+            using var errorLog = new ErrorLog(outputPath);
+
+            try
             {
-                var stopwatch = Stopwatch.StartNew();
+                // load configuration from current entry or fallback repository
+                var configLoader = new ConfigLoader(errorLog);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
+                if (errorLog.Write(errors))
+                {
+                    return true;
+                }
 
-                try
-                {
-                    // load configuration from current entry or fallback repository
-                    var configLoader = new ConfigLoader(errorLog);
-                    var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options, fetchOptions);
-                    if (errorLog.Write(errors))
-                    {
-                        return true;
-                    }
+                errorLog.Configure(config, buildOptions.OutputPath, null);
 
-                    errorLog.Configure(config, buildOptions.OutputPath, null);
-                    using (packageResolver)
-                    {
-                        // download dependencies to disk
-                        Parallel.Invoke(
-                            () => RestoreFiles(errorLog, config, fileResolver).GetAwaiter().GetResult(),
-                            () => RestorePackages(errorLog, buildOptions, config, packageResolver));
-                    }
-                    return errorLog.ErrorCount > 0;
-                }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    errorLog.Write(dex);
-                    return errorLog.ErrorCount > 0;
-                }
-                finally
-                {
-                    Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-                    Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                    errorLog.PrintSummary();
-                }
+                // download dependencies to disk
+                Parallel.Invoke(
+                    () => RestoreFiles(errorLog, config, fileResolver).GetAwaiter().GetResult(),
+                    () => RestorePackages(errorLog, buildOptions, config, packageResolver));
+                return errorLog.ErrorCount > 0;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                errorLog.Write(dex);
+                return errorLog.ErrorCount > 0;
+            }
+            finally
+            {
+                Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
+                Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                errorLog.PrintSummary();
             }
         }
 
