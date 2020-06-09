@@ -69,8 +69,7 @@ namespace Microsoft.Docs.Build
 
             if (InclusionContext.IsCircularReference(file, out var dependencyChain))
             {
-                errors.Add(Errors.Markdown.CircularReference(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo()), file, dependencyChain.Reverse()));
-                return;
+                throw Errors.Link.CircularReference(new SourceInfo(((Document)file).FilePath), file, dependencyChain.Reverse()).ToException();
             }
 
             using (InclusionContext.PushInclusion(file))
@@ -93,8 +92,7 @@ namespace Microsoft.Docs.Build
 
             if (InclusionContext.IsCircularReference(file, out var dependencyChain))
             {
-                errors.Add(Errors.Markdown.CircularReference(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo()), file, dependencyChain.Reverse()));
-                return;
+                throw Errors.Link.CircularReference(new SourceInfo(((Document)file).FilePath), file, dependencyChain.Reverse()).ToException();
             }
 
             using (InclusionContext.PushInclusion(file))
