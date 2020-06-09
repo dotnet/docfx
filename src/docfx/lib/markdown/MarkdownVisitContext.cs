@@ -7,11 +7,11 @@ namespace Microsoft.Docs.Build
 {
     internal class MarkdownVisitContext
     {
-        public List<SourceInfo?>? Parents { get; set; }
+        public List<SourceInfo?>? Parents { get; private set; }
 
-        public Document Document { get; set; }
+        public Document Document { get; private set; }
 
-        public bool IsInclude { get; set; }
+        public bool IsInclude { get; private set; }
 
         public MarkdownVisitContext(Document document, bool isInclude, List<SourceInfo?>? parents = null)
         {
