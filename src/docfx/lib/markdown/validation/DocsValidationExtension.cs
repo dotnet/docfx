@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
             this MarkdownPipelineBuilder builder,
             MarkdownEngine markdownEngine,
             ContentValidator contentValidator,
-            Func<MonikerList> getFileLevelMoniker,
-            Func<MonikerList> getPageLevelMoniker)
+            Func<MonikerList> getFileLevelMonikers,
+            Func<MonikerList> getPageLevelMonikers)
         {
             return builder.Use(document =>
             {
@@ -32,11 +32,11 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                var pageLevelMoniker = getPageLevelMoniker();
-                var fileLevelMoniker = getFileLevelMoniker();
+                var pageLevelMoniker = getPageLevelMonikers();
+                var fileLevelMoniker = getFileLevelMonikers();
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
-                    var isCanonicalVersion = IsCanonicalVersion(pageLevelMoniker, context.ZoneMoniker, fileLevelMoniker);
+                    var isCanonicalVersion = IsCanonicalVersion(pageLevelMoniker, fileLevelMoniker, context.ZoneMoniker);
                     ContentNode? documentNode = null;
                     if (node is HeadingBlock headingBlock)
                     {
@@ -87,20 +87,26 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static bool? IsCanonicalVersion(MonikerList? pageLevelMonikerList, MonikerList? zoneLevelMonikerList, MonikerList? fileLevelMonikerList)
+        private static bool? IsCanonicalVersion(MonikerList pageLevelMonikerList, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
         {
-            if (pageLevelMonikerList is null)
+            if (!pageLevelMonikerList.HasMonikers)
             {
                 return null;
             }
 
-            if (zoneLevelMonikerList is null && fileLevelMonikerList is null)
+            if (!zoneLevelMonikerList.HasMonikers && !fileLevelMonikerList.HasMonikers)
             {
                 return null;
             }
 
-            // todo: calculate is_canonical_version;
-            return null;
+            var canonicalVersion = pageLevelMonikerList.Last();
+
+            if (zoneLevelMonikerList.HasMonikers)
+            {
+                return zoneLevelMonikerList.Contains(canonicalVersion);
+            }
+
+            return fileLevelMonikerList.HasMonikers && fileLevelMonikerList.Contains(canonicalVersion);
         }
 
         private static string GetHeadingContent(HeadingBlock headingBlock)

@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
-                .UseDocsValidation(this, _contentValidator, GetFileLevelMoniker, GetPageLevelMoniker)
+                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetPageLevelMonikers)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
@@ -323,7 +323,7 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private MonikerList GetFileLevelMoniker()
+        private MonikerList GetFileLevelMonikers()
         {
             var status = t_status.Value!.Peek();
             var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
@@ -331,9 +331,11 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private MonikerList GetPageLevelMoniker()
+        private MonikerList GetPageLevelMonikers()
         {
             var status = t_status.Value!.Peek();
+
+            // todo: change to GetPageLevelMonikers when it's ready
             var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
             status.Errors.AddRange(monikerErrors);
             return monikers;

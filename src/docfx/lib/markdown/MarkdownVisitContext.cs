@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsInclude => FileStack.Count >= 2;
 
-        public MonikerList? ZoneMoniker => ZoneMonikerStack.Count >= 1 ? ZoneMonikerStack.Peek() : default;
+        public MonikerList ZoneMoniker => ZoneMonikerStack.Count >= 1 ? ZoneMonikerStack.Peek() : default;
 
         public string? Zone => ZoneStack.Count >= 1 ? ZoneStack.Peek() : default;
 
