@@ -98,25 +98,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
-                dynamic blockOrInline;
+                ITripleColon tripleColonObj;
 
                 if (obj is TripleColonBlock) {
-                    blockOrInline = (TripleColonBlock)obj;
+                    tripleColonObj = (TripleColonBlock)obj;
                 } else {
-                    blockOrInline = (TripleColonInline)obj;
-                } ;
+                    tripleColonObj = (TripleColonInline)obj;
+                };
+
                 var currentType = string.Empty;
                 var currentLightbox = string.Empty;
                 var currentBorderStr = string.Empty;
                 var currentBorder = true;
                 var currentLink = string.Empty;
-                if(!blockOrInline.Attributes.TryGetValue("type", out currentType))
+                if(!tripleColonObj.Attributes.TryGetValue("type", out currentType))
                 {
                     currentType = "content";
                 }
-                blockOrInline.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
-                blockOrInline.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
-                blockOrInline.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
+                tripleColonObj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
+                tripleColonObj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
+                tripleColonObj.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
                 if (!bool.TryParse(currentBorderStr, out currentBorder))
                 {
                     if(currentType == "icon")
@@ -154,7 +155,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if (currentType == "complex" && blockOrInline.Count == 0)
+                    if (currentType == "complex" && tripleColonObj.Count == 0)
                     {
                         logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
@@ -162,7 +163,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var htmlId = GetHtmlId(obj);
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                     renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-                    renderer.WriteChildren(blockOrInline);
+                    renderer.WriteChildren(tripleColonObj as ContainerBlock);
                     renderer.WriteLine("</div>");
                 }
                 if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
