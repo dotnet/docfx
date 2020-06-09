@@ -186,8 +186,6 @@ inputs:
   docs/b.md: |
     another [!INCLUDE[](a.md)]
 outputs:
-  docs/a.json:
-  docs/b.json:
   .dependencymap.json: |
     {  
        "dependencies":{
