@@ -303,6 +303,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
         public ECMA2YamlRepoConfig[]? Monodoc { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()

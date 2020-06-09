@@ -37,9 +37,9 @@ namespace Microsoft.Docs.Build
             {
                 lock (s_lock)
                 {
-                    for (var idx = 0; idx < _config.Monodoc.Length; idx++)
+                    for (var index = 0; index < _config.Monodoc.Length; index++)
                     {
-                        var monodocConfig = _config.Monodoc[idx];
+                        var monodocConfig = _config.Monodoc[index];
                         if (Directory.Exists(monodocConfig.OutputYamlFolder))
                         {
                             Directory.Delete(monodocConfig.OutputYamlFolder, recursive: true);
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                             fallbackOutputDirectory: fallbackOutputDirectory,
                             logWriter: LogError,
                             logContentBaseDirectory: _buildOptions.DocsetPath,
-                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-{idx}.json"),
+                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-{index}.json"),
                             config: monodocConfig);
                     }
                 }

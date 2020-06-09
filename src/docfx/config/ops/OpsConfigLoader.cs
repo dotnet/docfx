@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             if (monodoc != null)
             {
                 result["monodoc"] = monodoc;
-                result["sourceMap"] = new JArray(monodoc.Select((_, idx) => $".sourcemap-{idx}.json"));
+                result["sourceMap"] = new JArray(monodoc.Select((_, index) => $".sourcemap-{index}.json"));
             }
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
