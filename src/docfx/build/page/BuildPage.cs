@@ -28,7 +28,6 @@ namespace Microsoft.Docs.Build
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
                 context.ErrorLog.Write(errors);
-                context.PublishModelBuilder.Add(file.FilePath, null, null, outputPath);
                 return;
             }
 
@@ -60,7 +59,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            context.PublishModelBuilder.Add(file.FilePath, metadata, null, outputPath);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata, null, outputPath);
         }
 
         private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(

@@ -16,7 +16,7 @@ inputs:
   docs/A.png.md: '![](a.png)'
   docs/a.png:
 outputs:
-  docs/a.png.json:
+  docs/a.png:
   .errors.log: |
     {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a.png': 'docs/A.png.md', 'docs/a.png'"}
 ---

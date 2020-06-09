@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -79,8 +78,10 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Building files"))
             {
-                var files = context.PublishUrlMapBuilder.GetBuildFiles();
-                ParallelUtility.ForEach(context.ErrorLog, files, file => BuildFile(context, file));
+                context.BuildQueue.Start(file => BuildFile(context, file));
+                var files = context.PublishUrlMap.GetBuildFiles();
+                context.BuildQueue.Enqueue(files);
+                context.BuildQueue.WaitForCompletion();
             }
 
             Parallel.Invoke(

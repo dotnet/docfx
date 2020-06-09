@@ -5,13 +5,14 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(MonikerListJsonConverter))]
-    internal readonly struct MonikerList : IEquatable<MonikerList>, IEnumerable<string>
+    internal readonly struct MonikerList : IEquatable<MonikerList>, IEnumerable<string>, IComparable<MonikerList>
     {
         private static readonly ConcurrentDictionary<MonikerList, string> s_monikerGroupCache = new ConcurrentDictionary<MonikerList, string>();
 
@@ -123,6 +124,20 @@ namespace Microsoft.Docs.Build
         IEnumerator IEnumerable.GetEnumerator()
         {
             return (_monikers ?? Array.Empty<string>()).GetEnumerator();
+        }
+
+        public int CompareTo(MonikerList other)
+        {
+            if (!HasMonikers && other.HasMonikers)
+            {
+                return 1;
+            }
+            else if (HasMonikers && !other.HasMonikers)
+            {
+                return -1;
+            }
+
+            return PathUtility.PathComparer.Compare(MonikerGroup, other.MonikerGroup);
         }
 
         public static bool operator ==(MonikerList left, MonikerList right)

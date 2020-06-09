@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             var conflictingFiles = conflicts.ToDictionary(x => x.SourcePath, x => x.Monikers);
             _errorLog.Write(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
 
-            return conflicts.OrderByDescending(x => x, new PublishUrlMapItemComparer()).First();
+            return conflicts.OrderByDescending(x => x).First();
         }
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)

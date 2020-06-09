@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            context.PublishModelBuilder.Add(file.FilePath, null, null, context.DocumentProvider.GetOutputPath(file.FilePath));
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, null, null, context.DocumentProvider.GetOutputPath(file.FilePath));
         }
     }
 }

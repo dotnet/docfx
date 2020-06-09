@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 context.Output.WriteJson(metadataPath, metadata);
             }
 
-            context.PublishModelBuilder.Add(file.FilePath, publishMetadata, redirectUrl, outputPath);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, redirectUrl, outputPath);
         }
     }
 }
