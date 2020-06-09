@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsMap _tocMap;
         private readonly SourceMap _sourceMap;
 
-        private Dictionary<string, List<(PublishUrlMapItem publishItem, Document file)>> _publishUrlMap = new Dictionary<string, List<(PublishUrlMapItem, Document)>>();
+        private Dictionary<string, List<(PublishUrlMapItem publishItem, FilePath file)>> _publishUrlMap = new Dictionary<string, List<(PublishUrlMapItem, FilePath)>>();
 
         public PublishUrlMapBuilder(
             Config config,
@@ -44,10 +44,10 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> GetBuildFiles()
         {
-            return _publishUrlMap.Values.SelectMany(x => x).Select(x => x.file.FilePath);
+            return _publishUrlMap.Values.SelectMany(x => x).Select(x => x.file);
         }
 
-        public IEnumerable<(PublishUrlMapItem, Document)> GetPublishOutput()
+        public IEnumerable<(PublishUrlMapItem, FilePath)> GetPublishOutput()
         {
             return _publishUrlMap.Values.SelectMany(x => x);
         }
@@ -61,10 +61,7 @@ namespace Microsoft.Docs.Build
                          .Concat(_tocMap.GetFiles());
             using (Progress.Start("Building publish map"))
             {
-                ParallelUtility.ForEach(
-                    _errorLog,
-                    files,
-                    file => AddItem(builder, file));
+                ParallelUtility.ForEach(_errorLog, files, file => AddItem(builder, file));
             }
 
             // resolve output path conflicts
@@ -79,7 +76,7 @@ namespace Microsoft.Docs.Build
             var test = groupByPublishUrl.Where(g => g.Count() == 1).SelectMany(g => g)
                             .Concat(groupByPublishUrl.Where(g => g.Count() > 1).Select(g => ResolvePublishUrlConflicts(g.ToArray())));
 
-            _publishUrlMap = test.GroupBy(x => x.Item1.Url).ToDictionary(g => g.Key, g => g.ToList());
+            _publishUrlMap = test.GroupBy(x => x.Item1.Url).ToDictionary(g => g.Key, g => g.Select(x => (x.Item1, x.Item2.FilePath)).ToList());
         }
 
         private (PublishUrlMapItem item, Document file) ResolveOutputPathConflicts((PublishUrlMapItem item, Document file)[] conflicts)

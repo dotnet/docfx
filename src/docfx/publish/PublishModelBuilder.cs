@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly string _locale;
         private readonly ContentValidator _contentValidator;
         private readonly PublishUrlMapBuilder _publishUrlMapBuilder;
+        private readonly DocumentProvider _documentProvider;
 
         private ConcurrentDictionary<FilePath, (JObject? metadata, string? redirectUrl, string? outputPath)> _buildOutput = new ConcurrentDictionary<FilePath, (JObject? metadata, string? redirectUrl, string? outputPath)>();
         private Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
@@ -26,7 +27,8 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
             ContentValidator contentValidator,
-            PublishUrlMapBuilder publishUrlMapBuilder)
+            PublishUrlMapBuilder publishUrlMapBuilder,
+            DocumentProvider documentProvider)
         {
             _config = config;
             _errorLog = errorLog;
@@ -34,6 +36,7 @@ namespace Microsoft.Docs.Build
             _locale = buildOptions.Locale;
             _contentValidator = contentValidator;
             _publishUrlMapBuilder = publishUrlMapBuilder;
+            _documentProvider = documentProvider;
         }
 
         public void Add(FilePath file, JObject? metadata, string? redirectUrl, string? outputPath)
@@ -45,26 +48,30 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (item, file) in _publishUrlMapBuilder.GetPublishOutput())
             {
-                var buildOutput = _buildOutput.TryGetValue(file.FilePath, out var result);
+                var document = _documentProvider.GetDocument(file);
+                var buildOutput = _buildOutput.TryGetValue(file, out var result);
                 var publishItem = new PublishItem(
                     item.Url,
                     buildOutput ? result.outputPath : item.OutputPath,
                     item.SourcePath,
                     _locale,
                     item.Monikers,
-                    _monikerProvider.GetConfigMonikerRange(file.FilePath),
-                    file.ContentType,
-                    file.Mime,
+                    _monikerProvider.GetConfigMonikerRange(file),
+                    document.ContentType,
+                    document.Mime,
                     buildOutput ? result.redirectUrl : null,
-                    _errorLog.IsErrorFile(file.FilePath),
+                    _errorLog.IsErrorFile(file),
                     buildOutput ? result.metadata : null);
-                _publishItems.Add(file.FilePath, publishItem);
+                _publishItems.Add(file, publishItem);
             }
 
             foreach (var (filePath, publishItem) in _publishItems)
             {
-                Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
-                _contentValidator.ValidateManifest(filePath, publishItem);
+                if (!publishItem.HasError)
+                {
+                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
+                    _contentValidator.ValidateManifest(filePath, publishItem);
+                }
             }
 
             var publishItems = (

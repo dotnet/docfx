@@ -96,6 +96,7 @@ namespace Microsoft.Docs.Build
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             if (context.Config.DryRun)
             {
@@ -104,7 +105,6 @@ namespace Microsoft.Docs.Build
 
             // TODO: decouple files and dependencies from legacy.
             var dependencyMap = context.DependencyMapBuilder.Build();
-            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             Parallel.Invoke(
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),

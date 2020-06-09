@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -29,8 +28,9 @@ namespace Microsoft.Docs.Build
                 ["canonical_url"] = file.CanonicalUrl,
             };
 
+            context.ErrorLog.Write(errors);
             var outputPath = context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath) : null;
-            if (context.Config.Legacy && context.DocumentProvider.GetOutputPath(file.FilePath) != null && !context.ErrorLog.Write(errors.Where(x => x.FilePath == file.FilePath)) && !context.Config.DryRun && outputPath != null)
+            if (context.Config.Legacy && context.DocumentProvider.GetOutputPath(file.FilePath) != null && !context.ErrorLog.IsErrorFile(file.FilePath) && !context.Config.DryRun && outputPath != null)
             {
                 var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new
@@ -47,7 +47,6 @@ namespace Microsoft.Docs.Build
             }
 
             context.PublishModelBuilder.Add(file.FilePath, publishMetadata, redirectUrl, outputPath);
-            context.ErrorLog.Write(errors.Where(x => x.FilePath != file.FilePath));
         }
     }
 }

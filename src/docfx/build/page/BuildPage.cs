@@ -36,8 +36,9 @@ namespace Microsoft.Docs.Build
                 ? CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
+            context.ErrorLog.Write(errors);
 
-            if (!context.ErrorLog.Write(errors.Where(x => x.FilePath == file.FilePath)) && !context.Config.DryRun)
+            if (!context.ErrorLog.IsErrorFile(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Json)
                 {
@@ -60,7 +61,6 @@ namespace Microsoft.Docs.Build
             }
 
             context.PublishModelBuilder.Add(file.FilePath, metadata, null, outputPath);
-            context.ErrorLog.Write(errors.Where(x => x.FilePath != file.FilePath));
         }
 
         private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(

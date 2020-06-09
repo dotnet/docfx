@@ -36,7 +36,8 @@ namespace Microsoft.Docs.Build
                     UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
-            if (!context.ErrorLog.Write(errors.Where(x => x.FilePath == file.FilePath)) && !context.Config.DryRun)
+            context.ErrorLog.Write(errors);
+            if (!context.ErrorLog.IsErrorFile(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {
@@ -61,7 +62,6 @@ namespace Microsoft.Docs.Build
             }
 
             context.PublishModelBuilder.Add(file.FilePath, null, null, context.DocumentProvider.GetOutputPath(file.FilePath));
-            context.ErrorLog.Write(errors.Where(x => x.FilePath != file.FilePath));
         }
     }
 }

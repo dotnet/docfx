@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
             PublishUrlMapBuilder = new PublishUrlMapBuilder(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap, SourceMap);
-            PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMapBuilder);
+            PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMapBuilder, DocumentProvider);
         }
 
         public void Dispose()
