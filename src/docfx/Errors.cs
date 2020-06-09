@@ -481,13 +481,7 @@ namespace Microsoft.Docs.Build
         public static class Markdown
         {
             public static Error IncludeNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Warning, "include-not-found", $"Invalid include link: '{source}'.", source);
-
-            public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector)
-            {
-                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{file}'"));
-                return new Error(ErrorLevel.Warning, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
-            }
+                => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
         }
 
         public static class JsonSchema

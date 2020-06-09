@@ -202,8 +202,8 @@ outputs:
   .publish.json: |
     {"files": [{"url": "/docs/a", "source_path": "docs/a.md", "has_error": true}, {"url": "/docs/b", "source_path": "docs/b.md", "has_error": true}]}
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/b.md' --> 'docs/a.md' --> 'docs/b.md'","file":"docs/a.md","line":1,"column":5}
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/b.md' --> 'docs/a.md'","file":"docs/b.md","line":1,"column":9}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/b.md' --> 'docs/a.md'","file":"docs/a.md"}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/b.md' --> 'docs/a.md' --> 'docs/b.md'","file":"docs/b.md"}
 ---
 # Manifest link circular reference
 inputs:
