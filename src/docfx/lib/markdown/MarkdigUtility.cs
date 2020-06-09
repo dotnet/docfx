@@ -134,16 +134,6 @@ namespace Microsoft.Docs.Build
 
             switch (obj)
             {
-                case TripleColonBlock tripleColonBlock when tripleColonBlock.Extension.Name == "zone":
-                    var zoneTarget = tripleColonBlock.Attributes.TryGetValue("target", out var target) ? target : null;
-                    context.ZoneStack.Push(zoneTarget);
-                    foreach (var child in tripleColonBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-                    context.ZoneStack.Pop();
-                    break;
-
                 case MonikerRangeBlock monikerRangeBlock:
                     var monikers = monikerRangeBlock.GetAttributes().Properties.First(p => p.Key == "data-moniker").Value.Split(" ");
                     context.ZoneMonikerStack.Push(new MonikerList(monikers));
