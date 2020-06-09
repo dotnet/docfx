@@ -9,6 +9,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -29,27 +30,26 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                MarkdigUtility.Visit(document, null, null, (node, parents, nodeFile) =>
+                MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile, false), (node, context) =>
                 {
-                    var isInclude = nodeFile != null && parents != null;
                     if (node is HeadingBlock headingBlock)
                     {
                         var heading = new Heading
                         {
                             Level = headingBlock.Level,
                             SourceInfo = headingBlock.GetSourceInfo(),
-                            ParentSourceInfoList = parents?.Cast<object?>().ToList() ?? new List<object?>(),
+                            ParentSourceInfoList = context.Parents?.Cast<object?>().ToList() ?? new List<object?>(),
                             Content = GetHeadingContent(headingBlock), // used for reporting
                             HeadingChar = headingBlock.HeaderChar,
                             RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
                             IsVisible = MarkdigUtility.IsVisible(headingBlock),
                         };
 
-                        if (isInclude)
+                        if (context.IsInclude)
                         {
-                            if (!inclusionDocumentNodes.TryGetValue(nodeFile, out var contentNodes))
+                            if (!inclusionDocumentNodes.TryGetValue(context.Document, out var contentNodes))
                             {
-                                inclusionDocumentNodes[nodeFile] = contentNodes = new List<ContentNode>();
+                                inclusionDocumentNodes[context.Document] = contentNodes = new List<ContentNode>();
                             }
 
                             contentNodes.Add(heading);
@@ -70,9 +70,9 @@ namespace Microsoft.Docs.Build
                 });
 
                 contentValidator.ValidateHeadings(currentFile, documentNodes, false);
-                foreach (var (key, nodes) in inclusionDocumentNodes)
+                foreach (var (inclusion, inclusionNodes) in inclusionDocumentNodes)
                 {
-                    contentValidator.ValidateHeadings(key, nodes, true);
+                    contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
                 }
             });
         }
