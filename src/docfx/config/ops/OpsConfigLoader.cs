@@ -121,10 +121,10 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var ecma2Yaml in opsConfig.ECMA2Yaml)
                 {
-                    var ecma2YamlJObj = JsonUtility.ToJObject(ecma2Yaml);
-                    ecma2YamlJObj[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
-                    ecma2YamlJObj[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
-                    result.Add(ecma2YamlJObj);
+                    var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
+                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
+                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
+                    result.Add(ecma2YamlJObject);
                 }
             }
             return result.Count == 0 ? null : result;
