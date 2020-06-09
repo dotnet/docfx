@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using Markdig;
@@ -15,7 +13,6 @@ using Markdig.Parsers.Inlines;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
 #pragma warning disable CS0618
@@ -206,7 +203,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
-                .UseDocsValidation(this, _contentValidator)
+                .UseDocsValidation(this, _contentValidator, GetFileLevelMoniker, GetPageLevelMoniker)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
@@ -322,6 +319,22 @@ namespace Microsoft.Docs.Build
         {
             var status = t_status.Value!.Peek();
             var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
+            status.Errors.AddRange(monikerErrors);
+            return monikers;
+        }
+
+        private MonikerList GetFileLevelMoniker()
+        {
+            var status = t_status.Value!.Peek();
+            var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
+            status.Errors.AddRange(monikerErrors);
+            return monikers;
+        }
+
+        private MonikerList GetPageLevelMoniker()
+        {
+            var status = t_status.Value!.Peek();
+            var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
             status.Errors.AddRange(monikerErrors);
             return monikers;
         }
