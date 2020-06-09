@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 .Concat(groupByOutputPath.Where(g => g.Count() > 1).Select(g => ResolveOutputPathConflicts(g.ToArray())));
 
             // resolve publish url conflicts
-            var groupByPublishUrl = publishMapWithoutOutputPathConflicts.GroupBy(x => x, new PublishUrlMapItemComparer()).ToList();
+            var groupByPublishUrl = publishMapWithoutOutputPathConflicts.GroupBy(x => x).ToList();
             return groupByPublishUrl.Where(g => g.Count() == 1).SelectMany(g => g)
                             .Concat(groupByPublishUrl.Where(g => g.Count() > 1).Select(g => ResolvePublishUrlConflicts(g.ToArray())))
                             .GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.ToList());

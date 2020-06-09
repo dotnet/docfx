@@ -2,12 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishUrlMapItem : IEqualityComparer<PublishUrlMapItem>, IComparable<PublishUrlMapItem>
+    internal class PublishUrlMapItem : IEquatable<PublishUrlMapItem>, IComparable<PublishUrlMapItem>
     {
         public string Url { get; }
 
@@ -25,25 +24,6 @@ namespace Microsoft.Docs.Build
             SourcePath = sourcePath;
         }
 
-        public bool Equals([AllowNull] PublishUrlMapItem x, [AllowNull] PublishUrlMapItem y)
-        {
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-            return PathUtility.PathComparer.Compare(x.Url, y.Url) == 0 && x.Monikers.Intersects(y.Monikers);
-        }
-
-        public int GetHashCode([DisallowNull] PublishUrlMapItem obj)
-        {
-            return PathUtility.PathComparer.GetHashCode(obj.Url);
-        }
-
         public int CompareTo(PublishUrlMapItem? other)
         {
             if (other is null)
@@ -57,6 +37,30 @@ namespace Microsoft.Docs.Build
                 result = SourcePath.CompareTo(other.SourcePath);
             }
             return result;
+        }
+
+        public bool Equals([AllowNull] PublishUrlMapItem other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other is null)
+            {
+                return false;
+            }
+            return PathUtility.PathComparer.Compare(Url, other.Url) == 0 && Monikers.Intersects(other.Monikers);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as PublishUrlMapItem);
+        }
+
+        public override int GetHashCode()
+        {
+            return PathUtility.PathComparer.GetHashCode(Url);
         }
     }
 }
