@@ -504,3 +504,4 @@ kbd
 nobr
 allowtransparency
 addbuildtag
+ecma

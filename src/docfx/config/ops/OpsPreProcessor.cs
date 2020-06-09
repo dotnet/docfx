@@ -37,28 +37,32 @@ namespace Microsoft.Docs.Build
             {
                 lock (s_lock)
                 {
-                    if (Directory.Exists(_config.Monodoc.OutputYamlFolder))
+                    for (var index = 0; index < _config.Monodoc.Length; index++)
                     {
-                        Directory.Delete(_config.Monodoc.OutputYamlFolder, recursive: true);
+                        var monodocConfig = _config.Monodoc[index];
+                        if (Directory.Exists(monodocConfig.OutputYamlFolder))
+                        {
+                            Directory.Delete(monodocConfig.OutputYamlFolder, recursive: true);
+                        }
+
+                        Directory.CreateDirectory(monodocConfig.OutputYamlFolder);
+
+                        var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null
+                            ? null
+                            : Path.Combine(_buildOptions.FallbackDocsetPath.Value, monodocConfig.SourceXmlFolder);
+                        var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
+                            ? null
+                            : Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder);
+                        ECMA2YamlConverter.Run(
+                            xmlDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder),
+                            outputDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder),
+                            fallbackXmlDirectory: fallbackXmlPath,
+                            fallbackOutputDirectory: fallbackOutputDirectory,
+                            logWriter: LogError,
+                            logContentBaseDirectory: _buildOptions.DocsetPath,
+                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-{index}.json"),
+                            config: monodocConfig);
                     }
-
-                    Directory.CreateDirectory(_config.Monodoc.OutputYamlFolder);
-
-                    var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null
-                        ? null
-                        : Path.Combine(_buildOptions.FallbackDocsetPath.Value, _config.Monodoc.SourceXmlFolder);
-                    var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
-                        ? null
-                        : Path.Combine(_buildOptions.DocsetPath, ".fallback", _config.Monodoc.OutputYamlFolder);
-                    ECMA2YamlConverter.Run(
-                        xmlDirectory: Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.SourceXmlFolder),
-                        outputDirectory: Path.Combine(_buildOptions.DocsetPath, _config.Monodoc.OutputYamlFolder),
-                        fallbackXmlDirectory: fallbackXmlPath,
-                        fallbackOutputDirectory: fallbackOutputDirectory,
-                        logWriter: LogError,
-                        logContentBaseDirectory: _buildOptions.DocsetPath,
-                        sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, ".sourcemap.json"),
-                        config: _config.Monodoc);
                 }
             }
         }
