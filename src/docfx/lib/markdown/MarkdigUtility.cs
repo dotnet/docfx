@@ -117,6 +117,63 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Traverse the markdown object graph, returns true to skip the current node.
+        /// </summary>
+        public static void Visit(this MarkdownObject? obj, MarkdownVisitContext context, Func<MarkdownObject, MarkdownVisitContext, bool> action)
+        {
+            if (obj is null)
+            {
+                return;
+            }
+
+            if (action(obj, context))
+            {
+                return;
+            }
+
+            switch (obj)
+            {
+                case InclusionBlock inclusionBlock:
+                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionBlock.ResolvedFilePath, inclusionBlock.GetSourceInfo()));
+                    foreach (var child in inclusionBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.FileStack.Pop();
+                    break;
+
+                case ContainerBlock block:
+                    foreach (var child in block)
+                    {
+                        Visit(child, context, action);
+                    }
+                    break;
+
+                case InclusionInline inclusionInline:
+                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionInline.ResolvedFilePath, inclusionInline.GetSourceInfo()));
+                    foreach (var child in inclusionInline)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.FileStack.Pop();
+                    break;
+
+                case ContainerInline inline:
+                    foreach (var child in inline)
+                    {
+                        Visit(child, context, action);
+                    }
+                    break;
+
+                case LeafBlock leaf:
+                    Visit(leaf.Inline, context, action);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Traverses the markdown object graph and replace each node with another node,
         /// If <paramref name="action"/> returns null, remove the node from the graph.
         /// </summary>
