@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             return new
             {
                 Links = _links
-                        .Where(x => !_errorLog.IsErrorFile(x.InclusionRoot))
+                        .Where(x => !_errorLog.HasError(x.InclusionRoot))
                         .OrderBy(x => x)
                         .ToArray(),
             };

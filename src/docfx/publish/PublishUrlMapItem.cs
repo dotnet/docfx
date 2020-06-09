@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
 
         public MonikerList Monikers { get; }
 
-        public string SourcePath { get; }
+        public FilePath SourcePath { get; }
 
-        public PublishUrlMapItem(string url, string outputPath, MonikerList monikers, string sourcePath)
+        public PublishUrlMapItem(string url, string outputPath, MonikerList monikers, FilePath sourcePath)
         {
             Url = url;
             OutputPath = outputPath;

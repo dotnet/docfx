@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.ErrorLog.Write(errors);
-            if (!context.ErrorLog.IsErrorFile(file.FilePath) && !context.Config.DryRun)
+            if (!context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {

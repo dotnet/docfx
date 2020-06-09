@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public bool IsErrorFile(FilePath file) => _errorFiles.Contains(file);
+        public bool HasError(FilePath file) => _errorFiles.Contains(file);
 
         public ErrorLog(string? outputPath = null)
         {

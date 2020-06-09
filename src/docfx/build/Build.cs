@@ -79,12 +79,8 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Building files"))
             {
-                context.BuildQueue.Start(file => BuildFile(context, file));
-
                 var files = context.PublishUrlMapBuilder.GetBuildFiles();
-                context.BuildQueue.Enqueue(files);
-
-                context.BuildQueue.WaitForCompletion();
+                ParallelUtility.ForEach(context.ErrorLog, files, file => BuildFile(context, file));
             }
 
             Parallel.Invoke(

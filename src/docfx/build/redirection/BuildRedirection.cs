@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
             context.ErrorLog.Write(errors);
             var outputPath = context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath) : null;
-            if (context.Config.Legacy && context.DocumentProvider.GetOutputPath(file.FilePath) != null && !context.ErrorLog.IsErrorFile(file.FilePath) && !context.Config.DryRun && outputPath != null)
+            if (context.Config.Legacy && context.DocumentProvider.GetOutputPath(file.FilePath) != null && !context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun && outputPath != null)
             {
                 var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                 var metadata = new

@@ -15,11 +15,11 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
         private readonly ContentValidator _contentValidator;
-        private readonly PublishUrlMapBuilder _publishUrlMapBuilder;
+        private readonly PublishUrlMap _publishUrlMapBuilder;
         private readonly DocumentProvider _documentProvider;
+        private readonly SourceMap _sourceMap;
 
         private ConcurrentDictionary<FilePath, (JObject? metadata, string? redirectUrl, string? outputPath)> _buildOutput = new ConcurrentDictionary<FilePath, (JObject? metadata, string? redirectUrl, string? outputPath)>();
-        private Dictionary<FilePath, PublishItem> _publishItems = new Dictionary<FilePath, PublishItem>();
 
         public PublishModelBuilder(
             Config config,
@@ -27,8 +27,9 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
             ContentValidator contentValidator,
-            PublishUrlMapBuilder publishUrlMapBuilder,
-            DocumentProvider documentProvider)
+            PublishUrlMap publishUrlMapBuilder,
+            DocumentProvider documentProvider,
+            SourceMap sourceMap)
         {
             _config = config;
             _errorLog = errorLog;
@@ -37,6 +38,7 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _publishUrlMapBuilder = publishUrlMapBuilder;
             _documentProvider = documentProvider;
+            _sourceMap = sourceMap;
         }
 
         public void Add(FilePath file, JObject? metadata, string? redirectUrl, string? outputPath)
@@ -46,26 +48,27 @@ namespace Microsoft.Docs.Build
 
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
-            foreach (var (item, file) in _publishUrlMapBuilder.GetPublishOutput())
+            var publishItems = new Dictionary<FilePath, PublishItem>();
+            foreach (var (url, sourcePath, monikers) in _publishUrlMapBuilder.GetPublishOutput())
             {
-                var document = _documentProvider.GetDocument(file);
-                var buildOutput = _buildOutput.TryGetValue(file, out var result);
+                var document = _documentProvider.GetDocument(sourcePath);
+                var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
                 var publishItem = new PublishItem(
-                    item.Url,
-                    buildOutput ? result.outputPath : item.OutputPath,
-                    item.SourcePath,
+                    url,
+                    buildOutput ? result.outputPath : null,
+                    _sourceMap.GetOriginalFilePath(sourcePath) ?? sourcePath.Path,
                     _locale,
-                    item.Monikers,
-                    _monikerProvider.GetConfigMonikerRange(file),
+                    monikers,
+                    _monikerProvider.GetConfigMonikerRange(sourcePath),
                     document.ContentType,
                     document.Mime,
                     buildOutput ? result.redirectUrl : null,
-                    _errorLog.IsErrorFile(file),
+                    _errorLog.HasError(sourcePath),
                     buildOutput ? result.metadata : null);
-                _publishItems.Add(file, publishItem);
+                publishItems.Add(sourcePath, publishItem);
             }
 
-            foreach (var (filePath, publishItem) in _publishItems)
+            foreach (var (filePath, publishItem) in publishItems)
             {
                 if (!publishItem.HasError)
                 {
@@ -74,13 +77,13 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var publishItems = (
-                   from item in _publishItems.Values
+            var items = (
+                   from item in publishItems.Values
                    orderby item.Locale, item.Path, item.Url, item.RedirectUrl, item.MonikerGroup
                    select item).ToArray();
 
             var monikerGroups = new Dictionary<string, MonikerList>(
-                from item in _publishItems.Values
+                from item in publishItems.Values
                 let monikerGroup = item.MonikerGroup
                 where !string.IsNullOrEmpty(monikerGroup)
                 orderby monikerGroup
@@ -91,10 +94,10 @@ namespace Microsoft.Docs.Build
                 _config.Name,
                 _config.Product,
                 _config.BasePath.ValueWithLeadingSlash,
-                publishItems,
+                items,
                 monikerGroups);
 
-            var fileManifests = _publishItems.ToDictionary(item => item.Key, item => item.Value);
+            var fileManifests = publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
         }

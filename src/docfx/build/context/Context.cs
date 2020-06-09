@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
         public ContributionProvider ContributionProvider { get; }
 
-        public PublishUrlMapBuilder PublishUrlMapBuilder { get; }
+        public PublishUrlMap PublishUrlMapBuilder { get; }
 
         public PublishModelBuilder PublishModelBuilder { get; }
 
@@ -117,8 +117,8 @@ namespace Microsoft.Docs.Build
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
-            PublishUrlMapBuilder = new PublishUrlMapBuilder(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap, SourceMap);
-            PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMapBuilder, DocumentProvider);
+            PublishUrlMapBuilder = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap, BuildQueue);
+            PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMapBuilder, DocumentProvider, SourceMap);
         }
 
         public void Dispose()
