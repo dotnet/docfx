@@ -148,6 +148,7 @@ namespace Microsoft.Docs.Build
                         Visit(child, context, action);
                     }
                     break;
+
                 case InclusionInline inclusionInline:
                     context.FileStack.Push(new SourceInfo<Document>((Document)inclusionInline.ResolvedFilePath, inclusionInline.GetSourceInfo()));
                     foreach (var child in inclusionInline)
@@ -156,12 +157,14 @@ namespace Microsoft.Docs.Build
                     }
                     context.FileStack.Pop();
                     break;
+
                 case ContainerInline inline:
                     foreach (var child in inline)
                     {
                         Visit(child, context, action);
                     }
                     break;
+
                 case LeafBlock leaf:
                     Visit(leaf.Inline, context, action);
                     break;
