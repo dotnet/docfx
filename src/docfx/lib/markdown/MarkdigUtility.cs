@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -132,41 +131,42 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (obj is ContainerBlock block)
+            switch (obj)
             {
-                var currentContext = context;
-                if (block is InclusionBlock inclusionBlock)
-                {
-                    var currentParents = context.Parents?.ToList() ?? new List<SourceInfo?>();
-                    currentParents.Add(inclusionBlock.GetSourceInfo());
-                    var currentDocument = (Document)inclusionBlock.ResolvedFilePath;
-                    currentContext = new MarkdownVisitContext(currentDocument, true, currentParents);
-                }
+                case InclusionBlock inclusionBlock:
+                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionBlock.ResolvedFilePath, inclusionBlock.GetSourceInfo()));
+                    foreach (var child in inclusionBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.FileStack.Pop();
+                    break;
 
-                foreach (var child in block)
-                {
-                    Visit(child, currentContext, action);
-                }
-            }
-            else if (obj is ContainerInline inline)
-            {
-                var currentContext = context;
-                if (inline is InclusionInline inclusionInline)
-                {
-                    var currentParents = context.Parents?.ToList() ?? new List<SourceInfo?>();
-                    currentParents.Add(inclusionInline.GetSourceInfo());
-                    var currentDocument = (Document)inclusionInline.ResolvedFilePath;
-                    currentContext = new MarkdownVisitContext(currentDocument, true, currentParents);
-                }
-
-                foreach (var child in inline)
-                {
-                    Visit(child, currentContext, action);
-                }
-            }
-            else if (obj is LeafBlock leaf)
-            {
-                Visit(leaf.Inline, context, action);
+                case ContainerBlock block:
+                    foreach (var child in block)
+                    {
+                        Visit(child, context, action);
+                    }
+                    break;
+                case InclusionInline inclusionInline:
+                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionInline.ResolvedFilePath, inclusionInline.GetSourceInfo()));
+                    foreach (var child in inclusionInline)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.FileStack.Pop();
+                    break;
+                case ContainerInline inline:
+                    foreach (var child in inline)
+                    {
+                        Visit(child, context, action);
+                    }
+                    break;
+                case LeafBlock leaf:
+                    Visit(leaf.Inline, context, action);
+                    break;
+                default:
+                    break;
             }
         }
 

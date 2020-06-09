@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile, false), (node, context) =>
+                MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
                     if (node is HeadingBlock headingBlock)
                     {
