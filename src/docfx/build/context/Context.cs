@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
-            PublishUrlMapBuilder = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap, BuildQueue);
+            PublishUrlMapBuilder = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMapBuilder, DocumentProvider, SourceMap);
         }
 

@@ -52,22 +52,29 @@ namespace Microsoft.Docs.Build
                 return 1;
             }
 
-            if (!x.Monikers.HasMonikers)
+            if (!x.Monikers.HasMonikers && y.Monikers.HasMonikers)
             {
-                if (y.Monikers.HasMonikers)
+                return 1;
+            }
+            else if (x.Monikers.HasMonikers && !y.Monikers.HasMonikers)
+            {
+                return -1;
+            }
+
+            var result = PathUtility.PathComparer.Compare(x.Monikers.MonikerGroup, y.Monikers.MonikerGroup);
+
+            if (result == 0)
+            {
+                if (x.SourcePath.Origin == FileOrigin.Redirection && y.SourcePath.Origin == FileOrigin.Main)
                 {
                     return 1;
                 }
-            }
-            else
-            {
-                if (!y.Monikers.HasMonikers)
+                else if (y.SourcePath.Origin == FileOrigin.Redirection && x.SourcePath.Origin == FileOrigin.Main)
                 {
                     return -1;
                 }
             }
 
-            var result = PathUtility.PathComparer.Compare(x.Monikers.MonikerGroup, y.Monikers.MonikerGroup);
             if (result == 0)
             {
                 result = PathUtility.PathComparer.Compare(x.SourcePath.Path, y.SourcePath.Path);

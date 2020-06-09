@@ -17,7 +17,6 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TableOfContentsMap _tocMap;
-        private readonly WorkQueue<FilePath> _buildQueue;
 
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
 
@@ -28,8 +27,7 @@ namespace Microsoft.Docs.Build
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            TableOfContentsMap tocMap,
-            WorkQueue<FilePath> buildQueue)
+            TableOfContentsMap tocMap)
         {
             _config = config;
             _errorLog = errorLog;
@@ -38,7 +36,6 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _tocMap = tocMap;
-            _buildQueue = buildQueue;
             _publishUrlMap = Initialize();
         }
 

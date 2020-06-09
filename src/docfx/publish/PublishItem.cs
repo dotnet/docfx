@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
     {
         public string Url { get; }
 
+        public string? Path { get; }
+
         /// <summary>
         /// File source relative path to docset root
         /// will be used for PR comments
@@ -26,8 +28,6 @@ namespace Microsoft.Docs.Build
         public string? ConfigMonikerRange { get; }
 
         public string Locale { get; }
-
-        public string? Path { get; }
 
         public string? RedirectUrl { get; }
 
