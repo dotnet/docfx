@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax.Inlines;
     using System.Collections.Generic;
 
-    public class TripleColonInline : ContainerInline
+    public class TripleColonInline : ContainerInline, ITripleColon
     {
         public IDictionary<string, string> RenderProperties { get; set; }
         public ITripleColonExtensionInfo Extension { get; set; }
@@ -15,5 +15,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool Closed { get; set; }
         public bool EndingTripleColons { get; set; }
         public IDictionary<string, string> Attributes { get; set; }
+        public int Count { get; }
     }
 }
