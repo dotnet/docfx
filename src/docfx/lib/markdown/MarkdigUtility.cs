@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                 if (block is InclusionBlock inclusionBlock)
                 {
                     currentParent.Add(inclusionBlock.GetSourceInfo());
-                    currentDocument = (Document?)inclusionBlock.File;
+                    currentDocument = (Document?)inclusionBlock.ResolvedFilePath;
                 }
                 foreach (var child in block)
                 {
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
                 if (inline is InclusionInline inclusionInline)
                 {
                     currentParent.Add(inclusionInline.GetSourceInfo());
-                    currentDocument = (Document?)inclusionInline.File;
+                    currentDocument = (Document?)inclusionInline.ResolvedFilePath;
                 }
 
                 foreach (var child in inline)

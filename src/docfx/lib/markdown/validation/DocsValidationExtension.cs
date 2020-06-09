@@ -21,16 +21,17 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
-                var file = (Document)InclusionContext.File;
-                if (file.FilePath.Format != FileFormat.Markdown)
+                var currentFile = (Document)InclusionContext.File;
+                if (currentFile.FilePath.Format != FileFormat.Markdown)
                 {
                     return;
                 }
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                MarkdigUtility.Visit(document, null, null, (node, parents, current) =>
+                MarkdigUtility.Visit(document, null, null, (node, parents, nodeFile) =>
                 {
+                    var isInclude = nodeFile != null && parents != null;
                     if (node is HeadingBlock headingBlock)
                     {
                         var heading = new Heading
@@ -44,11 +45,11 @@ namespace Microsoft.Docs.Build
                             IsVisible = MarkdigUtility.IsVisible(headingBlock),
                         };
 
-                        if (current != null && parents != null)
+                        if (isInclude)
                         {
-                            if (!inclusionDocumentNodes.TryGetValue(current, out var contentNodes))
+                            if (!inclusionDocumentNodes.TryGetValue(nodeFile, out var contentNodes))
                             {
-                                inclusionDocumentNodes[current] = contentNodes = new List<ContentNode>();
+                                inclusionDocumentNodes[nodeFile] = contentNodes = new List<ContentNode>();
                             }
 
                             contentNodes.Add(heading);
@@ -68,7 +69,7 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                contentValidator.ValidateHeadings(file, documentNodes, false);
+                contentValidator.ValidateHeadings(currentFile, documentNodes, false);
                 foreach (var (key, nodes) in inclusionDocumentNodes)
                 {
                     contentValidator.ValidateHeadings(key, nodes, true);
