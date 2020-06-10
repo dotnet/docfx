@@ -46,13 +46,16 @@ namespace Microsoft.Docs.Build
 
         public void ValidateTocDeprecated(FilePath filePath)
         {
-            var validationContext = new ValidationContext { DocumentType = "toc" };
-            var tocItem = new TocItem()
+            if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
-                FilePath = filePath.Path.Value,
-                TocValidationType = TocValidationType.TocDeprecated,
-            };
-            Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                var tocItem = new TocItem()
+                {
+                    FilePath = filePath.Path.Value,
+                    SourceInfo = new SourceInfo(filePath, 0, 0),
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+            }
         }
 
         public void ValidateTocMissing(Document document, bool hasReferencedTocs)
@@ -64,49 +67,52 @@ namespace Microsoft.Docs.Build
                 {
                     FilePath = document.FilePath.Path.Value,
                     HasReferencedTocs = hasReferencedTocs,
-                    TocValidationType = TocValidationType.TocMissing,
+                    SourceInfo = new SourceInfo(document.FilePath, 0, 0),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateBreadcrumbLinkExternal(TableOfContentsNode[] nodes, FilePath filePath, SourceInfo<string> sourceInfo)
+        public void ValidateBreadcrumbLinkExternal(TableOfContentsNode[] nodes, FilePath filePath)
         {
-            var validationContext = new ValidationContext { DocumentType = "toc" };
-
-            foreach (var node in nodes)
+            if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
-                var tocItem = new TocItem()
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                foreach (var node in nodes)
                 {
-                    FilePath = node.Href.Value,
-                    IsHrefExternal = UrlUtility.GetLinkType(node.Href) == LinkType.External,
-                    SourceInfo = node.Href,
-                    TocValidationType = TocValidationType.TocExternalBreadcrumb,
-                };
-                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                    var tocItem = new TocItem()
+                    {
+                        FilePath = node.Href.Value,
+                        IsHrefExternal = UrlUtility.GetLinkType(node.Href) == LinkType.External,
+                        SourceInfo = new SourceInfo(filePath, 0, 0),
+                    };
+                    Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
 
-                if (node.Items.Count > 0)
-                {
-                    ValidateBreadcrumbLinkExternal(node.Items.Select(item => item.Value).ToArray(), filePath, sourceInfo);
+                    if (node.Items.Count > 0)
+                    {
+                        ValidateBreadcrumbLinkExternal(node.Items.Select(item => item.Value).ToArray(), filePath);
+                    }
                 }
             }
         }
 
         public void ValidateTocEntryDuplicated(Document file, TableOfContentsNode node)
         {
-            var items = FlattenRecursive(node);
-            var hrefs = items
-                .SelectMany(nodes => nodes.Items)
-                .Select(item => item.Value.Href.Value).ToList();
-
-            var validationContext = new ValidationContext { DocumentType = "toc" };
-            var tocItem = new TocItem()
+            if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
-                FilePath = file.FilePath.Path.Value,
-                Hrefs = hrefs,
-                TocValidationType = TocValidationType.TocEntryDuplicated,
-            };
-            Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                var items = FlattenRecursive(node);
+                var hrefs = items
+                    .SelectMany(nodes => nodes.Items)
+                    .Select(item => item.Value.Href.Value).ToList();
+
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                var tocItem = new TocItem()
+                {
+                    Hrefs = hrefs,
+                    SourceInfo = new SourceInfo(file.FilePath, 0, 0),
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+            }
         }
 
         private static IEnumerable<TableOfContentsNode> FlattenRecursive(TableOfContentsNode node)

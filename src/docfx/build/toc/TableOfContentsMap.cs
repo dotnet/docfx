@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                 _tocs.Value.docToTocs,
                 file => file.FilePath.Path);
 
-            _contentValidator.ValidateTocMissing(result.toc, result.hasReferencedTocs); // toc-missing
+            _contentValidator.ValidateTocMissing(file, result.hasReferencedTocs);
 
             return result.toc;
         }
