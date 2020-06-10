@@ -1,15 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
-using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,7 +19,9 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseDocsValidation(
             this MarkdownPipelineBuilder builder,
             MarkdownEngine markdownEngine,
-            ContentValidator contentValidator)
+            ContentValidator contentValidator,
+            Func<MonikerList> getFileLevelMonikers,
+            Func<MonikerList> getPageLevelMonikers)
         {
             return builder.Use(document =>
             {
@@ -30,11 +33,15 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
+                var pageLevelMoniker = getPageLevelMonikers();
+                var fileLevelMoniker = getFileLevelMonikers();
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
+                    var isCanonicalVersion = IsCanonicalVersion(pageLevelMoniker, fileLevelMoniker, context.ZoneMoniker);
+                    ContentNode? documentNode = null;
                     if (node is HeadingBlock headingBlock)
                     {
-                        var heading = new Heading
+                        documentNode = new Heading
                         {
                             Level = headingBlock.Level,
                             SourceInfo = headingBlock.GetSourceInfo(),
@@ -43,27 +50,31 @@ namespace Microsoft.Docs.Build
                             HeadingChar = headingBlock.HeaderChar,
                             RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
                             IsVisible = MarkdigUtility.IsVisible(headingBlock),
+                            IsCanonicalVersion = isCanonicalVersion,
                         };
-
-                        if (context.IsInclude)
-                        {
-                            if (!inclusionDocumentNodes.TryGetValue(context.Document, out var contentNodes))
-                            {
-                                inclusionDocumentNodes[context.Document] = contentNodes = new List<ContentNode>();
-                            }
-
-                            contentNodes.Add(heading);
-                        }
-
-                        documentNodes.Add(heading);
                     }
                     else if (node is LeafBlock leafBlock)
                     {
-                        documentNodes.Add(new ContentNode
+                        documentNode = new ContentNode
                         {
                             SourceInfo = node.GetSourceInfo(),
                             IsVisible = MarkdigUtility.IsVisible(leafBlock),
-                        });
+                            IsCanonicalVersion = isCanonicalVersion,
+                        };
+                    }
+
+                    if (documentNode != null)
+                    {
+                        documentNodes.Add(documentNode);
+                        if (context.IsInclude)
+                        {
+                            if (!inclusionDocumentNodes.TryGetValue(context.Document, out var inclusionNodes))
+                            {
+                                inclusionDocumentNodes[context.Document] = inclusionNodes = new List<ContentNode>();
+                            }
+
+                            inclusionNodes.Add(documentNode);
+                        }
                     }
 
                     return false;
@@ -75,6 +86,16 @@ namespace Microsoft.Docs.Build
                     contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
                 }
             });
+        }
+
+        private static bool? IsCanonicalVersion(MonikerList pageLevelMonikerList, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
+        {
+            if (zoneLevelMonikerList.HasMonikers)
+            {
+                return MonikerList.IsCanonicalVersion(pageLevelMonikerList, zoneLevelMonikerList);
+            }
+
+            return MonikerList.IsCanonicalVersion(pageLevelMonikerList, fileLevelMonikerList);
         }
 
         private static string GetHeadingContent(HeadingBlock headingBlock)

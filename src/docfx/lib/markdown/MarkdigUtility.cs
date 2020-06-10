@@ -7,6 +7,7 @@ using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -133,6 +134,16 @@ namespace Microsoft.Docs.Build
 
             switch (obj)
             {
+                case MonikerRangeBlock monikerRangeBlock:
+                    var monikers = monikerRangeBlock.GetAttributes().Properties.First(p => p.Key == "data-moniker").Value.Split(" ");
+                    context.ZoneMonikerStack.Push(new MonikerList(monikers));
+                    foreach (var child in monikerRangeBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.ZoneMonikerStack.Pop();
+                    break;
+
                 case InclusionBlock inclusionBlock:
                     context.FileStack.Push(new SourceInfo<Document>((Document)inclusionBlock.ResolvedFilePath, inclusionBlock.GetSourceInfo()));
                     foreach (var child in inclusionBlock)
@@ -168,6 +179,7 @@ namespace Microsoft.Docs.Build
                 case LeafBlock leaf:
                     Visit(leaf.Inline, context, action);
                     break;
+
                 default:
                     break;
             }
