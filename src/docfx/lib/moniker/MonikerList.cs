@@ -150,9 +150,9 @@ namespace Microsoft.Docs.Build
             return !(left == right);
         }
 
-        public static bool? IsCanonicalVersion(MonikerList pageLevelMonikerList, MonikerList monikerList)
+        public static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList monikerList)
         {
-            if (!pageLevelMonikerList.HasMonikers)
+            if (canonicalVersion is null)
             {
                 return null;
             }
@@ -162,7 +162,6 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            var canonicalVersion = pageLevelMonikerList.Last();
             return monikerList.Contains(canonicalVersion);
         }
 

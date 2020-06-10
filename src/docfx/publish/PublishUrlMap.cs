@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsMap _tocMap;
 
         private readonly HashSet<FilePath> _files;
-        private readonly Dictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
+        private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
 
         public PublishUrlMap(
             Config config,
@@ -41,11 +41,21 @@ namespace Microsoft.Docs.Build
             _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
 
-        public MonikerList GetCanonicalVersion(string url)
+        public string? GetCanonicalVersion(string url)
         {
             if (_publishUrlMap.TryGetValue(url, out var item))
             {
-                return item.Last().Monikers;
+                string? canonicalVersion = null;
+                var order = int.MinValue;
+                foreach (var moniker in item.SelectMany(x => x.Monikers))
+                {
+                    var currentOrder = _monikerProvider.GetMonikerOrder(moniker);
+                    if (currentOrder > order)
+                    {
+                        canonicalVersion = moniker;
+                    }
+                }
+                return canonicalVersion;
             }
             return default;
         }
@@ -74,7 +84,7 @@ namespace Microsoft.Docs.Build
             var publishMapWithoutOutputPathConflicts = builder.ToList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
 
             // resolve publish url conflicts
-            return publishMapWithoutOutputPathConflicts.GroupBy(x => x).Select(g => ResolvePublishUrlConflicts(g)).GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Monikers).ToList());
+            return publishMapWithoutOutputPathConflicts.GroupBy(x => x).Select(g => ResolvePublishUrlConflicts(g)).GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.ToList());
         }
 
         private PublishUrlMapItem ResolveOutputPathConflicts(IGrouping<string, PublishUrlMapItem> conflicts)

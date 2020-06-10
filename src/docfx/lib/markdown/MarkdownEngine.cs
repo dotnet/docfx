@@ -338,7 +338,7 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private MonikerList GetPageLevelMonikers()
+        private string? GetPageLevelMonikers()
         {
             return _publishUrlMap!.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
         }
