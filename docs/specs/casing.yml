@@ -10,6 +10,7 @@ outputs:
   docs/b.json:
 ---
 # URL is case insensitive on windows and mac
+os: windows, osx
 inputs:
   docfx.yml:
   docs/A.png.md: '![](a.png)'

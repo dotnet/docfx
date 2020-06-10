@@ -29,13 +29,13 @@ namespace Microsoft.Docs.Build
 
         public string Locale { get; }
 
-        public string? RedirectUrl { get; set; }
+        public string? RedirectUrl { get; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool HasError { get; set; }
+        public bool HasError { get; }
 
         [JsonExtensionData]
-        public JObject? ExtensionData { get; set; }
+        public JObject? ExtensionData { get; }
 
         [JsonIgnore]
         public ContentType ContentType { get; }
@@ -43,7 +43,18 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public string? Mime { get; }
 
-        public PublishItem(string url, string? path, string? sourcePath, string locale, MonikerList monikers, string? configMonikerRange, ContentType contentType, string? mime)
+        public PublishItem(
+            string url,
+            string? path,
+            string? sourcePath,
+            string locale,
+            MonikerList monikers,
+            string? configMonikerRange,
+            ContentType contentType,
+            string? mime,
+            string? redirectUrl,
+            bool hasError,
+            JObject? extensionData)
         {
             Url = url;
             Path = path;
@@ -53,6 +64,9 @@ namespace Microsoft.Docs.Build
             ConfigMonikerRange = configMonikerRange;
             ContentType = contentType;
             Mime = mime;
+            RedirectUrl = redirectUrl;
+            HasError = hasError;
+            ExtensionData = extensionData;
         }
     }
 }
