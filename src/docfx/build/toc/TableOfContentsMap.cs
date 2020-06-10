@@ -91,7 +91,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
         {
-            // can log directly to errorlog to output error
             var hasReferencedTocs = false;
             var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
 
