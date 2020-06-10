@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                 switch (Path.GetExtension(path).ToLowerInvariant())
                 {
                     case ".json":
-                        File.WriteAllText(path, NormlizeJsonFile(path));
+                        File.WriteAllText(path, NormalizeJsonFile(path));
                         break;
 
                     case ".log":
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string NormlizeJsonFile(string path) => NormalizeNewLine(NormalizeJson(File.ReadAllText(path)));
+        private static string NormalizeJsonFile(string path) => NormalizeNewLine(NormalizeJson(File.ReadAllText(path)));
 
         private static string NormalizeJson(string json) => JToken.Parse(json).ToString();
 
