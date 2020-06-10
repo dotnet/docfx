@@ -600,18 +600,6 @@ outputs:
             "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
-            "source_line": 4,
-            "source_url": "/docs/a/toc.json",
-            "target_url": "/docs/a"
-        },
-        {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
-            "source_line": 2,
-            "source_url": "/docs/a/toc.json",
-            "target_url": "/docs/b"
-        },
-        {
             "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
             "source_line": 3,
             "source_url": "/docs/b",

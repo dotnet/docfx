@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly TableOfContentsMap _tocMap;
 
+        private readonly HashSet<FilePath> _files;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
 
         public PublishUrlMap(
@@ -37,12 +38,10 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _tocMap = tocMap;
             _publishUrlMap = Initialize();
+            _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
 
-        public IEnumerable<FilePath> GetBuildFiles()
-        {
-            return _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath);
-        }
+        public HashSet<FilePath> GetFiles() => _files;
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
