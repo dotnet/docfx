@@ -54,8 +54,8 @@ namespace Microsoft.Docs.Build
                             ? null
                             : Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
                         ECMA2YamlConverter.Run(
-                            xmlDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder),
-                            outputDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder),
+                            xmlDirectory: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder)),
+                            outputDirectory: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder)),
                             fallbackXmlDirectory: fallbackXmlPath,
                             fallbackOutputDirectory: fallbackOutputDirectory,
                             logWriter: LogError,
