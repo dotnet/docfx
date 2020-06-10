@@ -8,6 +8,7 @@ using System.Text;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 
@@ -89,24 +90,12 @@ namespace Microsoft.Docs.Build
 
         private static bool? IsCanonicalVersion(MonikerList pageLevelMonikerList, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
         {
-            if (!pageLevelMonikerList.HasMonikers)
-            {
-                return null;
-            }
-
-            if (!zoneLevelMonikerList.HasMonikers && !fileLevelMonikerList.HasMonikers)
-            {
-                return null;
-            }
-
-            var canonicalVersion = pageLevelMonikerList.Last();
-
             if (zoneLevelMonikerList.HasMonikers)
             {
-                return zoneLevelMonikerList.Contains(canonicalVersion);
+                return MonikerList.IsCanonicalVersion(pageLevelMonikerList, zoneLevelMonikerList);
             }
 
-            return fileLevelMonikerList.HasMonikers && fileLevelMonikerList.Contains(canonicalVersion);
+            return MonikerList.IsCanonicalVersion(pageLevelMonikerList, fileLevelMonikerList);
         }
 
         private static string GetHeadingContent(HeadingBlock headingBlock)

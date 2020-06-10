@@ -135,6 +135,22 @@ namespace Microsoft.Docs.Build
             return !(left == right);
         }
 
+        public static bool? IsCanonicalVersion(MonikerList pageLevelMonikerList, MonikerList monikerList)
+        {
+            if (!pageLevelMonikerList.HasMonikers)
+            {
+                return null;
+            }
+
+            if (!monikerList.HasMonikers)
+            {
+                return null;
+            }
+
+            var canonicalVersion = pageLevelMonikerList.Last();
+            return monikerList.Contains(canonicalVersion);
+        }
+
         private class MonikerListJsonConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType) => objectType == typeof(MonikerList);
