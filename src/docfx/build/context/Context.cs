@@ -117,7 +117,6 @@ namespace Microsoft.Docs.Build
             MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, DocumentProvider, MonikerProvider, TemplateEngine, ContentValidator);
 
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
-
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers, ContentValidator);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);

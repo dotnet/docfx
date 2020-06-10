@@ -63,7 +63,6 @@ namespace Microsoft.Docs.Build
 
         public (Error? error, string link, Document? file) ResolveLink(SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
-
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(

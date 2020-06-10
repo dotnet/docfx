@@ -87,7 +87,6 @@ namespace Microsoft.Docs.Build
                 {
                     _contentValidator.ValidateTocEntryDuplicated(file, node);
                 }
-
                 return node;
             }
             finally
