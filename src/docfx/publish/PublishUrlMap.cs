@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsMap _tocMap;
 
         private readonly HashSet<FilePath> _files;
-        private readonly ConcurrentDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
+        private readonly Dictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
 
         public PublishUrlMap(
             Config config,
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
 
-        private ConcurrentDictionary<string, List<PublishUrlMapItem>> Initialize()
+        private Dictionary<string, List<PublishUrlMapItem>> Initialize()
         {
             var builder = new ListBuilder<PublishUrlMapItem>();
 
@@ -74,8 +74,7 @@ namespace Microsoft.Docs.Build
             var publishMapWithoutOutputPathConflicts = builder.ToList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
 
             // resolve publish url conflicts
-            var result = publishMapWithoutOutputPathConflicts.GroupBy(x => x).Select(g => ResolvePublishUrlConflicts(g)).GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Monikers).ToList());
-            return new ConcurrentDictionary<string, List<PublishUrlMapItem>>(result);
+            return publishMapWithoutOutputPathConflicts.GroupBy(x => x).Select(g => ResolvePublishUrlConflicts(g)).GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.OrderBy(x => x.Monikers).ToList());
         }
 
         private PublishUrlMapItem ResolveOutputPathConflicts(IGrouping<string, PublishUrlMapItem> conflicts)
