@@ -66,6 +66,7 @@ namespace Microsoft.Docs.Build
                     if (currentOrder > order)
                     {
                         canonicalVersion = moniker;
+                        order = currentOrder;
                     }
                 }
                 return canonicalVersion;
