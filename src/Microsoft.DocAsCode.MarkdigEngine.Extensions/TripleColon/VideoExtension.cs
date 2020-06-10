@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
 
-    public class VideoExtensionInline : ITripleColonExtensionInfo
+    public class VideoExtension : ITripleColonExtensionInfo
     {
         private readonly MarkdownContext _context;
 

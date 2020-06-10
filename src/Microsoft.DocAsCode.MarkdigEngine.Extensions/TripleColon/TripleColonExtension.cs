@@ -27,14 +27,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new ChromelessFormExtension(),
                 new ImageExtension(context),
                 new CodeExtension(context),
-                new VideoExtension(context)
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
 
             _extensionsInline = (new ITripleColonExtensionInfo[]
             {
                 new ImageExtension(context),
-                new VideoExtensionInline(context)
+                new VideoExtension(context)
             }).ToDictionary(x => x.Name);
         }
 
@@ -49,6 +48,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 pipeline.BlockParsers.AddIfNotAlready(parser);
             }
+
+            var inlineParser = new TripleColonParserInline(_context, _extensionsInline);
+            pipeline.InlineParsers.InsertBefore<InlineParser>(inlineParser); pipeline.InlineParsers.InsertBefore<InlineParser>(inlineParser);
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
