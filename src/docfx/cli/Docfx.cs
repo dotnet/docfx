@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
         private static void PrintFatalErrorMessage(Exception exception)
         {
-            if (exception is AggregateException ae && ae.InnerException != null)
+            while (exception is AggregateException ae && ae.InnerException != null)
             {
                 exception = ae.InnerException;
             }
