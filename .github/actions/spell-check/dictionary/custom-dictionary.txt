@@ -506,3 +506,4 @@ allowtransparency
 addbuildtag
 ecma
 Idx
+igrouping
