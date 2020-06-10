@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
-                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetPageLevelMonikers)
+                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
@@ -338,7 +338,7 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private string? GetPageLevelMonikers()
+        private string? GetCanonicalVersion()
         {
             return _publishUrlMap!.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
         }

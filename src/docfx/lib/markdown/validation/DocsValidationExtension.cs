@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             MarkdownEngine markdownEngine,
             ContentValidator contentValidator,
             Func<MonikerList> getFileLevelMonikers,
-            Func<string?> getPageLevelMonikers)
+            Func<string?> getCanonicalVersion)
         {
             return builder.Use(document =>
             {
@@ -33,11 +33,11 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                var pageLevelMoniker = getPageLevelMonikers();
+                var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
-                    var isCanonicalVersion = IsCanonicalVersion(pageLevelMoniker, fileLevelMoniker, context.ZoneMoniker);
+                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
                     ContentNode? documentNode = null;
                     if (node is HeadingBlock headingBlock)
                     {
