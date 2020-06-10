@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -53,6 +54,14 @@ namespace Microsoft.Docs.Build
                 t_repos.Value = repos;
                 t_appDataPath.Value = appDataPath;
                 await RunCore(docsetPath, outputPath, spec);
+            }
+            catch (Exception exception)
+            {
+                while (exception is AggregateException ae && ae.InnerException != null)
+                {
+                    exception = ae.InnerException;
+                }
+                ExceptionDispatchInfo.Capture(exception).Throw();
             }
             finally
             {

@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             Clean(outputPath);
 
             var buildTime = Build(repositoryPath, outputPath, docfxConfig);
-            Prettify(outputPath);
+            Normalizer.Normalize(outputPath);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
+                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
                 });
@@ -302,50 +302,6 @@ namespace Microsoft.Docs.Build
         private static string BasicAuth(string? token)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
-        }
-
-        private static void Prettify(string outputPath)
-        {
-            // remove docfx.yml to ignore the diff caused by xref url for now
-            // the logic can be removed while docfx.yml not generated anymore
-            foreach (var configPath in Directory.GetFiles(outputPath, "docfx.yml", SearchOption.AllDirectories))
-            {
-                File.Delete(configPath);
-            }
-
-            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), PrettifyFile);
-
-            static void PrettifyFile(string path)
-            {
-                switch (Path.GetExtension(path).ToLowerInvariant())
-                {
-                    case ".json":
-                        File.WriteAllText(path, PrettifyJson(File.ReadAllText(path)));
-                        break;
-
-                    case ".log":
-                    case ".txt":
-                        File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select(PrettifyLogJson));
-                        break;
-                }
-            }
-
-            static string PrettifyJson(string json)
-            {
-                return PrettifyNewLine(JToken.Parse(json).ToString());
-            }
-
-            static string PrettifyLogJson(string json)
-            {
-                var obj = JObject.Parse(json);
-                obj.Remove("date_time");
-                return PrettifyNewLine(obj.ToString());
-            }
-
-            static string PrettifyNewLine(string text)
-            {
-                return text.Replace("\r", "").Replace("\\n\\n", "⬇\n").Replace("\\n", "⬇\n");
-            }
         }
 
         private static Task SendPullRequestComments()

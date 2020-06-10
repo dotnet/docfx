@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
-        internal static List<Error> Build(Context context, Document file)
+        internal static void Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
@@ -17,47 +17,36 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
-            var publishItem = new PublishItem(
-                file.SiteUrl,
-                context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath) : null,
-                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
-                context.BuildOptions.Locale,
-                monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-                file.ContentType,
-                file.Mime.Value);
-
             var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
             errors.AddIfNotNull(redirectError);
-            publishItem.RedirectUrl = redirectUrl;
+
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
-            publishItem.ExtensionData = new JObject
+            var publishMetadata = new JObject
             {
                 ["document_id"] = documentId,
                 ["document_version_independent_id"] = documentVersionIndependentId,
                 ["canonical_url"] = file.CanonicalUrl,
             };
 
-            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
+            context.ErrorLog.Write(errors);
+            var outputPath = context.Config.Legacy ? context.DocumentProvider.GetOutputPath(file.FilePath) : null;
+            if (context.Config.Legacy && context.DocumentProvider.GetOutputPath(file.FilePath) != null && !context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun && outputPath != null)
             {
-                if (publishItem.Path != null && !context.Config.DryRun)
+                var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                var metadata = new
                 {
-                    var metadataPath = publishItem.Path.Substring(0, publishItem.Path.Length - ".raw.page.json".Length) + ".mta.json";
-                    var metadata = new
-                    {
-                        locale = context.BuildOptions.Locale,
-                        monikers,
-                        redirect_url = publishItem.RedirectUrl,
-                        is_dynamic_rendering = true,
-                    };
+                    locale = context.BuildOptions.Locale,
+                    monikers,
+                    redirect_url = redirectUrl,
+                    is_dynamic_rendering = true,
+                };
 
-                    // Note: produce an empty output to make publish happy
-                    context.Output.WriteText(publishItem.Path, "{}");
-                    context.Output.WriteJson(metadataPath, metadata);
-                }
-            });
+                // Note: produce an empty output to make publish happy
+                context.Output.WriteText(outputPath, "{}");
+                context.Output.WriteJson(metadataPath, metadata);
+            }
 
-            return errors;
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, redirectUrl, outputPath);
         }
     }
 }

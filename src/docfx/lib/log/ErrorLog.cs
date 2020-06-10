@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public IEnumerable<FilePath> ErrorFiles => _errorFiles;
+        public bool HasError(FilePath file) => _errorFiles.Contains(file);
 
         public ErrorLog(string? outputPath = null)
         {
@@ -99,11 +99,6 @@ namespace Microsoft.Docs.Build
             }
 
             if (config != null && config.WarningsAsErrors && level == ErrorLevel.Warning)
-            {
-                level = ErrorLevel.Error;
-            }
-
-            if (error.Code == "circular-reference" || error.Code == "include-not-found")
             {
                 level = ErrorLevel.Error;
             }

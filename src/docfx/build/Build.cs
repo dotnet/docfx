@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -80,13 +79,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
-
-                Parallel.Invoke(
-                    () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
-                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
-                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
-                    () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
-
+                context.BuildQueue.Enqueue(context.PublishUrlMap.GetFiles());
                 context.BuildQueue.WaitForCompletion();
             }
 
@@ -101,8 +94,7 @@ namespace Microsoft.Docs.Build
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel();
-            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
-            context.ErrorLog.Write(errors);
+            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             if (context.Config.DryRun)
             {
@@ -116,23 +108,28 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
-                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build()),
+                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetFiles())),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
         }
 
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
-            var errors = file.ContentType switch
+            switch (file.ContentType)
             {
-                ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
-                ContentType.Resource when path.Origin != FileOrigin.Fallback || context.Config.OutputType == OutputType.Html => BuildResource.Build(context, file),
-                ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
-                ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
-                _ => new List<Error>(),
-            };
-
-            context.ErrorLog.Write(errors);
+                case ContentType.TableOfContents:
+                    BuildTableOfContents.Build(context, file);
+                    break;
+                case ContentType.Resource:
+                    BuildResource.Build(context, file);
+                    break;
+                case ContentType.Page:
+                    BuildPage.Build(context, file);
+                    break;
+                case ContentType.Redirection:
+                    BuildRedirection.Build(context, file);
+                    break;
+            }
         }
     }
 }
