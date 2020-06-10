@@ -49,10 +49,10 @@ namespace Microsoft.Docs.Build
 
                         var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null
                             ? null
-                            : Path.Combine(_buildOptions.FallbackDocsetPath.Value, monodocConfig.SourceXmlFolder);
+                            : Path.GetFullPath(Path.Combine(_buildOptions.FallbackDocsetPath.Value, monodocConfig.SourceXmlFolder));
                         var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
                             ? null
-                            : Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder);
+                            : Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
                         ECMA2YamlConverter.Run(
                             xmlDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder),
                             outputDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder),
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(item.Code))
             {
-                _errorLog.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, new FilePath(item.File), item.Line ?? 0));
+                _errorLog.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, item.File is null ? null : new FilePath(item.File), item.Line ?? 0));
             }
 
             ErrorLevel MapLevel(MessageSeverity level)
