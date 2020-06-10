@@ -49,10 +49,10 @@ namespace Microsoft.Docs.Build
 
                         var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null
                             ? null
-                            : Path.Combine(_buildOptions.FallbackDocsetPath.Value, monodocConfig.SourceXmlFolder);
+                            : PathUtility.Normalize(Path.Combine(_buildOptions.FallbackDocsetPath.Value, monodocConfig.SourceXmlFolder));
                         var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
                             ? null
-                            : Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder);
+                            : PathUtility.Normalize(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
                         ECMA2YamlConverter.Run(
                             xmlDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder),
                             outputDirectory: Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder),
