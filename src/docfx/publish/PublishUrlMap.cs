@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
 
         private readonly HashSet<FilePath> _files;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
+        private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
 
         public PublishUrlMap(
             Config config,
@@ -43,6 +44,18 @@ namespace Microsoft.Docs.Build
 
         public string? GetCanonicalVersion(string url)
         {
+            return _canonicalVersionMap.GetOrAdd(url, GetCanonicalVersionCore);
+        }
+
+        public HashSet<FilePath> GetFiles() => _files;
+
+        public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
+        {
+            return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
+        }
+
+        private string? GetCanonicalVersionCore(string url)
+        {
             if (_publishUrlMap.TryGetValue(url, out var item))
             {
                 string? canonicalVersion = null;
@@ -58,13 +71,6 @@ namespace Microsoft.Docs.Build
                 return canonicalVersion;
             }
             return default;
-        }
-
-        public HashSet<FilePath> GetFiles() => _files;
-
-        public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
-        {
-            return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
 
         private Dictionary<string, List<PublishUrlMapItem>> Initialize()
