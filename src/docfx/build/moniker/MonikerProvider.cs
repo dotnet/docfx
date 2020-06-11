@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             {
                 return value;
             }
-            return int.MinValue;
+            return 0;
         }
 
         public SourceInfo<string?> GetConfigMonikerRange(FilePath file)

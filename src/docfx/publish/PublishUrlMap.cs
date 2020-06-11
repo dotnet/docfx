@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             if (_publishUrlMap.TryGetValue(url, out var item))
             {
                 string? canonicalVersion = null;
-                var order = int.MinValue;
+                var order = 0;
                 foreach (var moniker in item.SelectMany(x => x.Monikers))
                 {
                     var currentOrder = _monikerProvider.GetMonikerOrder(moniker);
