@@ -420,13 +420,15 @@ inputs:
   redirections.yml: |
     redirections:
       docs/a.md: /a
-  docs/a.md: |
+  docs/a.md:
+  docs/b.md: |
     ---
-    redirect_url: https://docfx.com/b
+    redirect_url: https://docfx.com/c
     ---
 outputs:
+  docs/b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute redirect_url is reserved for use by Docs.","file":"docs/a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute redirect_url is reserved for use by Docs.","file":"docs/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/a.json': 'docs/a.md [redirection]', 'docs/a.md'"}
 ---
 # document_id of .yml redirections are calculated as .md
