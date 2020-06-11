@@ -23,6 +23,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (List<Error>, MonikerList)> _monikerCache
                    = new ConcurrentDictionary<FilePath, (List<Error>, MonikerList)>();
 
+        private readonly IReadOnlyDictionary<string, int> _monikerOrder;
+
         public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver)
         {
             _config = config;
@@ -38,6 +40,16 @@ namespace Microsoft.Docs.Build
             _rangeParser = new MonikerRangeParser(monikerDefinition);
 
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
+            _monikerOrder = GetMonikerOrder(monikerDefinition);
+        }
+
+        public int GetMonikerOrder(string moniker)
+        {
+            if (_monikerOrder.TryGetValue(moniker, out var value))
+            {
+                return value;
+            }
+            return 0;
         }
 
         public SourceInfo<string?> GetConfigMonikerRange(FilePath file)
@@ -181,6 +193,17 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        private Dictionary<string, int> GetMonikerOrder(MonikerDefinitionModel monikerDefinition)
+        {
+            var result = new Dictionary<string, int>();
+            var sorted = monikerDefinition.Monikers.OrderBy(moniker => moniker.Order).ToArray();
+            for (var i = 0; i < sorted.Length; i++)
+            {
+                result[sorted[i].MonikerName] = i;
+            }
+            return result;
         }
     }
 }

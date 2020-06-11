@@ -70,6 +70,8 @@ namespace Microsoft.Docs.Build
 
         public SourceMap SourceMap { get; }
 
+        public MetadataValidator MetadataValidator { get; }
+
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
@@ -89,7 +91,7 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
-            MetadataProvider = new MetadataProvider(Config, Input, MicrosoftGraphAccessor, FileResolver, BuildScope);
+            MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
@@ -119,6 +121,8 @@ namespace Microsoft.Docs.Build
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
             PublishUrlMap = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
+            MarkdownEngine.Configure(PublishUrlMap);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
         }
 
         public void Dispose()

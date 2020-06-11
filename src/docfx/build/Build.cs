@@ -86,14 +86,14 @@ namespace Microsoft.Docs.Build
             Parallel.Invoke(
                 () => context.BookmarkValidator.Validate(),
                 () => context.ContentValidator.PostValidate(),
-                () => context.ErrorLog.Write(context.MetadataProvider.PostValidate()),
+                () => context.ErrorLog.Write(context.MetadataValidator.PostValidate()),
                 () => context.ContributionProvider.Save(),
                 () => context.RepositoryProvider.Save(),
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
 
             // TODO: explicitly state that ToXrefMapModel produces errors
-            var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+            var xrefMapModel = context.XrefResolver.ToXrefMapModel(context.BuildOptions.IsLocalizedBuild);
             var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             if (context.Config.DryRun)
@@ -110,6 +110,11 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetFiles())),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
+
+            using (Progress.Start("Waiting for pending outputs..."))
+            {
+                context.Output.WaitForCompletion();
+            }
         }
 
         private static void BuildFile(Context context, FilePath path)

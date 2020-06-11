@@ -116,12 +116,15 @@ namespace Microsoft.Docs.Build
             return (error, xrefSpec, href);
         }
 
-        public XrefMapModel ToXrefMapModel()
+        public XrefMapModel ToXrefMapModel(bool isLocalizedBuild)
         {
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
-            var references = _internalXrefMap.Value.Values
+            var references =
+                isLocalizedBuild
+                ? Array.Empty<ExternalXrefSpec>()
+                : _internalXrefMap.Value.Values
                 .Select(xref =>
                 {
                     // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL

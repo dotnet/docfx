@@ -195,6 +195,9 @@ namespace Microsoft.Docs.Build
                     where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental
                     group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
+                tocToTocs.TrimExcess();
+                docToTocs.TrimExcess();
+
                 return (tocToTocs, docToTocs);
             }
         }
