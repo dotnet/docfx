@@ -44,5 +44,7 @@ namespace Microsoft.DocAsCode
         [Option("noStdin", HelpText = "Do not use stdin when wkhtmltopdf is executed")]
         public bool? NoInputStreamArgs { get; set; }
 
+        [Option("filePath", HelpText = "The path and file name of a wkhtmltopdf.exe compatible executable. This path may be relative to the current working directory. If not specified, wkhtmltopdf.exe will be searched in paths specified in the PATH environment variable.")]
+        public string FilePath { get; set; }
     }
 }

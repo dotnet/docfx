@@ -33,12 +33,14 @@ let config = {
     "choco": nconf.get("choco"),
     "sync": nconf.get("sync"),
     "azdevops": nconf.get("azdevops"),
+    "nuget": nconf.get("nuget"),
 };
 
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
-Guard.argumentNotNull(config.azdevops, "config.docfx", "Can't find Azure DevOps configuration.");
-Guard.argumentNotNull(config.git, "config.docfx", "Can't find git configuration.");
-Guard.argumentNotNull(config.choco, "config.docfx", "Can't find choco configuration.");
+Guard.argumentNotNull(config.azdevops, "config.azdevops", "Can't find Azure DevOps configuration.");
+Guard.argumentNotNull(config.git, "config.git", "Can't find git configuration.");
+Guard.argumentNotNull(config.choco, "config.choco", "Can't find choco configuration.");
+Guard.argumentNotNull(config.nuget, "config.nuget", "Can't find nuget configuration.");
 
 gulp.task("build", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
@@ -93,7 +95,7 @@ gulp.task("publish:azdevops-perf-login", () => {
 
 gulp.task("publish:azdevops-perf", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["perfUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["perfUrl"]);
 });
 
 gulp.task("publish:azdevops-internal-login", () => {
@@ -102,7 +104,7 @@ gulp.task("publish:azdevops-internal-login", () => {
 
 gulp.task("publish:azdevops-internal", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["internalUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["internalUrl"]);
 });
 
 gulp.task("publish:azdevops-ppe-login", () => {
@@ -111,7 +113,7 @@ gulp.task("publish:azdevops-ppe-login", () => {
 
 gulp.task("publish:azdevops-ppe", () => {
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["ppeUrl"]);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["ppeUrl"]);
 });
 
 gulp.task("publish:azdevops-prod-login", () => {
@@ -122,7 +124,14 @@ gulp.task("publish:azdevops-prod", () => {
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, config.azdevops["prodUrl"], releaseNotePath);
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["prodUrl"], releaseNotePath);
+});
+
+gulp.task("publish:nuget", () => {
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
+    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, process.env.NUGETAPIKEY, config.nuget["nuget.org"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
@@ -218,6 +227,6 @@ gulp.task("dev:release", gulp.series("pack", "publish:azdevops-perf-login", "pub
 
 gulp.task("master:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
 gulp.task("master:pack", gulp.series("pack"));
-gulp.task("master:release", gulp.series("packAssetZip", "publish:azdevops-prod-login", "publish:azdevops-prod", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
+gulp.task("master:release", gulp.series("packAssetZip", "publish:azdevops-prod-login", "publish:azdevops-prod", "publish:nuget", "publish:gh-release", "publish:gh-asset", "publish:chocolatey"));
 
 gulp.task("default", gulp.series("dev"));

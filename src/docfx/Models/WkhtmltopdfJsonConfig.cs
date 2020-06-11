@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode
 {
     using System;
-    using System.IO;
     using Newtonsoft.Json;
 
     /// <summary>
@@ -24,15 +23,5 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("additionalArguments")]
         public string AdditionalArguments { get; set; }
-
-        internal string GetFullFilePath(string baseDirectory)
-        {
-            if (string.IsNullOrEmpty(FilePath) || Path.IsPathRooted(FilePath))
-            {
-                return FilePath;
-            }
-
-            return Path.Combine(baseDirectory, FilePath);
-        }
     }
 }

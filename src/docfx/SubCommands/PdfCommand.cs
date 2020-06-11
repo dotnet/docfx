@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public PdfCommand(PdfCommandOptions options)
         {
             _config = ParseOptions(options);
-            _wkhtmltopdfFilePath = _config.Wkhtmltopdf?.GetFullFilePath(_config.BaseDirectory);
+            _wkhtmltopdfFilePath = _config.Wkhtmltopdf?.FilePath.GetFullFilePath(_config.BaseDirectory);
             ConvertWrapper.PrerequisiteCheck(_wkhtmltopdfFilePath);
 
             if (_config.Serve == true)
@@ -193,6 +193,11 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.NoInputStreamArgs.HasValue)
             {
                 config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
+            }
+
+            if (!string.IsNullOrEmpty(options.FilePath))
+            {
+                config.Wkhtmltopdf.FilePath = options.FilePath.GetFullFilePath(Environment.CurrentDirectory);
             }
         }
 

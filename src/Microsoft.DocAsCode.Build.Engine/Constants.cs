@@ -11,5 +11,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         public const string DefaultLanguage = "csharp";
 
         public const string ManifestFileName = "manifest.json";
+
+        public static class OPSEnvironmentVariable
+        {
+            public const string SystemMetadata = "_op_systemMetadata";
+            public const string OpSiteHostName = "_op_siteHostName";
+        }
     }
 }
