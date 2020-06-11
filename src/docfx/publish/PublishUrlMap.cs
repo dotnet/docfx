@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
 
         private readonly HashSet<FilePath> _files;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
+        private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
 
         public PublishUrlMap(
             Config config,
@@ -41,11 +42,36 @@ namespace Microsoft.Docs.Build
             _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
 
+        public string? GetCanonicalVersion(string url)
+        {
+            return _canonicalVersionMap.GetOrAdd(url, GetCanonicalVersionCore);
+        }
+
         public HashSet<FilePath> GetFiles() => _files;
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
             return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
+        }
+
+        private string? GetCanonicalVersionCore(string url)
+        {
+            if (_publishUrlMap.TryGetValue(url, out var item))
+            {
+                string? canonicalVersion = null;
+                var order = int.MinValue;
+                foreach (var moniker in item.SelectMany(x => x.Monikers))
+                {
+                    var currentOrder = _monikerProvider.GetMonikerOrder(moniker);
+                    if (currentOrder > order)
+                    {
+                        canonicalVersion = moniker;
+                        order = currentOrder;
+                    }
+                }
+                return canonicalVersion;
+            }
+            return default;
         }
 
         private Dictionary<string, List<PublishUrlMapItem>> Initialize()
@@ -62,30 +88,34 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve output path conflicts
-            var publishMap = builder.ToList();
-            var groupByOutputPath = publishMap.GroupBy(x => x.OutputPath, PathUtility.PathComparer).ToList();
-            var publishMapWithoutOutputPathConflicts = groupByOutputPath.Where(g => g.Count() == 1).SelectMany(g => g)
-                .Concat(groupByOutputPath.Where(g => g.Count() > 1).Select(g => ResolveOutputPathConflicts(g.ToArray())));
+            var publishMapWithoutOutputPathConflicts = builder.ToList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
 
             // resolve publish url conflicts
-            var groupByPublishUrl = publishMapWithoutOutputPathConflicts.GroupBy(x => x).ToList();
-            return groupByPublishUrl.Where(g => g.Count() == 1).SelectMany(g => g)
-                            .Concat(groupByPublishUrl.Where(g => g.Count() > 1).Select(g => ResolvePublishUrlConflicts(g.ToArray())))
-                            .GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.ToList());
+            return publishMapWithoutOutputPathConflicts.GroupBy(x => x).Select(g => ResolvePublishUrlConflicts(g)).GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.ToList());
         }
 
-        private PublishUrlMapItem ResolveOutputPathConflicts(PublishUrlMapItem[] conflicts)
+        private PublishUrlMapItem ResolveOutputPathConflicts(IGrouping<string, PublishUrlMapItem> conflicts)
         {
+            if (conflicts.Count() == 1)
+            {
+                return conflicts.First();
+            }
+
             _errorLog.Write(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
 
             // redirection file is preferred than source file
             // otherwise, prefer the one based on FilePath
-            return conflicts.OrderByDescending(x => x.SourcePath.Origin.ToString(), PathUtility.PathComparer)
-                .ThenByDescending(x => x.SourcePath.Path, PathUtility.PathComparer).First();
+            return conflicts.OrderBy(x => x.SourcePath.Origin.ToString(), PathUtility.PathComparer)
+                .ThenBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
         }
 
-        private PublishUrlMapItem ResolvePublishUrlConflicts(PublishUrlMapItem[] conflicts)
+        private PublishUrlMapItem ResolvePublishUrlConflicts(IGrouping<PublishUrlMapItem, PublishUrlMapItem> conflicts)
         {
+            if (conflicts.Count() == 1)
+            {
+                return conflicts.First();
+            }
+
             var conflictMonikers = conflicts
                 .SelectMany(x => x.Monikers)
                 .GroupBy(moniker => moniker)
@@ -95,7 +125,7 @@ namespace Microsoft.Docs.Build
             var conflictingFiles = conflicts.ToDictionary(x => x.SourcePath, x => x.Monikers);
             _errorLog.Write(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
 
-            return conflicts.OrderByDescending(x => x).First();
+            return conflicts.OrderBy(x => x).Last();
         }
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)

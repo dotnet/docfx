@@ -35,6 +35,8 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
+        private PublishUrlMap? _publishUrlMap;
+
         public MarkdownEngine(
             Config config,
             Input input,
@@ -72,6 +74,11 @@ namespace Microsoft.Docs.Build
                 CreateInlineMarkdownPipeline(),
                 CreateTocMarkdownPipeline(),
             };
+        }
+
+        public void Configure(PublishUrlMap publishUrlMap)
+        {
+            _publishUrlMap = publishUrlMap;
         }
 
         public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType pipelineType)
@@ -203,7 +210,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
-                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetPageLevelMonikers)
+                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
@@ -331,14 +338,9 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private MonikerList GetPageLevelMonikers()
+        private string? GetCanonicalVersion()
         {
-            var status = t_status.Value!.Peek();
-
-            // todo: change to GetPageLevelMonikers when it's ready
-            var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
-            status.Errors.AddRange(monikerErrors);
-            return monikers;
+            return _publishUrlMap!.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
         }
 
         private class Status

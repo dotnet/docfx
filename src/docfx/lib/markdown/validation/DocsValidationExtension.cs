@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             MarkdownEngine markdownEngine,
             ContentValidator contentValidator,
             Func<MonikerList> getFileLevelMonikers,
-            Func<MonikerList> getPageLevelMonikers)
+            Func<string?> getCanonicalVersion)
         {
             return builder.Use(document =>
             {
@@ -33,11 +33,11 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                var pageLevelMoniker = getPageLevelMonikers();
+                var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
-                    var isCanonicalVersion = IsCanonicalVersion(pageLevelMoniker, fileLevelMoniker, context.ZoneMoniker);
+                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
                     ContentNode? documentNode = null;
                     if (node is HeadingBlock headingBlock)
                     {
@@ -88,14 +88,14 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static bool? IsCanonicalVersion(MonikerList pageLevelMonikerList, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
+        private static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
         {
             if (zoneLevelMonikerList.HasMonikers)
             {
-                return MonikerList.IsCanonicalVersion(pageLevelMonikerList, zoneLevelMonikerList);
+                return MonikerList.IsCanonicalVersion(canonicalVersion, zoneLevelMonikerList);
             }
 
-            return MonikerList.IsCanonicalVersion(pageLevelMonikerList, fileLevelMonikerList);
+            return MonikerList.IsCanonicalVersion(canonicalVersion, fileLevelMonikerList);
         }
 
         private static string GetHeadingContent(HeadingBlock headingBlock)
