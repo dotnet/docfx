@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsInclude => FileStack.Count >= 2;
 
-        public (MonikerList monikers, bool valid) Monikers => MonikerStack.TryPeek(out var moniker) ? moniker : default;
+        public (MonikerList monikers, bool valid) Monikers => MonikerStack.TryPeek(out var monikers) ? monikers : default;
 
         public MarkdownVisitContext(Document document, MonikerList monikerList)
         {
