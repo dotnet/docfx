@@ -87,8 +87,15 @@ namespace Microsoft.Docs.Build
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
-            TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
+            TemplateEngine = new TemplateEngine(
+                config,
+                buildOptions,
+                PackageResolver,
+                new Lazy<MarkdownEngine>(() => MarkdownEngine),
+                new Lazy<LinkResolver>(() => LinkResolver),
+                new Lazy<XrefResolver>(() => XrefResolver),
+                errorLog);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
@@ -107,8 +114,6 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 FileLinkMapBuilder,
                 ErrorLog,
-                new Lazy<MarkdownEngine>(() => MarkdownEngine),
-                LinkResolver,
                 TemplateEngine,
                 DocumentProvider,
                 MetadataProvider,

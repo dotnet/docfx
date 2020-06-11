@@ -20,9 +20,17 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly Config _config;
+        private readonly Lazy<MarkdownEngine> _markdownEngine;
+        private readonly Lazy<LinkResolver> _linkResolver;
+        private readonly Lazy<XrefResolver> _xrefResolver;
+        private readonly ErrorLog _errorLog;
 
-        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
+        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<MarkdownEngine> markdownEngine, Lazy<LinkResolver> linkResolver, Lazy<XrefResolver> xrefResolver, ErrorLog errorLog)
         {
+            _markdownEngine = markdownEngine;
+            _linkResolver = linkResolver;
+            _xrefResolver = xrefResolver;
+            _errorLog = errorLog;
             _config = config;
             _templateDir = config.Template.Type switch
             {
@@ -131,17 +139,17 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
+        private IReadOnlyDictionary<string, Lazy<TemplateSchema>>
             LoadSchemas(string schemaDir, string contentTemplateDir)
         {
             var schemas = Directory.Exists(schemaDir)
                 ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                    let fileName = Path.GetFileName(k)
                    select fileName.Substring(0, fileName.Length - ".schema.json".Length))
-                   .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                   .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir, _markdownEngine, _linkResolver, _xrefResolver, _errorLog)))
                 : new Dictionary<string, Lazy<TemplateSchema>>();
 
-            schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
+            schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir, _markdownEngine, _linkResolver, _xrefResolver, _errorLog)));
             return schemas;
         }
     }

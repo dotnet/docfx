@@ -8,6 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateSchema
     {
+        private readonly Lazy<MarkdownEngine> _markdownEngine;
+        private readonly Lazy<LinkResolver> _linkResolver;
+        private readonly Lazy<XrefResolver> _xrefResolver;
+        private readonly ErrorLog _errorLog;
+
         public string SchemaName { get; }
 
         public bool IsPage { get; }
@@ -16,8 +21,12 @@ namespace Microsoft.Docs.Build
 
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
-        public TemplateSchema(string schemaName, string schemaDir, string contentTemplateDir)
+        public TemplateSchema(string schemaName, string schemaDir, string contentTemplateDir, Lazy<MarkdownEngine> markdownEngine, Lazy<LinkResolver> linkResolver, Lazy<XrefResolver> xrefResolver, ErrorLog errorLog)
         {
+            _markdownEngine = markdownEngine;
+            _linkResolver = linkResolver;
+            _xrefResolver = xrefResolver;
+            _errorLog = errorLog;
             SchemaName = schemaName;
             IsPage = GetIsPageCore(schemaName, contentTemplateDir);
             (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
@@ -52,7 +61,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
-            return (new JsonSchemaValidator(jsonSchema, forceError: true), new JsonSchemaTransformer(jsonSchema));
+            return (new JsonSchemaValidator(jsonSchema, forceError: true), new JsonSchemaTransformer(jsonSchema, _markdownEngine, _linkResolver, _xrefResolver, _errorLog));
         }
     }
 }

@@ -26,8 +26,6 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder,
             ErrorLog errorLog,
-            Lazy<MarkdownEngine> markdownEngine,
-            LinkResolver linkResolver,
             TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
@@ -38,8 +36,14 @@ namespace Microsoft.Docs.Build
             _config = config;
             _repository = repository;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
-                () => InternalXrefMapBuilder.Build(markdownEngine.Value, linkResolver, this, errorLog, templateEngine, documentProvider, metadataProvider, monikerProvider, input, buildScope));
-
+                () => new InternalXrefMapBuilder(
+                            errorLog,
+                            templateEngine,
+                            documentProvider,
+                            metadataProvider,
+                            monikerProvider,
+                            input,
+                            buildScope).Build());
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
