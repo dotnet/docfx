@@ -1456,9 +1456,9 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core", "order": 1 },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core", "order": 2 },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core", "order": 3 },
       ]
     }
   rules.json: |
@@ -1529,9 +1529,9 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core", "order": 1 },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core", "order": 2 },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core", "order": 3 },
       ]
     }
   rules.json: |
@@ -1623,10 +1623,10 @@ inputs:
   monikerDefinition.json: |
     {
       "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core", "order": 1 },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core", "order": 2 },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core", "order": 3 },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core", "order": 4 },
       ]
     }
   rules.json: |
