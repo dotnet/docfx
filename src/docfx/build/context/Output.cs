@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks.Dataflow;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,6 +12,9 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly bool _dryRun;
+        private readonly ActionBlock<Action> _queue = new ActionBlock<Action>(
+            action => action(),
+            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
 
         public string OutputPath { get; }
 
@@ -29,8 +33,11 @@ namespace Microsoft.Docs.Build
         {
             EnsureNoDryRun();
 
-            using var writer = new StreamWriter(GetDestinationPath(destRelativePath));
-            JsonUtility.Serialize(writer, graph);
+            _queue.Post(() =>
+            {
+                using var writer = new StreamWriter(GetDestinationPath(destRelativePath));
+                JsonUtility.Serialize(writer, graph);
+            });
         }
 
         /// <summary>
@@ -41,7 +48,10 @@ namespace Microsoft.Docs.Build
         {
             EnsureNoDryRun();
 
-            File.WriteAllText(GetDestinationPath(destRelativePath), text);
+            _queue.Post(() =>
+            {
+                File.WriteAllText(GetDestinationPath(destRelativePath), text);
+            });
         }
 
         /// <summary>
@@ -52,40 +62,26 @@ namespace Microsoft.Docs.Build
         {
             EnsureNoDryRun();
 
-            var targetPhysicalPath = GetDestinationPath(destRelativePath);
-            if (_input.TryGetPhysicalPath(file, out var sourcePhysicalPath))
+            _queue.Post(() =>
             {
-                File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
-                return;
-            }
+                var targetPhysicalPath = GetDestinationPath(destRelativePath);
+                if (_input.TryGetPhysicalPath(file, out var sourcePhysicalPath))
+                {
+                    File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
+                    return;
+                }
 
-            using var sourceStream = _input.ReadStream(file);
-            using var targetStream = File.Create(targetPhysicalPath);
-            sourceStream.CopyTo(targetStream);
-            sourceStream.Flush();
+                using var sourceStream = _input.ReadStream(file);
+                using var targetStream = File.Create(targetPhysicalPath);
+                sourceStream.CopyTo(targetStream);
+                sourceStream.Flush();
+            });
         }
 
-        public void Delete(string destRelativePath, bool legacy = false)
+        public void WaitForCompletion()
         {
-            Debug.Assert(!Path.IsPathRooted(destRelativePath));
-
-            EnsureNoDryRun();
-
-            var destinationPath = Path.Combine(OutputPath, destRelativePath);
-
-            if (File.Exists(destinationPath))
-            {
-                File.Delete(destinationPath);
-            }
-
-            if (legacy)
-            {
-                var mtaJsonPath = LegacyUtility.ChangeExtension(destinationPath, ".mta.json");
-                if (File.Exists(mtaJsonPath))
-                {
-                    File.Delete(mtaJsonPath);
-                }
-            }
+            _queue.Complete();
+            _queue.Completion.Wait();
         }
 
         private string GetDestinationPath(string destRelativePath)
