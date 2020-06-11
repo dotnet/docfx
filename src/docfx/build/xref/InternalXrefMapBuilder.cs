@@ -50,14 +50,17 @@ namespace Microsoft.Docs.Build
                     file => Load(builder, file));
             }
 
-            var result =
+            var xrefmap =
                 from spec in builder.ToList()
                 group spec by spec.Uid.Value into g
                 let uid = g.Key
                 let spec = AggregateXrefSpecs(uid, g.ToArray())
                 select (uid, spec);
 
-            return result.ToDictionary(item => item.uid, item => item.spec);
+            var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
+            result.TrimExcess();
+
+            return result;
         }
 
         private void Load(

@@ -49,6 +49,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
+                result.TrimExcess();
                 return result;
             }
         }
