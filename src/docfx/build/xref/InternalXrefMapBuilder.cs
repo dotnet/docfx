@@ -48,6 +48,8 @@ namespace Microsoft.Docs.Build
                     {
                         var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                         errors.AddRange(fileMetaErrors);
+
+                        errors.AddRange(context.MetadataValidator.ValidateMetadata(fileMetadata.RawJObject, file.FilePath));
                         var (markdownErrors, spec) = LoadMarkdown(context, fileMetadata, file);
                         errors.AddRange(markdownErrors);
                         if (spec != null)
