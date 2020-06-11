@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 //var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
                 var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
                 var snippet = new CodeSnippet(null);
-                snippet.CodePath = source;
+                snippet.CodePath = currentSource;
                 snippet.TagName = currentId;
                 List<CodeRange> ranges;
                 HtmlCodeSnippetRenderer.TryGetLineRanges(currentRange, out ranges);
