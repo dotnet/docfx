@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             _rangeParser = new MonikerRangeParser(monikerDefinition);
 
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
-            _monikerOrder = SetMonikerOrder(monikerDefinition);
+            _monikerOrder = monikerDefinition.Monikers.ToDictionary(moniker => moniker.MonikerName, moniker => moniker.Order);
         }
 
         public int GetMonikerOrder(string moniker)
@@ -193,17 +193,6 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
-        }
-
-        private Dictionary<string, int> SetMonikerOrder(MonikerDefinitionModel monikerDefinition)
-        {
-            var result = new Dictionary<string, int>();
-            var monikers = monikerDefinition.Monikers;
-            for (var i = 0; i < monikers.Count; i++)
-            {
-                result[monikers[i].MonikerName] = i;
-            }
-            return result;
         }
     }
 }
