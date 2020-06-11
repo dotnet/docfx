@@ -136,12 +136,14 @@ namespace Microsoft.Docs.Build
             {
                 case MonikerRangeBlock monikerRangeBlock:
                     var monikers = monikerRangeBlock.GetAttributes().Properties.First(p => p.Key == "data-moniker").Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                    context.ZoneMonikerStack.Push(new MonikerList(monikers));
+                    context.MonikerStack.Push((new MonikerList(monikers), monikers.Length >= 1));
+
                     foreach (var child in monikerRangeBlock)
                     {
                         Visit(child, context, action);
                     }
-                    context.ZoneMonikerStack.Pop();
+
+                    context.MonikerStack.Pop();
                     break;
 
                 case InclusionBlock inclusionBlock:

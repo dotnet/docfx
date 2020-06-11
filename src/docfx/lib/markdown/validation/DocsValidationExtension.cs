@@ -8,7 +8,6 @@ using System.Text;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 
@@ -35,9 +34,9 @@ namespace Microsoft.Docs.Build
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
-                MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
+                MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile, fileLevelMoniker), (node, context) =>
                 {
-                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
+                    var isCanonicalVersion = !context.Monikers.valid ? false : MonikerList.IsCanonicalVersion(canonicalVersion, context.Monikers.monikers);
                     ContentNode? documentNode = null;
                     if (node is HeadingBlock headingBlock)
                     {
@@ -86,16 +85,6 @@ namespace Microsoft.Docs.Build
                     contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
                 }
             });
-        }
-
-        private static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
-        {
-            if (zoneLevelMonikerList.HasMonikers)
-            {
-                return MonikerList.IsCanonicalVersion(canonicalVersion, zoneLevelMonikerList);
-            }
-
-            return MonikerList.IsCanonicalVersion(canonicalVersion, fileLevelMonikerList);
         }
 
         private static string GetHeadingContent(HeadingBlock headingBlock)

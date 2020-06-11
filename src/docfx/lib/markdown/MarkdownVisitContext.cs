@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MarkdownVisitContext
     {
-        public Stack<MonikerList> ZoneMonikerStack { get; private set; }
+        public Stack<(MonikerList, bool)> MonikerStack { get; private set; }
 
         public Stack<SourceInfo<Document>> FileStack { get; private set; }
 
@@ -18,13 +18,14 @@ namespace Microsoft.Docs.Build
 
         public bool IsInclude => FileStack.Count >= 2;
 
-        public MonikerList ZoneMoniker => ZoneMonikerStack.TryPeek(out var zoneMoniker) ? zoneMoniker : default;
+        public (MonikerList monikers, bool valid) Monikers => MonikerStack.TryPeek(out var moniker) ? moniker : default;
 
-        public MarkdownVisitContext(Document document)
+        public MarkdownVisitContext(Document document, MonikerList monikerList)
         {
             FileStack = new Stack<SourceInfo<Document>>();
-            ZoneMonikerStack = new Stack<MonikerList>();
+            MonikerStack = new Stack<(MonikerList, bool)>();
             FileStack.Push(new SourceInfo<Document>(document));
+            MonikerStack.Push((monikerList, true));
         }
     }
 }
