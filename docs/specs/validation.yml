@@ -1677,7 +1677,7 @@ inputs:
       docs/v2/: docs/
     monikerDefinition: monikerDefinition.json
     globalMetadata:
-      layout: Conceptual
+      layout: conceptual
   docs/v1/a.md: |
     ---
     title: t
