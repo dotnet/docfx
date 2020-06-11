@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             Parallel.Invoke(
                 () => context.BookmarkValidator.Validate(),
                 () => context.ContentValidator.PostValidate(),
-                () => context.ErrorLog.Write(context.MetadataProvider.PostValidate()),
+                () => context.ErrorLog.Write(context.MetadataValidator.PostValidate()),
                 () => context.ContributionProvider.Save(),
                 () => context.RepositoryProvider.Save(),
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),

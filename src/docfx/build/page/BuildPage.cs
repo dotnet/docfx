@@ -220,6 +220,8 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
+            errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
+
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
             errors.AddRange(markupErrors);
@@ -266,6 +268,8 @@ namespace Microsoft.Docs.Build
                 var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                 JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
+
+                errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
             }
 
             var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, validatedObj);
