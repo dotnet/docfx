@@ -11,31 +11,52 @@ namespace Microsoft.Docs.Build
 {
     internal static class InternalXrefMapBuilder
     {
-        public static IReadOnlyDictionary<string, InternalXrefSpec> Build(Context context)
+        public static IReadOnlyDictionary<string, InternalXrefSpec> Build(
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            ErrorLog errorLog,
+            TemplateEngine templateEngine,
+            DocumentProvider documentProvider,
+            MetadataProvider metadataProvider,
+            MonikerProvider monikerProvider,
+            Input input,
+            BuildScope buildScope)
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
-                    context.ErrorLog,
-                    context.BuildScope.GetFiles(ContentType.Page),
-                    file => Load(context, builder, file));
+                    errorLog,
+                    buildScope.GetFiles(ContentType.Page),
+                    file => Load(builder, file, markdownEngine, linkResolver, xrefResolver, errorLog, templateEngine, documentProvider, metadataProvider, monikerProvider, input));
             }
 
             var result =
                 from spec in builder.ToList()
                 group spec by spec.Uid.Value into g
                 let uid = g.Key
-                let spec = AggregateXrefSpecs(context, uid, g.ToArray())
+                let spec = AggregateXrefSpecs(errorLog, uid, g.ToArray())
                 select (uid, spec);
 
             return result.ToDictionary(item => item.uid, item => item.spec);
         }
 
-        private static void Load(Context context, ListBuilder<InternalXrefSpec> xrefs, FilePath path)
+        private static void Load(
+            ListBuilder<InternalXrefSpec> xrefs,
+            FilePath path,
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            ErrorLog errorLog,
+            TemplateEngine templateEngine,
+            DocumentProvider documentProvider,
+            MetadataProvider metadataProvider,
+            MonikerProvider monikerProvider,
+            Input input)
         {
-            var file = context.DocumentProvider.GetDocument(path);
+            var file = documentProvider.GetDocument(path);
             if (file.ContentType != ContentType.Page)
             {
                 return;
@@ -46,9 +67,9 @@ namespace Microsoft.Docs.Build
             {
                 case FileFormat.Markdown:
                     {
-                        var (fileMetaErrors, fileMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                        var (fileMetaErrors, fileMetadata) = metadataProvider.GetMetadata(file.FilePath);
                         errors.AddRange(fileMetaErrors);
-                        var (markdownErrors, spec) = LoadMarkdown(context, fileMetadata, file);
+                        var (markdownErrors, spec) = LoadMarkdown(fileMetadata, file, monikerProvider);
                         errors.AddRange(markdownErrors);
                         if (spec != null)
                         {
@@ -58,27 +79,27 @@ namespace Microsoft.Docs.Build
                     }
                 case FileFormat.Yaml:
                     {
-                        var (yamlErrors, token) = context.Input.ReadYaml(file.FilePath);
+                        var (yamlErrors, token) = input.ReadYaml(file.FilePath);
                         errors.AddRange(yamlErrors);
-                        var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                        var (schemaErrors, specs) = LoadSchemaDocument(token, file, markdownEngine, linkResolver, xrefResolver, errorLog, templateEngine);
                         errors.AddRange(schemaErrors);
                         xrefs.AddRange(specs);
                         break;
                     }
                 case FileFormat.Json:
                     {
-                        var (jsonErrors, token) = context.Input.ReadJson(file.FilePath);
+                        var (jsonErrors, token) = input.ReadJson(file.FilePath);
                         errors.AddRange(jsonErrors);
-                        var (schemaErrors, specs) = LoadSchemaDocument(context, token, file);
+                        var (schemaErrors, specs) = LoadSchemaDocument(token, file, markdownEngine, linkResolver, xrefResolver, errorLog, templateEngine);
                         errors.AddRange(schemaErrors);
                         xrefs.AddRange(specs);
                         break;
                     }
             }
-            context.ErrorLog.Write(errors);
+            errorLog.Write(errors);
         }
 
-        private static (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(Context context, UserMetadata metadata, Document file)
+        private static (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(UserMetadata metadata, Document file, MonikerProvider monikerProvider)
         {
             if (string.IsNullOrEmpty(metadata.Uid))
             {
@@ -88,19 +109,26 @@ namespace Microsoft.Docs.Build
             var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
-            var (errors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
+            var (errors, monikers) = monikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers;
             return (errors, xref);
         }
 
-        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(Context context, JToken token, Document file)
+        private static (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(
+            JToken token,
+            Document file,
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            ErrorLog errorLog,
+            TemplateEngine templateEngine)
         {
-            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
+            var schemaTemplate = templateEngine.GetSchema(file.Mime);
 
-            return schemaTemplate.JsonSchemaTransformer.LoadXrefSpecs(file, context, token);
+            return schemaTemplate.JsonSchemaTransformer.LoadXrefSpecs(file, token, markdownEngine, linkResolver, xrefResolver, errorLog);
         }
 
-        private static InternalXrefSpec AggregateXrefSpecs(Context context, string uid, InternalXrefSpec[] specsWithSameUid)
+        private static InternalXrefSpec AggregateXrefSpecs(ErrorLog errorLog, string uid, InternalXrefSpec[] specsWithSameUid)
         {
             // no conflicts
             if (specsWithSameUid.Length == 1)
@@ -116,7 +144,7 @@ namespace Microsoft.Docs.Build
                 var duplicatedSources = (from spec in duplicatedSpecs where spec.Uid.Source != null select spec.Uid.Source).ToArray();
                 foreach (var spec in duplicatedSpecs)
                 {
-                    context.ErrorLog.Write(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
+                    errorLog.Write(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
                 }
             }
 
@@ -125,7 +153,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                context.ErrorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
+                errorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
             // uid conflicts with different values of the same xref property
@@ -136,7 +164,7 @@ namespace Microsoft.Docs.Build
                 var conflictingNames = specsWithSameUid.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
                 if (conflictingNames.Count() > 1)
                 {
-                    context.ErrorLog.Write(Errors.Xref.UidPropertyConflict(uid, xrefProperty, conflictingNames));
+                    errorLog.Write(Errors.Xref.UidPropertyConflict(uid, xrefProperty, conflictingNames));
                 }
             }
 

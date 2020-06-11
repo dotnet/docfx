@@ -100,7 +100,21 @@ namespace Microsoft.Docs.Build
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, ContributionProvider);
-            XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder, errorLog);
+            XrefResolver = new XrefResolver(
+                config,
+                FileResolver,
+                buildOptions.Repository,
+                DependencyMapBuilder,
+                FileLinkMapBuilder,
+                ErrorLog,
+                MarkdownEngine,
+                LinkResolver,
+                TemplateEngine,
+                DocumentProvider,
+                MetadataProvider,
+                MonikerProvider,
+                Input,
+                BuildScope);
 
             LinkResolver = new LinkResolver(
                 config,

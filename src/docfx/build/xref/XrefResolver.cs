@@ -20,18 +20,25 @@ namespace Microsoft.Docs.Build
         private readonly string _xrefHostName;
 
         public XrefResolver(
-            Context context,
             Config config,
             FileResolver fileResolver,
             Repository? repository,
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder,
-            ErrorLog errorLog)
+            ErrorLog errorLog,
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            TemplateEngine templateEngine,
+            DocumentProvider documentProvider,
+            MetadataProvider metadataProvider,
+            MonikerProvider monikerProvider,
+            Input input,
+            BuildScope buildScope)
         {
             _config = config;
             _repository = repository;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
-                () => InternalXrefMapBuilder.Build(context));
+                () => InternalXrefMapBuilder.Build(markdownEngine, linkResolver, this, errorLog, templateEngine, documentProvider, metadataProvider, monikerProvider, input, buildScope));
 
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
