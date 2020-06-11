@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
 
             // TODO: explicitly state that ToXrefMapModel produces errors
-            var xrefMapModel = context.XrefResolver.ToXrefMapModel();
+            var xrefMapModel = context.XrefResolver.ToXrefMapModel(context.BuildOptions.IsLocalizedBuild);
             var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             if (context.Config.DryRun)
