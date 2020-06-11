@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 FileLinkMapBuilder,
                 ErrorLog,
-                MarkdownEngine,
+                new Lazy<MarkdownEngine>(() => MarkdownEngine),
                 LinkResolver,
                 TemplateEngine,
                 DocumentProvider,
@@ -128,14 +128,23 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, DocumentProvider, MonikerProvider, TemplateEngine, ContentValidator);
+            MarkdownEngine = new MarkdownEngine(
+                Config,
+                Input,
+                FileResolver,
+                LinkResolver,
+                XrefResolver,
+                DocumentProvider,
+                MonikerProvider,
+                TemplateEngine,
+                ContentValidator,
+                new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);
             PublishUrlMap = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
-            MarkdownEngine.Configure(PublishUrlMap);
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
         }
 

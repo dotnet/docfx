@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        private PublishUrlMap? _publishUrlMap;
+        private Lazy<PublishUrlMap> _publishUrlMap;
 
         public MarkdownEngine(
             Config config,
@@ -46,7 +47,8 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
-            ContentValidator contentValidator)
+            ContentValidator contentValidator,
+            Lazy<PublishUrlMap> publishUrlMap)
         {
             _input = input;
             _linkResolver = linkResolver;
@@ -55,6 +57,7 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
+            _publishUrlMap = publishUrlMap;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
             var markdownValidationRules = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules);
@@ -74,11 +77,6 @@ namespace Microsoft.Docs.Build
                 CreateInlineMarkdownPipeline(),
                 CreateTocMarkdownPipeline(),
             };
-        }
-
-        public void Configure(PublishUrlMap publishUrlMap)
-        {
-            _publishUrlMap = publishUrlMap;
         }
 
         public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType pipelineType)
@@ -340,7 +338,7 @@ namespace Microsoft.Docs.Build
 
         private string? GetCanonicalVersion()
         {
-            return _publishUrlMap!.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
+            return _publishUrlMap.Value.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
         }
 
         private class Status
