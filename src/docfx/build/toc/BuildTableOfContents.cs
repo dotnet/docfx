@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
             var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
 
+            errors.AddRange(context.MetadataValidator.ValidateMetadata(metadata.RawJObject, file.FilePath));
+
             var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
             errors.AddRange(validationErrors);
 

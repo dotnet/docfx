@@ -1664,3 +1664,94 @@ outputs:
     {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No intersection between zone and file level monikers. The result of zone level range string '< netcore-1.1' is 'netcore-1.0', while file level monikers is 'netcore-1.2', 'netcore-2.0'.","file":"docs/v1/token3.md","line":1,"end_line":1,"column":1,"end_column":1}
   9d4e15fd/docs/a.json:
   9d4e15fd/docs/b.json:
+---
+# Canonial Version Only Metadata Validation
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    monikerRange:
+      'docs/v1/**': '< netcore-1.2'
+      'docs/v2/**': '>= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    title: t
+    description: a
+    ---
+  docs/v1/b.md: |
+    ---
+    title: t
+    description: b
+    ---
+  docs/v2/b.md: |
+    ---
+    title: t
+    description: c
+    ---
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  schema.json: |
+    {
+      "docsetUnique": [ "title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "customRules": {
+          "title": {
+              "duplicate-attribute": {
+                  "severity": "suggestion",
+                  "code": "duplicate-title-within-docset",
+                  "canonicalVersionOnly": true,
+                  "additionalMessage": "Title must be unique within a docset."
+                },
+                "string-length-invalid": {
+                    "severity": "suggestion",
+                    "code": "description-bad-length"
+                  }
+          },
+          "description": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "canonicalVersionOnly": true
+              }
+          }
+      },
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2","file":"docs/v1/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"docs/v1/a.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v1/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v1/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+  9d4e15fd/docs/a.json:
+  9d4e15fd/docs/b.json:
+  976da3a9/docs/b.json:
