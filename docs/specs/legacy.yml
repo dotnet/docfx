@@ -447,7 +447,7 @@ outputs:
   docs/a.mta.json:
   docs/a.raw.page.json:
   .errors.log: |
-    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report"}
+    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}
 ---
 # Replace empty content with <div></div>
 legacy: true
