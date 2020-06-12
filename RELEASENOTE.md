@@ -1,14 +1,23 @@
-Version Notes (Current Version: v2.55)
+Version Notes (Current Version: v2.56)
 =======================================
 
-v2.55(Pre-release)
+v2.56(Pre-release)
 -----------
+
+v2.55
+-----------
+1. Support setting `wkhtmltopdf.exe` path in CLI option. Thanks @icnocop! (#6040)
+2. Make console output readable under white background. Thanks @paulpach! (#5309)
+3. Improvement and bug fix in code extension. (#5945, #5968)
+4. Ensure `SourceBasePath` present in manifest when a version contains no files. (#5960)
+5. Bug fix:
+    1. Fix failing to search for methods by name. Thanks @paulpach! (#5695)
 
 v2.54
 -----------
 1. Supporting setting `wkhtmltopdf.exe` path in config. Thanks @icnocop! (#4422)
-1. Add video Markdown extension syntax. (#5945)
-1. Bug fix:
+2. Add video Markdown extension syntax. (#5945)
+3. Bug fix:
     1. Fix inaccurate error message when UIDs are duplicate. (#5898).
 
 v2.53.1
