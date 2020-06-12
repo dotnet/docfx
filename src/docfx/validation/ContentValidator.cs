@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
-                var tocItem = new TocItem()
+                var tocItem = new DeprecatedTocItem()
                 {
                     FilePath = filePath.Path.Value,
                     SourceInfo = new SourceInfo(filePath, 0, 0),
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             if (TryGetValidationDocumentType(document.ContentType, document.Mime.Value, false, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
-                var tocItem = new TocItem()
+                var tocItem = new MissingTocItem()
                 {
                     FilePath = document.FilePath.Path.Value,
                     HasReferencedTocs = hasReferencedTocs,
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 foreach (var node in nodes)
                 {
-                    var tocItem = new TocItem()
+                    var tocItem = new ExternalBreadcrumbTocItem()
                     {
                         FilePath = node.Href.Value,
                         IsHrefExternal = UrlUtility.GetLinkType(node.Href) == LinkType.External,
@@ -101,14 +101,14 @@ namespace Microsoft.Docs.Build
             if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
                 var items = FlattenRecursive(node);
-                var hrefs = items
+                var paths = items
                     .SelectMany(nodes => nodes.Items)
-                    .Select(item => item.Value.Href.Value).ToList();
+                    .Select(item => item.Value.Document?.FilePath.Path.Value).ToList();
 
                 var validationContext = new ValidationContext { DocumentType = documentType };
-                var tocItem = new TocItem()
+                var tocItem = new DuplicatedTocItem()
                 {
-                    Hrefs = hrefs,
+                    FilePaths = paths,
                     SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());

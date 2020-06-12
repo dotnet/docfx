@@ -31,13 +31,13 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
-
-            var jsonOutputPath = LegacyUtility.ChangeExtension(context.DocumentProvider.GetOutputPath(file.FilePath, true), ".json");
-            if (string.Compare(jsonOutputPath, metadata.BreadcrumbPath, System.StringComparison.OrdinalIgnoreCase) == 0)
+            var outputUrl = context.DocumentProvider.GetDocsSiteUrl(file.FilePath);
+            if (string.Compare(outputUrl, metadata.BreadcrumbPath, System.StringComparison.OrdinalIgnoreCase) == 0)
             {
                 context.ContentValidator.ValidateBreadcrumbLinkExternal(model.Items, file.FilePath);
             }
+
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
 
             // enable pdf
             if (context.Config.OutputPdf)
