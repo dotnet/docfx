@@ -225,6 +225,7 @@ outputs:
   cat/api/toc.json:
 ---
 # Run ECMA2Yaml multiple times
+# Support ECMA2Yaml.id to configure toc output path
 os: windows, osx
 skipInputCheck: true
 repos:
@@ -244,10 +245,11 @@ repos:
               "SDPMode": true,
             },
             {
-            "SourceXmlFolder": "cat/mouse/xml",
-            "OutputYamlFolder": "cat/mouse/api",
-            "Flatten": true,
-            "SDPMode": true,
+              "id": "copied-mouse",
+              "SourceXmlFolder": "cat/mouse/xml",
+              "OutputYamlFolder": "cat/mouse/api",
+              "Flatten": true,
+              "SDPMode": true,
             },
           ]
         }
@@ -409,10 +411,10 @@ outputs:
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"mouse/xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
   cat/api/_splitted/catlibrary/toc.json:
-  cat/mouse/api/_splitted/catlibrary/toc.json:
+  cat/mouse/api/copied-mouse/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
   cat/8069edc7/mouse/api/catlibrary.cat-2.-ctor.json:
   cat/8069edc7/api/catlibrary.json:
   cat/8069edc7/mouse/api/catlibrary.json:
   cat/api/toc.json:
-  cat/mouse/api/toc.json:
+  cat/mouse/api/copied-mouse/toc.json:
