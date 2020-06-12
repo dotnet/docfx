@@ -73,26 +73,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateBreadcrumbLinkExternal(TableOfContentsNode[] nodes, FilePath filePath)
+        public void ValidateTocBreadcrumbLinkExternal(SourceInfo<TableOfContentsNode> node)
         {
-            if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
+            if (!string.IsNullOrEmpty(node.Value?.Href)
+                && TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
-                foreach (var node in nodes)
+                var tocItem = new ExternalBreadcrumbTocItem()
                 {
-                    var tocItem = new ExternalBreadcrumbTocItem()
-                    {
-                        FilePath = node.Href.Value,
-                        IsHrefExternal = UrlUtility.GetLinkType(node.Href) == LinkType.External,
-                        SourceInfo = new SourceInfo(filePath, 0, 0),
-                    };
-                    Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
-
-                    if (node.Items.Count > 0)
-                    {
-                        ValidateBreadcrumbLinkExternal(node.Items.Select(item => item.Value).ToArray(), filePath);
-                    }
-                }
+                    FilePath = node.Value.Href,
+                    IsHrefExternal = UrlUtility.GetLinkType(node.Value.Href) == LinkType.External,
+                    SourceInfo = node.Source,
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 

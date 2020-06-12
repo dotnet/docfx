@@ -135,6 +135,8 @@ namespace Microsoft.Docs.Build
             var topicHref = GetTopicHref(node, errors);
             var topicUid = node.Value.Uid;
 
+            _contentValidator.ValidateTocBreadcrumbLinkExternal(node);
+
             var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                 filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
             var (resolvedTopicHref, resolvedTopicName, document) = ProcessTopicItem(
@@ -272,6 +274,7 @@ namespace Microsoft.Docs.Build
             }
 
             var tocHrefType = GetHrefType(tocHref);
+
             Debug.Assert(tocHrefType == TocHrefType.AbsolutePath || IsTocIncludeHref(tocHrefType));
 
             if (tocHrefType == TocHrefType.AbsolutePath)
@@ -415,6 +418,7 @@ namespace Microsoft.Docs.Build
         private static TocHrefType GetHrefType(string? href)
         {
             var linkType = UrlUtility.GetLinkType(href);
+
             if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
             {
                 return TocHrefType.AbsolutePath;

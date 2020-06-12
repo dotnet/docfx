@@ -31,12 +31,6 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
             errors.AddRange(monikerErrors);
 
-            var outputUrl = context.DocumentProvider.GetDocsSiteUrl(file.FilePath);
-            if (string.Compare(outputUrl, metadata.BreadcrumbPath, System.StringComparison.OrdinalIgnoreCase) == 0)
-            {
-                context.ContentValidator.ValidateBreadcrumbLinkExternal(model.Items, file.FilePath);
-            }
-
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
 
             // enable pdf
