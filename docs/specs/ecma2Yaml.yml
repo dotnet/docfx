@@ -101,10 +101,10 @@ repos:
 outputs:
   cat/.errors.log: |
     {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"xml/CatLibrary/Cat`2.xml"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'"}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
   cat/api/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
   cat/8069edc7/api/catlibrary.json:
@@ -216,10 +216,10 @@ repos:
 outputs:
   cat/.errors.log: |
     {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"_repo.en-us/CatLibrary/Cat`2.xml"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'"}
-    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report"}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
+    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}
   cat/api/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.json:
   cat/api/toc.json:
@@ -403,11 +403,11 @@ outputs:
   cat/.errors.log: |
     {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"xml/CatLibrary/Cat`2.xml"}
     {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"mouse/xml/CatLibrary/Cat`2.xml"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'"}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'","file":"mouse/xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"mouse/xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
   cat/api/_splitted/catlibrary/toc.json:
   cat/mouse/api/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:

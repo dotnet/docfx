@@ -351,7 +351,7 @@ outputs:
       }
     }
   .errors.log: |
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/docs/a' appears twice or more in the redirection mappings","file":"redirections.yml","line":3,"column":21}
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/docs/a' appears twice or more in the redirection mappings.","file":"redirections.yml","line":3,"column":21}
 ---
 # Redirection file with monikers - moniker overlap
 inputs:
@@ -402,7 +402,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md [redirection]<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/a-old.md [redirection]<'netcore-1.1', 'netcore-1.2'>'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-1.1') publish to the same url '/docs/a-old': 'docs/v1/a-old.md [redirection]<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/a-old.md [redirection]<'netcore-1.1', 'netcore-1.2'>'."}
 ---
 # Two or more documents which don't have moniker or the moniker range is not mutually exclusive from others, publish to the same url
 inputs:
@@ -437,7 +437,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.0', 'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.0', 'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'."}
 ---
 # With moniker range not defined in config, user should not define it in file metadata
 inputs:
@@ -521,7 +521,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'","file":"docs/v1/a.md","line":2,"column":15}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'.","file":"docs/v1/a.md","line":2,"column":15}
 ---
 # No intersection of file level monikers and zone monikers
 inputs:
@@ -638,7 +638,7 @@ outputs:
   218c13d0/docs/a.json:
   4667fedf/docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'."}
 ---
 # Define same uid with multiple moniker ranges with same name, 
 # reference to it without moniker in the same docset, anyone can be taken
@@ -731,9 +731,9 @@ outputs:
   docs/c.json: |
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-1.1, netcore-2.0</a></p>"}
   .errors.log: |
-    {"message_severity":"error","code":"moniker-overlapping","message":"Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'"}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'"}
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'"}
+    {"message_severity":"error","code":"moniker-overlapping","message":"Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'."}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'."}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'."}
   .xrefmap.json: | 
     {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
   .publish.json: |
@@ -913,7 +913,7 @@ outputs:
   .xrefmap.json: | 
     {"references":[{"uid":"a","name":"b with no version"}]}
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'b with no version', 'netcore-1.1', 'netcore-2.0'"}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'b with no version', 'netcore-1.1', 'netcore-2.0'."}
 ---
 # Build toc with monikers info
 inputs:
@@ -1266,7 +1266,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md<'netcore-1.0', 'netcore-2.0'>', 'docs/v2/TOC.md<'netcore-2.0'>'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/toc.json': 'docs/v1/TOC.md<'netcore-1.0', 'netcore-2.0'>', 'docs/v2/TOC.md<'netcore-2.0'>'."}
 ---
 # No intersection of config monikers and file monikers of TOC file
 inputs:
@@ -1290,7 +1290,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","file":"docs/v1/TOC.md","line":2,"column":15}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'.","file":"docs/v1/TOC.md","line":2,"column":15}
 ---
 # Build resource file with moniker
 inputs:
@@ -1378,7 +1378,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/c.png<'netcore-1.1', 'netcore-1.2'>'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-1.1') publish to the same url '/docs/c.png': 'docs/v1/c.png<'netcore-1.0', 'netcore-1.1'>', 'docs/v2/c.png<'netcore-1.1', 'netcore-1.2'>'."}
 ---
 # Invalid moniker definition
 inputs:
@@ -1402,7 +1402,7 @@ inputs:
     {}
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '>= netcore-2.0': Moniker 'netcore-2.0' is not defined","file":"docfx.yml","line":2,"column":17}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '>= netcore-2.0': Moniker 'netcore-2.0' is not defined.","file":"docfx.yml","line":2,"column":17}
 ---
 # Invalid moniker range in file
 inputs:
@@ -1427,9 +1427,9 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range 'netcore-1.2': Moniker 'netcore-1.2' is not defined","file":"docs/v1/a.md","line":2,"column":15}
-    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '<= netcore-1.2': Moniker 'netcore-1.2' is not defined","file":"docs/v1/b.md","line":2,"column":1}
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', while file moniker range 'netcore-1.2' is ''","file":"docs/v1/a.md","line":2,"column":15}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range 'netcore-1.2': Moniker 'netcore-1.2' is not defined.","file":"docs/v1/a.md","line":2,"column":15}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '<= netcore-1.2': Moniker 'netcore-1.2' is not defined.","file":"docs/v1/b.md","line":2,"column":1}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', while file moniker range 'netcore-1.2' is ''.","file":"docs/v1/a.md","line":2,"column":15}
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No intersection between zone and file level monikers. The result of zone level range string '<= netcore-1.2' is '', while file level monikers is 'netcore-1.0'.","file":"docs/v1/b.md","line":2,"column":1}
 ---
 # Resolving moniker zone in token should base on root file's moniker
@@ -1527,9 +1527,9 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/b.png': 'docs/b.png', 'docs/v1/b.png'"}
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md'"}
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/toc.json': 'docs/TOC.md', 'docs/v1/TOC.md'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/b.png': 'docs/b.png', 'docs/v1/b.png'."}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a': 'docs/a.md', 'docs/v1/a.md'."}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/toc.json': 'docs/TOC.md', 'docs/v1/TOC.md'."}
 ---
 # monikers output should be stable
 inputs:
@@ -1643,7 +1643,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is 'netcore-1.0'","file":"docs/v1/TOC.md","line":2,"column":11}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is 'netcore-1.0'.","file":"docs/v1/TOC.md","line":2,"column":11}
 ---
 # Warn on moniker config duplication
 inputs:
@@ -1668,8 +1668,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'","file":"docs/v1/TOC.md","line":3,"column":15}
-    {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored","file":"docs/v1/TOC.md","line":2,"column":11}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file moniker range 'netcore-1.0' is 'netcore-1.0'.","file":"docs/v1/TOC.md","line":3,"column":15}
+    {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored.","file":"docs/v1/TOC.md","line":2,"column":11}
 ---
 # Throw on monikers value invalid
 inputs:
@@ -1693,8 +1693,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid monikers: Moniker 'netcore-1.1' is not defined","file":"docs/v1/TOC.md","line":2,"column":11}
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is ''","file":"docs/v1/TOC.md","line":2,"column":11}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid monikers: Moniker 'netcore-1.1' is not defined.","file":"docs/v1/TOC.md","line":2,"column":11}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is ''.","file":"docs/v1/TOC.md","line":2,"column":11}
 ---
 # Should take monikerRange as final monikers even it outputs empty
 inputs:
@@ -1719,8 +1719,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored","file":"docs/v1/TOC.md","line":2,"column":11}
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', 'netcore-2.0', while file moniker range '>netcore-1.0 <netcore-1.0' is ''","file":"docs/v1/TOC.md","line":3,"column":15}
+    {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored.","file":"docs/v1/TOC.md","line":2,"column":11}
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', 'netcore-2.0', while file moniker range '>netcore-1.0 <netcore-1.0' is ''.","file":"docs/v1/TOC.md","line":3,"column":15}
 ---
 # Should take monikers as final monikers if user inputs empty string for monikerRange
 # and no duplicate-moniker-config warning
@@ -1774,8 +1774,8 @@ outputs:
   136a42ac/docs/toc.json: |
     {"metadata":{}}
   .errors.log: |
-    {"message_severity":"warning","code":"null-array-value","message":"'monikers' contains null value, the null value has been removed","file":"docs/v1/TOC.md","line":3,"column":4}
-    {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored"}
+    {"message_severity":"warning","code":"null-array-value","message":"'monikers' contains null value, the null value has been removed.","file":"docs/v1/TOC.md","line":3,"column":4}
+    {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored."}
 ---
 # Should be OK for reference versioning docset to skip moniker range in config file
 inputs:
@@ -1845,7 +1845,7 @@ inputs:
     moniker: netcore-2.0
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'a.json': 'docs/v1/a.md', 'docs/v2/a.md'"}
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'a.json': 'docs/v1/a.md', 'docs/v2/a.md'."}
   a.json: |
     {"conceptual":"<p>moniker: netcore-2.0</p>"}
 ---

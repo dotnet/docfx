@@ -41,8 +41,8 @@ inputs:
   a.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key1' can only be a scalar value or string array","file":"docfx.yml","line":2,"column":9}
-    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key2' can only be a scalar value or string array","file":"docfx.yml","line":6,"column":7}
+    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key1' can only be a scalar value or string array.","file":"docfx.yml","line":2,"column":9}
+    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key2' can only be a scalar value or string array.","file":"docfx.yml","line":6,"column":7}
 ---
 # Additional metadata validation from external JSON schema
 inputs:
@@ -73,9 +73,9 @@ outputs:
       "key3": "net462"
     }
   .errors.log: |
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'","file":"docfx.yml","line":3,"column":9}
-    {"message_severity":"warning","code":"invalid-value","message":"Invalid value for 'key2': 'XNAGameStudio'","file":"docfx.yml","line":6,"column":13}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Integer' but got 'String'","file":"a.md","line":2,"column":7}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'.","file":"docfx.yml","line":3,"column":9}
+    {"message_severity":"warning","code":"invalid-value","message":"Invalid value for 'key2': 'XNAGameStudio'.","file":"docfx.yml","line":6,"column":13}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Integer' but got 'String'.","file":"a.md","line":2,"column":7}
 ---
 # Report missing-attribute at file level when yaml header missing
 inputs:
@@ -91,8 +91,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":1,"column":1}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"b.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"b.md","line":1,"column":1}
 ---
 # Allow multiple metadata schema definitions
 inputs:
@@ -111,8 +111,8 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":2,"column":1}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'.","file":"a.md","line":2,"column":6}
 ---
 # Validate each metadata schema individually for multiple metadata schema definitions
 inputs:
@@ -131,10 +131,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":2,"column":1}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Integer'","file":"a.md","line":2,"column":6}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'b'","file":"a.md","line":2,"column":1}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Array' but got 'Integer'","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Integer'.","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'b'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Array' but got 'Integer'.","file":"a.md","line":2,"column":6}
 ---
 # Json schema microsoft alias rule: Mute error, when no connection with Graph API
 inputs:
@@ -439,8 +439,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","file":"b.md","line":2,"column":14}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","file":"a.md","line":3,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'.","file":"b.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'.","file":"a.md","line":3,"column":14}
 ---
 # Json schema docset unique: null/empty values are not in-scope
 inputs:
@@ -483,8 +483,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"a.md","line":2,"column":14}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"docfx.yml","line":3,"column":16}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"a.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"docfx.yml","line":3,"column":16}
 ---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
@@ -516,8 +516,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"a.md","line":2,"column":14}
-    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10","file":"b.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"a.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10.","file":"b.md","line":2,"column":14}
 ---
 # Content validation - H1 unique
 inputs:
@@ -1747,11 +1747,11 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
-    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2","file":"docs/v1/b.md","line":2,"end_line":2,"column":8,"end_column":9}
-    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
-    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"docs/v1/a.md","line":3,"end_line":3,"column":14,"end_column":15}
-    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/a.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v1/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v1/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
   9d4e15fd/docs/a.json:
