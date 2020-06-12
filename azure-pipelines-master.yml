@@ -202,3 +202,6 @@ steps:
     filename: node
     arguments: '.\node_modules\gulp\bin\gulp.js master:release'
     workingFolder: tools/Deployment
+  env:
+    NUGETAPIKEY: $(NUGETAPIKEY)
+  
