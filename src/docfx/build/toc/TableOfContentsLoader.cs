@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
 
                 if (file == rootPath)
                 {
-                    _contentValidator.ValidateTocEntryDuplicated(file, node);
+                    _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
                 }
                 return node;
             }

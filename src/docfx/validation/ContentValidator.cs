@@ -89,34 +89,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocEntryDuplicated(Document file, TableOfContentsNode node)
+        public void ValidateTocEntryDuplicated(Document file, List<Document> referencedFiles)
         {
             if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
             {
-                var items = FlattenRecursive(node);
-                var paths = items
-                    .SelectMany(nodes => nodes.Items)
-                    .Select(item => item.Value.Document?.FilePath.Path.Value).ToList();
+                var filePaths = referencedFiles
+                    .Where(item => item != null)
+                    .Select(item => item.FilePath.Path.Value)
+                    .ToList();
 
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 var tocItem = new DuplicatedTocItem()
                 {
-                    FilePaths = paths,
+                    FilePaths = filePaths,
                     SourceInfo = new SourceInfo(file.FilePath, 0, 0),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
-            }
-        }
-
-        private static IEnumerable<TableOfContentsNode> FlattenRecursive(TableOfContentsNode node)
-        {
-            yield return node;
-            foreach (var child in node.Items)
-            {
-                foreach (var flattenedNode in FlattenRecursive(child))
-                {
-                    yield return flattenedNode;
-                }
             }
         }
 
