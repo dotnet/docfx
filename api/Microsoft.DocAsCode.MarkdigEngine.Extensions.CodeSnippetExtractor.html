@@ -5,12 +5,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class CodeTagExtentions
+    <title>Class CodeSnippetExtractor
    | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class CodeTagExtentions
+    <meta name="title" content="Class CodeSnippetExtractor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.54.0.0">
+    <meta name="generator" content="docfx 2.55.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,17 +78,17 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeTagExtentions">
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor">
   
   
-  <h1 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeTagExtentions" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeTagExtentions" class="text-break">Class CodeTagExtentions
+  <h1 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor" class="text-break">Class CodeSnippetExtractor
   </h1>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.object">Object</a></div>
-    <div class="level1"><span class="xref">CodeTagExtentions</span></div>
+    <div class="level1"><span class="xref">CodeSnippetExtractor</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -116,26 +116,101 @@
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.MarkdigEngine.Extensions.html">Microsoft.DocAsCode.MarkdigEngine.Extensions</a></h6>
   <h6><strong>Assembly</strong>: Microsoft.DocAsCode.MarkdigEngine.Extensions.dll</h6>
-  <h5 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeTagExtentions_syntax">Syntax</h5>
+  <h5 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class CodeTagExtentions</code></pre>
+    <pre><code class="lang-csharp hljs">public class CodeSnippetExtractor</code></pre>
   </div>
-  <h3 id="methods">Methods
+  <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeTagExtentions_FindIndexOfTag_System_String___System_String_System_Boolean_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeTagExtentions.FindIndexOfTag(System.String%5B%5D%2CSystem.String%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor__ctor_System_String_System_String_System_Boolean_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.%23ctor(System.String%2CSystem.String%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/TripleColon/CodeExtension.cs/#L304">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/CodeSnippet/CodeSnippetExtractor.cs/#L20">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeTagExtentions_FindIndexOfTag_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeTagExtentions.FindIndexOfTag*"></a>
-  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeTagExtentions_FindIndexOfTag_System_String___System_String_System_Boolean_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeTagExtentions.FindIndexOfTag(System.String[],System.String,System.Boolean)">FindIndexOfTag(String[], String, Boolean)</h4>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor__ctor_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.#ctor*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor__ctor_System_String_System_String_System_Boolean_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.#ctor(System.String,System.String,System.Boolean)">CodeSnippetExtractor(String, String, Boolean)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static int FindIndexOfTag(this string[] codeLines, string id, bool isEnd = false)</code></pre>
+    <pre><code class="lang-csharp hljs">public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">startLineTemplate</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td><span class="parametername">endLineTemplate</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
+        <td><span class="parametername">isEndLineContainsTagName</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor_TagNamePlaceHolder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.TagNamePlaceHolder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/CodeSnippet/CodeSnippetExtractor.cs/#L18">View Source</a>
+  </span>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor_TagNamePlaceHolder" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.TagNamePlaceHolder">TagNamePlaceHolder</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string TagNamePlaceHolder = &quot;{tagname}&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor_GetAllTags_System_String___System_Collections_Generic_HashSet_System_Int32___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.GetAllTags(System.String%5B%5D%2CSystem.Collections.Generic.HashSet%7BSystem.Int32%7D%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/CodeSnippet/CodeSnippetExtractor.cs/#L27">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor_GetAllTags_" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.GetAllTags*"></a>
+  <h4 id="Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor_GetAllTags_System_String___System_Collections_Generic_HashSet_System_Int32___" data-uid="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor.GetAllTags(System.String[],System.Collections.Generic.HashSet{System.Int32}@)">GetAllTags(String[], ref HashSet&lt;Int32&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, CodeRange&gt; GetAllTags(string[] lines, ref HashSet&lt;int&gt; tagLines)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -149,17 +224,12 @@
     <tbody>
       <tr>
         <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>[]</td>
-        <td><span class="parametername">codeLines</span></td>
+        <td><span class="parametername">lines</span></td>
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a></td>
-        <td><span class="parametername">id</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.boolean">Boolean</a></td>
-        <td><span class="parametername">isEnd</span></td>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.hashset-1">HashSet</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.int32">Int32</a>&gt;</td>
+        <td><span class="parametername">tagLines</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -174,11 +244,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.int32">Int32</a></td>
+        <td><a class="xref" href="https://docs.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://docs.microsoft.com/dotnet/api/system.string">String</a>, <a class="xref" href="Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeRange.html">CodeRange</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
   </table>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+  </div>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
@@ -197,10 +271,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeTagExtentions.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeTagExtentions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdigEngine_Extensions_CodeSnippetExtractor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdigEngine.Extensions.CodeSnippetExtractor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/TripleColon/CodeExtension.cs/#L302" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdigEngine.Extensions/CodeSnippet/CodeSnippetExtractor.cs/#L12" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>
