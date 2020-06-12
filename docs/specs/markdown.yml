@@ -662,7 +662,7 @@ outputs:
   docs/b.png:
   docs/a.json: |
     { 
-      "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div><div class=\"mx-imgBorder\"><p><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>"
+      "conceptual": "<p class=\"mx-imgBorder\"><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p><p class=\"mx-imgBorder\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p>"
     }
 ---
 # Invalid Link
@@ -741,7 +741,7 @@ inputs:
   include/b.png:
 outputs:
   a.json: |
-    { "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>" }
+    { "conceptual": "<p class=\"mx-imgBorder\"><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p>" }
   include/b.json:
   include/b.png:
 ---

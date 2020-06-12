@@ -15,21 +15,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public string Name => "image";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
 
         public ImageExtension(MarkdownContext context)
         {
             _context = context;
         }
 
-        public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
         {
             return RenderDelegate != null
-                ? RenderDelegate(renderer, block)
+                ? RenderDelegate(renderer, markdownObject)
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetLink(src, block));
+            htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
 
             if (type == "icon")
             {
@@ -94,23 +94,31 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
-            var id = GetHtmlId(block);
+            var id = GetHtmlId(markdownObject);
             if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             RenderDelegate = (renderer, obj) =>
             {
+                ITripleColon tripleColonObj;
+
+                if (obj is TripleColonBlock) {
+                    tripleColonObj = (TripleColonBlock)obj;
+                } else {
+                    tripleColonObj = (TripleColonInline)obj;
+                };
+
                 var currentType = string.Empty;
                 var currentLightbox = string.Empty;
                 var currentBorderStr = string.Empty;
                 var currentBorder = true;
                 var currentLink = string.Empty;
-                if(!obj.Attributes.TryGetValue("type", out currentType))
+                if(!tripleColonObj.Attributes.TryGetValue("type", out currentType))
                 {
                     currentType = "content";
                 }
-                obj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
-                obj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
-                obj.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
+                tripleColonObj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
+                tripleColonObj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
+                tripleColonObj.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
                 if (!bool.TryParse(currentBorderStr, out currentBorder))
                 {
                     if(currentType == "icon")
@@ -122,7 +130,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                 }
 
-                if(!string.IsNullOrEmpty(currentLink))
+                if (currentBorder)
+                {
+                    renderer.WriteLine("<p class=\"mx-imgBorder\">");
+                } else
+                {
+                    renderer.WriteLine("<p>");
+                }
+                if (!string.IsNullOrEmpty(currentLink))
                 {
                     var linkHtmlAttributes = new HtmlAttributes();
                     currentLink = _context.GetLink(currentLink, obj);
@@ -136,16 +151,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     lightboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                     renderer.Write("<a").WriteAttributes(lightboxHtmlAttributes).WriteLine(">");
                 }
-                if(currentBorder)
-                {
-                    renderer.WriteLine("<div class=\"mx-imgBorder\"><p>");
-                }
                 if(currentType != "complex")
                 {
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 } else
                 {
-                    if (currentType == "complex" && obj.Count == 0)
+                    if (currentType == "complex" && tripleColonObj.Count == 0)
                     {
                         logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                         return false;
@@ -153,19 +164,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var htmlId = GetHtmlId(obj);
                     renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                     renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-                    renderer.WriteChildren(obj);
+                    renderer.WriteChildren(tripleColonObj as ContainerBlock);
                     renderer.WriteLine("</div>");
-                }
-
-                if (currentBorder)
-                {
-                    renderer.WriteLine("</p></div>");
                 }
                 if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
                 {
                     renderer.WriteLine($"</a>");
                 }
-
+                renderer.WriteLine("</p>");
                 return true;
             };
 

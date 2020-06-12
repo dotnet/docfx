@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         private readonly MarkdownContext _context;
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
-        private readonly IDictionary<string, ITripleColonExtensionInlineInfo> _extensionsInline;
+        private readonly IDictionary<string, ITripleColonExtensionInfo> _extensionsInline;
 
         public TripleColonExtension(MarkdownContext context)
         {
@@ -30,9 +30,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
 
-            _extensionsInline = (new ITripleColonExtensionInlineInfo[]
+            _extensionsInline = (new ITripleColonExtensionInfo[]
             {
-                new ImageExtensionInline(context),
+                new ImageExtension(context),
                 new VideoExtensionInline(context)
             }).ToDictionary(x => x.Name);
         }
@@ -59,8 +59,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<TripleColonRenderer>())
             {
-                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonRenderer());
                 htmlRenderer.ObjectRenderers.Insert(0, new TripleColonInlineRenderer());
+                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonRenderer());
             }
         }
     }
@@ -69,17 +69,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         string Name { get; }
         bool SelfClosing { get; }
-        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block);
+        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
-        bool Render(HtmlRenderer renderer, TripleColonBlock block);
-    }
-
-    public interface ITripleColonExtensionInlineInfo
-    {
-        string Name { get; }
-        bool SelfClosing { get; }
-        bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonInline inline);
-        bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
-        bool Render(HtmlRenderer renderer, TripleColonInline inline);
+        bool Render(HtmlRenderer renderer, MarkdownObject markdownObject);
     }
 }

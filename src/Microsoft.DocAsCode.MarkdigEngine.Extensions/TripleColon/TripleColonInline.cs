@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -7,13 +7,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Syntax.Inlines;
     using System.Collections.Generic;
 
-    public class TripleColonInline : ContainerInline
+    public class TripleColonInline : ContainerInline, ITripleColon
     {
         public IDictionary<string, string> RenderProperties { get; set; }
-        public ITripleColonExtensionInlineInfo Extension { get; set; }
+        public ITripleColonExtensionInfo Extension { get; set; }
         public TripleColonInline(InlineParser parser) : base() { }
         public bool Closed { get; set; }
         public bool EndingTripleColons { get; set; }
         public IDictionary<string, string> Attributes { get; set; }
+        public int Count { get; }
     }
 }

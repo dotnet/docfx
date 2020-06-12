@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -8,27 +8,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
 
-    public class VideoExtensionInline : ITripleColonExtensionInlineInfo
+    public class VideoExtensionInline : ITripleColonExtensionInfo
     {
         private readonly MarkdownContext _context;
 
         public string Name => "video";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, TripleColonInline, bool> RenderDelegate { get; private set; }
+        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
 
         public VideoExtensionInline(MarkdownContext context)
         {
             _context = context;
         }
 
-        public bool Render(HtmlRenderer renderer, TripleColonInline inline)
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
         {
             return RenderDelegate != null
-                ? RenderDelegate(renderer, inline)
+                ? RenderDelegate(renderer, markdownObject)
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonInline inline)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
