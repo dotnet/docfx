@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,16 @@ namespace Microsoft.Docs.Build
             return _canonicalVersionMap.GetOrAdd(url, GetCanonicalVersionCore);
         }
 
-        public HashSet<FilePath> GetFiles() => _files;
+        public IEnumerable<FilePath> GetFilesByUrl(string url)
+        {
+            if (_publishUrlMap.TryGetValue(url, out var items))
+            {
+                return items.Select(x => x.SourcePath);
+            }
+            return Array.Empty<FilePath>();
+        }
+
+        public HashSet<FilePath> GetAllFiles() => _files;
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
