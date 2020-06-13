@@ -4,22 +4,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Parsers;
     using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
     using System.Collections.Generic;
 
-    public class TripleColonBlock : ContainerBlock, ITripleColon
+    public class TripleColonInline : ContainerInline, ITripleColon
     {
         public IDictionary<string, string> RenderProperties { get; set; }
         public ITripleColonExtensionInfo Extension { get; set; }
-        public TripleColonBlock(BlockParser parser) : base(parser) { }
-        public bool Closed { get; set; }
-        public bool EndingTripleColons { get; set; }
-        public IDictionary<string, string> Attributes { get; set; }
-    }
-
-    interface ITripleColon
-    {
-        public IDictionary<string, string> RenderProperties { get; set; }
-        public ITripleColonExtensionInfo Extension { get; set; }
+        public TripleColonInline(InlineParser parser) : base() { }
         public bool Closed { get; set; }
         public bool EndingTripleColons { get; set; }
         public IDictionary<string, string> Attributes { get; set; }

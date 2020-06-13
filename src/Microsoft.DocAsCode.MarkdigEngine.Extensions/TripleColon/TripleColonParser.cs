@@ -165,7 +165,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool TryMatchIdentifier(ref StringSlice slice, out string name)
+        public static bool TryMatchIdentifier(ref StringSlice slice, out string name)
         {
             name = string.Empty;
             var c = slice.CurrentChar;
@@ -183,7 +183,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        private bool TryMatchAttributeValue(ref StringSlice slice, out string value, string extensionName, string attributeName, Action<string> logError)
+        private static bool TryMatchAttributeValue(ref StringSlice slice, out string value, string extensionName, string attributeName, Action<string> logError)
         {
             value = string.Empty;
             var c = slice.CurrentChar;
@@ -209,7 +209,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, bool selfClosing, Action<string> logError)
+        public static bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, bool selfClosing, Action<string> logError)
         {
             attributes = EmptyAttributes;
             while (true)
