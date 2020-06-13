@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 var tocItem = new ExternalBreadcrumbTocItem()
                 {
-                    FilePath = node.Value.Href,
+                    FilePath = node.Value.Href!,
                     IsHrefExternal = UrlUtility.GetLinkType(node.Value.Href) == LinkType.External,
                     SourceInfo = node.Source,
                 };
