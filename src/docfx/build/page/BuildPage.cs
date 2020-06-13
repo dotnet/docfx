@@ -157,6 +157,9 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
+            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
+                ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+
             if (context.Config.DryRun)
             {
                 return (errors, systemMetadata);
@@ -173,8 +176,6 @@ namespace Microsoft.Docs.Build
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
-                ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
 

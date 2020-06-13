@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,70 @@ namespace Microsoft.Docs.Build
 
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateTocDeprecated(FilePath filePath)
+        {
+            if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                var tocItem = new DeprecatedTocItem()
+                {
+                    FilePath = filePath.Path.Value,
+                    SourceInfo = new SourceInfo(filePath, 0, 0),
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateTocMissing(Document document, bool hasReferencedTocs)
+        {
+            if (TryGetValidationDocumentType(document.ContentType, document.Mime.Value, false, out var documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                var tocItem = new MissingTocItem()
+                {
+                    FilePath = document.FilePath.Path.Value,
+                    HasReferencedTocs = hasReferencedTocs,
+                    SourceInfo = new SourceInfo(document.FilePath, 0, 0),
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateTocBreadcrumbLinkExternal(SourceInfo<TableOfContentsNode> node)
+        {
+            if (!string.IsNullOrEmpty(node.Value?.Href)
+                && TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                var tocItem = new ExternalBreadcrumbTocItem()
+                {
+                    FilePath = node.Value.Href!,
+                    IsHrefExternal = UrlUtility.GetLinkType(node.Value.Href) == LinkType.External,
+                    SourceInfo = node.Source,
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateTocEntryDuplicated(Document file, List<Document> referencedFiles)
+        {
+            if (TryGetValidationDocumentType(ContentType.TableOfContents, string.Empty, false, out var documentType))
+            {
+                var filePaths = referencedFiles
+                    .Where(item => item != null)
+                    .Select(item => item.FilePath.Path.Value)
+                    .ToList();
+
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                var tocItem = new DuplicatedTocItem()
+                {
+                    FilePaths = filePaths,
+                    SourceInfo = new SourceInfo(file.FilePath, 0, 0),
+                };
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
