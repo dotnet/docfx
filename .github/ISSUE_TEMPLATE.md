@@ -1,4 +1,4 @@
-**Operation System**: (`Windows` or `Linux` or `MacOS`)
+**Operating System**: (`Windows` or `Linux` or `MacOS`)
 
 **DocFX Version Used**: 
 
