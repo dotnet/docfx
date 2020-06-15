@@ -544,7 +544,7 @@ noStdin                  | Do not use `--read-args-from-stdin` for the wkhtmltop
 Key                      | Description
 -------------------------|-----------------------------
 filePath                 | The path and file name of a wkhtmltopdf.exe compatible executable.
-additionalArguments      | Additional arguments that should be passed to the wkhtmltopdf executable.
+additionalArguments      | Additional arguments that should be passed to the wkhtmltopdf executable. For example, pass `--enable-local-file-access` if you are building on a local file system. This will ensure that the supporting *.js and *.css files are loaded when rendering the HTML being converted to PDF.
 
 ## 4. Supported File Mapping Format
 

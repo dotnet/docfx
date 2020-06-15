@@ -95,6 +95,9 @@ Parameters are similar to `build` section, definitely it is using a different te
         ]
       }
     ],
+    "wkhtmltopdf": {
+      "additionalArguments": "--enable-local-file-access"
+    },
     "dest": "_site_pdf"
   }
 ```
