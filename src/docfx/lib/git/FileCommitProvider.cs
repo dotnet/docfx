@@ -23,14 +23,11 @@ namespace Microsoft.Docs.Build
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
         private readonly ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>> _commits;
 
-        // Intern path strings by given each path segment a string ID. For faster string lookup.
-        private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
-
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
-        private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>?> _trees
-                   = new ConcurrentDictionary<long, Dictionary<int, git_oid>?>();
+        private readonly GitBlobTrie _trees;
 
-        private int _nextStringId;
+        private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new ConcurrentDictionary<(string, string?), GitCommit[]>();
+
         private IntPtr _repo;
 
         public FileCommitProvider(Repository repository, string cacheFilePath)
@@ -40,6 +37,7 @@ namespace Microsoft.Docs.Build
                 throw new ArgumentException($"Invalid git repo {repository.Path}");
             }
             _repository = repository;
+            _trees = new GitBlobTrie(_repo);
             _commitCache = new Lazy<GitCommitCache>(() => new GitCommitCache(cacheFilePath));
             _commits = new ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>>();
         }
@@ -48,15 +46,21 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!file.Contains('\\'));
 
+            return _commitHistoryCache.GetOrAdd((file, committish), GetCommitHistoryCore);
+        }
+
+        private GitCommit[] GetCommitHistoryCore((string, string?) key)
+        {
+            var (file, committish) = key;
             var commitCache = _commitCache.Value.ForFile(file);
 
             lock (commitCache)
             {
-                return GetCommitHistory(commitCache, file, committish);
+                return GetCommitHistoryCore(commitCache, file, committish);
             }
         }
 
-        private GitCommit[] GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string? committish = null)
+        private GitCommit[] GetCommitHistoryCore(GitCommitCache.FileCommitCache commitCache, string file, string? committish = null)
         {
             const int MaxParentBlob = 32;
 
@@ -69,14 +73,13 @@ namespace Microsoft.Docs.Build
                 return Array.Empty<GitCommit>();
             }
 
-            var searchSteps = 0;
             var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = new long[MaxParentBlob];
-            var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
+            var pathSegments = Array.ConvertAll(file.Split('/'), GitBlobTrie.GetStringId);
 
             var headCommit = commits[0];
-            var headBlob = GetBlob(commits[0].Tree, pathSegments);
+            var headBlob = _trees.GetBlob(commits[0].Tree, pathSegments);
             var commitsToFollow = new List<(Commit commit, long blob)> { (headCommit, headBlob) };
 
             // `commits` is the commit history for the current branch,
@@ -84,8 +87,6 @@ namespace Microsoft.Docs.Build
             // Reusing a single branch commit history is a performance optimization.
             foreach (var commit in commits)
             {
-                searchSteps++;
-
                 // Find and remove if this commit should be followed by the tree traversal.
                 if (!TryRemoveCommit(commit, commitsToFollow, out var blob))
                 {
@@ -110,7 +111,7 @@ namespace Microsoft.Docs.Build
 
                 for (var i = 0; i < parentCount; i++)
                 {
-                    parentBlobs[i] = GetBlob(commit.Parents[i].Tree, pathSegments);
+                    parentBlobs[i] = _trees.GetBlob(commit.Parents[i].Tree, pathSegments);
                     if (parentBlobs[i] == blob)
                     {
                         // and it was TREESAME to one parent, follow only that parent.
@@ -134,11 +135,6 @@ namespace Microsoft.Docs.Build
                 {
                     result.Add(commit);
                 }
-            }
-
-            if (searchSteps > 100)
-            {
-                Log.Write($"GetCommitHistory took {searchSteps} steps on '{file}'");
             }
 
             if (updateCache)
@@ -265,56 +261,7 @@ namespace Microsoft.Docs.Build
                 commit.ParentShas = Array.Empty<git_oid>();
             });
 
-            if (committish.Equals(_repository.Commit))
-            {
-                Telemetry.TrackBuildCommitCount(commits.Count);
-            }
-
             return (commits, commitsBySha);
-        }
-
-        private long GetBlob(git_oid treeId, int[] pathSegments)
-        {
-            var blob = treeId;
-
-            for (var i = 0; i < pathSegments.Length; i++)
-            {
-                var files = _trees.GetOrAdd(blob.a, _ => LoadTree(blob));
-                if (files is null || !files.TryGetValue(pathSegments[i], out blob))
-                {
-                    return default;
-                }
-            }
-
-            return blob.a;
-        }
-
-        private unsafe Dictionary<int, git_oid>? LoadTree(git_oid treeId)
-        {
-            if (git_object_lookup(out var tree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
-            {
-                return null;
-            }
-
-            var n = git_tree_entrycount(tree);
-            var blobs = new Dictionary<int, git_oid>((int)n);
-
-            for (var p = IntPtr.Zero; p != n; p = p + 1)
-            {
-                var entry = git_tree_entry_byindex(tree, p);
-                var name = Marshal.PtrToStringUTF8(git_tree_entry_name(entry)) ?? "";
-
-                blobs[GetStringId(name)] = *git_tree_entry_id(entry);
-            }
-
-            git_object_free(tree);
-
-            return blobs;
-        }
-
-        private int GetStringId(string value)
-        {
-            return _stringPool.GetOrAdd(value, _ => Interlocked.Increment(ref _nextStringId));
         }
 
         private class Commit
