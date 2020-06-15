@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(redirectUrl);
-                var docs = _publishUrlMap.Value.GetFilesByUrl(trimmedRedirectUrl);
+                var docs = _publishUrlMap.Value.GetFilesByUrl(trimmedRedirectUrl.ToLowerInvariant());
                 if (!docs.Any())
                 {
                     if (item.RedirectDocumentId)
