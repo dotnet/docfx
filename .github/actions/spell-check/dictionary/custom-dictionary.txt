@@ -504,3 +504,6 @@ kbd
 nobr
 allowtransparency
 addbuildtag
+ecma
+Idx
+igrouping

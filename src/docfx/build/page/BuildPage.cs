@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildPage
     {
-        public static List<Error> Build(Context context, Document file)
+        public static void Build(Context context, Document file)
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
@@ -25,55 +25,41 @@ namespace Microsoft.Docs.Build
             errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
-
-            var publishItem = new PublishItem(
-                file.SiteUrl,
-                outputPath,
-                context.SourceMap.GetOriginalFilePath(file.FilePath) ?? file.FilePath.Path,
-                context.BuildOptions.Locale,
-                monikers,
-                context.MonikerProvider.GetConfigMonikerRange(file.FilePath),
-                file.ContentType,
-                file.Mime);
-
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
-                context.PublishModelBuilder.Add(file.FilePath, publishItem);
-                return errors;
+                context.ErrorLog.Write(errors);
+                return;
             }
 
             var (outputErrors, output, metadata) = file.IsPage
                 ? CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
-            publishItem.ExtensionData = metadata;
+            context.ErrorLog.Write(errors);
 
-            context.PublishModelBuilder.Add(file.FilePath, publishItem, () =>
+            if (!context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun)
             {
-                if (!context.Config.DryRun)
+                if (context.Config.OutputType == OutputType.Json)
                 {
-                    if (context.Config.OutputType == OutputType.Json)
-                    {
-                        context.Output.WriteJson(outputPath, output);
-                    }
-                    else if (output is string str)
-                    {
-                        context.Output.WriteText(outputPath, str);
-                    }
-                    else
-                    {
-                        context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
-                    }
-
-                    if (context.Config.Legacy && file.IsPage)
-                    {
-                        var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
-                        context.Output.WriteJson(metadataPath, metadata);
-                    }
+                    context.Output.WriteJson(outputPath, output);
                 }
-            });
+                else if (output is string str)
+                {
+                    context.Output.WriteText(outputPath, str);
+                }
+                else
+                {
+                    context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
+                }
 
-            return errors;
+                if (context.Config.Legacy && file.IsPage)
+                {
+                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    context.Output.WriteJson(metadataPath, metadata);
+                }
+            }
+
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata, null, outputPath);
         }
 
         private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(
@@ -171,6 +157,9 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
+            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
+                ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+
             if (context.Config.DryRun)
             {
                 return (errors, systemMetadata);
@@ -187,8 +176,6 @@ namespace Microsoft.Docs.Build
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
-                ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
             systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
 
@@ -233,6 +220,8 @@ namespace Microsoft.Docs.Build
 
             var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
+
+            errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
 
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
@@ -280,6 +269,8 @@ namespace Microsoft.Docs.Build
                 var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
                 JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
                 errors.AddRange(metadataErrors);
+
+                errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
             }
 
             var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, validatedObj);

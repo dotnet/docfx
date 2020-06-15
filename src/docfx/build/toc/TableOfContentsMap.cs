@@ -22,11 +22,12 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsParser _tocParser;
         private readonly DocumentProvider _documentProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
+        private readonly ContentValidator _contentValidator;
 
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
         public TableOfContentsMap(
-            ErrorLog errorLog, Input input, BuildScope buildScope, DependencyMapBuilder dependencyMapBuilder, TableOfContentsParser tocParser, TableOfContentsLoader tocLoader, DocumentProvider documentProvider)
+            ErrorLog errorLog, Input input, BuildScope buildScope, DependencyMapBuilder dependencyMapBuilder, TableOfContentsParser tocParser, TableOfContentsLoader tocLoader, DocumentProvider documentProvider, ContentValidator contentValidator)
         {
             _errorLog = errorLog;
             _input = input;
@@ -35,6 +36,7 @@ namespace Microsoft.Docs.Build
             _tocLoader = tocLoader;
             _documentProvider = documentProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
+            _contentValidator = contentValidator;
             _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
         }
 
@@ -69,11 +71,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         internal Document? FindNearestToc(Document file)
         {
-            return FindNearestToc(
+            var result = FindNearestToc(
                 file,
                 _tocs.Value.tocToTocs.Keys.Where(toc => !toc.IsExperimental),
                 _tocs.Value.docToTocs,
                 file => file.FilePath.Path);
+
+            _contentValidator.ValidateTocMissing(file, result.hasReferencedTocs);
+            return result.toc;
         }
 
         /// <summary>
@@ -83,7 +88,7 @@ namespace Microsoft.Docs.Build
         /// 2. parent nearest(based on file path)
         /// 3. sub-name lexicographical nearest
         /// </summary>
-        internal static T? FindNearestToc<T>(T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
+        internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
         {
             var hasReferencedTocs = false;
             var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
@@ -93,7 +98,7 @@ namespace Microsoft.Docs.Build
                                 where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
                                 select (subCount: dirInfo.subDirectoryCount, parentCount: dirInfo.parentDirectoryCount, toc);
 
-            return tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
+            return (tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
             {
                 var result = minCandidate.subCount - nextCandidate.subCount;
                 if (result == 0)
@@ -105,7 +110,7 @@ namespace Microsoft.Docs.Build
                     result = minCandidate.toc.CompareTo(nextCandidate.toc);
                 }
                 return result <= 0 ? minCandidate : nextCandidate;
-            }).toc;
+            }).toc, hasReferencedTocs);
         }
 
         private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
@@ -194,6 +199,9 @@ namespace Microsoft.Docs.Build
                     from doc in item.Value.docs
                     where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental
                     group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+
+                tocToTocs.TrimExcess();
+                docToTocs.TrimExcess();
 
                 return (tocToTocs, docToTocs);
             }

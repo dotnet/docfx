@@ -77,7 +77,7 @@ cache:
 outputs:
   docs/index.json:
   .errors.log: |
-    {"message_severity":"warning","code":"author-not-found","message":"Invalid value for author: 'invalid_user' is not a valid GitHub ID","file":"docs/index.md","line":2,"column":9}
+    {"message_severity":"warning","code":"author-not-found","message":"Invalid value for author: 'invalid_user' is not a valid GitHub ID.","file":"docs/index.md","line":2,"column":9}
 ---
 # Author should NOT exist in contributors. Author can have no contribution to the file before.
 repos:

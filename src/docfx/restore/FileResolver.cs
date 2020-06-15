@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,9 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
+        // NOTE: This line assumes each build runs in a new process
+        private static readonly ConcurrentHashSet<string> s_downloadedUrls = new ConcurrentHashSet<string>();
+
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
@@ -94,16 +98,16 @@ namespace Microsoft.Docs.Build
             }
 
             var filePath = GetRestorePathFromUrl(file);
+            if ((_fetchOptions == FetchOptions.UseCache || s_downloadedUrls.Contains(file)) && File.Exists(filePath))
+            {
+                return;
+            }
+
             var etagPath = GetRestoreEtagPath(file);
             var existingEtag = default(EntityTagHeaderValue);
 
             using (InterProcessMutex.Create(filePath))
             {
-                if (_fetchOptions == FetchOptions.UseCache && File.Exists(filePath))
-                {
-                    return;
-                }
-
                 var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
                 if (!string.IsNullOrEmpty(etagContent))
                 {
@@ -135,7 +139,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return;
+            s_downloadedUrls.TryAdd(file);
         }
 
         private static string GetRestorePathFromUrl(string url)

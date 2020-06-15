@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.GetType() == typeof(ImageExtension)
                 && htmlAttributes != null
-                && ImageExtensionInline.RequiresClosingTripleColon(attributes))
+                && ImageExtension.RequiresClosingTripleColon(attributes))
             {
                 block.EndingTripleColons = true;
                 return BlockState.ContinueDiscard;

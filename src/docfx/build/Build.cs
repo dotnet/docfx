@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -41,13 +40,15 @@ namespace Microsoft.Docs.Build
 
         private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            using var errorLog = new ErrorLog(outputPath);
             var stopwatch = Stopwatch.StartNew();
+
+            using var errorLog = new ErrorLog(outputPath);
+            using var disposables = new DisposableCollector();
 
             try
             {
                 var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(docsetPath, outputPath, options, fetchOptions);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
                     return true;
@@ -78,29 +79,22 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
-
-                Parallel.Invoke(
-                    () => context.BuildQueue.Enqueue(context.RedirectionProvider.Files),
-                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Resource)),
-                    () => context.BuildQueue.Enqueue(context.BuildScope.GetFiles(ContentType.Page)),
-                    () => context.BuildQueue.Enqueue(context.TocMap.GetFiles()));
-
+                context.BuildQueue.Enqueue(context.PublishUrlMap.GetFiles());
                 context.BuildQueue.WaitForCompletion();
             }
 
             Parallel.Invoke(
                 () => context.BookmarkValidator.Validate(),
                 () => context.ContentValidator.PostValidate(),
-                () => context.ErrorLog.Write(context.MetadataProvider.PostValidate()),
+                () => context.ErrorLog.Write(context.MetadataValidator.PostValidate()),
                 () => context.ContributionProvider.Save(),
                 () => context.RepositoryProvider.Save(),
                 () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
                 () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
 
             // TODO: explicitly state that ToXrefMapModel produces errors
-            var xrefMapModel = context.XrefResolver.ToXrefMapModel();
-            var (errors, publishModel, fileManifests) = context.PublishModelBuilder.Build();
-            context.ErrorLog.Write(errors);
+            var xrefMapModel = context.XrefResolver.ToXrefMapModel(context.BuildOptions.IsLocalizedBuild);
+            var (publishModel, fileManifests) = context.PublishModelBuilder.Build();
 
             if (context.Config.DryRun)
             {
@@ -114,23 +108,33 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
-                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build()),
+                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetFiles())),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
+
+            using (Progress.Start("Waiting for pending outputs..."))
+            {
+                context.Output.WaitForCompletion();
+            }
         }
 
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
-            var errors = file.ContentType switch
+            switch (file.ContentType)
             {
-                ContentType.TableOfContents => BuildTableOfContents.Build(context, file),
-                ContentType.Resource when path.Origin != FileOrigin.Fallback || context.Config.OutputType == OutputType.Html => BuildResource.Build(context, file),
-                ContentType.Page when path.Origin != FileOrigin.Fallback => BuildPage.Build(context, file),
-                ContentType.Redirection when path.Origin != FileOrigin.Fallback => BuildRedirection.Build(context, file),
-                _ => new List<Error>(),
-            };
-
-            context.ErrorLog.Write(errors);
+                case ContentType.TableOfContents:
+                    BuildTableOfContents.Build(context, file);
+                    break;
+                case ContentType.Resource:
+                    BuildResource.Build(context, file);
+                    break;
+                case ContentType.Page:
+                    BuildPage.Build(context, file);
+                    break;
+                case ContentType.Redirection:
+                    BuildRedirection.Build(context, file);
+                    break;
+            }
         }
     }
 }

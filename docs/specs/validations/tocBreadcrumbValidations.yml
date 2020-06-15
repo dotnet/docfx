@@ -1,0 +1,145 @@
+
+#TOC validation - toc-deprecated
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "toc": {
+        "name": "TOC and Breadcrumbs ",
+        "description": "Validates TOC and breadcrumbs.",
+        "rules": [
+          {
+            "type": "TocDeprecated",
+            "message": "Markdown TOC files are deprecated. Convert to a YAML TOC.",
+            "code": "toc-deprecated",
+            "severity": "SUGGESTION",
+            "exclusions": ["includes", "landingpage", "hubpage", "conceptual"]
+          }
+        ]
+      }
+    }
+  a/TOC.md:
+  b/TOC.md:
+  c/TOC.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"toc-deprecated","message":"Markdown TOC files are deprecated. Convert to a YAML TOC.","file":"a/TOC.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"toc-deprecated","message":"Markdown TOC files are deprecated. Convert to a YAML TOC.","file":"b/TOC.md","line":0,"end_line":0,"column":0,"end_column":0}
+  a/toc.json:
+  b/toc.json:
+  c/toc.json:
+---
+#TOC validation - toc-entry-duplicated
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "toc": {
+        "name": "TOC and Breadcrumbs ",
+        "description": "Validates TOC and breadcrumbs.",
+        "rules": [
+          {
+            "type": "TocEntryDuplicated",
+            "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a TOC.",
+            "code": "toc-entry-duplicated",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingpage",
+              "hubpage",
+            ]
+          }
+        ]
+      }
+    }
+  path/a.md:
+  path/b.md:
+  TOC.yml: |
+    - name: a
+      href: path/a.md
+    - name: b
+      href: path/b.md
+    - name: c
+      href: path/a.md
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md. Each article can only be referenced once in a TOC.","file":"TOC.yml","line":0,"end_line":0,"column":0,"end_column":0}
+  toc.json:
+  path/a.json:
+  path/b.json:
+---
+#TOC validation - toc-breadcrumb-link-external
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    globalMetadata:
+      breadcrumb_path: /bread/toc.json
+  rules.json: |
+    {
+      "toc": {
+        "name": "TOC and Breadcrumbs ",
+        "description": "Validates TOC and breadcrumbs.",
+        "rules": [
+          {
+            "type": "TocBreadcrumbLinkExternal",
+            "message": "External link: {0}. TOC and breadcrumb links can’t be to pages outside of Docs.",
+            "code": "toc-breadcrumb-link-external",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingpage",
+              "hubpage",
+            ]
+          }
+        ]
+      }
+    }
+  bread/TOC.yml: |
+    - name: a
+      href: /a
+    - name: b
+      href: http://www.msn.com
+    - name: c
+      href: /c
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"toc-breadcrumb-link-external","message":"External link: http://www.msn.com. TOC and breadcrumb links can’t be to pages outside of Docs.","file":"bread/TOC.yml","line":3,"end_line":3,"column":3,"end_column":3}
+  bread/toc.json:
+---
+#TOC validation - toc-missing
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "toc": {
+        "name": "TOC and Breadcrumbs ",
+        "description": "Validates TOC and breadcrumbs.",
+        "rules": [
+          {
+            "type": "TocMissing",
+            "message": "Article is not referenced from a table of contents. Every article must be in a TOC.",
+            "code": "toc-missing",
+            "severity": "suggestion",
+            "exclusions": [
+              "landingpage",
+              "hubpage",
+              "includes",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md:
+  b.md:
+  TOC.yml: |
+    - name: a
+      href: a.md
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"toc-missing","message":"Article is not referenced from a table of contents. Every article must be in a TOC.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+  a.json:
+  b.json:
+  toc.json:
+---

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public string Name => "code";
         public bool SelfClosing => true;
         public bool EndingTripleColons => false;
-        public Func<HtmlRenderer, TripleColonBlock, bool> RenderDelegate { get; private set; }
+        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
 
         private readonly MarkdownContext _context;
         private static Regex tagRegex = new Regex(@"(?:<!--|--|//|'|rem|%|;|#)\s*<\s*.*\s*?>|#region|#endregion");
@@ -26,15 +26,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _context = context;
         }
 
-        public bool Render(HtmlRenderer renderer, TripleColonBlock block)
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
         {
+            var block = (TripleColonBlock)markdownObject;
             return RenderDelegate != null
                 ? RenderDelegate(renderer, block)
                 : false;
         }
 
-        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, TripleColonBlock block)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
+
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
             var source = string.Empty;
@@ -96,12 +98,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             RenderDelegate = (renderer, obj) =>
             {
+                var block = (TripleColonBlock)obj;
                 var currentId = string.Empty;
                 var currentRange = string.Empty;
                 var currentSource = string.Empty;
-                obj.Attributes.TryGetValue("id", out currentId); //it's okay if this is null
-                obj.Attributes.TryGetValue("range", out currentRange); //it's okay if this is null
-                obj.Attributes.TryGetValue("source", out currentSource); //source has already been checked above
+                block.Attributes.TryGetValue("id", out currentId); //it's okay if this is null
+                block.Attributes.TryGetValue("range", out currentRange); //it's okay if this is null
+                block.Attributes.TryGetValue("source", out currentSource); //source has already been checked above
                 var (code, codePath) = _context.ReadFile(currentSource, obj);
                 if (string.IsNullOrEmpty(code))
                 {
@@ -111,7 +114,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 //var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
                 var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
                 var snippet = new CodeSnippet(null);
-                snippet.CodePath = source;
+                snippet.CodePath = currentSource;
                 snippet.TagName = currentId;
                 List<CodeRange> ranges;
                 HtmlCodeSnippetRenderer.TryGetLineRanges(currentRange, out ranges);

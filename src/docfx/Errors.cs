@@ -87,14 +87,14 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "microsoft-graph-api-failed", $"Call to Microsoft Graph API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
             public static Error MetadataValidationRuleset(string ruleset)
-                => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}");
+                => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}.");
 
             /// <summary>
             /// Liquid is not found for current mime type.
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error LiquidNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template used to generate HTML is not found for mimeType '{source}', the output HTML will not be generated", source);
+                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template used to generate HTML is not found for mimeType '{source}', the output HTML will not be generated.", source);
         }
 
         public static class Logging
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error FallbackError(string defaultLocale)
-                => new Error(ErrorLevel.Error, "fallback-error", $"Error(s) from '{defaultLocale}' repository caused this build failure, please check '{defaultLocale}' build report");
+                => new Error(ErrorLevel.Error, "fallback-error", $"Error(s) from '{defaultLocale}' repository caused this build failure, please check '{defaultLocale}' build report.");
         }
 
         public static class Json
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
 
             // Behavior: ✔️ Message: ❌
             public static Error NullArrayValue(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed", source);
+                => new Error(ErrorLevel.Warning, "null-array-value", $"'{name}' contains null value, the null value has been removed.", source);
 
             /// <summary>
             /// Schema document with violate content type/value against predefined models(not syntax error).
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error YamlHeaderNotObject(bool isArray, FilePath file)
-                => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}", new SourceInfo(file, 2, 1));
+                => new Error(ErrorLevel.Warning, "yaml-header-not-object", $"Expect yaml header to be an object, but got {(isArray ? "an array" : "a scalar")}.", new SourceInfo(file, 2, 1));
 
             /// <summary>
             /// Syntax error in yaml file(not duplicate key).
@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ✔️
             public static Error SchemaNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{source}'", source);
+                => new Error(ErrorLevel.Error, "schema-not-found", $"Unknown schema '{source}'.", source);
         }
 
         public static class Config
@@ -190,7 +190,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error ConfigNotFound(string docsetPath)
-                => new Error(ErrorLevel.Error, "config-not-found", $"Can't find docfx config file in '{docsetPath}'");
+                => new Error(ErrorLevel.Error, "config-not-found", $"Can't find docfx config file in '{docsetPath}'.");
 
             /// <summary>
             /// Build an OPS repo with a docset name that isn't provisioned.
@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error GlobPatternInvalid(string pattern, Exception ex)
-                => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}");
+                => new Error(ErrorLevel.Error, "glob-pattern-invalid", $"Glob pattern '{pattern}' is invalid: {ex.Message}.");
 
             /// <summary>
             /// Used invalid locale name(can't be resolved by <see cref="System.Globalization.CultureInfo"/>).
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
-                => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope", source);
+                => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope.", source);
 
             /// <summary>
             /// Used a link pointing to an rooted absolute file path.
@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error LocalFilePath(SourceInfo<string> path)
-                => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead", path);
+                => new Error(ErrorLevel.Warning, "local-file-path", $"Link '{path}' points to a local file. Use a relative path instead.", path);
 
             /// <summary>
             /// Two files include each other.
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
             {
                 display ??= obj => obj?.ToString();
                 var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{display(file)}'"));
-                return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
+                return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}.", source);
             }
 
             /// <summary>
@@ -290,7 +290,7 @@ namespace Microsoft.Docs.Build
                 return new Error(
                     ErrorLevel.Warning,
                     "publish-url-conflict",
-                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"))}");
+                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"))}.");
             }
 
             /// <summary>
@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error OutputPathConflict(string path, IEnumerable<FilePath> files)
-                => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}");
+                => new Error(ErrorLevel.Warning, "output-path-conflict", $"Two or more files output to the same path '{path}': {StringUtility.Join(files)}.");
         }
 
         public static class Redirection
@@ -311,7 +311,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error RedirectionConflict(SourceInfo? source, string path)
-                => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{path}' appears twice or more in the redirection mappings", source);
+                => new Error(ErrorLevel.Error, "redirection-conflict", $"The '{path}' appears twice or more in the redirection mappings.", source);
 
             /// <summary>
             /// Redirection entry isn't a conceptual article(*.{md,json,yml}).
@@ -324,7 +324,7 @@ namespace Microsoft.Docs.Build
             /// The key or value of redirection is null or empty.
             /// </summary>
             public static Error RedirectionIsNullOrEmpty(SourceInfo<string> source, string from)
-                => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty", source);
+                => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty.", source);
 
             /// <summary>
             /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
@@ -332,7 +332,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error RedirectionUrlConflict(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings", source);
+                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings.", source);
 
             /// <summary>
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
@@ -347,7 +347,7 @@ namespace Microsoft.Docs.Build
             }
 
             public static Error CircularRedirection(SourceInfo? source, IEnumerable<FilePath> redirectionChain)
-                => new Error(ErrorLevel.Warning, "circular-redirection", $"Build has identified circular redirection: {string.Join(" --> ", redirectionChain)}", source);
+                => new Error(ErrorLevel.Warning, "circular-redirection", $"Build has identified circular redirection: {string.Join(" --> ", redirectionChain)}.", source);
         }
 
         public static class TableOfContents
@@ -358,28 +358,28 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTopicHref(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{source}' can only reference to a local file or absolute path", source);
+                => new Error(ErrorLevel.Error, "invalid-topic-href", $"The topic href '{source}' can only reference to a local file or absolute path.", source);
 
             /// <summary>
             /// In markdown-format toc, link(treated as inclusion) CAN ONLY be toc file, folder or absolute path.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTocHref(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path", source);
+                => new Error(ErrorLevel.Error, "invalid-toc-href", $"The toc href '{source}' can only reference to a local TOC file, folder or absolute path.", source);
 
             /// <summary>
             /// Toc inclusion with relative folder, no toc.{md,yml} file in corresponding folder.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error FileNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists", source);
+                => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists.", source);
 
             /// <summary>
             /// In markdown-format toc, defined an empty node(# ) with no content.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MissingTocName(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "missing-toc-name", $"TOC node is missing name (if it is toc.yml) or title (toc.md)", source);
+                => new Error(ErrorLevel.Warning, "missing-toc-name", $"TOC node is missing name (if it is toc.yml) or title (toc.md).", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
@@ -390,14 +390,14 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTocSyntax(SourceInfo? source)
-                => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax is invalid, each line must be a valid markdown [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) with a single link, xref link or literal text", source);
+                => new Error(ErrorLevel.Error, "invalid-toc-syntax", $"The toc syntax is invalid, each line must be a valid markdown [ATX heading](https://spec.commonmark.org/0.28/#atx-heading) with a single link, xref link or literal text.", source);
 
             /// <summary>
             /// In markdown-format toc, header level should be continuous, it shouldn't skip a level.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTocLevel(SourceInfo? source, int from, int to)
-                => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}", source);
+                => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}.", source);
         }
 
         public static class Xref
@@ -407,14 +407,14 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ✔️
             public static Error AtXrefNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'", source);
+                => new Error(ErrorLevel.Off, "at-xref-not-found", $"Cross reference not found: '{source}'.", source);
 
             /// <summary>
             /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
             /// </summary>
             /// Behavior: ❌ Message: ✔️
             public static Error XrefNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'", source);
+                => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'.", source);
 
             /// <summary>
             /// The same uid of the same version is defined in multiple places
@@ -423,7 +423,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts)
-                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}", uid);
+                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
 
             /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.
@@ -432,13 +432,13 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
-                => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}");
+                => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
         }
 
         public static class Versioning
         {
             public static Error DuplicateMonikerConfig(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "duplicate-moniker-config", $"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored", source);
+                => new Error(ErrorLevel.Warning, "duplicate-moniker-config", $"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored.", source);
 
             /// <summary>
             /// Multiple articles with same uid contain overlapped monikers,
@@ -446,7 +446,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingMonikers)
-                => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}");
+                => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}.");
 
             /// <summary>
             /// Failed to parse moniker string.
@@ -472,22 +472,16 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No intersection between zone and file level monikers. The result of zone level range string '{source}' is {StringUtility.Join(zoneLevelMonikers)}, while file level monikers is {StringUtility.Join(fileLevelMonikers)}.", source);
 
             public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, SourceInfo<string?> monikerRange, IEnumerable<string> fileMonikers)
-                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}", monikerRange);
+                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}.", monikerRange);
 
             public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, SourceInfo<string?>[] monikers, IEnumerable<string> fileMonikers)
-                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}", monikers.FirstOrDefault());
+                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}.", monikers.FirstOrDefault());
         }
 
         public static class Markdown
         {
             public static Error IncludeNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Warning, "include-not-found", $"Invalid include link: '{source}'.", source);
-
-            public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector)
-            {
-                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{file}'"));
-                return new Error(ErrorLevel.Warning, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}", source);
-            }
+                => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
         }
 
         public static class JsonSchema
@@ -504,98 +498,98 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error UnexpectedType(SourceInfo? source, object expectedType, object actualType, string? name = null)
-                => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'", source, name);
+                => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'.", source, name);
 
             /// <summary>
             /// The input value is not defined in a valid value list.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error InvalidValue(SourceInfo? source, string name, object value, string? propName = null)
-                => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'", source, propName ?? name);
+                => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'.", source, propName ?? name);
 
             /// <summary>
             /// The string type's value doesn't match given format.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error FormatInvalid(SourceInfo? source, string value, object type, string propName)
-                => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'", source, propName);
+                => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'.", source, propName);
 
             /// <summary>
             /// Array length not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
-                => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}", source, propName);
+                => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
 
             /// <summary>
             /// Array items not unique.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayNotUnique(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique", source, propName);
+                => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique.", source, propName);
 
             /// <summary>
             /// Array items not unique.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayContainsFailed(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema", source, propName);
+                => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema.", source, propName);
 
             /// <summary>
             /// Error when JSON boolean schema failed.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error BooleanSchemaFailed(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'", source, propName);
+                => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'.", source, propName);
 
             /// <summary>
             /// Object property count not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error PropertyCountInvalid(SourceInfo? source, string propName, string criteria)
-                => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}", source, propName);
+                => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}.", source, propName);
 
             /// <summary>
             /// String length not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error StringLengthInvalid(SourceInfo? source, string propName, string type, int length, string criteria)
-                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' is too {type}: {length} characters. Length should be {criteria}", source, propName);
+                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' is too {type}: {length} characters. Length should be {criteria}.", source, propName);
 
             /// <summary>
             /// Number not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error NumberInvalid(SourceInfo? source, double value, string criteria, string propName)
-                => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}", source, propName);
+                => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}.", source, propName);
 
             /// <summary>
             /// A required attribute is missing.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MissingAttribute(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'", source, name);
+                => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'.", source, name);
 
             /// <summary>
             /// An attribute lacks the required dependency.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MissingPairedAttribute(SourceInfo? source, string name, string otherKey)
-                => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'", source, name);
+                => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'.", source, name);
 
             /// <summary>
             /// Attributes do not meet the requirements of either logic.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MissingEitherAttribute(SourceInfo? source, IEnumerable<object> attributes, string propName)
-                => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {StringUtility.Join(attributes)}", source, propName);
+                => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {StringUtility.Join(attributes)}.", source, propName);
 
             /// <summary>
             /// Attributes do not meet the requirements of precludes logic.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error PrecludedAttributes(SourceInfo? source, IEnumerable<object> attributes, string propName)
-                => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {StringUtility.Join(attributes)}", source, propName);
+                => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {StringUtility.Join(attributes)}.", source, propName);
 
             /// <summary>
             /// An attribute doesn't conform to date format.
@@ -609,35 +603,37 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DateOutOfRange(SourceInfo? source, string name, string value)
-                => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'", source, name);
+                => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'.", source, name);
 
             /// <summary>
             /// An attribute is deprecated.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error AttributeDeprecated(SourceInfo? source, string name, string replacedBy)
-                => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead")}", source, name);
+                => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead.")}", source, name);
 
             /// <summary>
             /// The value of paired attribute is invalid.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error InvalidPairedAttribute(SourceInfo? source, string name, object value, string dependentFieldName, object? dependentFieldValue, string propName)
-                => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'", source, propName);
+                => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'.", source, propName);
 
             /// <summary>
             /// The value is not a valid Microsoft alias
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
-                => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias", alias, name: name);
+                => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias.", alias, name: name);
 
             /// <summary>
             /// The attribute value is duplicated within docset
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
+            public const string DuplicateAttributeCode = "duplicate-attribute";
+
             public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
-                => new Error(ErrorLevel.Suggestion, "duplicate-attribute", $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}", source, name);
+                => new Error(ErrorLevel.Suggestion, DuplicateAttributeCode, $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.", source, name);
         }
 
         public static class Metadata
@@ -649,7 +645,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error AuthorNotFound(SourceInfo<string> login)
-                => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID", login);
+                => new Error(ErrorLevel.Warning, "author-not-found", $"Invalid value for author: '{login}' is not a valid GitHub ID.", login);
 
             /// <summary>
             /// - Used docfx output model property which are not defined in input model.
@@ -663,7 +659,7 @@ namespace Microsoft.Docs.Build
             /// Metadata value must be scalar or arrays of scalars.
             /// </summary>
             public static Error InvalidMetadataType(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array", source, name);
+                => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array.", source, name);
         }
 
         public static class Content
@@ -688,7 +684,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error BookmarkNotFound(SourceInfo? source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
-                => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(StringUtility.FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : null)}", source);
+                => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(StringUtility.FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : ".")}", source);
 
             /// <summary>
             /// Custom 404 page is not supported
@@ -696,7 +692,7 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(Document file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning", file.FilePath);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file.FilePath);
 
             /// <summary>
             /// Html Tag value must be in allowed list

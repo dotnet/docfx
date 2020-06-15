@@ -21,8 +21,8 @@ outputs:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"a?a=b&amp;c=d#e\">a</a></p>" }
   .errors.log: |
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#e' in 'docs/a.md'","file":"docs/b.md","line":1,"column":9}
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#a?b=c' in 'docs/b.md'","file":"docs/a.md","line":1,"column":9}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#e' in 'docs/a.md'.","file":"docs/b.md","line":1,"column":9}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#a?b=c' in 'docs/b.md'.","file":"docs/a.md","line":1,"column":9}
 ---
 # Links to URLs are preserved as is
 inputs:
@@ -189,7 +189,7 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p><a href=\"\">Absolute</a></p>" }
   .errors.log: |
-    {"message_severity":"warning","code":"local-file-path","message":"Link 'C:/a.md' points to a local file. Use a relative path instead","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"local-file-path","message":"Link 'C:/a.md' points to a local file. Use a relative path instead.","file":"docs/a.md","line":1,"column":1}
 ---
 # Show warning if two files share the same site url
 inputs:
@@ -199,7 +199,7 @@ inputs:
 outputs:
   docs/a.png.json:
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a.png': 'docs/a.png', 'docs/a.png.md'."}
 ---
 # Prefer relative url to file when there is a matching folder name
 inputs:
@@ -257,7 +257,7 @@ inputs:
   docs/redirect.md:
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/redirect': 'docs/redirect.md [redirection]', 'docs/redirect.md'"}
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md [redirection]', 'docs/redirect.md'."}
 ---
 # Show warning if link to a page outside build scope
 inputs:
@@ -272,8 +272,8 @@ outputs:
   docs/b.json: |
     {"conceptual":"<p><a href=\"#self\"></a></p>"}
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'c.md' referenced by link '../c.md' will not be built because it is not included in build scope","file":"docs/a.md","line":1,"column":9}
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#self' in 'c.md'","file":"c.md","line":1,"column":1}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'c.md' referenced by link '../c.md' will not be built because it is not included in build scope.","file":"docs/a.md","line":1,"column":9}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#self' in 'c.md'.","file":"c.md","line":1,"column":1}
 ---
 # Don't show warning if link to a resource outside build scope
 inputs:
@@ -310,7 +310,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'dep/logo.svg [dep]' referenced by link '../dep/logo.svg' will not be built because it is not included in build scope","file":"docs/a.md","line":1,"column":9}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'dep/logo.svg [dep]' referenced by link '../dep/logo.svg' will not be built because it is not included in build scope.","file":"docs/a.md","line":1,"column":9}
 ---
 # Show warning if link from a token in dependency repo to a file in dependency repo
 repos:
@@ -328,7 +328,7 @@ outputs:
   a.json: |
     {"conceptual":"<p><a href=\"logo.svg\"></a></p>"}
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'dep/logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope","file":"dep/b.md","line":1,"column":1}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'dep/logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope.","file":"dep/b.md","line":1,"column":1}
 ---
 # Cannot include entry docset file from dependency
 repos:

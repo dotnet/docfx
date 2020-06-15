@@ -7,7 +7,7 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to &lt;xref:a&gt;</p>" }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'","file":"docs/a.md","line":1,"column":9}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"docs/a.md","line":1,"column":9}
 ---
 # Unknown xrefs using @ syntax are not included in error log
 inputs:
@@ -344,8 +344,8 @@ outputs:
   base_path/docs/c.json: |
     {"conceptual": "<p>Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'","file":"docs/a.yml","line":2,"column":6}
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'","file":"docs/b.json","line":3,"column":12}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
   .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}], "properties": {"tags":["/base_path","internal"]}}
 ---
@@ -439,7 +439,7 @@ outputs:
      }
   .errors.log: |
     {"message_severity":"error","code":"json-syntax-error","message":"Unexpected character encountered while parsing value: }.","file":"docs/a.json","line":7}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'","file":"docs/b.json","line":3,"column":13}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"docs/b.json","line":3,"column":13}
   .xrefmap.json: | 
     {"references": undefined}
 ---
@@ -538,8 +538,8 @@ outputs:
   docs/b.json: |
     {"xref":{"uid":"a","href":"a.json"}}
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'","file":"docs/a.json","line":3,"column":12}
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'","file":"docs/a.json","line":6,"column":14}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'.","file":"docs/a.json","line":3,"column":12}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'.","file":"docs/a.json","line":6,"column":14}
 ---
 # uid conflict in non-root level and another SDP
 inputs:
@@ -569,8 +569,8 @@ outputs:
   docs/a.json:
   docs/b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'","file":"docs/a.json","line":6,"column":14}
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'","file":"docs/b.json","line":3,"column":12}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/a.json","line":6,"column":14}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
 ---
 # href shouldn't be defined at same level with uid
 inputs:
@@ -725,7 +725,7 @@ outputs:
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'c'","file":"docs/b.md","line":1,"column":9}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'c'.","file":"docs/b.md","line":1,"column":9}
 ---
 # Markdown inclusion with xref reference
 inputs:
@@ -791,7 +791,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'.","file":"docs/a.yml","line":2,"column":6}
 ---
 # circular reference within SDP UID definition a -> b -> c -> a
 inputs:
@@ -818,9 +818,9 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))'","file":"docs/a.yml","line":2,"column":6}
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","file":"docs/b.yml","line":2,"column":6}
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))'","file":"docs/c.yml","line":2,"column":6}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))'.","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'.","file":"docs/b.yml","line":2,"column":6}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))'.","file":"docs/c.yml","line":2,"column":6}
 ---
 # circular reference within SDP UID definition a -> b -> a -> c
 inputs:
@@ -849,8 +849,8 @@ inputs:
 outputs:
   docs/c.json:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))'","file":"docs/a.yml","line":2,"column":6}
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'","file":"docs/b.yml","line":2,"column":6}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))'.","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'.","file":"docs/b.yml","line":2,"column":6}
 ---
 # display property of non-plain text content type will be ignored
 inputs:
@@ -912,7 +912,7 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Integer'","file":"docs/a.yml","line":1,"column":1}
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Integer'.","file":"docs/a.yml","line":1,"column":1}
 ---
 # support <xref href="uid"></xref>
 inputs:
@@ -954,9 +954,9 @@ outputs:
     }
   docs/c.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'd'","file":"docs/a.md","line":2,"column":5}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'd'","file":"docs/a.md","line":3,"column":5}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'f'","file":"docs/a.md","line":11,"column":3}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'd'.","file":"docs/a.md","line":2,"column":5}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'd'.","file":"docs/a.md","line":3,"column":5}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'f'.","file":"docs/a.md","line":11,"column":3}
 ---
 # Transform xref in HTML block should not auto close the parent tag
 inputs:
@@ -1002,9 +1002,9 @@ outputs:
     }
   docs/b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b?displayProperty=a'","file":"docs/a.md","line":2,"column":19}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b#bookmark'","file":"docs/a.md","line":3,"column":22}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unexist'","file":"docs/a.md","line":7,"column":35}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b?displayProperty=a'.","file":"docs/a.md","line":2,"column":19}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b#bookmark'.","file":"docs/a.md","line":3,"column":22}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unexist'.","file":"docs/a.md","line":7,"column":35}
 ---
 # Support <xref> tag with neither uid nor href
 inputs:
@@ -1352,7 +1352,7 @@ outputs:
        ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'","file":"docs/a.yml","line":5,"column":11}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"docs/a.yml","line":5,"column":11}
   .xrefmap.json: |
     {
        "references":[
@@ -1519,7 +1519,7 @@ outputs:
   136a42ac/docs/a.json:
   4667fedf/docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'","file":"docs/v1/a.yml","line":5,"column":6}
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'","file":"docs/v2/a.yml","line":5,"column":6}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'"}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'"}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'.","file":"docs/v1/a.yml","line":5,"column":6}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'.","file":"docs/v2/a.yml","line":5,"column":6}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}

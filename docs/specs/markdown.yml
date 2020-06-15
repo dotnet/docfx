@@ -134,7 +134,7 @@ inputs:
     # Heading
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/a.md'","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/a.md'.","file":"docs/a.md"}
 ---
 # Comments between yaml header and H1
 inputs:
@@ -413,15 +413,18 @@ outputs:
 # do not output file if bookmark-not-found is treated as error
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       bookmark-not-found: error
   docs/a.md: |
     [link to b](b.md#bookmark)
   docs/b.md:
 outputs:
+  docs/a.json:
   docs/b.json:
+  .publish.json: |
+    {"files":[{"url": "/docs/a", "source_path": "docs/a.md", "has_error": true},{"url": "/docs/b", "source_path": "docs/b.md"}]}
   .errors.log: |
-    {"message_severity":"error","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/b.md'","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"error","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/b.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # Bookmark suggestion and validation
 inputs:
@@ -445,8 +448,8 @@ outputs:
   docs/d.json:
   .errors.log: |
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#some-bookmark' in 'docs/a.md', did you mean '#a-bookmark'?","file":"docs/b.md","line":1,"column":1}
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'","file":"docs/c.md","line":2,"column":1}
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark123456' in 'docs/c.md'","file":"docs/d.md","line":1,"column":1}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#b-has-no-bookmark' in 'docs/b.md'.","file":"docs/c.md","line":2,"column":1}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark123456' in 'docs/c.md'.","file":"docs/d.md","line":1,"column":1}
 ---
 # Do not validate bookmark for tabbed contents
 inputs:
@@ -531,7 +534,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"yaml-header-not-object","message":"Expect yaml header to be an object, but got an array","file":"docs/a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"yaml-header-not-object","message":"Expect yaml header to be an object, but got an array.","file":"docs/a.md","line":2,"column":1}
 ---
 # yaml header shouldn't be scalar
 inputs:
@@ -544,7 +547,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"yaml-header-not-object","message":"Expect yaml header to be an object, but got a scalar","file":"docs/a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"yaml-header-not-object","message":"Expect yaml header to be an object, but got a scalar.","file":"docs/a.md","line":2,"column":1}
 ---
 # Handling malformed HTML tags using HtmlAgilityPack 1.4.9
 inputs:
@@ -597,8 +600,8 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/a.md'","file":"docs/a.md","line":3,"column":23}
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/a.md'","file":"docs/a.md","line":4,"column":23}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/a.md'.","file":"docs/a.md","line":3,"column":23}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/a.md'.","file":"docs/a.md","line":4,"column":23}
 ---
 # Report warning for custom 404 page
 inputs:
@@ -610,7 +613,7 @@ outputs:
       "robots": "NOINDEX, NOFOLLOW"
     }
   .errors.log: |
-    {"message_severity":"warning","code":"custom-404-page","message":"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning","file":"docs/404.md"}
+    {"message_severity":"warning","code":"custom-404-page","message":"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.","file":"docs/404.md"}
 ---
 # bookmark as HTML predefined url
 inputs:
@@ -659,7 +662,7 @@ outputs:
   docs/b.png:
   docs/a.json: |
     { 
-      "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div><div class=\"mx-imgBorder\"><p><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>"
+      "conceptual": "<p class=\"mx-imgBorder\"><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p><p class=\"mx-imgBorder\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p>"
     }
 ---
 # Invalid Link
@@ -738,7 +741,7 @@ inputs:
   include/b.png:
 outputs:
   a.json: |
-    { "conceptual": "<div class=\"mx-imgBorder\"><p><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p></div>" }
+    { "conceptual": "<p class=\"mx-imgBorder\"><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p>" }
   include/b.json:
   include/b.png:
 ---

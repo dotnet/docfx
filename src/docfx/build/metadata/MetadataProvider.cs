@@ -14,46 +14,31 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly bool _hasMonikerRangeFileMetadata;
         private readonly BuildScope _buildScope;
-        private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly JObject _globalMetadata;
-        private readonly HashSet<string> _reservedMetadata;
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules
             = new List<(Func<string, bool> glob, string key, JToken value)>();
 
         private readonly ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)> _metadataCache
                    = new ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)>();
 
-        public JsonSchema[] MetadataSchemas { get; }
-
         public ICollection<string> HtmlMetaHidden { get; }
 
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
-        public MetadataProvider(
-            Config config, Input input, MicrosoftGraphAccessor microsoftGraphAccessor, FileResolver fileResolver, BuildScope buildScope)
+        public MetadataProvider(Config config, Input input, FileResolver fileResolver, BuildScope buildScope)
         {
             _input = input;
             _globalMetadata = config.GlobalMetadata.ExtensionData;
             _buildScope = buildScope;
 
-            MetadataSchemas = Array.ConvertAll(
+            var metadataSchemas = Array.ConvertAll(
                 config.MetadataSchema,
                 schema => JsonUtility.DeserializeData<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
 
-            _schemaValidators = Array.ConvertAll(
-                MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor));
-
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
-                .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
-                .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
-                .Except(JsonUtility.GetPropertyNames(typeof(UserMetadata)))
-                .ToHashSet();
-
-            HtmlMetaHidden = MetadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
+            HtmlMetaHidden = metadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
 
             HtmlMetaNames = new Dictionary<string, string>(
-                from schema in MetadataSchemas
+                from schema in metadataSchemas
                 from property in schema.Properties
                 let htmlMetaName = property.Value.HtmlMetaName
                 where !string.IsNullOrEmpty(htmlMetaName)
@@ -87,17 +72,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public List<Error> PostValidate()
-        {
-            var errors = new List<Error>();
-            foreach (var validator in _schemaValidators)
-            {
-                errors.AddRange(validator.PostValidate());
-            }
-
-            return errors;
-        }
-
         private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath filePath, ContentType contentType)
         {
             var result = new JObject();
@@ -128,32 +102,6 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            foreach (var (key, value) in result)
-            {
-                if (value is null)
-                {
-                    continue;
-                }
-                if (_reservedMetadata.Contains(key))
-                {
-                    errors.Add(Errors.Metadata.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
-                }
-                else if (!IsValidMetadataType(value))
-                {
-                    errors.Add(Errors.Metadata.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
-                }
-            }
-
-            var mime = _buildScope.GetMime(contentType, filePath);
-            foreach (var schemaValidator in _schemaValidators)
-            {
-                // Only validate conceptual files
-                if (contentType == ContentType.Page && mime == "Conceptual" && !result.ContainsKey("layout"))
-                {
-                    errors.AddRange(schemaValidator.Validate(result));
-                }
-            }
-
             var (validationErrors, metadata) = JsonUtility.ToObject<UserMetadata>(result);
 
             metadata.RawJObject = result;
@@ -161,21 +109,6 @@ namespace Microsoft.Docs.Build
             errors.AddRange(validationErrors);
 
             return (errors, metadata);
-        }
-
-        private static bool IsValidMetadataType(JToken token)
-        {
-            if (token is JObject)
-            {
-                return false;
-            }
-
-            if (token is JArray array && !array.All(item => item is JValue))
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(FilePath file)

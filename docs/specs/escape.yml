@@ -157,4 +157,4 @@ outputs:
           </p>"
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a%2A'","file":"html-xref.md","line":6,"column":9}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a%2A'.","file":"html-xref.md","line":6,"column":9}

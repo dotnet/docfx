@@ -11,6 +11,9 @@ namespace Microsoft.Docs.Build
 {
     internal class PackageResolver : IDisposable
     {
+        // NOTE: This line assumes each build runs in a new process
+        private static readonly ConcurrentHashSet<(string, bool)> s_downloadedGitRepositories = new ConcurrentHashSet<(string, bool)>();
+
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
@@ -102,9 +105,14 @@ namespace Microsoft.Docs.Build
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
 
+            if (_fetchOptions == FetchOptions.UseCache && File.Exists(gitDocfxHead))
+            {
+                return;
+            }
+
             using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
             {
-                if (!File.Exists(gitDocfxHead) || _fetchOptions != FetchOptions.UseCache)
+                if (!s_downloadedGitRepositories.Contains((gitPath, depthOne)))
                 {
                     DeleteIfExist(gitDocfxHead);
                     using (PerfScope.Start($"Downloading '{url}#{committish}'"))
@@ -112,15 +120,17 @@ namespace Microsoft.Docs.Build
                         DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
                     }
                     File.WriteAllText(gitDocfxHead, committish);
+                    Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
 
-                    // ensure contribution branch for CRR included in build
-                    if (fetchContributionBranch)
-                    {
-                        var crrRepository = Repository.Create(gitPath, committish, url);
-                        LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
-                    }
+                    s_downloadedGitRepositories.TryAdd((gitPath, depthOne));
                 }
-                Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
+            }
+
+            // ensure contribution branch for CRR included in build
+            if (fetchContributionBranch)
+            {
+                var crrRepository = Repository.Create(gitPath, committish, url);
+                LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
             }
         }
 

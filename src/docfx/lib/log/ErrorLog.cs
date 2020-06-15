@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public int SuggestionCount => _suggestionCount;
 
-        public IEnumerable<FilePath> ErrorFiles => _errorFiles;
+        public bool HasError(FilePath file) => _errorFiles.Contains(file);
 
         public ErrorLog(string? outputPath = null)
         {
@@ -87,9 +87,9 @@ namespace Microsoft.Docs.Build
         public bool Write(Error error, ErrorLevel? overwriteLevel = null)
         {
             var config = _config;
-            if (config != null && config.CustomErrors.TryGetValue(error.Code, out var customError))
+            if (config != null && config.CustomRules.TryGetValue(error.Code, out var customRule))
             {
-                error = error.WithCustomError(customError);
+                error = error.WithCustomRule(customRule);
             }
 
             var level = overwriteLevel ?? error.Level;
@@ -99,11 +99,6 @@ namespace Microsoft.Docs.Build
             }
 
             if (config != null && config.WarningsAsErrors && level == ErrorLevel.Warning)
-            {
-                level = ErrorLevel.Error;
-            }
-
-            if (error.Code == "circular-reference" || error.Code == "include-not-found")
             {
                 level = ErrorLevel.Error;
             }

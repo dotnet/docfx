@@ -183,8 +183,8 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
-        [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed", "null-array-value", ErrorLevel.Warning)]
+        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
+        [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
         internal void TestNullValue(string json, string message, string errorCode, ErrorLevel errorLevel)
         {
             var (errors, result) = JsonUtility.Parse(json.Replace('\'', '"'), null);

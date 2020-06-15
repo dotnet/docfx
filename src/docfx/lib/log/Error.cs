@@ -3,8 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Jint.Runtime.References;
 
 namespace Microsoft.Docs.Build
 {
@@ -47,12 +45,17 @@ namespace Microsoft.Docs.Build
             Name = name;
         }
 
-        public Error WithCustomError(CustomError customError)
+        public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
         {
+            var level = customRule.Severity ?? Level;
+            level = isCanonicalVersion != null && customRule.CanonicalVersionOnly
+                ? (isCanonicalVersion.Value ? level : ErrorLevel.Off)
+                : level;
+
             return new Error(
-                customError.Severity ?? Level,
-                string.IsNullOrEmpty(customError.Code) ? Code : customError.Code,
-                string.IsNullOrEmpty(customError.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customError.AdditionalMessage}",
+                level,
+                string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
+                string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
                 FilePath,
                 Line,
                 Column,

@@ -36,6 +36,10 @@ namespace Microsoft.Docs.Build
         // if this is a JObject property value.
         internal SourceInfo? KeySourceInfo { get; set; }
 
+        public SourceInfo(FilePath file)
+            : this(file, 0, 0, 0, 0)
+        { }
+
         public SourceInfo(FilePath file, int line, int column)
             : this(file, line, column, line, column)
         { }

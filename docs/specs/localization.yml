@@ -19,7 +19,7 @@ repos:
 outputs:
   docs/loc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","file":"docs/loc.md","line":1,"column":1}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope.","file":"docs/loc.md","line":1,"column":1}
 ---
 # restore loc repo with dependencies 2
 # [bilingual]
@@ -46,7 +46,7 @@ repos:
 outputs:
   docs/loc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope","file":"docs/loc.md","line":1,"column":1}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope.","file":"docs/loc.md","line":1,"column":1}
 ---
 # edit url convention without source locale 1
 locale: zh-cn
@@ -314,7 +314,7 @@ outputs:
   docs/b.json: |
     {"conceptual":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
   .xrefmap.json: |
-    {"references":[{"uid":"a","href":"https://docs.com/docs/a?branch=master","name":"a"},{"uid":"c","href":"https://docs.com/docs/c?branch=master","name":"c"}]}
+    {}
 ---
 # built metadata for loc files 1
 locale: zh-cn

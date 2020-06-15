@@ -281,7 +281,7 @@ inputs:
   docs/index.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'","file":"docs/TOC.md","line":1,"column":1}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'.","file":"docs/TOC.md","line":1,"column":1}
 ---
 # Circle toc referencing 2
 inputs:
@@ -293,7 +293,7 @@ inputs:
   docs/index.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/TOC.md'","file":"docs/TOC.md","line":1,"column":1}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/TOC.md'.","file":"docs/TOC.md","line":1,"column":1}
 ---
 # Reference to a folder, basic usages
 # Reference to a folder behavior is not same with reference to a toc file
@@ -555,7 +555,7 @@ outputs:
       "items": [{ "name":"topic href has higher priority", "href":"~/docs/f1/n2.md" }]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in build scope","file":"docs/f1/TOC.yml","line":3,"column":14}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in build scope.","file":"docs/f1/TOC.yml","line":3,"column":14}
 ---
 # Combine topic href and href(toc) => href + items
 # replace href finally
@@ -587,8 +587,8 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in build scope","file":"docs/f1/TOC.yml","line":3,"column":14}
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in build scope","file":"docs/f1/f11/TOC.md","line":1,"column":3}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in build scope.","file":"docs/f1/TOC.yml","line":3,"column":14}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in build scope.","file":"docs/f1/f11/TOC.md","line":1,"column":3}
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
 inputs:
@@ -665,9 +665,9 @@ inputs:
 outputs:
   docs/f1/toc.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/' can only reference to a local file or absolute path","file":"docs/TOC.yml","line":2,"column":14}
-    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/TOC.md' can only reference to a local file or absolute path","file":"docs/TOC.yml","line":4,"column":14}
-    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/TOC.md' can only reference to a local file or absolute path","file":"docs/TOC.yml","line":6,"column":14}
+    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/' can only reference to a local file or absolute path.","file":"docs/TOC.yml","line":2,"column":14}
+    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/TOC.md' can only reference to a local file or absolute path.","file":"docs/TOC.yml","line":4,"column":14}
+    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/TOC.md' can only reference to a local file or absolute path.","file":"docs/TOC.yml","line":6,"column":14}
 ---
 # Toc href cannot reference a local file
 inputs:
@@ -684,8 +684,8 @@ outputs:
   docs/f1/toc.json:
   docs/f1/a.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","file":"docs/TOC.yml","line":2,"column":12}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path","file":"docs/TOC.yml","line":4,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":2,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":4,"column":12}
 ---
 # Toc syntax error with duplicated keys
 inputs:
@@ -705,7 +705,7 @@ outputs:
     {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
   .errors.log: |
     {"message_severity":"suggestion","code":"yaml-duplicate-key","message":"Key 'topicHref' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.","file":"docs/TOC.yml","line":3,"column":3}
-    {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists","file":"docs/TOC.yml","line":4,"column":12}
+    {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists.","file":"docs/TOC.yml","line":4,"column":12}
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -722,7 +722,7 @@ outputs:
   docs/toc.json:
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/f1/TOC.yml","line":2,"column":9}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","file":"docs/f1/TOC.yml","line":4,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/f1/TOC.yml","line":4,"column":12}
 ---
 # TOC includes same href at different levels
 inputs:
@@ -744,9 +744,9 @@ outputs:
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/TOC.yml","line":3,"column":9}
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/TOC.yml","line":7,"column":13}
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/TOC.yml","line":11,"column":17}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","file":"docs/TOC.yml","line":2,"column":12}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","file":"docs/TOC.yml","line":6,"column":16}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path","file":"docs/TOC.yml","line":10,"column":20}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":2,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":6,"column":16}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":10,"column":20}
 ---
 # Individual experimental TOC should be built
 inputs:
@@ -884,7 +884,7 @@ outputs:
   docs/f1/toc.json: |
     { "items":[{"name":"TOC Reference"}] }
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside ../f2/ Please make sure the file exists","file":"docs/f1/TOC.md","line":1,"column":3}
+    {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside ../f2/ Please make sure the file exists.","file":"docs/f1/TOC.md","line":1,"column":3}
 ---
 # Toc with null value
 inputs:
@@ -923,9 +923,9 @@ outputs:
   docs/toc.json:
   docs/f1/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md)","file":"docs/TOC.yml","line":5,"column":8}
-    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md)","file":"docs/TOC.yml","line":7,"column":3}
-    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md)","file":"docs/f1/TOC.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md).","file":"docs/TOC.yml","line":5,"column":8}
+    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md).","file":"docs/TOC.yml","line":7,"column":3}
+    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md).","file":"docs/f1/TOC.md","line":1,"column":1}
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
@@ -1018,7 +1018,7 @@ inputs:
     ### level 3
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3","file":"docs/TOC.md","line":2,"column":1}
+    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3.","file":"docs/TOC.md","line":2,"column":1}
 ---
 # Markdown TOC root can start from any level, but must be aligned
 inputs:
@@ -1028,7 +1028,7 @@ inputs:
     # level 1
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 0 to 1","file":"TOC.md","line":2,"column":1}
+    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 0 to 1.","file":"TOC.md","line":2,"column":1}
 ---
 # Missing TOC heading name
 inputs:
@@ -1039,7 +1039,7 @@ inputs:
 outputs:
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md)","file":"docs/TOC.md","line":2,"column":1}
+    {"message_severity":"warning","code":"missing-toc-name","message":"TOC node is missing name (if it is toc.yml) or title (toc.md).","file":"docs/TOC.md","line":2,"column":1}
 ---
 # Multiple leaf inlines in toc title
 inputs:
@@ -1089,7 +1089,7 @@ outputs:
     {"_tocRel": "toc.json"}
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'"}
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'."}
 ---
 # validate bookmarks in toc
 inputs:
@@ -1188,7 +1188,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'","file":"docs/TOC.yml","line":6,"column":8}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.yml","line":6,"column":8}
 ---
 # uid reference first in yaml toc
 inputs:
@@ -1217,7 +1217,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'c'","file":"docs/TOC.yml","line":5,"column":8}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'c'.","file":"docs/TOC.yml","line":5,"column":8}
 ---
 # uid reference with monikers in yaml toc
 inputs:
@@ -1409,7 +1409,7 @@ outputs:
 # turn skip-level toc error to warning
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       invalid-toc-level: warning
   docs/TOC.md: |
     # level 1
@@ -1418,7 +1418,7 @@ inputs:
     ## level 2
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3","file":"docs/TOC.md","line":2,"column":1}
+    {"message_severity":"warning","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3.","file":"docs/TOC.md","line":2,"column":1}
   docs/toc.json: |
     {
       "items": [{

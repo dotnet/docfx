@@ -13,19 +13,22 @@ namespace Microsoft.Docs.Build
 
         public SourceMap(PathString docsetPath, Config config, FileResolver fileResolver)
         {
-            if (!string.IsNullOrEmpty(config.SourceMap))
+            foreach (var sourceMap in config.SourceMap)
             {
-                var content = fileResolver.ReadString(config.SourceMap);
-                var map = JsonUtility.DeserializeData<SourceMapModel>(content, new FilePath(config.SourceMap));
-                var sourceMapDirectory = Path.GetDirectoryName(fileResolver.ResolveFilePath(config.SourceMap)) ?? "";
-
-                foreach (var (path, originalPath) in map.Files)
+                if (!string.IsNullOrEmpty(sourceMap))
                 {
-                    if (originalPath != null)
+                    var content = fileResolver.ReadString(sourceMap);
+                    var map = JsonUtility.DeserializeData<SourceMapModel>(content, new FilePath(sourceMap));
+                    var sourceMapDirectory = Path.GetDirectoryName(fileResolver.ResolveFilePath(sourceMap)) ?? "";
+
+                    foreach (var (path, originalPath) in map.Files)
                     {
-                        _map.Add(
-                            new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, path))),
-                            new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, originalPath.Value))));
+                        if (originalPath != null)
+                        {
+                            _map.Add(
+                                new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, path))),
+                                new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, originalPath.Value))));
+                        }
                     }
                 }
             }

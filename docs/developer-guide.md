@@ -13,11 +13,11 @@ You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio 
 
 ## Release Process
 
-We continuously deploy `v3` branch to [Production MyGet Feed](https://www.myget.org/F/docfx-v3/api/v2). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
+We continuously deploy `v3` branch to [Production Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-prod/nuget/v3/index.json). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
 
 Large feature work happens in feature branches. Feature branch name starts with `feature/`.
 
-Pull request validation, continuos deployment to [Sandbox MyGet Feed](https://www.myget.org/F/docfx-v3-sandbox/api/v2) is enabled automatically on `v3` branch and all feature branches.
+Pull request validation, continuos deployment to [Sandbox Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-test/nuget/v3/index.json) is enabled automatically on `v3` branch and all feature branches.
 
 Package version produced from `v3` branch is higher than other branches:
 - `v3`: `3.0.0-beta-{commitDepth}-{commitHash}`

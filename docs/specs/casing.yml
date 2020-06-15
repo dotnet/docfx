@@ -10,6 +10,7 @@ outputs:
   docs/b.json:
 ---
 # URL is case insensitive on windows and mac
+os: windows, osx
 inputs:
   docfx.yml:
   docs/A.png.md: '![](a.png)'
@@ -17,7 +18,7 @@ inputs:
 outputs:
   docs/a.png:
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a.png': 'docs/A.png.md', 'docs/a.png'"}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/a.png': 'docs/A.png.md', 'docs/a.png'."}
 ---
 # Redirection config is case insensitive on windows and mac
 os: windows, osx

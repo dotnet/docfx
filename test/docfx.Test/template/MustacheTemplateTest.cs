@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
         [InlineData("section.tmpl", "{'section':1}", "<p></p>")]
         [InlineData("section.tmpl", "{'section':'string'}", "<p></p>")]
         [InlineData("section.tmpl", "{'section':''}", "")]
+        [InlineData("section.tmpl", "{'me':'a'}", "a me")]
         [InlineData("xref.tmpl", "{'uid':{'name':'uid-name-resolve','href':'https://domain/path'}}", "<a href=\"https://domain/path\"> uid-name-resolve </a>")]
         [InlineData("xref.tmpl", "{'uid':{'name':'uid-name-unresolve'}}", "<span> uid-name-unresolve </span>")]
         [InlineData("xref-partial.tmpl", "{'uid':{'name':'uid-name-unresolve'}}", "<span> uid-name-unresolve </span>")]
@@ -45,6 +46,10 @@ namespace Microsoft.Docs.Build
             "list.tmpl",
             "{'list':['l1','l2'], 'list-empty':[], 'list-empty-string':['']}",
             "list=' l1 l2'")]
+        [InlineData(
+            "list.tmpl",
+            "{'parent': [{'child': [1,2]}, {'child': ''}]}",
+            "1")]
         public void RenderMustacheTemplate(string name, string json, string html)
         {
             var model = JToken.Parse(json.Replace('\'', '"'));

@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
         public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
 
         [JsonProperty(nameof(ECMA2Yaml))]
-        public ECMA2YamlRepoConfig? ECMA2Yaml { get; private set; }
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; private set; }
     }
 }

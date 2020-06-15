@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                 new object[] { new TripleColonBlock (null) { Extension = new ZoneExtension () }, "TripleColonZone" },
                 new object[] { new TripleColonBlock (null) { Extension = new ChromelessFormExtension () }, "TripleColonForm" },
                 new object[] { new TripleColonBlock (null) { Extension = new ImageExtension (null) }, "TripleColonImage" },
-                new object[] { new TripleColonInline (null) { Extension = new ImageExtensionInline (null) }, "TripleColonInline" },
+                //new object[] { new TripleColonInline (null) { Extension = new ImageExtensionInline (null) }, "TripleColonInline" },
                 new object[] { new TripleColonBlock (null) { Extension = new CodeExtension (null) }, "TripleColonCode" },
                 new object[] { new YamlFrontMatterBlock (null), "YamlHeader" },
                 new object[] { new InclusionBlock (null), "IncludeFile" },

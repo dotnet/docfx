@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class CustomError
+    internal class CustomRule
     {
         public ErrorLevel? Severity { get; private set; }
 
@@ -14,8 +14,10 @@ namespace Microsoft.Docs.Build
 
         public string? AdditionalMessage { get; private set; }
 
-        public CustomError() { }
+        public bool CanonicalVersionOnly { get; private set; }
 
-        public CustomError(ErrorLevel? severity) => Severity = severity;
+        public CustomRule() { }
+
+        public CustomRule(ErrorLevel? severity) => Severity = severity;
     }
 }

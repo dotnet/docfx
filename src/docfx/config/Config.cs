@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomError> CustomErrors { get; } = new Dictionary<string, CustomError>();
+        public Dictionary<string, CustomRule> CustomRules { get; } = new Dictionary<string, CustomRule>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -287,7 +287,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// A file containing a map of file path to the original file path.
         /// </summary>
-        public SourceInfo<string> SourceMap { get; private set; } = new SourceInfo<string>("");
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public SourceInfo<string>[] SourceMap { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Determines if validate the moniker configuration.
@@ -302,7 +303,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
-        public ECMA2YamlRepoConfig? Monodoc { get; private set; }
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ECMA2YamlRepoConfig[]? Monodoc { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
@@ -311,7 +313,10 @@ namespace Microsoft.Docs.Build
                 yield return url;
             }
 
-            yield return SourceMap;
+            foreach (var sourceMap in SourceMap)
+            {
+                yield return sourceMap;
+            }
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
             yield return Allowlists;

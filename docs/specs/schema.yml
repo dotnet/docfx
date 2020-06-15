@@ -42,8 +42,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"docs/a.yml","line":1,"column":1}
-   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''","file":"docs/b.json","line":1,"column":1}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''.","file":"docs/a.yml","line":1,"column":1}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''.","file":"docs/b.json","line":1,"column":1}
 ---
 # Fallback to documentType when yaml mime is YamlDocument
 inputs:
@@ -72,9 +72,9 @@ inputs:
     { "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/SchemaNotExisting.json"}
 outputs:
   .errors.log: |
-   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'","file":"docs/a.yml","line":1,"column":1}
-   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'","file":"docs/b.json","line":2,"column":95}
-   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'","file":"docs/c.json","line":1,"column":95}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'.","file":"docs/a.yml","line":1,"column":1}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'.","file":"docs/b.json","line":2,"column":95}
+   {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'SchemaNotExisting'.","file":"docs/c.json","line":1,"column":95}
 ---
 # Support schema documents with Href content
 inputs:
@@ -135,7 +135,7 @@ outputs:
   toc.json:
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Object'","file":"docs/a.yml","line":3,"column":18}
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Object'.","file":"docs/a.yml","line":3,"column":18}
 ---
 # Schema documents with Href content referencing resource file, the resource file should be outputed
 inputs:
@@ -193,12 +193,12 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Null'","file":"docs/a.yml","line":2,"column":13}
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Null'.","file":"docs/a.yml","line":2,"column":13}
 ---
 # Support schema documents with inline markdown content
 inputs:
   docfx.yml: |
-    customErrors:
+    customRules:
       heading-not-found: error
   docs/a.yml: |
     #YamlMime:TestPage
@@ -350,7 +350,7 @@ inputs:
     - array
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'","file":"a.yml","line":1,"column":1}
+    {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'.","file":"a.yml","line":1,"column":1}
 ---
 # Validate bookmark against content HTML after applying template for SDP 
 legacy: true
@@ -456,6 +456,6 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'","file":"a.yml","line":2,"column":1}
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":2,"column":1}
   .publish.json: |
-    {"files":[{"url":"/a/","path":"a/index.html","source_path":"a.yml","has_error":true}]}
+    {"files":[{"url":"/a/","source_path":"a.yml","has_error":true}]}

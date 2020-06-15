@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly bool _reduceTOCChildMonikers;
+        private readonly ContentValidator _contentValidator;
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
                      new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
@@ -36,7 +37,8 @@ namespace Microsoft.Docs.Build
             TableOfContentsParser parser,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder,
-            bool reduceTOCChildMonikers)
+            bool reduceTOCChildMonikers,
+            ContentValidator contentValidator)
         {
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
@@ -44,6 +46,7 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
             _reduceTOCChildMonikers = reduceTOCChildMonikers;
+            _contentValidator = contentValidator;
         }
 
         public (List<Error> errors, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
@@ -79,6 +82,11 @@ namespace Microsoft.Docs.Build
 
                 var node = _parser.Parse(file.FilePath, errors);
                 node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs, errors);
+
+                if (file == rootPath)
+                {
+                    _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
+                }
                 return node;
             }
             finally
@@ -126,6 +134,8 @@ namespace Microsoft.Docs.Build
             var tocHref = GetTocHref(node, errors);
             var topicHref = GetTopicHref(node, errors);
             var topicUid = node.Value.Uid;
+
+            _contentValidator.ValidateTocBreadcrumbLinkExternal(node);
 
             var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                 filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);

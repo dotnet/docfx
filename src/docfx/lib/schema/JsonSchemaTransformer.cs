@@ -15,8 +15,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
-        private readonly ConcurrentDictionary<JToken, (List<Error>, JToken)> _xrefPropertiesCache =
-                     new ConcurrentDictionary<JToken, (List<Error>, JToken)>(ReferenceEqualsComparer.Default);
 
         private readonly ConcurrentDictionary<Document, int> _uidCountCache =
                      new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
@@ -158,7 +156,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector.Push(uid);
-                var (transformErrors, transformedToken) = _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, schema, value, uidCount));
+                var (transformErrors, transformedToken) = TransformContentCore(file, context, schema, value, uidCount);
                 context.ErrorLog.Write(transformErrors);
                 return transformedToken;
             }
@@ -203,9 +201,7 @@ namespace Microsoft.Docs.Build
                         else if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
                             var isXrefProperty = schema.XrefProperties.Contains(key);
-                            var (propertyErrors, transformedValue) = isXrefProperty
-                                ? _xrefPropertiesCache.GetOrAdd(value, _ => TransformContentCore(file, context, propertySchema, value, uidCount))
-                                : TransformContentCore(file, context, propertySchema, value, uidCount);
+                            var (propertyErrors, transformedValue) = TransformContentCore(file, context, propertySchema, value, uidCount);
                             errors.AddRange(propertyErrors);
                             newObject[key] = transformedValue;
                         }

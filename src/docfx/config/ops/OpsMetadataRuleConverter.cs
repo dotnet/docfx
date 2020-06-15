@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 either = new List<List<string>>(),
                 precludes = new List<List<string>>(),
                 enumDependencies = new EnumDependenciesSchema(),
-                customErrors = new Dictionary<string, Dictionary<string, dynamic>>(),
+                customRules = new Dictionary<string, Dictionary<string, dynamic>>(),
             };
 
             foreach (var (attribute, attributeRules) in rules)
@@ -64,9 +64,9 @@ namespace Microsoft.Docs.Build
                     schema.properties.Add(attribute, property);
                 }
 
-                if (TryGetAttributeAdditionalErrors(rulesInfo, out var attributeAdditionalErrors))
+                if (TryGetAttributeCustomRules(rulesInfo, out var attributeCustomRules))
                 {
-                    schema.customErrors.Add(attribute, attributeAdditionalErrors);
+                    schema.customRules.Add(attribute, attributeCustomRules);
                 }
 
                 if (rulesInfo.ContainsKey("Uniqueness"))
@@ -114,9 +114,9 @@ namespace Microsoft.Docs.Build
             return jsonSchema;
         }
 
-        private static bool TryGetAttributeAdditionalErrors(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeAdditionalErrorsErrors)
+        private static bool TryGetAttributeCustomRules(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)
         {
-            attributeAdditionalErrorsErrors = new Dictionary<string, dynamic>();
+            attributeCustomRules = new Dictionary<string, dynamic>();
 
             var ruleNameConvert = new Dictionary<string, string[]>()
             {
@@ -140,20 +140,21 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var baseCode in baseCodes)
                     {
-                        if (!attributeAdditionalErrorsErrors.ContainsKey(baseCode))
+                        if (!attributeCustomRules.ContainsKey(baseCode))
                         {
-                            attributeAdditionalErrorsErrors.Add(baseCode, new
+                            attributeCustomRules.Add(baseCode, new
                             {
                                 severity = string.IsNullOrEmpty(ruleInfo.Severity) ? null : ruleInfo.Severity.ToLowerInvariant(),
                                 code = ruleInfo.Code,
                                 additionalMessage = ruleInfo.AdditionalErrorMessage,
+                                canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
                             });
                         }
                     }
                 }
             }
 
-            return attributeAdditionalErrorsErrors.Count != 0;
+            return attributeCustomRules.Count != 0;
         }
 
         private static bool TryGetAllowlist(string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)

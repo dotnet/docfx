@@ -7,6 +7,7 @@ using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
+using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -113,6 +114,74 @@ namespace Microsoft.Docs.Build
             else if (obj is LeafBlock leaf)
             {
                 Visit(leaf.Inline, action);
+            }
+        }
+
+        /// <summary>
+        /// Traverse the markdown object graph, returns true to skip the current node.
+        /// </summary>
+        public static void Visit(this MarkdownObject? obj, MarkdownVisitContext context, Func<MarkdownObject, MarkdownVisitContext, bool> action)
+        {
+            if (obj is null)
+            {
+                return;
+            }
+
+            if (action(obj, context))
+            {
+                return;
+            }
+
+            switch (obj)
+            {
+                case MonikerRangeBlock monikerRangeBlock:
+                    var monikers = monikerRangeBlock.GetAttributes().Properties.First(p => p.Key == "data-moniker").Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    context.ZoneMonikerStack.Push(new MonikerList(monikers));
+                    foreach (var child in monikerRangeBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.ZoneMonikerStack.Pop();
+                    break;
+
+                case InclusionBlock inclusionBlock:
+                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionBlock.ResolvedFilePath, inclusionBlock.GetSourceInfo()));
+                    foreach (var child in inclusionBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.FileStack.Pop();
+                    break;
+
+                case ContainerBlock block:
+                    foreach (var child in block)
+                    {
+                        Visit(child, context, action);
+                    }
+                    break;
+
+                case InclusionInline inclusionInline:
+                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionInline.ResolvedFilePath, inclusionInline.GetSourceInfo()));
+                    foreach (var child in inclusionInline)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.FileStack.Pop();
+                    break;
+
+                case ContainerInline inline:
+                    foreach (var child in inline)
+                    {
+                        Visit(child, context, action);
+                    }
+                    break;
+
+                case LeafBlock leaf:
+                    Visit(leaf.Inline, context, action);
+                    break;
+
+                default:
+                    break;
             }
         }
 

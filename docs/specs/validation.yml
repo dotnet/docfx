@@ -41,8 +41,8 @@ inputs:
   a.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key1' can only be a scalar value or string array","file":"docfx.yml","line":2,"column":9}
-    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key2' can only be a scalar value or string array","file":"docfx.yml","line":6,"column":7}
+    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key1' can only be a scalar value or string array.","file":"docfx.yml","line":2,"column":9}
+    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key2' can only be a scalar value or string array.","file":"docfx.yml","line":6,"column":7}
 ---
 # Additional metadata validation from external JSON schema
 inputs:
@@ -73,9 +73,9 @@ outputs:
       "key3": "net462"
     }
   .errors.log: |
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'","file":"docfx.yml","line":3,"column":9}
-    {"message_severity":"warning","code":"invalid-value","message":"Invalid value for 'key2': 'XNAGameStudio'","file":"docfx.yml","line":6,"column":13}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Integer' but got 'String'","file":"a.md","line":2,"column":7}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'.","file":"docfx.yml","line":3,"column":9}
+    {"message_severity":"warning","code":"invalid-value","message":"Invalid value for 'key2': 'XNAGameStudio'.","file":"docfx.yml","line":6,"column":13}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Integer' but got 'String'.","file":"a.md","line":2,"column":7}
 ---
 # Report missing-attribute at file level when yaml header missing
 inputs:
@@ -91,8 +91,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":1,"column":1}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"b.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"b.md","line":1,"column":1}
 ---
 # Allow multiple metadata schema definitions
 inputs:
@@ -111,8 +111,8 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":2,"column":1}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'.","file":"a.md","line":2,"column":6}
 ---
 # Validate each metadata schema individually for multiple metadata schema definitions
 inputs:
@@ -131,10 +131,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'","file":"a.md","line":2,"column":1}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Integer'","file":"a.md","line":2,"column":6}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'b'","file":"a.md","line":2,"column":1}
-    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Array' but got 'Integer'","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Integer'.","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'b'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Array' but got 'Integer'.","file":"a.md","line":2,"column":6}
 ---
 # Json schema microsoft alias rule: Mute error, when no connection with Graph API
 inputs:
@@ -439,8 +439,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","file":"b.md","line":2,"column":14}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'","file":"a.md","line":3,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'.","file":"b.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'.","file":"a.md","line":3,"column":14}
 ---
 # Json schema docset unique: null/empty values are not in-scope
 inputs:
@@ -483,8 +483,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"a.md","line":2,"column":14}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'","file":"docfx.yml","line":3,"column":16}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"a.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"docfx.yml","line":3,"column":16}
 ---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
@@ -516,8 +516,8 @@ outputs:
   a.json:
   b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2","file":"a.md","line":2,"column":14}
-    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10","file":"b.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"a.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10.","file":"b.md","line":2,"column":14}
 ---
 # Content validation - H1 unique
 inputs:
@@ -1431,3 +1431,329 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":0,"end_column":0}
 ---
+# Canonial Version Only H1 Unique Check
+# todo: add test cases for split-versioning cases
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ::: moniker range="<= netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  docs/v1/b.md: |
+    # h1
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "canonicalVersionOnly": true
+          }
+        ]
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/a.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/b.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+  2420f88b/docs/a.json:
+  2420f88b/docs/b.json:
+---
+# Canonial Version Only H1 Unique Check with Inclusion
+inputs:
+  docfx.yml: |
+    exclude:
+      - docs/v1/token1.md
+      - docs/v1/token2.md
+    markdownValidationRules: rules.json
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    [!include[](token2.md)]
+  docs/v1/b.md: |
+    # h1
+    ::: moniker range="<= netcore-1.2"
+    [!include[](token1.md)]
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.1"
+    [!include[](token1.md)]
+    ::: moniker-end
+  docs/v1/token1.md: |
+    # h1
+  docs/v1/token2.md: |
+    ::: moniker range="<= netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "canonicalVersionOnly": true
+          }
+        ]
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
+  2420f88b/docs/a.json:
+  2420f88b/docs/b.json:
+---
+# Canonial Version Only H1 Unique Check with Inclusion
+# multiple-versioning file cases
+# invalid moniker zone is treated as non-versioning
+inputs:
+  docfx.yml: |
+    exclude:
+      - docs/v1/token1.md
+      - docs/v1/token2.md
+      - docs/v1/token3.md
+    markdownValidationRules: rules.json
+    monikerRange:
+      'docs/v1/**': '< netcore-1.2'
+      'docs/v2/**': '>= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    [!include[](token2.md)]
+  docs/v1/b.md: |
+    # h1
+    ::: moniker range="<= netcore-1.2"
+    [!include[](token1.md)]
+    ::: moniker-end
+    ::: moniker range="< netcore-1.1"
+    [!include[](token1.md)]
+    ::: moniker-end
+  docs/v2/b.md: |
+    # h1
+    ::: moniker range="<= netcore-2.0"
+    [!include[](../v1/token1.md)]
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    [!include[](../v1/token1.md)]
+    ::: moniker-end
+    [!include[](../v1/token3.md)]
+  docs/v1/token1.md: |
+    # h1
+  docs/v1/token2.md: |
+    ::: moniker range="< netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  docs/v1/token3.md: |
+    ::: moniker range="< netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "canonicalVersionOnly": true
+          }
+        ]
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v2/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v1/token3.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No intersection between zone and file level monikers. The result of zone level range string '< netcore-1.1' is 'netcore-1.0', while file level monikers is 'netcore-1.2', 'netcore-2.0'.","file":"docs/v1/token3.md","line":1,"end_line":1,"column":1,"end_column":1}
+  9d4e15fd/docs/a.json:
+  9d4e15fd/docs/b.json:
+---
+# Canonial Version Only Metadata Validation
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    monikerRange:
+      'docs/v1/**': '< netcore-1.2'
+      'docs/v2/**': '>= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+    globalMetadata:
+      layout: conceptual
+  docs/v1/a.md: |
+    ---
+    title: t
+    description: a
+    ---
+  docs/v1/b.md: |
+    ---
+    title: t
+    description: b
+    ---
+  docs/v2/b.md: |
+    ---
+    title: t
+    description: c
+    ---
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  schema.json: |
+    {
+      "docsetUnique": [ "title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "customRules": {
+          "title": {
+              "duplicate-attribute": {
+                  "severity": "suggestion",
+                  "code": "duplicate-title-within-docset",
+                  "canonicalVersionOnly": true,
+                  "additionalMessage": "Title must be unique within a docset."
+                },
+                "string-length-invalid": {
+                    "severity": "suggestion",
+                    "code": "description-bad-length"
+                  }
+          },
+          "description": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "canonicalVersionOnly": true
+              }
+          }
+      },
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/a.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v1/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v1/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+  9d4e15fd/docs/a.json:
+  9d4e15fd/docs/b.json:
+  976da3a9/docs/b.json:

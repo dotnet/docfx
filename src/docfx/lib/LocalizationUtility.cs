@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -13,6 +14,9 @@ namespace Microsoft.Docs.Build
 {
     internal static class LocalizationUtility
     {
+        // NOTE: This line assumes each build runs in a new process
+        private static readonly ConcurrentHashSet<Repository> s_fetchedLocalizationRepositories = new ConcurrentHashSet<Repository>();
+
         private static readonly HashSet<string> s_locales = new HashSet<string>(
             CultureInfo.GetCultures(CultureTypes.AllCultures).Except(
                 CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
@@ -87,13 +91,23 @@ namespace Microsoft.Docs.Build
             // here to generate the correct contributor list.
             if (repository != null && TryGetContributionBranch(repository.Branch, out var contributionBranch))
             {
-                try
+                using (InterProcessMutex.Create(repository.Path))
                 {
-                    GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                    if (s_fetchedLocalizationRepositories.Contains(repository))
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                    }
+
+                    s_fetchedLocalizationRepositories.TryAdd(repository);
                 }
             }
         }

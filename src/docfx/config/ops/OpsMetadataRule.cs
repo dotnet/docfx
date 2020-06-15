@@ -52,5 +52,7 @@ namespace Microsoft.Docs.Build
 
         // MicrosoftAliasRule
         public string? AllowedDLs { get; set; }
+
+        public bool? CanonicalVersionOnly { get; set; }
     }
 }

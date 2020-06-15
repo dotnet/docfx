@@ -16,48 +16,42 @@ namespace Microsoft.Docs.Build
 
         public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorLog errorLog)
         {
-            var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
-
-            foreach (var url in config.Xref)
+            using (Progress.Start("Loading external xref map"))
             {
-                using var stream = fileResolver.ReadStream(url);
-                var path = new FilePath(url);
-                if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-                {
-                    LoadZipFile(result, path, stream, errorLog);
-                }
-                else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-                {
-                    using var reader = new StreamReader(stream);
-                    var (errors, xrefMap) = YamlUtility.Deserialize<XrefMapModel>(reader, path);
-                    errorLog.Write(errors);
-                    foreach (var spec in xrefMap.References)
-                    {
-                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                    }
-                }
-                else if (stream is FileStream fileStream)
-                {
-                    // Fast pass for JSON xref files
-                    foreach (var (uid, spec) in LoadJsonFile(fileStream.Name))
-                    {
-                        // for same uid with multiple specs, we should respect the order of the list
-                        result.TryAdd(uid, spec);
-                    }
-                }
-                else
-                {
-                    using var reader = new StreamReader(stream);
-                    var (errors, xrefMap) = JsonUtility.Deserialize<XrefMapModel>(reader, path);
-                    errorLog.Write(errors);
-                    foreach (var spec in xrefMap.References)
-                    {
-                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
-                    }
-                }
-            }
+                var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
-            return result;
+                foreach (var url in config.Xref)
+                {
+                    var path = new FilePath(url);
+                    var physicalPath = fileResolver.ResolveFilePath(url);
+                    if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        LoadZipFile(result, path, physicalPath, errorLog);
+                    }
+                    else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using var reader = new StreamReader(physicalPath);
+                        var (errors, xrefMap) = YamlUtility.Deserialize<XrefMapModel>(reader, path);
+                        errorLog.Write(errors);
+                        foreach (var spec in xrefMap.References)
+                        {
+                            result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                        }
+                    }
+                    else
+                    {
+                        // Fast pass for JSON xref files
+                        foreach (var (uid, spec) in LoadJsonFile(physicalPath))
+                        {
+                            // for same uid with multiple specs, we should respect the order of the list
+                            result.TryAdd(uid, spec);
+                        }
+                    }
+                }
+
+                result.TrimExcess();
+                return result;
+            }
         }
 
         public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath)
@@ -80,8 +74,9 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, Stream stream, ErrorLog errorLog)
+        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
         {
+            using var stream = File.OpenRead(physicalPath);
             using var archive = new ZipArchive(stream);
             foreach (var entry in archive.Entries)
             {

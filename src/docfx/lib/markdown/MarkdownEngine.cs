@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using Markdig;
@@ -15,7 +13,6 @@ using Markdig.Parsers.Inlines;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
 #pragma warning disable CS0618
@@ -37,6 +34,8 @@ namespace Microsoft.Docs.Build
         private readonly MarkdownPipeline[] _pipelines;
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+
+        private PublishUrlMap? _publishUrlMap;
 
         public MarkdownEngine(
             Config config,
@@ -77,6 +76,11 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        public void Configure(PublishUrlMap publishUrlMap)
+        {
+            _publishUrlMap = publishUrlMap;
+        }
+
         public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
@@ -109,8 +113,6 @@ namespace Microsoft.Docs.Build
                     t_status.Value!.Push(status);
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
-
-                    ValidateHeadings();
 
                     return (status.Errors, html);
                 }
@@ -199,7 +201,7 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry()
                 .UseMonikerZone(ParseMonikerRange)
-                .UseContentValidation(this, _validatorProvider, GetValidationNodes, ReadFile)
+                .UseApexValidation(_validatorProvider)
                 .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
@@ -208,6 +210,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
+                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
@@ -327,25 +330,17 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> GetValidationNodes(List<ValidationNode> nodes)
+        private MonikerList GetFileLevelMonikers()
         {
             var status = t_status.Value!.Peek();
-
-            if (!status.Nodes.ContainsKey((Document)InclusionContext.File))
-            {
-                status.Nodes.Add((Document)InclusionContext.File, (nodes, InclusionContext.IsInclude));
-            }
-
-            return status.Nodes;
+            var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
+            status.Errors.AddRange(monikerErrors);
+            return monikers;
         }
 
-        private void ValidateHeadings()
+        private string? GetCanonicalVersion()
         {
-            var status = t_status.Value!.Peek();
-            foreach (var (document, (nodes, isIncluded)) in status.Nodes)
-            {
-                _contentValidator.ValidateHeadings(document, nodes.OfType<ContentNode>().ToList(), isIncluded);
-            }
+            return _publishUrlMap!.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
         }
 
         private class Status
@@ -353,8 +348,6 @@ namespace Microsoft.Docs.Build
             public ConceptualModel? Conceptual { get; }
 
             public List<Error> Errors { get; } = new List<Error>();
-
-            public Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)> Nodes { get; } = new Dictionary<Document, (List<ValidationNode> nodes, bool isIncluded)>();
 
             public Status(ConceptualModel? conceptual = null)
             {

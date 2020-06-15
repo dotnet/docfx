@@ -65,12 +65,12 @@ this: is a frontmatter
         [InlineData(
 @"---
 hello
-...", "yaml-header-not-object", "Expect yaml header to be an object, but got a scalar")]
+...", "yaml-header-not-object", "Expect yaml header to be an object, but got a scalar.")]
         [InlineData(
 @"---
 - 1
 - 2
-...", "yaml-header-not-object", "Expect yaml header to be an object, but got an array")]
+...", "yaml-header-not-object", "Expect yaml header to be an object, but got an array.")]
         public void TestNotJObject(string content, string expectedErrorCode, string expectedErrorMessage)
         {
             using var reader = new StringReader(content);
