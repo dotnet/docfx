@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 context.BuildQueue.Start(file => BuildFile(context, file));
-                context.BuildQueue.Enqueue(context.PublishUrlMap.GetFiles());
+                context.BuildQueue.Enqueue(context.PublishUrlMap.GetAllFiles());
                 context.BuildQueue.WaitForCompletion();
             }
 
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
-                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetFiles())),
+                () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
             using (Progress.Start("Waiting for pending outputs..."))

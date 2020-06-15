@@ -94,7 +94,15 @@ namespace Microsoft.Docs.Build
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
-            RedirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, Config.HostName, ErrorLog, BuildScope, buildOptions.Repository, DocumentProvider, MonikerProvider);
+            RedirectionProvider = new RedirectionProvider(
+                buildOptions.DocsetPath,
+                Config.HostName,
+                ErrorLog,
+                BuildScope,
+                buildOptions.Repository,
+                DocumentProvider,
+                MonikerProvider,
+                new Lazy<PublishUrlMap>(() => PublishUrlMap));
             ContentValidator = new ContentValidator(config, FileResolver, errorLog);
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);

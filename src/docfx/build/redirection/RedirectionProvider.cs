@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,15 +14,22 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
-        private readonly IReadOnlyDictionary<FilePath, FilePath> _renameHistory;
-        private readonly IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> _redirectionHistory;
+        private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
 
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
-            string docsetPath, string hostName, ErrorLog errorLog, BuildScope buildScope, Repository? repository, DocumentProvider documentProvider, MonikerProvider monikerProvider)
+            string docsetPath,
+            string hostName,
+            ErrorLog errorLog,
+            BuildScope buildScope,
+            Repository? repository,
+            DocumentProvider documentProvider,
+            MonikerProvider monikerProvider,
+            Lazy<PublishUrlMap> publishUrlMap)
         {
             _errorLog = errorLog;
             _buildScope = buildScope;
@@ -35,7 +41,8 @@ namespace Microsoft.Docs.Build
                 var (errors, redirections) = LoadRedirectionModel(docsetPath, repository);
                 _errorLog.Write(errors);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
-                (_renameHistory, _redirectionHistory) = GetRenameAndRedirectionHistory(redirections, _redirectUrls);
+                _history = new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(() => GetRenameAndRedirectionHistory(redirections, _redirectUrls));
+                _publishUrlMap = publishUrlMap;
             }
         }
 
@@ -48,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             var redirectionChain = new Stack<FilePath>();
             var redirectionFile = file;
-            while (_redirectionHistory.TryGetValue(redirectionFile, out var item))
+            while (_history.Value.redirectionHistory.TryGetValue(redirectionFile, out var item))
             {
                 var (renamedFrom, source) = item;
                 if (redirectionChain.Contains(redirectionFile))
@@ -66,7 +73,7 @@ namespace Microsoft.Docs.Build
         public FilePath GetOriginalFile(FilePath file)
         {
             var renameChain = new HashSet<FilePath>();
-            while (_renameHistory.TryGetValue(file, out var renamedFrom))
+            while (_history.Value.renameHistory.TryGetValue(file, out var renamedFrom))
             {
                 if (!renameChain.Add(file))
                 {
@@ -191,7 +198,6 @@ namespace Microsoft.Docs.Build
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             var renameHistory = new Dictionary<FilePath, FilePath>();
             var redirectionHistory = new Dictionary<FilePath, (FilePath, SourceInfo?)>();
-            var publishUrlMap = GetPublishUrlMap(redirectUrls.Keys);
 
             foreach (var item in redirections)
             {
@@ -202,7 +208,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(redirectUrl);
-                if (!publishUrlMap.TryGetValue(trimmedRedirectUrl, out var docs))
+                var docs = _publishUrlMap.Value.GetFilesByUrl(trimmedRedirectUrl.ToLowerInvariant());
+                if (!docs.Any())
                 {
                     if (item.RedirectDocumentId)
                     {
@@ -233,17 +240,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return (renameHistory, redirectionHistory);
-        }
-
-        private Dictionary<string, List<FilePath>> GetPublishUrlMap(IEnumerable<FilePath> redirectUrlSources)
-        {
-            var fileUrls = new ConcurrentBag<(FilePath file, string url)>();
-            var allSources = _buildScope.Files.Concat(redirectUrlSources);
-            ParallelUtility.ForEach(_errorLog, allSources, file => fileUrls.Add((file, _documentProvider.GetDocsSiteUrl(file))));
-
-            var publishUrlMap = fileUrls.GroupBy(fileUrl => fileUrl.url)
-                                .ToDictionary(group => group.Key, group => group.Select(g => g.file).ToList(), PathUtility.PathComparer);
-            return publishUrlMap;
         }
 
         private static (string path, string query) RemoveTrailingIndex(string redirectionUrl)
