@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata, null, outputPath);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata, outputPath);
         }
 
         private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(

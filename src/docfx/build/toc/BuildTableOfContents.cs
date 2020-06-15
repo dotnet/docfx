@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -41,31 +42,27 @@ namespace Microsoft.Docs.Build
             }
 
             context.ErrorLog.Write(errors);
+
             if (!context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {
                     // Just for current PDF build. toc.json is used for generate PDF outline
                     var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
+                    context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
 
                     var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
                     var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
                     context.Output.WriteText(outputPath, html);
                 }
-                else if (context.Config.Legacy)
-                {
-                    var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
-                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".json"), output);
-                    context.Output.WriteJson(LegacyUtility.ChangeExtension(outputPath, ".mta.json"), model.Metadata);
-                }
                 else
                 {
-                    context.Output.WriteJson(outputPath, model);
+                    var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
+                    context.Output.WriteJson(outputPath, output);
                 }
             }
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, null, null, context.DocumentProvider.GetOutputPath(file.FilePath));
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, null, context.DocumentProvider.GetOutputPath(file.FilePath));
         }
     }
 }

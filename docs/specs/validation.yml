@@ -257,7 +257,7 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
 ---
 # Json schema microsoft alias rule: The author is valid with graph call
 os: windows
@@ -316,7 +316,7 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
 ---
 # Content validation end to end scenario 
 inputs:
