@@ -296,11 +296,6 @@ namespace Microsoft.Docs.Build
         public bool SkipMonikerValidation { get; private set; }
 
         /// <summary>
-        /// Determines if remove TOC child node monikers when it's the same as its parent's.
-        /// </summary>
-        public bool ReduceTOCChildMonikers { get; private set; }
-
-        /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
