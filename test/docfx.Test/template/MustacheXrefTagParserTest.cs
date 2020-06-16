@@ -8,10 +8,11 @@ namespace Microsoft.Docs.Build
     public class MustacheXrefTagParserTest
     {
         [Theory]
+        [InlineData("<no xref>", "<no xref>")]
         [InlineData("<xref/>",
             "{{#uid}}" +
             "  {{#href}}" +
-            "    <a href=\"{{href}}\"> {{name}} </a>" +
+            "    <a href='{{href}}'> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
             "    <span> {{name}} </span>" +
@@ -21,7 +22,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref uid='{{uid}}'/>",
             "{{#uid}}" +
             "  {{#href}}" +
-            "    <a href=\"{{href}}\"> {{name}} </a>" +
+            "    <a href='{{href}}'> {{name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
             "    <span> {{name}} </span>" +
@@ -50,11 +51,59 @@ namespace Microsoft.Docs.Build
             )]
         [InlineData("<xref uid='{{ . }}'/>",
             "{{#href}}" +
-            "  <a href=\"{{href}}\"> {{name}} </a>" +
+            "  <a href='{{href}}'> {{name}} </a>" +
             "{{/href}}" +
             "{{^href}}" +
             "  <span> {{name}} </span>" +
             "{{/href}}"
+            )]
+        [InlineData("<xref uid='{{ . }}' title='{{title}}'/>",
+            "{{#href}}" +
+            "  <a href='{{href}}' title='{{title}}'> {{name}} </a>" +
+            "{{/href}}" +
+            "{{^href}}" +
+            "  <span> {{name}} </span>" +
+            "{{/href}}"
+            )]
+        [InlineData(
+            "<xref href='{{uid-from-href}}' title='{{name}}'>" +
+            "  <h3>{{name}}</h3>" +
+            "</xref>",
+            "{{#uid-from-href}}" +
+            "  {{#href}}" +
+            "    <a href='{{href}}' title='{{name}}'>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span>" +
+            "  {{/href}}" +
+            "  <h3>{{name}}</h3>" +
+            "  {{#href}}" +
+            "    </a>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    </span>" +
+            "  {{/href}}" +
+            "{{/uid-from-href}}"
+            )]
+        [InlineData(
+            "<xref uid='{{uid-higher-priority}}' href='{{uid}}' title='{{name}}'>" +
+            "  <h3>{{name}}</h3>" +
+            "</xref>",
+            "{{#uid-higher-priority}}" +
+            "  {{#href}}" +
+            "    <a href='{{href}}' title='{{name}}'>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span>" +
+            "  {{/href}}" +
+            "  <h3>{{name}}</h3>" +
+            "  {{#href}}" +
+            "    </a>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    </span>" +
+            "  {{/href}}" +
+            "{{/uid-higher-priority}}"
             )]
         public void ProcessXrefTag(string template, string expected)
         {

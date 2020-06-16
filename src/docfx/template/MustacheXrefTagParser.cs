@@ -1,16 +1,31 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text.RegularExpressions;
+using System;
+using System.Text;
 
 namespace Microsoft.Docs.Build
 {
     internal static class MustacheXrefTagParser
     {
-        /// <summary>
-        /// Using `href` property to indicate xref spec resolve success.
-        /// </summary>
-        private const string XrefTagTemplate =
+        // Using `href` property to indicate xref spec resolve success.
+        private const string OpeningClause =
+            "{{#href}}" +
+            "  @openTag" +
+            "{{/href}}" +
+            "{{^href}}" +
+            "  <span>" +
+            "{{/href}}";
+
+        private const string ClosingClause =
+            "{{#href}}" +
+            "  </a>" +
+            "{{/href}}" +
+            "{{^href}}" +
+            "  </span>" +
+            "{{/href}}";
+
+        private const string SelfClosingXrefTagTemplate =
             "{{#href}}" +
             "  @resolvedTag" +
             "{{/href}}" +
@@ -20,42 +35,72 @@ namespace Microsoft.Docs.Build
 
         private static readonly char[] s_trimChars = new[] { '{', ' ', '}' };
 
-        private static readonly Regex s_xrefTagMatcher = new Regex(@"<xref(.*?)\/>", RegexOptions.IgnoreCase);
-
         public static string ProcessXrefTag(string templateStr)
-            => s_xrefTagMatcher.Replace(templateStr, ReplaceXrefTag);
-
-        private static string ReplaceXrefTag(Match match)
         {
-            var uidName = "uid";
+            if (!templateStr.Contains("<xref", StringComparison.OrdinalIgnoreCase))
+            {
+                return templateStr;
+            }
+            var reader = new HtmlReader(templateStr);
+            var result = new StringBuilder();
+            var uidName = default(string);
             var partialName = default(string);
-            var reader = new HtmlReader(match.Value);
+            var titleName = default(string);
+
             while (reader.Read(out var token))
             {
                 if (token.NameIs("xref"))
                 {
-                    foreach (ref readonly var attribute in token.Attributes.Span)
+                    if (token.Type == HtmlTokenType.StartTag)
                     {
-                        // TODO: uid may fallback to href in ProfileList
-                        if (attribute.NameIs("uid"))
+                        uidName = default;
+                        partialName = default;
+                        titleName = default;
+                        foreach (ref readonly var attribute in token.Attributes.Span)
                         {
-                            uidName = attribute.Value.ToString().Trim(s_trimChars);
+                            if (attribute.NameIs("uid"))
+                            {
+                                uidName = attribute.Value.ToString().Trim(s_trimChars);
+                            }
+                            else if (attribute.NameIs("href"))
+                            {
+                                uidName = uidName ?? attribute.Value.ToString().Trim(s_trimChars);
+                            }
+                            else if (attribute.NameIs("template"))
+                            {
+                                partialName = attribute.Value.ToString().Trim(s_trimChars);
+                            }
+                            else if (attribute.NameIs("title"))
+                            {
+                                titleName = attribute.Value.ToString().Trim(s_trimChars);
+                            }
                         }
-                        else if (attribute.NameIs("template"))
+
+                        result.Append((uidName ??= "uid") != "." ? $"{{{{#{uidName}}}}}" : default);
+                        var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}>";
+                        if (token.IsSelfClosing)
                         {
-                            partialName = attribute.Value.ToString().Trim(s_trimChars);
+                            result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}"))
+                                  .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
+                        }
+                        else
+                        {
+                            result.Append(OpeningClause.Replace("@openTag", openAnchor));
                         }
                     }
+                    else if (token.Type == HtmlTokenType.EndTag)
+                    {
+                        result.Append(ClosingClause)
+                              .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
+                    }
+                }
+                else
+                {
+                    result.Append(token.RawText);
                 }
             }
 
-            var resolvedTag = partialName == null
-                ? "<a href=\"{{href}}\"> {{name}} </a>"
-                : "{{> " + partialName + "}}";
-
-            var resultTemplate = XrefTagTemplate.Replace("@resolvedTag", resolvedTag);
-
-            return uidName == "." ? resultTemplate : $"{{{{#{uidName}}}}}{resultTemplate}{{{{/{uidName}}}}}";
+            return result.ToString();
         }
     }
 }
