@@ -417,14 +417,14 @@ samp {
 }
 
 h1 {
-    font-family: 'Segoe UI Light' !important;
+    font-family: 'Segoe UI Light';
 }
 
 h3,
 h4,
 h5,
 h6 {
-    font-family: 'Segoe UI Light' !important;
+    font-family: 'Segoe UI Light';
 }
 
 div.button a:focus,
@@ -477,34 +477,8 @@ div#headerWrapper {
     margin-bottom: 0
 }
 
-.NOTE {
-    border-color: #0070a7
-}
-
 .alert a {
     color: #0070a7
-}
-
-.WARNING a {
-    color: #006ba0
-}
-
-.IMPORTANT {
-    border-color: #8a6d3b;
-    background: #fcf8e3;
-    color: #8a6d3b
-}
-
-.WARNING {
-    border-color: #a94442;
-    background: #f2dede;
-    color: #a94442
-}
-
-.TIP {
-    border-color: #3c763d;
-    background: #dff0d8;
-    color: #3c763d
 }
 
 .alert-minimal {
@@ -794,58 +768,159 @@ table th {
     word-wrap: break-word
 }
 
+.NOTE {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
+}
+
 .NOTE h5 {
-    color: #0070a7
+    font-family: inherit;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #31708f;
+    font-size: 14px;
 }
 
 .NOTE h5:before {
-    content: "\e70b";
-    margin-right: .2em
-}
-
-.IMPORTANT {
-    border-color: #000000;
-    background: #fcf8e3;
-    color: #8a6d3b
-}
-
-.IMPORTANT h5 {
-    color: #8a6d3b
-}
-
-.IMPORTANT h5:before {
-    content: "\e783";
-    margin-right: .2em
-}
-
-.WARNING {
-    border-color: #000000;
-    background: #f2dede;
-    color: #a94442
-}
-
-.WARNING h5 {
-    color: #a94442
-}
-
-.WARNING h5:before {
-    content: "\e945";
-    margin-right: .2em
+    content: "\e086";
+    margin-right: .2em;
+    position:relative;
+    top:1px;
+    display:inline-block;
+    font-family: "Glyphicons Halflings";
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    margin-right: 5px;
+    font-weight: normal;
 }
 
 .TIP {
-    border-color: #000000;
-    background: #dff0d8;
-    color: #3c763d
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    color: #31708f;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
 }
 
 .TIP h5 {
-    color: #3c763d
+    font-family: inherit;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #31708f;
+    font-size: 14px;
 }
 
 .TIP h5:before {
-    content: "\e82f";
-    margin-right: .2em
+    content: "\e086";
+    margin-right: .2em;
+    position:relative;
+    top:1px;
+    display:inline-block;
+    font-family: "Glyphicons Halflings";
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    margin-right: 5px;
+    font-weight: normal;
+}
+
+.IMPORTANT {
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
+}
+
+.IMPORTANT h5 {
+    font-family: inherit;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #31708f;
+    font-size: 14px;
+}
+
+.IMPORTANT h5:before {
+    content: "\e127";
+    margin-right: .2em;
+    position:relative;
+    top:1px;
+    display:inline-block;
+    font-family: "Glyphicons Halflings";
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    margin-right: 5px;
+    font-weight: normal;
+}
+
+.CAUTION {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
+}
+
+.CAUTION h5 {
+    font-family: inherit;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #31708f;
+    font-size: 14px;
+}
+
+.CAUTION h5:before {
+    content: "\e107";
+    margin-right: .2em;
+    position:relative;
+    top:1px;
+    display:inline-block;
+    font-family: "Glyphicons Halflings";
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    margin-right: 5px;
+    font-weight: normal;
+}
+
+.WARNING {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Segoe UI",Tahoma,Helvetica,sans-serif;
+}
+
+.WARNING h5 {
+    font-family: inherit;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #31708f;
+    font-size: 14px;
+}
+
+.WARNING h5:before {
+    content: "\e107";
+    margin-right: .2em;
+    position:relative;
+    top:1px;
+    display:inline-block;
+    font-family: "Glyphicons Halflings";
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    margin-right: 5px;
+    font-weight: normal;
 }
 
 .inheritance ul {
