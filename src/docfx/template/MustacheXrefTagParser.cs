@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                             result.Append(OpeningClause.Replace("@openTag", openAnchor));
                         }
                     }
-                    else
+                    else if (token.Type == HtmlTokenType.EndTag)
                     {
                         result.Append(ClosingClause)
                               .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
