@@ -8,25 +8,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System;
     using System.Collections.Generic;
 
-    public class VideoExtensionInline : ITripleColonExtensionInfo
+    public class VideoExtension : ITripleColonExtensionInfo
     {
-        private readonly MarkdownContext _context;
-
         public string Name => "video";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
-
-        public VideoExtensionInline(MarkdownContext context)
-        {
-            _context = context;
-        }
-
-        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
-        {
-            return RenderDelegate != null
-                ? RenderDelegate(renderer, markdownObject)
-                : false;
-        }
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
@@ -93,21 +78,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 htmlAttributes.AddProperty("style", $"max-width:{maxWidth}px;");
             }
 
-            RenderDelegate = (renderer, obj) =>
-            {
-                renderer.WriteLine("<div class=\"embeddedvideo\">");
-                renderer.Write($"<iframe").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine("</div>");
-                
-                return true;
-            };
+            return true;
+        }
+
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
+        {
+            renderer.WriteLine("<div class=\"embeddedvideo\">");
+            renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine(">");
+            renderer.WriteLine("</div>");
 
             return true;
         }
+
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;
         }
-
     }
 }
