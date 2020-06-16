@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsParser _parser;
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
-        private readonly bool _reduceTOCChildMonikers;
         private readonly ContentValidator _contentValidator;
 
         private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
@@ -37,7 +36,6 @@ namespace Microsoft.Docs.Build
             TableOfContentsParser parser,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder,
-            bool reduceTOCChildMonikers,
             ContentValidator contentValidator)
         {
             _linkResolver = linkResolver;
@@ -45,7 +43,6 @@ namespace Microsoft.Docs.Build
             _parser = parser;
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
-            _reduceTOCChildMonikers = reduceTOCChildMonikers;
             _contentValidator = contentValidator;
         }
 
@@ -174,15 +171,11 @@ namespace Microsoft.Docs.Build
         {
             var monikers = MonikerList.Union(GetMonikerLists(currentItem, errors));
 
-            // TODO: remove _reduceTOCChildMonikers flag and apply it to all toc after more e2e-testing
-            if (_reduceTOCChildMonikers)
+            foreach (var item in currentItem.Items)
             {
-                foreach (var item in currentItem.Items)
+                if (monikers == item.Value.Monikers)
                 {
-                    if (monikers == item.Value.Monikers)
-                    {
-                        item.Value.Monikers = default;
-                    }
+                    item.Value.Monikers = default;
                 }
             }
             return monikers;

@@ -925,7 +925,6 @@ inputs:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
     outputPdf: true
-    reduceTOCChildMonikers: true
   docs/v1/a.md: |
     ---
     monikerRange: netcore-1.1 || netcore-1.0

@@ -153,7 +153,6 @@ namespace Microsoft.Docs.Build
                 disallowlists = DisallowlistsApi,
                 xref = xrefMaps,
                 skipMonikerValidation = docset.use_template,
-                reduceTOCChildMonikers = docset.use_template,
             });
         }
 
