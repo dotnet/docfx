@@ -8,15 +8,29 @@ namespace Microsoft.Docs.Build
 {
     internal static class MustacheXrefTagParser
     {
-        /// <summary>
-        /// Using `href` property to indicate xref spec resolve success.
-        /// </summary>
-        private const string XrefTagTemplate =
+        // Using `href` property to indicate xref spec resolve success.
+        private const string OpeningClause =
+            "{{#href}}" +
+            "  @openTag" +
+            "{{/href}}" +
+            "{{^href}}" +
+            "  <span>" +
+            "{{/href}}";
+
+        private const string ClosingClause =
+            "{{#href}}" +
+            "  </a>" +
+            "{{/href}}" +
+            "{{^href}}" +
+            "  </span>" +
+            "{{/href}}";
+
+        private const string SelfClosingXrefTagTemplate =
             "{{#href}}" +
             "  @resolvedTag" +
             "{{/href}}" +
             "{{^href}}" +
-            "  @unresolvedTag" +
+            "  <span> {{name}} </span>" +
             "{{/href}}";
 
         private static readonly char[] s_trimChars = new[] { '{', ' ', '}' };
@@ -29,70 +43,56 @@ namespace Microsoft.Docs.Build
             }
             var reader = new HtmlReader(templateStr);
             var result = new StringBuilder();
-            var innerTemplate = new StringBuilder();
-            var resolvedTag = new StringBuilder();
-            var unresolvedTag = new StringBuilder();
+            var uidName = default(string);
+            var partialName = default(string);
+            var titleName = default(string);
 
             while (reader.Read(out var token))
             {
-                if (token.NameIs("xref") && token.Type == HtmlTokenType.StartTag)
+                if (token.NameIs("xref"))
                 {
-                    var uidName = default(string);
-                    var partialName = default(string);
-                    var titleName = default(string);
-                    innerTemplate.Length = 0;
-                    resolvedTag.Length = 0;
-                    unresolvedTag.Length = 0;
-                    foreach (ref readonly var attribute in token.Attributes.Span)
+                    if (token.Type == HtmlTokenType.StartTag)
                     {
-                        if (attribute.NameIs("uid"))
+                        uidName = default;
+                        partialName = default;
+                        titleName = default;
+                        foreach (ref readonly var attribute in token.Attributes.Span)
                         {
-                            uidName = attribute.Value.ToString().Trim(s_trimChars);
+                            if (attribute.NameIs("uid"))
+                            {
+                                uidName = attribute.Value.ToString().Trim(s_trimChars);
+                            }
+                            else if (attribute.NameIs("href"))
+                            {
+                                uidName = uidName ?? attribute.Value.ToString().Trim(s_trimChars);
+                            }
+                            else if (attribute.NameIs("template"))
+                            {
+                                partialName = attribute.Value.ToString().Trim(s_trimChars);
+                            }
+                            else if (attribute.NameIs("title"))
+                            {
+                                titleName = attribute.Value.ToString().Trim(s_trimChars);
+                            }
                         }
-                        else if (attribute.NameIs("href"))
-                        {
-                            uidName = uidName ?? attribute.Value.ToString().Trim(s_trimChars);
-                        }
-                        else if (attribute.NameIs("template"))
-                        {
-                            partialName = attribute.Value.ToString().Trim(s_trimChars);
-                        }
-                        else if (attribute.NameIs("title"))
-                        {
-                            titleName = attribute.Value.ToString().Trim(s_trimChars);
-                        }
-                    }
 
-                    var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}";
-                    if (token.IsSelfClosing)
-                    {
-                        resolvedTag.Append(partialName == null ? $"{openAnchor}> {{{{name}}}} </a>" : "{{> " + partialName + "}}");
-                        unresolvedTag.Append("<span> {{name}} </span>");
+                        result.Append((uidName ??= "uid") != "." ? $"{{{{#{uidName}}}}}" : default);
+                        var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}>";
+                        if (token.IsSelfClosing)
+                        {
+                            result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}"))
+                                  .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
+                        }
+                        else
+                        {
+                            result.Append(OpeningClause.Replace("@openTag", openAnchor));
+                        }
                     }
                     else
                     {
-                        resolvedTag.Append($"{openAnchor}>");
-                        unresolvedTag.Append("<span>");
-
-                        while (reader.Read(out var innerToken))
-                        {
-                            if (innerToken.NameIs("xref") && innerToken.Type == HtmlTokenType.EndTag)
-                            {
-                                resolvedTag.Append(innerTemplate).Append("</a>");
-                                unresolvedTag.Append(innerTemplate).Append("</span>");
-                                break;
-                            }
-                            else
-                            {
-                                innerTemplate.Append(innerToken.RawText);
-                            }
-                        }
+                        result.Append(ClosingClause)
+                              .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
                     }
-
-                    var resultTemplate = XrefTagTemplate
-                        .Replace("@resolvedTag", resolvedTag.ToString())
-                        .Replace("@unresolvedTag", unresolvedTag.ToString());
-                    result.Append((uidName ??= "uid") == "." ? resultTemplate : $"{{{{#{uidName}}}}}{resultTemplate}{{{{/{uidName}}}}}");
                 }
                 else
                 {

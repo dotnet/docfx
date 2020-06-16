@@ -71,10 +71,17 @@ namespace Microsoft.Docs.Build
             "</xref>",
             "{{#uid-from-href}}" +
             "  {{#href}}" +
-            "    <a href='{{href}}' title='{{name}}'> <h3>{{name}}</h3> </a>" +
+            "    <a href='{{href}}' title='{{name}}'>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> <h3>{{name}}</h3> </span>" +
+            "    <span>" +
+            "  {{/href}}" +
+            "  <h3>{{name}}</h3>" +
+            "  {{#href}}" +
+            "    </a>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    </span>" +
             "  {{/href}}" +
             "{{/uid-from-href}}"
             )]
@@ -84,10 +91,17 @@ namespace Microsoft.Docs.Build
             "</xref>",
             "{{#uid-higher-priority}}" +
             "  {{#href}}" +
-            "    <a href='{{href}}' title='{{name}}'> <h3>{{name}}</h3> </a>" +
+            "    <a href='{{href}}' title='{{name}}'>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> <h3>{{name}}</h3> </span>" +
+            "    <span>" +
+            "  {{/href}}" +
+            "  <h3>{{name}}</h3>" +
+            "  {{#href}}" +
+            "    </a>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    </span>" +
             "  {{/href}}" +
             "{{/uid-higher-priority}}"
             )]
