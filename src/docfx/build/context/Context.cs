@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Net.Mail;
 
 namespace Microsoft.Docs.Build
 {
@@ -28,8 +27,6 @@ namespace Microsoft.Docs.Build
         public BuildScope BuildScope { get; }
 
         public RedirectionProvider RedirectionProvider { get; }
-
-        public WorkQueue<FilePath> BuildQueue { get; }
 
         public DocumentProvider DocumentProvider { get; }
 
@@ -78,7 +75,6 @@ namespace Microsoft.Docs.Build
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
-            BuildQueue = new WorkQueue<FilePath>(errorLog);
 
             Config = config;
             ErrorLog = errorLog;
