@@ -35,7 +35,6 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: MICROSOFT_GRAPH_CLIENT_SECRET
 
   - script: |
       bash <(curl -s https://codecov.io/bash)
