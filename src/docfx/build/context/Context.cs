@@ -145,6 +145,7 @@ namespace Microsoft.Docs.Build
                 LinkResolver,
                 XrefResolver,
                 DocumentProvider,
+                MetadataProvider,
                 MonikerProvider,
                 TemplateEngine,
                 ContentValidator,

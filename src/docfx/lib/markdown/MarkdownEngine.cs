@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly DocumentProvider _documentProvider;
         private readonly Input _input;
+        private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly ContentValidator _contentValidator;
@@ -45,6 +46,7 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             DocumentProvider documentProvider,
+            MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
             ContentValidator contentValidator,
@@ -54,6 +56,7 @@ namespace Microsoft.Docs.Build
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _documentProvider = documentProvider;
+            _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
@@ -199,7 +202,7 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry()
                 .UseMonikerZone(ParseMonikerRange)
-                .UseApexValidation(_validatorProvider)
+                .UseApexValidation(_validatorProvider, GetLayout)
                 .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
@@ -269,6 +272,11 @@ namespace Microsoft.Docs.Build
         private static ConceptualModel? GetConceptual()
         {
             return t_status.Value!.Peek().Conceptual;
+        }
+
+        private string? GetLayout(FilePath path)
+        {
+            return _metadataProvider.GetMetadata(path).metadata.Layout;
         }
 
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
