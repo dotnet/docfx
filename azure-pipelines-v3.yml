@@ -59,16 +59,18 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # Build and test
-  - powershell: ./build.ps1
-    displayName: Build
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+      inputs:
+        command: test
+        configuration: Release
+        publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
