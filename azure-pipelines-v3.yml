@@ -37,7 +37,7 @@ jobs:
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
   - bash: |
-      bash <(curl -s https://codecov.io/bash)
+      bash <(curl -s https://codecov.io/bash) -f $(Agent.TempDirectory) -t $(CODECOV_TOKEN)
     displayName: 'Upload to codecov.io'
 
   # Build RegressionTest into Artifact 
