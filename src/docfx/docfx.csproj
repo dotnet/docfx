@@ -20,7 +20,7 @@
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.298" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.13.1" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.5" />
-    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.17" />
+    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.20" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.730" />
     <PackageReference Include="Microsoft.Graph" Version="3.0.1" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.10.0" />
