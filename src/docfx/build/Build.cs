@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
-                () => context.Output.WriteJson(".report-build.json", context.ReportModelBuilder.Build()),
+                () => context.Output.WriteJson(".buildreport.json", context.ReportModelBuilder.Build()),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
             using (Progress.Start("Waiting for pending outputs..."))

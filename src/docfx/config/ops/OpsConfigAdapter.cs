@@ -254,6 +254,7 @@ namespace Microsoft.Docs.Build
                            var response = await _http.SendAsync(request);
                            if (_reportModelBuilder != null && response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
+                               _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                                _reportModelBuilder.SetValidationRuleSet(string.Join(',', metadataVersion));
                            }
                            return response;
