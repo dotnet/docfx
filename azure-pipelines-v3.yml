@@ -67,10 +67,10 @@ jobs:
 
   - task: DotNetCoreCLI@2
     displayName: Run Tests
-      inputs:
-        command: test
-        configuration: Release
-        publishTestResults: true
+    inputs:
+      command: test
+      configuration: Release
+      publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
