@@ -19,7 +19,6 @@ jobs:
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
-  # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
@@ -39,7 +38,6 @@ jobs:
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
-  # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
@@ -70,6 +68,7 @@ jobs:
     inputs:
       command: test
       configuration: Release
+      arguments: --collect "Code Coverage"
       publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
