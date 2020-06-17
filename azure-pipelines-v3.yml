@@ -30,7 +30,7 @@ jobs:
       command: test
       projects: test/Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests
       configuration: Release
-      arguments: --collect "XPlat Code Coverage"
+      arguments: --collect "XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
