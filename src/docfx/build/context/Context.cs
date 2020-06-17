@@ -28,8 +28,6 @@ namespace Microsoft.Docs.Build
 
         public RedirectionProvider RedirectionProvider { get; }
 
-        public WorkQueue<FilePath> BuildQueue { get; }
-
         public DocumentProvider DocumentProvider { get; }
 
         public MetadataProvider MetadataProvider { get; }
@@ -79,7 +77,6 @@ namespace Microsoft.Docs.Build
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap, ReportModelBuilder reportModelBuilder)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
-            BuildQueue = new WorkQueue<FilePath>(errorLog);
 
             Config = config;
             ErrorLog = errorLog;
@@ -147,6 +144,7 @@ namespace Microsoft.Docs.Build
                 LinkResolver,
                 XrefResolver,
                 DocumentProvider,
+                MetadataProvider,
                 MonikerProvider,
                 TemplateEngine,
                 ContentValidator,

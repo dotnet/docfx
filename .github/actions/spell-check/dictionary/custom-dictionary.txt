@@ -507,4 +507,6 @@ addbuildtag
 ecma
 Idx
 igrouping
+contentrules
+metadatarules
 buildreport

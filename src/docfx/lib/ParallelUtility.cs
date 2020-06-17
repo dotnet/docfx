@@ -14,45 +14,43 @@ namespace Microsoft.Docs.Build
 {
     internal static class ParallelUtility
     {
+        private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
+
+        private static readonly ParallelOptions s_parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = s_maxParallelism,
+        };
+
         private static readonly ExecutionDataflowBlockOptions s_dataflowOptions = new ExecutionDataflowBlockOptions
         {
-            MaxDegreeOfParallelism = Math.Max(8, Environment.ProcessorCount * 2),
+            MaxDegreeOfParallelism = s_maxParallelism,
             BoundedCapacity = DataflowBlockOptions.Unbounded,
             EnsureOrdered = false,
         };
 
-        public static void ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Action<T> action, int? maxDegreeOfParallelism = null)
+        public static void ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Action<T> action)
         {
-            Debug.Assert(maxDegreeOfParallelism == null || maxDegreeOfParallelism.Value > 0);
-
             var done = 0;
             var total = source.Count();
 
-            Parallel.ForEach(
-                source,
-                new ParallelOptions
+            Parallel.ForEach(source, s_parallelOptions, item =>
+            {
+                try
                 {
-                    // https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.paralleloptions.maxdegreeofparallelism?view=netcore-2.2
-                    MaxDegreeOfParallelism = maxDegreeOfParallelism ?? -1,
-                },
-                item =>
+                    action(item);
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    try
-                    {
-                        action(item);
-                    }
-                    catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                    {
-                        errorLog.Write(dex);
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"Error processing '{item}'");
-                        throw;
-                    }
+                    errorLog.Write(dex);
+                }
+                catch
+                {
+                    Console.WriteLine($"Error processing '{item}'");
+                    throw;
+                }
 
-                    Progress.Update(Interlocked.Increment(ref done), total);
-                });
+                Progress.Update(Interlocked.Increment(ref done), total);
+            });
         }
 
         public static async Task ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Func<T, Task> action)

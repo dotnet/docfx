@@ -80,8 +80,7 @@ namespace Microsoft.Docs.Build
             ParallelUtility.ForEach(
                 errorLog,
                 GetPackages(config).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags),
-                maxDegreeOfParallelism: 8);
+                item => packageResolver.DownloadPackage(item.package, item.flags));
 
             LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
         }

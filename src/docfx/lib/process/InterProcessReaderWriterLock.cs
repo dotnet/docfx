@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private readonly struct GlobalMutex : IDisposable
+        private class GlobalMutex : IDisposable
         {
             private readonly Mutex _mutex;
 

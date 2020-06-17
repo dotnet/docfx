@@ -26,8 +26,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_cacheCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Cache", "Name", "State", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_buildCommitCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildCommitCount", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
         private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
@@ -59,24 +57,9 @@ namespace Microsoft.Docs.Build
             s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static IDisposable TrackingOperationTime(TelemetryName name)
-        {
-            return new PerfScope(name.ToString());
-        }
-
         public static void TrackErrorCount(string code, ErrorLevel level, string? name)
         {
             s_errorCountMetric.TrackValue(1, code, level.ToString(), CoalesceEmpty(name), "User", s_os, s_version, s_repo, s_branch, s_correlationId);
-        }
-
-        public static void TrackCacheTotalCount(TelemetryName name)
-        {
-            s_cacheCountMetric.TrackValue(1, name.ToString(), "total", s_os, s_version, s_repo, s_branch, s_correlationId);
-        }
-
-        public static void TrackCacheMissCount(TelemetryName name)
-        {
-            s_cacheCountMetric.TrackValue(1, name.ToString(), "miss", s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildFileTypeCount(FilePath filePath, PublishItem publishItem)
@@ -92,11 +75,6 @@ namespace Microsoft.Docs.Build
             {
                 s_markdownElementCountMetric.TrackValue(value, CoalesceEmpty(elementType), fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
             }
-        }
-
-        public static void TrackBuildCommitCount(int count)
-        {
-            s_buildCommitCountMetric.TrackValue(count, TelemetryName.BuildCommits.ToString(), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackException(Exception ex)
