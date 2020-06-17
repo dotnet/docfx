@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Net.Mail;
 
 namespace Microsoft.Docs.Build
 {
@@ -72,6 +73,8 @@ namespace Microsoft.Docs.Build
 
         public MetadataValidator MetadataValidator { get; }
 
+        public JsonSchemaTransformer JsonSchemaTransformer { get; }
+
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
@@ -88,14 +91,7 @@ namespace Microsoft.Docs.Build
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
-            TemplateEngine = new TemplateEngine(
-                config,
-                buildOptions,
-                PackageResolver,
-                new Lazy<MarkdownEngine>(() => MarkdownEngine),
-                new Lazy<LinkResolver>(() => LinkResolver),
-                new Lazy<XrefResolver>(() => XrefResolver),
-                errorLog);
+            TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
@@ -119,7 +115,8 @@ namespace Microsoft.Docs.Build
                 MetadataProvider,
                 MonikerProvider,
                 Input,
-                BuildScope);
+                BuildScope,
+                new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
 
             LinkResolver = new LinkResolver(
                 config,
@@ -145,6 +142,7 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
+            JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, config.ReduceTOCChildMonikers);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider);

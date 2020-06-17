@@ -8,28 +8,19 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateSchema
     {
-        private readonly Lazy<MarkdownEngine> _markdownEngine;
-        private readonly Lazy<LinkResolver> _linkResolver;
-        private readonly Lazy<XrefResolver> _xrefResolver;
-        private readonly ErrorLog _errorLog;
-
         public string SchemaName { get; }
 
         public bool IsPage { get; }
 
         public JsonSchemaValidator JsonSchemaValidator { get; }
 
-        public JsonSchemaTransformer JsonSchemaTransformer { get; }
+        public JsonSchema JsonSchema { get; }
 
-        public TemplateSchema(string schemaName, string schemaDir, string contentTemplateDir, Lazy<MarkdownEngine> markdownEngine, Lazy<LinkResolver> linkResolver, Lazy<XrefResolver> xrefResolver, ErrorLog errorLog)
+        public TemplateSchema(string schemaName, string schemaDir, string contentTemplateDir)
         {
-            _markdownEngine = markdownEngine;
-            _linkResolver = linkResolver;
-            _xrefResolver = xrefResolver;
-            _errorLog = errorLog;
             SchemaName = schemaName;
             IsPage = GetIsPageCore(schemaName, contentTemplateDir);
-            (JsonSchemaValidator, JsonSchemaTransformer) = GetJsonSchemaCore(schemaDir, schemaName);
+            (JsonSchema, JsonSchemaValidator) = GetJsonSchemaCore(schemaDir, schemaName);
         }
 
         private bool GetIsPageCore(string schemaName, string contentTemplateDir)
@@ -43,7 +34,7 @@ namespace Microsoft.Docs.Build
                 || File.Exists(Path.Combine(contentTemplateDir, $"{schemaName}.html.primary.js"));
         }
 
-        private (JsonSchemaValidator, JsonSchemaTransformer) GetJsonSchemaCore(string schemaDir, string schemaName)
+        private (JsonSchema, JsonSchemaValidator) GetJsonSchemaCore(string schemaDir, string schemaName)
         {
             if (schemaName is null)
             {
@@ -61,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
-            return (new JsonSchemaValidator(jsonSchema, forceError: true), new JsonSchemaTransformer(jsonSchema, _markdownEngine, _linkResolver, _xrefResolver, _errorLog));
+            return (jsonSchema, new JsonSchemaValidator(jsonSchema, forceError: true));
         }
     }
 }

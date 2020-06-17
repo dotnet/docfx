@@ -31,7 +31,8 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             Input input,
-            BuildScope buildScope)
+            BuildScope buildScope,
+            Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
             _repository = repository;
@@ -43,7 +44,8 @@ namespace Microsoft.Docs.Build
                             metadataProvider,
                             monikerProvider,
                             input,
-                            buildScope).Build());
+                            buildScope,
+                            jsonSchemaTransformer.Value).Build());
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 

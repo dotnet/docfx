@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using DotLiquid;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
+        private readonly JsonSchemaTransformer _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
             ErrorLog errorLog,
@@ -27,7 +27,8 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             Input input,
-            BuildScope buildScope)
+            BuildScope buildScope,
+            JsonSchemaTransformer jsonSchemaTransformer)
         {
             _errorLog = errorLog;
             _templateEngine = templateEngine;
@@ -36,6 +37,7 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _input = input;
             _buildScope = buildScope;
+            _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
         public IReadOnlyDictionary<string, InternalXrefSpec> Build()
@@ -131,7 +133,7 @@ namespace Microsoft.Docs.Build
         {
             var schemaTemplate = _templateEngine.GetSchema(file.Mime);
 
-            return schemaTemplate.JsonSchemaTransformer.LoadXrefSpecs(file, token);
+            return _jsonSchemaTransformer.LoadXrefSpecs(schemaTemplate.JsonSchema, file, token);
         }
 
         private InternalXrefSpec AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
