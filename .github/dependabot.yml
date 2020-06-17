@@ -1,0 +1,7 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  target-branch: v3
+  directory: "/"
+  schedule:
+    interval: daily
