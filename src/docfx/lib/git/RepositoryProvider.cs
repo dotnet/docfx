@@ -47,10 +47,7 @@ namespace Microsoft.Docs.Build
                 return (null, null, Array.Empty<GitCommit>());
             }
 
-            using (Telemetry.TrackingOperationTime(TelemetryName.LoadCommitHistory))
-            {
-                return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
-            }
+            return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
         }
 
         public void Save()

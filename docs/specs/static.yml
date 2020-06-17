@@ -108,7 +108,7 @@ inputs:
     outputUrlType: Ugly
   redirections.yml: |
     renames:
-      a.md: /b
+      a.md: /b.html
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.layout = "Conceptual";
@@ -123,7 +123,7 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/a.html", "redirect_url": "/b" },
+        { "url": "/a.html", "redirect_url": "/b.html" },
         { "url": "/b.html"}
       ]
     }

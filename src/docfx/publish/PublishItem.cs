@@ -29,8 +29,6 @@ namespace Microsoft.Docs.Build
 
         public string Locale { get; }
 
-        public string? RedirectUrl { get; }
-
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool HasError { get; }
 
@@ -52,7 +50,6 @@ namespace Microsoft.Docs.Build
             string? configMonikerRange,
             ContentType contentType,
             string? mime,
-            string? redirectUrl,
             bool hasError,
             JObject? extensionData)
         {
@@ -64,7 +61,6 @@ namespace Microsoft.Docs.Build
             ConfigMonikerRange = configMonikerRange;
             ContentType = contentType;
             Mime = mime;
-            RedirectUrl = redirectUrl;
             HasError = hasError;
             ExtensionData = extensionData;
         }

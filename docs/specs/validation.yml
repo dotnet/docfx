@@ -257,7 +257,7 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
 ---
 # Json schema microsoft alias rule: The author is valid with graph call
 os: windows
@@ -316,7 +316,7 @@ environments:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias","file":"a.md","line":2,"column":12}
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
 ---
 # Content validation end to end scenario 
 inputs:
@@ -1192,7 +1192,7 @@ outputs:
   h.json:
   j.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":0,"end_line":0,"column":0,"end_column":0}
@@ -1254,7 +1254,7 @@ outputs:
   c.json:
   e.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":1,"end_line":1,"column":0,"end_column":0}
 ---

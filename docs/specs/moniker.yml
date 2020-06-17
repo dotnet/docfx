@@ -188,8 +188,8 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/c","moniker_group":"9d4e15fd"},
         {"url":"/docs/c","moniker_group":"4667fedf"},
+        {"url":"/docs/c","moniker_group":"9d4e15fd"},
         {"url":"/docs/b","moniker_group":"4667fedf"},
         {"url":"/docs/a","moniker_group":"9d4e15fd"}
       ],
@@ -925,7 +925,6 @@ inputs:
       docs/v1/: docs/
     monikerDefinition: monikerDefinition.json
     outputPdf: true
-    reduceTOCChildMonikers: true
   docs/v1/a.md: |
     ---
     monikerRange: netcore-1.1 || netcore-1.0

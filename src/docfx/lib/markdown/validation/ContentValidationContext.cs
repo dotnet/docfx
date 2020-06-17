@@ -42,7 +42,6 @@ namespace Microsoft.Docs.Build
             MarkdownRulesFilePath = markdownValidationRulesPath;
             RepositoryUrl = EnvironmentVariable.RepositoryUrl;
             Branch = EnvironmentVariable.RepositoryBranch;
-            ApiBase = OpsConfigAdapter.ValidationServiceEndpoint;
             DocfxVersion = "v3";
             RequestTimeout = TimeSpan.FromSeconds(ValidationRequestTimeoutInSeconds);
             MaxTries = ValidationMaxTries;
@@ -50,6 +49,7 @@ namespace Microsoft.Docs.Build
             MaxTransientFailureCount = ValidationMaxTransientFailureCount;
             AllowlistFilePath = allowlistsPath;
             DisallowlistFilePath = disallowlistsPath;
+            ApiBase = "";
         }
     }
 }

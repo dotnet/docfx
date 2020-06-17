@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private static IReadOnlyDictionary<string, Lazy<TemplateSchema>>
+        private IReadOnlyDictionary<string, Lazy<TemplateSchema>>
             LoadSchemas(string schemaDir, string contentTemplateDir)
         {
             var schemas = Directory.Exists(schemaDir)

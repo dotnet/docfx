@@ -20,15 +20,6 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsConfigAdapter : IDisposable
     {
-        public static string ValidationServiceEndpoint => s_docsEnvironment switch
-        {
-            DocsEnvironment.Prod => "https://docs.microsoft.com",
-            DocsEnvironment.PPE => "https://ppe.docs.microsoft.com",
-            DocsEnvironment.Internal => "https://ppe.docs.microsoft.com",
-            DocsEnvironment.Perf => "https://ppe.docs.microsoft.com",
-            _ => throw new NotSupportedException(),
-        };
-
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
@@ -153,7 +144,6 @@ namespace Microsoft.Docs.Build
                 disallowlists = DisallowlistsApi,
                 xref = xrefMaps,
                 skipMonikerValidation = docset.use_template,
-                reduceTOCChildMonikers = docset.use_template,
             });
         }
 
@@ -191,28 +181,28 @@ namespace Microsoft.Docs.Build
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules/content", headers);
+            return await FetchValidationRules(ValidationServiceUrl("contentrules"), headers);
         }
 
         private async Task<string> GetAllowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+            return await FetchValidationRules(ValidationServiceUrl("allowlists"), headers);
         }
 
         private async Task<string> GetDisallowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/disallowlists", headers);
+            return await FetchValidationRules(ValidationServiceUrl("disallowlists"), headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
-            var rules = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/rules", headers);
-            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/api/metadata/allowlists", headers);
+            var rules = FetchValidationRules(ValidationServiceUrl("metadatarules"), headers);
+            var allowlists = FetchValidationRules(ValidationServiceUrl("allowlists"), headers);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
         }
@@ -361,5 +351,19 @@ namespace Microsoft.Docs.Build
                 ? docsEnvironment
                 : DocsEnvironment.Prod;
         }
+
+        private static string ValidationServiceUrl(string resource) => (s_docsEnvironment, resource) switch
+        {
+            (DocsEnvironment.Prod, "allowlists") => "https://docs.microsoft.com/api/metadata/allowlists",
+            (DocsEnvironment.Prod, "disallowlists") => "https://docs.microsoft.com/api/metadata/disallowlists",
+            (DocsEnvironment.Prod, "metadatarules") => "https://docs.microsoft.com/api/metadata/rules",
+            (DocsEnvironment.Prod, "contentrules") => "https://docs.microsoft.com/api/metadata/rules/content",
+
+            (_, "allowlists") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/validation/allowlists",
+            (_, "disallowlists") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/validation/disallowlists",
+            (_, "metadatarules") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/rulesets/metadatarules",
+            (_, "contentrules") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/rulesets/contentrules",
+            (_, _) => throw new NotSupportedException(),
+        };
     }
 }

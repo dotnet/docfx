@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
 
-        private ConcurrentDictionary<FilePath, (JObject? metadata, string? redirectUrl, string? outputPath)> _buildOutput = new ConcurrentDictionary<FilePath, (JObject? metadata, string? redirectUrl, string? outputPath)>();
+        private ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
 
         public PublishModelBuilder(
             Config config,
@@ -41,9 +41,9 @@ namespace Microsoft.Docs.Build
             _sourceMap = sourceMap;
         }
 
-        public void SetPublishItem(FilePath file, JObject? metadata, string? redirectUrl, string? outputPath)
+        public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath)
         {
-            _buildOutput.TryAdd(file, (metadata, redirectUrl, outputPath));
+            _buildOutput.TryAdd(file, (metadata, outputPath));
         }
 
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
@@ -62,7 +62,6 @@ namespace Microsoft.Docs.Build
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     document.ContentType,
                     document.Mime,
-                    buildOutput ? result.redirectUrl : null,
                     _errorLog.HasError(sourcePath),
                     buildOutput ? result.metadata : null);
                 publishItems.Add(sourcePath, publishItem);
@@ -79,7 +78,7 @@ namespace Microsoft.Docs.Build
 
             var items = (
                    from item in publishItems.Values
-                   orderby item.Locale, item.Path, item.Url, item.RedirectUrl, item.MonikerGroup
+                   orderby item.Locale, item.Path, item.Url, item.MonikerGroup
                    select item).ToArray();
 
             var monikerGroups = new Dictionary<string, MonikerList>(

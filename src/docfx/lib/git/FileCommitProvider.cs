@@ -30,6 +30,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>?> _trees
                    = new ConcurrentDictionary<long, Dictionary<int, git_oid>?>();
 
+        private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new ConcurrentDictionary<(string, string?), GitCommit[]>();
+
         private int _nextStringId;
         private IntPtr _repo;
 
@@ -48,15 +50,21 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(!file.Contains('\\'));
 
+            return _commitHistoryCache.GetOrAdd((file, committish), GetCommitHistoryCore);
+        }
+
+        private GitCommit[] GetCommitHistoryCore((string, string?) key)
+        {
+            var (file, committish) = key;
             var commitCache = _commitCache.Value.ForFile(file);
 
             lock (commitCache)
             {
-                return GetCommitHistory(commitCache, file, committish);
+                return GetCommitHistoryCore(commitCache, file, committish);
             }
         }
 
-        private GitCommit[] GetCommitHistory(GitCommitCache.FileCommitCache commitCache, string file, string? committish = null)
+        private GitCommit[] GetCommitHistoryCore(GitCommitCache.FileCommitCache commitCache, string file, string? committish = null)
         {
             const int MaxParentBlob = 32;
 
@@ -69,7 +77,6 @@ namespace Microsoft.Docs.Build
                 return Array.Empty<GitCommit>();
             }
 
-            var searchSteps = 0;
             var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = new long[MaxParentBlob];
@@ -84,8 +91,6 @@ namespace Microsoft.Docs.Build
             // Reusing a single branch commit history is a performance optimization.
             foreach (var commit in commits)
             {
-                searchSteps++;
-
                 // Find and remove if this commit should be followed by the tree traversal.
                 if (!TryRemoveCommit(commit, commitsToFollow, out var blob))
                 {
@@ -134,11 +139,6 @@ namespace Microsoft.Docs.Build
                 {
                     result.Add(commit);
                 }
-            }
-
-            if (searchSteps > 100)
-            {
-                Log.Write($"GetCommitHistory took {searchSteps} steps on '{file}'");
             }
 
             if (updateCache)
@@ -264,11 +264,6 @@ namespace Microsoft.Docs.Build
                 }
                 commit.ParentShas = Array.Empty<git_oid>();
             });
-
-            if (committish.Equals(_repository.Commit))
-            {
-                Telemetry.TrackBuildCommitCount(commits.Count);
-            }
 
             return (commits, commitsBySha);
         }

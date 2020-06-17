@@ -33,14 +33,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _extensionsInline = (new ITripleColonExtensionInfo[]
             {
                 new ImageExtension(context),
-                new VideoExtensionInline(context)
+                new VideoExtension()
             }).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-
-            var parser = new TripleColonParser(_context, _extensions);
+            var parser = new TripleColonBlockParser(_context, _extensions);
             if (pipeline.BlockParsers.Contains<CustomContainerParser>())
             {
                 pipeline.BlockParsers.InsertBefore<CustomContainerParser>(parser);
@@ -50,17 +49,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 pipeline.BlockParsers.AddIfNotAlready(parser);
             }
 
-            var inlineParser = new TripleColonParserInline(_context, _extensionsInline);
+            var inlineParser = new TripleColonInlineParser(_context, _extensionsInline);
             pipeline.InlineParsers.InsertBefore<InlineParser>(inlineParser);
 
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<TripleColonRenderer>())
+            if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<TripleColonBlockRenderer>())
             {
-                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonInlineRenderer());
-                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonRenderer());
+                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonInlineRenderer(_context));
+                htmlRenderer.ObjectRenderers.Insert(0, new TripleColonBlockRenderer(_context));
             }
         }
     }
@@ -71,6 +70,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         bool SelfClosing { get; }
         bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject);
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
-        bool Render(HtmlRenderer renderer, MarkdownObject markdownObject);
+        bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning);
     }
 }

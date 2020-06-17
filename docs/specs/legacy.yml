@@ -51,9 +51,6 @@ cache:
       ]
     }
 outputs:
-  a.raw.page.json:
-  a.mta.json: |
-    { "locale": "en-us", "redirect_url": "/b" }
   c.raw.page.json: |
     {
       "content": "<p><a href=\"d.png\" data-linktype=\"relative-path\">d</a></p>",
@@ -89,7 +86,6 @@ outputs:
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
   toc.json:
-  toc.mta.json:
   .manifest.json:
   filemap.json:
   op_aggregated_file_map_info.json:
@@ -252,7 +248,6 @@ outputs:
   b.json:
 ---
 # Prefer redirection when redirection and file share the same output path
-legacy: true
 inputs:
   docfx.yml:
   redirections.yml: |
@@ -260,9 +255,6 @@ inputs:
       docs/a.md: /asdf
   docs/a.md:
 outputs:
-  docs/a.mta.json: |
-    {"redirect_url":"/asdf"}
-  docs/a.raw.page.json:
   .errors.log: |
     { "message_severity": "warning", "code": "output-path-conflict" }
 ---
@@ -279,8 +271,6 @@ outputs:
   a.mta.json:
   a.raw.page.json: |
     { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
-  redirect.mta.json:
-  redirect.raw.page.json:
 ---
 # Legacy metadata black list
 inputs:
@@ -416,12 +406,10 @@ inputs:
     }
 outputs:
   docs/136a42ac/toc.json:
-  docs/136a42ac/toc.mta.json:
   docs/136a42ac/f1/a.mta.json:
   docs/136a42ac/f1/a.raw.page.json: |
     {"rawMetadata":{"_tocRel": "../toc.json"}}
   docs/4667fedf/toc.json:
-  docs/4667fedf/toc.mta.json:
   docs/4667fedf/f1/a.mta.json:
   docs/4667fedf/f1/a.raw.page.json: |
     {"rawMetadata":{"_tocRel": "../toc.json"}}
