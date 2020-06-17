@@ -273,7 +273,7 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
             }
 
-            var (schemaTransformError, transformedToken) = schemaTemplate.JsonSchemaTransformer.TransformContent(file, context, validatedObj);
+            var (schemaTransformError, transformedToken) = context.JsonSchemaTransformer.TransformContent(schemaTemplate.JsonSchema, file, validatedObj);
             errors.AddRange(schemaTransformError);
             var pageModel = (JObject)transformedToken;
 

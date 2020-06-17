@@ -13,8 +13,10 @@ namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaTransformer
     {
-        private readonly JsonSchema _schema;
-        private readonly JsonSchemaDefinition _definitions;
+        private readonly MarkdownEngine _markdownEngine;
+        private readonly LinkResolver _linkResolver;
+        private readonly XrefResolver _xrefResolver;
+        private readonly ErrorLog _errorLog;
 
         private readonly ConcurrentDictionary<Document, int> _uidCountCache =
                      new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
@@ -22,56 +24,73 @@ namespace Microsoft.Docs.Build
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
-        public JsonSchemaTransformer(JsonSchema schema)
+        public JsonSchemaTransformer(MarkdownEngine markdownEngine, LinkResolver linkResolver, XrefResolver xrefResolver, ErrorLog errorLog)
         {
-            _schema = schema;
-            _definitions = new JsonSchemaDefinition(schema);
+            _markdownEngine = markdownEngine;
+            _linkResolver = linkResolver;
+            _xrefResolver = xrefResolver;
+            _errorLog = errorLog;
         }
 
-        public (List<Error> errors, JToken token) TransformContent(Document file, Context context, JToken token)
+        public (List<Error> errors, JToken token) TransformContent(JsonSchema schema, Document file, JToken token)
         {
-            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(_schema, token));
-            return TransformContentCore(file, context, _schema, token, uidCount);
+            var definitions = new JsonSchemaDefinition(schema);
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
+            return TransformContentCore(definitions, file, schema, token, uidCount);
         }
 
-        public (List<Error>, IReadOnlyList<InternalXrefSpec>) LoadXrefSpecs(Document file, Context context, JToken token)
+        public (List<Error>, IReadOnlyList<InternalXrefSpec>) LoadXrefSpecs(JsonSchema schema, Document file, JToken token)
         {
             var errors = new List<Error>();
             var xrefSpecs = new List<InternalXrefSpec>();
-            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(_schema, token));
-            LoadXrefSpecsCore(file, context, _schema, token, errors, xrefSpecs, uidCount);
+            var definitions = new JsonSchemaDefinition(schema);
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
+            LoadXrefSpecsCore(file, schema, definitions, token, errors, xrefSpecs, uidCount);
             return (errors, xrefSpecs);
         }
 
-        private void LoadXrefSpecsCore(Document file, Context context, JsonSchema schema, JToken node, List<Error> errors, List<InternalXrefSpec> xrefSpecs, int uidCount)
+        private void LoadXrefSpecsCore(
+            Document file,
+            JsonSchema schema,
+            JsonSchemaDefinition definitions,
+            JToken node,
+            List<Error> errors,
+            List<InternalXrefSpec> xrefSpecs,
+            int uidCount)
         {
-            schema = _definitions.GetDefinition(schema);
+            schema = definitions.GetDefinition(schema);
             switch (node)
             {
                 case JObject obj:
                     if (IsXrefSpec(obj, schema, out var uid))
                     {
-                        xrefSpecs.Add(LoadXrefSpec(file, context, schema, uid, obj, uidCount));
+                        xrefSpecs.Add(LoadXrefSpec(definitions, file, schema, uid, obj, uidCount));
                     }
 
                     foreach (var (key, value) in obj)
                     {
                         if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            LoadXrefSpecsCore(file, context, propertySchema, value, errors, xrefSpecs, uidCount);
+                            LoadXrefSpecsCore(file, propertySchema, definitions, value, errors, xrefSpecs, uidCount);
                         }
                     }
                     break;
                 case JArray array when schema.Items.schema != null:
                     foreach (var item in array)
                     {
-                        LoadXrefSpecsCore(file, context, schema.Items.schema, item, errors, xrefSpecs, uidCount);
+                        LoadXrefSpecsCore(file, schema.Items.schema, definitions, item, errors, xrefSpecs, uidCount);
                     }
                     break;
             }
         }
 
-        private InternalXrefSpec LoadXrefSpec(Document file, Context context, JsonSchema schema, SourceInfo<string> uid, JObject obj, int uidCount)
+        private InternalXrefSpec LoadXrefSpec(
+            JsonSchemaDefinition definitions,
+            Document file,
+            JsonSchema schema,
+            SourceInfo<string> uid,
+            JObject obj,
+            int uidCount)
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var xref = new InternalXrefSpec(uid, href, file);
@@ -91,16 +110,16 @@ namespace Microsoft.Docs.Build
                 }
 
                 xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(file, context, uid, value, propertySchema, uidCount),
+                    () => LoadXrefProperty(definitions, file, uid, value, propertySchema, uidCount),
                     LazyThreadSafetyMode.PublicationOnly);
             }
 
             return xref;
         }
 
-        private int GetFileUidCount(JsonSchema schema, JToken node)
+        private int GetFileUidCount(JsonSchemaDefinition definitions, JsonSchema schema, JToken node)
         {
-            schema = _definitions.GetDefinition(schema);
+            schema = definitions.GetDefinition(schema);
             var count = 0;
             switch (node)
             {
@@ -114,14 +133,14 @@ namespace Microsoft.Docs.Build
                     {
                         if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            count += GetFileUidCount(propertySchema, value);
+                            count += GetFileUidCount(definitions, propertySchema, value);
                         }
                     }
                     break;
                 case JArray array when schema.Items.schema != null:
                     foreach (var item in array)
                     {
-                        count += GetFileUidCount(schema.Items.schema, item);
+                        count += GetFileUidCount(definitions, schema.Items.schema, item);
                     }
                     break;
             }
@@ -145,7 +164,13 @@ namespace Microsoft.Docs.Build
         private string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
             => !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : file.SiteUrl;
 
-        private JToken LoadXrefProperty(Document file, Context context, SourceInfo<string> uid, JToken value, JsonSchema schema, int uidCount)
+        private JToken LoadXrefProperty(
+            JsonSchemaDefinition definitions,
+            Document file,
+            SourceInfo<string> uid,
+            JToken value,
+            JsonSchema schema,
+            int uidCount)
         {
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(uid))
@@ -156,8 +181,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector.Push(uid);
-                var (transformErrors, transformedToken) = TransformContentCore(file, context, schema, value, uidCount);
-                context.ErrorLog.Write(transformErrors);
+                var (transformErrors, transformedToken) = TransformContentCore(definitions, file, schema, value, uidCount);
+                _errorLog.Write(transformErrors);
                 return transformedToken;
             }
             finally
@@ -167,10 +192,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (List<Error>, JToken) TransformContentCore(Document file, Context context, JsonSchema schema, JToken token, int uidCount)
+        private (List<Error>, JToken) TransformContentCore(JsonSchemaDefinition definitions, Document file, JsonSchema schema, JToken token, int uidCount)
         {
             var errors = new List<Error>();
-            schema = _definitions.GetDefinition(schema);
+            schema = definitions.GetDefinition(schema);
             switch (token)
             {
                 // transform array and object is not supported yet
@@ -183,7 +208,7 @@ namespace Microsoft.Docs.Build
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        var (arrayErrors, newItem) = TransformContentCore(file, context, schema.Items.schema, item, uidCount);
+                        var (arrayErrors, newItem) = TransformContentCore(definitions, file, schema.Items.schema, item, uidCount);
                         errors.AddRange(arrayErrors);
                         newArray.Add(newItem);
                     }
@@ -200,8 +225,7 @@ namespace Microsoft.Docs.Build
                         }
                         else if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            var isXrefProperty = schema.XrefProperties.Contains(key);
-                            var (propertyErrors, transformedValue) = TransformContentCore(file, context, propertySchema, value, uidCount);
+                            var (propertyErrors, transformedValue) = TransformContentCore(definitions, file, propertySchema, value, uidCount);
                             errors.AddRange(propertyErrors);
                             newObject[key] = transformedValue;
                         }
@@ -221,14 +245,14 @@ namespace Microsoft.Docs.Build
                     return (errors, newObject);
 
                 case JValue value:
-                    return TransformScalar(schema, file, context, value);
+                    return TransformScalar(schema, file, value);
 
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        private (List<Error>, JToken) TransformScalar(JsonSchema schema, Document file, Context context, JValue value)
+        private (List<Error>, JToken) TransformScalar(JsonSchema schema, Document file, JValue value)
         {
             var errors = new List<Error>();
             if (value.Type == JTokenType.Null || schema.ContentType is null)
@@ -242,19 +266,19 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = context.LinkResolver.ResolveLink(content, file, file);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
                     return (errors, link);
 
                 case JsonSchemaContentType.Markdown:
-                    var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
+                    var (markupErrors, html) = _markdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
                     return (errors, html);
 
                 case JsonSchemaContentType.InlineMarkdown:
-                    var (inlineMarkupErrors, inlineHtml) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
+                    var (inlineMarkupErrors, inlineHtml) = _markdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
@@ -267,7 +291,7 @@ namespace Microsoft.Docs.Build
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {
-                            var (htmlError, htmlLink, _) = context.LinkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
                         });
@@ -277,7 +301,7 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Xref:
                     // the content here must be an UID, not href
-                    var (xrefError, xrefSpec, href) = context.XrefResolver.ResolveXrefSpec(content, file, file);
+                    var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
                     errors.AddIfNotNull(xrefError);
 
                     return xrefSpec != null

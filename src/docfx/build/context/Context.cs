@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Net.Mail;
 
 namespace Microsoft.Docs.Build
 {
@@ -72,6 +73,8 @@ namespace Microsoft.Docs.Build
 
         public MetadataValidator MetadataValidator { get; }
 
+        public JsonSchemaTransformer JsonSchemaTransformer { get; }
+
         public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
@@ -87,8 +90,8 @@ namespace Microsoft.Docs.Build
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
-            TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
+            TemplateEngine = new TemplateEngine(config, buildOptions, PackageResolver);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
@@ -108,7 +111,20 @@ namespace Microsoft.Docs.Build
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, ContributionProvider);
-            XrefResolver = new XrefResolver(this, config, FileResolver, buildOptions.Repository, DependencyMapBuilder, FileLinkMapBuilder, errorLog);
+            XrefResolver = new XrefResolver(
+                config,
+                FileResolver,
+                buildOptions.Repository,
+                DependencyMapBuilder,
+                FileLinkMapBuilder,
+                ErrorLog,
+                TemplateEngine,
+                DocumentProvider,
+                MetadataProvider,
+                MonikerProvider,
+                Input,
+                BuildScope,
+                new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
 
             LinkResolver = new LinkResolver(
                 config,
@@ -122,14 +138,24 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder);
 
-            MarkdownEngine = new MarkdownEngine(Config, Input, FileResolver, LinkResolver, XrefResolver, DocumentProvider, MonikerProvider, TemplateEngine, ContentValidator);
+            MarkdownEngine = new MarkdownEngine(
+                Config,
+                Input,
+                FileResolver,
+                LinkResolver,
+                XrefResolver,
+                DocumentProvider,
+                MonikerProvider,
+                TemplateEngine,
+                ContentValidator,
+                new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
+            JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, ContentValidator);
             TocMap = new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
-            MarkdownEngine.Configure(PublishUrlMap);
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
         }
 
