@@ -12,45 +12,6 @@ variables:
 
 jobs:
 
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  - bash: ./build.sh
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: MICROSOFT_GRAPH_CLIENT_SECRET
-
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  - bash: ./build.sh
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: MICROSOFT_GRAPH_CLIENT_SECRET
-
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
@@ -74,6 +35,7 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
+      MICROSOFT_GRAPH_CLIENT_SECRET: MICROSOFT_GRAPH_CLIENT_SECRET
 
   - script: |
       bash <(curl -s https://codecov.io/bash)
@@ -124,68 +86,3 @@ jobs:
       storage: opsbuildk8sprod
       containerName: docfx-bin
 
-
-# Run RegressionTest
-- job: RunRegressionTest
-  dependsOn: WindowsBuild
-  pool:
-    name: DocFX
-  strategy:
-    matrix:
-      azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
-      sql-docs-pr:
-        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120
-      dynamics-365-customer-engagement-pr:
-        params: https://github.com/MicrosoftDocs/dynamics-365-customer-engagement-pr --timeout 70
-      roslyn-api-docs:
-        params: https://github.com/dotnet/roslyn-api-docs --timeout 105
-      docs-help-pr:
-        params: >
-          https://github.com/MicrosoftDocs/docs-help-pr --timeout 30
-      Dynamics-365-Operations:
-        params: https://github.com/MicrosoftDocs/Dynamics-365-Operations --timeout 65
-      mc-docs-pr:
-        params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
-      ATADocs-pr:
-        params: https://github.com/MicrosoftDocs/ATADocs-pr --timeout 30
-      azure-docs-rest-apis:
-        params: https://github.com/Azure/azure-docs-rest-apis --timeout 130
-      biztalk-docs.zh-cn:
-        params: https://github.com/MicrosoftDocs/biztalk-docs.zh-cn --branch master-sxs --locale zh-cn --timeout 50
-      DevSandbox:
-        params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
-      office-dev-O365API:
-        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/office-dev-O365API --timeout 20
-      dynamics-crm-notinTOC_1.he-il:
-        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/dynamics-crm-notinTOC.he-il --locale he-il --timeout 70
-
-  steps:
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # Download RegressionTest binary
-  - download: current
-    displayName: Download RegressionTest binary
-    artifact: RegressionTest
-
-  # Run Regression Tests
-  - task: AzureCLI@2
-    displayName: Run regression tests
-    inputs:
-      azureSubscription: 'Open Publishing - Build Production'
-      scriptType: ps
-      scriptLocation: inlineScript
-      powerShellErrorActionPreference: continue
-      inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
-    env:
-      BUILD_REASON: $(Build.Reason)
-      DOCFX_APPDATA_PATH: D:/appdata
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
-      APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
