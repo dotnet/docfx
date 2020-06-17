@@ -68,13 +68,16 @@ jobs:
     inputs:
       command: test
       configuration: Release
-      arguments: --collect "Code Coverage"
+      arguments: --collect "XPlat Code Coverage"
       publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
+
+  - script: |
+      bash <(curl -s https://codecov.io/bash)
+    displayName: 'Upload to codecov.io'
 
   # Build RegressionTest into Artifact 
   - powershell: |
