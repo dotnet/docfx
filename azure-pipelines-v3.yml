@@ -36,7 +36,7 @@ jobs:
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
-  - script: |
+  - bash: |
       bash <(curl -s https://codecov.io/bash)
     displayName: 'Upload to codecov.io'
 
