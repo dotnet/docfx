@@ -47,9 +47,8 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var reportModelBuilder = new ReportModelBuilder();
-                var configLoader = new ConfigLoader(errorLog, reportModelBuilder);
-                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
+                var configLoader = new ConfigLoader(errorLog);
+                var (errors, config, buildOptions, packageResolver, fileResolver, reportModelBuilder) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
                     return true;

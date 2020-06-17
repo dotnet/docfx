@@ -507,3 +507,4 @@ addbuildtag
 ecma
 Idx
 igrouping
+buildreport

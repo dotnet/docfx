@@ -15,12 +15,10 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly ErrorLog _errorLog;
-        private readonly ReportModelBuilder? _reportModelBuilder;
 
-        public ConfigLoader(ErrorLog errorLog, ReportModelBuilder? reportModelBuilder = null)
+        public ConfigLoader(ErrorLog errorLog)
         {
             _errorLog = errorLog;
-            _reportModelBuilder = reportModelBuilder;
         }
 
         public static (List<Error> errors, (string docsetPath, string? outputPath)[]) FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -58,7 +56,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error>, Config, BuildOptions, PackageResolver, FileResolver) Load(DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        public (List<Error>, Config, BuildOptions, PackageResolver, FileResolver, ReportModelBuilder) Load(DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             // load and trace entry repository
             var repository = Repository.Create(docsetPath);
@@ -92,7 +90,8 @@ namespace Microsoft.Docs.Build
 
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
-            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider, _reportModelBuilder);
+            var reportModelBuilder = new ReportModelBuilder();
+            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider, reportModelBuilder);
             var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions);
             disposables.Add(packageResolver);
 
@@ -107,7 +106,7 @@ namespace Microsoft.Docs.Build
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
-            return (errors, config, buildOptions, packageResolver, fileResolver);
+            return (errors, config, buildOptions, packageResolver, fileResolver, reportModelBuilder);
         }
 
         private static JObject LoadConfig(List<Error> errorBuilder, string fileName, string content)
