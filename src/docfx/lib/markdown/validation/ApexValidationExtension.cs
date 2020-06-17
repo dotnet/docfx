@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 if (filePath.Format == FileFormat.Markdown)
                 {
                     var layout = getLayout(filePath);
-                    if (layout != "HubPage")
+                    if (layout != "HubPage" && layout != "LandingPage")
                     {
                         foreach (var validator in validators)
                         {
