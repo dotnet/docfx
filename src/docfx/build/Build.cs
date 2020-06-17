@@ -47,7 +47,8 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var configLoader = new ConfigLoader(errorLog);
+                var reportModelBuilder = new ReportModelBuilder();
+                var configLoader = new ConfigLoader(errorLog, reportModelBuilder);
                 var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
@@ -57,7 +58,7 @@ namespace Microsoft.Docs.Build
                 new OpsPreProcessor(config, errorLog, buildOptions).Run();
                 var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
                 errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
-                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
+                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap, reportModelBuilder);
                 Run(context);
                 return errorLog.ErrorCount > 0;
             }
@@ -109,6 +110,7 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
+                () => context.Output.WriteJson(".report-build.json", context.ReportModelBuilder.Build()),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
             using (Progress.Start("Waiting for pending outputs..."))

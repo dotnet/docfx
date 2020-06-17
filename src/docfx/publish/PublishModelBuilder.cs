@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
 
-        private ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
+        private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
 
         public PublishModelBuilder(
             Config config,

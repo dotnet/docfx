@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Net.Mail;
 
 namespace Microsoft.Docs.Build
 {
@@ -75,7 +74,9 @@ namespace Microsoft.Docs.Build
 
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
-        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
+        public ReportModelBuilder ReportModelBuilder { get; set; }
+
+        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap, ReportModelBuilder reportModelBuilder)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
             BuildQueue = new WorkQueue<FilePath>(errorLog);
@@ -86,6 +87,7 @@ namespace Microsoft.Docs.Build
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
             SourceMap = sourceMap;
+            ReportModelBuilder = reportModelBuilder;
 
             RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);

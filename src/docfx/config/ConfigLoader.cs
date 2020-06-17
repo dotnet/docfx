@@ -15,10 +15,12 @@ namespace Microsoft.Docs.Build
     internal class ConfigLoader
     {
         private readonly ErrorLog _errorLog;
+        private readonly ReportModelBuilder? _reportModelBuilder;
 
-        public ConfigLoader(ErrorLog errorLog)
+        public ConfigLoader(ErrorLog errorLog, ReportModelBuilder? reportModelBuilder = null)
         {
             _errorLog = errorLog;
+            _reportModelBuilder = reportModelBuilder;
         }
 
         public static (List<Error> errors, (string docsetPath, string? outputPath)[]) FindDocsets(string workingDirectory, CommandLineOptions options)
@@ -90,7 +92,7 @@ namespace Microsoft.Docs.Build
 
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
-            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
+            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider, _reportModelBuilder);
             var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions);
             disposables.Add(packageResolver);
 
