@@ -67,12 +67,9 @@ namespace Microsoft.Docs.Build
 
         private ConcurrentDictionary<string, FileCommitCache> Load()
         {
-            Telemetry.TrackCacheTotalCount(TelemetryName.GitCommitCache);
-
             var commitCache = new ConcurrentDictionary<string, FileCommitCache>();
             if (!File.Exists(_cacheFilePath))
             {
-                Telemetry.TrackCacheMissCount(TelemetryName.GitCommitCache);
                 return commitCache;
             }
 
