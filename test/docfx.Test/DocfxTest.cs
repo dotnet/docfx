@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             if (!spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
             {
-                yield return "dryrun";
+                yield return "DryRun";
             }
         }
 
@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
 
         private static void RunBuild(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec)
         {
-            var dryRun = test.Metrix.Contains("dryrun");
+            var dryRun = test.Metrix.Contains("DryRun");
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");

@@ -301,8 +301,8 @@ inputs:
     {
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"yaml-syntax-error","message":"Mapping values are not allowed in this context.","file":"docs/a.yml","line":2,"column":5}
-    {"message_severity":"error","code":"json-syntax-error","message":"Error reading JObject from JsonReader.","file":"docs/b.json","line":2}
+    {"message_severity":"error","code":"yaml-syntax-error","file":"docs/a.yml","line":2,"column":5}
+    {"message_severity":"error","code":"json-syntax-error","file":"docs/b.json","line":2}
 ---
 # Invalid JSON
 inputs:
