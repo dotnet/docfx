@@ -112,14 +112,13 @@ namespace Microsoft.Docs.Build
 
             // TODO: decouple files and dependencies from legacy.
             var dependencyMap = context.DependencyMapBuilder.Build();
-            var reportModel = reportModelBuilder.Build();
 
             Parallel.Invoke(
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
-                () => context.Output.WriteJson(".buildreport.json", reportModel),
+                () => context.Output.WriteJson(".buildreport.json", reportModelBuilder.Build()),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
             using (Progress.Start("Waiting for pending outputs..."))

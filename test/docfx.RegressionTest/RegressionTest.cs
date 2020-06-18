@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
         {
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore --legacy --verbose --stdin",
+                arguments: $"restore --no-cache --legacy --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
 
