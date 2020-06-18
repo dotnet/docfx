@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             var hasError = false;
             Parallel.ForEach(docsets, docset =>
             {
-                if (RestoreDocset(docset.docsetPath, docset.outputPath, options, FetchOptions.Latest))
+                if (RestoreDocset(docset.docsetPath, docset.outputPath, options, FetchOptions.Latest, out _))
                 {
                     hasError = true;
                 }
@@ -32,18 +32,19 @@ namespace Microsoft.Docs.Build
             return hasError ? 1 : 0;
         }
 
-        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, out ReportModelBuilder reportModelBuilder)
         {
             var stopwatch = Stopwatch.StartNew();
 
             using var disposables = new DisposableCollector();
             using var errorLog = new ErrorLog(outputPath);
+            reportModelBuilder = new ReportModelBuilder();
 
             try
             {
                 // load configuration from current entry or fallback repository
-                var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver, _) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
+                var configLoader = new ConfigLoader(errorLog, reportModelBuilder);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
                     return true;

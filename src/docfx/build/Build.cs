@@ -24,21 +24,29 @@ namespace Microsoft.Docs.Build
             var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
             Parallel.ForEach(docsets, docset =>
             {
-                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
+                if (options.NoRestore)
                 {
-                    hasError = true;
-                    return;
+                    if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions, new ReportModelBuilder()))
+                    {
+                        hasError = true;
+                    }
                 }
-
-                if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions))
+                else
                 {
-                    hasError = true;
+                    if (Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions, out var reportModelBuilder))
+                    {
+                        hasError = true;
+                    }
+                    else if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions, reportModelBuilder))
+                    {
+                        hasError = true;
+                    }
                 }
             });
             return hasError ? 1 : 0;
         }
 
-        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, ReportModelBuilder reportModelBuilder)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -47,8 +55,8 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver, reportModelBuilder) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
+                var configLoader = new ConfigLoader(errorLog, reportModelBuilder);
+                var (errors, config, buildOptions, packageResolver, fileResolver) = configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errorLog.Write(errors))
                 {
                     return true;
@@ -58,7 +66,7 @@ namespace Microsoft.Docs.Build
                 var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
                 errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap, reportModelBuilder);
-                Run(context);
+                Run(context, reportModelBuilder);
                 return errorLog.ErrorCount > 0;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -74,7 +82,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void Run(Context context)
+        private static void Run(Context context, ReportModelBuilder reportModelBuilder)
         {
             using (Progress.Start("Building files"))
             {
@@ -104,13 +112,14 @@ namespace Microsoft.Docs.Build
 
             // TODO: decouple files and dependencies from legacy.
             var dependencyMap = context.DependencyMapBuilder.Build();
+            var reportModel = reportModelBuilder.Build();
 
             Parallel.Invoke(
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
-                () => context.Output.WriteJson(".buildreport.json", context.ReportModelBuilder.Build()),
+                () => context.Output.WriteJson(".buildreport.json", reportModel),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
             using (Progress.Start("Waiting for pending outputs..."))

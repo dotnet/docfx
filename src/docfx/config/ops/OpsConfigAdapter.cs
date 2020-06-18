@@ -52,13 +52,13 @@ namespace Microsoft.Docs.Build
 
         private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
 
-        private readonly ReportModelBuilder? _reportModelBuilder;
+        private readonly ReportModelBuilder _reportModelBuilder;
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
 
-        public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider, ReportModelBuilder? reportModelBuilder)
+        public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider, ReportModelBuilder reportModelBuilder)
         {
             _errorLog = errorLog;
             _credentialProvider = credentialProvider;
@@ -243,10 +243,10 @@ namespace Microsoft.Docs.Build
                                }
                            }
                            var response = await _http.SendAsync(request);
-                           if (_reportModelBuilder != null && response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
                                _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                               _reportModelBuilder.SetValidationRuleSet(string.Join(',', metadataVersion));
+                               _reportModelBuilder.AddValidationRuleSet(string.Join(',', metadataVersion));
                            }
                            return response;
                        });
