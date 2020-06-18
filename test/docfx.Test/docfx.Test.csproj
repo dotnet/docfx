@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0034" />
-    <PackageReference Include="Fody" Version="6.1.1" />
+    <PackageReference Include="Fody" Version="6.2.0" />
     <PackageReference Include="ModuleInit.Fody" Version="2.1.0" />
     <PackageReference Include="coverlet.msbuild" Version="2.8.0" />
     <PackageReference Include="Codecov" Version="1.10.0" />
