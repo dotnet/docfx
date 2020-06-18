@@ -17,7 +17,7 @@
     <PackageReference Include="docs.validation" Version="1.0.0-beta-00141-21b1204" />
     <PackageReference Include="DotLiquid" Version="2.0.358" />
     <PackageReference Include="Glob" Version="1.1.6" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.298" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.312" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.13.1" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.5" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.20" />
