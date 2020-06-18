@@ -78,13 +78,10 @@ namespace Microsoft.Docs.Build
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
             var (opsConfigErrors, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
             errors.AddRange(opsConfigErrors);
-            var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
-                ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
-                : null;
 
             // Preload
             var preloadConfigObject = new JObject();
-            JsonUtility.Merge(unionProperties, preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(unionProperties, preloadConfigObject, envConfig, opsConfig, docfxConfig, cliConfig);
             var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
             errors.AddRange(preloadErrors);
 
@@ -101,7 +98,7 @@ namespace Microsoft.Docs.Build
 
             // Create full config
             var configObject = new JObject();
-            JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
+            JsonUtility.Merge(unionProperties, configObject, envConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 

@@ -7,8 +7,6 @@ namespace Microsoft.Docs.Build
 {
     public static class EnvironmentVariable
     {
-        public static string? GlobalConfigPath => GetValue("DOCFX_GLOBAL_CONFIG_PATH");
-
         public static string? AppDataPath => GetValue("DOCFX_APPDATA_PATH");
 
         public static string? CachePath => GetValue("DOCFX_CACHE_PATH");
