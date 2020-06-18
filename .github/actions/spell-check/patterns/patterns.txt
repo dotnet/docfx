@@ -14,3 +14,5 @@
 # unicode
 '\\u[a-fA-F0-9]{4}'
 '\\x[a-fA-F0-9]{4}'
+# version
+\d+.\d+.\d+[-a-zA-Z0-9]*
