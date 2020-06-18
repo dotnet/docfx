@@ -13,8 +13,8 @@
     <PackageReference Include="ModuleInit.Fody" Version="2.1.0" />
     <PackageReference Include="coverlet.msbuild" Version="2.8.0" />
     <PackageReference Include="Codecov" Version="1.10.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="yunit" Version="1.0.0-preview-0016-g3f2c457b32" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="yunit" Version="1.0.0-preview-0026-g48bfd5b1eb" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.2" />
   </ItemGroup>

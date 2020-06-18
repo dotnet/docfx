@@ -81,7 +81,7 @@ inputs:
   a.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"json-syntax-error","message":"*","file":"config.json"}
+    {"message_severity":"error","code":"json-syntax-error","file":"config.json"}
 ---
 # Restore dependencies with extends
 repos:
@@ -144,7 +144,7 @@ inputs:
     monikerDefinition: a.json
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"file-not-found","message":"*","file":"docfx.yml","line":1,"column":20}
+    {"message_severity":"error","code":"file-not-found","file":"docfx.yml","line":1,"column":20}
 ---
 # Restore long path repo
 inputs:
