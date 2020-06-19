@@ -18,7 +18,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 :::image type=""content"" source=""example.jpg"" alt-text=""example"" lightbox=""example-expanded.jpg"":::
 
 :::image type=""content"" source=""example.jpg"" alt-text=""example"" lightbox=""example-expanded.jpg"" border=""false"":::
-";
+
+:::image type=""icon"" source=""green-checkmark.png""::: |  |  |  |
+
+|Capability   | Admin  | Member  | Contributor  | Viewer |
+|---|---|---|---|---|
+| Update and delete the workspace.  |  |   |   |   | 
+| Add/remove people, including other admins.  | :::image type=""icon"" source=""green-checkmark.png"":::  |   |   |   |
+| Add members or others with lower permissions.  |  X | X  |  |   |";
+
             var expected = @"<p class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"">
 </p>
@@ -35,6 +43,46 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <img src=""example.jpg"" alt=""example"">
 </a>
 </p>
+<p>
+<img src=""green-checkmark.png"" role=""presentation"">
+</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Admin</th>
+<th>Member</th>
+<th>Contributor</th>
+<th>Viewer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Update and delete the workspace.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Add/remove people, including other admins.</td>
+<td><p>
+<img src=""green-checkmark.png"" role=""presentation"">
+</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Add members or others with lower permissions.</td>
+<td>X</td>
+<td>X</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
@@ -128,7 +176,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             var expected = @"<p>:::image type=&quot;icon&quot;:::</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image", "invalid-image" });
+            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
         }
 
         [Fact]
@@ -141,7 +189,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             var expected = @"<p>:::image source=&quot;example.svg&quot;:::</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image", "invalid-image" });
+            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
         }
 
         [Fact]

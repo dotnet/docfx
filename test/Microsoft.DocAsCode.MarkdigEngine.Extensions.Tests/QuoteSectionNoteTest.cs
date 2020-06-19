@@ -306,10 +306,10 @@ no-note text 2-2</p>
 > [!div class=""b"" cause=""divb""]
 > this is div with class b and cause divb
 > [!IMPORTANT]
-> This is imoprtant text follow div")]
+> This is important text follow div")]
         public void TestSectionNoteMixture(string source)
         {
-            var expected = "<blockquote>\n<p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>This is note text</p>\n</div>\n<div class=\"WARNING\">\n<h5>WARNING</h5>\n<p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\">\n<p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\">\n<p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\">\n<h5>IMPORTANT</h5>\n<p>This is imoprtant text follow div</p>\n</div>\n";
+            var expected = "<blockquote>\n<p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>This is note text</p>\n</div>\n<div class=\"WARNING\">\n<h5>WARNING</h5>\n<p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\">\n<p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\">\n<p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\">\n<h5>IMPORTANT</h5>\n<p>This is important text follow div</p>\n</div>\n";
 
             TestUtility.VerifyMarkup(source, expected);
         }
