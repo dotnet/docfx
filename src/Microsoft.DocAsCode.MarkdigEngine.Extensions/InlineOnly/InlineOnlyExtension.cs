@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Parsers;
     using Markdig.Renderers;
 
-    public class InlineOnlyExtentsion : IMarkdownExtension
+    public class InlineOnlyExtension : IMarkdownExtension
     {
         public void Setup(MarkdownPipelineBuilder pipeline)
         {

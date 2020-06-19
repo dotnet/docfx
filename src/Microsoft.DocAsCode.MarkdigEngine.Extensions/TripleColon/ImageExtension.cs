@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -14,18 +14,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public string Name => "image";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
 
         public ImageExtension(MarkdownContext context)
         {
             _context = context;
-        }
-
-        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
-        {
-            return RenderDelegate != null
-                ? RenderDelegate(renderer, markdownObject)
-                : false;
         }
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
@@ -66,7 +58,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if(string.IsNullOrEmpty(type))
+            if (string.IsNullOrEmpty(type))
             {
                 type = "content";
             }
@@ -89,93 +81,88 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (type == "icon")
             {
                 htmlAttributes.AddProperty("role", "presentation");
-            } else
+            }
+            else
             {
                 htmlAttributes.AddProperty("alt", alt);
             }
             var id = GetHtmlId(markdownObject);
-            if(type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
-
-            RenderDelegate = (renderer, obj) =>
-            {
-                ITripleColon tripleColonObj;
-
-                if (obj is TripleColonBlock) {
-                    tripleColonObj = (TripleColonBlock)obj;
-                } else {
-                    tripleColonObj = (TripleColonInline)obj;
-                };
-
-                var currentType = string.Empty;
-                var currentLightbox = string.Empty;
-                var currentBorderStr = string.Empty;
-                var currentBorder = true;
-                var currentLink = string.Empty;
-                if(!tripleColonObj.Attributes.TryGetValue("type", out currentType))
-                {
-                    currentType = "content";
-                }
-                tripleColonObj.Attributes.TryGetValue("lightbox", out currentLightbox); //it's okay if this is null
-                tripleColonObj.Attributes.TryGetValue("border", out currentBorderStr); //it's okay if this is null
-                tripleColonObj.Attributes.TryGetValue("link", out currentLink); //it's okay if this is null
-                if (!bool.TryParse(currentBorderStr, out currentBorder))
-                {
-                    if(currentType == "icon")
-                    {
-                        currentBorder = false;
-                    } else
-                    {
-                        currentBorder = true;
-                    }
-                }
-
-                if (currentBorder)
-                {
-                    renderer.WriteLine("<p class=\"mx-imgBorder\">");
-                } else
-                {
-                    renderer.WriteLine("<p>");
-                }
-                if (!string.IsNullOrEmpty(currentLink))
-                {
-                    var linkHtmlAttributes = new HtmlAttributes();
-                    currentLink = _context.GetLink(currentLink, obj);
-                    linkHtmlAttributes.AddProperty("href", $"{currentLink}");
-                    renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
-                } else if (!string.IsNullOrEmpty(currentLightbox))
-                {
-                    var lighboxHtmlAttributes = new HtmlAttributes();
-                    var path = _context.GetLink(currentLightbox, obj);
-                    lighboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
-                    lighboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
-                    renderer.Write("<a").WriteAttributes(lighboxHtmlAttributes).WriteLine(">");
-                }
-                if(currentType != "complex")
-                {
-                    renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-                } else
-                {
-                    if (currentType == "complex" && tripleColonObj.Count == 0)
-                    {
-                        logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
-                        return false;
-                    }
-                    var htmlId = GetHtmlId(obj);
-                    renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-                    renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-                    renderer.WriteChildren(tripleColonObj as ContainerBlock);
-                    renderer.WriteLine("</div>");
-                }
-                if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
-                {
-                    renderer.WriteLine($"</a>");
-                }
-                renderer.WriteLine("</p>");
-                return true;
-            };
+            if (type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             return true;
         }
+
+        public bool Render(HtmlRenderer renderer, MarkdownObject obj, Action<string> logWarning)
+        {
+            var tripleColonObj = (ITripleColon)obj;
+
+            if (!tripleColonObj.Attributes.TryGetValue("type", out var currentType))
+            {
+                currentType = "content";
+            }
+            tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); //it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); //it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("link", out var currentLink); //it's okay if this is null
+            if (!bool.TryParse(currentBorderStr, out var currentBorder))
+            {
+                if (currentType == "icon")
+                {
+                    currentBorder = false;
+                }
+                else
+                {
+                    currentBorder = true;
+                }
+            }
+
+            if (currentBorder)
+            {
+                renderer.WriteLine("<p class=\"mx-imgBorder\">");
+            }
+            else
+            {
+                renderer.WriteLine("<p>");
+            }
+            if (!string.IsNullOrEmpty(currentLink))
+            {
+                var linkHtmlAttributes = new HtmlAttributes();
+                currentLink = _context.GetLink(currentLink, obj);
+                linkHtmlAttributes.AddProperty("href", $"{currentLink}");
+                renderer.Write("<a").WriteAttributes(linkHtmlAttributes).WriteLine(">");
+            }
+            else if (!string.IsNullOrEmpty(currentLightbox))
+            {
+                var lightboxHtmlAttributes = new HtmlAttributes();
+                var path = _context.GetLink(currentLightbox, obj);
+                lightboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
+                lightboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
+                renderer.Write("<a").WriteAttributes(lightboxHtmlAttributes).WriteLine(">");
+            }
+            if (currentType != "complex")
+            {
+                renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+            }
+            else
+            {
+                if (currentType == "complex" && tripleColonObj.Count == 0)
+                {
+                    logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
+                    return false;
+                }
+                var htmlId = GetHtmlId(obj);
+                renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+                renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
+                renderer.WriteChildren(tripleColonObj as ContainerBlock);
+                renderer.WriteLine("</div>");
+            }
+            if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
+            {
+                renderer.WriteLine($"</a>");
+            }
+            renderer.WriteLine("</p>");
+            return true;
+        }
+
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;
@@ -188,21 +175,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)
         {
-            if(attributes != null
+            if (attributes != null
                && attributes.ContainsKey("type")
                && attributes["type"] == "complex")
             {
                 return true;
-            } else
+            }
+            else
             {
                 return false;
             }
         }
-    }
-
-    public class ImageProperties
-    {
-        public string id { get; set; }
-        public string type { get; set; }
     }
 }

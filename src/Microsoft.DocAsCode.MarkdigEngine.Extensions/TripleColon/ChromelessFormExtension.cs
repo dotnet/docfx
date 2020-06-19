@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
@@ -14,19 +13,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public string Name => "form";
         public bool SelfClosing => true;
-        public Func<HtmlRenderer, MarkdownObject, bool> RenderDelegate { get; private set; }
-
-        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
-        {
-            var block = markdownObject;
-            return RenderDelegate != null
-                ? RenderDelegate(renderer, block)
-                : false;
-        }
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
-            var block = (TripleColonBlock)markdownObject;
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
             var model = string.Empty;
@@ -75,22 +64,22 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             renderProperties.Add(new KeyValuePair<string, string>("submitText", submitText));
 
-            RenderDelegate = (renderer, obj) =>
-            {
-                var block = (TripleColonBlock)obj;
-                var buttonText = "Submit";
-                block.RenderProperties.TryGetValue("submitText", out buttonText);
+            return true;
+        }
 
-                renderer.Write("<form").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine("<div></div>");
-                renderer.WriteLine($"<button class=\"button is-primary\" disabled=\"disabled\" type=\"submit\">{buttonText}</button>");
-                renderer.WriteLine("</form>");
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
+        {
+            var block = (TripleColonBlock)markdownObject;
+            block.RenderProperties.TryGetValue("submitText", out var buttonText);
 
-                return true;
-            };
+            renderer.Write("<form").WriteAttributes(block).WriteLine(">");
+            renderer.WriteLine("<div></div>");
+            renderer.WriteLine($"<button class=\"button is-primary\" disabled=\"disabled\" type=\"submit\">{buttonText}</button>");
+            renderer.WriteLine("</form>");
 
             return true;
         }
+
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;

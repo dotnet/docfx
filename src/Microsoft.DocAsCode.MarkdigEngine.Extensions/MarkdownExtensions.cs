@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public static MarkdownPipelineBuilder UseInlineOnly(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.AddIfNotAlready(new InlineOnlyExtentsion());
+            pipeline.Extensions.AddIfNotAlready(new InlineOnlyExtension());
             return pipeline;
         }
 
