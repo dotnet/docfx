@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
             var uidName = default(string);
             var partialName = default(string);
             var titleName = default(string);
+            var hasInnerContent = false;
 
             while (reader.Read(out var token))
             {
@@ -56,6 +57,7 @@ namespace Microsoft.Docs.Build
                         uidName = default;
                         partialName = default;
                         titleName = default;
+                        hasInnerContent = false;
                         foreach (ref readonly var attribute in token.Attributes.Span)
                         {
                             if (attribute.NameIs("uid"))
@@ -90,12 +92,14 @@ namespace Microsoft.Docs.Build
                     }
                     else if (token.Type == HtmlTokenType.EndTag)
                     {
-                        result.Append(ClosingClause)
+                        result.Append(hasInnerContent ? default : "{{name}}")
+                              .Append(ClosingClause)
                               .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
                     }
                 }
                 else
                 {
+                    hasInnerContent = true;
                     result.Append(token.RawText);
                 }
             }
