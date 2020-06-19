@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             while (!c.IsZero())
             {
-                //Meet line ends or whitespaces
+                // Meet line ends or whitespace
                 if (c.IsWhiteSpaceOrZero() || StopCharacters.Contains(c))
                 {
                     break;

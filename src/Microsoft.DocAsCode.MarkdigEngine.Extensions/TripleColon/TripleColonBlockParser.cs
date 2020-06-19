@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
@@ -10,13 +10,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
-    public class TripleColonParser : BlockParser
+    public class TripleColonBlockParser : BlockParser
     {
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
         private readonly MarkdownContext _context;
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
 
-        public TripleColonParser(MarkdownContext context, IDictionary<string, ITripleColonExtensionInfo> extensions)
+        public TripleColonBlockParser(MarkdownContext context, IDictionary<string, ITripleColonExtensionInfo> extensions)
         {
             OpeningCharacters = new[] { ':' };
             _context = context;
@@ -36,17 +36,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            var extensionName = "triple-colon";
-            Action<string> logError = (string message) => _context.LogError(
-                $"invalid-{extensionName}",
-                $"{message}",
-                null,
-                line: processor.LineIndex);
-            Action<string> logWarning = (string message) => _context.LogWarning(
-                $"invalid-{extensionName}",
-                $"{message}",
-                null,
-                line: processor.LineIndex);
+            if (!TryMatchIdentifier(ref slice, out var extensionName) || !_extensions.TryGetValue(extensionName, out var extension))
+            {
+                return BlockState.None;
+            }
 
             var block = new TripleColonBlock(this)
             {
@@ -56,11 +49,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Span = new SourceSpan(sourcePosition, slice.End),
             };
 
-            if (!TryMatchIdentifier(ref slice, out extensionName)
-                || !_extensions.TryGetValue(extensionName, out var extension)
-                || !extension.TryValidateAncestry(processor.CurrentContainer, logError)
-                || !TryMatchAttributes(ref slice, out var attributes, extensionName, extension.SelfClosing, logError)
-                || !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, block))
+            var logError = new Action<string>(message => _context.LogError($"invalid-{extensionName}", message, block));
+            var logWarning = new Action<string>(message => _context.LogWarning($"invalid-{extensionName}", message, block));
+
+            if (!extension.TryValidateAncestry(processor.CurrentContainer, logError) ||
+                !TryMatchAttributes(ref slice, out var attributes, extension.SelfClosing, logError) ||
+                !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, block))
             {
                 return BlockState.None;
             }
@@ -183,7 +177,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        private static bool TryMatchAttributeValue(ref StringSlice slice, out string value, string extensionName, string attributeName, Action<string> logError)
+        public static bool TryMatchAttributeValue(ref StringSlice slice, out string value, string attributeName, Action<string> logError)
         {
             value = string.Empty;
             var c = slice.CurrentChar;
@@ -209,7 +203,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        public static bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, string extensionName, bool selfClosing, Action<string> logError)
+        public static bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, bool selfClosing, Action<string> logError)
         {
             attributes = EmptyAttributes;
             while (true)
@@ -238,7 +232,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     slice.NextChar();
                     ExtensionsHelper.SkipSpaces(ref slice);
-                    if (!TryMatchAttributeValue(ref slice, out value, extensionName, attributeName, logError))
+                    if (!TryMatchAttributeValue(ref slice, out value, attributeName, logError))
                     {
                         return false;
                     }

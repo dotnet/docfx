@@ -72,7 +72,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestDfmImageLink_WithSpecialCharactorsInAltText()
+        public void TestDfmImageLink_WithSpecialCharactersInAltText()
         {
             var source = @"![This is image alt text with quotation ' and double quotation ""hello"" world](girl.png)";
 
@@ -123,8 +123,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        [Trait("A wrong case need to be fixed in dfm", "' in title should be traslated to &#39; instead of &amp;#39;")]
-        public void TestDfmLink_LinkWithSpecialCharactorsInTitle()
+        [Trait("A wrong case need to be fixed in dfm", "' in title should be translated to &#39; instead of &amp;#39;")]
+        public void TestDfmLink_LinkWithSpecialCharactersInTitle()
         {
             var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";
             var expected = @"<p><a href=""https://www.google.com.sg/?gfe_rd=cr&amp;ei=Xk"" title=""Google's homepage"">text's string</a></p>
@@ -134,7 +134,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestDfmLink_WithSpecialCharactorsInTitle()
+        public void TestDfmLink_WithSpecialCharactersInTitle()
         {
             var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is \""hello\"" world."")";
 
@@ -160,7 +160,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestPathUtility_AbsoluteLinkWithBracketAndBrackt()
+        public void TestPathUtility_AbsoluteLinkWithBracketAndBracket()
         {
             var source = @"[User-Defined Date/Time Formats (Format Function)](http://msdn2.microsoft.com/library/73ctwf33\(VS.90\).aspx)";
             var expected = @"<p><a href=""http://msdn2.microsoft.com/library/73ctwf33(VS.90).aspx"">User-Defined Date/Time Formats (Format Function)</a></p>
@@ -271,7 +271,7 @@ content-b
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestAllExtentsions()
+        public void TestAllExtensions()
         {
             string source = @"---
 title: ""如何使用 Visual C++ 工具集报告问题 | Microsoft Docs""

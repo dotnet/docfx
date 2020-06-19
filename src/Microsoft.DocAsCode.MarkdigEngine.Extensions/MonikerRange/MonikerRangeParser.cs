@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (c != '"')
             {
-                _context.LogWarning("invalid-moniker-range", "MonikerRange does not have ending charactor (\").", null, line: processor.LineIndex);
+                _context.LogWarning("invalid-moniker-range", "MonikerRange does not have ending character (\").", null, line: processor.LineIndex);
                 return BlockState.None;
             }
 
@@ -144,7 +144,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var monikerRange = (MonikerRangeBlock)block;
             if (monikerRange != null && monikerRange.Closed == false)
             {
-                _context.LogWarning("invalid-moniker-range", $"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explictly.", block);
+                _context.LogWarning("invalid-moniker-range", $"No \"::: {EndString}\" found for \"{monikerRange.MonikerRange}\", MonikerRange does not end explicitly.", block);
             }
             return true;
         }

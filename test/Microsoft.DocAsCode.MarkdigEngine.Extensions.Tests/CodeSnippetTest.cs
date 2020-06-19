@@ -153,7 +153,7 @@ print(azureml.core.VERSION)</code></pre>";
             TestUtility.VerifyMarkup(
                 source,
                 expected,
-                errors: new[] { "mutiple-tags-with-same-name"},
+                errors: new[] { "multiple-tags-with-same-name"},
                 files: new Dictionary<string, string>
                 {
                     { "Program.ipynb", content },
@@ -161,7 +161,7 @@ print(azureml.core.VERSION)</code></pre>";
         }
 
         [Fact]
-        public void CodeSnippetShouldNotWorkInParagragh()
+        public void CodeSnippetShouldNotWorkInParagraph()
         {
             var source = "text [!code[test](CodeSnippet.cs)]";
 

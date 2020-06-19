@@ -39,13 +39,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 ")]
         [InlineData(@":::video title=""My title"":::", @"<p>:::video title=&quot;My title&quot;:::</p>
 ")]
+        [InlineData(@":::video source=""https://videoland.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" max-width=""400"":::", @"<p><div class=""embeddedvideo"">
+<iframe src=""https://videoland.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true"" allowFullScreen=""true"" frameBorder=""0"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" style=""max-width:400px;"">
+</div></p>
+")]
         [InlineData(@":::video source=""https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" max-width=""what"":::", @"<p>:::video source=&quot;https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true&quot; title=&quot;Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin&quot; max-width=&quot;what&quot;:::</p>
 ")]
         [InlineData(@":::video blab=""blib"" source=""https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"":::", @"<p>:::video blab=&quot;blib&quot; source=&quot;https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true&quot; title=&quot;Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin&quot;:::</p>
 ")]
+        [InlineData(@":::video source=""https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"":::", @"<p><div class=""embeddedvideo"">
+<iframe src=""https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/?nocookie=true"" allowFullScreen=""true"" frameBorder=""0"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"">
+</div></p>
+")]
         public void VideoTestBlock_InvalidVideo(string source, string expected)
         {
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-video", "invalid-video" });
+            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-video" });
         }
 
 

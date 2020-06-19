@@ -209,11 +209,11 @@ namespace TableSnippets
         {
             // <Snippet_TableCell_Const1>
             // A child Block element for the new TableCell element.
-            Paragraph parx = new Paragraph(new Run(""A bit of text content...""));
+            Paragraph para = new Paragraph(new Run(""A bit of text content...""));
 
             // After this line executes, the new element ""cellx""
-            // contains the specified Block element, ""parx"".
-            TableCell cellx = new TableCell(parx);
+            // contains the specified Block element, ""para"".
+            TableCell cellx = new TableCell(para);
             // </Snippet_TableCell_Const1>
         }
     }
@@ -378,7 +378,7 @@ namespace ChangeFeedSample
         }
     }
 }";
-        static public string contentCharpRegion = @"using Microsoft.AspNetCore.Builder;
+        static public string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -481,13 +481,13 @@ namespace TagHelpersBuiltIn
             <td>asp-all-route-data</td>
             <td>
                 <code>
-                    @Html.Raw(Html.Encode(@""<a asp-route=""""speakerevalscurrent"""" asp-all-route-data=""""parms"""">Speaker Evaluations</a>""))
+                    @Html.Raw(Html.Encode(@""<a asp-route=""""speakerevalscurrent"""" asp-all-route-data=""""params"""">Speaker Evaluations</a>""))
                 </code>
             </td>
             <td>
                 <!-- <snippet_AspAllRouteData> -->
                 @{
-                var parms = new Dictionary<string, string>
+                var params = new Dictionary<string, string>
                             {
                                 { ""speakerId"", ""11"" },
                                 { ""currentYear"", ""true"" }
@@ -495,7 +495,7 @@ namespace TagHelpersBuiltIn
                 }
 
                 <a asp-route=""speakerevalscurrent""
-                   asp-all-route-data=""parms"">Speaker Evaluations</a>
+                   asp-all-route-data=""params"">Speaker Evaluations</a>
                 <!-- </snippet_AspAllRouteData> -->
             </td>
         </tr>
@@ -1107,7 +1107,7 @@ using System.Windows;
         [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
-            TableCell cellx = new TableCell(parx);
+            TableCell cellx = new TableCell(para);
             // &lt;/Snippet_TableCell_Const1&gt;
         }
     }
@@ -1315,12 +1315,12 @@ End Class
         &lt;td&gt;asp-all-route-data&lt;/td&gt;
         &lt;td&gt;
             &lt;code&gt;
-                @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;parms&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
+                @Html.Raw(Html.Encode(@&quot;&lt;a asp-route=&quot;&quot;speakerevalscurrent&quot;&quot; asp-all-route-data=&quot;&quot;params&quot;&quot;&gt;Speaker Evaluations&lt;/a&gt;&quot;))
             &lt;/code&gt;
         &lt;/td&gt;
         &lt;td&gt;
             @{
-            var parms = new Dictionary&lt;string, string&gt;
+            var params = new Dictionary&lt;string, string&gt;
                         {
                             { &quot;speakerId&quot;, &quot;11&quot; },
                             { &quot;currentYear&quot;, &quot;true&quot; }
@@ -1328,7 +1328,7 @@ End Class
             }
 
             &lt;a asp-route=&quot;speakerevalscurrent&quot;
-               asp-all-route-data=&quot;parms&quot;&gt;Speaker Evaluations&lt;/a&gt;
+               asp-all-route-data=&quot;params&quot;&gt;Speaker Evaluations&lt;/a&gt;
         &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
@@ -1697,7 +1697,7 @@ Key &quot;doc&quot; is not found.
             else if (source.Contains("source2.cs"))
             {
                 filename = "source2.cs";
-                content = contentCharpRegion;
+                content = contentCSharpRegion;
             }
             else if (source.Contains("source3.cs"))
             {

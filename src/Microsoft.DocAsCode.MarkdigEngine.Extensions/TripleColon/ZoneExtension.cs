@@ -4,28 +4,28 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using Markdig.Parsers;
     using Markdig.Renderers;
-	using Markdig.Renderers.Html;
-	using Markdig.Syntax;
-	using System;
-	using System.Collections.Generic;
+    using Markdig.Renderers.Html;
+    using Markdig.Syntax;
+    using System;
+    using System.Collections.Generic;
     using System.Text.RegularExpressions;
 
-	public class ZoneExtension : ITripleColonExtensionInfo
+    public class ZoneExtension : ITripleColonExtensionInfo
     {
         private static readonly Regex pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
         private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
         public string Name => "zone";
-		public bool SelfClosing => false;
+        public bool SelfClosing => false;
 
-        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject)
-		{
-			return false;
-		}
+        public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
+        {
+            return false;
+        }
 
-		public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+        public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
             htmlAttributes = null;
-			renderProperties = null;
+            renderProperties = null;
             var target = string.Empty;
             var pivot = string.Empty;
             foreach (var attribute in attributes)
