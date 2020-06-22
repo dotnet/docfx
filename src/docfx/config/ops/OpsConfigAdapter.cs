@@ -181,30 +181,30 @@ namespace Microsoft.Docs.Build
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules(ValidationServiceUrl("contentrules"), headers);
+            return await FetchValidationRules($"{ValidationServiceEndPoint}/rulesets/contentrules", headers);
         }
 
         private async Task<string> GetAllowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules(ValidationServiceUrl("allowlists"), headers);
+            return await FetchValidationRules($"{ValidationServiceEndPoint}/validation/allowlists", headers);
         }
 
         private async Task<string> GetDisallowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules(ValidationServiceUrl("disallowlists"), headers);
+            return await FetchValidationRules($"{ValidationServiceEndPoint}/validation/disallowlists", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
-            var rules = FetchValidationRules(ValidationServiceUrl("metadatarules"), headers);
-            var allowlists = FetchValidationRules(ValidationServiceUrl("allowlists"), headers);
+            var metadataRules = FetchValidationRules($"{ValidationServiceEndPoint}/rulesets/metadatarules", headers);
+            var allowlists = FetchValidationRules($"{ValidationServiceEndPoint}/validation/allowlists", headers);
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await rules, await allowlists);
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
 
         private static Dictionary<string, string> GetValidationServiceHeaders(Uri url)
@@ -352,18 +352,13 @@ namespace Microsoft.Docs.Build
                 : DocsEnvironment.Prod;
         }
 
-        private static string ValidationServiceUrl(string resource) => (s_docsEnvironment, resource) switch
+        private static string ValidationServiceEndPoint => s_docsEnvironment switch
         {
-            (DocsEnvironment.Prod, "allowlists") => "https://docs.microsoft.com/api/metadata/allowlists",
-            (DocsEnvironment.Prod, "disallowlists") => "https://docs.microsoft.com/api/metadata/disallowlists",
-            (DocsEnvironment.Prod, "metadatarules") => "https://docs.microsoft.com/api/metadata/rules",
-            (DocsEnvironment.Prod, "contentrules") => "https://docs.microsoft.com/api/metadata/rules/content",
-
-            (_, "allowlists") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/validation/allowlists",
-            (_, "disallowlists") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/validation/disallowlists",
-            (_, "metadatarules") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/rulesets/metadatarules",
-            (_, "contentrules") => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt/rulesets/contentrules",
-            (_, _) => throw new NotSupportedException(),
+            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.Internal => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.Perf => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            _ => throw new NotSupportedException(),
         };
     }
 }
