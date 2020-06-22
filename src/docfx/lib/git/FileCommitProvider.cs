@@ -76,6 +76,7 @@ namespace Microsoft.Docs.Build
                 return Array.Empty<GitCommit>();
             }
 
+            var searchSteps = 0;
             var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = new long[MaxParentBlob];
@@ -95,6 +96,8 @@ namespace Microsoft.Docs.Build
                 {
                     continue;
                 }
+
+                searchSteps++;
 
                 // Lookup and use cached commit history ONLY if there are no other commits to follow
                 if (commitsToFollow.Count == 0 && commitCache.TryGetCommits(commit.Id.a, blob, out var commitIds))
@@ -140,12 +143,10 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (updateCache)
+            // Only update commit cache if the search takes significant amount of effort
+            if (updateCache && searchSteps > 100)
             {
-                lock (commitCache)
-                {
-                    commitCache.SetCommits(headCommit.Id.a, headBlob, result.Select(c => c.Id.a).ToArray());
-                }
+                commitCache.SetCommits(headCommit.Id.a, headBlob, result.Select(c => c.Id.a).ToArray());
             }
 
             return result.Select(c => c.GitCommit).ToArray();
