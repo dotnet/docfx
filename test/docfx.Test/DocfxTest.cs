@@ -183,6 +183,9 @@ namespace Microsoft.Docs.Build
                 ? new Dictionary<string, string> { [".errors.log"] = spec.Outputs[".errors.log"] }
                 : spec.Outputs;
 
+            // Put some delay here to wait for file system update
+            Thread.Sleep(5);
+
             VerifyOutput(randomOutputPath, outputs);
 
             Directory.Delete(randomOutputPath, recursive: true);
