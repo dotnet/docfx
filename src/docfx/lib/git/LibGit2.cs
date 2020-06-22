@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern git_oid* git_tree_entry_id(IntPtr entry);
 
         [DllImport(LibName)]
-        public static unsafe extern IntPtr git_tree_entry_name(IntPtr entry);
+        public static unsafe extern byte* git_tree_entry_name(IntPtr entry);
 
         [DllImport(LibName)]
         public static unsafe extern int git_tree_entry_type(IntPtr entry);

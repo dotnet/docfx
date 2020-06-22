@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
-            using (Progress.Start("Waiting for pending outputs..."))
+            using (Progress.Start("Waiting for pending outputs"))
             {
                 context.Output.WaitForCompletion();
             }
