@@ -181,28 +181,28 @@ namespace Microsoft.Docs.Build
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndPoint}/rulesets/contentrules", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/rulesets/contentrules", headers);
         }
 
         private async Task<string> GetAllowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndPoint}/validation/allowlists", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/validation/allowlists", headers);
         }
 
         private async Task<string> GetDisallowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndPoint}/validation/disallowlists", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint}/validation/disallowlists", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
-            var metadataRules = FetchValidationRules($"{ValidationServiceEndPoint}/rulesets/metadatarules", headers);
-            var allowlists = FetchValidationRules($"{ValidationServiceEndPoint}/validation/allowlists", headers);
+            var metadataRules = FetchValidationRules($"{ValidationServiceEndpoint}/rulesets/metadatarules", headers);
+            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/validation/allowlists", headers);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
@@ -352,7 +352,7 @@ namespace Microsoft.Docs.Build
                 : DocsEnvironment.Prod;
         }
 
-        private static string ValidationServiceEndPoint => s_docsEnvironment switch
+        private static string ValidationServiceEndpoint => s_docsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net/route/validationmgt",
             DocsEnvironment.Internal => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
