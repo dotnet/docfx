@@ -75,7 +75,7 @@ jobs:
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
   # Upload code coverage to codecov.io
-  - script: |
+  - bash: |
       bash <(curl -s https://codecov.io/bash)
     displayName: 'Upload to codecov.io'
 
