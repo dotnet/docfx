@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
+    using Markdig.Syntax.Inlines;
     using System;
     using System.Collections.Generic;
 
@@ -115,13 +116,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if (currentBorder)
+            if (currentBorder && tripleColonObj is Block)
             {
                 renderer.WriteLine("<p class=\"mx-imgBorder\">");
             }
             else
             {
-                renderer.WriteLine("<p>");
+                if(tripleColonObj is Block) renderer.WriteLine("<p>");
             }
             if (!string.IsNullOrEmpty(currentLink))
             {
@@ -159,7 +160,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 renderer.WriteLine($"</a>");
             }
-            renderer.WriteLine("</p>");
+            if (tripleColonObj is Block)
+            {
+                renderer.WriteLine("</p>");
+            } else
+            {
+                renderer.WriteChildren(tripleColonObj as ContainerInline);
+            }
             return true;
         }
 
