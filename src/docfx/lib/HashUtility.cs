@@ -43,6 +43,26 @@ namespace Microsoft.Docs.Build
             return ToHexString(sha1.ComputeHash(input));
         }
 
+        public static uint GetFnv1A32Hash(ReadOnlySpan<byte> input)
+        {
+            var hash = 2166136261;
+            for (var i = 0; i < input.Length; i++)
+            {
+                hash = (hash * 16777619) ^ input[i];
+            }
+            return hash;
+        }
+
+        public static ulong GetFnv1A64Hash(ReadOnlySpan<byte> input)
+        {
+            var hash = 14695981039346656037;
+            for (var i = 0; i < input.Length; i++)
+            {
+                hash = (hash * 1099511628211) ^ input[i];
+            }
+            return hash;
+        }
+
         private static string ToHexString(byte[] bytes, int digits = 0)
         {
             var formatted = new StringBuilder(2 * bytes.Length);

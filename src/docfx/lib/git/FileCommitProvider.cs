@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Collections.Extensions;
 
 using static Microsoft.Docs.Build.LibGit2;
 
@@ -16,6 +18,8 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class FileCommitProvider : IDisposable
     {
+        private static readonly DictionarySlim<uint, Tree> s_emptyTree = new DictionarySlim<uint, Tree>();
+
         private readonly Repository _repository;
         private readonly Lazy<GitCommitCache> _commitCache;
 
@@ -23,16 +27,11 @@ namespace Microsoft.Docs.Build
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
         private readonly ConcurrentDictionary<string, Lazy<(List<Commit>, Dictionary<long, Commit>)>> _commits;
 
-        // Intern path strings by given each path segment a string ID. For faster string lookup.
-        private readonly ConcurrentDictionary<string, int> _stringPool = new ConcurrentDictionary<string, int>();
-
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
-        private readonly ConcurrentDictionary<long, Dictionary<int, git_oid>?> _trees
-                   = new ConcurrentDictionary<long, Dictionary<int, git_oid>?>();
+        private readonly ConcurrentDictionary<long, Tree> _treeCache = new ConcurrentDictionary<long, Tree>();
 
         private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new ConcurrentDictionary<(string, string?), GitCommit[]>();
 
-        private int _nextStringId;
         private IntPtr _repo;
 
         public FileCommitProvider(Repository repository, string cacheFilePath)
@@ -68,7 +67,7 @@ namespace Microsoft.Docs.Build
         {
             const int MaxParentBlob = 32;
 
-            var (commits, commitsBySha) = _commits.GetOrAdd(
+            var (commits, commitsById) = _commits.GetOrAdd(
                 committish ?? "",
                 key => new Lazy<(List<Commit>, Dictionary<long, Commit>)>(() => LoadCommits(key))).Value;
 
@@ -80,7 +79,7 @@ namespace Microsoft.Docs.Build
             var updateCache = true;
             var result = new List<Commit>();
             var parentBlobs = new long[MaxParentBlob];
-            var pathSegments = Array.ConvertAll(file.Split('/'), GetStringId);
+            var pathSegments = Array.ConvertAll(file.Split('/'), path => HashUtility.GetFnv1A32Hash(Encoding.UTF8.GetBytes(path)));
 
             var headCommit = commits[0];
             var headBlob = GetBlob(commits[0].Tree, pathSegments);
@@ -98,14 +97,14 @@ namespace Microsoft.Docs.Build
                 }
 
                 // Lookup and use cached commit history ONLY if there are no other commits to follow
-                if (commitsToFollow.Count == 0 && commitCache.TryGetCommits(commit.Sha.a, blob, out var commitIds))
+                if (commitsToFollow.Count == 0 && commitCache.TryGetCommits(commit.Id.a, blob, out var commitIds))
                 {
                     // Only update cache when the cached result has changed.
                     updateCache = result.Count != 0;
 
                     for (var i = 0; i < commitIds.Length; i++)
                     {
-                        result.Add(commitsBySha[commitIds[i]]);
+                        result.Add(commitsById[commitIds[i]]);
                     }
                     break;
                 }
@@ -145,7 +144,7 @@ namespace Microsoft.Docs.Build
             {
                 lock (commitCache)
                 {
-                    commitCache.SetCommits(headCommit.Sha.a, headBlob, result.Select(c => c.Sha.a).ToArray());
+                    commitCache.SetCommits(headCommit.Id.a, headBlob, result.Select(c => c.Id.a).ToArray());
                 }
             }
 
@@ -193,145 +192,162 @@ namespace Microsoft.Docs.Build
 
         private unsafe (List<Commit>, Dictionary<long, Commit>) LoadCommits(string? committish = null)
         {
-            if (string.IsNullOrEmpty(committish))
+            using (Progress.Start("Loading git commits"))
             {
-                committish = _repository.Commit;
+                if (string.IsNullOrEmpty(committish))
+                {
+                    committish = _repository.Commit;
+                }
+
+                var commits = new List<Commit>();
+                var commitsById = new Dictionary<long, Commit>();
+
+                // walk commit list
+                git_revwalk_new(out var walk, _repo);
+                git_revwalk_sorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
+
+                if (git_revparse_single(out var headCommit, _repo, committish) != 0)
+                {
+                    git_object_free(walk);
+                    throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();
+                }
+
+                var lastCommitId = *git_object_id(headCommit);
+                git_revwalk_push(walk, &lastCommitId);
+                git_object_free(headCommit);
+
+                while (true)
+                {
+                    var error = git_revwalk_next(out var commitId, walk);
+                    if (error == -31 /* GIT_ITEROVER */)
+                    {
+                        break;
+                    }
+
+                    // https://github.com/libgit2/libgit2sharp/issues/1351
+                    if (error != 0 /* GIT_ENOTFOUND */)
+                    {
+                        git_revwalk_free(walk);
+
+                        Log.Write($"Load git commit failed: {error} {lastCommitId}");
+                        throw Errors.System.GitCloneIncomplete(_repository.Path).ToException();
+                    }
+
+                    lastCommitId = commitId;
+                    git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
+                    var author = git_commit_author(commit);
+                    var parentCount = git_commit_parentcount(commit);
+                    var parents = new git_oid[parentCount];
+                    for (var i = 0; i < parentCount; i++)
+                    {
+                        parents[i] = *git_commit_parent_id(commit, i);
+                    }
+
+                    var gitCommit = new GitCommit(
+                        Marshal.PtrToStringUTF8(author->name) ?? "",
+                        Marshal.PtrToStringUTF8(author->email) ?? "",
+                        commitId.ToString(),
+                        new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset());
+
+                    var treeId = *git_commit_tree_id(commit);
+                    var tree = new Tree { Id = treeId };
+                    var item = new Commit(commitId, parents, tree, gitCommit);
+
+                    commitsById.Add(commitId.a, item);
+                    commits.Add(item);
+                    git_object_free(commit);
+                }
+                git_revwalk_free(walk);
+
+                // build parent indices
+                Parallel.ForEach(commits, commit =>
+                {
+                    for (var i = 0; i < commit.ParentIds.Length; i++)
+                    {
+                        commit.Parents[i] = commitsById[commit.ParentIds[i].a];
+                    }
+                    commit.ParentIds = Array.Empty<git_oid>();
+                });
+
+                return (commits, commitsById);
             }
-
-            var commits = new List<Commit>();
-            var commitsBySha = new Dictionary<long, Commit>();
-
-            // walk commit list
-            git_revwalk_new(out var walk, _repo);
-            git_revwalk_sorting(walk, 1 << 0 | 1 << 1 /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
-
-            if (git_revparse_single(out var headCommit, _repo, committish) != 0)
-            {
-                git_object_free(walk);
-                throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();
-            }
-
-            var lastCommitId = *git_object_id(headCommit);
-            git_revwalk_push(walk, &lastCommitId);
-            git_object_free(headCommit);
-
-            while (true)
-            {
-                var error = git_revwalk_next(out var commitId, walk);
-                if (error == -31 /* GIT_ITEROVER */)
-                {
-                    break;
-                }
-
-                // https://github.com/libgit2/libgit2sharp/issues/1351
-                if (error != 0 /* GIT_ENOTFOUND */)
-                {
-                    git_revwalk_free(walk);
-
-                    Log.Write($"Load git commit failed: {error} {lastCommitId}");
-                    throw Errors.System.GitCloneIncomplete(_repository.Path).ToException();
-                }
-
-                lastCommitId = commitId;
-                git_object_lookup(out var commit, _repo, &commitId, 1 /* GIT_OBJ_COMMIT */);
-                var author = git_commit_author(commit);
-                var parentCount = git_commit_parentcount(commit);
-                var parents = new git_oid[parentCount];
-                for (var i = 0; i < parentCount; i++)
-                {
-                    parents[i] = *git_commit_parent_id(commit, i);
-                }
-
-                var gitCommit = new GitCommit(
-                    Marshal.PtrToStringUTF8(author->name) ?? "",
-                    Marshal.PtrToStringUTF8(author->email) ?? "",
-                    commitId.ToString(),
-                    new git_time { time = git_commit_time(commit), offset = git_commit_time_offset(commit) }.ToDateTimeOffset());
-
-                var item = new Commit(commitId, parents, *git_commit_tree_id(commit), gitCommit);
-                commitsBySha.Add(commitId.a, item);
-                commits.Add(item);
-                git_object_free(commit);
-            }
-            git_revwalk_free(walk);
-
-            // build parent indices
-            Parallel.ForEach(commits, commit =>
-            {
-                for (var i = 0; i < commit.ParentShas.Length; i++)
-                {
-                    commit.Parents[i] = commitsBySha[commit.ParentShas[i].a];
-                }
-                commit.ParentShas = Array.Empty<git_oid>();
-            });
-
-            return (commits, commitsBySha);
         }
 
-        private long GetBlob(git_oid treeId, int[] pathSegments)
+        private long GetBlob(Tree tree, uint[] pathSegments)
         {
-            var blob = treeId;
+            var node = tree;
 
             for (var i = 0; i < pathSegments.Length; i++)
             {
-                var files = _trees.GetOrAdd(blob.a, _ => LoadTree(blob));
-                if (files is null || !files.TryGetValue(pathSegments[i], out blob))
+                var children = node.Children ?? LoadChildren(node);
+                if (children.Count == 0 || !children.TryGetValue(pathSegments[i], out node))
                 {
                     return default;
                 }
             }
 
-            return blob.a;
+            return node.Id.a;
         }
 
-        private unsafe Dictionary<int, git_oid>? LoadTree(git_oid treeId)
+        private unsafe DictionarySlim<uint, Tree> LoadChildren(Tree tree)
         {
-            if (git_object_lookup(out var tree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
+            var treeId = tree.Id;
+            if (git_object_lookup(out var pTree, _repo, &treeId, 2 /* GIT_OBJ_TREE */) != 0)
             {
-                return null;
+                return tree.Children = s_emptyTree;
             }
 
-            var n = git_tree_entrycount(tree);
-            var blobs = new Dictionary<int, git_oid>((int)n);
+            var n = (int)git_tree_entrycount(pTree);
+            var children = new DictionarySlim<uint, Tree>(n);
 
-            for (var p = IntPtr.Zero; p != n; p = p + 1)
+            for (var i = 0; i < n; i++)
             {
-                var entry = git_tree_entry_byindex(tree, p);
-                var name = Marshal.PtrToStringUTF8(git_tree_entry_name(entry)) ?? "";
+                var entry = git_tree_entry_byindex(pTree, (IntPtr)i);
+                var entryId = *git_tree_entry_id(entry);
+                var pName = git_tree_entry_name(entry);
+                var pNameEnd = pName;
+                while (*pNameEnd != 0)
+                {
+                    pNameEnd++;
+                }
 
-                blobs[GetStringId(name)] = *git_tree_entry_id(entry);
+                var name = new ReadOnlySpan<byte>(pName, (int)(pNameEnd - pName));
+
+                children.GetOrAddValueRef(HashUtility.GetFnv1A32Hash(name)) = _treeCache.GetOrAdd(entryId.a, (_, id) => new Tree { Id = id }, entryId);
             }
 
-            git_object_free(tree);
+            git_object_free(pTree);
 
-            return blobs;
-        }
-
-        private int GetStringId(string value)
-        {
-            return _stringPool.GetOrAdd(value, _ => Interlocked.Increment(ref _nextStringId));
+            return tree.Children = children;
         }
 
         private class Commit
         {
-            public git_oid Sha { get; }
+            public git_oid Id { get; }
 
-            public git_oid Tree { get; }
+            public Tree Tree { get; }
 
             public GitCommit GitCommit { get; }
 
             public Commit[] Parents { get; }
 
-            public git_oid[] ParentShas { get; set; }
+            public git_oid[] ParentIds { get; set; }
 
-            public Commit(git_oid sha, git_oid[] parentShas, git_oid tree, GitCommit gitCommit)
+            public Commit(git_oid id, git_oid[] parentIds, Tree tree, GitCommit gitCommit)
             {
-                Sha = sha;
-                ParentShas = parentShas;
-                Parents = new Commit[parentShas.Length];
+                Id = id;
+                ParentIds = parentIds;
                 Tree = tree;
                 GitCommit = gitCommit;
+                Parents = new Commit[parentIds.Length];
             }
+        }
+
+        private class Tree
+        {
+            public git_oid Id { get; set; }
+
+            public DictionarySlim<uint, Tree>? Children { get; set; }
         }
     }
 }
