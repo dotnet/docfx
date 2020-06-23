@@ -78,7 +78,7 @@ jobs:
   - bash: |
       bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
     displayName: 'Upload to codecov.io'
-    evn:
+    env:
       CODECOV_TOKEN: $(CODECOV_TOKEN)
 
   # Build RegressionTest into Artifact 
