@@ -66,14 +66,18 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # Build and test
+  # Running Tests
   - powershell: ./build.ps1
-    displayName: Build
+    displayName: Running tests
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
+
+  # Upload code coverage to codecov.io
+  - script: |
+      bash <(curl -s https://codecov.io/bash)
+    displayName: 'Upload to codecov.io'
 
   # Build RegressionTest into Artifact 
   - powershell: |
