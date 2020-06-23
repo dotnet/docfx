@@ -176,6 +176,9 @@ namespace Microsoft.Docs.Build
             if (s_isPullRequest)
             {
                 var watch = Stopwatch.StartNew();
+                Normalizer.Normalize(outputPath);
+                Normalizer.Normalize(existingOutputPath);
+
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
@@ -183,9 +186,6 @@ namespace Microsoft.Docs.Build
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
                 });
-
-                Normalizer.Normalize(outputPath);
-                Normalizer.Normalize(existingOutputPath);
 
                 var diffFile = Path.Combine(s_testDataRoot, $".temp/{testRepositoryName}.patch");
 
