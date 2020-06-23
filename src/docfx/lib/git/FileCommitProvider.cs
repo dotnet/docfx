@@ -280,7 +280,7 @@ namespace Microsoft.Docs.Build
             for (var i = 0; i < pathSegments.Length; i++)
             {
                 var children = node.Children ?? LoadChildren(node);
-                if (ReferenceEquals(children, s_emptyTree) || !children.TryGetValue(pathSegments[i], out node))
+                if (children.Count == 0 || !children.TryGetValue(pathSegments[i], out node))
                 {
                     return default;
                 }
