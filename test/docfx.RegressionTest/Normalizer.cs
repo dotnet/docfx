@@ -13,27 +13,30 @@ namespace Microsoft.Docs.Build
     {
         internal static void Normalize(string outputPath)
         {
-            // remove docfx.yml to ignore the diff caused by xref url for now
-            // the logic can be removed while docfx.yml not generated anymore
-            foreach (var configPath in Directory.GetFiles(outputPath, "docfx.yml", SearchOption.AllDirectories))
+            using (Progress.Start("Normalizing output files"))
             {
-                File.Delete(configPath);
-            }
-
-            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), PrettifyFile);
-
-            static void PrettifyFile(string path)
-            {
-                switch (Path.GetExtension(path).ToLowerInvariant())
+                // remove docfx.yml to ignore the diff caused by xref url for now
+                // the logic can be removed while docfx.yml not generated anymore
+                foreach (var configPath in Directory.GetFiles(outputPath, "docfx.yml", SearchOption.AllDirectories))
                 {
-                    case ".json":
-                        File.WriteAllText(path, NormalizeJsonFile(path));
-                        break;
+                    File.Delete(configPath);
+                }
 
-                    case ".log":
-                    case ".txt":
-                        File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select(NormalizeJsonLog));
-                        break;
+                Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), PrettifyFile);
+
+                static void PrettifyFile(string path)
+                {
+                    switch (Path.GetExtension(path).ToLowerInvariant())
+                    {
+                        case ".json":
+                            File.WriteAllText(path, NormalizeJsonFile(path));
+                            break;
+
+                        case ".log":
+                        case ".txt":
+                            File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select(NormalizeJsonLog));
+                            break;
+                    }
                 }
             }
         }

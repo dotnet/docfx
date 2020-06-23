@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -100,7 +99,6 @@ namespace Microsoft.Docs.Build
             Clean(outputPath);
 
             var buildTime = Build(repositoryPath, outputPath, docfxConfig);
-            Normalizer.Normalize(outputPath);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -185,6 +183,9 @@ namespace Microsoft.Docs.Build
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
                 });
+
+                Normalizer.Normalize(outputPath);
+                Normalizer.Normalize(existingOutputPath);
 
                 var diffFile = Path.Combine(s_testDataRoot, $".temp/{testRepositoryName}.patch");
 
