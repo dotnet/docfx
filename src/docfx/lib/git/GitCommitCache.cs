@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class GitCommitCache
     {
-        private const int MaxCommitCacheCountPerFile = 10;
+        private const int MaxCommitCacheCountPerFile = 20;
 
         private readonly string _cacheFilePath;
 
