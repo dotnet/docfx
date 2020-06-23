@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.14.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.5" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.20" />
-    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.730" />
+    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.731" />
     <PackageReference Include="Microsoft.Graph" Version="3.8.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
