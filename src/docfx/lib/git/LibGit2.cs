@@ -2,14 +2,14 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-
-#pragma warning disable SA1300 // Element should begin with upper-case letter
-#pragma warning disable SA1307 // AccessibleFieldsMustBeginWithUpperCaseLetter
-#pragma warning disable IDE1006 // Naming Styles
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "other code")]
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter", Justification = "other code")]
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1307:AccessibleFieldsMustBeginWithUpperCaseLetter", Justification = "other code")]
     internal static class LibGit2
     {
         private const string LibName = "git2-ef5a385";
