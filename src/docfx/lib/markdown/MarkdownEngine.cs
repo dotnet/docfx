@@ -16,8 +16,6 @@ using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Validations.DocFx.Adapter;
 
-#pragma warning disable CS0618
-
 namespace Microsoft.Docs.Build
 {
     internal class MarkdownEngine
