@@ -15,14 +15,22 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly GitHubAccessor _githubAccessor;
         private readonly BuildOptions _buildOptions;
-        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders =
+            new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+
         private readonly RepositoryProvider _repositoryProvider;
         private readonly SourceMap _sourceMap;
 
-        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
+        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls =
+            new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
 
         public ContributionProvider(
-            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
+            Config config,
+            BuildOptions buildOptions,
+            Input input,
+            GitHubAccessor githubAccessor,
+            RepositoryProvider repositoryProvider,
+            SourceMap sourceMap)
         {
             _input = input;
             _config = config;
@@ -111,7 +119,8 @@ namespace Microsoft.Docs.Build
                 if (_config.UpdateTimeAsCommitBuildTime && repository != null)
                 {
                     return _commitBuildTimeProviders
-                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
+                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(
+                            () => new CommitBuildTimeProvider(_config, repository))).Value
                         .GetCommitBuildTime(fileCommits[0].Sha);
                 }
                 else

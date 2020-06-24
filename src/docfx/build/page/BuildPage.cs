@@ -122,7 +122,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
+        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(
+            Context context, Document file, JObject sourceModel)
         {
             if (context.Config.DryRun)
             {
@@ -167,14 +168,16 @@ namespace Microsoft.Docs.Build
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
-            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file.FilePath, inputMetadata.Author);
+            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(
+                file.FilePath, inputMetadata.Author);
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
             systemMetadata.Locale = context.BuildOptions.Locale;
             systemMetadata.CanonicalUrl = file.CanonicalUrl;
             systemMetadata.Path = file.SitePath;
-            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
+            systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine(
+                $"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
             systemMetadata.EnableLocSxs = context.BuildOptions.EnableSideBySide;
             systemMetadata.SiteName = context.Config.SiteName;
@@ -195,7 +198,11 @@ namespace Microsoft.Docs.Build
             if (context.Config.OutputPdf)
             {
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
-                    $"https://{context.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{context.Config.Product}.{context.Config.Name}", "{branchName}");
+                    $"https://{context.Config.HostName}",
+                    "pdfstore",
+                    systemMetadata.Locale,
+                    $"{context.Config.Product}.{context.Config.Name}",
+                    "{branchName}");
             }
 
             return (errors, systemMetadata);
@@ -246,7 +253,8 @@ namespace Microsoft.Docs.Build
             return LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static (List<Error> errors, JObject model) LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
+        private static (List<Error> errors, JObject model) LoadSchemaDocument(
+            Context context, List<Error> errors, JToken token, Document file)
         {
             var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 
@@ -273,7 +281,8 @@ namespace Microsoft.Docs.Build
                 errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
             }
 
-            var (schemaTransformError, transformedToken) = context.JsonSchemaTransformer.TransformContent(schemaTemplate.JsonSchema, file, validatedObj);
+            var (schemaTransformError, transformedToken) = context.JsonSchemaTransformer.TransformContent(
+                schemaTemplate.JsonSchema, file, validatedObj);
             errors.AddRange(schemaTransformError);
             var pageModel = (JObject)transformedToken;
 

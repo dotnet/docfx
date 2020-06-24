@@ -22,7 +22,8 @@ namespace Microsoft.Docs.Build
         private static readonly ConcurrentBag<JavaScriptContext> s_contextPool = new ConcurrentBag<JavaScriptContext>();
 
         // Limit the maximum ChakraCore runtimes to current processor count.
-        private static readonly SemaphoreSlim s_contextThrottler = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
+        private static readonly SemaphoreSlim s_contextThrottler = new SemaphoreSlim(
+            Environment.ProcessorCount, Environment.ProcessorCount);
 
         private static readonly ConcurrentDictionary<(JavaScriptContext, string scriptPath), JavaScriptValue> s_scriptExports
                           = new ConcurrentDictionary<(JavaScriptContext, string scriptPath), JavaScriptValue>();
@@ -31,11 +32,13 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
 
-        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>?> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>?>();
+        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>?> t_modules =
+            new ThreadLocal<Dictionary<string, JavaScriptValue>?>();
 
         private static int s_currentSourceContext;
 
-        private readonly ConcurrentDictionary<JavaScriptContext, JavaScriptValue> _globals = new ConcurrentDictionary<JavaScriptContext, JavaScriptValue>();
+        private readonly ConcurrentDictionary<JavaScriptContext, JavaScriptValue> _globals =
+            new ConcurrentDictionary<JavaScriptContext, JavaScriptValue>();
 
         private readonly string _scriptDir;
         private readonly JObject? _global;
@@ -240,7 +243,8 @@ namespace Microsoft.Docs.Build
 
                         case DateTime aDate:
                             var constructor = JavaScriptValue.GlobalObject.GetProperty(JavaScriptPropertyId.FromString("Date"));
-                            var args = new[] { JavaScriptValue.Undefined, JavaScriptValue.FromString(aDate.ToString("o", CultureInfo.InvariantCulture)) };
+                            var aDateArg = JavaScriptValue.FromString(aDate.ToString("o", CultureInfo.InvariantCulture));
+                            var args = new[] { JavaScriptValue.Undefined, aDateArg };
                             Native.ThrowIfError(Native.JsConstructObject(constructor, args, 2, out var date));
                             return date;
 

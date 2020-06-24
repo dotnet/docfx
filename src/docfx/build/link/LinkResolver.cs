@@ -57,11 +57,13 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.Include, referencingFile.ContentType);
+            _dependencyMapBuilder.AddDependencyItem(
+                referencingFile.FilePath, file.FilePath, DependencyType.Include, referencingFile.ContentType);
             return (error, file);
         }
 
-        public (Error? error, string link, Document? file) ResolveLink(SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
+        public (Error? error, string link, Document? file) ResolveLink(
+            SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
@@ -80,12 +82,14 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file?.FilePath, DependencyType.File, referencingFile.ContentType);
+                    _dependencyMapBuilder.AddDependencyItem(
+                        referencingFile.FilePath, file?.FilePath, DependencyType.File, referencingFile.ContentType);
                     _bookmarkValidator.AddBookmarkReference(referencingFile, inclusionRoot, fragment, true, href);
                 }
                 else if (file != null)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.File, referencingFile.ContentType);
+                    _dependencyMapBuilder.AddDependencyItem(
+                        referencingFile.FilePath, file.FilePath, DependencyType.File, referencingFile.ContentType);
                     _bookmarkValidator.AddBookmarkReference(referencingFile, file, fragment, false, href);
                 }
             }
@@ -100,8 +104,8 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        private (Error? error, string href, string? fragment, LinkType linkType, Document? file, bool isCrossReference) TryResolveAbsoluteLink(
-            SourceInfo<string> href, Document hrefRelativeTo)
+        private (Error? error, string href, string? fragment, LinkType linkType, Document? file, bool isCrossReference)
+            TryResolveAbsoluteLink(SourceInfo<string> href, Document hrefRelativeTo)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
             var (error, file, query, fragment, linkType) = TryResolveFile(hrefRelativeTo, decodedHref);
@@ -146,10 +150,12 @@ namespace Microsoft.Docs.Build
             }
 
             // For static hosting, reference file in fallback repo should be resolved to docs site URL
-            if (file.FilePath.Origin == FileOrigin.Fallback && file.ContentType == ContentType.Page && _config.OutputUrlType != OutputUrlType.Docs)
+            if (file.FilePath.Origin == FileOrigin.Fallback &&
+                file.ContentType == ContentType.Page && _config.OutputUrlType != OutputUrlType.Docs)
             {
                 var siteUrl = _documentProvider.GetDocsSiteUrl(file.FilePath);
-                return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{siteUrl}", query, fragment), fragment, linkType, file, false);
+                return (error, UrlUtility.MergeUrl(
+                    $"https://{_config.HostName}{siteUrl}", query, fragment), fragment, linkType, file, false);
             }
 
             return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
@@ -229,7 +235,8 @@ namespace Microsoft.Docs.Build
                 // the relative path could be outside docset
                 if (pathToDocset.Value.StartsWith("."))
                 {
-                    pathToDocset = new PathString(Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, pathToDocset.Value)));
+                    pathToDocset = new PathString(
+                        Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, pathToDocset.Value)));
                 }
             }
 

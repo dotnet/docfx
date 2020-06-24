@@ -26,9 +26,15 @@ namespace Microsoft.Docs.Build
                      new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
-        private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
+        private static readonly string[] s_experimentalTocFileNames = new[]
+        {
+            "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml",
+        };
 
-        private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector = new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
+        private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector = new AsyncLocal<ImmutableStack<Document>>
+        {
+            Value = ImmutableStack<Document>.Empty,
+        };
 
         public TableOfContentsLoader(
             LinkResolver linkResolver,
@@ -252,7 +258,10 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem, TocHrefType tocHrefType)
+        private (SourceInfo<string?> resolvedTocHref,
+            TableOfContentsNode? subChildren,
+            TableOfContentsNode? subChildrenFirstItem,
+            TocHrefType tocHrefType)
             ProcessTocHref(
                 Document filePath,
                 Document rootPath,
@@ -275,7 +284,8 @@ namespace Microsoft.Docs.Build
             }
 
             var (hrefPath, _, _) = UrlUtility.SplitUrl(tocHref.Value ?? "");
-            var referenceTocFilePath = ResolveTocHref(filePath, referencedTocs, tocHrefType, new SourceInfo<string>(hrefPath, tocHref), errors);
+            var referenceTocFilePath = ResolveTocHref(
+                filePath, referencedTocs, tocHrefType, new SourceInfo<string>(hrefPath, tocHref), errors);
             if (referenceTocFilePath != null)
             {
                 var nestedToc = LoadTocFile(
@@ -288,7 +298,8 @@ namespace Microsoft.Docs.Build
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                    _dependencyMapBuilder.AddDependencyItem(filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File, filePath.ContentType);
+                    _dependencyMapBuilder.AddDependencyItem(
+                        filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File, filePath.ContentType);
                     return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 

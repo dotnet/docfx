@@ -46,7 +46,8 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
             var outputPath = file.SitePath;
-            if ((file.ContentType == ContentType.Page && file.IsPage) || file.ContentType == ContentType.Redirection || file.ContentType == ContentType.TableOfContents)
+            if ((file.ContentType == ContentType.Page && file.IsPage) ||
+                file.ContentType == ContentType.Redirection || file.ContentType == ContentType.TableOfContents)
             {
                 var fileExtension = _config.Legacy && file.IsPage
                     ? ".raw.page.json"
@@ -155,7 +156,10 @@ namespace Microsoft.Docs.Build
                         OutputUrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
                         OutputUrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
                             ? Path.Combine(Path.GetDirectoryName(sitePath) ?? "", "index.html")
-                            : Path.Combine(Path.GetDirectoryName(sitePath) ?? "", Path.GetFileNameWithoutExtension(sitePath).TrimEnd(' ', '.'), "index.html"),
+                            : Path.Combine(
+                                Path.GetDirectoryName(sitePath) ?? "",
+                                Path.GetFileNameWithoutExtension(sitePath).TrimEnd(' ', '.'),
+                                "index.html"),
                         OutputUrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
                         _ => throw new NotSupportedException(),
                     };
@@ -184,7 +188,8 @@ namespace Microsoft.Docs.Build
         {
             var url = path.Replace('\\', '/');
 
-            if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isPage))
+            if (contentType == ContentType.Redirection ||
+                contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isPage))
             {
                 if (outputUrlType != OutputUrlType.Ugly)
                 {

@@ -76,7 +76,8 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
+            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(
+                new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
             if (xrefError != null || xrefSpec is null || resolvedHref == null)
             {
                 return (xrefError, null, alt ?? "", null);
@@ -115,7 +116,8 @@ namespace Microsoft.Docs.Build
             {
                 return (error, null, "", null);
             }
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href, uid.Source);
+            _fileLinkMapBuilder.AddFileLink(
+                inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href, uid.Source);
             return (null, href, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
         }
 
@@ -217,7 +219,8 @@ namespace Microsoft.Docs.Build
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, DependencyType.Uid, referencingFile.ContentType);
+                _dependencyMapBuilder.AddDependencyItem(
+                    referencingFile.FilePath, spec.DeclaringFile.FilePath, DependencyType.Uid, referencingFile.ContentType);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
                 return (spec, href);
             }

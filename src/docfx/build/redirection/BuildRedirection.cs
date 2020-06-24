@@ -18,7 +18,8 @@ namespace Microsoft.Docs.Build
             var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
             errors.AddIfNotNull(redirectError);
 
-            var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+            var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(
+                context.RedirectionProvider.GetOriginalFile(file.FilePath));
             var publishMetadata = new JObject
             {
                 ["redirect_url"] = redirectUrl,

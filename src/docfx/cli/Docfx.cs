@@ -114,7 +114,8 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
-                    syntax.DefineOption("no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
+                    syntax.DefineOption(
+                        "no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 

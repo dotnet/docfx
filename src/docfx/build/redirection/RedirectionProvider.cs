@@ -120,7 +120,8 @@ namespace Microsoft.Docs.Build
                     {
                         case LinkType.RelativePath:
                             var siteUrl = _documentProvider.GetDocument(filePath).SiteUrl;
-                            absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
+                            absoluteRedirectUrl = PathUtility.Normalize(
+                                Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
                             break;
                         case LinkType.AbsolutePath:
                             break;
@@ -192,8 +193,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (IReadOnlyDictionary<FilePath, FilePath>, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)>) GetRenameAndRedirectionHistory(
-            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
+        private (IReadOnlyDictionary<FilePath, FilePath>, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)>)
+            GetRenameAndRedirectionHistory(RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             var renameHistory = new Dictionary<FilePath, FilePath>();

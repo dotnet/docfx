@@ -30,7 +30,8 @@ namespace Microsoft.Docs.Build
                         {
                             return;
                         }
-                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
+                        var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(
+                            context, fileManifest.Value);
                         var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
 
                         var fileItem = LegacyFileMapItem.Instance(

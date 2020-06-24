@@ -74,7 +74,8 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
+        private static void LoadZipFile(
+            Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
         {
             using var stream = File.OpenRead(physicalPath);
             using var archive = new ZipArchive(stream);
@@ -114,7 +115,8 @@ namespace Microsoft.Docs.Build
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
-                        if (reader.ValueTextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
+                        if (reader.ValueTextEquals(s_uidBytes) && reader.Read() &&
+                            reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
                         {
                             stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
                         }

@@ -103,7 +103,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
+        public (List<Error> errors, string html) ToHtml(
+            string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
         {
             using (InclusionContext.PushFile(file))
             {
@@ -291,7 +292,8 @@ namespace Microsoft.Docs.Build
         private string GetLink(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(
+                new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -331,7 +333,8 @@ namespace Microsoft.Docs.Build
         private MonikerList ParseMonikerRange(SourceInfo<string?> monikerRange)
         {
             var status = t_status.Value!.Peek();
-            var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
+            var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(
+                ((Document)InclusionContext.RootFile).FilePath, monikerRange);
             status.Errors.AddRange(monikerErrors);
             return monikers;
         }

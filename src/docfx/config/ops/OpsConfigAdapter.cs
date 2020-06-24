@@ -50,7 +50,8 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
             => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
 
-        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
+        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(
+            () => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -97,7 +98,8 @@ namespace Microsoft.Docs.Build
             var branch = queries["branch"];
             var locale = queries["locale"];
             var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
+            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"])
+                ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
             var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
@@ -150,7 +152,8 @@ namespace Microsoft.Docs.Build
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
             var environment = s_docsEnvironment;
-            if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(xrefEndpoint) &&
+                string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
                 environment = DocsEnvironment.Prod;
             }
@@ -285,7 +288,8 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception ex)
                     {
-                        Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
+                        Log.Write("Cannot get 'OPBuildUserToken' from azure key vault, "
+                            + $"please make sure you have been granted the permission to access: {ex.Message}");
                     }
                 }
 

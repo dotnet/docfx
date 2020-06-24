@@ -23,7 +23,8 @@ namespace Microsoft.Docs.Build
         };
 
         // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap = new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap =
+            new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
         {
             // Content sectioning
             { "address", null },
@@ -173,14 +174,19 @@ namespace Microsoft.Docs.Build
                 if (IsLink(ref token, attribute))
                 {
                     var source = block?.GetSourceInfo(attribute.ValueRange);
-                    var link = HttpUtility.HtmlEncode(transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
+                    var link = HttpUtility.HtmlEncode(
+                        transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
 
                     attribute = attribute.WithValue(link);
                 }
             }
         }
 
-        public static void TransformXref(ref HtmlReader reader, ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        public static void TransformXref(
+            ref HtmlReader reader,
+            ref HtmlToken token,
+            MarkdownObject? block,
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             if (!token.NameIs("xref"))
             {
@@ -234,7 +240,8 @@ namespace Microsoft.Docs.Build
             token = new HtmlToken(resolvedNode);
         }
 
-        public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
+        public static string CreateHtmlMetaTags(
+            JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
         {
             var result = new StringBuilder();
 

@@ -27,7 +27,14 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
         public TableOfContentsMap(
-            ErrorLog errorLog, Input input, BuildScope buildScope, DependencyMapBuilder dependencyMapBuilder, TableOfContentsParser tocParser, TableOfContentsLoader tocLoader, DocumentProvider documentProvider, ContentValidator contentValidator)
+            ErrorLog errorLog,
+            Input input,
+            BuildScope buildScope,
+            DependencyMapBuilder dependencyMapBuilder,
+            TableOfContentsParser tocParser,
+            TableOfContentsLoader tocLoader,
+            DocumentProvider documentProvider,
+            ContentValidator contentValidator)
         {
             _errorLog = errorLog;
             _input = input;
@@ -88,10 +95,12 @@ namespace Microsoft.Docs.Build
         /// 2. parent nearest(based on file path)
         /// 3. sub-name lexicographical nearest
         /// </summary>
-        internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
+        internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(
+            T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
         {
             var hasReferencedTocs = false;
-            var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
+            var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles))
+                ? referencedTocFiles : tocs;
 
             var tocCandidates = from toc in filteredTocs
                                 let dirInfo = GetRelativeDirectoryInfo(getPath(file), getPath(toc))
@@ -150,7 +159,8 @@ namespace Microsoft.Docs.Build
             }
 
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            if (_tocs.Value.tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback))
+            if (_tocs.Value.tocToTocs.TryGetValue(file, out var tocReferences) &&
+                tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback))
             {
                 return true;
             }

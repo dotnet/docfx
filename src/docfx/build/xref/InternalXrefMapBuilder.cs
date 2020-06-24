@@ -120,7 +120,8 @@ namespace Microsoft.Docs.Build
             }
 
             var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
-            xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
+            xref.XrefProperties["name"] = new Lazy<JToken>(
+                () => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title));
 
             var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
             xref.Monikers = monikers;
@@ -161,7 +162,8 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                _errorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
+                _errorLog.Write(Errors.Versioning.MonikerOverlapping(
+                    uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
             // uid conflicts with different values of the same xref property

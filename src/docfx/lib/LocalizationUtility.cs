@@ -23,8 +23,11 @@ namespace Microsoft.Docs.Build
                     new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }),
             StringComparer.OrdinalIgnoreCase);
 
-        private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
-        private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
+        private static readonly Regex s_nameWithLocale = new Regex(
+            @"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+
+        private static readonly Regex s_lrmAdjustment = new Regex(
+            @"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
         public static bool IsValidLocale(string locale) => s_locales.Contains(locale);
 
@@ -52,7 +55,8 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var branch in new[] { fallbackBranch, "master" })
                     {
-                        if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
+                        if (packageResolver.TryResolvePackage(
+                            new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                         {
                             return Path.Combine(fallbackRepoPath, docsetSourceFolder);
                         }
@@ -100,7 +104,8 @@ namespace Microsoft.Docs.Build
 
                     try
                     {
-                        GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                        GitUtility.Fetch(
+                            config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
                     }
                     catch (InvalidOperationException ex)
                     {
@@ -145,7 +150,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static bool TryRemoveLocale(string name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
+        private static bool TryRemoveLocale(
+            string name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
         {
             var match = s_nameWithLocale.Match(name);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))

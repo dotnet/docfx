@@ -54,7 +54,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ConvertDocumentToLegacyManifestItem(string docsetPath, Context context, KeyValuePair<Document, PublishItem> fileManifest, DictionaryBuilder<string, MonikerList> dictionaryBuilder, ListBuilder<(LegacyManifestItem manifestItem, Document doc, MonikerList monikers)> listBuilder)
+        private static void ConvertDocumentToLegacyManifestItem(
+            string docsetPath,
+            Context context,
+            KeyValuePair<Document, PublishItem> fileManifest,
+            DictionaryBuilder<string, MonikerList> dictionaryBuilder,
+            ListBuilder<(LegacyManifestItem manifestItem, Document doc, MonikerList monikers)> listBuilder)
         {
             var document = fileManifest.Key;
             var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
@@ -62,7 +67,8 @@ namespace Microsoft.Docs.Build
 
             var output = new LegacyManifestOutput
             {
-                MetadataOutput = (document.ContentType == ContentType.Page && !document.IsPage) || document.ContentType == ContentType.Resource
+                MetadataOutput = (document.ContentType == ContentType.Page && !document.IsPage) ||
+                document.ContentType == ContentType.Resource
                 ? null
                 : new LegacyManifestOutputItem
                 {

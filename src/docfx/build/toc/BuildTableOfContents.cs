@@ -37,8 +37,9 @@ namespace Microsoft.Docs.Build
             // enable pdf
             if (context.Config.OutputPdf)
             {
+                var pdfSitePath = LegacyUtility.ChangeExtension(file.SitePath, ".pdf");
                 model.Metadata.PdfAbsolutePath = "/" +
-                    UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
+                    UrlUtility.Combine(context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", pdfSitePath);
             }
 
             context.ErrorLog.Write(errors);
