@@ -65,6 +65,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 SourceDirectory = Path.Combine(rawOutputFolder, _config.Destination ?? string.Empty),
                 ExcludeTocs = _config.ExcludedTocs?.ToArray(),
                 KeepRawFiles = _config.KeepRawFiles,
+                ExcludeDefaultToc = _config.ExcludeDefaultToc,
                 LoadErrorHandling = _config.LoadErrorHandling,
                 FilePath = _wkhtmltopdfFilePath,
                 AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
@@ -183,6 +184,11 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.KeepRawFiles.HasValue)
             {
                 config.KeepRawFiles = options.KeepRawFiles.Value;
+            }
+
+            if (options.ExcludeDefaultToc.HasValue)
+            {
+                config.ExcludeDefaultToc = options.ExcludeDefaultToc.Value;
             }
 
             if (options.GeneratesExternalLink.HasValue)

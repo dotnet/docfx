@@ -29,6 +29,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("keepRawFiles")]
         public bool KeepRawFiles { get; set; }
 
+        [JsonProperty("excludeDefaultToc")]
+        public bool ExcludeDefaultToc { get; set; }
+
         [JsonProperty("rawOutputFolder")]
         public string RawOutputFolder { get; set; }
 
