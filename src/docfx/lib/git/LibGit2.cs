@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 namespace Microsoft.Docs.Build
 {
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "other code")]
+    [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "other code")]
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:Element should begin with upper-case letter", Justification = "other code")]
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1307:AccessibleFieldsMustBeginWithUpperCaseLetter", Justification = "other code")]
     internal static class LibGit2
