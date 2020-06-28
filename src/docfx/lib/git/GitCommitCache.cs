@@ -18,7 +18,8 @@ namespace Microsoft.Docs.Build
 
         // Commit history LRU cache per file (or empty for whole repo). Key is the file path relative to repository root.
         // Value is a dictionary of git commit history for a particular commit hash and file blob hash.
-        // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file, they are selected by least recently used order (lruOrder).
+        // Only the last N = MaxCommitCacheCountPerFile commit histories are cached for a file,
+        // they are selected by least recently used order (lruOrder).
         private readonly ConcurrentDictionary<string, FileCommitCache> _commitCache;
 
         private bool _cacheUpdated;

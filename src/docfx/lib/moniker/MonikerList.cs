@@ -14,7 +14,8 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(MonikerListJsonConverter))]
     internal readonly struct MonikerList : IEquatable<MonikerList>, IEnumerable<string>, IComparable<MonikerList>
     {
-        private static readonly ConcurrentDictionary<MonikerList, string> s_monikerGroupCache = new ConcurrentDictionary<MonikerList, string>();
+        private static readonly ConcurrentDictionary<MonikerList, string> s_monikerGroupCache =
+            new ConcurrentDictionary<MonikerList, string>();
 
         private readonly string[]? _monikers;
 

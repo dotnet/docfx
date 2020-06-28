@@ -30,7 +30,8 @@ namespace Microsoft.Docs.Build
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
         private readonly ConcurrentDictionary<long, Tree> _treeCache = new ConcurrentDictionary<long, Tree>();
 
-        private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new ConcurrentDictionary<(string, string?), GitCommit[]>();
+        private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache =
+            new ConcurrentDictionary<(string, string?), GitCommit[]>();
 
         private IntPtr _repo;
 

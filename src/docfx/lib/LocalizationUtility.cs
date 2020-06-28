@@ -23,8 +23,11 @@ namespace Microsoft.Docs.Build
                     new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }),
             StringComparer.OrdinalIgnoreCase);
 
-        private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
-        private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
+        private static readonly Regex s_nameWithLocale =
+            new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+
+        private static readonly Regex s_lrmAdjustment =
+            new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
         public static bool IsValidLocale(string locale) => s_locales.Contains(locale);
 
