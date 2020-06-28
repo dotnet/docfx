@@ -104,6 +104,17 @@ jobs:
       nugetFeedType: external
       allowPackageConflicts: true
 
+
+# Publish Binary packages to test
+  - task: AzureFileCopy@4
+    displayName: Publish Binary Packages To Test
+    inputs:
+      SourcePath: 'drop/docfx-bin/staging'
+      azureSubscription: 'Open Publishing - Build Sandbox'
+      Destination: 'AzureBlob'
+      storage: 'opsbuildk8sppe'
+      ContainerName: 'docfx-bin'
+      
   # Publish binary packages to sandbox
   - task: AzureFileCopy@3
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
