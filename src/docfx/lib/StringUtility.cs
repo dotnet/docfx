@@ -54,7 +54,8 @@ namespace Microsoft.Docs.Build
         /// <returns>
         ///     if a match is found, return true and assign it to <paramref name="bestMatch"/>, otherwise return false.
         /// </returns>
-        public static bool FindBestMatch(string target, IEnumerable<string> candidates, [NotNullWhen(true)] out string? bestMatch, int threshold = 5)
+        public static bool FindBestMatch(
+            string target, IEnumerable<string> candidates, [NotNullWhen(true)] out string? bestMatch, int threshold = 5)
         {
             bestMatch = candidates != null ?
                     (from candidate in candidates
