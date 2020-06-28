@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
@@ -22,7 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly JObject? _global;
         private readonly string _templateDir;
         private readonly ParserPipeline _parserPipeline;
-        private readonly ConcurrentDictionary<string, Lazy<BlockToken>> _templates = new ConcurrentDictionary<string, Lazy<BlockToken>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Lazy<BlockToken>> _templates =
+            new ConcurrentDictionary<string, Lazy<BlockToken>>(PathUtility.PathComparer);
 
         public MustacheTemplate(string templateDir, JObject? global = null)
         {

@@ -12,7 +12,8 @@ namespace Microsoft.Docs.Build
 
         public override bool CanConvert(Type objectType) => objectType.IsArray;
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            => throw new InvalidOperationException();
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
