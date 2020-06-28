@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             _queue.Completion.Wait();
         }
 
-        private string GetDestinationPath(string destRelativePath)
+        public string GetDestinationPath(string destRelativePath)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
