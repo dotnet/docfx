@@ -57,12 +57,11 @@ namespace Microsoft.Docs.Build
             ///   - restore a repo with bad url
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error GitCloneFailed(string url, string branch)
+            public static Error GitCloneFailed(string url, string branch, Exception ex)
             {
                 var message = $"Failure to clone the repository `{url}#{branch}`."
                         + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
-                        + "This could also be caused by not having the proper permission the repository, "
-                        + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
+                        + $"If it is not the case, please open a ticket in https://SiteHelp and include exception details: {ex.Message}.";
                 return new Error(ErrorLevel.Error, "git-clone-failed", message);
             }
 
@@ -705,6 +704,50 @@ namespace Microsoft.Docs.Build
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
                 => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, name: $"{tag}_{attribute}");
+        }
+
+        public static class CRR
+        {
+            /// <summary>
+            /// Repository owner did not re-authorize his/her GitHub account to Docs Build with SSO.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RepositoryOwnerSSOIssue(string repoUrl, string repoOwner, string dependentRepoUrl)
+            {
+                var message = $"Owner of {repoUrl} repository does not have access to {dependentRepoUrl}. "
+                    + $"Please ask the repository owner '{repoOwner}' to re-authorize his/her GitHub account to Docs Build "
+                    + $"(reference: https://teams.microsoft.com/l/message/19:7ecffca1166a4a3986fed528cf0870ee@thread.skype/1590030602688?tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47&groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&parentMessageId=1590030602688&teamName=Docs%20Support&channelName=General&createdTime=1590030602688).";
+                return new Error(ErrorLevel.Error, "repository-owner-sso-issue", message);
+            }
+
+            /// <summary>
+            /// Service accounts do not have 'Write' permissions on CRR.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error ServiceAccountPermissionInsufficient(string? repoOrg, string repoOwner, string dependentRepoUrl)
+            {
+                var serviceAccountsDocsLink = "https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master";
+                if (!string.IsNullOrEmpty(repoOrg))
+                {
+                    serviceAccountsDocsLink += $"#{repoOrg.ToLowerInvariant()}";
+                }
+                var message = $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under "
+                    + $"'{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: {serviceAccountsDocsLink}. "
+                    + $"For any support, please open a ticket in https://SiteHelp.";
+                return new Error(ErrorLevel.Error, "service-account-permission-insufficient", message);
+            }
+
+            /// <summary>
+            /// Repository owner does not have 'Read' permission on CRR.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RepositoryOwnerPermissionInsufficient(string repoOwner, string? dependentRepoOrg, string? dependentRepoName, string dependentRepoUrl)
+            {
+                var message = $"Docs Build cannot access CRR repo {dependentRepoUrl} using the access token from user {repoOwner} because {repoOwner} does not have Read access to the CRR repo. "
+                    + $"Please ask {repoOwner} to contact the admins of the CRR repo {dependentRepoUrl} to get Read permission. Don't know who to contact? "
+                    + $"This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/";
+                return new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", message);
+            }
         }
     }
 }

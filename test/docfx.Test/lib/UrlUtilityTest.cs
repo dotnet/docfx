@@ -131,37 +131,38 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("https://ceapex.visualstudio.com/", false, null, null)]
-        [InlineData("http://ceapex.visualstudio.com/project", false, null, null)]
-        [InlineData("http://ceapex.visualstudio.com/project/_git", false, null, null)]
-        [InlineData("http://ceapex.visualstudio.com/project/repo", false, null, null)]
-        [InlineData("http://ceapex.visualstudio.com/project/_git/repo/unknown", false, null, null)]
-        [InlineData("http://ceapex.visualstudio.com/project/_git/repo#", false, null, null)]
-        [InlineData("https://dev.azure.com/ceapex", false, null, null)]
-        [InlineData("http://dev.azure.com/ceapex/project", false, null, null)]
-        [InlineData("http://dev.azure.com/ceapex/project/_git", false, null, null)]
-        [InlineData("http://dev.azure.com/ceapex/project/repo", false, null, null)]
-        [InlineData("http://dev.azure.com/ceapex/project/_git/repo/unknown", false, null, null)]
-        [InlineData("http://dev.azure.com/ceapex/project/_git/repo#", false, null, null)]
-        [InlineData("http://ceapex.visualstudio.com/project/_git/repo/", true, "project", "repo")]
-        [InlineData("https://ceapex.visualstudio.com/project/_git/repo", true, "project", "repo")]
-        [InlineData("http://ceapex.visualstudio.com/project/_git/repo", true, "project", "repo")]
-        [InlineData("http://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo")]
-        [InlineData("https://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo")]
-        [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo", true, "project", "repo")]
-        [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo/", true, "project", "repo")]
-        [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo")]
-        [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo")]
-        [InlineData("https://dev.azure.com/ceapex/project/_git/repo", true, "project", "repo")]
-        [InlineData("http://dev.azure.com/ceapex/project/_git/repo/", true, "project", "repo")]
-        [InlineData("https://dev.azure.com/ceapex/project/_git/repo#branch", true, "project", "repo")]
-        [InlineData("http://dev.azure.com/ceapex/project/_git/repo#branch", true, "project", "repo")]
-        public static void ParseAzureReposUrl(string remote, bool parsed, string expectedProject, string expectedName)
+        [InlineData("https://ceapex.visualstudio.com/", false, null, null, null)]
+        [InlineData("http://ceapex.visualstudio.com/project", false, null, null, null)]
+        [InlineData("http://ceapex.visualstudio.com/project/_git", false, null, null, null)]
+        [InlineData("http://ceapex.visualstudio.com/project/repo", false, null, null, null)]
+        [InlineData("http://ceapex.visualstudio.com/project/_git/repo/unknown", false, null, null, null)]
+        [InlineData("http://ceapex.visualstudio.com/project/_git/repo#", false, null, null, null)]
+        [InlineData("https://dev.azure.com/ceapex", false, null, null, null)]
+        [InlineData("http://dev.azure.com/ceapex/project", false, null, null, null)]
+        [InlineData("http://dev.azure.com/ceapex/project/_git", false, null, null, null)]
+        [InlineData("http://dev.azure.com/ceapex/project/repo", false, null, null, null)]
+        [InlineData("http://dev.azure.com/ceapex/project/_git/repo/unknown", false, null, null, null)]
+        [InlineData("http://dev.azure.com/ceapex/project/_git/repo#", false, null, null, null)]
+        [InlineData("http://ceapex.visualstudio.com/project/_git/repo/", true, "project", "repo", "ceapex")]
+        [InlineData("https://ceapex.visualstudio.com/project/_git/repo", true, "project", "repo", "ceapex")]
+        [InlineData("http://ceapex.visualstudio.com/project/_git/repo", true, "project", "repo", "ceapex")]
+        [InlineData("http://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo", "ceapex")]
+        [InlineData("https://ceapex.visualstudio.com/project/_git/repo#branch", true, "project", "repo", "ceapex")]
+        [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo", true, "project", "repo", "ceapex")]
+        [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo/", true, "project", "repo", "ceapex")]
+        [InlineData("https://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo", "ceapex")]
+        [InlineData("http://ceapex.visualstudio.com/DefaultCollection/project/_git/repo#branch", true, "project", "repo", "ceapex")]
+        [InlineData("https://dev.azure.com/ceapex/project/_git/repo", true, "project", "repo", "ceapex")]
+        [InlineData("http://dev.azure.com/ceapex/project/_git/repo/", true, "project", "repo", "ceapex")]
+        [InlineData("https://dev.azure.com/ceapex/project/_git/repo#branch", true, "project", "repo", "ceapex")]
+        [InlineData("http://dev.azure.com/ceapex/project/_git/repo#branch", true, "project", "repo", "ceapex")]
+        public static void ParseAzureReposUrl(string remote, bool parsed, string expectedProject, string expectedName, string expectedOwner)
         {
-            if (UrlUtility.TryParseAzureReposUrl(remote, out var owner, out var name))
+            if (UrlUtility.TryParseAzureReposUrl(remote, out var project, out var name, out var owner))
             {
                 Assert.True(parsed);
-                Assert.Equal(expectedProject, owner);
+                Assert.Equal(expectedOwner, owner);
+                Assert.Equal(expectedProject, project);
                 Assert.Equal(expectedName, name);
                 return;
             }

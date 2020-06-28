@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using Jint.Parser;
 
 namespace Microsoft.Docs.Build
 {
@@ -151,8 +152,10 @@ namespace Microsoft.Docs.Build
             {
                 GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ioe)
             {
+                ThrowRestoreDependentRepositoryFailureError(url, committish, ioe);
+
                 try
                 {
                     // Fallback to fetch all branches if the input committish is not supported by fetch
@@ -160,7 +163,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (InvalidOperationException ex)
                 {
-                    throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
+                    throw Errors.System.GitCloneFailed(url, committish, ex).ToException(ex);
                 }
             }
 
@@ -171,6 +174,67 @@ namespace Microsoft.Docs.Build
             catch (InvalidOperationException ex)
             {
                 throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
+            }
+        }
+
+        private void ThrowRestoreDependentRepositoryFailureError(string url, string committish, Exception ex)
+        {
+            var systemServiceTokenAccountType = "SystemServiceAccount";
+            var templateRepoUrlPrefix = "https://github.com/Microsoft/templates.docs.msft";
+
+            if (ex.Message.Contains("has enabled or enforced SAML SSO", StringComparison.OrdinalIgnoreCase))
+            {
+                if (url.StartsWith(templateRepoUrlPrefix) || _config.GitAccessTokenAccountType.Equals(systemServiceTokenAccountType))
+                {
+                    throw Errors.System.GitCloneFailed(url, committish, ex).ToException(ex);
+                }
+                else
+                {
+                    throw Errors.CRR.RepositoryOwnerSSOIssue(EnvironmentVariable.RepositoryUrl ?? "this", _config.RepositoryOwnerName, url).ToException(ex);
+                }
+            }
+            else if (ex.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
+                || ex.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
+                || ex.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
+                || ex.Message.Contains("does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
+                || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase))
+            {
+                if (_config.GitAccessTokenAccountType.Equals(systemServiceTokenAccountType))
+                {
+                    if (url.StartsWith(templateRepoUrlPrefix))
+                    {
+                        throw Errors.System.GitCloneFailed(url, committish, ex).ToException(ex);
+                    }
+                    else
+                    {
+                        // Service accounts are not supported for Azure DevOps repos. So this scenario only occurs for GitHub repos.
+                        UrlUtility.TryParseGitHubUrl(EnvironmentVariable.RepositoryUrl, out var repoOrg, out _);
+                        throw Errors.CRR.ServiceAccountPermissionInsufficient(repoOrg, _config.RepositoryOwnerName, url).ToException(ex);
+                    }
+                }
+                else
+                {
+                    (var repoOrg, var repoName) = ParseRepoInfo(url);
+                    throw Errors.CRR.RepositoryOwnerPermissionInsufficient(_config.RepositoryOwnerName, repoOrg, repoName, url).ToException(ex);
+                }
+            }
+        }
+
+        private (string? org, string? name) ParseRepoInfo(string url)
+        {
+            string? org;
+            string? name;
+            if (UrlUtility.TryParseGitHubUrl(url, out org, out name))
+            {
+                return (org, name);
+            }
+            else if (UrlUtility.TryParseAzureReposUrl(url, out _, out name, out org))
+            {
+                return (org, name);
+            }
+            else
+            {
+                return (null, null);
             }
         }
 
