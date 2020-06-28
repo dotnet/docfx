@@ -72,7 +72,13 @@ namespace Microsoft.Docs.Build
 
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
-        public Context(ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
+        public Context(
+            ErrorLog errorLog,
+            Config config,
+            BuildOptions buildOptions,
+            PackageResolver packageResolver,
+            FileResolver fileResolver,
+            SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
 

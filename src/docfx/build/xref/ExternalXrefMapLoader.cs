@@ -74,7 +74,8 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
+        private static void LoadZipFile(
+            Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
         {
             using var stream = File.OpenRead(physicalPath);
             using var archive = new ZipArchive(stream);

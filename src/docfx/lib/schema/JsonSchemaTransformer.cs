@@ -192,7 +192,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (List<Error>, JToken) TransformContentCore(JsonSchemaDefinition definitions, Document file, JsonSchema schema, JToken token, int uidCount)
+        private (List<Error>, JToken) TransformContentCore(
+            JsonSchemaDefinition definitions, Document file, JsonSchema schema, JToken token, int uidCount)
         {
             var errors = new List<Error>();
             schema = definitions.GetDefinition(schema);

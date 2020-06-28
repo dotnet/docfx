@@ -106,7 +106,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string fileExtension, string documentType, string mimeType) GetFileType(FilePath filePath, ContentType contentType, string? mime)
+        private static (string fileExtension, string documentType, string mimeType) GetFileType(
+            FilePath filePath, ContentType contentType, string? mime)
         {
             return s_fileTypeCache.GetOrAdd(filePath, filePath =>
             {

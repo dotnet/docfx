@@ -120,7 +120,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Traverse the markdown object graph, returns true to skip the current node.
         /// </summary>
-        public static void Visit(this MarkdownObject? obj, MarkdownVisitContext context, Func<MarkdownObject, MarkdownVisitContext, bool> action)
+        public static void Visit(
+            this MarkdownObject? obj, MarkdownVisitContext context, Func<MarkdownObject, MarkdownVisitContext, bool> action)
         {
             if (obj is null)
             {

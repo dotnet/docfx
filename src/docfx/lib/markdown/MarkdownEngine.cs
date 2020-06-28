@@ -103,7 +103,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
+        public (List<Error> errors, string html) ToHtml(
+            string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
         {
             using (InclusionContext.PushFile(file))
             {

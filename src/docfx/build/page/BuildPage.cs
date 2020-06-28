@@ -122,7 +122,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
+        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(
+            Context context, Document file, JObject sourceModel)
         {
             if (context.Config.DryRun)
             {
@@ -246,7 +247,8 @@ namespace Microsoft.Docs.Build
             return LoadSchemaDocument(context, errors, token, file);
         }
 
-        private static (List<Error> errors, JObject model) LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
+        private static (List<Error> errors, JObject model) LoadSchemaDocument(
+            Context context, List<Error> errors, JToken token, Document file)
         {
             var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
 

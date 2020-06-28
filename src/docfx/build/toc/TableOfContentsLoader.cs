@@ -252,7 +252,10 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem, TocHrefType tocHrefType)
+        private (SourceInfo<string?> resolvedTocHref,
+            TableOfContentsNode? subChildren,
+            TableOfContentsNode? subChildrenFirstItem,
+            TocHrefType tocHrefType)
             ProcessTocHref(
                 Document filePath,
                 Document rootPath,

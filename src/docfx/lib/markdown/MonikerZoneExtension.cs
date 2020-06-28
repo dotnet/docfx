@@ -11,7 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class MonikerZoneExtension
     {
-        public static MarkdownPipelineBuilder UseMonikerZone(this MarkdownPipelineBuilder builder, Func<SourceInfo<string?>, MonikerList> parseMonikerRange)
+        public static MarkdownPipelineBuilder UseMonikerZone(
+            this MarkdownPipelineBuilder builder, Func<SourceInfo<string?>, MonikerList> parseMonikerRange)
         {
             return builder.Use(document =>
             {

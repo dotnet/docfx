@@ -192,8 +192,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (IReadOnlyDictionary<FilePath, FilePath>, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)>) GetRenameAndRedirectionHistory(
-            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
+        private (IReadOnlyDictionary<FilePath, FilePath>, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)>)
+            GetRenameAndRedirectionHistory(RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             var renameHistory = new Dictionary<FilePath, FilePath>();

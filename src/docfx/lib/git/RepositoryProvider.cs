@@ -39,7 +39,8 @@ namespace Microsoft.Docs.Build
             return (repository, new PathString(Path.GetRelativePath(repository.Path, fullPath)));
         }
 
-        public (Repository? repo, PathString? pathToRepo, GitCommit[] commits) GetCommitHistory(PathString fullPath, string? committish = null)
+        public (Repository? repo, PathString? pathToRepo, GitCommit[] commits) GetCommitHistory(
+            PathString fullPath, string? committish = null)
         {
             var (repo, pathToRepo) = GetRepository(fullPath);
             if (repo is null || pathToRepo is null)

@@ -22,7 +22,12 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
 
         public ContributionProvider(
-            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
+            Config config,
+            BuildOptions buildOptions,
+            Input input,
+            GitHubAccessor githubAccessor,
+            RepositoryProvider repositoryProvider,
+            SourceMap sourceMap)
         {
             _input = input;
             _config = config;

@@ -87,7 +87,8 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
+        private static bool? IsCanonicalVersion(
+            string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
         {
             if (zoneLevelMonikerList.HasMonikers)
             {

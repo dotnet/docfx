@@ -145,7 +145,8 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static bool TryRemoveLocale(string name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
+        private static bool TryRemoveLocale(
+            string name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)
         {
             var match = s_nameWithLocale.Match(name);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))

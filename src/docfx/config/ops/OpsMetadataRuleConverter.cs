@@ -114,7 +114,8 @@ namespace Microsoft.Docs.Build
             return jsonSchema;
         }
 
-        private static bool TryGetAttributeCustomRules(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)
+        private static bool TryGetAttributeCustomRules(
+            Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)
         {
             attributeCustomRules = new Dictionary<string, dynamic>();
 
@@ -157,7 +158,8 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetAllowlist(string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
+        private static bool TryGetAllowlist(
+            string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
             allowList = new Dictionary<string, EnumDependenciesSchema?>();
 

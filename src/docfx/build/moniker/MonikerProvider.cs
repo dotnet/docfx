@@ -139,7 +139,12 @@ namespace Microsoft.Docs.Build
             return (errors, configMonikers);
         }
 
-        private static (Error?, MonikerList) GetMonikerIntersection(UserMetadata metadata, SourceInfo<string?> configMonikerRange, MonikerList configMonikers, MonikerList fileMonikers, bool skipMonikerValidation)
+        private static (Error?, MonikerList) GetMonikerIntersection(
+            UserMetadata metadata,
+            SourceInfo<string?> configMonikerRange,
+            MonikerList configMonikers,
+            MonikerList fileMonikers,
+            bool skipMonikerValidation)
         {
             Error? error = null;
 

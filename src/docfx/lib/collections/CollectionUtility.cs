@@ -15,7 +15,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> range) where TKey : notnull
+        public static void AddRange<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> range) where TKey : notnull
         {
             foreach (var (key, value) in range)
             {
