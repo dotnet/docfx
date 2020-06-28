@@ -74,13 +74,6 @@ jobs:
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
       DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
 
-  # Upload code coverage to codecov.io
-  - bash: |
-      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    displayName: 'Upload to codecov.io'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
-
   # Build RegressionTest into Artifact 
   - powershell: |
       $regressionTestDir = './drop/RegressionTest'
@@ -103,7 +96,6 @@ jobs:
       publishFeedCredentials: docs-public-packages
       nugetFeedType: external
       allowPackageConflicts: true
-
 
 # Publish Binary packages to test
   - task: AzureFileCopy@4
