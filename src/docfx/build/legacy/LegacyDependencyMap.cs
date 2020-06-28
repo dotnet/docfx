@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
                         version = dep.Version,
                     });
 
-                using var dependentListWriter = File.AppendText(context.Output.GetDestinationPath("full - dependent - list.txt"));
+                using var dependentListWriter = File.AppendText(context.Output.GetDestinationPath("full-dependent-list.txt"));
                 using var serverDependentListWriter = File.AppendText(context.Output.GetDestinationPath("server-side-dependent-list.txt"));
                 foreach (var dependency in dependencyList)
                 {
