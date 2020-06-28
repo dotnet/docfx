@@ -152,9 +152,9 @@ namespace Microsoft.Docs.Build
             {
                 GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
             }
-            catch (InvalidOperationException ioe)
+            catch (InvalidOperationException invalidOperationException)
             {
-                ThrowRestoreDependentRepositoryFailureError(url, committish, ioe);
+                ThrowRestoreDependentRepositoryFailureError(url, committish, invalidOperationException);
 
                 try
                 {
