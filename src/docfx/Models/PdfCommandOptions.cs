@@ -23,6 +23,9 @@ namespace Microsoft.DocAsCode
         [Option("keepRawFiles", HelpText = "Specify whether or not to keep the intermediate html files that used to generate the PDF file. It it usually used in debug purpose. By default the value is false")]
         public bool? KeepRawFiles { get; set; }
 
+        [Option("excludeDefaultToc", HelpText = "Specify whether or not to exclude a table of contents. By default the value is false")]
+        public bool? ExcludeDefaultToc { get; set; }
+
         [Option("errorHandling", HelpText = "Specify how to handle pdf pages that fail to load: abort, ignore or skip(default abort), it is the same input as wkhtmltopdf --load-error-handling options")]
         public string LoadErrorHandling { get; set; }
 

@@ -29,6 +29,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         public bool KeepRawFiles { get; set; } = false;
 
+        public bool ExcludeDefaultToc { get; set; } = false;
+
         public int PdfConvertParallelism { get; set; } = 4;
 
         public string ExternalLinkFormat => $"{Normalize(Host)}{Normalize(Locale)}{Normalize(BasePath)}{{0}}";

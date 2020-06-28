@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                             currentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
                         }
 
-                        if (File.Exists(tocPageFilePath))
+                        if (File.Exists(tocPageFilePath) && !_pdfOptions.ExcludeDefaultToc)
                         {
                             RemoveQueryStringAndBookmarkTransformer(tocPageFilePath);
                             AbsolutePathInTocPageFileTransformer(tocPageFilePath);
