@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Normalizer
     {
-        internal static void Normalize(string outputPath, bool noAdditionalRule = false)
+        internal static void Normalize(string outputPath, bool basicNormalize = false)
         {
             var sw = Stopwatch.StartNew();
 
@@ -24,11 +24,11 @@ namespace Microsoft.Docs.Build
                 File.Delete(configPath);
             }
 
-            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), (path) => PrettifyFile(path, noAdditionalRule));
+            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), (path) => PrettifyFile(path, basicNormalize));
             Console.WriteLine($"Normalizing done in {sw.Elapsed.TotalSeconds}s");
         }
 
-        private static void PrettifyFile(string path, bool noAdditionalRule)
+        private static void PrettifyFile(string path, bool basicNormalize)
         {
             switch (Path.GetExtension(path).ToLowerInvariant())
             {
@@ -38,7 +38,14 @@ namespace Microsoft.Docs.Build
 
                 case ".log":
                 case ".txt":
-                    File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select((line) => NormalizeJsonLog(line, noAdditionalRule)));
+                    if (basicNormalize)
+                    {
+                        File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line));
+                    }
+                    else
+                    {
+                        File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select((line) => NormalizeJsonLog(line)));
+                    }
                     break;
             }
         }
@@ -49,19 +56,16 @@ namespace Microsoft.Docs.Build
 
         private static string NormalizeNewLine(string text) => text.Replace("\r", "").Replace("\\n\\n", "⬇\n").Replace("\\n", "⬇\n");
 
-        private static string NormalizeJsonLog(string json, bool noAdditionalRule)
+        private static string NormalizeJsonLog(string json)
         {
             var obj = JObject.Parse(json);
             obj.Remove("date_time");
 
-            if (!noAdditionalRule)
+            if (obj.ContainsKey("code")
+            && obj["code"]!.Value<string>() == "yaml-syntax-error"
+            && obj.ContainsKey("message"))
             {
-                if (obj.ContainsKey("code")
-                && obj["code"]!.Value<string>() == "yaml-syntax-error"
-                && obj.ContainsKey("message"))
-                {
-                    obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]!.Value<string>(), @"Idx: \d+", ""));
-                }
+                obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]!.Value<string>(), @"Idx: \d+", ""));
             }
 
             return NormalizeNewLine(obj.ToString());
