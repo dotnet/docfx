@@ -126,13 +126,15 @@ namespace Microsoft.Docs.Build
                 xrefMaps.AddRange(links);
             }
 
+            var xrefHostName = GetXrefHostName(docset.site_name, branch);
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
                 siteName = docset.site_name,
                 hostName = GetHostName(docset.site_name),
                 basePath = docset.base_path.ValueWithLeadingSlash,
-                xrefHostName = GetXrefHostName(docset.site_name, branch),
+                xrefHostName,
+                removeHostName = xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
@@ -355,9 +357,9 @@ namespace Microsoft.Docs.Build
         private static string ValidationServiceEndpoint => s_docsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.Internal => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net/route/validationmgt",
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.Perf => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net/route/validationmgt",
             _ => throw new NotSupportedException(),
         };
     }
