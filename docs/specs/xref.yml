@@ -145,7 +145,7 @@ repos:
         docfx.yml: |
           hostName: docs.com
           basePath: /base_path
-          renderingHostName: test.docs.com
+          xrefhostName: test.docs.com
         docs/a.md: |
           ---
           title: Title from yaml header a

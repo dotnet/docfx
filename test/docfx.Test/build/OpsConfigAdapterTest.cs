@@ -15,19 +15,19 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData(
             "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=master",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','renderingHostName':'review.docs.microsoft.com'}")]
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com'}")]
         [InlineData(
             "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=live",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','renderingHostName':'docs.microsoft.com'}")]
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
             "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr.zh-cn&branch=live-sxs",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','renderingHostName':'docs.microsoft.com'}")]
+            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
         [InlineData(
             "https://ops/buildconfig/?name=mooncake-docs&repository_url=https://github.com/MicrosoftDocs/mc-docs-pr&branch=master",
-            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','renderingHostName':'review.docs.azure.cn'}")]
+            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn'}")]
         [InlineData(
             "https://ops/buildconfig/?name=dotnet-api-docs&repository_url=https://github.com/dotnet/dotnet-api-docs/&branch=master",
-            "{'product':'VS','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/dotnet','renderingHostName':'review.docs.microsoft.com', 'skipMonikerValidation': true}")]
+            "{'product':'VS','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/dotnet','xrefHostName':'review.docs.microsoft.com', 'skipMonikerValidation': true}")]
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");

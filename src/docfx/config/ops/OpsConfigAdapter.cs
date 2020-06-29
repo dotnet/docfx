@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                 siteName = docset.site_name,
                 hostName = GetHostName(docset.site_name),
                 basePath = docset.base_path.ValueWithLeadingSlash,
-                renderingHostName = GetRenderingHostName(docset.site_name, branch),
+                xrefHostName = GetXrefHostName(docset.site_name, branch),
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
@@ -335,7 +335,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static string GetRenderingHostName(string siteName, string branch)
+        private static string GetXrefHostName(string siteName, string branch)
         {
             return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
