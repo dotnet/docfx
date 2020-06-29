@@ -13,7 +13,13 @@ namespace Microsoft.Docs.Build
 {
     internal static class Normalizer
     {
-        internal static void Normalize(string outputPath, bool basicNormalize = false)
+        /// <summary>
+        /// Normalize output directory.
+        /// </summary>
+        /// <param name="outputPath">Output directory to normalize</param>
+        /// <param name="basicNormalize">For commit build, refresh checked-in baseline</param>
+        /// <param name="normalizeJsonFiles">For PR build, dont't need to normalize baseline json files</param>
+        internal static void Normalize(string outputPath, bool basicNormalize = false, bool normalizeJsonFiles = true)
         {
             var sw = Stopwatch.StartNew();
 
@@ -24,16 +30,19 @@ namespace Microsoft.Docs.Build
                 File.Delete(configPath);
             }
 
-            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), (path) => PrettifyFile(path, basicNormalize));
+            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), (path) => PrettifyFile(path, basicNormalize, normalizeJsonFiles));
             Console.WriteLine($"Normalizing done in {sw.Elapsed.TotalSeconds}s");
         }
 
-        private static void PrettifyFile(string path, bool basicNormalize)
+        private static void PrettifyFile(string path, bool basicNormalize, bool normalizeJsonFiles)
         {
             switch (Path.GetExtension(path).ToLowerInvariant())
             {
                 case ".json":
-                    File.WriteAllText(path, NormalizeJsonFile(path));
+                    if (normalizeJsonFiles)
+                    {
+                        File.WriteAllText(path, NormalizeJsonFile(path));
+                    }
                     break;
 
                 case ".log":

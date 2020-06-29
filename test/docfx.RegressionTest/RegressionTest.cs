@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
             {
                 var watch = Stopwatch.StartNew();
                 Normalizer.Normalize(outputPath);
-                Normalizer.Normalize(existingOutputPath);
+                Normalizer.Normalize(existingOutputPath, normalizeJsonFiles: false);
 
                 var process = Process.Start(new ProcessStartInfo
                 {
