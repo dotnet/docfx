@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         /// Writes the input lines to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void WriteLines(string destRelativePath, IEnumerable<string> lines)
+        public void WriteLines(string destRelativePath, string[] lines)
         {
             EnsureNoDryRun();
 

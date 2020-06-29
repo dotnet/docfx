@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                     orderby d.From, d.To, d.Type
                     select d).ToArray();
 
-                var dependencyList =
+                var dependencyList = (
                     from dep in sorted
                     select JsonUtility.Serialize(new
                     {
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                         from_file_path = Path.GetFullPath(Path.Combine(docsetPath, dep.From.Substring(2))),
                         to_file_path = Path.GetFullPath(Path.Combine(docsetPath, dep.To.Substring(2))),
                         version = dep.Version,
-                    });
+                    })).ToArray();
 
                 context.Output.WriteLines("full-dependent-list.txt", dependencyList);
                 context.Output.WriteLines("server-side-dependent-list.txt", dependencyList);
