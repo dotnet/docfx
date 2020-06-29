@@ -13,17 +13,22 @@ namespace Microsoft.Docs.Build
 {
     internal static class Normalizer
     {
+        [Flags]
+        internal enum NormalizeStage
+        {
+            NormalizeJsonFiles = 0b01,
+            PrettifyLogFiles = 0b10, // only sort, and remote date_time
+            NormalizeLogFiles = 0b11, // sort, apply additional rule and indentation
+        }
+
         /// <summary>
         /// Normalize output directory.
         /// To eliminate new diff during new feature integration:
         /// - Add your temporary normalization logic inside <see cref="NormalizeJsonFile(string)"/>,
-        /// - Set normalizeJsonFiles to true on callsite when normalizing baseline folder
+        /// - Set NormalizeJsonFiles flat on call-site when normalizing baseline folder
         /// also remember to rever them if they will disappear after baseline refreshment.
         /// </summary>
-        /// <param name="outputPath">Output directory to normalize</param>
-        /// <param name="basicNormalize">For commit build, refresh checked-in baseline</param>
-        /// <param name="normalizeJsonFiles">For PR build, dont't need to normalize baseline json files</param>
-        internal static void Normalize(string outputPath, bool basicNormalize = false, bool normalizeJsonFiles = true)
+        internal static void Normalize(string outputPath, NormalizeStage normalizeStage)
         {
             var sw = Stopwatch.StartNew();
 
@@ -34,16 +39,16 @@ namespace Microsoft.Docs.Build
                 File.Delete(configPath);
             }
 
-            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), (path) => PrettifyFile(path, basicNormalize, normalizeJsonFiles));
+            Parallel.ForEach(Directory.GetFiles(outputPath, "*.*", SearchOption.AllDirectories), (path) => NormalizeFile(path, normalizeStage));
             Console.WriteLine($"Normalizing done in {sw.Elapsed.TotalSeconds}s");
         }
 
-        private static void PrettifyFile(string path, bool basicNormalize, bool normalizeJsonFiles)
+        private static void NormalizeFile(string path, NormalizeStage normalzeStage)
         {
             switch (Path.GetExtension(path).ToLowerInvariant())
             {
                 case ".json":
-                    if (normalizeJsonFiles)
+                    if (normalzeStage.HasFlag(NormalizeStage.NormalizeJsonFiles))
                     {
                         File.WriteAllText(path, NormalizeJsonFile(path));
                     }
@@ -51,11 +56,11 @@ namespace Microsoft.Docs.Build
 
                 case ".log":
                 case ".txt":
-                    if (basicNormalize)
+                    if (normalzeStage.HasFlag(NormalizeStage.PrettifyLogFiles))
                     {
-                        File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line));
+                        File.WriteAllLines(path, File.ReadAllLines(path).Select(line => Regex.Replace(line, ",\"date_time\":.*?Z\"", "")).OrderBy(line => line));
                     }
-                    else
+                    else if (normalzeStage.HasFlag(NormalizeStage.NormalizeLogFiles))
                     {
                         File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select((line) => NormalizeJsonLog(line)));
                     }
