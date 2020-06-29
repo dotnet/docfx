@@ -40,12 +40,12 @@ namespace Microsoft.Docs.Build
                 Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
 
                 var result = stdout ? process.StandardOutput.ReadToEnd() : "";
-
+                var error = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
                 if (process.ExitCode != 0)
                 {
-                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}'");
+                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}': \nSTDERROR:'{error}'");
                 }
 
                 return result;

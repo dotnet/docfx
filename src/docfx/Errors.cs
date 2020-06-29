@@ -57,11 +57,11 @@ namespace Microsoft.Docs.Build
             ///   - restore a repo with bad url
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error GitCloneFailed(string url, string branch, Exception ex)
+            public static Error GitCloneFailed(string url, string branch)
             {
-                var message = $"Failure to clone the repository `{url}#{branch}`."
-                        + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
-                        + $"If it is not the case, please open a ticket in https://SiteHelp and include exception details: {ex.Message}.";
+                var message = $"Failure to clone the repository `{url}#{branch}`. "
+                        + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). "
+                        + $"If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.";
                 return new Error(ErrorLevel.Error, "git-clone-failed", message);
             }
 
@@ -726,13 +726,8 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error ServiceAccountPermissionInsufficient(string? repoOrg, string repoOwner, string dependentRepoUrl)
             {
-                var serviceAccountsDocsLink = "https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master";
-                if (!string.IsNullOrEmpty(repoOrg))
-                {
-                    serviceAccountsDocsLink += $"#{repoOrg.ToLowerInvariant()}";
-                }
                 var message = $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under "
-                    + $"'{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: {serviceAccountsDocsLink}. "
+                    + $"'{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. "
                     + $"For any support, please open a ticket in https://SiteHelp.";
                 return new Error(ErrorLevel.Error, "service-account-permission-insufficient", message);
             }

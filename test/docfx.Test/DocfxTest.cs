@@ -90,6 +90,11 @@ namespace Microsoft.Docs.Build
             var cachePath = Path.Combine(appDataPath, "cache");
             var statePath = Path.Combine(appDataPath, "state");
 
+            if (spec.Inputs.ContainsKey("repositoryUrl"))
+            {
+                Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", spec.Inputs["repositoryUrl"]);
+            }
+
             var variables = new Dictionary<string, string>
             {
                 { "APP_BASE_PATH", AppContext.BaseDirectory },
@@ -99,6 +104,8 @@ namespace Microsoft.Docs.Build
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
                 { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
+                { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
+                { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
             };
 
             var missingVariables = spec.Environments.Where(env => !variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));

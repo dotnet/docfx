@@ -292,9 +292,9 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool TryParseAzureReposUrl(
-            string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo, [NotNullWhen(true)] out string? owner)
+            string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo, [NotNullWhen(true)] out string? org)
         {
-            project = repo = owner = default;
+            project = repo = org = default;
 
             if (string.IsNullOrEmpty(remoteUrl))
             {
@@ -307,7 +307,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            owner = match.Groups["account"].Value;
+            org = match.Groups["account"].Value;
             project = match.Groups["project"].Value;
             repo = match.Groups["repository"].Value;
 

@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (InvalidOperationException ex)
                 {
-                    throw Errors.System.GitCloneFailed(url, committish, ex).ToException(ex);
+                    throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
             }
 
@@ -186,24 +186,20 @@ namespace Microsoft.Docs.Build
             {
                 if (url.StartsWith(templateRepoUrlPrefix) || _config.GitAccessTokenAccountType.Equals(systemServiceTokenAccountType))
                 {
-                    throw Errors.System.GitCloneFailed(url, committish, ex).ToException(ex);
+                    throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
                 else
                 {
-                    throw Errors.CRR.RepositoryOwnerSSOIssue(EnvironmentVariable.RepositoryUrl ?? "this", _config.RepositoryOwnerName, url).ToException(ex);
+                    throw Errors.CRR.RepositoryOwnerSSOIssue(EnvironmentVariable.RepositoryUrl ?? "", _config.RepositoryOwnerName, url).ToException(ex);
                 }
             }
-            else if (ex.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
-                || ex.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
-                || ex.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
-                || ex.Message.Contains("does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
-                || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase))
+            else if (IsPermissionInsufficient(ex))
             {
                 if (_config.GitAccessTokenAccountType.Equals(systemServiceTokenAccountType))
                 {
                     if (url.StartsWith(templateRepoUrlPrefix))
                     {
-                        throw Errors.System.GitCloneFailed(url, committish, ex).ToException(ex);
+                        throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                     }
                     else
                     {
@@ -220,11 +216,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static bool IsPermissionInsufficient(Exception ex)
+        {
+            return ex.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
+                            || ex.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
+                            || ex.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
+                            || ex.Message.Contains("does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
+                            || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
+        }
+
         private (string? org, string? name) ParseRepoInfo(string url)
         {
-            string? org;
-            string? name;
-            if (UrlUtility.TryParseGitHubUrl(url, out org, out name))
+            if (UrlUtility.TryParseGitHubUrl(url, out var org, out var name))
             {
                 return (org, name);
             }
@@ -234,7 +237,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                return (null, null);
+                return default;
             }
         }
 

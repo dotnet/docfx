@@ -156,12 +156,12 @@ namespace Microsoft.Docs.Build
         [InlineData("http://dev.azure.com/ceapex/project/_git/repo/", true, "project", "repo", "ceapex")]
         [InlineData("https://dev.azure.com/ceapex/project/_git/repo#branch", true, "project", "repo", "ceapex")]
         [InlineData("http://dev.azure.com/ceapex/project/_git/repo#branch", true, "project", "repo", "ceapex")]
-        public static void ParseAzureReposUrl(string remote, bool parsed, string expectedProject, string expectedName, string expectedOwner)
+        public static void ParseAzureReposUrl(string remote, bool parsed, string expectedProject, string expectedName, string expectedOrg)
         {
-            if (UrlUtility.TryParseAzureReposUrl(remote, out var project, out var name, out var owner))
+            if (UrlUtility.TryParseAzureReposUrl(remote, out var project, out var name, out var org))
             {
                 Assert.True(parsed);
-                Assert.Equal(expectedOwner, owner);
+                Assert.Equal(expectedOrg, org);
                 Assert.Equal(expectedProject, project);
                 Assert.Equal(expectedName, name);
                 return;
