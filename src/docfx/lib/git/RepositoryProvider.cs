@@ -15,9 +15,14 @@ namespace Microsoft.Docs.Build
 
         public Repository? Repository { get; }
 
-        public RepositoryProvider(Repository? repository)
+        public RepositoryProvider(BuildOptions buildOptions, Config config)
         {
-            Repository = repository;
+            Repository = buildOptions.Repository;
+
+            if (Repository != null && !config.DryRun && !buildOptions.IsLocalizedBuild)
+            {
+                GetCommitProvider(Repository).WarmUp();
+            }
         }
 
         public (Repository? repository, PathString? pathToRepository) GetRepository(PathString fullPath)
