@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                     return (error, "", null, LinkType.RelativePath, null, false);
                 }
 
-                return (error, UrlUtility.RemoveLeadingHostName(href, _config.HostName), fragment, LinkType.AbsolutePath, null, false);
+                return (error, UrlUtility.RemoveLeadingHostName(href, _config.RenderingHostName), fragment, LinkType.AbsolutePath, null, false);
             }
 
             // Cannot resolve the file, leave href as is
