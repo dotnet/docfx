@@ -23,81 +23,88 @@ namespace Microsoft.Docs.Build
         };
 
         // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap = new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
-        {
-            // Content sectioning
-            { "address", null },
-            { "section", null },
+        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap =
+            new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
+            {
+                // Content sectioning
+                { "address", null },
+                { "section", null },
 
-            // Text content
-            { "blockquote", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite" } },
-            { "dd", null },
-            { "div", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
-            { "dl", null },
-            { "dt", null },
-            { "figcaption", null },
-            { "figure", null },
-            { "hr", null },
-            { "li", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "value" } },
-            { "ol", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "reversed", "start", "type" } },
-            { "p", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
-            { "pre", null },
-            { "ul", null },
+                // Text content
+                { "blockquote", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite" } },
+                { "dd", null },
+                { "div", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
+                { "dl", null },
+                { "dt", null },
+                { "figcaption", null },
+                { "figure", null },
+                { "hr", null },
+                { "li", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "value" } },
+                { "ol", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "reversed", "start", "type" } },
+                { "p", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
+                { "pre", null },
+                { "ul", null },
 
-            // Inline text semantics
-            { "a", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel" } },
-            { "abbr", null },
-            { "b", null },
-            { "bdi", null },
-            { "bdo", null },
-            { "br", null },
-            { "cite", null },
-            { "code", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name" } },
-            { "dfn", null },
-            { "em", null },
-            { "i", null },
-            { "kbd", null },
-            { "mark", null },
-            { "q", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite" } },
-            { "s", null },
-            { "samp", null },
-            { "small", null },
-            { "span", null },
-            { "strong", null },
-            { "sub", null },
-            { "sup", null },
-            { "time", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "datetime" } },
-            { "u", null },
-            { "var", null },
+                // Inline text semantics
+                { "a", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel" } },
+                { "abbr", null },
+                { "b", null },
+                { "bdi", null },
+                { "bdo", null },
+                { "br", null },
+                { "cite", null },
+                { "code", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "name" } },
+                { "dfn", null },
+                { "em", null },
+                { "i", null },
+                { "kbd", null },
+                { "mark", null },
+                { "q", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite" } },
+                { "s", null },
+                { "samp", null },
+                { "small", null },
+                { "span", null },
+                { "strong", null },
+                { "sub", null },
+                { "sup", null },
+                { "time", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "datetime" } },
+                { "u", null },
+                { "var", null },
 
-            // Image and multimedia
-            { "img", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align" } },
-            { "image", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width" } },
+                // Image and multimedia
+                { "img", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align" } },
+                { "image", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width" } },
 
-            // Demarcating edits
-            { "del", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
-            { "ins", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
+                // Demarcating edits
+                { "del", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
+                { "ins", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
 
-            // table
-            { "caption", null },
-            { "col", null },
-            { "colgroup", null },
-            { "table", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align", "width", "border" } },
-            { "tbody", null },
-            { "td", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width" } },
-            { "tfoot", null },
-            { "th", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width" } },
-            { "thead", null },
-            { "tr", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
+                // table
+                { "caption", null },
+                { "col", null },
+                { "colgroup", null },
+                { "table", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align", "width", "border" } },
+                { "tbody", null },
+                { "td", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width" } },
+                { "tfoot", null },
+                { "th", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width" } },
+                { "thead", null },
+                { "tr", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
 
-            // other
-            { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "frameborder", "allowtransparency", "allowfullscreen", "scrolling", "height", "src", "width" } },
-            { "center", null },
-            { "summary", null },
-            { "details", null },
-            { "nobr", null },
-            { "strike", null },
-        };
+                // other
+                {
+                    "iframe",
+                    new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        "frameborder", "allowtransparency", "allowfullscreen", "scrolling", "height", "src", "width",
+                    }
+                },
+                { "center", null },
+                { "summary", null },
+                { "details", null },
+                { "nobr", null },
+                { "strike", null },
+            };
 
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {

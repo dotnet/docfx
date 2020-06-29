@@ -50,7 +50,8 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
             => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
 
-        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
+        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken =
+            new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -355,9 +356,9 @@ namespace Microsoft.Docs.Build
         private static string ValidationServiceEndpoint => s_docsEnvironment switch
         {
             DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.Internal => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net/route/validationmgt",
             DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.Perf => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
+            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net/route/validationmgt",
             _ => throw new NotSupportedException(),
         };
     }

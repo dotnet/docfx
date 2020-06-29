@@ -18,18 +18,66 @@ namespace Microsoft.Docs.Build
     internal static class Telemetry
     {
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
-        private static readonly ConcurrentDictionary<FilePath, (string, string, string)> s_fileTypeCache = new ConcurrentDictionary<FilePath, (string, string, string)>();
+        private static readonly ConcurrentDictionary<FilePath, (string, string, string)> s_fileTypeCache =
+            new ConcurrentDictionary<FilePath, (string, string, string)>();
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
-        private static readonly MetricConfiguration s_metricConfiguration = new MetricConfiguration(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
+        private static readonly MetricConfiguration s_metricConfiguration =
+            new MetricConfiguration(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
-        private static readonly Metric s_operationTimeMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_errorCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_buildFileTypeCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
-        private static readonly Metric s_markdownElementCountMetric = s_telemetryClient.GetMetric(new MetricIdentifier(null, "MarkdownElement", "ElementType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_operationTimeMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                s_metricConfiguration);
 
-        private static readonly string s_version = typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
+        private static readonly Metric s_errorCountMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(
+                    null,
+                    $"BuildLog",
+                    "Code",
+                    "Level",
+                    "Name",
+                    "Type",
+                    "OS",
+                    "Version",
+                    "Repo",
+                    "Branch",
+                    "CorrelationId"), s_metricConfiguration);
+
+        private static readonly Metric s_buildFileTypeCountMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(
+                    null,
+                    "BuildFileType",
+                    "FileExtension",
+                    "DocumentType",
+                    "MimeType",
+                    "OS",
+                    "Version",
+                    "Repo",
+                    "Branch",
+                    "CorrelationId"), s_metricConfiguration);
+
+        private static readonly Metric s_markdownElementCountMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(
+                    null,
+                    "MarkdownElement",
+                    "ElementType",
+                    "FileExtension",
+                    "DocumentType",
+                    "MimeType",
+                    "OS",
+                    "Version",
+                    "Repo",
+                    "Branch",
+                    "CorrelationId"), s_metricConfiguration);
+
+        private static readonly string s_version =
+            typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
+
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
 
         private static string s_repo = "<null>";

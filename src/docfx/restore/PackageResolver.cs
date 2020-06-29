@@ -18,8 +18,11 @@ namespace Microsoft.Docs.Build
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
 
-        private readonly ConcurrentDictionary<PackagePath, Lazy<string>> _packagePath = new ConcurrentDictionary<PackagePath, Lazy<string>>();
-        private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
+        private readonly ConcurrentDictionary<PackagePath, Lazy<string>> _packagePath =
+            new ConcurrentDictionary<PackagePath, Lazy<string>>();
+
+        private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks =
+            new Dictionary<PathString, InterProcessReaderWriterLock>();
 
         public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions)
         {

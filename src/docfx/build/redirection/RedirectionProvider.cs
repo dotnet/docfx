@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
-        private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
+        private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory,
+            IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
 
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 

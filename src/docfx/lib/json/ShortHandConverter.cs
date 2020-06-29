@@ -21,7 +21,8 @@ namespace Microsoft.Docs.Build
 
         public override bool CanConvert(Type objectType) => GetShortHandType(objectType) != null;
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            => throw new InvalidOperationException();
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {

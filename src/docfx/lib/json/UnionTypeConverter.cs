@@ -14,7 +14,8 @@ namespace Microsoft.Docs.Build
     {
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException();
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            => throw new InvalidOperationException();
 
         public override bool CanConvert(Type objectType) => typeof(ITuple).IsAssignableFrom(objectType);
 
