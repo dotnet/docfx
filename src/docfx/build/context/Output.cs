@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks.Dataflow;
@@ -51,6 +52,20 @@ namespace Microsoft.Docs.Build
             _queue.Post(() =>
             {
                 File.WriteAllText(GetDestinationPath(destRelativePath), text);
+            });
+        }
+
+        /// <summary>
+        /// Writes the input lines to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public void WriteLines(string destRelativePath, string[] lines)
+        {
+            EnsureNoDryRun();
+
+            _queue.Post(() =>
+            {
+                File.WriteAllLines(GetDestinationPath(destRelativePath), lines);
             });
         }
 

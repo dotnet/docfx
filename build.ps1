@@ -14,10 +14,6 @@ function test() {
     }
 
     exec "dotnet test -c Release --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-
-    if ($env:CODECOV_TOKEN) {
-        exec "$env:USERPROFILE\.nuget\packages\codecov\1.10.0\tools\codecov.exe -f ./test/docfx.Test/coverage.opencover.xml"
-    }
 }
 
 function publish() {

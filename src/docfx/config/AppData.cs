@@ -46,12 +46,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static bool TryGetGlobalConfigPath([NotNullWhen(true)] out string? path)
         {
-            if (EnvironmentVariable.GlobalConfigPath != null && File.Exists(EnvironmentVariable.GlobalConfigPath))
-            {
-                path = EnvironmentVariable.GlobalConfigPath;
-                return true;
-            }
-
             path = PathUtility.FindYamlOrJson(Root, "docfx");
             return path != null;
         }

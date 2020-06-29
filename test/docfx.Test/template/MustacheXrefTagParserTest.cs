@@ -105,6 +105,24 @@ namespace Microsoft.Docs.Build
             "  {{/href}}" +
             "{{/uid-higher-priority}}"
             )]
+        [InlineData(
+            "<xref uid='{{url}}'></xref>",
+            "{{#url}}" +
+            "  {{#href}}" +
+            "    <a href='{{href}}'>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    <span>" +
+            "  {{/href}}" +
+            "  {{name}}" +
+            "  {{#href}}" +
+            "    </a>" +
+            "  {{/href}}" +
+            "  {{^href}}" +
+            "    </span>" +
+            "  {{/href}}" +
+            "{{/url}}"
+            )]
         public void ProcessXrefTag(string template, string expected)
         {
             template = template.Replace('\'', '"');
