@@ -44,12 +44,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Type of git access token used to access the GitHub API
         /// </summary>
-        public string GitAccessTokenAccountType { get; private set; } = "";
+        public DocsGitTokenType? DocsGitTokenType { get; private set; }
 
         /// <summary>
         /// Name of the git repository owner
         /// </summary>
-        public string RepositoryOwnerName { get; private set; } = "";
+        public string? DocsRepositoryOwnerName { get; private set; }
 
         public Action<HttpRequestMessage> GetCredentialProvider()
         {

@@ -90,11 +90,6 @@ namespace Microsoft.Docs.Build
             var cachePath = Path.Combine(appDataPath, "cache");
             var statePath = Path.Combine(appDataPath, "state");
 
-            if (spec.Inputs.ContainsKey("repositoryUrl"))
-            {
-                Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", spec.Inputs["repositoryUrl"]);
-            }
-
             var variables = new Dictionary<string, string>
             {
                 { "APP_BASE_PATH", AppContext.BaseDirectory },

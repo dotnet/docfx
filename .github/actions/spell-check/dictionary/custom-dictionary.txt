@@ -365,7 +365,7 @@ rpetrusha
 ruleset
 rulesets
 safecrlf
-SAML
+saml
 sbyte
 scriptblock
 sdp
@@ -441,7 +441,7 @@ uid
 ulong
 unescape
 unicode
-Username
+username
 userprofile
 ushort
 utils

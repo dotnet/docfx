@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Jint.Parser;
 
 namespace Microsoft.Docs.Build
 {
@@ -18,15 +17,17 @@ namespace Microsoft.Docs.Build
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
+        private readonly Repository? _repository;
 
         private readonly ConcurrentDictionary<PackagePath, Lazy<string>> _packagePath = new ConcurrentDictionary<PackagePath, Lazy<string>>();
         private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
-        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions)
+        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, Repository? repository)
         {
             _docsetPath = docsetPath;
             _config = config;
             _fetchOptions = fetchOptions;
+            _repository = repository;
         }
 
         public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, [NotNullWhen(true)] out string? path)
@@ -152,10 +153,8 @@ namespace Microsoft.Docs.Build
             {
                 GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
             }
-            catch (InvalidOperationException invalidOperationException)
+            catch (InvalidOperationException)
             {
-                ThrowRestoreDependentRepositoryFailureError(url, committish, invalidOperationException);
-
                 try
                 {
                     // Fallback to fetch all branches if the input committish is not supported by fetch
@@ -163,6 +162,11 @@ namespace Microsoft.Docs.Build
                 }
                 catch (InvalidOperationException ex)
                 {
+                    if (_config.DocsGitTokenType != null)
+                    {
+                        ThrowRestoreDependentRepositoryFailureError(url, committish, ex);
+                    }
+
                     throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
             }
@@ -179,39 +183,38 @@ namespace Microsoft.Docs.Build
 
         private void ThrowRestoreDependentRepositoryFailureError(string url, string committish, Exception ex)
         {
-            var systemServiceTokenAccountType = "SystemServiceAccount";
             var templateRepoUrlPrefix = "https://github.com/Microsoft/templates.docs.msft";
 
             if (ex.Message.Contains("has enabled or enforced SAML SSO", StringComparison.OrdinalIgnoreCase))
             {
-                if (url.StartsWith(templateRepoUrlPrefix) || _config.GitAccessTokenAccountType.Equals(systemServiceTokenAccountType))
+                if (url.StartsWith(templateRepoUrlPrefix) || _config.DocsGitTokenType.Equals(DocsGitTokenType.SystemServiceAccount))
                 {
-                    throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
+                    throw Errors.System.RestoreDependentRepositoryFailed(url, committish).ToException(ex);
                 }
                 else
                 {
-                    throw Errors.CRR.RepositoryOwnerSSOIssue(EnvironmentVariable.RepositoryUrl ?? "", _config.RepositoryOwnerName, url).ToException(ex);
+                    throw Errors.DependencyRepository.RepositoryOwnerSSOIssue(_repository?.Remote, _config.DocsRepositoryOwnerName, url).ToException(ex);
                 }
             }
             else if (IsPermissionInsufficient(ex))
             {
-                if (_config.GitAccessTokenAccountType.Equals(systemServiceTokenAccountType))
+                if (_config.DocsGitTokenType.Equals(DocsGitTokenType.SystemServiceAccount))
                 {
                     if (url.StartsWith(templateRepoUrlPrefix))
                     {
-                        throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
+                        throw Errors.System.RestoreDependentRepositoryFailed(url, committish).ToException(ex);
                     }
                     else
                     {
                         // Service accounts are not supported for Azure DevOps repos. So this scenario only occurs for GitHub repos.
-                        UrlUtility.TryParseGitHubUrl(EnvironmentVariable.RepositoryUrl, out var repoOrg, out _);
-                        throw Errors.CRR.ServiceAccountPermissionInsufficient(repoOrg, _config.RepositoryOwnerName, url).ToException(ex);
+                        UrlUtility.TryParseGitHubUrl(_repository?.Remote, out var repoOrg, out _);
+                        throw Errors.DependencyRepository.ServiceAccountPermissionInsufficient(repoOrg, _config.DocsRepositoryOwnerName, url).ToException(ex);
                     }
                 }
                 else
                 {
                     (var repoOrg, var repoName) = ParseRepoInfo(url);
-                    throw Errors.CRR.RepositoryOwnerPermissionInsufficient(_config.RepositoryOwnerName, repoOrg, repoName, url).ToException(ex);
+                    throw Errors.DependencyRepository.RepositoryOwnerPermissionInsufficient(_config.DocsRepositoryOwnerName, repoOrg, repoName, url).ToException(ex);
                 }
             }
         }

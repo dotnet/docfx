@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -36,16 +37,31 @@ namespace Microsoft.Docs.Build
 
                 var process = Process.Start(psi);
 
-                // Redirect stderr to stdout
-                Task.Run(() => process.StandardError.BaseStream.CopyTo(Console.OpenStandardOutput()));
+                var errData = new StringBuilder();
+                Task.Run(
+                () =>
+                {
+                    var reader = process.StandardError;
+                    while (true)
+                    {
+                        var line = reader.ReadLine();
+                        if (line == null)
+                        {
+                            break;
+                        }
+                        errData.Append(line);
+                    }
+                    using var errStream = new MemoryStream(Encoding.UTF8.GetBytes(errData.ToString()));
+                    errStream.CopyTo(Console.OpenStandardOutput());
+                });
+                var sanitizedErrorData = secrets != null ? secrets.Aggregate(errData.ToString(), HideSecrets) : errData.ToString();
 
                 var result = stdout ? process.StandardOutput.ReadToEnd() : "";
-                var error = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
                 if (process.ExitCode != 0)
                 {
-                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}': \nSTDERROR:'{error}'");
+                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}': \nSTDERROR:'{sanitizedErrorData}'");
                 }
 
                 return result;

@@ -209,7 +209,7 @@ namespace Microsoft.Docs.Build
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[]? secrets = null)
         {
-            Execute(cwd, commandLineArgs, stdout: false, secrets);
+            Execute(cwd, commandLineArgs, stdout: true, secrets);
         }
 
         private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[]? secrets = null)

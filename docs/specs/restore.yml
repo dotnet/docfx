@@ -373,10 +373,13 @@ outputs:
     }
 ---
 # Show error for system service account SSO issue
+repos:
+  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
+    - files:
+        docs/a.md: a2
 inputs:
-  repositoryUrl: "https://github.com/MicrosoftDocs/ppe-test-sso-2406"
   docfx.yml: |
-    gitAccessTokenAccountType: "SystemServiceAccount"
+    docsGitTokenType: "SystemServiceAccount"
     http:
           https://github.com/Microsoft/templates.docs.msft:
             headers:
@@ -389,14 +392,17 @@ environments:
   - GIT_TOKEN_HTTP_AUTH_SSO_DISABLED
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"git-clone-failed","message":"Failure to clone the repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
+    {"message_severity":"error","code":"restore-dependent-repository-failed","message":"Failed to restore dependent repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
 ---
 # Show error for repository owner account SSO issue
+repos:
+  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
+    - files:
+        docs/a.md: a2
 inputs:
-  repositoryUrl: "https://github.com/MicrosoftDocs/ppe-test-sso-2406"
   docfx.yml: |
-    gitAccessTokenAccountType: "RepositoryOwnerAccount"
-    repositoryOwnerName: "test-repo-owner"
+    docsGitTokenType: "RepositoryOwnerAccount"
+    docsRepositoryOwnerName: "test-repo-owner"
     http:
           https://github.com/:
             headers:
@@ -412,10 +418,13 @@ outputs:
     {"message_severity":"error","code":"repository-owner-sso-issue","message":"Owner of https://github.com/MicrosoftDocs/ppe-test-sso-2406 repository does not have access to https://github.com/microsoft/azure-cseries-preview. Please ask the repository owner 'test-repo-owner' to re-authorize his/her GitHub account to Docs Build (reference: https://teams.microsoft.com/l/message/19:7ecffca1166a4a3986fed528cf0870ee@thread.skype/1590030602688?tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47&groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&parentMessageId=1590030602688&teamName=Docs%20Support&channelName=General&createdTime=1590030602688)."}
 ---
 # Show error for system service account with insufficient permission on template repository
+repos:
+  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
+    - files:
+        docs/a.md: a2
 inputs:
-  repositoryUrl: "https://github.com/MicrosoftDocs/ppe-test-sso-2406"
   docfx.yml: |
-    gitAccessTokenAccountType: "SystemServiceAccount"
+    docsGitTokenType: "SystemServiceAccount"
     http:
           https://github.com/Microsoft/templates.docs.msft:
             headers:
@@ -428,14 +437,17 @@ environments:
   - GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"git-clone-failed","message":"Failure to clone the repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
+    {"message_severity":"error","code":"restore-dependent-repository-failed","message":"Failed to restore dependent repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
 ---
 # Show error for system service account with insufficient permission on non-template repository
+repos:
+  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
+    - files:
+        docs/a.md: a2
 inputs:
-  repositoryUrl: "https://github.com/MicrosoftDocs/ppe-test-sso-2406"
   docfx.yml: |
-    gitAccessTokenAccountType: "SystemServiceAccount"
-    repositoryOwnerName: "test-repo-owner"
+    docsGitTokenType: "SystemServiceAccount"
+    docsRepositoryOwnerName: "test-repo-owner"
     http:
           https://github.com/:
             headers:
@@ -451,11 +463,14 @@ outputs:
     {"message_severity":"error","code":"service-account-permission-insufficient","message":"Docs Build service account cannot access repository 'https://github.com/sharanya-dev/test-samples'. Please ask repository owner 'test-repo-owner' to grant 'write' permission to all service accounts under 'MicrosoftDocs' organization to 'https://github.com/sharanya-dev/test-samples'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#microsoftdocs. For any support, please open a ticket in https://SiteHelp."}
 ---
 # Show error for repository owner account with insufficient permission on CRR
+repos:
+  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
+    - files:
+        docs/a.md: a2
 inputs:
-  repositoryUrl: "https://github.com/MicrosoftDocs/ppe-test-sso-2406"
   docfx.yml: |
-    gitAccessTokenAccountType: "RepositoryOwnerAccount"
-    repositoryOwnerName: "test-repo-owner"
+    docsGitTokenType: "RepositoryOwnerAccount"
+    docsRepositoryOwnerName: "test-repo-owner"
     http:
           https://github.com/:
             headers:
