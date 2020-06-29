@@ -15,6 +15,10 @@ namespace Microsoft.Docs.Build
     {
         /// <summary>
         /// Normalize output directory.
+        /// To eliminate new diff during new feature integration:
+        /// - Add your temporary normalization logic inside <see cref="NormalizeJsonFile(string)"/>,
+        /// - Set normalizeJsonFiles to true on callsite when normalizing baseline folder
+        /// also remember to rever them if they will disappear after baseline refreshment.
         /// </summary>
         /// <param name="outputPath">Output directory to normalize</param>
         /// <param name="basicNormalize">For commit build, refresh checked-in baseline</param>
@@ -59,9 +63,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string NormalizeJsonFile(string path) => NormalizeNewLine(NormalizeJson(File.ReadAllText(path)));
-
-        private static string NormalizeJson(string json) => JToken.Parse(json).ToString();
+        private static string NormalizeJsonFile(string path)
+        {
+            // Apply your normalize logic to eliminate new diff
+            var obj = JToken.Parse(File.ReadAllText(path));
+            return NormalizeNewLine(obj.ToString());
+        }
 
         private static string NormalizeNewLine(string text) => text.Replace("\r", "").Replace("\\n\\n", "⬇\n").Replace("\\n", "⬇\n");
 
