@@ -125,9 +125,9 @@ namespace Microsoft.Docs.Build
         public BasePath BasePath { get; private set; }
 
         /// <summary>
-        /// Gets host name used for generating .xrefmap.json
+        /// Gets host name used for the final rendering
         /// </summary>
-        public string XrefHostName { get; private set; } = "";
+        public string RenderingHostName { get; private set; } = "";
 
         /// <summary>
         /// Gets whether we are running in legacy mode
