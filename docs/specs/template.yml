@@ -162,7 +162,7 @@ legacy: true
 inputs:
   docfx.yml: |
     xref: xrefmap.yml
-    renderingHostName: docs.com
+    removeHostName: docs.com
   xrefmap.yml: |
     references:
       - uid: uid1

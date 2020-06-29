@@ -22,7 +22,7 @@ outputs:
 # xref should be unironed from different sources
 inputs:
   docfx.yml: |
-    renderingHostName: review.docs.microsoft.com
+    removeHostName: review.docs.microsoft.com
     hostName: docs.microsoft.com
     xref:
     - 2.xrefmap.json
@@ -49,7 +49,7 @@ outputs:
 # original config should have higher priority than extend config
 inputs:
   docfx.yml: |
-    renderingHostName: docs.microsoft.com
+    removeHostName: docs.microsoft.com
     xref:
     - high.xrefmap.json
     extend: _shared/extend.json
@@ -196,7 +196,7 @@ repos:
     - files:
         docfx.yml: |
           hostName: docs.microsoft.com
-          renderingHostName: review.docs.microsoft.com
+          removeHostName: review.docs.microsoft.com
           basePath: /base_path
           xref: 
             - 1.xrefmap.json
@@ -1131,7 +1131,7 @@ outputs:
 # uid resolving should respect the order of xref settings
 inputs:
   docfx.yml: |
-    renderingHostName: docs.microsoft.com
+    removeHostName: docs.microsoft.com
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json

@@ -71,7 +71,7 @@ outputs:
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
-    renderingHostName: docs.microsoft.com
+    removeHostName: docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
@@ -85,7 +85,7 @@ outputs:
 # query string will be ignored for redirect document id calculation
 inputs:
   docfx.yml: |
-    renderingHostName: docs.microsoft.com
+    removeHostName: docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
@@ -460,7 +460,7 @@ repos:
       docfx.yml: |
         name: docset
         product: product
-        renderingHostName: docs.com
+        removeHostName: docs.com
       folder/index.md:
 outputs:
   folder/index.json: |
