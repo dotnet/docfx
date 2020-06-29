@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new ConcurrentDictionary<(string, string?), GitCommit[]>();
 
-        private IntPtr _repo;
+        private readonly IntPtr _repo;
         private int _isDisposed;
         private Task? _warmup;
 
