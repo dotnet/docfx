@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
 
                 if (process.ExitCode != 0)
                 {
-                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}': \nSTDERROR:'{sanitizedErrorData}'");
+                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}': \nSTDERR:'{sanitizedErrorData}'");
                 }
 
                 return result;
