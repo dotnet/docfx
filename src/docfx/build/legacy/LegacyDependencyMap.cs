@@ -48,10 +48,13 @@ namespace Microsoft.Docs.Build
                         version = dep.Version,
                     });
 
-                var dependencyListText = string.Join('\n', dependencyList);
-
-                context.Output.WriteText("full-dependent-list.txt", dependencyListText);
-                context.Output.WriteText("server-side-dependent-list.txt", dependencyListText);
+                using var dependentListWriter = File.AppendText(context.Output.GetDestinationPath("full-dependent-list.txt"));
+                using var serverDependentListWriter = File.AppendText(context.Output.GetDestinationPath("server-side-dependent-list.txt"));
+                foreach (var dependency in dependencyList)
+                {
+                    dependentListWriter.WriteLine(dependency);
+                    serverDependentListWriter.WriteLine(dependency);
+                }
 
                 return sorted.Select(x => new LegacyDependencyMapItem(x.From.Substring(2), x.To.Substring(2), x.Version, x.Type))
                              .GroupBy(x => x.From)

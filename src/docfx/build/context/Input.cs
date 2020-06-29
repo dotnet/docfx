@@ -24,8 +24,12 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
-        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
-        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache = new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _jsonTokenCache =
+            new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
+
+        private readonly ConcurrentDictionary<FilePath, (List<Error>, JToken)> _yamlTokenCache =
+            new ConcurrentDictionary<FilePath, (List<Error>, JToken)>();
+
         private readonly ConcurrentDictionary<PathString, byte[]?> _gitBlobCache = new ConcurrentDictionary<PathString, byte[]?>();
         private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
         private readonly PathString? _alternativeFallbackFolder;

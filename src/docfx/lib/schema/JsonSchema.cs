@@ -177,7 +177,8 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
+        /// Alternative name used in output HTML <meta> tag.
+        /// If not set, the original metadata name is used. Does not have effect in sub schemas.
         /// </summary>
         public string? HtmlMetaName { get; set; }
 
@@ -208,7 +209,8 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Properties that are used to indicate some attitudes are required and the value of them can't be null or white space for string type
+        /// Properties that are used to indicate some attitudes are required,
+        /// and the value of them can't be null or white space for string type
         /// </summary>
         public string[] StrictRequired { get; set; } = Array.Empty<string>();
 
@@ -263,6 +265,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, CustomRule>> CustomRules { get; } = new Dictionary<string, Dictionary<string, CustomRule>>();
+        public Dictionary<string, Dictionary<string, CustomRule>> CustomRules { get; } =
+            new Dictionary<string, Dictionary<string, CustomRule>>();
     }
 }

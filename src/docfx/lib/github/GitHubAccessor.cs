@@ -25,7 +25,9 @@ namespace Microsoft.Docs.Build
 
         private readonly HttpClient? _httpClient;
         private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
-        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
+        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos =
+            new ConcurrentHashSet<(string owner, string name)>();
+
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
         private volatile Error? _fatalError;
