@@ -101,11 +101,6 @@ namespace Microsoft.Docs.Build
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
             };
 
-            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET")))
-            {
-                Console.WriteLine($"shrrrrrr {Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET")}");
-            }
-
             var missingVariables = spec.Environments.Where(env => !variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
             if (missingVariables.Any())
             {
