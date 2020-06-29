@@ -11,13 +11,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     {
         private readonly bool _exportFileLink;
         private readonly bool _updateValue;
-        private readonly string _liveSiteHostName;
+        private readonly string _siteHostName;
 
-        public HrefInterpreter(bool exportFileLink, bool updateValue, string liveSiteHostName = null)
+        public HrefInterpreter(bool exportFileLink, bool updateValue, string siteHostName = null)
         {
             _exportFileLink = exportFileLink;
             _updateValue = updateValue;
-            _liveSiteHostName = liveSiteHostName;
+            _siteHostName = siteHostName;
         }
 
         public bool CanInterpret(BaseSchema schema)
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             // "/" is also considered as absolute to us
             if (uri.IsAbsoluteUri || val.StartsWith("/", StringComparison.Ordinal))
             {
-                return Helper.RemoveHostName(val, _liveSiteHostName);
+                return Helper.RemoveHostName(val, _siteHostName);
             }
 
             // sample value: a/b/c?hello
