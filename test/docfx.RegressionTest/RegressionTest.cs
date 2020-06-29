@@ -212,6 +212,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
+                Normalizer.Normalize(outputPath, noAdditionalRule: true);
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: testWorkingFolder);
                 Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString}\"", cwd: testWorkingFolder, ignoreError: true);
             }
