@@ -1,8 +1,13 @@
 Version Notes (Current Version: v2.56)
 =======================================
 
-v2.56(Pre-release)
+v2.56
 -----------
+1. Support excluding default TOC in PDF. Thanks @Blake-Eryx! (#6146)
+2. Improvement and bug fix in code extension. (#6070)
+3. Bug fix:
+    1. Fix TOC scrolling to wrong place. Thanks @Spongman! (#4470)
+    1. Fix NOTE/WARNING/INFORMATION/CAUTION/TIP sections style. Thanks @Blake-Eryx! (#6082)
 
 v2.55
 -----------
