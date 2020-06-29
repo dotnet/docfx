@@ -66,9 +66,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 </tr>
 <tr>
 <td>Add/remove people, including other admins.</td>
-<td><p>
-<img src=""green-checkmark.png"" role=""presentation"">
-</p>
+<td><img src=""green-checkmark.png"" role=""presentation"">
 </td>
 <td></td>
 <td></td>
