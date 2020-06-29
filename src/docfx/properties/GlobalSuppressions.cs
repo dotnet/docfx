@@ -28,3 +28,5 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1720", Justification = "Others code", Scope = "namespaceanddescendants", Target = "ChakraHost.Hosting")]
 [assembly: SuppressMessage("Design", "CA1724", Justification = "Others code", Scope = "namespaceanddescendants", Target = "ChakraHost.Hosting")]
 [assembly: SuppressMessage("Design", "CA1801", Justification = "Others code", Scope = "namespaceanddescendants", Target = "ChakraHost.Hosting")]
+
+[assembly: SuppressMessage("Layout", "MEN002", Justification = "Others code", Scope = "namespaceanddescendants", Target = "ChakraHost.Hosting")]
