@@ -141,6 +141,7 @@ namespace Microsoft.Docs.Build
             Exec("git", $"clean -xdff", cwd: testWorkingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {branch} {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule sync {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"clean -xdf", cwd: Path.Combine(testWorkingFolder, testRepositoryName));
