@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
-using static Microsoft.Docs.Build.Normalizer;
 
 namespace Microsoft.Docs.Build
 {
