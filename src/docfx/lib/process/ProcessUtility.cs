@@ -38,13 +38,14 @@ namespace Microsoft.Docs.Build
                 using var process = Process.Start(psi);
 
                 using var errorStream = new MemoryStream();
-                Task.Run(() => PipeStream(process.StandardError.BaseStream, Console.OpenStandardOutput(), errorStream)).GetAwaiter().GetResult();
+                var readError = Task.Run(() => PipeStream(process.StandardError.BaseStream, Console.OpenStandardOutput(), errorStream));
                 var result = stdout ? process.StandardOutput.ReadToEnd() : "";
 
                 process.WaitForExit();
 
                 if (process.ExitCode != 0)
                 {
+                    readError.GetAwaiter().GetResult();
                     errorStream.Seek(0, SeekOrigin.Begin);
 
                     using var errorReader = new StreamReader(errorStream);
