@@ -2,17 +2,17 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "disable")]
+    [SuppressMessage("Security", "CA5351:Do Not Use Broken Cryptographic Algorithms", Justification = "disable")]
     internal static class HashUtility
     {
-#pragma warning disable CA5351 // Do not use insecure cryptographic algorithm MD5.
-#pragma warning disable CA5350 // Do not use insecure cryptographic algorithm SHA1.
-
         public static string GetMd5Hash(string input)
         {
             using var md5 = MD5.Create();

@@ -9,8 +9,6 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#pragma warning disable CS0618
-
 namespace Microsoft.Docs.Build
 {
     internal static class HtmlExtension
