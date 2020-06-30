@@ -43,12 +43,12 @@ namespace Microsoft.Docs.Build
             Console.WriteLine($"Normalizing done in {sw.Elapsed.TotalSeconds}s");
         }
 
-        private static void NormalizeFile(string path, NormalizeStage normalzeStage)
+        private static void NormalizeFile(string path, NormalizeStage normalizeStage)
         {
             switch (Path.GetExtension(path).ToLowerInvariant())
             {
                 case ".json":
-                    if (normalzeStage.HasFlag(NormalizeStage.NormalizeJsonFiles))
+                    if (normalizeStage.HasFlag(NormalizeStage.NormalizeJsonFiles))
                     {
                         File.WriteAllText(path, NormalizeJsonFile(path));
                     }
@@ -56,11 +56,11 @@ namespace Microsoft.Docs.Build
 
                 case ".log":
                 case ".txt":
-                    if (normalzeStage.HasFlag(NormalizeStage.PrettifyLogFiles))
+                    if (normalizeStage.HasFlag(NormalizeStage.PrettifyLogFiles))
                     {
                         File.WriteAllLines(path, File.ReadAllLines(path).Select(line => Regex.Replace(line, ",\"date_time\":.*?Z\"", "")).OrderBy(line => line));
                     }
-                    else if (normalzeStage.HasFlag(NormalizeStage.NormalizeLogFiles))
+                    else if (normalizeStage.HasFlag(NormalizeStage.NormalizeLogFiles))
                     {
                         File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select((line) => NormalizeJsonLog(line)));
                     }
