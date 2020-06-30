@@ -33,6 +33,7 @@ function publishBinaryPackages() {
         exec "dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false"
         if ($rid -eq "win7-x64") {
             $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
+            Write-Host "##[debug]package version: $version"
         }
         $packageName = "docfx-$rid-$version"
         Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
