@@ -41,6 +41,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public Dictionary<string, HttpConfig> Http { get; private set; } = new Dictionary<string, HttpConfig>();
 
+        /// <summary>
+        /// Type of git access token used to access the GitHub API
+        /// </summary>
+        public DocsGitTokenType? DocsGitTokenType { get; private set; }
+
+        /// <summary>
+        /// Name of the git repository owner
+        /// </summary>
+        public string? DocsRepositoryOwnerName { get; private set; }
+
         public Action<HttpRequestMessage> GetCredentialProvider()
         {
             var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToArray();
