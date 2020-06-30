@@ -136,7 +136,6 @@ namespace Microsoft.Docs.Build
                 hostName = GetHostName(docset.site_name),
                 basePath = docset.base_path.ValueWithLeadingSlash,
                 xrefHostName,
-                removeHostName = GetXrefHostName(docset.site_name, branch),
                 removeHostName = xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
