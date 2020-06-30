@@ -62,10 +62,6 @@ namespace Microsoft.Docs.Build
                 {
                     errors.Add(Errors.Metadata.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
                 }
-                else if (!IsValidMetadataType(value))
-                {
-                    errors.Add(Errors.Metadata.InvalidMetadataType(JsonUtility.GetSourceInfo(value), key));
-                }
             }
 
             var contentType = _buildScope.GetContentType(filePath);
@@ -73,6 +69,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = _documentProvider.GetDocsSiteUrl(filePath);
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
             var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, _monikerProvider.GetFileLevelMonikers(filePath).monikers);
+
             foreach (var schemaValidator in _schemaValidators)
             {
                 // Only validate conceptual files
@@ -95,21 +92,6 @@ namespace Microsoft.Docs.Build
             }
 
             return errors;
-        }
-
-        private static bool IsValidMetadataType(JToken token)
-        {
-            if (token is JObject)
-            {
-                return false;
-            }
-
-            if (token is JArray array && !array.All(item => item is JValue))
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

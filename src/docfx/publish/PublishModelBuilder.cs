@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                     document.ContentType,
                     document.Mime,
                     _errorLog.HasError(sourcePath),
-                    buildOutput ? result.metadata : null);
+                    buildOutput ? RemoveComplexValue(result.metadata) : null);
                 publishItems.Add(sourcePath, publishItem);
             }
 
@@ -99,6 +99,43 @@ namespace Microsoft.Docs.Build
             var fileManifests = publishItems.ToDictionary(item => item.Key, item => item.Value);
 
             return (model, fileManifests);
+        }
+
+        private JObject? RemoveComplexValue(JObject? metadata)
+        {
+            if (metadata is null)
+            {
+                return null;
+            }
+
+            var keysToRemove = default(List<string>);
+
+            foreach (var (key, value) in metadata)
+            {
+                if (value is JObject)
+                {
+                    keysToRemove ??= new List<string>();
+                    keysToRemove.Add(key);
+                    continue;
+                }
+
+                if (value is JArray array && !array.All(item => item is JValue))
+                {
+                    keysToRemove ??= new List<string>();
+                    keysToRemove.Add(key);
+                    continue;
+                }
+            }
+
+            if (keysToRemove != null)
+            {
+                foreach (var key in keysToRemove)
+                {
+                    metadata.Remove(key);
+                }
+            }
+
+            return metadata;
         }
     }
 }
