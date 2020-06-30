@@ -161,23 +161,6 @@ outputs:
         "canonical_url": "https://docs.com/en-us/rawmetadata/c",
         "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
-        "_op_gitContributorInformation": {
-          "update_at": "10/30/2018",
-          "contributors": [
-            {
-              "name": "charlie",
-              "profile_url": "https://github.com/charlie",
-              "display_name": "Charlie",
-              "id": "3"
-            }
-          ],
-          "author": {
-            "name": "bob",
-            "profile_url": "https://github.com/bob",
-            "display_name": "Bob",
-            "id": "2"
-          }
-        },
         "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
@@ -198,16 +181,7 @@ outputs:
         "url": "/rawmetadata/",
         "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
         "_path": "index.json",
-        "_op_gitContributorInformation": {
-          "update_at": "10/30/2018",
-          "author": {
-            "name": "charlie",
-            "profile_url": "https://github.com/charlie",
-            "display_name": "Charlie",
-            "id": "3"
-          },
           "contributors": undefined
-      },
       },
       {
         "url": "/rawmetadata/toc.json"
