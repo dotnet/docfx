@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                     orderby d.From, d.To, d.Type
                     select d).ToArray();
 
-                var dependencyList =
+                var dependencyList = (
                     from dep in sorted
                     select JsonUtility.Serialize(new
                     {
@@ -46,15 +46,10 @@ namespace Microsoft.Docs.Build
                         from_file_path = Path.GetFullPath(Path.Combine(docsetPath, dep.From.Substring(2))),
                         to_file_path = Path.GetFullPath(Path.Combine(docsetPath, dep.To.Substring(2))),
                         version = dep.Version,
-                    });
+                    })).ToArray();
 
-                using var dependentListWriter = File.AppendText(context.Output.GetDestinationPath("full-dependent-list.txt"));
-                using var serverDependentListWriter = File.AppendText(context.Output.GetDestinationPath("server-side-dependent-list.txt"));
-                foreach (var dependency in dependencyList)
-                {
-                    dependentListWriter.WriteLine(dependency);
-                    serverDependentListWriter.WriteLine(dependency);
-                }
+                context.Output.WriteLines("full-dependent-list.txt", dependencyList);
+                context.Output.WriteLines("server-side-dependent-list.txt", dependencyList);
 
                 return sorted.Select(x => new LegacyDependencyMapItem(x.From.Substring(2), x.To.Substring(2), x.Version, x.Type))
                              .GroupBy(x => x.From)

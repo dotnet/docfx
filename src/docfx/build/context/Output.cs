@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks.Dataflow;
@@ -55,6 +56,20 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
+        /// Writes the input lines to an output file.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public void WriteLines(string destRelativePath, string[] lines)
+        {
+            EnsureNoDryRun();
+
+            _queue.Post(() =>
+            {
+                File.WriteAllLines(GetDestinationPath(destRelativePath), lines);
+            });
+        }
+
+        /// <summary>
         /// Copies a file from source to destination, throws if source does not exists.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
@@ -84,7 +99,7 @@ namespace Microsoft.Docs.Build
             _queue.Completion.Wait();
         }
 
-        public string GetDestinationPath(string destRelativePath)
+        private string GetDestinationPath(string destRelativePath)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 

@@ -126,13 +126,15 @@ namespace Microsoft.Docs.Build
                 xrefMaps.AddRange(links);
             }
 
+            var xrefHostName = GetXrefHostName(docset.site_name, branch);
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
                 siteName = docset.site_name,
                 hostName = GetHostName(docset.site_name),
                 basePath = docset.base_path.ValueWithLeadingSlash,
-                xrefHostName = GetXrefHostName(docset.site_name, branch),
+                xrefHostName,
+                removeHostName = xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]

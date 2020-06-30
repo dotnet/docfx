@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "html", new List<string>{".html", ".jsp", ".asp", ".aspx", ".ascx" } },
             { "cshtml", new List<string>{".cshtml", "aspx-cs", "aspx-csharp" } },
             { "vbhtml", new List<string>{".vbhtml", "aspx-vb" } },
-            { "java", new List<string>{".java" } },
+            { "java", new List<string>{".java", ".gradle" } },
             { "javascript", new List<string>{"js", "node", ".js", "json", ".json" } },
             { "lisp", new List<string>{".lisp", ".lsp" } },
             { "lua", new List<string>{".lua" } },
@@ -106,6 +106,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         // Lisp code snippet comment block: ; <[/]snippetname>
         private static readonly string LispCodeSnippetRegionStartLineTemplate = ";<{tagname}>";
         private static readonly string LispCodeSnippetRegionEndLineTemplate = ";</{tagname}>";
+
+        // If we ever come across a language that has not been defined above, we shouldn't break the build.
+        // We can at least try it with a default language, "C#" for now, and try and resolve the code snippet.
+        private static readonly string DefaultSnippetLanguage = ".cs";
 
         // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
@@ -247,9 +251,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return GetNoteBookContent(content, obj.TagName, obj);
                 }
 
-                if (!s_codeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtractor> extractors))
+                List<CodeSnippetExtractor> extractors;
+                if (!s_codeLanguageExtractors.TryGetValue(lang, out extractors))
                 {
-                    _context.LogError(
+                    s_codeLanguageExtractors.TryGetValue(DefaultSnippetLanguage, out extractors);
+
+                    _context.LogWarning(
                         "unknown-language-code",
                         $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead",
                         obj);

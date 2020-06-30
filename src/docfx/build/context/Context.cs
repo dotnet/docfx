@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             FileResolver = fileResolver;
             SourceMap = sourceMap;
 
-            RepositoryProvider = new RepositoryProvider(buildOptions.Repository);
+            RepositoryProvider = new RepositoryProvider(buildOptions, config);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
-                Config.HostName,
+                Config.RemoveHostName,
                 ErrorLog,
                 BuildScope,
                 buildOptions.Repository,

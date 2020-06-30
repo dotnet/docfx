@@ -130,6 +130,11 @@ namespace Microsoft.Docs.Build
         public string XrefHostName { get; private set; } = "";
 
         /// <summary>
+        /// Gets host name used for removing host
+        /// </summary>
+        public string RemoveHostName { get; private set; } = "";
+
+        /// <summary>
         /// Gets whether we are running in legacy mode
         /// </summary>
         public bool Legacy { get; private set; }
