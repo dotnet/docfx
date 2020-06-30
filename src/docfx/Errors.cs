@@ -669,12 +669,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error AttributeReserved(SourceInfo? source, string name)
                 => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs.", source, name);
-
-            /// <summary>
-            /// Metadata value must be scalar or arrays of scalars.
-            /// </summary>
-            public static Error InvalidMetadataType(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Error, "invalid-metadata-type", $"Metadata '{name}' can only be a scalar value or string array.", source, name);
         }
 
         public static class Content

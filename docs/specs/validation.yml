@@ -29,7 +29,7 @@ inputs:
 outputs:
   docs/a.json:
 ---
-# Metadata value must be scalar or scalar array
+# Remove object form metadata from publish.json
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -40,9 +40,12 @@ inputs:
           - a: 1
   a.md:
 outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key1' can only be a scalar value or string array.","file":"docfx.yml","line":2,"column":9}
-    {"message_severity":"error","code":"invalid-metadata-type","message":"Metadata 'key2' can only be a scalar value or string array.","file":"docfx.yml","line":6,"column":7}
+  a.json: |
+    { "key1": {}, "key2": [{ "a": 1 }] }
+  .publish.json: |
+    {
+      "files": [{ "url": "/a", "key1": undefined, "key2": undefined }]
+    }
 ---
 # Additional metadata validation from external JSON schema
 inputs:
