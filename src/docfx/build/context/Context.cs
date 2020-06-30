@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
-                Config.HostName,
+                Config.RemoveHostName,
                 ErrorLog,
                 BuildScope,
                 buildOptions.Repository,

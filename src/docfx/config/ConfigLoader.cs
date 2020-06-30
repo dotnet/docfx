@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
-            var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions);
+            var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
             disposables.Add(packageResolver);
 
             var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, packageResolver);

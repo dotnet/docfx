@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
 
             return UrlUtility.TryParseGitHubUrl(repo.Remote, out _, out _)
                 ? $"{repo.Remote}/blob/{commit}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(repo.Remote, out _, out _)
+                : UrlUtility.TryParseAzureReposUrl(repo.Remote, out _, out _, out _)
                 ? $"{repo.Remote}/commit/{commit}?path=/{pathToRepo}&_a=contents"
                 : null;
         }
@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
         {
             return UrlUtility.TryParseGitHubUrl(remote, out _, out _)
                 ? $"{{repo}}/blob/{{branch}}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(remote, out _, out _)
+                : UrlUtility.TryParseAzureReposUrl(remote, out _, out _, out _)
                 ? $"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents"
                 : null;
         }
