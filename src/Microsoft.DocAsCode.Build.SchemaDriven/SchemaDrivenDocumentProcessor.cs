@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly bool _allowOverwrite;
         private readonly MarkdigMarkdownService _markdigMarkdownService;
         private readonly FolderRedirectionManager _folderRedirectionManager;
-        private readonly string _liveSiteHostName;
+        private readonly string _siteHostName;
         #endregion
 
         public SchemaValidator SchemaValidator { get; }
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             ICompositionContainer container,
             MarkdigMarkdownService markdigMarkdownService,
             FolderRedirectionManager folderRedirectionManager,
-            string liveSiteHostName = null)
+            string siteHostName = null)
         {
             if (string.IsNullOrWhiteSpace(schema.Title))
             {
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var schemaSpecificSteps = container.GetExports<IDocumentBuildStep>($"{nameof(SchemaDrivenDocumentProcessor)}.{_schemaName}");
                 BuildSteps = commonSteps.Union(schemaSpecificSteps).ToList();
             }
-            _liveSiteHostName = liveSiteHostName;
+            _siteHostName = siteHostName;
 
         }
 
@@ -222,7 +222,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             var pc = new ProcessContext(null, model, context);
             DocumentSchema schema = model.Properties.Schema;
             model.Content = new SchemaProcessor(
-                new HrefInterpreter(false, true, _liveSiteHostName),
+                new HrefInterpreter(false, true, _siteHostName),
                 new FileInterpreter(false, true),
                 new XrefInterpreter(false, true)
                 ).Process(content, schema, pc);
