@@ -137,7 +137,7 @@ jobs:
       dynamics-365-customer-engagement-pr:
         params: https://github.com/MicrosoftDocs/dynamics-365-customer-engagement-pr --timeout 70
       roslyn-api-docs:
-        params: https://github.com/dotnet/roslyn-api-docs --timeout 105
+        params: https://github.com/dotnet/roslyn-api-docs --branch live --timeout 105
       docs-help-pr:
         params: >
           https://github.com/MicrosoftDocs/docs-help-pr --timeout 30
