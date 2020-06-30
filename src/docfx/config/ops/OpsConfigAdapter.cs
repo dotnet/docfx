@@ -47,6 +47,8 @@ namespace Microsoft.Docs.Build
             _ => throw new NotSupportedException(),
         };
 
+        private static string ValidationServiceEndpoint => $"{s_buildServiceEndpoint}/route/validationmgt";
+
         private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
             => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
 
@@ -103,7 +105,7 @@ namespace Microsoft.Docs.Build
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
-                new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template= false } });
+                new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template = false } });
 
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
@@ -242,6 +244,7 @@ namespace Microsoft.Docs.Build
                                    request.Headers.TryAddWithoutValidation(key, value);
                                }
                            }
+                           await FillOpsToken(url, request);
                            var response = await _http.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
@@ -278,18 +281,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                if (url.StartsWith(s_buildServiceEndpoint) && !request.Headers.Contains("X-OP-BuildUserToken"))
-                {
-                    // For development usage
-                    try
-                    {
-                        request.Headers.Add("X-OP-BuildUserToken", (await s_opBuildUserToken.Value).Value.Value);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
-                    }
-                }
+                await FillOpsToken(url, request);
 
                 var response = await _http.SendAsync(request);
 
@@ -354,13 +346,20 @@ namespace Microsoft.Docs.Build
                 : DocsEnvironment.Prod;
         }
 
-        private static string ValidationServiceEndpoint => s_docsEnvironment switch
+        private static async Task FillOpsToken(string url, HttpRequestMessage request)
         {
-            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net/route/validationmgt",
-            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net/route/validationmgt",
-            _ => throw new NotSupportedException(),
-        };
+            if (url.StartsWith(s_buildServiceEndpoint) && !request.Headers.Contains("X-OP-BuildUserToken"))
+            {
+                // For development usage
+                try
+                {
+                    request.Headers.Add("X-OP-BuildUserToken", (await s_opBuildUserToken.Value).Value.Value);
+                }
+                catch (Exception ex)
+                {
+                    Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
+                }
+            }
+        }
     }
 }
