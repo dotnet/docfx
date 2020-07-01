@@ -12,8 +12,6 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#pragma warning disable CS0618
-
 namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
@@ -135,7 +133,9 @@ namespace Microsoft.Docs.Build
             switch (obj)
             {
                 case MonikerRangeBlock monikerRangeBlock:
-                    var monikers = monikerRangeBlock.GetAttributes().Properties.First(p => p.Key == "data-moniker").Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    var monikers = monikerRangeBlock.GetAttributes()
+                                                    .Properties.First(p => p.Key == "data-moniker")
+                                                    .Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                     context.ZoneMonikerStack.Push(new MonikerList(monikers));
                     foreach (var child in monikerRangeBlock)
                     {

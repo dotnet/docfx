@@ -15,11 +15,14 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly GitHubAccessor _githubAccessor;
         private readonly BuildOptions _buildOptions;
-        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders =
+            new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+
         private readonly RepositoryProvider _repositoryProvider;
         private readonly SourceMap _sourceMap;
 
-        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
+        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls =
+            new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
 
         public ContributionProvider(
             Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
@@ -163,7 +166,7 @@ namespace Microsoft.Docs.Build
 
             return UrlUtility.TryParseGitHubUrl(repo.Remote, out _, out _)
                 ? $"{repo.Remote}/blob/{commit}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(repo.Remote, out _, out _)
+                : UrlUtility.TryParseAzureReposUrl(repo.Remote, out _, out _, out _)
                 ? $"{repo.Remote}/commit/{commit}?path=/{pathToRepo}&_a=contents"
                 : null;
         }
@@ -213,7 +216,7 @@ namespace Microsoft.Docs.Build
         {
             return UrlUtility.TryParseGitHubUrl(remote, out _, out _)
                 ? $"{{repo}}/blob/{{branch}}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(remote, out _, out _)
+                : UrlUtility.TryParseAzureReposUrl(remote, out _, out _, out _)
                 ? $"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents"
                 : null;
         }

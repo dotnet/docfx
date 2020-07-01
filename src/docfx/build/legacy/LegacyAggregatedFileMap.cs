@@ -20,7 +20,9 @@ namespace Microsoft.Docs.Build
 
             foreach (var (path, (fileMapItem, monikers))
                 in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder)
-                        .ToDictionary(g => g.Key, g => (g.First().fileMapItem, g.SelectMany(x => x.fileMapItem.Monikers).Distinct().OrderBy(_ => _, StringComparer.Ordinal).ToList())))
+                        .ToDictionary(
+                          g => g.Key,
+                          g => (g.First().fileMapItem, g.SelectMany(x => x.fileMapItem.Monikers).Distinct().OrderBy(_ => _, StringComparer.Ordinal).ToList())))
             {
                 if (fileMapItem.Type == "Resource")
                 {

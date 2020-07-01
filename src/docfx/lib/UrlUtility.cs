@@ -23,7 +23,8 @@ namespace Microsoft.Docs.Build
 
         private static readonly Regex s_azureReposUrlRegex =
             new Regex(
-                @"^(https|http):\/\/((?<account1>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account2>[^\/\s]+)\/)+(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+                @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
+                @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };
@@ -292,9 +293,9 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool TryParseAzureReposUrl(
-            string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo)
+            string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo, [NotNullWhen(true)] out string? org)
         {
-            project = repo = default;
+            project = repo = org = default;
 
             if (string.IsNullOrEmpty(remoteUrl))
             {
@@ -307,6 +308,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
+            org = match.Groups["account"].Value;
             project = match.Groups["project"].Value;
             repo = match.Groups["repository"].Value;
 

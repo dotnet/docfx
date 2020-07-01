@@ -58,6 +58,9 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
+
+            uid = Uri.UnescapeDataString(uid);
+
             string? moniker = null;
             string? text = null;
             string? alt = null;
@@ -176,23 +179,15 @@ namespace Microsoft.Docs.Build
                 return url.Substring($"https://{hostName}".Length);
             }
 
-            // TODO: this workaround can be removed when all xref related repos migrated to v3
-            if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
-                        && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
-            {
-                return url.Substring("https://review.docs.microsoft.com".Length);
-            }
-
             return url;
         }
 
         private (Error?, IXrefSpec?, string? href) Resolve(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
-            var unescapedUid = Uri.UnescapeDataString(uid);
-            var (xrefSpec, href) = ResolveInternalXrefSpec(unescapedUid, referencingFile, inclusionRoot);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot);
             if (xrefSpec is null)
             {
-                (xrefSpec, href) = ResolveExternalXrefSpec(unescapedUid);
+                (xrefSpec, href) = ResolveExternalXrefSpec(uid);
             }
 
             if (xrefSpec is null)
@@ -207,7 +202,7 @@ namespace Microsoft.Docs.Build
         {
             if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
+                var href = RemoveSharingHost(spec.Value.Href, _config.RemoveHostName);
                 return (spec.Value, href);
             }
             return default;

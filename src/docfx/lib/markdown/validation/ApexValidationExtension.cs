@@ -6,8 +6,6 @@ using Markdig;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Validations.DocFx.Adapter;
 
-#pragma warning disable CS0618
-
 namespace Microsoft.Docs.Build
 {
     internal static class ApexValidationExtension

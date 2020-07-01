@@ -365,6 +365,7 @@ rpetrusha
 ruleset
 rulesets
 safecrlf
+saml
 sbyte
 scriptblock
 sdp
@@ -387,6 +388,7 @@ spellcheck
 sql
 sqldw
 sqlite
+sso
 stackalloc
 stacktrace
 standalone
@@ -439,9 +441,11 @@ uid
 ulong
 unescape
 unicode
+username
 userprofile
 ushort
 utils
+validationmgt
 validator
 validators
 vba

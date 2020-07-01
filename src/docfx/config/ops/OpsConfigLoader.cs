@@ -24,7 +24,8 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
         }
 
-        public static (List<Error> errors, string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(string docsetPath, Repository? repository)
+        public static (List<Error> errors, string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(
+            string docsetPath, Repository? repository)
         {
             if (repository is null)
             {
@@ -42,7 +43,8 @@ namespace Microsoft.Docs.Build
             return (errors, xrefEndpoint, xrefQueryTags, config);
         }
 
-        private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(string branch, OpsConfig opsConfig, PathString buildSourceFolder)
+        private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
+            string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -80,7 +82,8 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            result["fileMetadata"] = GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>());
+            result["fileMetadata"] =
+                GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>(), buildSourceFolder);
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
             if (monodoc != null)
@@ -130,7 +133,7 @@ namespace Microsoft.Docs.Build
             return result.Count == 0 ? null : result;
         }
 
-        private static JObject GenerateJoinTocMetadata(OpsJoinTocConfig[] configs)
+        private static JObject GenerateJoinTocMetadata(OpsJoinTocConfig[] configs, string buildSourceFolder)
         {
             var conceptualToc = new JObject();
             var refToc = new JObject();
@@ -139,11 +142,11 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(config.ConceptualTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
                 {
-                    refToc[config.ConceptualTOC] = config.ReferenceTOCUrl;
+                    refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
                 }
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
-                    conceptualToc[config.ReferenceTOC] = config.ConceptualTOCUrl;
+                    conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
                 }
             }
 

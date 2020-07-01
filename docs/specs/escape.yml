@@ -127,34 +127,44 @@ inputs:
       "fullName": "test.test",
       "description": "<some text &>"
     }
+  b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "xref": "a%26b"
+    }
   html-xref.md: |
     Link to [text](xref:a&b?displayProperty=description)
     Link to <xref href="a&b?displayProperty=description" />
     Link to <xref:a&b?displayProperty=description>
     Link to @a&b?displayProperty=description
     Link to @a&c
-    Link to <xref:a%2A>
+    Link to <xref:a%26>
+    Link to <xref:a%26b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
         "uid": { "contentType": "uid" },
+        "xref": { "contentType": "xref" },
         "description": { "type": "string" }
       },
       "xrefProperties": ["name", "fullName", "description"]
     }
 outputs:
   a.json:
+  b.json:
   html-xref.json: |
     {
       "conceptual": "
           <p>
-            Link to <a href=\"a.json\">text</a>
+            Link to <a href='a.json'>text</a>
             Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
-            Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
-            Link to <a href=\"a.json\">&lt;some text &amp;&gt;\n</a>
+            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
             Link to @a&amp;c
-            Link to &lt;xref:a%2A&gt;
+            Link to &lt;xref:a%26&gt;
+            Link to <a href='a.json'>test\n</a>
           </p>"
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a%2A'.","file":"html-xref.md","line":6,"column":9}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&'.","file":"html-xref.md","line":6,"column":9}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a%26b'.","file":"b.json","line":3,"column":17}

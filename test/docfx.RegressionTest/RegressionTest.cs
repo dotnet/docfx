@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -100,7 +99,6 @@ namespace Microsoft.Docs.Build
             Clean(outputPath);
 
             var buildTime = Build(repositoryPath, outputPath, docfxConfig);
-            Normalizer.Normalize(outputPath);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -143,6 +141,7 @@ namespace Microsoft.Docs.Build
             Exec("git", $"clean -xdff", cwd: testWorkingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {branch} {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule sync {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"clean -xdf", cwd: Path.Combine(testWorkingFolder, testRepositoryName));
@@ -178,6 +177,9 @@ namespace Microsoft.Docs.Build
             if (s_isPullRequest)
             {
                 var watch = Stopwatch.StartNew();
+                Normalizer.Normalize(outputPath, NormalizeStage.NormalizeLogFiles | NormalizeStage.NormalizeJsonFiles);
+                Normalizer.Normalize(existingOutputPath, NormalizeStage.NormalizeLogFiles);
+
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
@@ -211,6 +213,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
+                Normalizer.Normalize(outputPath, NormalizeStage.PrettifyLogFiles | NormalizeStage.NormalizeJsonFiles);
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: testWorkingFolder);
                 Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString}\"", cwd: testWorkingFolder, ignoreError: true);
             }

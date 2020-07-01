@@ -11,13 +11,19 @@ namespace Microsoft.Docs.Build
     internal class RepositoryProvider : IDisposable
     {
         private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
+        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath =
+            new ConcurrentDictionary<string, FileCommitProvider>();
 
         public Repository? Repository { get; }
 
-        public RepositoryProvider(Repository? repository)
+        public RepositoryProvider(BuildOptions buildOptions, Config config)
         {
-            Repository = repository;
+            Repository = buildOptions.Repository;
+
+            if (Repository != null && !config.DryRun && !buildOptions.IsLocalizedBuild)
+            {
+                GetCommitProvider(Repository).WarmUp();
+            }
         }
 
         public (Repository? repository, PathString? pathToRepository) GetRepository(PathString fullPath)
