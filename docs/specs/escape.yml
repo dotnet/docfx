@@ -138,7 +138,7 @@ inputs:
     Link to <xref:a&b?displayProperty=description>
     Link to @a&b?displayProperty=description
     Link to @a&c
-    Link to <xref:a%2A>
+    Link to <xref:a%26>
     Link to <xref:a%26b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
@@ -161,10 +161,10 @@ outputs:
             Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
             Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
             Link to @a&amp;c
-            Link to &lt;xref:a%2A&gt;
+            Link to &lt;xref:a%26&gt;
             Link to <a href='a.json'>test\n</a>
           </p>"
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a*'.","file":"html-xref.md","line":6,"column":9}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a*'.","file":"b.json","line":3,"column":17}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&'.","file":"html-xref.md","line":6,"column":9}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&'.","file":"b.json","line":3,"column":17}
