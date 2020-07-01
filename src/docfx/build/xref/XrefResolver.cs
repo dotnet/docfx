@@ -58,6 +58,9 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
+
+            uid = Uri.UnescapeDataString(uid);
+
             string? moniker = null;
             string? text = null;
             string? alt = null;
@@ -181,11 +184,10 @@ namespace Microsoft.Docs.Build
 
         private (Error?, IXrefSpec?, string? href) Resolve(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
         {
-            var unescapedUid = Uri.UnescapeDataString(uid);
-            var (xrefSpec, href) = ResolveInternalXrefSpec(unescapedUid, referencingFile, inclusionRoot);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot);
             if (xrefSpec is null)
             {
-                (xrefSpec, href) = ResolveExternalXrefSpec(unescapedUid);
+                (xrefSpec, href) = ResolveExternalXrefSpec(uid);
             }
 
             if (xrefSpec is null)

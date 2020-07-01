@@ -694,7 +694,12 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    { "conceptual": "<p>Link to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a>\nLink to <a href=\"a\">Title from yaml header a</a></p>" }
+    { "conceptual": "<p>
+          Link to <a href=\"a\">Title from yaml header a</a>
+          Link to <a href=\"a\">Title from yaml header a</a>
+          Link to <a href=\"a\">Title from yaml header a</a>
+          Link to <a href=\"a\">Title from yaml header a</a>
+          Link to <a href=\"a\">Title from yaml header a</a></p>" }
 ---
 # Refer to uid within link
 inputs:
