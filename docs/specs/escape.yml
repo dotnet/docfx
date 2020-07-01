@@ -167,4 +167,4 @@ outputs:
     }
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&'.","file":"html-xref.md","line":6,"column":9}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&'.","file":"b.json","line":3,"column":17}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&26b'.","file":"b.json","line":3,"column":17}
