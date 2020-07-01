@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
     public static class DocfxTest
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
-
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
 
@@ -56,26 +55,29 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("OS not supported");
             }
 
-            var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
+            lock (string.Intern($"{test.FilePath}-{test.Ordinal:D2}-{test.Matrix}"))
+            {
+                var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
 
-            try
-            {
-                t_repos.Value = repos;
-                t_appDataPath.Value = appDataPath;
-                RunCore(docsetPath, outputPath, test, spec);
-            }
-            catch (Exception exception)
-            {
-                while (exception is AggregateException ae && ae.InnerException != null)
+                try
                 {
-                    exception = ae.InnerException;
+                    t_repos.Value = repos;
+                    t_appDataPath.Value = appDataPath;
+                    RunCore(docsetPath, outputPath, test, spec);
                 }
-                ExceptionDispatchInfo.Capture(exception).Throw();
-            }
-            finally
-            {
-                t_repos.Value = null;
-                t_appDataPath.Value = null;
+                catch (Exception exception)
+                {
+                    while (exception is AggregateException ae && ae.InnerException != null)
+                    {
+                        exception = ae.InnerException;
+                    }
+                    ExceptionDispatchInfo.Capture(exception).Throw();
+                }
+                finally
+                {
+                    t_repos.Value = null;
+                    t_appDataPath.Value = null;
+                }
             }
         }
 
@@ -184,9 +186,6 @@ namespace Microsoft.Docs.Build
             var outputs = dryRun
                 ? new Dictionary<string, string> { [".errors.log"] = spec.Outputs[".errors.log"] }
                 : spec.Outputs;
-
-            // Put some delay here to wait for file system update
-            Thread.Sleep(5);
 
             VerifyOutput(randomOutputPath, outputs);
 
