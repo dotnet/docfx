@@ -52,7 +52,8 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
             => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
 
-        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
+        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken =
+            new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
@@ -154,7 +155,8 @@ namespace Microsoft.Docs.Build
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
             var environment = s_docsEnvironment;
-            if (!string.IsNullOrEmpty(xrefEndpoint) && string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(xrefEndpoint) &&
+                string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
                 environment = DocsEnvironment.Prod;
             }

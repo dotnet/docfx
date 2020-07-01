@@ -23,7 +23,8 @@ namespace Microsoft.Docs.Build
 
         private static readonly Regex s_azureReposUrlRegex =
             new Regex(
-                @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+                @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
+                @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };

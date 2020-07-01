@@ -32,7 +32,16 @@ namespace Microsoft.Docs.Build
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name)
         { }
 
-        public Error(ErrorLevel level, string code, string message, FilePath? file = null, int line = 0, int column = 0, int endLine = 0, int endColumn = 0, string? name = null)
+        public Error(
+            ErrorLevel level,
+            string code,
+            string message,
+            FilePath? file = null,
+            int line = 0,
+            int column = 0,
+            int endLine = 0,
+            int endColumn = 0,
+            string? name = null)
         {
             Level = level;
             Code = code;

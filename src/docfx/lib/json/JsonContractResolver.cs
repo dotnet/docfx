@@ -65,7 +65,8 @@ namespace Microsoft.Docs.Build
 
         private static void HandleSourceInfo(JsonProperty property)
         {
-            if (property.PropertyType != null && property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+            if (property.PropertyType != null && property.PropertyType.IsGenericType &&
+                property.PropertyType.GetGenericTypeDefinition() == typeof(SourceInfo<>))
             {
                 // Allow source info propagation for null values
                 property.NullValueHandling = NullValueHandling.Include;

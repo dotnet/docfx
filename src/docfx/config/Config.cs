@@ -148,7 +148,8 @@ namespace Microsoft.Docs.Build
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
+        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } =
+            new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.

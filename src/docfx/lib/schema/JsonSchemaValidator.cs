@@ -268,7 +268,8 @@ namespace Microsoft.Docs.Build
 
                 if (schema.MinLength.HasValue && unicodeLength < schema.MinLength.Value)
                 {
-                    errors.Add(Errors.JsonSchema.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, "short", unicodeLength, $">= {schema.MinLength}"));
+                    errors.Add(
+                        Errors.JsonSchema.StringLengthInvalid(JsonUtility.GetSourceInfo(scalar), name, "short", unicodeLength, $">= {schema.MinLength}"));
                 }
             }
 

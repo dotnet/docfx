@@ -10,7 +10,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class ExtractTitleExtension
     {
-        public static MarkdownPipelineBuilder UseExtractTitle(this MarkdownPipelineBuilder builder, MarkdownEngine markdownEngine, Func<ConceptualModel?> getConceptual)
+        public static MarkdownPipelineBuilder UseExtractTitle(
+            this MarkdownPipelineBuilder builder, MarkdownEngine markdownEngine, Func<ConceptualModel?> getConceptual)
         {
             return builder.Use(document =>
             {
