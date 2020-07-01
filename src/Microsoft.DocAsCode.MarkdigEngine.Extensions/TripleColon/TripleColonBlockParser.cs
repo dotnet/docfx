@@ -68,14 +68,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 block.SetData(typeof(HtmlAttributes), htmlAttributes);
             }
 
-            processor.NewBlocks.Push(block);
-
-            if (extension.GetType() == typeof(ImageExtension)
-                && htmlAttributes != null
-                && ImageExtension.RequiresClosingTripleColon(attributes))
+            if (extension.GetType() == typeof(ImageExtension))
             {
+                if(htmlAttributes != null
+                && !ImageExtension.RequiresClosingTripleColon(attributes))
+                {
+                    return BlockState.None;
+                }
+
+                processor.NewBlocks.Push(block);
                 block.EndingTripleColons = true;
                 return BlockState.ContinueDiscard;
+            } else
+            {
+                processor.NewBlocks.Push(block);
             }
 
             if (extension.SelfClosing)
@@ -89,52 +95,67 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public override BlockState TryContinue(BlockProcessor processor, Block block)
         {
             var slice = processor.Line;
-            if (processor.IsBlankLine)
-            {
-                return BlockState.Continue;
-            }
-
-            ExtensionsHelper.SkipSpaces(ref slice);
-
-            if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
-            {
-                ExtensionsHelper.ResetLineIndent(processor);
-                return BlockState.Continue;
-            }
-
-            ExtensionsHelper.SkipSpaces(ref slice);
-
-            var extensionName = ((TripleColonBlock)block).Extension.Name;
-
-            if (!ExtensionsHelper.MatchStart(ref slice, extensionName) || !ExtensionsHelper.MatchStart(ref slice, "-end"))
-            {
-                ExtensionsHelper.ResetLineIndent(processor);
-                return BlockState.Continue;
-            }
-
-            var c = ExtensionsHelper.SkipSpaces(ref slice);
-
             var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
-            if (endingTripleColons && !ExtensionsHelper.MatchStart(ref slice, ":::"))
+
+            if(((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension)
+                || endingTripleColons)
             {
-                _context.LogWarning(
-                    $"invalid-{extensionName}",
-                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{extensionName}-end:::\"",
-                    block);
-                return BlockState.Continue;
+                if (processor.IsBlankLine)
+                {
+                    return BlockState.Continue;
+                }
+
+                ExtensionsHelper.SkipSpaces(ref slice);
+
+                if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
+                {
+                    ExtensionsHelper.ResetLineIndent(processor);
+                    return BlockState.Continue;
+                }
+
+                ExtensionsHelper.SkipSpaces(ref slice);
+
+                var extensionName = ((TripleColonBlock)block).Extension.Name;
+
+                if (!ExtensionsHelper.MatchStart(ref slice, extensionName) || !ExtensionsHelper.MatchStart(ref slice, "-end"))
+                {
+                    ExtensionsHelper.ResetLineIndent(processor);
+                    return BlockState.Continue;
+                }
+
+                var c = ExtensionsHelper.SkipSpaces(ref slice);
+
+                if (endingTripleColons && !ExtensionsHelper.MatchStart(ref slice, ":::"))
+                {
+                    _context.LogWarning(
+                        $"invalid-{extensionName}",
+                        $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Missing ending \":::{extensionName}-end:::\"",
+                        block);
+                    return BlockState.Continue;
+                }
+
+                if (!c.IsZero() && !endingTripleColons)
+                {
+                    _context.LogWarning(
+                        $"invalid-{extensionName}",
+                        $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {extensionName}-end\": \"{c}\"",
+                        block);
+                }
+
+                block.UpdateSpanEnd(slice.End);
+                block.IsOpen = false;
+                (block as TripleColonBlock).Closed = true;
+
+                return BlockState.BreakDiscard;
             }
 
-            if (!c.IsZero() && !endingTripleColons)
-            {
-                _context.LogWarning(
-                    $"invalid-{extensionName}",
-                    $"Invalid {extensionName} on line {block.Line}. \"{slice.Text}\" is invalid. Invalid character after \"::: {extensionName}-end\": \"{c}\"",
-                    block);
-            }
-
-            block.UpdateSpanEnd(slice.End);
             block.IsOpen = false;
             (block as TripleColonBlock).Closed = true;
+
+            if (!processor.IsBlankLine)
+            {
+                return BlockState.Continue;
+            }
 
             return BlockState.BreakDiscard;
         }
