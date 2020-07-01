@@ -123,7 +123,8 @@ namespace Microsoft.Docs.Build
 
                 var (fileMonikerErrors, fileMonikers) = _rangeParser.Parse(metadata.MonikerRange);
                 errors.AddRange(fileMonikerErrors);
-                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
+                var (intersectionError, intersection) =
+                    GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }
@@ -131,7 +132,8 @@ namespace Microsoft.Docs.Build
             {
                 var (fileMonikerErrors, fileMonikers) = _rangeParser.Validate(metadata.Monikers);
                 errors.AddRange(fileMonikerErrors);
-                var (intersectionError, intersection) = GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
+                var (intersectionError, intersection) =
+                    GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
                 errors.AddIfNotNull(intersectionError);
                 return (errors, intersection);
             }

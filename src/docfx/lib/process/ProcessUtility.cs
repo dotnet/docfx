@@ -53,7 +53,9 @@ namespace Microsoft.Docs.Build
                     var errorData = errorReader.ReadToEnd();
                     var sanitizedErrorData = secrets != null ? secrets.Aggregate(errorData, HideSecrets) : errorData;
 
-                    throw new InvalidOperationException($"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: \nSTDOUT:'{result}': \nSTDERR:'{sanitizedErrorData}'");
+                    throw new InvalidOperationException(
+                        $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: " +
+                        $"\nSTDOUT:'{result}': \nSTDERR:'{sanitizedErrorData}'");
                 }
 
                 return result;

@@ -133,7 +133,9 @@ namespace Microsoft.Docs.Build
             switch (obj)
             {
                 case MonikerRangeBlock monikerRangeBlock:
-                    var monikers = monikerRangeBlock.GetAttributes().Properties.First(p => p.Key == "data-moniker").Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    var monikers = monikerRangeBlock.GetAttributes()
+                                                    .Properties.First(p => p.Key == "data-moniker")
+                                                    .Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                     context.ZoneMonikerStack.Push(new MonikerList(monikers));
                     foreach (var child in monikerRangeBlock)
                     {
