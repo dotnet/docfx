@@ -59,7 +59,8 @@ namespace Microsoft.Docs.Build
                     maxLength = GetMaxLength(rulesInfo),
                 };
 
-                var propertyJson = JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                var propertyJson =
+                    JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 if (!string.Equals("{}", propertyJson))
                 {
                     schema.properties.Add(attribute, property);

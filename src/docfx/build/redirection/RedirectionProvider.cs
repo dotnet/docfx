@@ -42,7 +42,9 @@ namespace Microsoft.Docs.Build
                 var (errors, redirections) = LoadRedirectionModel(docsetPath, repository);
                 _errorLog.Write(errors);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
-                _history = new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(() => GetRenameAndRedirectionHistory(redirections, _redirectUrls));
+                _history =
+                   new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(
+                        () => GetRenameAndRedirectionHistory(redirections, _redirectUrls));
                 _publishUrlMap = publishUrlMap;
             }
         }

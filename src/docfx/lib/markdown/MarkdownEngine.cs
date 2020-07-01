@@ -289,7 +289,8 @@ namespace Microsoft.Docs.Build
         private string GetLink(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
+            var (error, link, _) =
+                _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
 
             return link;

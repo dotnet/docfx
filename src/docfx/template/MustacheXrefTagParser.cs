@@ -85,7 +85,8 @@ namespace Microsoft.Docs.Build
                         var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}>";
                         if (token.IsSelfClosing)
                         {
-                            result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}"))
+                            var resolvedTag = partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}";
+                            result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", resolvedTag))
                                   .Append($"{{{{/{uidName}}}}}");
                         }
                         else

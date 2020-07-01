@@ -221,7 +221,8 @@ namespace Microsoft.Docs.Build
             return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
             {
                 ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
-                ShouldRecursePredicate = (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
+                ShouldRecursePredicate =
+                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
             };
 
             static PathString ToPathString(ref FileSystemEntry entry)

@@ -33,7 +33,10 @@ namespace Microsoft.Docs.Build
         public GitHubAccessor(Config config)
         {
             _userCache = new JsonDiskCache<Error, string, GitHubUser>(
-                AppData.GitHubUserCachePath, TimeSpan.FromHours(config.GithubUserCacheExpirationInHours), StringComparer.OrdinalIgnoreCase, ResolveGitHubUserConflict);
+                AppData.GitHubUserCachePath,
+                TimeSpan.FromHours(config.GithubUserCacheExpirationInHours),
+                StringComparer.OrdinalIgnoreCase,
+                ResolveGitHubUserConflict);
 
             if (!string.IsNullOrEmpty(config.GithubToken))
             {

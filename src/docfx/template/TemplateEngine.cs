@@ -138,7 +138,8 @@ namespace Microsoft.Docs.Build
                 ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                    let fileName = Path.GetFileName(k)
                    select fileName.Substring(0, fileName.Length - ".schema.json".Length))
-                   .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                   .ToDictionary(
+                    schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
                 : new Dictionary<string, Lazy<TemplateSchema>>();
 
             schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));

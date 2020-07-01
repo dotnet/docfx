@@ -97,7 +97,8 @@ namespace Microsoft.Docs.Build
                 catch (OperationCanceledException oce)
                 {
                     // Action block catches cancellation exceptions
-                    // https://github.com/dotnet/corefx/blob/4b36fba308d8e2d3207773952c30268ac3365eed/src/System.Threading.Tasks.Dataflow/src/Blocks/ActionBlock.cs#L142
+                    // Check file /System.Threading.Tasks.Dataflow/src/Blocks/ActionBlock.cs#L142 at
+                    // https://github.com/dotnet/corefx/blob/4b36fba308d8e2d3207773952c30268ac3365eed/src
                     throw new WrapException(oce);
                 }
                 catch

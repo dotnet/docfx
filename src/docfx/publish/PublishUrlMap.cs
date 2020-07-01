@@ -91,17 +91,27 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building publish url map"))
             {
                 Parallel.Invoke(
-                    () => ParallelUtility.ForEach(_errorLog, _redirectionProvider.Files.Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
-                    () => ParallelUtility.ForEach(_errorLog, _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html), file => AddItem(builder, file)),
-                    () => ParallelUtility.ForEach(_errorLog, _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
+                    () => ParallelUtility.ForEach(
+                        _errorLog, _redirectionProvider.Files.Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
+                    () => ParallelUtility.ForEach(
+                        _errorLog,
+                        _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html),
+                        file => AddItem(builder, file)),
+                    () => ParallelUtility.ForEach(
+                        _errorLog, _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
                     () => ParallelUtility.ForEach(_errorLog, _tocMap.GetFiles(), file => AddItem(builder, file)));
             }
 
             // resolve output path conflicts
-            var publishMapWithoutOutputPathConflicts = builder.ToList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
+            var publishMapWithoutOutputPathConflicts =
+                builder.ToList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
 
             // resolve publish url conflicts
-            return publishMapWithoutOutputPathConflicts.GroupBy(x => x).Select(g => ResolvePublishUrlConflicts(g)).GroupBy(x => x.Url).ToDictionary(g => g.Key, g => g.ToList());
+            return publishMapWithoutOutputPathConflicts
+                   .GroupBy(x => x)
+                   .Select(g => ResolvePublishUrlConflicts(g))
+                   .GroupBy(x => x.Url)
+                   .ToDictionary(g => g.Key, g => g.ToList());
         }
 
         private PublishUrlMapItem ResolveOutputPathConflicts(IGrouping<string, PublishUrlMapItem> conflicts)

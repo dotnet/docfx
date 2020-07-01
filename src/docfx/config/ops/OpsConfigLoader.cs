@@ -82,7 +82,8 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            result["fileMetadata"] = GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>(), buildSourceFolder);
+            result["fileMetadata"] =
+                GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>(), buildSourceFolder);
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
             if (monodoc != null)

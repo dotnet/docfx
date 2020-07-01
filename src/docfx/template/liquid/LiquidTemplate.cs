@@ -110,7 +110,9 @@ namespace Microsoft.Docs.Build
             {
                 JValue value => value.Value,
                 JArray arr => arr.Select(ToLiquidObject).ToArray(),
-                JObject obj => obj.Cast<KeyValuePair<string, JToken>>().GroupBy(prop => prop.Key, StringComparer.OrdinalIgnoreCase).ToDictionary(group => group.Key, group => ToLiquidObject(group.Last().Value)),
+                JObject obj => obj.Cast<KeyValuePair<string, JToken>>()
+                                  .GroupBy(prop => prop.Key, StringComparer.OrdinalIgnoreCase)
+                                  .ToDictionary(group => group.Key, group => ToLiquidObject(group.Last().Value)),
                 _ => throw new NotSupportedException($"Unknown jToken type {token.Type}"),
             };
         }
