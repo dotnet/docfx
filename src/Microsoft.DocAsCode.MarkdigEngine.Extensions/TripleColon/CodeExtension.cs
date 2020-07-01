@@ -49,6 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (updatedCode == string.Empty)
             {
+                logWarning($"It looks like your code snippet was not rendered. Try range instead.");
                 return false;
             }
             renderer.WriteLine("<pre>");
