@@ -33,7 +33,8 @@ namespace Microsoft.Docs.Build
             }
 
             if (context.Config.OutputUrlType == OutputUrlType.Docs &&
-                Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison) && doc.ContentType != ContentType.Resource)
+                Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison) &&
+                doc.ContentType != ContentType.Resource)
             {
                 legacySiteUrlRelativeToBasePath = $"{legacySiteUrlRelativeToBasePath}/index";
             }
