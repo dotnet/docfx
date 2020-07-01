@@ -74,7 +74,8 @@ namespace Microsoft.Docs.Build
             {
                 // Only validate conceptual files
                 if (contentType == ContentType.Page && mime == "Conceptual" &&
-                    (!metadata.ContainsKey("layout") || string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase)))
+                    (!metadata.ContainsKey("layout") ||
+                     string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase)))
                 {
                     errors.AddRange(schemaValidator.Validate(metadata, isCanonicalVersion));
                 }

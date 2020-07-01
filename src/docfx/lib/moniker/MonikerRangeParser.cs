@@ -10,7 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, (List<Error>, MonikerList)> _cache = new ConcurrentDictionary<string, (List<Error>, MonikerList)>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, (List<Error>, MonikerList)> _cache =
+            new ConcurrentDictionary<string, (List<Error>, MonikerList)>(StringComparer.OrdinalIgnoreCase);
+
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)

@@ -23,7 +23,8 @@ namespace Microsoft.Docs.Build
         };
 
         // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap = new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap =
+            new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
         {
             // Content sectioning
             { "address", null },
@@ -91,7 +92,10 @@ namespace Microsoft.Docs.Build
             { "tr", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "align" } },
 
             // other
-            { "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "frameborder", "allowtransparency", "allowfullscreen", "scrolling", "height", "src", "width" } },
+            {
+              "iframe", new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        { "frameborder", "allowtransparency", "allowfullscreen", "scrolling", "height", "src", "width" }
+            },
             { "center", null },
             { "summary", null },
             { "details", null },
@@ -180,7 +184,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void TransformXref(ref HtmlReader reader, ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        public static void TransformXref(
+            ref HtmlReader reader,
+            ref HtmlToken token,
+            MarkdownObject? block,
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             if (!token.NameIs("xref"))
             {
@@ -228,10 +236,13 @@ namespace Microsoft.Docs.Build
                 isShorthand);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
-                ? rawHtml ?? rawSource ?? $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>"
+                ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
                 : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
 
             token = new HtmlToken(resolvedNode);
+
+            string GetDefaultResolvedNode()
+                => $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>";
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)

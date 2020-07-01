@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
-        private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
+        private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory,
+            IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
 
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
@@ -223,7 +224,8 @@ namespace Microsoft.Docs.Build
 
                 var candidates = redirectionSourceMonikers.Count == 0
                                     ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList()
-                                    : docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
+                                    : docs.Where(
+                                        doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
 
                 // skip circular redirection validation for url containing query string
                 if (candidates.Count > 0 && string.IsNullOrEmpty(redirectQuery))

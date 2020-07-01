@@ -46,7 +46,8 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
             var outputPath = file.SitePath;
-            if ((file.ContentType == ContentType.Page && file.IsPage) || file.ContentType == ContentType.Redirection || file.ContentType == ContentType.TableOfContents)
+            if ((file.ContentType == ContentType.Page && file.IsPage) ||
+                file.ContentType == ContentType.Redirection || file.ContentType == ContentType.TableOfContents)
             {
                 var fileExtension = _config.Legacy && file.IsPage
                     ? ".raw.page.json"

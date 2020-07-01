@@ -11,7 +11,8 @@ namespace Microsoft.Docs.Build
     internal class RepositoryProvider : IDisposable
     {
         private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath = new ConcurrentDictionary<string, FileCommitProvider>();
+        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath =
+            new ConcurrentDictionary<string, FileCommitProvider>();
 
         public Repository? Repository { get; }
 

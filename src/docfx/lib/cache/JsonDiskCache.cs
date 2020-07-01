@@ -27,7 +27,8 @@ namespace Microsoft.Docs.Build
 
         private volatile bool _needUpdate;
 
-        public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null, Func<TValue, TValue, TValue>? resolveConflict = null)
+        public JsonDiskCache(
+            string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null, Func<TValue, TValue, TValue>? resolveConflict = null)
         {
             comparer ??= EqualityComparer<TKey>.Default;
             _resolveConflict = resolveConflict;
