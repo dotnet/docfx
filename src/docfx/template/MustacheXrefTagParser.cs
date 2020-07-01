@@ -41,6 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 return templateStr;
             }
+
             var reader = new HtmlReader(templateStr);
             var result = new StringBuilder();
             var uidName = default(string);
@@ -66,7 +67,7 @@ namespace Microsoft.Docs.Build
                             }
                             else if (attribute.NameIs("href"))
                             {
-                                uidName = uidName ?? attribute.Value.ToString().Trim(s_trimChars);
+                                uidName ??= attribute.Value.ToString().Trim(s_trimChars);
                             }
                             else if (attribute.NameIs("template"))
                             {
@@ -78,12 +79,14 @@ namespace Microsoft.Docs.Build
                             }
                         }
 
-                        result.Append((uidName ??= "uid") != "." ? $"{{{{#{uidName}}}}}" : default);
+                        uidName ??= "uid";
+
+                        result.Append($"{{{{#{uidName}}}}}");
                         var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}>";
                         if (token.IsSelfClosing)
                         {
                             result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}"))
-                                  .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
+                                  .Append($"{{{{/{uidName}}}}}");
                         }
                         else
                         {
@@ -94,7 +97,7 @@ namespace Microsoft.Docs.Build
                     {
                         result.Append(hasInnerContent ? default : "{{name}}")
                               .Append(ClosingClause)
-                              .Append((uidName ??= "uid") != "." ? $"{{{{/{uidName}}}}}" : default);
+                              .Append($"{{{{/{uidName}}}}}");
                     }
                 }
                 else
