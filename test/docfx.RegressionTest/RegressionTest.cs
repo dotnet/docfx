@@ -271,7 +271,7 @@ namespace Microsoft.Docs.Build
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
-            if (allowExitCodes.Contains(process.ExitCode) && !ignoreError)
+            if (!allowExitCodes.Contains(process.ExitCode) && !ignoreError)
             {
                 throw new InvalidOperationException(
                     $"'\"{fileName}\" {sanitizedArguments}' failed in directory '{cwd}' with exit code {process.ExitCode}, message: \n {stderr}");
