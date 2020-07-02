@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 {
                     // When the item expired, trigger background update but don't wait for the result
                     var awaiter = Update(key, valueFactory).GetAwaiter();
-                    if (EnvironmentVariable.SyncUpdateCache)
+                    if (EnvironmentVariable.UpdateCacheSync)
                     {
                         awaiter.GetResult();
                     }
