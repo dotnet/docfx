@@ -81,8 +81,8 @@ namespace Microsoft.Docs.Build
                 updateTimeAsCommitBuildTime = true,
                 githubToken = s_githubToken,
                 githubUserCacheExpirationInHours = noUserCacheExpire ? 24 * 365 : 24 * 30,
-
             };
+
             return JsonUtility.Serialize(docfxConfig);
         }
 
