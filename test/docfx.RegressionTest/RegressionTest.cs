@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
-        private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
-        private static readonly bool s_isPullRequest = s_buildReason == "PullRequest";
+        private static readonly CIType s_ciType = GetCIType();
+        private static readonly bool s_isPullRequest = s_ciType == CIType.Pr;
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
         private static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 });
         }
 
-        private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
+        private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath) Prepare(Options opts)
         {
             var repositoryName = Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
@@ -64,41 +64,43 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
 
-            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
+            return (baseLinePath, outputPath, workingFolder, repositoryPath);
+        }
 
-            static string GetDocfxConfig()
+        private static string GetDocfxConfig(bool noUserCacheExpire = false)
+        {
+            // Git token for CRR restore
+            var http = new Dictionary<string, object>();
+            http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
+            http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
+            var docfxConfig = new
             {
-                // Git token for CRR restore
-                var http = new Dictionary<string, object>();
-                http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
-                http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
-                var docfxConfig = new
-                {
-                    http,
-                    maxWarnings = 5000,
-                    maxInfos = 30000,
-                    updateTimeAsCommitBuildTime = true,
-                    githubToken = s_githubToken,
-                };
-                return JsonUtility.Serialize(docfxConfig);
-            }
+                http,
+                maxWarnings = 5000,
+                maxInfos = 30000,
+                updateTimeAsCommitBuildTime = true,
+                githubToken = s_githubToken,
+                githubUserCacheExpirationInHours = noUserCacheExpire ? 24 * 365 : 24 * 30,
 
-            static Dictionary<string, string> ToAuthHeader(string? token)
-            {
-                return new Dictionary<string, string>
+            };
+            return JsonUtility.Serialize(docfxConfig);
+        }
+
+        private static Dictionary<string, string> ToAuthHeader(string? token)
+        {
+            return new Dictionary<string, string>
                 {
                     { "authorization", $"basic {BasicAuth(token)}" },
                 };
-            }
         }
 
         private static bool Test(Options opts)
         {
-            var (baseLinePath, outputPath, workingFolder, repositoryPath, docfxConfig) = Prepare(opts);
+            var (baseLinePath, outputPath, workingFolder, repositoryPath) = Prepare(opts);
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath, docfxConfig);
+            var buildTime = Build(repositoryPath, outputPath);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -156,19 +158,31 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
+        private static TimeSpan Build(string repositoryPath, string outputPath)
         {
+            var noExpireDocfxConfig = GetDocfxConfig(noUserCacheExpire: true);
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"restore --legacy --verbose --stdin",
-                stdin: docfxConfig,
+                stdin: noExpireDocfxConfig,
                 cwd: repositoryPath);
 
+            if (s_ciType == CIType.Schedule)
+            {
+                var expireDocfxConfig = GetDocfxConfig(noUserCacheExpire: true);
+                Exec(
+                    Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                    arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
+                    stdin: expireDocfxConfig,
+                    cwd: repositoryPath,
+                    allowExitCodes: new int[] { 0, 1 });
+            }
             return Exec(
-                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
-                stdin: docfxConfig,
-                cwd: repositoryPath);
+                    Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                    arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
+                    stdin: noExpireDocfxConfig,
+                    cwd: repositoryPath,
+                    allowExitCodes: new int[] { 0, 1 });
         }
 
         private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
@@ -233,10 +247,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Exec(string fileName, string arguments = "", string? stdin = null, string? cwd = null, bool ignoreError = false, bool redirectStandardError = false, params string[] secrets)
+        private static TimeSpan Exec(
+            string fileName,
+            string arguments = "",
+            string? stdin = null,
+            string? cwd = null,
+            bool ignoreError = false,
+            bool redirectStandardError = false,
+            int[]? allowExitCodes = null,
+            params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
             var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
+            allowExitCodes ??= new int[] { 0 };
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
@@ -258,8 +281,7 @@ namespace Microsoft.Docs.Build
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
-            // TODO: docs-pipeline should not exit 1 for content error while reporting moved to docs.build
-            if (!new int[] { 0, 1 }.Contains(process.ExitCode) && !ignoreError)
+            if (allowExitCodes.Contains(process.ExitCode) && !ignoreError)
             {
                 throw new InvalidOperationException(
                     $"'\"{fileName}\" {sanitizedArguments}' failed in directory '{cwd}' with exit code {process.ExitCode}, message: \n {stderr}");
@@ -368,5 +390,19 @@ namespace Microsoft.Docs.Build
                 response.EnsureSuccessStatusCode();
             }
         }
+
+        private enum CIType
+        {
+            Commit = 0, // default, when build reason is commit build
+            Pr = 1, // pull request build
+            Schedule = 2, // daily scheduled build
+        }
+
+        private static CIType GetCIType() => Environment.GetEnvironmentVariable("BUILD_REASON") switch
+            {
+                "Schedule" => CIType.Schedule,
+                "PullRequest" => CIType.Pr,
+                _ => CIType.Commit,
+            };
     }
 }
