@@ -81,13 +81,13 @@ namespace Microsoft.Docs.Build
 
                         uidName ??= "uid";
 
-                        result.Append($"{{{{#{uidName}}}}}");
+                        result.Append($"{{{{#{uidName}.__xrefspec}}}}");
                         var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}>";
                         if (token.IsSelfClosing)
                         {
                             var resolvedTag = partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}";
                             result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", resolvedTag))
-                                  .Append($"{{{{/{uidName}}}}}");
+                                  .Append($"{{{{/{uidName}.__xrefspec}}}}");
                         }
                         else
                         {
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                     {
                         result.Append(hasInnerContent ? default : "{{name}}")
                               .Append(ClosingClause)
-                              .Append($"{{{{/{uidName}}}}}");
+                              .Append($"{{{{/{uidName}.__xrefspec}}}}");
                     }
                 }
                 else

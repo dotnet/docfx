@@ -21,29 +21,32 @@ namespace Microsoft.Docs.Build
 
         private readonly JObject? _global;
         private readonly string _templateDir;
+        private readonly Lazy<JsonSchemaTransformer>? _jsonSchemaTransformer;
         private readonly ParserPipeline _parserPipeline;
+
         private readonly ConcurrentDictionary<string, Lazy<BlockToken>> _templates =
             new ConcurrentDictionary<string, Lazy<BlockToken>>(PathUtility.PathComparer);
 
-        public MustacheTemplate(string templateDir, JObject? global = null)
+        public MustacheTemplate(string templateDir, JObject? global = null, Lazy<JsonSchemaTransformer>? jsonSchemaTransformer = null)
         {
             _global = global;
             _templateDir = templateDir;
+            _jsonSchemaTransformer = jsonSchemaTransformer;
             _parserPipeline = new ParserPipelineBuilder().Build();
         }
 
-        public string Render(string templateFileName, JToken model)
+        public string Render(string templateFileName, JToken model, FilePath? file = null)
         {
             var context = new Stack<JToken>();
             var template = GetTemplate(templateFileName);
 
             var result = new StringBuilder(1024);
             context.Push(model);
-            Render(template, result, context);
+            Render(template, result, context, file);
             return result.ToString();
         }
 
-        public void Render(BlockToken block, StringBuilder result, Stack<JToken> context)
+        private void Render(BlockToken block, StringBuilder result, Stack<JToken> context, FilePath? file)
         {
             foreach (var child in block.Children)
             {
@@ -57,22 +60,22 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case PartialToken partial:
-                        Render(GetTemplate(partial.Content.ToString()), result, context);
+                        Render(GetTemplate(partial.Content.ToString()), result, context, file);
                         break;
 
                     case InvertedSectionToken invertedSection:
-                        switch (Lookup(context, invertedSection.SectionName))
+                        switch (Lookup(context, invertedSection.SectionName, file))
                         {
                             case null:
                             case JValue value when !IsTruthy(value):
                             case JArray array when array.Count == 0:
-                                Render(invertedSection, result, context);
+                                Render(invertedSection, result, context, file);
                                 break;
                         }
                         break;
 
                     case SectionToken section:
-                        var property = Lookup(context, section.SectionName);
+                        var property = Lookup(context, section.SectionName, file);
                         switch (property)
                         {
                             case null:
@@ -83,21 +86,21 @@ namespace Microsoft.Docs.Build
                                 foreach (var item in array)
                                 {
                                     context.Push(item);
-                                    Render(section, result, context);
+                                    Render(section, result, context, file);
                                     context.Pop();
                                 }
                                 break;
 
                             default:
                                 context.Push(property);
-                                Render(section, result, context);
+                                Render(section, result, context, file);
                                 context.Pop();
                                 break;
                         }
                         break;
 
                     case InterpolationToken interpolationToken:
-                        if (Lookup(context, interpolationToken.Content.ToString()) is JToken text)
+                        if (Lookup(context, interpolationToken.Content.ToString(), file) is JToken text)
                         {
                             var content = interpolationToken.EscapeResult
                                 ? WebUtility.HtmlEncode(text.ToString())
@@ -110,7 +113,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken? Lookup(Stack<JToken> tokens, string name)
+        private JToken? Lookup(Stack<JToken> tokens, string name, FilePath? file)
         {
             if (name == ".")
             {
@@ -121,7 +124,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!name.Contains('.'))
                 {
-                    var result = GetProperty(token, name);
+                    var result = GetProperty(token, name, file);
                     if (result != null)
                     {
                         return result;
@@ -133,7 +136,7 @@ namespace Microsoft.Docs.Build
                     var keys = name.Split('.', StringSplitOptions.RemoveEmptyEntries);
                     for (var i = 0; i < keys.Length; i++)
                     {
-                        result = GetProperty(result, keys[i]);
+                        result = GetProperty(result, keys[i], file);
                         if (result is null)
                         {
                             // Skip looking up parent context for the last segment,
@@ -156,13 +159,15 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private JToken? GetProperty(JToken token, string key)
+        private JToken? GetProperty(JToken token, string key, FilePath? file = null)
         {
             return token switch
             {
-                JObject obj => key == "__global" && _global != null
-                    ? _global : obj.GetValue(key, StringComparison.Ordinal),
+                JObject _ when _global != null && key == "__global" => _global,
+                JObject obj => obj.GetValue(key, StringComparison.Ordinal),
                 JArray array when int.TryParse(key, out var index) && index >= 0 && index < array.Count => array[index],
+                JValue value when _jsonSchemaTransformer != null && file != null && value.Value is string str && key == "__xrefspec"
+                    => (JToken?)_jsonSchemaTransformer.Value.GetResolvedXrefSpec(file, str) ?? value,
                 _ => null,
             };
         }

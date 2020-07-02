@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
 
                     var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
-                    var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel);
+                    var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel, file.FilePath);
                     context.Output.WriteText(outputPath, html);
                 }
                 else

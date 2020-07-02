@@ -342,7 +342,7 @@ namespace Microsoft.Docs.Build
 
             // Generate SDP content
             var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
-            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model, file.FilePath);
 
             return ProcessHtml(context, file, content);
         }
