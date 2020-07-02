@@ -132,7 +132,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError("Language is not set, and your source has no file type. Cannot infer language.");
             }
-            var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo => oo.Value.Contains(fileExtension) || oo.Value.Contains($".{fileExtension}")).FirstOrDefault();
+            var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo =>
+                oo.Key.Equals(fileExtension)
+                || oo.Key.Equals(fileExtension.Remove(0, 1))
+                || oo.Value.Contains(fileExtension)
+                || oo.Value.Contains(fileExtension.Remove(0,1))).FirstOrDefault();
             if(string.IsNullOrEmpty(language.Key))
             {
                 logError("Language is not set, and we could not infer language from the file type.");

@@ -26,49 +26,48 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
         {
-            { "actionscript", new List<string>{".as" } },
-            { "arduino", new List<string>{".ino" } },
-            { "assembly", new List<string>{"nasm", ".asm" } },
-            { "batchfile", new List<string>{".bat", ".cmd" } },
-            { "css", new List<string>{"css", ".css" } },
-            { "cpp", new List<string>{"c", "c++", "objective-c", "obj-c", "objc", "objectivec", ".c", ".cpp", ".h", ".hpp", ".cc" } },
-            { "csharp", new List<string>{"cs", ".cs" } },
-            { "cuda", new List<string>{".cu", ".cuh" } },
-            { "d", new List<string>{"dlang", ".d" } },
-            { "everything", new List<string>{"everything", ".everything", "example", ".example" } }, //this is the catch all to try and process unforseen languages
-            { "erlang", new List<string>{".erl" } },
-            { "fsharp", new List<string>{"fs", ".fs", ".fsi", ".fsx" } },
-            { "go", new List<string>{"golang", ".go" } },
-            { "handlebars", new List<string>{".hbs", "hbs" } },
-            { "haskell", new List<string>{".hs" } },
-            { "html", new List<string>{".html", ".jsp", ".asp", ".aspx", ".ascx" } },
-            { "cshtml", new List<string>{".cshtml", "aspx-cs", "aspx-csharp" } },
-            { "vbhtml", new List<string>{".vbhtml", "aspx-vb" } },
-            { "java", new List<string>{".java", ".gradle" } },
-            { "javascript", new List<string>{"js", "node", ".js", "json", ".json" } },
-            { "lisp", new List<string>{".lisp", ".lsp" } },
-            { "lua", new List<string>{".lua" } },
-            { "objectivec", new List<string>{".m", "m" } },
-            { "matlab", new List<string>{".matlab" } },
-            { "pascal", new List<string>{".pas" } },
-            { "perl", new List<string>{".pl" } },
-            { "php", new List<string>{".php" } },
-            { "powershell", new List<string>{"posh", ".ps1" } },
-            { "processing", new List<string>{".pde" } },
-            { "python", new List<string>{".py" } },
-            { "r", new List<string>{".r" } },
-            { "react", new List<string>{".tsx", "tsx" } },
-            { "ruby", new List<string>{"ru", ".ru", ".ruby", "", ".erb", "erb", ".rb", "rb" } },
-            { "rust", new List<string>{".rs" } },
-            { "scala", new List<string>{".scala" } },
-            { "shell", new List<string>{"sh", "bash", ".sh", ".bash" } },
-            { "smalltalk", new List<string>{".st" } },
-            { "sql", new List<string>{".sql" } },
-            { "swift", new List<string>{".swift" } },
-            { "typescript", new List<string>{"ts", ".ts" } },
-            { "xaml", new List<string>{".xaml" } },
-            { "xml", new List<string>{"xsl", "xslt", "xsd", "wsdl", ".xml", ".csdl", ".edmx", ".xsl", ".xslt", ".xsd", ".wsdl" } },
-            { "vb", new List<string>{"vbnet", "vbscript", ".vb", ".bas", ".vbs", ".vba" } }
+            { "actionscript", new List<string>{"as" } },
+            { "arduino", new List<string>{"ino" } },
+            { "assembly", new List<string>{"nasm", "asm" } },
+            { "batchfile", new List<string>{"bat", "cmd" } },
+            { "css", new List<string>{ } },
+            { "cpp", new List<string>{"c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
+            { "csharp", new List<string>{"cs"} },
+            { "cuda", new List<string>{"cu", "cuh" } },
+            { "d", new List<string>{"dlang"} },
+            { "everything", new List<string>{"example" } }, //this is the catch all to try and process unforseen languages
+            { "erlang", new List<string>{"erl" } },
+            { "fsharp", new List<string>{"fs", "fsi", "fsx" } },
+            { "go", new List<string>{"golang" } },
+            { "handlebars", new List<string>{"hbs" } },
+            { "haskell", new List<string>{"hs" } },
+            { "html", new List<string>{ "jsp", "asp", "aspx", "ascx" } },
+            { "cshtml", new List<string>{"aspx-cs", "aspx-csharp" } },
+            { "vbhtml", new List<string>{"aspx-vb" } },
+            { "java", new List<string>{"gradle" } },
+            { "javascript", new List<string>{"js", "node", "json" } },
+            { "lisp", new List<string>{".lsp" } },
+            { "lua", new List<string>{ } },
+            { "matlab", new List<string>{ } },
+            { "pascal", new List<string>{"pas" } },
+            { "perl", new List<string>{"pl" } },
+            { "php", new List<string>{"php" } },
+            { "powershell", new List<string>{"posh", "ps1" } },
+            { "processing", new List<string>{"pde" } },
+            { "python", new List<string>{"py" } },
+            { "r", new List<string>{ } },
+            { "react", new List<string>{"tsx" } },
+            { "ruby", new List<string>{"ru", "ruby", "", "erb", "rb" } },
+            { "rust", new List<string>{"rs" } },
+            { "scala", new List<string>{ } },
+            { "shell", new List<string>{"sh", "bash" } },
+            { "smalltalk", new List<string>{"st" } },
+            { "sql", new List<string>{ } },
+            { "swift", new List<string>{ } },
+            { "typescript", new List<string>{"ts" } },
+            { "xaml", new List<string>{ } },
+            { "xml", new List<string>{"xsl", "xslt", "xsd", "wsdl", "csdl", "edmx" } },
+            { "vb", new List<string>{"vbnet", "vbscript", "bas", "vbs", "vba" } }
         };
 
 
@@ -263,7 +262,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
 
                 List<CodeSnippetExtractor> extractors;
-                if (!s_codeLanguageExtractors.TryGetValue(lang, out extractors))
+                if (!s_codeLanguageExtractors.TryGetValue(lang, out extractors)
+                    && !s_codeLanguageExtractors.TryGetValue(lang.Remove(0, 1), out extractors))
                 {
                     s_codeLanguageExtractors.TryGetValue(DefaultSnippetLanguage, out extractors);
 
