@@ -174,6 +174,13 @@ namespace Microsoft.Docs.Build
 
         private string RemoveSharingHost(string url, string hostName)
         {
+            // TODO: this workaround can be removed when all xref related repos migrated to v3
+            if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
+                        && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
+            {
+                return url.Substring("https://review.docs.microsoft.com".Length);
+            }
+
             if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
                 return url.Substring($"https://{hostName}".Length);
@@ -202,7 +209,7 @@ namespace Microsoft.Docs.Build
         {
             if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                var href = RemoveSharingHost(spec.Value.Href, _config.RemoveHostName);
+                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
                 return (spec.Value, href);
             }
             return default;

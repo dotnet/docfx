@@ -71,7 +71,6 @@ outputs:
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
-    removeHostName: docs.microsoft.com
   b.md:
   redirections.yml: |
     renames:
@@ -84,12 +83,11 @@ outputs:
 # output document_id and canonical_url for redirection file as well
 # query string will be ignored for redirect document id calculation
 inputs:
-  docfx.yml: |
-    removeHostName: docs.microsoft.com
+  docfx.yml:
   b.md:
   redirections.yml: |
     renames:
-      a.md: https://docs.microsoft.com/en-us/b?query#fragment
+      a.md: https://docs.com/en-us/b?query#fragment
 outputs:
   .publish.json: |
     {"files":[
@@ -460,7 +458,6 @@ repos:
       docfx.yml: |
         name: docset
         product: product
-        removeHostName: docs.com
       folder/index.md:
 outputs:
   folder/index.json: |

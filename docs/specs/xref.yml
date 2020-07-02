@@ -22,7 +22,6 @@ outputs:
 # xref should be unironed from different sources
 inputs:
   docfx.yml: |
-    removeHostName: review.docs.microsoft.com
     hostName: docs.microsoft.com
     xref:
     - 2.xrefmap.json
@@ -36,7 +35,7 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String",
-          "href": "https://review.docs.microsoft.com/dotnet/api/system.string",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
@@ -49,7 +48,7 @@ outputs:
 # original config should have higher priority than extend config
 inputs:
   docfx.yml: |
-    removeHostName: docs.microsoft.com
+    hostName: docs.microsoft.com
     xref:
     - high.xrefmap.json
     extend: _shared/extend.json
@@ -196,7 +195,6 @@ repos:
     - files:
         docfx.yml: |
           hostName: docs.microsoft.com
-          removeHostName: review.docs.microsoft.com
           basePath: /base_path
           xref: 
             - 1.xrefmap.json
@@ -1124,8 +1122,7 @@ outputs:
 ---
 # uid resolving should respect the order of xref settings
 inputs:
-  docfx.yml: |
-    removeHostName: docs.microsoft.com
+  docfx.yml:
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
