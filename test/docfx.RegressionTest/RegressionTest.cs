@@ -63,11 +63,7 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
-
-            if (s_BuildReason == BuildReason.Schedule)
-            {
-                Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", "true");
-            }
+            Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_BuildReason == BuildReason.Schedule ? "true" : "false");
 
             return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
 
