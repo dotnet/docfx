@@ -396,7 +396,7 @@ namespace Microsoft.Docs.Build
         {
             var buildReasonStr = Environment.GetEnvironmentVariable("BUILD_REASON");
 
-            // local debug should be set as PullRequest build to avoid accidentially push
+            // local debug should be set as PullRequest build to avoid accidentally push
             if (buildReasonStr == null)
             {
                 return BuildReason.PullRequest;
