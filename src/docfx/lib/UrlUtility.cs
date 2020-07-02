@@ -314,8 +314,13 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        public static string RemoveLeadingHostName(string url, string hostName, bool removeLocale = false)
+        public static string RemoveLeadingHostName(string url, string hostName, bool disableRemoveHost, bool removeLocale = false)
         {
+            if (disableRemoveHost)
+            {
+                return url;
+            }
+
             if (string.IsNullOrEmpty(hostName))
             {
                 return url;

@@ -254,3 +254,16 @@ outputs:
     { "metadata": { "universal_conceptual_toc": "/dotnet-1/azure/sdk/toc.json", "universal_ref_toc": undefined } }
   docs-ref-conceptual-2/toc.json: |
     { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet-2/api/azure_ref_toc/toc.json" } }
+---
+# Disable removing host in ops config
+repos:
+  https://github.com/ops/disable-remove-host:
+  - files:
+      .openpublishing.publish.config.json: |
+        {"disable_remove_host": true}
+      docfx.yml:
+      docs/a.md: |
+        [external link](https://docs.com/c)
+outputs:
+  docs/a.json: |
+    {"conceptual": "<p><a href=\"https://docs.com/c\" data-linktype=\"external\">external link</a></p>"}

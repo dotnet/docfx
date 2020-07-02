@@ -301,6 +301,12 @@ namespace Microsoft.Docs.Build
         public bool SkipMonikerValidation { get; private set; }
 
         /// <summary>
+        /// Determines if remove host for external link.
+        /// </summary>
+        ///
+        public bool DisableRemoveHost { get; private set; }
+
+        /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]

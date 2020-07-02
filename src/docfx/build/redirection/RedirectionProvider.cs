@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RedirectionProvider
     {
+        private readonly bool _disableRemoveHost;
         private readonly ErrorLog _errorLog;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
+            bool disableRemoveHost,
             string docsetPath,
             string hostName,
             ErrorLog errorLog,
@@ -31,6 +33,7 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
+            _disableRemoveHost = disableRemoveHost;
             _errorLog = errorLog;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
@@ -125,7 +128,7 @@ namespace Microsoft.Docs.Build
                         case LinkType.AbsolutePath:
                             break;
                         case LinkType.External:
-                            absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
+                            absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, _disableRemoveHost, removeLocale: true);
                             break;
                         default:
                             _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));

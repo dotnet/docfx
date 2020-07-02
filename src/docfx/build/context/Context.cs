@@ -94,6 +94,7 @@ namespace Microsoft.Docs.Build
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(
+                config.DisableRemoveHost,
                 buildOptions.DocsetPath,
                 Config.RemoveHostName,
                 ErrorLog,

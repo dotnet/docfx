@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://docs.com/", "docs.com", true, "/")]
         public static void RemoveHostName(string url, string hostName, bool removeLocale, string expected)
         {
-            var result = UrlUtility.RemoveLeadingHostName(url, hostName, removeLocale);
+            var result = UrlUtility.RemoveLeadingHostName(url, hostName, false, removeLocale);
             Assert.Equal(expected, result);
         }
     }

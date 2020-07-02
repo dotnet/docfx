@@ -59,6 +59,7 @@ namespace Microsoft.Docs.Build
                 dep => dep.name.Equals("_themes", StringComparison.OrdinalIgnoreCase)).obj;
 
             result["outputPdf"] = opsConfig.NeedGeneratePdfUrlTemplate;
+            result["disableRemoveHost"] = opsConfig.DisableRemoveHost;
 
             result["editRepositoryUrl"] = opsConfig.GitRepositoryUrlOpenToPublicContributors;
             result["editRepositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors;
