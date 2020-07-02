@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
-        private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
-        private static readonly bool s_isPullRequest = s_buildReason == "PullRequest";
+        private static readonly BuildReason s_BuildReason = GetBuildReason();
+        private static readonly bool s_isPullRequest = s_BuildReason == BuildReason.PullRequest;
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
         private static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
@@ -64,6 +64,11 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
 
+            if (s_BuildReason == BuildReason.Schedule)
+            {
+                Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", "true");
+            }
+
             return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
 
             static string GetDocfxConfig()
@@ -79,7 +84,9 @@ namespace Microsoft.Docs.Build
                     maxInfos = 30000,
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
+                    githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
                 };
+
                 return JsonUtility.Serialize(docfxConfig);
             }
 
@@ -162,7 +169,8 @@ namespace Microsoft.Docs.Build
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"restore --legacy --verbose --stdin",
                 stdin: docfxConfig,
-                cwd: repositoryPath);
+                cwd: repositoryPath,
+                allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
@@ -233,10 +241,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Exec(string fileName, string arguments = "", string? stdin = null, string? cwd = null, bool ignoreError = false, bool redirectStandardError = false, params string[] secrets)
+        private static TimeSpan Exec(
+            string fileName,
+            string arguments = "",
+            string? stdin = null,
+            string? cwd = null,
+            bool ignoreError = false,
+            bool redirectStandardError = false,
+            int[]? allowExitCodes = null,
+            params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
             var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
+            allowExitCodes ??= new int[] { 0, 1 };
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
@@ -258,8 +275,7 @@ namespace Microsoft.Docs.Build
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
-            // TODO: docs-pipeline should not exit 1 for content error while reporting moved to docs.build
-            if (!new int[] { 0, 1 }.Contains(process.ExitCode) && !ignoreError)
+            if (allowExitCodes.Contains(process.ExitCode) && !ignoreError)
             {
                 throw new InvalidOperationException(
                     $"'\"{fileName}\" {sanitizedArguments}' failed in directory '{cwd}' with exit code {process.ExitCode}, message: \n {stderr}");
@@ -367,6 +383,28 @@ namespace Microsoft.Docs.Build
 
                 response.EnsureSuccessStatusCode();
             }
+        }
+
+        private enum BuildReason
+        {
+            Commit = 0, // default, when build reason is commit build
+            PullRequest = 1, // pull request build
+            Schedule = 2, // daily scheduled build
+        }
+
+        private static BuildReason GetBuildReason()
+        {
+            var buildReasonStr = Environment.GetEnvironmentVariable("BUILD_REASON");
+
+            // local debug should be set as PullRequest build to avoid accidentially push
+            if (buildReasonStr == null)
+            {
+                return BuildReason.PullRequest;
+            }
+
+            return Enum.TryParse(buildReasonStr, true, out BuildReason buildReason)
+                ? buildReason
+                : BuildReason.Commit;
         }
     }
 }
