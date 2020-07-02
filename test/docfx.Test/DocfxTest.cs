@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("OS not supported");
             }
 
-            lock (string.Intern($"{test.FilePath}-{test.Ordinal:D2}-{test.Matrix}"))
+            lock (string.Intern($"{test.FilePath}-{test.Ordinal:D2}"))
             {
                 var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
 
