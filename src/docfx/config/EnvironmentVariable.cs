@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
 
         public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
 
-        public static bool RemoveHostName => bool.TryParse(GetValue("DOCFX_REMOVE_HOST_NAME"), out var removeHostName) && removeHostName;
-
         private static string? GetValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);
