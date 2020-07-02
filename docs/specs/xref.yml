@@ -22,7 +22,6 @@ outputs:
 # xref should be unironed from different sources
 inputs:
   docfx.yml: |
-    removeHostName: review.docs.microsoft.com
     hostName: docs.microsoft.com
     xref:
     - 2.xrefmap.json
@@ -36,7 +35,7 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String",
-          "href": "https://review.docs.microsoft.com/dotnet/api/system.string",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
@@ -49,7 +48,7 @@ outputs:
 # original config should have higher priority than extend config
 inputs:
   docfx.yml: |
-    removeHostName: docs.microsoft.com
+    hostName: docs.microsoft.com
     xref:
     - high.xrefmap.json
     extend: _shared/extend.json
@@ -196,7 +195,6 @@ repos:
     - files:
         docfx.yml: |
           hostName: docs.microsoft.com
-          removeHostName: review.docs.microsoft.com
           basePath: /base_path
           xref: 
             - 1.xrefmap.json
@@ -385,13 +383,7 @@ outputs:
   docs/f1/f2/b.json: | 
     {
       "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
-      "xref": {
-          "href": "../../a.json",
-          "uid": "a",
-          "name": "test",
-          "fullName": "test.test",
-          "description": "a.description"
-      }
+      "xref": "a"
     }
   .xrefmap.json: | 
     {"references":[{"uid":"a","href":"https://docs.com/docs/a.json"}]}
@@ -433,17 +425,12 @@ inputs:
     }
 outputs:
   docs/b.json: | 
-    {
-      "xref": {
-        "name": "a",
-        "href": null
-      }
-     }
+    { "xref": "a" }
   .errors.log: |
     {"message_severity":"error","code":"json-syntax-error","message":"Unexpected character encountered while parsing value: }.","file":"docs/a.json","line":7}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"docs/b.json","line":3,"column":13}
   .xrefmap.json: | 
-    {"references": undefined}
+    { "references": undefined }
 ---
 # support multiple uids in the same array in one SDP
 inputs:
@@ -538,7 +525,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"xref":{"uid":"a","href":"a.json"}}
+    { "xref": "a" }
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'.","file":"docs/a.json","line":3,"column":12}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.json(3,12)', 'docs/a.json(6,14)'.","file":"docs/a.json","line":6,"column":14}
@@ -800,7 +787,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'.","file":"docs/a.yml","line":2,"column":6}
 ---
-# circular reference within SDP UID definition a -> b -> c -> a
+# [skip] circular reference within SDP UID definition a -> b -> c -> a
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -1136,7 +1123,7 @@ outputs:
 # uid resolving should respect the order of xref settings
 inputs:
   docfx.yml: |
-    removeHostName: docs.microsoft.com
+    hostName: docs.microsoft.com
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
@@ -1344,17 +1331,11 @@ outputs:
        "children":[
           {
              "uid":"child1",
-             "xref": {
-               "name": "a",
-               "href": null
-             }
+             "xref": "a"
           },
           {
              "uid":"child2",
-             "xref":{
-                "uid":"child1",
-                "href":"a.json#child1"
-             }
+             "xref": "child1"
           }
        ]
     }
@@ -1363,12 +1344,8 @@ outputs:
   .xrefmap.json: |
     {
        "references":[
-          {
-             "uid":"child1"
-          },
-          {
-             "uid":"child2"
-          }
+          { "uid":"child1" },
+          { "uid":"child2" }
        ]
     }
 ---

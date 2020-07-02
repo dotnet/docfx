@@ -202,11 +202,6 @@ namespace Microsoft.Docs.Build
                 branch = contributionBranch;
             }
 
-            if (_buildOptions.IsLocalizedBuild)
-            {
-                repo = LocalizationUtility.GetLocalizedRepository(repo, _buildOptions.Locale);
-            }
-
             var gitUrlTemplate = GetGitUrlTemplate(repo, pathToRepo);
 
             return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", branch);

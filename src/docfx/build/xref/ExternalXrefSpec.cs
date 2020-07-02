@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         public string Name
         {
             get => _name ?? Uid;
-            set => _name = value;
+            private set => _name = value;
         }
 
         Document? IXrefSpec.DeclaringFile => null;
