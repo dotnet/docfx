@@ -13,6 +13,7 @@ using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Extensions.Http;
 
@@ -137,7 +138,6 @@ namespace Microsoft.Docs.Build
                 hostName = GetHostName(docset.site_name),
                 basePath = docset.base_path.ValueWithLeadingSlash,
                 xrefHostName,
-                removeHostName = xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]

@@ -403,7 +403,7 @@ outputs:
 # remove host name for external link
 inputs:
   docfx.yml: |
-    removeHostName: docs.com
+    removeHostName: true
   docs/a.md: |
     [external link](https://docs.com/c)
 outputs:
@@ -707,7 +707,7 @@ outputs:
 # Resolve image link inside NOTE
 inputs:
   docfx.yml: |
-    removeHostName: docs.com
+    removeHostName: true
   a.md: |
     > [!TIP]
     > [![](./b.png)](https://docs.com)
