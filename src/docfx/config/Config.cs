@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines if remove host name
         /// </summary>
-        public bool? RemoveHostName { get; private set; }
+        public bool RemoveHostName { get; private set; }
 
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc

@@ -1122,7 +1122,7 @@ outputs:
 ---
 # uid resolving should respect the order of xref settings
 inputs:
-  docfx.yml:
+  docfx.yml: |
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
