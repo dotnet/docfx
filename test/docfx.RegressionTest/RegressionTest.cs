@@ -165,7 +165,8 @@ namespace Microsoft.Docs.Build
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"restore --legacy --verbose --stdin",
                 stdin: noExpireDocfxConfig,
-                cwd: repositoryPath);
+                cwd: repositoryPath,
+                allowExitCodes: new int[] { 0 });
 
             if (s_ciType == CIType.Schedule)
             {
@@ -174,15 +175,13 @@ namespace Microsoft.Docs.Build
                     Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                     arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
                     stdin: expireDocfxConfig,
-                    cwd: repositoryPath,
-                    allowExitCodes: new int[] { 0, 1 });
+                    cwd: repositoryPath);
             }
             return Exec(
                     Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                     arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
                     stdin: noExpireDocfxConfig,
-                    cwd: repositoryPath,
-                    allowExitCodes: new int[] { 0, 1 });
+                    cwd: repositoryPath);
         }
 
         private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
@@ -259,7 +258,7 @@ namespace Microsoft.Docs.Build
         {
             var stopwatch = Stopwatch.StartNew();
             var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
-            allowExitCodes ??= new int[] { 0 };
+            allowExitCodes ??= new int[] { 0, 1 };
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
