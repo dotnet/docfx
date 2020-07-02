@@ -79,11 +79,6 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static string GetLocalizedRepository(string repositoryUrl, string locale)
-        {
-            return AppendLocale(repositoryUrl, locale);
-        }
-
         public static void EnsureLocalizationContributionBranch(PreloadConfig config, Repository? repository)
         {
             // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
