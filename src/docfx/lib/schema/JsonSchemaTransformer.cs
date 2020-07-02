@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorLog _errorLog;
 
-        private readonly ConcurrentDictionary<Document, int> _uidCountCache =
-                     new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
+        private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
+        private readonly ConcurrentDictionary<(FilePath, string), JObject> _resolvedXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject>();
 
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -30,6 +30,11 @@ namespace Microsoft.Docs.Build
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _errorLog = errorLog;
+        }
+
+        public JObject? GetResolvedXrefSpec(FilePath file, string uid)
+        {
+            return _resolvedXrefSpec.TryGetValue((file, uid), out var result) ? result : null;
         }
 
         public (List<Error> errors, JToken token) TransformContent(JsonSchema schema, Document file, JToken token)
@@ -304,9 +309,13 @@ namespace Microsoft.Docs.Build
                     var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
                     errors.AddIfNotNull(xrefError);
 
-                    return xrefSpec != null
-                        ? (errors, JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href)))
-                        : (errors, new JObject { ["name"] = value, ["href"] = null });
+                    var xrefSpecObj = xrefSpec is null
+                        ? new JObject { ["name"] = value, ["href"] = null }
+                        : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+
+                    _resolvedXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
+
+                    return (errors, value);
             }
 
             return (errors, value);
