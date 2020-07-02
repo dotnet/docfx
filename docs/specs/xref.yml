@@ -1123,6 +1123,7 @@ outputs:
 # uid resolving should respect the order of xref settings
 inputs:
   docfx.yml: |
+    hostName: docs.microsoft.com
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
