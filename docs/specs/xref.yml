@@ -787,7 +787,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'.","file":"docs/a.yml","line":2,"column":6}
 ---
-# circular reference within SDP UID definition a -> b -> c -> a
+# [skip] circular reference within SDP UID definition a -> b -> c -> a
 inputs:
   docfx.yml:
   docs/a.yml: |
