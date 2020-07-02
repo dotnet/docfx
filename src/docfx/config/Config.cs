@@ -303,7 +303,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Determines if remove host for external link.
         /// </summary>
-        ///
         public bool DisableRemoveHost { get; private set; }
 
         /// <summary>
