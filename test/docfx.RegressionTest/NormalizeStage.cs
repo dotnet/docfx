@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     internal enum NormalizeStage
     {
         PrettifyJsonFiles = 0b001, // indentation only
-        NormalizeJsonFiles = 0b001, // apply additional to output json files
+        NormalizeJsonFiles = 0b010, // apply additional to output json files
         PrettifyLogFiles = 0b100, // sort, apply additional rule and indentation
     }
 }
