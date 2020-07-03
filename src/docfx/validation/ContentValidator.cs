@@ -47,7 +47,18 @@ namespace Microsoft.Docs.Build
 
             static string GetOgTitle(string title, string titleSuffix)
             {
-                return $"{title}-{titleSuffix}";
+                // below code logic is copyed from docs-ui, but not exactly same
+                if (string.IsNullOrWhiteSpace(titleSuffix))
+                {
+                    return title;
+                }
+
+                var pipeIndex = title.IndexOf('|');
+                if (pipeIndex > 5)
+                {
+                    return $"{title.Substring(0, pipeIndex)} - {titleSuffix}";
+                }
+                return $"{title} - {titleSuffix}";
             }
         }
 
