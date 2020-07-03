@@ -514,3 +514,5 @@ igrouping
 contentrules
 metadatarules
 fnv
+MEMORYSTATUSEX
+sizeof
