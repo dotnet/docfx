@@ -35,7 +35,10 @@ namespace System.Collections.Concurrent
                 }
             }
 
-            Log.Write($"Memory cache removed {removedCount} items on low memory");
+            if (removedCount > 0)
+            {
+                Log.Write($"Memory cache removed {removedCount} items on low memory");
+            }
         }
     }
 }
