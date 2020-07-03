@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -65,15 +66,15 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
             Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_BuildReason == BuildReason.Schedule ? "true" : "false");
 
-            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
+            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig(opts));
 
-            static string GetDocfxConfig()
+            static string GetDocfxConfig(Options opts)
             {
                 // Git token for CRR restore
                 var http = new Dictionary<string, object>();
                 http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
                 http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
-                var docfxConfig = new
+                var docfxConfig = JObject.FromObject(new
                 {
                     http,
                     maxWarnings = 5000,
@@ -81,8 +82,14 @@ namespace Microsoft.Docs.Build
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
-                };
+                });
 
+                if (opts.OutputHtml)
+                {
+                    docfxConfig["outputType"] = "html";
+                    docfxConfig["outputUrlType"] = "ugly";
+                    docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
+                }
                 return JsonConvert.SerializeObject(docfxConfig);
             }
 
@@ -101,7 +108,7 @@ namespace Microsoft.Docs.Build
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath, docfxConfig);
+            var buildTime = Build(repositoryPath, outputPath, !opts.OutputHtml, docfxConfig);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -159,18 +166,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
+        private static TimeSpan Build(string repositoryPath, string outputPath, bool legacyMode, string docfxConfig)
         {
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore --legacy --verbose --stdin",
+                arguments: $"restore {(legacyMode ? "--legacy" : string.Empty)} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {(legacyMode ? "--legacy" : string.Empty)} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
@@ -191,7 +198,7 @@ namespace Microsoft.Docs.Build
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
+                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
                 });

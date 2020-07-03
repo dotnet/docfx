@@ -145,7 +145,7 @@ jobs:
       vsts-docs-pr:
         params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
       AspNetCore.Docs:
-        params: https://github.com/dotnet/AspNetCore.Docs --timeout 30
+        params: https://github.com/dotnet/AspNetCore.Docs --timeout 30 --output-html
       microsoft-365-docs-pr.zh-CN:
         params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --timeout 25
       powerbi-docs-pr.de-DE:

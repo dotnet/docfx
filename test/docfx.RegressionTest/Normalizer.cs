@@ -58,6 +58,14 @@ namespace Microsoft.Docs.Build
                         PrettifyJsonLog(path);
                     }
                     break;
+
+                case ".html":
+                case ".yml":
+                    break;
+
+                default:
+                    File.Delete(path);
+                    break;
             }
         }
 

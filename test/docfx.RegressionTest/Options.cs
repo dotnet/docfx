@@ -18,5 +18,8 @@ namespace Microsoft.Docs.Build
 
         [Option("timeout")]
         public int? Timeout { get; set; }
+
+        [Option("output-html")]
+        public bool OutputHtml { get; set; } = false;
     }
 }
