@@ -403,7 +403,7 @@ outputs:
 # remove host name for external link
 inputs:
   docfx.yml: |
-    removeHostName: docs.com
+    removeHostName: true
   docs/a.md: |
     [external link](https://docs.com/c)
 outputs:
@@ -662,7 +662,7 @@ outputs:
   docs/b.png:
   docs/a.json: |
     { 
-      "conceptual": "<p class=\"mx-imgBorder\"><img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\"></p><p class=\"mx-imgBorder\"><img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p>"
+      "conceptual": "<p><span class=\"mx-imgBorder\">\n<img src=\"a.png\" alt=\"Image\" data-linktype=\"relative-path\">\n</span>\n<span class=\"mx-imgBorder\">\n<img src=\"b.png\" alt=\"Image\" data-linktype=\"relative-path\">\n</span>\n</p>\n"
     }
 ---
 # Invalid Link
@@ -707,7 +707,7 @@ outputs:
 # Resolve image link inside NOTE
 inputs:
   docfx.yml: |
-    removeHostName: docs.com
+    removeHostName: true
   a.md: |
     > [!TIP]
     > [![](./b.png)](https://docs.com)
@@ -742,7 +742,7 @@ inputs:
   include/b.png:
 outputs:
   a.json: |
-    { "conceptual": "<p class=\"mx-imgBorder\"><img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\"></p>" }
+    { "conceptual": "<p><span class=\"mx-imgBorder\">\n<img src=\"include/b.png\" alt=\"Image\" data-linktype=\"relative-path\">\n</span>\n</p>\n" }
   include/b.json:
   include/b.png:
 ---

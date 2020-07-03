@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -16,9 +15,6 @@ namespace Microsoft.Docs.Build
         where TKey : notnull
         where TValue : class, ICacheObject<TKey>
     {
-        private static int s_randomSeed = Environment.TickCount;
-        private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
-
         private readonly string _cachePath;
         private readonly double _expirationInSeconds;
         private readonly Func<TValue, TValue, TValue>? _resolveConflict;
@@ -27,7 +23,8 @@ namespace Microsoft.Docs.Build
 
         private volatile bool _needUpdate;
 
-        public JsonDiskCache(string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null, Func<TValue, TValue, TValue>? resolveConflict = null)
+        public JsonDiskCache(
+            string cachePath, TimeSpan expiration, IEqualityComparer<TKey>? comparer = null, Func<TValue, TValue, TValue>? resolveConflict = null)
         {
             comparer ??= EqualityComparer<TKey>.Default;
             _resolveConflict = resolveConflict;
@@ -73,7 +70,11 @@ namespace Microsoft.Docs.Build
                 if (HasExpired(value))
                 {
                     // When the item expired, trigger background update but don't wait for the result
-                    Update(key, valueFactory).GetAwaiter();
+                    var awaiter = Update(key, valueFactory).GetAwaiter();
+                    if (EnvironmentVariable.UpdateCacheSync)
+                    {
+                        awaiter.GetResult();
+                    }
                 }
                 return (default, value);
             }
@@ -137,7 +138,7 @@ namespace Microsoft.Docs.Build
 
         private static DateTime GetRandomUpdatedAt()
         {
-            return DateTime.UtcNow.AddMilliseconds(1000.0 * t_random.Value!.NextDouble());
+            return DateTime.UtcNow.AddMilliseconds(1000.0 * RandomUtility.Random.NextDouble());
         }
 
         private bool HasExpired(TValue value)

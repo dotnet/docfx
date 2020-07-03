@@ -22,13 +22,14 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
 
-        private readonly ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
-                     new ConcurrentDictionary<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
+        private readonly MemoryCache<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
+                     new MemoryCache<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector = new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
+        private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
+            new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
 
         public TableOfContentsLoader(
             LinkResolver linkResolver,
@@ -288,7 +289,8 @@ namespace Microsoft.Docs.Build
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                    _dependencyMapBuilder.AddDependencyItem(filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File, filePath.ContentType);
+                    _dependencyMapBuilder.AddDependencyItem(
+                        filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File, filePath.ContentType);
                     return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 

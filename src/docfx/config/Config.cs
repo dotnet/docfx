@@ -130,11 +130,6 @@ namespace Microsoft.Docs.Build
         public string XrefHostName { get; private set; } = "";
 
         /// <summary>
-        /// Gets host name used for removing host
-        /// </summary>
-        public string RemoveHostName { get; private set; } = "";
-
-        /// <summary>
         /// Gets whether we are running in legacy mode
         /// </summary>
         public bool Legacy { get; private set; }
@@ -148,7 +143,8 @@ namespace Microsoft.Docs.Build
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } = new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
+        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } =
+            new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.
@@ -299,6 +295,11 @@ namespace Microsoft.Docs.Build
         /// Determines if validate the moniker configuration.
         /// </summary>
         public bool SkipMonikerValidation { get; private set; }
+
+        /// <summary>
+        /// Determines if remove host name
+        /// </summary>
+        public bool RemoveHostName { get; private set; }
 
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc

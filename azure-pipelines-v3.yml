@@ -134,29 +134,34 @@ jobs:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
       sql-docs-pr:
         params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120
-      dynamics-365-customer-engagement-pr:
-        params: https://github.com/MicrosoftDocs/dynamics-365-customer-engagement-pr --timeout 70
+      docs:
+        params: https://github.com/dotnet/docs --timeout 60
+      windowsserverdocs-pr:
+        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45
+      VBA-Docs:
+        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60
+      azure-devops-docs-pr:
+        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30
+      vsts-docs-pr:
+        params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
+      AspNetCore.Docs:
+        params: https://github.com/dotnet/AspNetCore.Docs --timeout 30
+      microsoft-365-docs-pr.zh-CN:
+        params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --timeout 25
+      powerbi-docs-pr.de-DE:
+        params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
       roslyn-api-docs:
-        params: https://github.com/dotnet/roslyn-api-docs --timeout 105
-      docs-help-pr:
-        params: >
-          https://github.com/MicrosoftDocs/docs-help-pr --timeout 30
-      Dynamics-365-Operations:
-        params: https://github.com/MicrosoftDocs/Dynamics-365-Operations --timeout 65
-      mc-docs-pr:
-        params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
-      ATADocs-pr:
-        params: https://github.com/MicrosoftDocs/ATADocs-pr --timeout 30
+        params: https://github.com/dotnet/roslyn-api-docs --branch live --timeout 105
       azure-docs-rest-apis:
         params: https://github.com/Azure/azure-docs-rest-apis --timeout 130
-      biztalk-docs.zh-cn:
-        params: https://github.com/MicrosoftDocs/biztalk-docs.zh-cn --branch master-sxs --locale zh-cn --timeout 50
+      mc-docs-pr:
+        params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
+      dynamics365smb-devitpro:
+        params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
       DevSandbox:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
-      office-dev-O365API:
-        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/office-dev-O365API --timeout 20
-      dynamics-crm-notinTOC_1.he-il:
-        params: https://dev.azure.com/docs-archive/docs-archive-project/_git/dynamics-crm-notinTOC.he-il --locale he-il --timeout 70
+      test:
+        params: https://github.com/MicrosoftDocs/test --timeout 15
 
   steps:
   # Install .NET Core sdk

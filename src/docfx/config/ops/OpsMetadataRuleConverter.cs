@@ -59,7 +59,9 @@ namespace Microsoft.Docs.Build
                     maxLength = GetMaxLength(rulesInfo),
                 };
 
-                if (!string.Equals("{}", JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })))
+                var propertyJson =
+                    JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                if (!string.Equals("{}", propertyJson))
                 {
                     schema.properties.Add(attribute, property);
                 }
@@ -157,7 +159,8 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetAllowlist(string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
+        private static bool TryGetAllowlist(
+            string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
             allowList = new Dictionary<string, EnumDependenciesSchema?>();
 

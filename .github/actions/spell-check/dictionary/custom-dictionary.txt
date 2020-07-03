@@ -445,6 +445,7 @@ username
 userprofile
 ushort
 utils
+validationmgt
 validator
 validators
 vba
@@ -513,3 +514,6 @@ igrouping
 contentrules
 metadatarules
 fnv
+MEMORYSTATUSEX
+sizeof
+IMemory

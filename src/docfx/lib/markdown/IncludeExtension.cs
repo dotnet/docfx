@@ -10,8 +10,6 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
-#pragma warning disable CS0618
-
 namespace Microsoft.Docs.Build
 {
     internal static class IncludeExtension
@@ -38,7 +36,8 @@ namespace Microsoft.Docs.Build
             renderer.ObjectRenderers.RemoveAll(r => r is HtmlInclusionInlineRenderer);
         }
 
-        private static void ExpandInclude(MarkdownContext context, MarkdownObject document, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
+        private static void ExpandInclude(
+            MarkdownContext context, MarkdownObject document, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
         {
             document.Visit(obj =>
             {
@@ -58,7 +57,8 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static void ExpandInclusionBlock(MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
+        private static void ExpandInclusionBlock(
+            MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
         {
             var (content, file) = context.ReadFile(inclusionBlock.IncludedFilePath, inclusionBlock);
             if (content is null)
@@ -81,7 +81,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ExpandInclusionInline(MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
+        private static void ExpandInclusionInline(
+            MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
         {
             var (content, file) = context.ReadFile(inclusionInline.IncludedFilePath, inclusionInline);
             if (content is null)

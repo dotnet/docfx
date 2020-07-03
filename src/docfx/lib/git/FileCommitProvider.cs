@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
 
         // Commit history and a lookup table from commit hash to commit.
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
-        private readonly ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>> _commits = new ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>>();
+        private readonly ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>> _commits =
+            new ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>>();
 
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
         private readonly ConcurrentDictionary<long, Tree> _treeCache = new ConcurrentDictionary<long, Tree>();

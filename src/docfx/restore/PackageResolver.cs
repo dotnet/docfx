@@ -214,7 +214,8 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     (var repoOrg, var repoName) = ParseRepoInfo(url);
-                    throw Errors.DependencyRepository.RepositoryOwnerPermissionInsufficient(_config.DocsRepositoryOwnerName, repoOrg, repoName, url).ToException(ex);
+                    throw Errors.DependencyRepository.RepositoryOwnerPermissionInsufficient(
+                        _config.DocsRepositoryOwnerName, repoOrg, repoName, url).ToException(ex);
                 }
             }
         }
@@ -224,7 +225,8 @@ namespace Microsoft.Docs.Build
             return ex.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
                             || ex.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
                             || ex.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
+                            || ex.Message.Contains(
+                                "does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
                             || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
         }
 

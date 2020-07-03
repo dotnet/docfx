@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly Config _config;
 
-        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver)
+        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
             _templateDir = config.Template.Type switch
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                 ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
                 : new JintJsEngine(_contentTemplateDir, _global);
 
-            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global);
+            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
         public bool IsPage(string? mime)
@@ -80,9 +80,9 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, file.Mime, liquidModel);
         }
 
-        public string RunMustache(string templateName, JToken pageModel)
+        public string RunMustache(string templateName, JToken pageModel, FilePath file)
         {
-            return _mustacheTemplate.Render(templateName, pageModel);
+            return _mustacheTemplate.Render(templateName, pageModel, file);
         }
 
         public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
@@ -138,7 +138,8 @@ namespace Microsoft.Docs.Build
                 ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
                    let fileName = Path.GetFileName(k)
                    select fileName.Substring(0, fileName.Length - ".schema.json".Length))
-                   .ToDictionary(schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
+                   .ToDictionary(
+                    schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
                 : new Dictionary<string, Lazy<TemplateSchema>>();
 
             schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));

@@ -116,9 +116,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if (currentBorder && tripleColonObj is Block)
+            if (currentBorder)
             {
-                renderer.WriteLine("<p class=\"mx-imgBorder\">");
+                if (tripleColonObj is Block)
+                {
+                    renderer.WriteLine("<p class=\"mx-imgBorder\">");
+                } else
+                {
+                    renderer.WriteLine("<span class=\"mx-imgBorder\">");
+                }
+
             }
             else
             {
@@ -142,6 +149,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (currentType != "complex")
             {
                 renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+
+                if(tripleColonObj is ContainerBlock
+                    && (tripleColonObj as ContainerBlock).LastChild != null)
+                {
+                    var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
+                    renderer.WriteChildren(inline);
+                }
+                
             }
             else
             {
@@ -165,6 +180,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 renderer.WriteLine("</p>");
             } else
             {
+                if(currentBorder) renderer.WriteLine("</span>");
                 renderer.WriteChildren(tripleColonObj as ContainerInline);
             }
             return true;

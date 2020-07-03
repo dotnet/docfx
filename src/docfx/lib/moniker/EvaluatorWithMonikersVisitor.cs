@@ -26,7 +26,8 @@ namespace Microsoft.Docs.Build
         {
             if (!MonikerOrder.TryGetValue(expression.Operand, out var moniker))
             {
-                return (Errors.Versioning.MonikerRangeInvalid(monikerRange, $"Invalid moniker range '{monikerRange}': Moniker '{expression.Operand}' is not defined."), Array.Empty<Moniker>());
+                var message = $"Invalid moniker range '{monikerRange}': Moniker '{expression.Operand}' is not defined.";
+                return (Errors.Versioning.MonikerRangeInvalid(monikerRange, message), Array.Empty<Moniker>());
             }
 
             return expression.Operator switch

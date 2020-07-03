@@ -223,34 +223,38 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "a",
+          }],
           "JoinTOCPlugin": [
             {
-              "ReferenceTOC": "api/TOC.yml",
+              "ReferenceTOC": "a/api/TOC.yml",
               "ReferenceTOCUrl": "/dotnet/api/azure_ref_toc/toc.json",
               "ConceptualTOCUrl": "/dotnet/azure/sdk/toc.json",
-              "ConceptualTOC": "docs-ref-conceptual/TOC.yml"
+              "ConceptualTOC": "a/docs-ref-conceptual/TOC.yml"
             },
             {
-              "ReferenceTOC": "api-1/TOC.yml",
+              "ReferenceTOC": "a/api-1/TOC.yml",
               "ConceptualTOCUrl": "/dotnet-1/azure/sdk/toc.json",
             },
             {
               "ReferenceTOCUrl": "/dotnet-2/api/azure_ref_toc/toc.json",
-              "ConceptualTOC": "docs-ref-conceptual-2/TOC.yml"
+              "ConceptualTOC": "a/docs-ref-conceptual-2/TOC.yml"
             }
           ],
         }
-      docfx.yml:
-      api/TOC.yml:
-      docs-ref-conceptual/TOC.yml:
-      api-1/TOC.yml:
-      docs-ref-conceptual-2/TOC.yml:
+      a/docfx.yml:
+      a/api/TOC.yml:
+      a/docs-ref-conceptual/TOC.yml:
+      a/api-1/TOC.yml:
+      a/docs-ref-conceptual-2/TOC.yml:
 outputs:
-  api/toc.json: |
+  a/api/toc.json: |
     { "metadata": { "universal_conceptual_toc": "/dotnet/azure/sdk/toc.json", "universal_ref_toc": undefined } }
-  docs-ref-conceptual/toc.json: |
+  a/docs-ref-conceptual/toc.json: |
     { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet/api/azure_ref_toc/toc.json" } }
-  api-1/toc.json: |
+  a/api-1/toc.json: |
     { "metadata": { "universal_conceptual_toc": "/dotnet-1/azure/sdk/toc.json", "universal_ref_toc": undefined } }
-  docs-ref-conceptual-2/toc.json: |
+  a/docs-ref-conceptual-2/toc.json: |
     { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet-2/api/azure_ref_toc/toc.json" } }

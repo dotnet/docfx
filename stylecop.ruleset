@@ -153,14 +153,13 @@
     <Rule Id="CA5351" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
+    <Rule Id="MEN002" Action="Warning" />
     <Rule Id="MEN003" Action="Warning" />
     <Rule Id="MEN008" Action="Warning" />
-    <!-- TODO: Enable these rules after we've fixed all the problems -->
-    <Rule Id="MEN002" Action="None" />
     <!-- Avoid magic numbers -->
     <Rule Id="MEN010" Action="None" />
-    <Rule Id="MEN012" Action="None" />
-    <Rule Id="MEN013" Action="None" />
+    <Rule Id="MEN012" Action="Warning" />
+    <Rule Id="MEN013" Action="Warning" />
     <!-- Use a single return -->
     <Rule Id="MEN007" Action="None" />
   </Rules>
