@@ -12,9 +12,9 @@ namespace System.Collections.Concurrent
     internal static class MemoryMonitor
     {
         private const int PollingInterval = 10 * 1000;
-        private const int MemoryLimitPercentage = 90;
+        private const int MemoryLimitPercentage = 80;
 
-        private static readonly List<WeakReference<Action>> s_monitors = new List<WeakReference<Action>>();
+        private static readonly List<WeakReference<IMemoryMonitor>> s_monitors = new List<WeakReference<IMemoryMonitor>>();
         private static int s_lastGen2Count = 0;
 
         static MemoryMonitor()
@@ -25,13 +25,13 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public static void AddMemoryMonitor(Action onMemoryLow)
+        public static void AddMemoryMonitor(IMemoryMonitor monitor)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 lock (s_monitors)
                 {
-                    s_monitors.Add(new WeakReference<Action>(onMemoryLow));
+                    s_monitors.Add(new WeakReference<IMemoryMonitor>(monitor));
                 }
             }
         }
@@ -73,9 +73,9 @@ namespace System.Collections.Concurrent
 
                         foreach (var monitor in s_monitors)
                         {
-                            if (monitor.TryGetTarget(out var action))
+                            if (monitor.TryGetTarget(out var target))
                             {
-                                action();
+                                target.OnMemoryLow();
                             }
                             else
                             {

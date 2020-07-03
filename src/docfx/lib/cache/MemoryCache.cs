@@ -6,21 +6,21 @@ using Microsoft.Docs.Build;
 
 namespace System.Collections.Concurrent
 {
-    internal class MemoryCache<TKey, TValue> : ConcurrentDictionary<TKey, TValue> where TKey : notnull
+    internal class MemoryCache<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IMemoryMonitor where TKey : notnull
     {
         public MemoryCache()
             : base()
         {
-            MemoryMonitor.AddMemoryMonitor(Trim);
+            MemoryMonitor.AddMemoryMonitor(this);
         }
 
         public MemoryCache(IEqualityComparer<TKey> comparer)
             : base(comparer)
         {
-            MemoryMonitor.AddMemoryMonitor(Trim);
+            MemoryMonitor.AddMemoryMonitor(this);
         }
 
-        private void Trim()
+        public void OnMemoryLow()
         {
             // Drop half of our items randomly on each low memory condition
             var countToRemove = Count / 2;
