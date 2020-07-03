@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                 case ".json":
                     if (normalizeStage.HasFlag(NormalizeStage.PrettifyJsonFiles))
                     {
-                        NormalizeNewLine(JToken.Parse(File.ReadAllText(path)).ToString());
+                        File.WriteAllText(path, NormalizeNewLine(JToken.Parse(File.ReadAllText(path)).ToString()));
                     }
                     else if (normalizeStage.HasFlag(NormalizeStage.NormalizeJsonFiles))
                     {
