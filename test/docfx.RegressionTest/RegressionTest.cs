@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                     githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
                 };
 
-                return JsonUtility.Serialize(docfxConfig);
+                return JsonConvert.SerializeObject(docfxConfig);
             }
 
             static Dictionary<string, string> ToAuthHeader(string? token)
@@ -178,12 +178,16 @@ namespace Microsoft.Docs.Build
         private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
         {
             var testRepositoryName = Path.GetFileName(repository);
+
+            // For temporary normalize: use 'NormalizeJsonFiles' for output files
+            Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles);
+
             if (s_isPullRequest)
             {
                 var watch = Stopwatch.StartNew();
-                Normalizer.Normalize(outputPath, NormalizeStage.NormalizeLogFiles | NormalizeStage.NormalizeJsonFiles);
-                Normalizer.Normalize(existingOutputPath, NormalizeStage.NormalizeLogFiles);
 
+                // For temporary normalize: uncomment below line
+                // Normalizer.Normalize(existingOutputPath, NormalizeStage.NormalizeJsonFiles);
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
@@ -217,7 +221,6 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Normalizer.Normalize(outputPath, NormalizeStage.PrettifyLogFiles | NormalizeStage.NormalizeJsonFiles);
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true add -A", cwd: testWorkingFolder);
                 Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString}\"", cwd: testWorkingFolder, ignoreError: true);
             }
