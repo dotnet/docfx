@@ -787,7 +787,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'a (docs/a.yml(2,6))' --> 'a (docs/a.yml(2,6))'.","file":"docs/a.yml","line":2,"column":6}
 ---
-# [skip] circular reference within SDP UID definition a -> b -> c -> a
+# circular reference within SDP UID definition a -> b -> c -> a
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -816,7 +816,7 @@ outputs:
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))'.","file":"docs/b.yml","line":2,"column":6}
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'c (docs/c.yml(2,6))' --> 'a (docs/a.yml(2,6))' --> 'b (docs/b.yml(2,6))' --> 'c (docs/c.yml(2,6))'.","file":"docs/c.yml","line":2,"column":6}
 ---
-# circular reference within SDP UID definition a -> b -> a -> c
+# [skip] circular reference within SDP UID definition a -> b -> a -> c
 inputs:
   docfx.yml:
   docs/a.yml: |
