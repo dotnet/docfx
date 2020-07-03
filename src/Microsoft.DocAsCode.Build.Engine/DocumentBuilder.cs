@@ -377,7 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return result;
                     }
 
-                    var siteHostName = TryGetCurrentBranchSiteHostNameFromEnvironment();
+                    var siteHostName = TryGetPublishTargetSiteHostNameFromEnvironment();
                     var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
                     foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
                     {
@@ -499,16 +499,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        private static string TryGetCurrentBranchSiteHostNameFromEnvironment()
+        private static string TryGetPublishTargetSiteHostNameFromEnvironment()
         {
             string metadataString = Environment.GetEnvironmentVariable(Constants.OPSEnvironmentVariable.SystemMetadata);
 
             if (metadataString != null)
             {
                 var metadata = JsonUtility.FromJsonString<Dictionary<string, object>>(metadataString)?.ToImmutableDictionary();
-                if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpCurrentBranchSiteHostName, out object currentBranchSiteHostName))
+                if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpPublishTargetSiteHostName, out object publishTargetSiteHostName))
                 {
-                    return (string)currentBranchSiteHostName;
+                    return (string)publishTargetSiteHostName;
                 }
             }
             return null;
