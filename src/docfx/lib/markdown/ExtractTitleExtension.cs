@@ -11,30 +11,25 @@ namespace Microsoft.Docs.Build
     internal static class ExtractTitleExtension
     {
         public static MarkdownPipelineBuilder UseExtractTitle(
-            this MarkdownPipelineBuilder builder, MarkdownEngine markdownEngine, Func<ConceptualModel?> getConceptual)
+            this MarkdownPipelineBuilder builder, MarkdownEngine markdownEngine, Action<SourceInfo<string?>> setTitle, Action<string> setRawTitle)
         {
             return builder.Use(document =>
             {
                 var hasVisibleNodes = false;
-                var conceptual = getConceptual();
-                if (conceptual is null)
-                {
-                    return;
-                }
 
                 document.Replace(obj =>
                 {
                     switch (obj)
                     {
                         case HeadingBlock heading when heading.Level == 1 || heading.Level == 2 || heading.Level == 3:
-                            if (conceptual.Title is null && heading.Inline.Any())
+                            if (heading.Inline.Any())
                             {
-                                conceptual.Title = markdownEngine.ToPlainText(heading);
+                                setTitle(new SourceInfo<string?>(markdownEngine.ToPlainText(heading), heading.GetSourceInfo()));
                             }
 
                             if (!hasVisibleNodes)
                             {
-                                conceptual.RawTitle = markdownEngine.ToHtml(heading);
+                                setRawTitle(markdownEngine.ToHtml(heading));
                                 hasVisibleNodes = true;
                                 return null;
                             }

@@ -1435,7 +1435,6 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":0,"end_column":0}
 ---
 # Canonial Version Only H1 Unique Check
-# todo: add test cases for split-versioning cases
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -1760,3 +1759,73 @@ outputs:
   9d4e15fd/docs/a.json:
   9d4e15fd/docs/b.json:
   976da3a9/docs/b.json:
+---
+# title unique check
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    fileMetadata:
+      titleSuffix:
+        'a/*.md': Product A
+        'b/*.md': Product B
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "message": "Title '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a/a.md: |
+    ---
+    title: title 1
+    ---
+  a/b.md: |
+    ---
+    title: title 1
+    ---
+  a/c.md: |
+    # title 1
+  a/d.md: |
+    ---
+    title: title 2
+    ---
+    # title 1
+  b/a.md: |
+    ---
+    title: title 1
+    ---
+  c.md: |
+    ---
+    title: title 1
+    ---
+  d.md: |
+    # title 1
+outputs:
+  a/a.json:
+  a/b.json:
+  a/c.json:
+  a/d.json:
+  b/a.json:
+  c.json:
+  d.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product A' is duplicated with other articles: 'a/a.md(2,8), a/b.md(2,8), a/c.md'","file":"a/a.md","line":2,"end_line":2,"column":8,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product A' is duplicated with other articles: 'a/a.md(2,8), a/b.md(2,8), a/c.md'","file":"a/b.md","line":2,"end_line":2,"column":8,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product A' is duplicated with other articles: 'a/a.md(2,8), a/b.md(2,8), a/c.md'","file":"a/c.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'c.md(2,8), d.md'","file":"c.md","line":2,"end_line":2,"column":8,"end_column":15}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'c.md(2,8), d.md'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}

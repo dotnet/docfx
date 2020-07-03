@@ -223,10 +223,13 @@ namespace Microsoft.Docs.Build
 
             errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
 
-            var conceptual = new ConceptualModel { Title = userMetadata.Title };
-            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
+            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, out var contentTitle, out var rawTitle);
             errors.AddRange(markupErrors);
 
+            var titleSuffix = userMetadata.RawJObject.TryGetValue<JValue>("titleSuffix", out var metadataValue) ? metadataValue.ToString() : default;
+            context.ContentValidator.ValidateTitle(file, userMetadata.Title.Or(contentTitle), titleSuffix);
+
+            var conceptual = new ConceptualModel { Title = userMetadata.Title.Or(contentTitle).Value, RawTitle = rawTitle };
             ProcessConceptualHtml(conceptual, context, file, html);
 
             return (errors, context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual));

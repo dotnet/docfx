@@ -33,19 +33,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTitle(Document file, SourceInfo<string> title, string titleSuffix)
+        public void ValidateTitle(Document file, SourceInfo<string?> title, string? titleSuffix)
         {
+            if (string.IsNullOrWhiteSpace(title.Value))
+            {
+                return;
+            }
+
             if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))
             {
                 var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
                 var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
                 var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, monikers);
-                var titleItem = new TitleItem { IsCanonicalVersion = isCanonicalVersion, Title = GetOgTitle(title.Value, titleSuffix), SourceInfo = title.Source };
+                var titleItem = new TitleItem
+                {
+                    IsCanonicalVersion = isCanonicalVersion,
+                    Title = GetOgTitle(title.Value, titleSuffix),
+                    SourceInfo = title.Source,
+                };
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
             }
 
-            static string GetOgTitle(string title, string titleSuffix)
+            static string GetOgTitle(string title, string? titleSuffix)
             {
                 // below code logic is copyed from docs-ui, but not exactly same
                 if (string.IsNullOrWhiteSpace(titleSuffix))
