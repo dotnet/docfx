@@ -21,7 +21,7 @@ namespace System.Collections.Concurrent
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                new Thread(MonitorMemory).Start();
+                new Thread(MonitorMemory) { IsBackground = true }.Start();
             }
         }
 
