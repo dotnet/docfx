@@ -516,3 +516,4 @@ metadatarules
 fnv
 MEMORYSTATUSEX
 sizeof
+IMemory
