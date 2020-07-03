@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         public void TestContextObjectSDP()
         {
             Environment.SetEnvironmentVariable("_op_systemMetadata",
-                JsonUtility.ToJsonString(new Dictionary<string, object> { { "_op_currentBranchSiteHostName", "ppe.docs.microsoft.com" } }));
+                JsonUtility.ToJsonString(new Dictionary<string, object> { { "_op_publishTargetSiteHostName", "ppe.docs.microsoft.com" } }));
 
             using var listener = new TestListenerScope("TestContextObjectSDP");
             var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
