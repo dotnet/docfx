@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 {
                     obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]!.Value<string>(), @"Idx: \d+", ""));
                 }
-                sw.Write(obj.ToString());
+                sw.WriteLine(obj.ToString());
             }
         }
     }
