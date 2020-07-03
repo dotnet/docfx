@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
 :::image type=""content"" source=""example.jpg"" alt-text=""example"" lightbox=""example-expanded.jpg"" border=""false"":::
 
-:::image type=""icon"" source=""green-checkmark.png""::: |  |  |  |
+:::image type=""icon"" source=""green-checkmark.png"":::
 
 |Capability   | Admin  | Member  | Contributor  | Viewer |
 |---|---|---|---|---|
@@ -27,24 +27,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 | Add/remove people, including other admins.  | :::image type=""icon"" source=""green-checkmark.png"":::  |   |   |   |
 | Add members or others with lower permissions.  |  X | X  |  |   |";
 
-            var expected = @"<p class=""mx-imgBorder"">
+            var expected = @"<p><span class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"">
+</span>
 </p>
-<p>
-<img src=""example.jpg"" alt=""example"">
+<p><img src=""example.jpg"" alt=""example"">
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""example.jpg"" alt=""example"">
 </a>
+</span>
 </p>
-<p>
-<a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
+<p><a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""example.jpg"" alt=""example"">
 </a>
 </p>
-<p>
-<img src=""green-checkmark.png"" role=""presentation"">
+<p><img src=""green-checkmark.png"" role=""presentation"">
 </p>
 <table>
 <thead>
@@ -107,8 +106,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 ";
 
-            var expected = @"<p>
-<img src=""example.svg"" role=""presentation"">
+            var expected = @"<p><img src=""example.svg"" role=""presentation"">
 </p>
 <p class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"" aria-describedby=""3-0"">
@@ -116,8 +114,9 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
 </div>
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"">
+</span>
 </p>
 <p class=""mx-imgBorder"">
 <a href=""example-expanded.jpg#lightbox"" data-linktype=""relative-path"">
@@ -149,15 +148,17 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image source=""example.svg"" lightbox=""example.svg"" alt-text=""Lorum Ipsom"" link=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"":::
 ";
 
-            var expected = @"<p class=""mx-imgBorder"">
+            var expected = @"<p><span class=""mx-imgBorder"">
 <a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
 <img src=""example.svg"" alt=""Lorum Ipsom"">
 </a>
+</span>
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
 <img src=""example.svg"" alt=""Lorum Ipsom"">
 </a>
+</span>
 </p>
 ";
 
@@ -195,14 +196,20 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         {
             var source = @":::image type=""icon"" source=""example.svg"":::
 
-:::image type=""icon"" source=""example.svg"" border=""true"":::";
+:::image type=""icon"" source=""example.svg"" border=""true"":::
 
-            var expected = @"<p>
-<img src=""example.svg"" role=""presentation"">
+:::image type=""icon"" source=""example.svg"" border=""true""::: And this with inline text.";
+
+            var expected = @"<p><img src=""example.svg"" role=""presentation"">
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <img src=""example.svg"" role=""presentation"">
+</span>
 </p>
+<p><span class=""mx-imgBorder"">
+<img src=""example.svg"" role=""presentation"">
+</span>
+ And this with inline text.</p>
 ";
 
             TestUtility.VerifyMarkup(source, expected);
