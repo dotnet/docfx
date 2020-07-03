@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -73,7 +74,7 @@ namespace Microsoft.Docs.Build
                 var http = new Dictionary<string, object>();
                 http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
                 http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
-                var docfxConfig = new
+                var docfxConfig = JObject.FromObject(new
                 {
                     http,
                     maxWarnings = 5000,
@@ -81,10 +82,14 @@ namespace Microsoft.Docs.Build
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
-                    outputType = opts.OutputHtml ? "html" : "json",
-                    outputUrlType = opts.OutputHtml ? "ugly" : "docs",
-                    template = opts.OutputHtml ? "https://github.com/Microsoft/templates.docs.msft.pdf#master" : null,
-                };
+                });
+
+                if (opts.OutputHtml)
+                {
+                    docfxConfig["outputType"] = "html";
+                    docfxConfig["outputUrlType"] = "ugly";
+                    docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
+                }
                 return JsonUtility.Serialize(docfxConfig);
             }
 

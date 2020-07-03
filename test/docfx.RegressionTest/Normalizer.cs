@@ -57,6 +57,17 @@ namespace Microsoft.Docs.Build
                         File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select((line) => NormalizeJsonLog(line)));
                     }
                     break;
+
+                case ".html":
+                case ".yml":
+                    break;
+
+                default:
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                    break;
             }
         }
 
