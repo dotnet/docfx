@@ -64,10 +64,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 default:
-                    if (File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
+                    File.Delete(path);
                     break;
             }
         }
