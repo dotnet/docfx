@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 case ".txt":
                     if (normalizeStage.HasFlag(NormalizeStage.PrettifyLogFiles))
                     {
-                        NormalizeJsonLog(path);
+                        PrettifyJsonLog(path);
                     }
                     break;
             }
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
         private static string NormalizeNewLine(string text) => text.Replace("\r", "").Replace("\\n\\n", "⬇\n").Replace("\\n", "⬇\n");
 
-        private static void NormalizeJsonLog(string logPath)
+        private static void PrettifyJsonLog(string logPath)
         {
             var logs = File.ReadAllLines(logPath).OrderBy(line => line);
 
