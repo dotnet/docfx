@@ -65,9 +65,9 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
             Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_BuildReason == BuildReason.Schedule ? "true" : "false");
 
-            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
+            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig(opts));
 
-            static string GetDocfxConfig()
+            static string GetDocfxConfig(Options opts)
             {
                 // Git token for CRR restore
                 var http = new Dictionary<string, object>();
@@ -81,8 +81,9 @@ namespace Microsoft.Docs.Build
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
+                    outputType = opts.OutputHtml ? "html" : "json",
+                    outputUrlType = opts.OutputHtml ? "ugly" : "docs",
                 };
-
                 return JsonUtility.Serialize(docfxConfig);
             }
 
@@ -101,7 +102,7 @@ namespace Microsoft.Docs.Build
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath, docfxConfig);
+            var buildTime = Build(repositoryPath, outputPath, !opts.OutputHtml, docfxConfig);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -159,7 +160,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
+        private static TimeSpan Build(string repositoryPath, string outputPath, bool legacyMode, string docfxConfig)
         {
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
@@ -170,7 +171,7 @@ namespace Microsoft.Docs.Build
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {(legacyMode ? "--legacy" : string.Empty)} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
