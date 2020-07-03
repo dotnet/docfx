@@ -8,8 +8,8 @@ namespace Microsoft.Docs.Build
     [Flags]
     internal enum NormalizeStage
     {
-        NormalizeJsonFiles = 0b001,
-        PrettifyLogFiles = 0b010, // only sort, and remote date_time
-        NormalizeLogFiles = 0b100, // sort, apply additional rule and indentation
+        PrettifyJsonFiles = 0b001, // indentation only
+        NormalizeJsonFiles = 0b010, // apply additional to output json files
+        PrettifyLogFiles = 0b100, // sort, apply additional rule and indentation
     }
 }
