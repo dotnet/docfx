@@ -101,25 +101,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, string html) ToHtml(
-            string markdown,
-            Document file,
-            MarkdownPipelineType pipelineType,
-            out SourceInfo<string?> contentTitle,
-            out string rawTitle)
+        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    var status = new Status();
+                    var status = new Status(conceptual);
 
                     t_status.Value!.Push(status);
 
                     var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
 
-                    contentTitle = status.Title;
-                    rawTitle = status.RawTitle;
                     return (status.Errors, html);
                 }
                 finally
@@ -220,7 +213,7 @@ namespace Microsoft.Docs.Build
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(GetErrors, GetLink, GetXref)
-                .UseExtractTitle(this, SetTitle, SetRawTitle);
+                .UseExtractTitle(this, GetConceptual);
         }
 
         private static MarkdownPipeline CreateTocMarkdownPipeline()
@@ -272,6 +265,11 @@ namespace Microsoft.Docs.Build
         private static List<Error> GetErrors()
         {
             return t_status.Value!.Peek().Errors;
+        }
+
+        private static ConceptualModel? GetConceptual()
+        {
+            return t_status.Value!.Peek().Conceptual;
         }
 
         private string? GetLayout(FilePath path)
@@ -350,25 +348,16 @@ namespace Microsoft.Docs.Build
             return _publishUrlMap.Value.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
         }
 
-        private static void SetTitle(SourceInfo<string?> title)
-        {
-            var status = t_status.Value!.Peek();
-            status.Title = title;
-        }
-
-        private static void SetRawTitle(string rawTitle)
-        {
-            var status = t_status.Value!.Peek();
-            status.RawTitle = rawTitle;
-        }
-
         private class Status
         {
-            public SourceInfo<string?> Title { get; set; }
-
-            public string RawTitle { get; set; } = "";
+            public ConceptualModel? Conceptual { get; }
 
             public List<Error> Errors { get; } = new List<Error>();
+
+            public Status(ConceptualModel? conceptual = null)
+            {
+                Conceptual = conceptual;
+            }
         }
     }
 }

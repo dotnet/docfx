@@ -276,14 +276,14 @@ namespace Microsoft.Docs.Build
                     return (errors, link);
 
                 case JsonSchemaContentType.Markdown:
-                    var (markupErrors, html) = _markdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, out _, out _);
+                    var (markupErrors, html) = _markdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown);
                     errors.AddRange(markupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
                     return (errors, html);
 
                 case JsonSchemaContentType.InlineMarkdown:
-                    var (inlineMarkupErrors, inlineHtml) = _markdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown, out _, out _);
+                    var (inlineMarkupErrors, inlineHtml) = _markdownEngine.ToHtml(content, file, MarkdownPipelineType.InlineMarkdown);
                     errors.AddRange(inlineMarkupErrors);
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
