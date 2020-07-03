@@ -54,7 +54,12 @@ namespace Microsoft.Docs.Build
                     }
                     else if (normalizeStage.HasFlag(NormalizeStage.NormalizeLogFiles))
                     {
-                        File.WriteAllLines(path, File.ReadAllLines(path).OrderBy(line => line).Select((line) => NormalizeJsonLog(line)));
+                        File.WriteAllLines(
+                            path,
+                            File.ReadAllLines(path)
+                            .Select(line => Regex.Replace(line, ",\"date_time\":.*?Z\"", ""))
+                            .OrderBy(line => line)
+                            .Select((line) => NormalizeJsonLog(line)));
                     }
                     break;
             }
@@ -72,7 +77,6 @@ namespace Microsoft.Docs.Build
         private static string NormalizeJsonLog(string json)
         {
             var obj = JObject.Parse(json);
-            obj.Remove("date_time");
 
             if (obj.ContainsKey("code")
             && obj["code"]!.Value<string>() == "yaml-syntax-error"
