@@ -1896,7 +1896,7 @@ outputs:
   976da3a9/docs/c.json:
   9d4e15fd/docs/a.json:
   9d4e15fd/docs/b.json:
-  .errors.log: | 
+  .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/c.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":15}

@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             static string GetOgTitle(string title, string? titleSuffix)
             {
-                // below code logic is copyed from docs-ui, but not exactly same
+                // below code logic is copied from docs-ui, but not exactly same
                 if (string.IsNullOrWhiteSpace(titleSuffix))
                 {
                     return title;
