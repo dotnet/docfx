@@ -83,6 +83,7 @@ namespace Microsoft.Docs.Build
                     githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
                     outputType = opts.OutputHtml ? "html" : "json",
                     outputUrlType = opts.OutputHtml ? "ugly" : "docs",
+                    template = opts.OutputHtml ? "https://github.com/Microsoft/templates.docs.msft.pdf#master" : null,
                 };
                 return JsonUtility.Serialize(docfxConfig);
             }
@@ -164,7 +165,7 @@ namespace Microsoft.Docs.Build
         {
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore --legacy --verbose --stdin",
+                arguments: $"restore {(legacyMode ? "--legacy" : string.Empty)} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
