@@ -86,6 +86,7 @@ namespace Microsoft.Docs.Build
             foreach (var log in logs)
             {
                 var obj = JObject.Parse(log);
+                obj.Remove("date_time");
 
                 if (obj.ContainsKey("code")
                     && obj["code"]!.Value<string>() == "yaml-syntax-error"
