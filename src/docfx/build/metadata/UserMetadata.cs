@@ -10,7 +10,10 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class UserMetadata
     {
-        public string? Title { get; private set; }
+        [JsonProperty("titleSuffix")]
+        public string? TitleSuffix { get; private set; }
+
+        public SourceInfo<string?> Title { get; private set; }
 
         public string? Layout { get; private set; }
 

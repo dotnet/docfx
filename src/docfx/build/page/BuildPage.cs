@@ -227,6 +227,7 @@ namespace Microsoft.Docs.Build
             var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
             errors.AddRange(markupErrors);
 
+            context.ContentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
             ProcessConceptualHtml(conceptual, context, file, html);
 
             return (errors, context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual));
