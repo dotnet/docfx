@@ -1,7 +1,10 @@
-Version Notes (Current Version: v2.56.1)
+Version Notes (Current Version: v2.57)
 =======================================
 
-v2.56.1(Pre-release)
+v2.57(Pre-release)
+-----------
+
+v2.56.1
 -----------
 1. Bug fix:
     1. Fix updating links unexpectedly when building docs.microsoft.com docset for review purpose.
