@@ -80,13 +80,12 @@ namespace Microsoft.Docs.Build
 
         private static void PrettifyJsonLog(string logPath)
         {
-            var logs = File.ReadAllLines(logPath).OrderBy(line => line);
+            var logs = File.ReadAllLines(logPath).Select(line => Regex.Replace(line, ",\"date_time\":.*?Z\"", "")).OrderBy(line => line);
 
             using var sw = new StreamWriter(File.OpenWrite(logPath));
             foreach (var log in logs)
             {
                 var obj = JObject.Parse(log);
-                obj.Remove("date_time");
 
                 if (obj.ContainsKey("code")
                     && obj["code"]!.Value<string>() == "yaml-syntax-error"
