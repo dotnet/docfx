@@ -8,6 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefSpec : IXrefSpec
     {
+        private readonly bool _shouldSerializeName;
         private string? _name;
 
         public string Uid { get; private set; } = "";
@@ -30,9 +31,10 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec() { }
 
-        public ExternalXrefSpec(string? name, string uid, string href, MonikerList monikers)
+        public ExternalXrefSpec(string? name, string uid, string href, MonikerList monikers, bool shouldSerializeName)
         {
             _name = name;
+            _shouldSerializeName = shouldSerializeName;
             Uid = uid;
             Href = href;
             Monikers = monikers;
@@ -48,9 +50,11 @@ namespace Microsoft.Docs.Build
         }
 
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) =>
-            new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers)
+            new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers, _shouldSerializeName)
             {
                 ExtensionData = ExtensionData,
             };
+
+        public bool ShouldSerializeName() => _shouldSerializeName;
     }
 }

@@ -315,6 +315,30 @@ outputs:
       }
     }
 ---
+# Define uid in SDP without name as xref property
+inputs:
+  docfx.yml: |
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "fullName": "test.test",
+      "description": "a.description"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "fullName": { "type": "string" },
+        "name": { "type": "string" }
+      },
+      "xrefProperties": ["fullName", "description"]
+    }
+outputs:
+  docs/a.json:
+  .xrefmap.json: | 
+    {"references":[{"uid":"a", "name": undefined}]}
+---
 # Define duplicate uid in conceptual and SDP 
 # should output error and uid cannot be resolved
 repos:
