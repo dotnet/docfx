@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref, bool shouldSerializeName)
         {
-            var spec = new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers, XrefProperties.ContainsKey("name"));
+            var spec = new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers, shouldSerializeName | XrefProperties.ContainsKey("name"));
 
             foreach (var (key, value) in XrefProperties)
             {

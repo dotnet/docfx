@@ -171,6 +171,22 @@ inputs:
         href: https://docfx.com/uid2
       - uid: uid-non-href
         name: uni-non-href-name-use-span
+  a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "name": "test.test",
+      "description": "a.description"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "name": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "xrefProperties": ["description"]
+    }
     
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -221,6 +237,9 @@ inputs:
   # normal partial include syntax, with <xref /> in partial template
   _themes/ContentTemplate/partials/uid-partial.tmpl.partial: |
     <xref uid="{{uidPartial}}"/>
+  internal-uid.yml: |
+    ### YamlMime: TestPage
+    uid: a
   uid-resolve.yml: |
     ### YamlMime: TestPage
     uid: uid1
@@ -252,6 +271,10 @@ inputs:
       - unresolve
       - uid2
 outputs:
+  a.json:
+  internal-uid.mta.json:
+  internal-uid.raw.page.json: |
+    {"content": "<p> <a href=\"a.json\" data-linktype=\"relative-path\"> a </a> </p> "}
   uid-resolve.mta.json:
   uid-resolve.raw.page.json: |
     {"content": "<p> <a href=\"/en-us/uid1\" data-linktype=\"absolute-path\"> uid1-name </a> </p> "}
