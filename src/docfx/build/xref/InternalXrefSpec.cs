@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
               : null;
         }
 
-        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref, bool shouldSerializeName)
         {
             var spec = new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers, XrefProperties.ContainsKey("name"));
 

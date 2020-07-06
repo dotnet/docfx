@@ -49,8 +49,8 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) =>
-            new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers, _shouldSerializeName)
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref, bool shouldSerializeName) =>
+            new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers, shouldSerializeName)
             {
                 ExtensionData = ExtensionData,
             };

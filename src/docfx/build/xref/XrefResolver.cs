@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                     var query = repositoryBranch == "master" ? "?branch=master" : "";
                     var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
 
-                    var xrefSpec = xref.ToExternalXrefSpec(href);
+                    var xrefSpec = xref.ToExternalXrefSpec(href, false);
                     return xrefSpec;
                 })
                 .OrderBy(xref => xref.Uid).ToArray();

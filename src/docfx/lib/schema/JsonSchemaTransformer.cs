@@ -311,7 +311,7 @@ namespace Microsoft.Docs.Build
 
                     var xrefSpecObj = xrefSpec is null
                         ? new JObject { ["name"] = value, ["href"] = null }
-                        : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+                        : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href, true));
 
                     _resolvedXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
 
