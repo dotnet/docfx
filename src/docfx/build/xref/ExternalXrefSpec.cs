@@ -8,17 +8,9 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefSpec : IXrefSpec
     {
-        private string? _name;
-
         public string Uid { get; private set; } = "";
 
         public string Href { get; private set; } = "";
-
-        public string Name
-        {
-            get => _name ?? Uid;
-            private set => _name = value;
-        }
 
         Document? IXrefSpec.DeclaringFile => null;
 
@@ -30,9 +22,8 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec() { }
 
-        public ExternalXrefSpec(string? name, string uid, string href, MonikerList monikers)
+        public ExternalXrefSpec(string uid, string href, MonikerList monikers)
         {
-            _name = name;
             Uid = uid;
             Href = href;
             Monikers = monikers;
@@ -47,8 +38,10 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
+        public string? GetName() => GetXrefPropertyValueAsString("name");
+
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) =>
-            new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers)
+            new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers)
             {
                 ExtensionData = ExtensionData,
             };

@@ -11,8 +11,6 @@ namespace Microsoft.Docs.Build
     {
         public SourceInfo<string> Uid { get; }
 
-        public string Name => GetXrefPropertyValueAsString("name") ?? Uid;
-
         public string Href { get; set; }
 
         public Document DeclaringFile { get; }
@@ -38,9 +36,11 @@ namespace Microsoft.Docs.Build
               : null;
         }
 
+        public string? GetName() => GetXrefPropertyValueAsString("name");
+
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
         {
-            var spec = new ExternalXrefSpec(Name, Uid, overwriteHref ?? Href, Monikers);
+            var spec = new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers);
 
             foreach (var (key, value) in XrefProperties)
             {

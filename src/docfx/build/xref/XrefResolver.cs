@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
             // fallback order:
             // text -> xrefSpec.displayProperty -> xrefSpec.name
-            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.Name;
+            var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.GetName() ?? xrefSpec.Uid;
 
             if (!string.IsNullOrEmpty(moniker))
             {
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                 return (error, null, "", null);
             }
             _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href, uid.Source);
-            return (null, href, xrefSpec.Name ?? "", xrefSpec.DeclaringFile);
+            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
