@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Esprima;
 using Jint;
 using Jint.Native;
@@ -18,12 +15,10 @@ namespace Microsoft.Docs.Build
 {
     internal class JintJsEngine : IJavaScriptEngine
     {
-        private static readonly Engine s_engine = new Engine();
-
+        private readonly Engine _engine = new Engine();
         private readonly string _scriptDir;
         private readonly JsValue _global;
-        private readonly ConcurrentDictionary<string, ThreadLocal<JsValue>> _scripts
-                   = new ConcurrentDictionary<string, ThreadLocal<JsValue>>();
+        private readonly Dictionary<string, JsValue> _scriptExports = new Dictionary<string, JsValue>();
 
         public JintJsEngine(string scriptDir, JObject? global = null)
         {
@@ -33,8 +28,7 @@ namespace Microsoft.Docs.Build
 
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
-            var scriptFullPath = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
-            var exports = _scripts.GetOrAdd(scriptFullPath, file => new ThreadLocal<JsValue>(() => Run(file))).Value!;
+            var exports = GetScriptExports(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
             var method = exports.AsObject().Get(methodName);
 
             var jsArg = ToJsValue(arg);
@@ -50,7 +44,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JsValue Run(string entryScriptPath)
+        private JsValue GetScriptExports(string scriptPath)
+        {
+            if (_scriptExports.TryGetValue(scriptPath, out var result))
+            {
+                return result;
+            }
+
+            return _scriptExports[scriptPath] = Run(scriptPath);
+        }
+
+        private JsValue Run(string entryScriptPath)
         {
             var modules = new Dictionary<string, JsValue>();
 
@@ -89,24 +93,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static ObjectInstance MakeObject()
+        private ObjectInstance MakeObject()
         {
-            return s_engine.Object.Construct(Arguments.Empty);
+            return _engine.Object.Construct(Arguments.Empty);
         }
 
-        private static ObjectInstance MakeArray()
+        private ObjectInstance MakeArray()
         {
-            return s_engine.Array.Construct(Arguments.Empty);
+            return _engine.Array.Construct(Arguments.Empty);
         }
 
-        private static JsValue ToJsValue(JToken token)
+        private JsValue ToJsValue(JToken token)
         {
             if (token is JArray arr)
             {
                 var result = MakeArray();
                 foreach (var item in arr)
                 {
-                    s_engine.Array.PrototypeObject.Push(result, Arguments.From(ToJsValue(item)));
+                    _engine.Array.PrototypeObject.Push(result, Arguments.From(ToJsValue(item)));
                 }
                 return result;
             }
@@ -124,16 +128,16 @@ namespace Microsoft.Docs.Build
                 return result;
             }
 
-            return JsValue.FromObject(s_engine, ((JValue)token).Value);
+            return JsValue.FromObject(_engine, ((JValue)token).Value);
         }
 
-        private static JToken ToJToken(JsValue token)
+        private JToken ToJToken(JsValue token)
         {
             if (token.IsObject())
             {
                 token.AsObject().Delete("__global");
             }
-            return JToken.Parse(s_engine.Json.Stringify(null, new[] { token }).AsString());
+            return JToken.Parse(_engine.Json.Stringify(null, new[] { token }).AsString());
         }
     }
 }

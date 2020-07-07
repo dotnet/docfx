@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -18,73 +17,63 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ChakraCoreJsEngine : IJavaScriptEngine
     {
-        // A pool of ChakraCore runtime and context. Create one context for each runtime.
-        private static readonly ConcurrentBag<JavaScriptContext> s_contextPool = new ConcurrentBag<JavaScriptContext>();
-
-        // Limit the maximum ChakraCore runtimes to current processor count.
-        private static readonly SemaphoreSlim s_contextThrottler = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
-
-        private static readonly ConcurrentDictionary<(JavaScriptContext, string scriptPath), JavaScriptValue> s_scriptExports
-                          = new ConcurrentDictionary<(JavaScriptContext, string scriptPath), JavaScriptValue>();
-
         private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
-
         private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
-
         private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>?> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>?>();
 
         private static int s_currentSourceContext;
 
-        private readonly ConcurrentDictionary<JavaScriptContext, JavaScriptValue> _globals = new ConcurrentDictionary<JavaScriptContext, JavaScriptValue>();
-
+        private readonly JavaScriptContext _context = CreateContext();
+        private readonly JavaScriptValue _global;
         private readonly string _scriptDir;
-        private readonly JObject? _global;
+
+        private readonly Dictionary<string, JavaScriptValue> _scriptExports = new Dictionary<string, JavaScriptValue>();
 
         public ChakraCoreJsEngine(string scriptDir, JObject? global = null)
         {
             _scriptDir = scriptDir;
-            _global = global;
+
+            if (global != null)
+            {
+                _global = RunInContext(() => ToJavaScriptValue(global));
+                _global.AddRef();
+            }
         }
 
         public JToken Run(string scriptPath, string methodName, JToken arg)
         {
-            s_contextThrottler.Wait();
+            return RunInContext(() =>
+            {
+                var exports = GetScriptExports(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
+                var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
+                var input = ToJavaScriptValue(arg);
+
+                if (_global.IsValid)
+                {
+                    input.SetProperty(JavaScriptPropertyId.FromString("__global"), _global, useStrictRules: true);
+                }
+
+                var output = method.CallFunction(JavaScriptValue.Undefined, input);
+
+                return ToJToken(output);
+            });
+        }
+
+        private T RunInContext<T>(Func<T> action)
+        {
+            Native.ThrowIfError(Native.JsSetCurrentContext(_context));
 
             try
             {
-                var context = s_contextPool.TryTake(out var existingContext) ? existingContext : CreateContext();
-
-                Native.ThrowIfError(Native.JsSetCurrentContext(context));
-
-                try
-                {
-                    var exports = GetScriptExports(context, Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
-                    var global = GetGlobal(context);
-                    var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
-                    var input = ToJavaScriptValue(arg);
-
-                    if (global.IsValid)
-                    {
-                        input.SetProperty(JavaScriptPropertyId.FromString("__global"), global, useStrictRules: true);
-                    }
-
-                    var output = method.CallFunction(JavaScriptValue.Undefined, input);
-
-                    return ToJToken(output);
-                }
-                catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
-                {
-                    throw new JavaScriptEngineException($"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
-                }
-                finally
-                {
-                    Native.ThrowIfError(Native.JsSetCurrentContext(JavaScriptContext.Invalid));
-                    s_contextPool.Add(context);
-                }
+                return action();
+            }
+            catch (JavaScriptScriptException ex) when (ex.Error.IsValid)
+            {
+                throw new JavaScriptEngineException($"{ex.ErrorCode}:\n{ToJToken(ex.Error)}");
             }
             finally
             {
-                s_contextThrottler.Release();
+                Native.ThrowIfError(Native.JsSetCurrentContext(JavaScriptContext.Invalid));
             }
         }
 
@@ -97,42 +86,27 @@ namespace Microsoft.Docs.Build
             return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
         }
 
-        private static JavaScriptValue GetScriptExports(JavaScriptContext context, string scriptPath)
+        private JavaScriptValue GetScriptExports(string scriptPath)
         {
-            return s_scriptExports.GetOrAdd((context, scriptPath), key =>
+            if (_scriptExports.TryGetValue(scriptPath, out var result))
             {
-                t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
-
-                try
-                {
-                    var exports = Run(key.scriptPath);
-
-                    // Avoid exports been GCed by javascript garbage collector.
-                    exports.AddRef();
-                    return exports;
-                }
-                finally
-                {
-                    t_modules.Value = null;
-                }
-            });
-        }
-
-        private JavaScriptValue GetGlobal(JavaScriptContext context)
-        {
-            if (_global is null)
-            {
-                return JavaScriptValue.Invalid;
+                return result;
             }
 
-            return _globals.GetOrAdd(context, key =>
+            t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
+
+            try
             {
-                var global = ToJavaScriptValue(_global);
+                var exports = Run(scriptPath);
 
                 // Avoid exports been GCed by javascript garbage collector.
-                global.AddRef();
-                return global;
-            });
+                exports.AddRef();
+                return _scriptExports[scriptPath] = exports;
+            }
+            finally
+            {
+                t_modules.Value = null;
+            }
         }
 
         private static JavaScriptValue Run(string scriptPath)
