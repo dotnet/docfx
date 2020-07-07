@@ -80,8 +80,7 @@ namespace Microsoft.Docs.Build
         private static void PrettifyJsonLog(string logPath, ErrorLevel errorLevel)
         {
             var logs = File.ReadAllLines(logPath).OrderBy(line => line, StringComparer.Ordinal);
-            File.Delete(logPath);
-            using var sw = new StreamWriter(File.OpenWrite(logPath));
+            using var sw = new StreamWriter(File.Create(logPath));
             foreach (var log in logs)
             {
                 var obj = JObject.Parse(log);
