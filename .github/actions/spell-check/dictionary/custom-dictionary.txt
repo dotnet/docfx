@@ -518,3 +518,4 @@ MEMORYSTATUSEX
 sizeof
 IMemory
 uncomment
+Esprima

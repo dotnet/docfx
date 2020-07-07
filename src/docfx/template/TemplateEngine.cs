@@ -6,17 +6,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TemplateEngine
+    internal class TemplateEngine : IDisposable
     {
         private readonly string _templateDir;
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
-        private readonly IJavaScriptEngine _js;
+        private readonly ThreadLocal<IJavaScriptEngine> _js;
         private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly Config _config;
@@ -39,9 +40,9 @@ namespace Microsoft.Docs.Build
 
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
             // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
-            _js = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            _js = new ThreadLocal<IJavaScriptEngine>(() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
-                : new JintJsEngine(_contentTemplateDir, _global);
+                : new JintJsEngine(_contentTemplateDir, _global));
 
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
@@ -93,7 +94,7 @@ namespace Microsoft.Docs.Build
                 return model;
             }
 
-            var result = _js.Run(scriptPath, methodName, model);
+            var result = _js.Value!.Run(scriptPath, methodName, model);
             if (result is JObject obj && obj.TryGetValue("content", out var token) &&
                 token is JValue value && value.Value is string content)
             {
@@ -123,6 +124,11 @@ namespace Microsoft.Docs.Build
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
+        }
+
+        public void Dispose()
+        {
+            _js.Dispose();
         }
 
         private JObject LoadGlobalTokens()
