@@ -9,13 +9,13 @@ namespace Microsoft.Docs.Build
 
         string Href { get; }
 
-        string Name { get; }
-
         Document? DeclaringFile { get; }
 
         MonikerList Monikers { get; }
 
         string? GetXrefPropertyValueAsString(string propertyName);
+
+        string? GetName();
 
         ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null);
     }

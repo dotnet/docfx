@@ -25,12 +25,14 @@ namespace Microsoft.Docs.Build
             "  </span>" +
             "{{/href}}";
 
+        private const string NameUidFallbackTemplate = "{{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}}";
+
         private const string SelfClosingXrefTagTemplate =
             "{{#href}}" +
             "  @resolvedTag" +
             "{{/href}}" +
             "{{^href}}" +
-            "  <span> {{name}} </span>" +
+            "  <span> " + NameUidFallbackTemplate + " </span>" +
             "{{/href}}";
 
         private static readonly char[] s_trimChars = new[] { '{', ' ', '}' };
@@ -85,7 +87,7 @@ namespace Microsoft.Docs.Build
                         var openAnchor = $"<a href=\"{{{{href}}}}\" {(titleName == null ? "" : $"title=\"{{{{{titleName}}}}}\"")}>";
                         if (token.IsSelfClosing)
                         {
-                            var resolvedTag = partialName == null ? $"{openAnchor} {{{{name}}}} </a>" : "{{> " + partialName + "}}";
+                            var resolvedTag = partialName == null ? $"{openAnchor} {NameUidFallbackTemplate} </a>" : "{{> " + partialName + "}}";
                             result.Append(SelfClosingXrefTagTemplate.Replace("@resolvedTag", resolvedTag))
                                   .Append($"{{{{/{uidName}.__xrefspec}}}}");
                         }
@@ -96,7 +98,7 @@ namespace Microsoft.Docs.Build
                     }
                     else if (token.Type == HtmlTokenType.EndTag)
                     {
-                        result.Append(hasInnerContent ? default : "{{name}}")
+                        result.Append(hasInnerContent ? default : NameUidFallbackTemplate)
                               .Append(ClosingClause)
                               .Append($"{{{{/{uidName}.__xrefspec}}}}");
                     }

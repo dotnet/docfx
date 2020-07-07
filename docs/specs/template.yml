@@ -168,9 +168,10 @@ inputs:
         name: uid1-name
         href: https://docs.com/uid1
       - uid: uid2
+        name: uid2-name
         href: https://docfx.com/uid2
       - uid: uid-non-href
-        name: uni-non-href-name-use-span
+        name: uid-non-href-name
     
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -260,7 +261,7 @@ outputs:
     {"content": "<p> <span> unresolve </span> </p>"}
   uid-non-href.mta.json:
   uid-non-href.raw.page.json: |
-    {"content": "<p> <span> uni-non-href-name-use-span </span> </p> "}
+    {"content": "<p> <span> uid-non-href-name </span> </p> "}
   uid-partial.mta.json:
   uid-partial.raw.page.json: |
     {"content": "<p> <a href=\"/en-us/uid1\" data-linktype=\"absolute-path\"> uid1-name </a> </p> "}
@@ -272,10 +273,10 @@ outputs:
     {"content": "<p> <span> unresolve </span> </p>"}
   uid-list.mta.json:
   uid-list.raw.page.json: |
-    {"content": "<p> <a href=\"/en-us/uid1\" data-linktype=\"absolute-path\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docfx.com/uid2\" data-linktype=\"external\"> uid2 </a> </p> "}
+    {"content": "<p> <a href=\"/en-us/uid1\" data-linktype=\"absolute-path\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docfx.com/uid2\" data-linktype=\"external\"> uid2-name </a> </p> "}
   uid-list-partial.mta.json:
   uid-list-partial.raw.page.json: |
-    {"content": "<p> <a href=\"/en-us/uid1\" class=\"partial\" data-linktype=\"absolute-path\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docfx.com/uid2\" class=\"partial\" data-linktype=\"external\"> uid2 </a> </p> "}
+    {"content": "<p> <a href=\"/en-us/uid1\" class=\"partial\" data-linktype=\"absolute-path\"> uid1-name </a> <span> unresolve </span> <a href=\"https://docfx.com/uid2\" class=\"partial\" data-linktype=\"external\"> uid2-name </a> </p> "}
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-list.yml","line":4,"end_line":4,"column":5,"end_column":14}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-list-partial.yml","line":4,"end_line":4,"column":5,"end_column":14}
