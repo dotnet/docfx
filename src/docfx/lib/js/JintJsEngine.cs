@@ -6,10 +6,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Esprima;
 using Jint;
 using Jint.Native;
 using Jint.Native.Object;
-using Jint.Parser;
 using Jint.Runtime;
 using Jint.Runtime.Interop;
 using Newtonsoft.Json.Linq;
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             var method = exports.AsObject().Get(methodName);
 
             var jsArg = ToJsValue(arg);
-            jsArg.AsObject()?.Put("__global", _global, throwOnError: true);
+            jsArg.AsObject()?.Set("__global", _global);
 
             try
             {
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 var engine = new Engine(opt => opt.LimitRecursion(5000));
                 var exports = modules[fullPath] = MakeObject();
                 var sourceCode = File.ReadAllText(fullPath);
-                var parserOptions = new ParserOptions { Source = fullPath };
+                var parserOptions = new ParserOptions(fullPath);
 
                 // add process to input to get the correct file path while running script inside docs-ui
                 var script = $@"
@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
 }})
 ";
                 var dirname = Path.GetDirectoryName(fullPath) ?? "";
-                var require = new ClrFunctionInstance(engine, Require);
+                var require = new ClrFunctionInstance(engine, "require", Require);
 
                 var func = engine.Execute(script, parserOptions).GetCompletionValue();
                 func.Invoke(MakeObject(), exports, dirname, require, MakeObject());
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (value != null)
                     {
-                        result.Put(key, ToJsValue(value), throwOnError: true);
+                        result.Set(key, ToJsValue(value));
                     }
                 }
                 return result;
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
         {
             if (token.IsObject())
             {
-                token.AsObject().Delete("__global", throwOnError: false);
+                token.AsObject().Delete("__global");
             }
             return JToken.Parse(s_engine.Json.Stringify(null, new[] { token }).AsString());
         }
