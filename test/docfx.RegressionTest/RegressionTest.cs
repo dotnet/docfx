@@ -24,9 +24,9 @@ namespace Microsoft.Docs.Build
         private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
+        private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
-        private static readonly BuildReason s_BuildReason = GetBuildReason();
-        private static readonly bool s_isPullRequest = s_BuildReason == BuildReason.PullRequest;
+        private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
         private static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
-            Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_BuildReason == BuildReason.Schedule ? "true" : "false");
+            Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_isPullRequest ? "false" : "true");
 
             return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig(opts));
 
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                     maxInfos = 30000,
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
-                    githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
+                    githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
                 });
 
                 if (opts.OutputHtml)
@@ -189,6 +189,11 @@ namespace Microsoft.Docs.Build
             // For temporary normalize: use 'NormalizeJsonFiles' for output files
             Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles);
 
+            if (buildTime.TotalSeconds > timeout)
+            {
+                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: ${testRepositoryName}");
+            }
+
             if (s_isPullRequest)
             {
                 var watch = Stopwatch.StartNew();
@@ -212,11 +217,6 @@ namespace Microsoft.Docs.Build
                 s_testResult = (testRepositoryName, repository, process.ExitCode == 0, buildTime, timeout, diff, totalLines);
                 watch.Stop();
                 Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
-
-                if (buildTime.TotalSeconds > timeout)
-                {
-                    Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: ${testRepositoryName}");
-                }
 
                 if (process.ExitCode == 0)
                 {
@@ -389,28 +389,6 @@ namespace Microsoft.Docs.Build
 
                 response.EnsureSuccessStatusCode();
             }
-        }
-
-        private enum BuildReason
-        {
-            Commit = 0, // default, when build reason is commit build
-            PullRequest = 1, // pull request build
-            Schedule = 2, // daily scheduled build
-        }
-
-        private static BuildReason GetBuildReason()
-        {
-            var buildReasonStr = Environment.GetEnvironmentVariable("BUILD_REASON");
-
-            // local debug should be set as PullRequest build to avoid accidentally push
-            if (buildReasonStr == null)
-            {
-                return BuildReason.PullRequest;
-            }
-
-            return Enum.TryParse(buildReasonStr, true, out BuildReason buildReason)
-                ? buildReason
-                : BuildReason.Commit;
         }
     }
 }
