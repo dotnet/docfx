@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TemplateEngine
+    internal class TemplateEngine : IDisposable
     {
         private readonly string _templateDir;
         private readonly string _contentTemplateDir;
@@ -124,6 +124,11 @@ namespace Microsoft.Docs.Build
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
+        }
+
+        public void Dispose()
+        {
+            _js.Dispose();
         }
 
         private JObject LoadGlobalTokens()

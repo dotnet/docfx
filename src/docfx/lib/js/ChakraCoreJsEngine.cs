@@ -35,8 +35,12 @@ namespace Microsoft.Docs.Build
 
             if (global != null)
             {
-                _global = RunInContext(() => ToJavaScriptValue(global));
-                _global.AddRef();
+                _global = RunInContext(() =>
+                {
+                    var result = ToJavaScriptValue(global);
+                    result.AddRef();
+                    return result;
+                });
             }
         }
 

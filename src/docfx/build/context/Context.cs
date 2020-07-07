@@ -167,6 +167,7 @@ namespace Microsoft.Docs.Build
             RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();
+            TemplateEngine.Dispose();
         }
     }
 }
