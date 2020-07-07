@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
             Clean(outputPath);
 
             var buildTime = Build(repositoryPath, outputPath, !opts.OutputHtml, docfxConfig);
-            Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
+            Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder, opts.ErrorLevel);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"Test Pass {workingFolder}");
@@ -182,12 +182,12 @@ namespace Microsoft.Docs.Build
                 cwd: repositoryPath);
         }
 
-        private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
+        private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder, ErrorLevel errorLevel)
         {
             var testRepositoryName = Path.GetFileName(repository);
 
             // For temporary normalize: use 'NormalizeJsonFiles' for output files
-            Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles);
+            Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: errorLevel);
 
             if (buildTime.TotalSeconds > timeout)
             {
