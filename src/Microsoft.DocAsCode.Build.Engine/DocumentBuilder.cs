@@ -117,9 +117,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 bool transformDocument = false;
                 if (parameters.All(p => p.Files.Count == 0))
                 {
-                    Logger.LogWarning(
+                    Logger.LogSuggestion(
                         "No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
-                        code: WarningCodes.Build.EmptyInputFiles);
+                        code: SuggestionCodes.Build.EmptyInputFiles);
                 }
 
                 var noContentFound = true;
@@ -200,15 +200,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (noContentFound)
                 {
-                    Logger.LogWarning(
+                    Logger.LogSuggestion(
                         "No content file found. Please make sure the content section of docfx.json is correctly configured.",
-                        code: WarningCodes.Build.EmptyInputContents);
+                        code: SuggestionCodes.Build.EmptyInputContents);
                 }
                 else if (emptyContentGroups.Count > 0)
                 {
-                    Logger.LogWarning(
+                    Logger.LogSuggestion(
                         $"No content file found in group: {string.Join(",", emptyContentGroups)}. Please make sure the content section of docfx.json is correctly configured.",
-                        code: WarningCodes.Build.EmptyInputContents);
+                        code: SuggestionCodes.Build.EmptyInputContents);
                 }
 
                 using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
