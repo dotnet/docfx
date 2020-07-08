@@ -13,11 +13,15 @@ namespace Microsoft.Docs.Build
     {
         private Validator _validator;
         private ErrorLog _errorLog;
+        private MonikerProvider _monikerProvider;
+        private Lazy<PublishUrlMap> _publishUrlMap;
 
-        public ContentValidator(Config config, FileResolver fileResolver, ErrorLog log)
+        public ContentValidator(Config config, FileResolver fileResolver, ErrorLog log, MonikerProvider monikerProvider, Lazy<PublishUrlMap> publishUrlMap)
         {
             _validator = new Validator(GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules));
             _errorLog = log;
+            _monikerProvider = monikerProvider;
+            _publishUrlMap = publishUrlMap;
         }
 
         public void ValidateHeadings(Document file, List<ContentNode> nodes, bool isIncluded)
@@ -26,6 +30,45 @@ namespace Microsoft.Docs.Build
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateTitle(Document file, SourceInfo<string?> title, string? titleSuffix)
+        {
+            if (string.IsNullOrWhiteSpace(title.Value))
+            {
+                return;
+            }
+
+            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))
+            {
+                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+                var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
+                var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, monikers);
+                var titleItem = new TitleItem
+                {
+                    IsCanonicalVersion = isCanonicalVersion,
+                    Title = GetOgTitle(title.Value, titleSuffix),
+                    SourceInfo = title.Source,
+                };
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
+            }
+
+            static string GetOgTitle(string title, string? titleSuffix)
+            {
+                // below code logic is copied from docs-ui, but not exactly same
+                if (string.IsNullOrWhiteSpace(titleSuffix))
+                {
+                    return title;
+                }
+
+                var pipeIndex = title.IndexOf('|');
+                if (pipeIndex > 5)
+                {
+                    return $"{title.Substring(0, pipeIndex)} - {titleSuffix}";
+                }
+                return $"{title} - {titleSuffix}";
             }
         }
 

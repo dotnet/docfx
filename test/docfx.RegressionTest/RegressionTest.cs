@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,9 +24,9 @@ namespace Microsoft.Docs.Build
         private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
+        private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
-        private static readonly BuildReason s_BuildReason = GetBuildReason();
-        private static readonly bool s_isPullRequest = s_BuildReason == BuildReason.PullRequest;
+        private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
         private static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
@@ -63,27 +64,33 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
-            Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_BuildReason == BuildReason.Schedule ? "true" : "false");
+            Environment.SetEnvironmentVariable("DOCFX_UPDATE_CACHE_SYNC", s_isPullRequest ? "false" : "true");
 
-            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig());
+            return (baseLinePath, outputPath, workingFolder, repositoryPath, GetDocfxConfig(opts));
 
-            static string GetDocfxConfig()
+            static string GetDocfxConfig(Options opts)
             {
                 // Git token for CRR restore
                 var http = new Dictionary<string, object>();
                 http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
                 http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
-                var docfxConfig = new
+                var docfxConfig = JObject.FromObject(new
                 {
                     http,
                     maxWarnings = 5000,
                     maxInfos = 30000,
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
-                    githubUserCacheExpirationInHours = s_BuildReason == BuildReason.Schedule ? 24 * 30 : 24 * 365,
-                };
+                    githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
+                });
 
-                return JsonUtility.Serialize(docfxConfig);
+                if (opts.OutputHtml)
+                {
+                    docfxConfig["outputType"] = "html";
+                    docfxConfig["outputUrlType"] = "ugly";
+                    docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
+                }
+                return JsonConvert.SerializeObject(docfxConfig);
             }
 
             static Dictionary<string, string> ToAuthHeader(string? token)
@@ -101,8 +108,8 @@ namespace Microsoft.Docs.Build
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath, docfxConfig);
-            Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder);
+            var buildTime = Build(repositoryPath, outputPath, !opts.OutputHtml, docfxConfig);
+            Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder, opts.ErrorLevel);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"Test Pass {workingFolder}");
@@ -159,35 +166,45 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, string docfxConfig)
+        private static TimeSpan Build(string repositoryPath, string outputPath, bool legacyMode, string docfxConfig)
         {
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore --legacy --verbose --stdin",
+                arguments: $"restore {(legacyMode ? "--legacy" : string.Empty)} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" --legacy --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {(legacyMode ? "--legacy" : string.Empty)} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
 
-        private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder)
+        private static void Compare(string outputPath, string repository, string existingOutputPath, TimeSpan buildTime, int? timeout, string testWorkingFolder, ErrorLevel errorLevel)
         {
             var testRepositoryName = Path.GetFileName(repository);
+
+            // For temporary normalize: use 'NormalizeJsonFiles' for output files
+            Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: errorLevel);
+
+            if (buildTime.TotalSeconds > timeout)
+            {
+                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: ${testRepositoryName}");
+                Console.WriteLine($"Test failed, build timeout: {buildTime.TotalSeconds} Repo: ${testRepositoryName}");
+            }
+
             if (s_isPullRequest)
             {
                 var watch = Stopwatch.StartNew();
-                Normalizer.Normalize(outputPath, NormalizeStage.NormalizeLogFiles | NormalizeStage.NormalizeJsonFiles);
-                Normalizer.Normalize(existingOutputPath, NormalizeStage.NormalizeLogFiles);
 
+                // For temporary normalize: uncomment below line
+                // Normalizer.Normalize(existingOutputPath, NormalizeStage.NormalizeJsonFiles);
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
+                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
                 });
@@ -202,11 +219,6 @@ namespace Microsoft.Docs.Build
                 watch.Stop();
                 Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
 
-                if (buildTime.TotalSeconds > timeout)
-                {
-                    Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: ${testRepositoryName}");
-                }
-
                 if (process.ExitCode == 0)
                 {
                     return;
@@ -217,7 +229,6 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Normalizer.Normalize(outputPath, NormalizeStage.PrettifyLogFiles | NormalizeStage.NormalizeJsonFiles);
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true add -A", cwd: testWorkingFolder);
                 Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {testRepositoryName}: {s_commitString}\"", cwd: testWorkingFolder, ignoreError: true);
             }
@@ -379,28 +390,6 @@ namespace Microsoft.Docs.Build
 
                 response.EnsureSuccessStatusCode();
             }
-        }
-
-        private enum BuildReason
-        {
-            Commit = 0, // default, when build reason is commit build
-            PullRequest = 1, // pull request build
-            Schedule = 2, // daily scheduled build
-        }
-
-        private static BuildReason GetBuildReason()
-        {
-            var buildReasonStr = Environment.GetEnvironmentVariable("BUILD_REASON");
-
-            // local debug should be set as PullRequest build to avoid accidentally push
-            if (buildReasonStr == null)
-            {
-                return BuildReason.PullRequest;
-            }
-
-            return Enum.TryParse(buildReasonStr, true, out BuildReason buildReason)
-                ? buildReason
-                : BuildReason.Commit;
         }
     }
 }

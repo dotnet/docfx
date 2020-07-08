@@ -12,30 +12,30 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref/>",
             "{{#uid.__xrefspec}}" +
             "  {{#href}}" +
-            "    <a href='{{href}}'> {{name}} </a>" +
+            "    <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{name}} </span>" +
+            "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
             "{{/uid.__xrefspec}}"
             )]
         [InlineData("<xref uid='{{uid}}'/>",
             "{{#uid.__xrefspec}}" +
             "  {{#href}}" +
-            "    <a href='{{href}}'> {{name}} </a>" +
+            "    <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{name}} </span>" +
+            "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
             "{{/uid.__xrefspec}}"
             )]
         [InlineData("<xref uid='{{namespace}}'/>",
             "{{#namespace.__xrefspec}}" +
             "  {{#href}}" +
-            "    <a href='{{href}}'> {{name}} </a>" +
+            "    <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{name}} </span>" +
+            "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
             "{{/namespace.__xrefspec}}"
             )]
@@ -45,27 +45,27 @@ namespace Microsoft.Docs.Build
             "    {{> partials/dotnet/xref-name.tmpl}}" +
             "  {{/href}}" +
             "  {{^href}}" +
-            "    <span> {{name}} </span>" +
+            "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
             "{{/uid.__xrefspec}}"
             )]
         [InlineData("<xref uid='{{ . }}'/>",
             "{{#..__xrefspec}}" +
             "{{#href}}" +
-            "  <a href='{{href}}'> {{name}} </a>" +
+            "  <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
             "{{/href}}" +
             "{{^href}}" +
-            "  <span> {{name}} </span>" +
+            "  <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "{{/href}}" +
             "{{/..__xrefspec}}"
             )]
         [InlineData("<xref uid='{{ . }}' title='{{title}}'/>",
             "{{#..__xrefspec}}" +
             "{{#href}}" +
-            "  <a href='{{href}}' title='{{title}}'> {{name}} </a>" +
+            "  <a href='{{href}}' title='{{title}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
             "{{/href}}" +
             "{{^href}}" +
-            "  <span> {{name}} </span>" +
+            "  <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "{{/href}}" +
             "{{/..__xrefspec}}"
             )]
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    <span>" +
             "  {{/href}}" +
-            "  {{name}}" +
+            "  {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}}" +
             "  {{#href}}" +
             "    </a>" +
             "  {{/href}}" +

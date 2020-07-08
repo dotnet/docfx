@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                 DocumentProvider,
                 MonikerProvider,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
-            ContentValidator = new ContentValidator(config, FileResolver, errorLog);
+            ContentValidator = new ContentValidator(config, FileResolver, errorLog, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
@@ -167,6 +167,7 @@ namespace Microsoft.Docs.Build
             RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();
             MicrosoftGraphAccessor.Dispose();
+            TemplateEngine.Dispose();
         }
     }
 }

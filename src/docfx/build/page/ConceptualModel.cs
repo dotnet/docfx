@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
         public long? WordCount { get; set; }
 
-        public string? Title { get; set; }
+        public SourceInfo<string?> Title { get; set; }
 
         public string RawTitle { get; set; } = "";
 

@@ -145,7 +145,7 @@ jobs:
       vsts-docs-pr:
         params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
       AspNetCore.Docs:
-        params: https://github.com/dotnet/AspNetCore.Docs --timeout 30
+        params: https://github.com/dotnet/AspNetCore.Docs --timeout 30 --output-html
       microsoft-365-docs-pr.zh-CN:
         params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --timeout 25
       powerbi-docs-pr.de-DE:
@@ -153,7 +153,7 @@ jobs:
       roslyn-api-docs:
         params: https://github.com/dotnet/roslyn-api-docs --branch live --timeout 105
       azure-docs-rest-apis:
-        params: https://github.com/Azure/azure-docs-rest-apis --timeout 130
+        params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
       mc-docs-pr:
         params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
       dynamics365smb-devitpro:

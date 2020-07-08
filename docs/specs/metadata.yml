@@ -65,7 +65,7 @@ inputs:
     ---
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"violate-schema","message":"Cannot deserialize the current JSON array *\n*","file":"docs/a.md","line":3,"column":3}
+    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/a.md","line":3,"column":3}
 ---
 # generate normal document id and version id
 # backward compatible to docs.com
@@ -201,6 +201,17 @@ outputs:
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
   azure/app-service/index.experimental.json: |
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
+---
+# No canonical URL for profile page
+inputs:
+  docfx.yml:
+  a.md: |
+    ---
+    page_type: profile
+    ---
+outputs:
+  a.json: |
+    { "canonical_url": undefined }
 ---
 # redirection defined in file metadata is not supported
 inputs:

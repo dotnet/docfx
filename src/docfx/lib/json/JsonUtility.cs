@@ -557,7 +557,7 @@ namespace Microsoft.Docs.Build
 
         private static string RewriteErrorMessage(string message)
         {
-            if (message.StartsWith("Error reading string. Unexpected token"))
+            if (message.StartsWith("Error reading string. Unexpected token") || message.Contains("into type 'System.String'"))
             {
                 return "Expected type String, please input String or type compatible with String.";
             }

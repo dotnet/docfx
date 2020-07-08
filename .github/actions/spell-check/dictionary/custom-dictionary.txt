@@ -517,3 +517,5 @@ fnv
 MEMORYSTATUSEX
 sizeof
 IMemory
+uncomment
+Esprima
