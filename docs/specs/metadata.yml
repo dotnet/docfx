@@ -202,6 +202,17 @@ outputs:
   azure/app-service/index.experimental.json: |
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
 ---
+# No canonical URL for profile page
+inputs:
+  docfx.yml:
+  a.md: |
+    ---
+    page_type: profile
+    ---
+outputs:
+  a.json: |
+    { "canonical_url": undefined }
+---
 # redirection defined in file metadata is not supported
 inputs:
   docfx.yml: |
