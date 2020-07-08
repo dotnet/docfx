@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 
         public string? Layout { get; private set; }
 
+        public string? PageType { get; private set; }
+
         public SourceInfo<string> Author { get; private set; } = new SourceInfo<string>("");
 
         public SourceInfo<string> BreadcrumbPath { get; private set; } = new SourceInfo<string>("");
