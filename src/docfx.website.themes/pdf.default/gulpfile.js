@@ -30,4 +30,11 @@ gulp.task('concat', function () {
   ;
 });
 
+gulp.task('copy:font', function () {
+    return gulp.src(vendor.font.src, { cwd: vendor.font.cwd })
+        .pipe(copy('./fonts/'));
+});
+
+gulp.task('copy', ['copy:font']);
+
 gulp.task('default', ['concat']);
