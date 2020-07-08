@@ -377,7 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return result;
                     }
 
-                    var liveSiteHostName = TryGetLiveSiteHostNameFromEnvironment();
+                    var siteHostName = TryGetPublishTargetSiteHostNameFromEnvironment();
                     var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
                     foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
                     {
@@ -402,7 +402,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 new CompositionContainer(CompositionContainer.DefaultContainer),
                                 markdigMarkdownService,
                                 new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules),
-                                liveSiteHostName);
+                                siteHostName);
                             Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                             result.Add(sdp);
                         }
@@ -499,16 +499,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             return result;
         }
 
-        private static string TryGetLiveSiteHostNameFromEnvironment()
+        private static string TryGetPublishTargetSiteHostNameFromEnvironment()
         {
             string metadataString = Environment.GetEnvironmentVariable(Constants.OPSEnvironmentVariable.SystemMetadata);
 
             if (metadataString != null)
             {
                 var metadata = JsonUtility.FromJsonString<Dictionary<string, object>>(metadataString)?.ToImmutableDictionary();
-                if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpSiteHostName, out object liveSiteHostName))
+                if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpPublishTargetSiteHostName, out object publishTargetSiteHostName))
                 {
-                    return (string)liveSiteHostName;
+                    return (string)publishTargetSiteHostName;
                 }
             }
             return null;

@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public static class OPSEnvironmentVariable
         {
             public const string SystemMetadata = "_op_systemMetadata";
-            public const string OpSiteHostName = "_op_siteHostName";
+            public const string OpPublishTargetSiteHostName = "_op_publishTargetSiteHostName";
         }
     }
 }
