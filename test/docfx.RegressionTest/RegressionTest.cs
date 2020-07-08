@@ -192,6 +192,7 @@ namespace Microsoft.Docs.Build
             if (buildTime.TotalSeconds > timeout)
             {
                 Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: ${testRepositoryName}");
+                Console.WriteLine($"Test failed, build timeout: {buildTime.TotalSeconds} Repo: ${testRepositoryName}");
             }
 
             if (s_isPullRequest)
