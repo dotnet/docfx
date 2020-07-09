@@ -186,6 +186,11 @@ namespace Microsoft.Docs.Build
                     .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying: {api}"))
                     .ExecuteAsync(() => SendRequest(api, request));
 
+                if (response.Headers.TryGetValues("X-RateLimit-Remaining", out var remainings)
+                {
+                    Telemetry.TrackGitHubRateLimit(remainings.FirstOrDefault());
+                }
+
                 if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
                 {
                     Log.Write(await response.Content.ReadAsStringAsync());
