@@ -1928,28 +1928,27 @@ inputs:
         ]
       }
     }
+  pig1.jpg:
+  pig2.jpg:
   a.md: |
-    :::image type="content" source="./images/pig1.jpg" alt-text="test alt text":::
+    :::image type="content" source="pig1.jpg" alt-text="test alt text":::
 
-    :::image source="./images/pig2.jpg" alt-text="test alt text":::
+    :::image source="pig2.jpg" alt-text="test alt text":::
 
-    :::image source="./images/pig11.jpg" alt-text="unique alt text":::
+    :::image source="pig1.jpg" alt-text="unique alt text":::
 
-    :::image type="complex" source="./images/pig1.jpg" alt-text="test alt text1" loc-scope="azure"::: 
+    :::image type="complex" source="pig1.jpg" alt-text="test alt text1" loc-scope="azure"::: 
     text
     :::image-end:::
 
-    :::image type="complex" source="./images/pig2.jpg" alt-text="test alt text1" loc-scope="azure"::: 
+    :::image type="complex" source="pig2.jpg" alt-text="test alt text1" loc-scope="azure"::: 
     text
     :::image-end:::
 outputs:
   a.json:
+  pig1.jpg:
+  pig2.jpg:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: './images/pig1.jpg'.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: './images/pig2.jpg'.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: './images/pig11.jpg'.","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: './images/pig1.jpg'.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: './images/pig2.jpg'.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0}
