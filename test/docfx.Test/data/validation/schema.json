@@ -5084,157 +5084,131 @@
     "author": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "author-missing",
-        "additionalMessage": "Add a valid GitHub ID.",
-        "pullRequestOnly": false
+        "additionalMessage": "Add a valid GitHub ID."
       }
     },
     "ms.author": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-author-missing",
-        "additionalMessage": "Add a valid Microsoft alias.",
-        "pullRequestOnly": false
+        "additionalMessage": "Add a valid Microsoft alias."
       },
       "ms-alias-invalid": {
         "severity": "suggestion",
-        "code": "ms-author-invalid",
-        "pullRequestOnly": false
+        "code": "ms-author-invalid"
       }
     },
     "ms.prod": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-either-attribute": {
         "severity": "suggestion",
         "code": "ms-prod-or-service-missing",
-        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
-        "pullRequestOnly": false
+        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services."
       },
       "precluded-attributes": {
         "severity": "suggestion",
         "code": "ms-prod-and-service",
-        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
-        "pullRequestOnly": false
+        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services."
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-prod-technology-invalid",
-        "pullRequestOnly": false
+        "code": "ms-prod-technology-invalid"
       },
       "invalid-value": {
         "severity": "suggestion",
-        "code": "ms-prod-technology-invalid",
-        "pullRequestOnly": false
+        "code": "ms-prod-technology-invalid"
       }
     },
     "ms.service": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-service-subservice-invalid",
-        "pullRequestOnly": false
+        "code": "ms-service-subservice-invalid"
       },
       "invalid-value": {
         "severity": "suggestion",
-        "code": "ms-service-subservice-invalid",
-        "pullRequestOnly": false
+        "code": "ms-service-subservice-invalid"
       }
     },
     "ms.technology": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-prod-technology-invalid",
-        "pullRequestOnly": false
+        "code": "ms-prod-technology-invalid"
       }
     },
     "ms.subservice": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-service-subservice-invalid",
-        "pullRequestOnly": false
+        "code": "ms-service-subservice-invalid"
       }
     },
     "title": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "title-missing",
-        "additionalMessage": "Add a title string to show in search engine results.",
-        "pullRequestOnly": false
+        "additionalMessage": "Add a title string to show in search engine results."
       },
       "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-title-within-docset",
-        "additionalMessage": "Title must be unique within a docset.",
-        "pullRequestOnly": false
+        "additionalMessage": "Title must be unique within a docset."
       }
     },
     "ms.topic": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-topic-missing",
         "additionalMessage": "Add a valid value to indicate the article type.",
-        "pullRequestOnly": false
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-topic-invalid",
-        "pullRequestOnly": false
+        "code": "ms-topic-invalid"
       },
       "invalid-value": {
         "severity": "suggestion",
-        "code": "ms-topic-invalid",
-        "pullRequestOnly": false
+        "code": "ms-topic-invalid"
       }
     },
     "ms.date": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values",
-        "pullRequestOnly": false
+        "code": "multiple-values"
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-date-missing",
-        "additionalMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
-        "pullRequestOnly": false
+        "additionalMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY."
       },
       "date-format-invalid": {
         "severity": "suggestion",
@@ -5252,8 +5226,7 @@
     "ms.component": {
       "attribute-deprecated": {
         "severity": "suggestion",
-        "code": "deprecated-attribute",
-        "pullRequestOnly": false
+        "code": "deprecated-attribute"
       }
     },
     "description": {
@@ -5271,8 +5244,7 @@
       "string-length-invalid": {
         "severity": "suggestion",
         "code": "description-bad-length",
-        "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces.",
-        "pullRequestOnly": false
+        "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
       }
     }
   }

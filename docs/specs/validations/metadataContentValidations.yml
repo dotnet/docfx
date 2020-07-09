@@ -1870,7 +1870,7 @@ inputs:
             ],
             "excludedDocfxVersions": [
               "v2"
-            ] 
+            ]
           }
         ]
       }
