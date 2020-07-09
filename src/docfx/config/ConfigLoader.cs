@@ -108,14 +108,9 @@ namespace Microsoft.Docs.Build
 
             if (configObject.TryGetValue("markdownValidationRules", out var markdownValidationRules))
             {
-                var (validationRulesError, validationRulesObject) = JsonUtility.ToObject(markdownValidationRules, typeof(SourceInfo<string>));
-                errors.AddRange(validationRulesError);
-
-                if (validationRulesObject is SourceInfo<string> validationRulesSourceInfo)
-                {
-                    var contentValidationConfig = LoadContentRuleConfig(validationRulesSourceInfo, fileResolver);
-                    JsonUtility.Merge(configObject, contentValidationConfig);
-                }
+                var (contentValidationErrors, contentValidationConfig) = LoadContentRuleConfig(markdownValidationRules, fileResolver);
+                errors.AddRange(contentValidationErrors);
+                JsonUtility.Merge(configObject, contentValidationConfig);
             }
 
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
@@ -232,20 +227,28 @@ namespace Microsoft.Docs.Build
                 select new JProperty(configKey, configValue));
         }
 
-        private static JObject LoadContentRuleConfig(SourceInfo<string> markdownValidationRulesPath, FileResolver fileResolver)
+        private static (List<Error>, JObject) LoadContentRuleConfig(JToken markdownValidationRules, FileResolver fileResolver)
         {
             var result = new JObject();
+            var errors = new List<Error>();
 
-            // Fill in CustomRules from content validation rule
-            var physicalMarkdownValidationRulesPath = ContentValidator.GetValidationPhysicalFilePath(fileResolver, markdownValidationRulesPath);
-            var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(File.ReadAllText(physicalMarkdownValidationRulesPath));
+            var (validationRulesError, validationRulesObject) = JsonUtility.ToObject(markdownValidationRules, typeof(SourceInfo<string>));
+            errors.AddRange(validationRulesError);
 
-            var customRules = contentRules
-                .SelectMany(attributeRules => attributeRules.Value.Rules)
-                .Where(contentRule => contentRule.PullRequestOnly)
-                .ToDictionary(contentRule => contentRule.Code, _ => new { PullRequestOnly = true });
+            if (validationRulesObject is SourceInfo<string> validationRulesSourceInfo)
+            {
+                // Fill in CustomRules from content validation rule
+                var physicalMarkdownValidationRulesPath = ContentValidator.GetValidationPhysicalFilePath(fileResolver, validationRulesSourceInfo);
+                var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(File.ReadAllText(physicalMarkdownValidationRulesPath));
 
-            return JsonUtility.ToJObject(new { CustomRules = customRules });
+                var customRules = contentRules
+                    .SelectMany(attributeRules => attributeRules.Value.Rules)
+                    .Where(contentRule => contentRule.PullRequestOnly)
+                    .ToDictionary(contentRule => contentRule.Code, _ => new { PullRequestOnly = true });
+
+                result = JsonUtility.ToJObject(new { CustomRules = customRules });
+            }
+            return (errors, result);
         }
     }
 }
