@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Docs.MetadataService.Models;
 using Newtonsoft.Json;

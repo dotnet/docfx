@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         public int EndColumn { get; }
 
-        public bool Hidden { get; }
+        public bool PrOnly { get; }
 
         public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool hidden = false)
             : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name, hidden)
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             int endLine = 0,
             int endColumn = 0,
             string? name = null,
-            bool hidden = false)
+            bool prOnly = false)
         {
             Level = level;
             Code = code;
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndColumn = endColumn;
             Name = name;
-            Hidden = hidden;
+            PrOnly = prOnly;
         }
 
         public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
@@ -96,11 +96,11 @@ namespace Microsoft.Docs.Build
             var file = originalPath == null ? FilePath?.Path : originalPath;
             var date_time = DateTime.UtcNow;
             var log_item_type = "user";
-            var hidden = Hidden;
+            var pr_only = PrOnly ? (bool?)true : null;
 
             return originalPath == null
-                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, hidden, date_time })
-                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, hidden });
+                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, pr_only, date_time })
+                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pr_only });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)

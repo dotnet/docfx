@@ -237,8 +237,7 @@ namespace Microsoft.Docs.Build
 
             if (validationRulesObject is SourceInfo<string> validationRulesSourceInfo)
             {
-                var physicalMarkdownValidationRulesPath = ContentValidator.GetValidationPhysicalFilePath(fileResolver, validationRulesSourceInfo);
-                var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(File.ReadAllText(physicalMarkdownValidationRulesPath));
+                var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(fileResolver.ReadString(validationRulesSourceInfo));
 
                 var customRules = contentRules
                     .SelectMany(attributeRules => attributeRules.Value.Rules)
