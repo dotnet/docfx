@@ -193,8 +193,7 @@ namespace Microsoft.Docs.Build
                     }
                     var sourceFolder = new PathString(docsetDirectoryName);
                     return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
-                }
-                );
+                });
             }
 
             var configPath = PathUtility.FindYamlOrJson(workingDirectory, "docsets");
@@ -229,6 +228,7 @@ namespace Microsoft.Docs.Build
 
         private static (List<Error>, JObject) LoadContentRuleConfig(JToken markdownValidationRules, FileResolver fileResolver)
         {
+            // Fill in CustomRules from content validation rule
             var result = new JObject();
             var errors = new List<Error>();
 
@@ -237,7 +237,6 @@ namespace Microsoft.Docs.Build
 
             if (validationRulesObject is SourceInfo<string> validationRulesSourceInfo)
             {
-                // Fill in CustomRules from content validation rule
                 var physicalMarkdownValidationRulesPath = ContentValidator.GetValidationPhysicalFilePath(fileResolver, validationRulesSourceInfo);
                 var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(File.ReadAllText(physicalMarkdownValidationRulesPath));
 
