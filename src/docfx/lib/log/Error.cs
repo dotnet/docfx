@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
 
         public bool PrOnly { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool hidden = false)
-            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name, hidden)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool prOnly = false)
+            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name, prOnly)
         { }
 
         public Error(
