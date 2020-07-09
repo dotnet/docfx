@@ -96,11 +96,11 @@ namespace Microsoft.Docs.Build
             var file = originalPath == null ? FilePath?.Path : originalPath;
             var date_time = DateTime.UtcNow;
             var log_item_type = "user";
-            var pr_only = PullRequestOnly ? (bool?)true : null;
+            var pull_request_only = PullRequestOnly ? (bool?)true : null;
 
             return originalPath == null
-                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, pr_only, date_time })
-                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pr_only });
+                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, pull_request_only, date_time })
+                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pull_request_only });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)

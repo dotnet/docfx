@@ -361,7 +361,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'dependencies': {'key1': ['key2']}, 'customRules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','log_item_type':'user','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'required': ['author'], 'customRules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}", "{'b': 1}",
-            "{'message_severity':'suggestion','log_item_type':'user','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1,'pr_only':true}")]
+            "{'message_severity':'suggestion','log_item_type':'user','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1,'pull_request_only':true}")]
 
         // strict required validation
         [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
