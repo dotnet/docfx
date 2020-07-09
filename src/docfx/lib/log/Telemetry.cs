@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 
@@ -73,6 +74,28 @@ namespace Microsoft.Docs.Build
             s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
         }
 
+        public static void TrackDocfxConfig(string fileName, string docsetName, string configContent)
+        {
+            var docfxConfigTelemetryValue = configContent;
+            try
+            {
+                var source = new FilePath(fileName);
+                var (_, config) = fileName.EndsWith(".yml", PathUtility.PathComparison)
+                    ? YamlUtility.Parse(configContent, source)
+                    : JsonUtility.Parse(configContent, source);
+                docfxConfigTelemetryValue = JsonUtility.Serialize(JsonUtility.ToObject<DocfxConfigTelemetryModel>(config));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error happens when deserializing the config file {fileName}: {ex.Message}");
+            }
+
+            var dimensions = new Dictionary<string, string>();
+            dimensions["DocsetName"] = docsetName;
+            dimensions["Config"] = docfxConfigTelemetryValue;
+            TrackEvent(fileName, dimensions);
+        }
+
         public static void TrackOperationTime(string name, TimeSpan duration)
         {
             s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch, s_correlationId);
@@ -131,6 +154,22 @@ namespace Microsoft.Docs.Build
             {
                 TrackOperationTime(_name, _stopwatch.Elapsed);
             }
+        }
+
+        private static void TrackEvent(string name, IReadOnlyDictionary<string, string> properties)
+        {
+            var eventTelemetry = new EventTelemetry
+            {
+                Name = name,
+            };
+
+            properties = properties ?? new Dictionary<string, string>();
+            foreach (var property in properties)
+            {
+                eventTelemetry.Properties[property.Key] = property.Value;
+            }
+
+            s_telemetryClient.TrackEvent(eventTelemetry);
         }
 
         private static (string fileExtension, string documentType, string mimeType) GetFileType(FilePath filePath, ContentType contentType, string? mime)
