@@ -1870,7 +1870,7 @@ inputs:
             ],
             "excludedDocfxVersions": [
               "v2"
-            ]
+            ] 
           }
         ]
       }
@@ -1900,3 +1900,102 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/c.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":15}
+---
+# Hidden PR only validation rule result
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    metadataSchema: schema.json
+  schema.json: |
+    {
+      "required": ["title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "customRules": {
+          "title": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "title-bad-length",
+                  "pullRequestOnly": false
+              }
+          },
+          "description": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "pullRequestOnly": true
+              }
+          }
+      },
+    }
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
+            "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
+            "severity": "WARNING",
+            "code": "h1-missing"
+          },
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before H1.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [ "includes", "landingpage", "hubpage" ],
+            "excludedDocfxVersions": [
+              "v2"
+            ] ,
+            "pullRequestOnly": false
+          },
+          {
+            "type": "HeadingEmpty",
+            "message": "Empty {0}. Headings must have content.",
+            "code": "heading-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [ "landingpage", "hubpage", "toc" ],
+            "excludedDocfxVersions": [
+              "v2"
+            ] ,
+            "pullRequestOnly": true
+          }
+        ]
+      }
+    }
+  a.md: |
+    ---
+    title: too long title
+    description: too long description
+    ---
+  b.md: |
+    Some thing
+    # heading1
+    ## 
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"missing-attribute","message":"Missing required attribute: 'title'.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1,"hidden":false}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too long: 20 characters. Length should be <= 10.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":34,"hidden":true}
+    {"message_severity":"suggestion","log_item_type":"user","code":"title-bad-length","message":"String 'title' is too long: 14 characters. Length should be <= 10.","file":"a.md","line":2,"end_line":2,"column":8,"end_column":22, "hidden": false}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0,"hidden":false}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0,"hidden":false}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"hidden":true}

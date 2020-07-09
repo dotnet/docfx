@@ -54,5 +54,7 @@ namespace Microsoft.Docs.Build
         public string? AllowedDLs { get; set; }
 
         public bool? CanonicalVersionOnly { get; set; }
+
+        public bool PullRequestOnly { get; set; }
     }
 }

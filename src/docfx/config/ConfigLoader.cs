@@ -8,6 +8,8 @@ using System.IO;
 using System.IO.Enumeration;
 using System.Linq;
 using System.Net;
+using Microsoft.Docs.Validation;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -103,6 +105,19 @@ namespace Microsoft.Docs.Build
             // Create full config
             var configObject = new JObject();
             JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
+
+            if (configObject.TryGetValue("markdownValidationRules", out var markdownValidationRules))
+            {
+                var (validationRulesError, validationRulesObject) = JsonUtility.ToObject(markdownValidationRules, typeof(SourceInfo<string>));
+                errors.AddRange(validationRulesError);
+
+                if (validationRulesObject is SourceInfo<string> validationRulesSourceInfo)
+                {
+                    var contentValidationConfig = LoadContentRuleConfig(validationRulesSourceInfo, fileResolver);
+                    JsonUtility.Merge(configObject, contentValidationConfig);
+                }
+            }
+
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
@@ -183,7 +198,8 @@ namespace Microsoft.Docs.Build
                     }
                     var sourceFolder = new PathString(docsetDirectoryName);
                     return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
-                });
+                }
+                );
             }
 
             var configPath = PathUtility.FindYamlOrJson(workingDirectory, "docsets");
@@ -214,6 +230,22 @@ namespace Microsoft.Docs.Build
                 where values != null
                 let configValue = values.Length == 1 ? (object)values[0] : values
                 select new JProperty(configKey, configValue));
+        }
+
+        private static JObject LoadContentRuleConfig(SourceInfo<string> markdownValidationRulesPath, FileResolver fileResolver)
+        {
+            var result = new JObject();
+
+            // Fill in CustomRules from content validation rule
+            var physicalMarkdownValidationRulesPath = ContentValidator.GetValidationPhysicalFilePath(fileResolver, markdownValidationRulesPath);
+            var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(File.ReadAllText(physicalMarkdownValidationRulesPath));
+
+            var customRules = contentRules
+                .SelectMany(attributeRules => attributeRules.Value.Rules)
+                .Where(contentRule => contentRule.PullRequestOnly)
+                .ToDictionary(contentRule => contentRule.Code, _ => new { PullRequestOnly = true });
+
+            return JsonUtility.ToJObject(new { CustomRules = customRules });
         }
     }
 }

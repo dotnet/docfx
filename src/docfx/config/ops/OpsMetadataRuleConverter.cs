@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Docs.MetadataService.Models;
 using Newtonsoft.Json;
@@ -150,6 +151,7 @@ namespace Microsoft.Docs.Build
                                 code = ruleInfo.Code,
                                 additionalMessage = ruleInfo.AdditionalErrorMessage,
                                 canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
+                                pullRequestOnly = ruleInfo.PullRequestOnly,
                             });
                         }
                     }
