@@ -30,7 +30,7 @@
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Stubble.Core" Version="1.9.3" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-preview2-180503-2" />
-    <PackageReference Include="Validations.DocFx.Adapter" Version="1.2.27" />
+    <PackageReference Include="Validations.DocFx.Adapter" Version="1.2.28-beta002" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />
   </ItemGroup>
 
