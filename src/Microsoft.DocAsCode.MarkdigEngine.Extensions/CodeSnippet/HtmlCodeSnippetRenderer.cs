@@ -187,6 +187,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     {
                         foreach (var alias in aliases)
                         {
+                            AddExtractorItem(alias, extractor);
                             AddExtractorItem($".{alias}", extractor);
                         }
                     }
