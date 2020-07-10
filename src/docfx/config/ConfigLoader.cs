@@ -8,8 +8,6 @@ using System.IO;
 using System.IO.Enumeration;
 using System.Linq;
 using System.Net;
-using Microsoft.Docs.Validation;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -105,14 +103,6 @@ namespace Microsoft.Docs.Build
             // Create full config
             var configObject = new JObject();
             JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
-
-            if (configObject.TryGetValue("markdownValidationRules", out var markdownValidationRules))
-            {
-                var (contentValidationErrors, contentValidationConfig) = LoadContentRuleConfig(markdownValidationRules, fileResolver);
-                errors.AddRange(contentValidationErrors);
-                JsonUtility.Merge(configObject, contentValidationConfig);
-            }
-
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
@@ -224,29 +214,6 @@ namespace Microsoft.Docs.Build
                 where values != null
                 let configValue = values.Length == 1 ? (object)values[0] : values
                 select new JProperty(configKey, configValue));
-        }
-
-        private static (List<Error>, JObject) LoadContentRuleConfig(JToken markdownValidationRules, FileResolver fileResolver)
-        {
-            // Fill in CustomRules from content validation rule
-            var result = new JObject();
-            var errors = new List<Error>();
-
-            var (validationRulesError, validationRulesObject) = JsonUtility.ToObject(markdownValidationRules, typeof(SourceInfo<string>));
-            errors.AddRange(validationRulesError);
-
-            if (validationRulesObject is SourceInfo<string> validationRulesSourceInfo)
-            {
-                var contentRules = JsonConvert.DeserializeObject<Dictionary<string, ValidationRules>>(fileResolver.ReadString(validationRulesSourceInfo));
-
-                var customRules = contentRules
-                    .SelectMany(attributeRules => attributeRules.Value.Rules)
-                    .Where(contentRule => contentRule.PullRequestOnly)
-                    .ToDictionary(contentRule => contentRule.Code, _ => new { PullRequestOnly = true });
-
-                result = JsonUtility.ToJObject(new { CustomRules = customRules });
-            }
-            return (errors, result);
         }
     }
 }
