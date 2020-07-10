@@ -115,13 +115,6 @@ namespace Microsoft.Docs.Build
         public static class Logging
         {
             /// <summary>
-            /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
-            /// </summary>
-            /// Behavior: ❌ Message: ❌
-            public static Error ExceedMaxErrors(int maxErrors, ErrorLevel level)
-                => new Error(level, "exceed-max-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer {level} logs will be ignored.");
-
-            /// <summary>
             /// Build errors is larger than <see cref="OutputConfig.MaxFileErrors"/>.
             /// </summary>
             /// Behavior: ❌ Message: ❌
