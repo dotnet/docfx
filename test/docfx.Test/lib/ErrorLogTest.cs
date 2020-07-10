@@ -30,10 +30,10 @@ namespace Microsoft.Docs.Build
             var config = new Config();
             errorLog.Configure(config, ".", null);
 
-            var testFiles = 3;
+            var testFiles = 100;
             var testErrors = new List<Error>();
             var testFileErrors = config.MaxFileErrors + 10;
-            var testEmptyFileErrors = config.MaxErrors + 10;
+            var testEmptyFileErrors = 200;
 
             for (var i = 0; i < testFiles; i++)
             {
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
             ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Write(testError));
 
-            Assert.Equal(config.MaxFileErrors * testFiles + config.MaxErrors, errorLog.ErrorCount);
+            Assert.Equal(config.MaxFileErrors * testFiles + testEmptyFileErrors, errorLog.ErrorCount);
         }
     }
 }

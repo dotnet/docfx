@@ -88,19 +88,9 @@ namespace Microsoft.Docs.Build
         public bool CopyResources { get; private set; } = true;
 
         /// <summary>
-        /// Gets the maximum errors to output.
-        /// </summary>
-        public int MaxErrors { get; private set; } = 10;
-
-        /// <summary>
         /// Gets the maximum errors of each file to output.
         /// </summary>
         public int MaxFileErrors { get; private set; } = 10;
-
-        /// <summary>
-        /// Gets the maximum warnings to output.
-        /// </summary>
-        public int MaxWarnings { get; private set; } = 10;
 
         /// <summary>
         /// Gets the maximum warnings of each file to output.
@@ -108,21 +98,9 @@ namespace Microsoft.Docs.Build
         public int MaxFileWarnings { get; private set; } = 10;
 
         /// <summary>
-        /// Gets the maximum suggestions to output.
-        /// There are may be too many suggestion messages so increase the limit.
-        /// </summary>
-        public int MaxSuggestions { get; private set; } = 100;
-
-        /// <summary>
         /// Gets the maximum suggestions of each file to output.
         /// </summary>
         public int MaxFileSuggestions { get; private set; } = 100;
-
-        /// <summary>
-        /// Gets the maximum info to output.
-        /// There are may be too many info messages so increase the limit.
-        /// </summary>
-        public int MaxInfos { get; private set; } = 100;
 
         /// <summary>
         /// Gets the maximum info of each file to output.
