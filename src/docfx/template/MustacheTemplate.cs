@@ -167,19 +167,9 @@ namespace Microsoft.Docs.Build
                 JObject obj => obj.GetValue(key, StringComparison.Ordinal),
                 JArray array when int.TryParse(key, out var index) && index >= 0 && index < array.Count => array[index],
                 JValue value when _jsonSchemaTransformer != null && file != null && value.Value is string str && key == "__xrefspec"
-                    => _jsonSchemaTransformer.Value.TryGetResolvedXrefSpec(file, str, out var result)
-                        ? EnsureWellKnownXrefSpecProperties(result) : value,
+                    => _jsonSchemaTransformer.Value.GetResolvedXrefSpec(file, str) ?? value,
                 _ => null,
             };
-        }
-
-        private static JToken EnsureWellKnownXrefSpecProperties(JObject xrefSpec)
-        {
-            // Ensure these well known properties does not fallback to mustache parent variable scope
-            xrefSpec["uid"] ??= null;
-            xrefSpec["name"] ??= xrefSpec["uid"] ?? null;
-            xrefSpec["href"] ??= null;
-            return xrefSpec;
         }
 
         private static bool IsTruthy(JValue value)

@@ -40,9 +40,9 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
         }
 
-        public bool TryGetResolvedXrefSpec(FilePath file, string uid, [NotNullWhen(true)] out JObject? result)
+        public JToken? GetResolvedXrefSpec(FilePath file, string uid)
         {
-            return _resolvedXrefSpec.TryGetValue((file, uid), out result);
+            return _resolvedXrefSpec.TryGetValue((file, uid), out var result) ? result : null;
         }
 
         public (List<Error> errors, JToken token) TransformContent(JsonSchema schema, Document file, JToken token)
@@ -322,6 +322,11 @@ namespace Microsoft.Docs.Build
                         var xrefSpecObj = xrefSpec is null
                             ? new JObject { ["uid"] = value }
                             : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+
+                        // Ensure these well known properties does not fallback to mustache parent variable scope
+                        xrefSpecObj["uid"] ??= null;
+                        xrefSpecObj["name"] ??= xrefSpecObj["uid"] ?? null;
+                        xrefSpecObj["href"] ??= null;
 
                         _resolvedXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
                     }
