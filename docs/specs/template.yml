@@ -351,10 +351,12 @@ inputs:
           "items": {
             "properties": {
               "uid": {"contentType": "uid"}
-            }
+            },
+            "xrefProperties": ["name"]
           }
         }
-      }
+      },
+      "xrefProperties": ["name", "uid"]
     }
   _themes/ContentTemplate/TestPage.html.primary.tmpl: |
     <p>
@@ -388,7 +390,7 @@ outputs:
         </p>"
     }
 ---
-# Parent-contexted uid decalaration should NOT leak into child-context
+# Known variables in <xref> tag does not fallback to parent scope.
 legacy: true
 inputs:
   docfx.yml:
@@ -396,32 +398,32 @@ inputs:
     {
       "properties": {
         "uid": {"contentType": "uid"},
-        "uids": {
+        "xrefs": {
           "items": {
             "properties": {
               "uid": {"contentType": "xref"}
             }
           }
         }
-      }
+      },
+      "xrefProperties": ["name"]
     }
   _themes/ContentTemplate/TestPage.html.primary.tmpl: |
     <p>
       <xref uid="{{ uid }}" />
-      {{#uids}}
+      {{#xrefs}}
         <xref uid="{{uid}}" />
-      {{/uids}}
+      {{/xrefs}}
     </p>
  
   a.yml: |
     ### YamlMime: TestPage
     uid: uid
     name: root name
-    uids:
+    xrefs:
       - uid: unresolved1
         name: unresolved1 name
       - uid: unresolved2
-        name: unresolved2 name
 
 outputs:
   a.mta.json:
@@ -437,3 +439,26 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolved1'.","file":"a.yml","line":5,"end_line":5,"column":10,"end_column":21}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolved2'.","file":"a.yml","line":7,"end_line":7,"column":10,"end_column":21}
+---
+# Known variables in <xref> tag for external xref spec does not fallback to parent scope.
+legacy: true
+inputs:
+  docfx.yml: |
+    xref: xref.yml
+  xref.yml: |
+    references:
+    - uid: Edm.Int32
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": { "xref": { "contentType": "xref" }, }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <xref uid="{{ xref }}" />
+  a.yml: |
+    ### YamlMime: TestPage
+    xref: Edm.Int32
+    name: name
+outputs:
+  a.mta.json:
+  a.raw.page.json: |
+    { "content": "<span>Edm.Int32</span>" }

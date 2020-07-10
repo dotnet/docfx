@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -39,9 +40,9 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
         }
 
-        public JObject? GetResolvedXrefSpec(FilePath file, string uid)
+        public bool TryGetResolvedXrefSpec(FilePath file, string uid, [NotNullWhen(true)] out JObject? result)
         {
-            return _resolvedXrefSpec.TryGetValue((file, uid), out var result) ? result : null;
+            return _resolvedXrefSpec.TryGetValue((file, uid), out result);
         }
 
         public (List<Error> errors, JToken token) TransformContent(JsonSchema schema, Document file, JToken token)
@@ -109,6 +110,11 @@ namespace Microsoft.Docs.Build
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
+                if (xrefProperty == "uid")
+                {
+                    continue;
+                }
+
                 if (!obj.TryGetValue(xrefProperty, out var value))
                 {
                     xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
@@ -248,14 +254,6 @@ namespace Microsoft.Docs.Build
                             newObject[key] = value;
                         }
                     }
-                    if (IsXrefSpec(obj, schema, out var uid))
-                    {
-                        if (obj.TryGetValue("href", out var href))
-                        {
-                            errors.Add(Errors.Metadata.AttributeReserved(href.GetSourceInfo()?.KeySourceInfo!, "href"));
-                        }
-                        newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount, obj.Parent == null));
-                    }
                     return (errors, newObject);
 
                 case JValue value:
@@ -313,17 +311,20 @@ namespace Microsoft.Docs.Build
 
                     return (errors, htmlWithLinks);
 
+                case JsonSchemaContentType.Uid:
                 case JsonSchemaContentType.Xref:
-                    // the content here must be an UID, not href
-                    var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
-                    errors.AddIfNotNull(xrefError);
+                    if (!_resolvedXrefSpec.ContainsKey((file.FilePath, content)))
+                    {
+                        // the content here must be an UID, not href
+                        var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
+                        errors.AddIfNotNull(xrefError);
 
-                    var xrefSpecObj = xrefSpec is null
-                        ? new JObject { ["name"] = value, ["href"] = null }
-                        : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+                        var xrefSpecObj = xrefSpec is null
+                            ? new JObject { ["uid"] = value }
+                            : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
 
-                    _resolvedXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
-
+                        _resolvedXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
+                    }
                     return (errors, value);
             }
 
