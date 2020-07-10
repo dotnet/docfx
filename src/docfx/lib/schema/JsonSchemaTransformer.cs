@@ -25,7 +25,12 @@ namespace Microsoft.Docs.Build
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
-        public JsonSchemaTransformer(MarkdownEngine markdownEngine, LinkResolver linkResolver, XrefResolver xrefResolver, ErrorLog errorLog, MonikerProvider monikerProvider)
+        public JsonSchemaTransformer(
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            ErrorLog errorLog,
+            MonikerProvider monikerProvider)
         {
             _markdownEngine = markdownEngine;
             _linkResolver = linkResolver;
