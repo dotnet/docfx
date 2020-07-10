@@ -13,11 +13,15 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class Telemetry
     {
+        // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
+        private const int MaxEventPropertyLength = 8192;
+        private const int MaxChildrenLength = 5;
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
         private static readonly ConcurrentDictionary<FilePath, (string, string, string)> s_fileTypeCache =
             new ConcurrentDictionary<FilePath, (string, string, string)>();
@@ -74,25 +78,19 @@ namespace Microsoft.Docs.Build
             s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
         }
 
-        public static void TrackDocfxConfig(string fileName, string docsetName, string configContent)
+        public static void TrackDocfxConfig(string fileName, string docsetName, JObject docfxConfig)
         {
-            var docfxConfigTelemetryValue = configContent;
-            try
+            var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
+            var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
+            if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
             {
-                var source = new FilePath(fileName);
-                var (_, config) = fileName.EndsWith(".yml", PathUtility.PathComparison)
-                    ? YamlUtility.Parse(configContent, source)
-                    : JsonUtility.Parse(configContent, source);
-                docfxConfigTelemetryValue = JsonUtility.Serialize(JsonUtility.ToObject<DocfxConfigTelemetryModel>(config));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error happens when deserializing the config file {fileName}: {ex.Message}");
+                docfxConfigTelemetryValue = SerializeConfigObjectWithMaxLength(docfxConfig);
             }
 
             var dimensions = new Dictionary<string, string>();
             dimensions["DocsetName"] = docsetName;
             dimensions["Config"] = docfxConfigTelemetryValue;
+            dimensions["ContentHash"] = hashCode;
             TrackEvent(fileName, dimensions);
         }
 
@@ -185,6 +183,51 @@ namespace Microsoft.Docs.Build
         private static string CoalesceEmpty(string? str)
         {
             return string.IsNullOrEmpty(str) ? "<null>" : str;
+        }
+
+        private static string SerializeConfigObjectWithMaxLength(JObject graph)
+        {
+            TryRemoveNestedObject(graph);
+            var result = JsonUtility.Serialize(graph);
+            if (result.Length <= MaxEventPropertyLength)
+            {
+                return result;
+            }
+
+            TryRemoveLongArray(graph);
+            return JsonUtility.Serialize(graph);
+        }
+
+        private static void TryRemoveNestedObject(this JObject graph)
+        {
+            foreach (var (key, value) in graph)
+            {
+                if (value is JObject propertyValue)
+                {
+                    foreach (var (nestedKey, nestedValue) in propertyValue)
+                    {
+                        if (nestedValue is JObject @object && @object.Count > MaxChildrenLength)
+                        {
+                            propertyValue[nestedKey] = new JObject();
+                        }
+                        if (nestedValue is JArray array && array.Count > MaxChildrenLength)
+                        {
+                            propertyValue[nestedKey] = new JArray();
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void TryRemoveLongArray(this JObject graph)
+        {
+            foreach (var (key, value) in graph)
+            {
+                if (value is JArray array && array.Count > MaxChildrenLength)
+                {
+                    graph[key] = new JArray();
+                }
+            }
         }
     }
 }
