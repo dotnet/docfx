@@ -1932,11 +1932,15 @@ inputs:
   pig2.jpg:
   a.md: |
     :::image type="content" source="pig1.jpg" alt-text="test alt text":::
+
     :::image source="pig2.jpg" alt-text="test alt text":::
+
     :::image source="pig1.jpg" alt-text="unique alt text":::
+
     :::image type="complex" source="pig1.jpg" alt-text="test alt text1" loc-scope="azure"::: 
     text
     :::image-end:::
+
     :::image type="complex" source="pig2.jpg" alt-text="test alt text1" loc-scope="azure"::: 
     text
     :::image-end:::
