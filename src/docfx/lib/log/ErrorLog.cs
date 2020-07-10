@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace Microsoft.Docs.Build
@@ -26,13 +27,26 @@ namespace Microsoft.Docs.Build
         private int _suggestionCount;
         private int _infoCount;
 
-        private int _maxExceeded;
+        private ConcurrentDictionary<FilePath, int> _fileInfoCount = new ConcurrentDictionary<FilePath, int>();
+        private ConcurrentDictionary<FilePath, int> _fileSuggestionCount = new ConcurrentDictionary<FilePath, int>();
+        private ConcurrentDictionary<FilePath, int> _fileWarningCount = new ConcurrentDictionary<FilePath, int>();
+        private ConcurrentDictionary<FilePath, int> _fileErrorCount = new ConcurrentDictionary<FilePath, int>();
 
-        public int ErrorCount => _errorCount;
+        private ConcurrentHashSet<FilePath> _fileInfoMaxExceeded = new ConcurrentHashSet<FilePath>();
+        private ConcurrentHashSet<FilePath> _fileSuggestionMaxExceeded = new ConcurrentHashSet<FilePath>();
+        private ConcurrentHashSet<FilePath> _fileWarningMaxExceeded = new ConcurrentHashSet<FilePath>();
+        private ConcurrentHashSet<FilePath> _fileErrorMaxExceeded = new ConcurrentHashSet<FilePath>();
 
-        public int WarningCount => _warningCount;
+        private int _errorMaxExceeded;
+        private int _warningMaxExceeded;
+        private int _suggestionMaxExceeded;
+        private int _infoMaxExceeded;
 
-        public int SuggestionCount => _suggestionCount;
+        public int ErrorCount => _fileErrorCount.Values.Sum() + _errorCount;
+
+        public int WarningCount => _fileWarningCount.Values.Sum() + _warningCount;
+
+        public int SuggestionCount => _fileSuggestionCount.Values.Sum() + _suggestionCount;
 
         public bool HasError(FilePath file) => _errorFiles.Contains(file);
 
@@ -112,14 +126,11 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (ExceedMaxErrors(config, level))
+            if (ExceedMaxErrors(config, level, error.FilePath))
             {
-                if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
-                {
-                    WriteCore(Errors.Logging.ExceedMaxErrors(GetMaxCount(config, level), level), level);
-                }
+                WriteExceedMaxError(config, level, error.FilePath);
             }
-            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level))
+            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level, error.FilePath))
             {
                 WriteCore(error, level);
             }
@@ -208,7 +219,7 @@ namespace Microsoft.Docs.Build
             return File.AppendText(outputFilePath);
         }
 
-        private int GetMaxCount(Config? config, ErrorLevel level)
+        private int GetMaxCount(Config? config, ErrorLevel level, bool isFile = false)
         {
             if (config == null)
             {
@@ -217,14 +228,15 @@ namespace Microsoft.Docs.Build
 
             return level switch
             {
-                ErrorLevel.Error => config.MaxErrors,
-                ErrorLevel.Warning => config.MaxWarnings,
-                ErrorLevel.Suggestion => config.MaxSuggestions,
+                ErrorLevel.Error => isFile ? config.MaxFileErrors : config.MaxErrors,
+                ErrorLevel.Warning => isFile ? config.MaxFileWarnings : config.MaxWarnings,
+                ErrorLevel.Suggestion => isFile ? config.MaxFileSuggestions : config.MaxSuggestions,
+                ErrorLevel.Info => isFile ? config.MaxFileInfos : config.MaxInfos,
                 _ => int.MaxValue,
             };
         }
 
-        private bool ExceedMaxErrors(Config? config, ErrorLevel level)
+        private bool ExceedEmptyFileMaxErrors(Config? config, ErrorLevel level)
         {
             if (config == null)
             {
@@ -241,7 +253,26 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level)
+        private bool ExceedMaxErrors(Config? config, ErrorLevel level, FilePath? filePath)
+        {
+            if (config == null)
+            {
+                return false;
+            }
+
+            if (filePath == null)
+            {
+                return ExceedEmptyFileMaxErrors(config, level);
+            }
+
+            if (TryGetFileCount(level, out var fileCount))
+            {
+                return fileCount.GetValueOrDefault(filePath, 0) >= GetMaxCount(config, level, true);
+            }
+            return false;
+        }
+
+        private bool IncrementEmptyFileExceedMaxErrors(Config? config, ErrorLevel level)
         {
             return level switch
             {
@@ -253,6 +284,39 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level, FilePath? filePath)
+        {
+            if (filePath == null)
+            {
+                return IncrementEmptyFileExceedMaxErrors(config, level);
+            }
+
+            if (TryGetFileCount(level, out var fileCount))
+            {
+                return fileCount.AddOrUpdate(filePath, 1, (_, oldCount) => ++oldCount) > GetMaxCount(config, level, true);
+            }
+
+            return false;
+        }
+
+        private void WriteExceedMaxError(Config? config, ErrorLevel level, FilePath? filePath)
+        {
+            if (filePath == null)
+            {
+                if (TryGetEmptyFileMaxExceeded(level))
+                {
+                    WriteCore(Errors.Logging.ExceedMaxErrors(GetMaxCount(config, level), level), level);
+                }
+            }
+            else
+            {
+                if (TryGetFileMaxExceeded(level, filePath))
+                {
+                    WriteCore(Errors.Logging.ExceedFileMaxErrors(GetMaxCount(config, level, true), level, filePath), level);
+                }
+            }
+        }
+
         private static ConsoleColor GetColor(ErrorLevel level)
         {
             return level switch
@@ -262,6 +326,44 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Suggestion => ConsoleColor.Magenta,
                 ErrorLevel.Info => ConsoleColor.DarkGray,
                 _ => ConsoleColor.DarkGray,
+            };
+        }
+
+        private bool TryGetFileCount(ErrorLevel level, [NotNullWhen(returnValue: true)] out ConcurrentDictionary<FilePath, int>? fileCountDictionary)
+        {
+            fileCountDictionary = level switch
+            {
+                ErrorLevel.Error => _fileErrorCount,
+                ErrorLevel.Warning => _fileWarningCount,
+                ErrorLevel.Suggestion => _fileSuggestionCount,
+                ErrorLevel.Info => _fileInfoCount,
+                _ => null,
+            };
+
+            return fileCountDictionary != null;
+        }
+
+        private bool TryGetFileMaxExceeded(ErrorLevel level, FilePath filePath)
+        {
+            return level switch
+            {
+                ErrorLevel.Error => _fileErrorMaxExceeded.TryAdd(filePath),
+                ErrorLevel.Warning => _fileWarningMaxExceeded.TryAdd(filePath),
+                ErrorLevel.Suggestion => _fileSuggestionMaxExceeded.TryAdd(filePath),
+                ErrorLevel.Info => _fileInfoMaxExceeded.TryAdd(filePath),
+                _ => false,
+            };
+        }
+
+        private bool TryGetEmptyFileMaxExceeded(ErrorLevel level)
+        {
+            return level switch
+            {
+                ErrorLevel.Error => Interlocked.Exchange(ref _errorMaxExceeded, 1) == 0,
+                ErrorLevel.Warning => Interlocked.Exchange(ref _warningMaxExceeded, 1) == 0,
+                ErrorLevel.Suggestion => Interlocked.Exchange(ref _suggestionMaxExceeded, 1) == 0,
+                ErrorLevel.Info => Interlocked.Exchange(ref _infoMaxExceeded, 1) == 0,
+                _ => false,
             };
         }
     }

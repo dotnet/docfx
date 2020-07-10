@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Graph;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -23,18 +26,28 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void MaxErrors()
         {
-            var maxErrors = 1000;
             using var errorLog = new ErrorLog("MaxErrors");
-            errorLog.Configure(new Config(), ".", null);
-            for (var i = 0; i < maxErrors; i++)
+            var config = new Config();
+            errorLog.Configure(config, ".", null);
+
+            var testFiles = 10;
+            var testErrors = new List<Error>();
+            var testFileErrors = config.MaxFileErrors + 10;
+            var testEmptyFileErrors = config.MaxErrors + 10;
+            for (var i = 0; i < testFiles; i++)
+            {
+                for (var j = 0; j < testFileErrors; j++)
+                {
+                    errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", j.ToString(), new FilePath($"file-{i}")));
+                }
+            }
+
+            for (var i = 0; i < testEmptyFileErrors; i++)
             {
                 errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
             }
 
-            Assert.Equal(maxErrors, errorLog.ErrorCount);
-
-            errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "another message"));
-            Assert.Equal(maxErrors, errorLog.ErrorCount);
+            Assert.Equal(config.MaxFileErrors * testFiles + config.MaxErrors, errorLog.ErrorCount);
         }
     }
 }
