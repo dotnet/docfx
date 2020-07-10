@@ -1,6 +1,0 @@
-{
-    "version": "2.56.0-beta.{height}",
-    "publicReleaseRefSpec": [
-        "^refs/tags/v\\d+\\.\\d+$"
-    ]
-}
