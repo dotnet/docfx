@@ -27,6 +27,10 @@ namespace Microsoft.Docs.Build
         private int _suggestionCount;
         private int _infoCount;
 
+        private int _actualErrorCount;
+        private int _actualWarningCount;
+        private int _actualSuggestionCount;
+
         private ConcurrentDictionary<FilePath, int> _fileInfoCount = new ConcurrentDictionary<FilePath, int>();
         private ConcurrentDictionary<FilePath, int> _fileSuggestionCount = new ConcurrentDictionary<FilePath, int>();
         private ConcurrentDictionary<FilePath, int> _fileWarningCount = new ConcurrentDictionary<FilePath, int>();
@@ -42,11 +46,11 @@ namespace Microsoft.Docs.Build
         private int _suggestionMaxExceeded;
         private int _infoMaxExceeded;
 
-        public int ErrorCount => _fileErrorCount.Values.Sum() + _errorCount;
+        public int ErrorCount => _actualErrorCount;
 
-        public int WarningCount => _fileWarningCount.Values.Sum() + _warningCount;
+        public int WarningCount => _actualWarningCount;
 
-        public int SuggestionCount => _fileSuggestionCount.Values.Sum() + _suggestionCount;
+        public int SuggestionCount => _actualSuggestionCount;
 
         public bool HasError(FilePath file) => _errorFiles.Contains(file);
 
@@ -132,6 +136,7 @@ namespace Microsoft.Docs.Build
             }
             else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level, error.FilePath))
             {
+                IncrementActualErrorCount(level);
                 WriteCore(error, level);
             }
 
@@ -365,6 +370,24 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Info => Interlocked.Exchange(ref _infoMaxExceeded, 1) == 0,
                 _ => false,
             };
+        }
+
+        private void IncrementActualErrorCount(ErrorLevel level)
+        {
+            switch (level)
+            {
+                case ErrorLevel.Error:
+                    Interlocked.Increment(ref _actualErrorCount);
+                    break;
+                case ErrorLevel.Warning:
+                    Interlocked.Increment(ref _actualWarningCount);
+                    break;
+                case ErrorLevel.Suggestion:
+                    Interlocked.Increment(ref _actualSuggestionCount);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

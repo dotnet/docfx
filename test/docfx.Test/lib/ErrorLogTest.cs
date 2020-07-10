@@ -30,22 +30,25 @@ namespace Microsoft.Docs.Build
             var config = new Config();
             errorLog.Configure(config, ".", null);
 
-            var testFiles = 10;
+            var testFiles = 3;
             var testErrors = new List<Error>();
             var testFileErrors = config.MaxFileErrors + 10;
             var testEmptyFileErrors = config.MaxErrors + 10;
+
             for (var i = 0; i < testFiles; i++)
             {
                 for (var j = 0; j < testFileErrors; j++)
                 {
-                    errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", j.ToString(), new FilePath($"file-{i}")));
+                    testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", j.ToString(), new FilePath($"file-{i}")));
                 }
             }
 
             for (var i = 0; i < testEmptyFileErrors; i++)
             {
-                errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
+                testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
             }
+
+            ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Write(testError));
 
             Assert.Equal(config.MaxFileErrors * testFiles + config.MaxErrors, errorLog.ErrorCount);
         }
