@@ -450,15 +450,19 @@ inputs:
     - uid: Edm.Int32
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "properties": { "xref": { "contentType": "xref" }, }
+      "properties": {
+        "xref": { "contentType": "xref" }
+      }
     }
   _themes/ContentTemplate/TestPage.html.primary.tmpl: |
     <xref uid="{{ xref }}" />
+    <xref uid="{{ type }}" />
   a.yml: |
     ### YamlMime: TestPage
     xref: Edm.Int32
+    type: Missing
     name: name
 outputs:
   a.mta.json:
   a.raw.page.json: |
-    { "content": "<span>Edm.Int32</span>" }
+    { "content": "<span>Edm.Int32</span><span>Missing</span>" }
