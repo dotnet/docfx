@@ -76,8 +76,7 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
-            var docfxConfigContent = File.ReadAllText(configPath);
-            var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), docfxConfigContent);
+            var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
             var (opsConfigErrors, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
             errors.AddRange(opsConfigErrors);
             var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
