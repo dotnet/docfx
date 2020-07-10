@@ -31,7 +31,17 @@ namespace Microsoft.Docs.Build
         public bool PullRequestOnly { get; }
 
         public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool pullRequestOnly = false)
-            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name, pullRequestOnly)
+            : this(
+                level,
+                code,
+                message,
+                source?.File,
+                source?.Line ?? 0,
+                source?.Column ?? 0,
+                source?.EndLine ?? 0,
+                source?.EndColumn ?? 0,
+                name,
+                pullRequestOnly)
         { }
 
         public Error(
@@ -99,7 +109,20 @@ namespace Microsoft.Docs.Build
             var pull_request_only = PullRequestOnly ? (bool?)true : null;
 
             return originalPath == null
-                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, pull_request_only, date_time })
+                ? JsonUtility.Serialize(new
+                {
+                    message_severity,
+                    log_item_type,
+                    Code,
+                    Message,
+                    file,
+                    line,
+                    end_line,
+                    column,
+                    end_column,
+                    pull_request_only,
+                    date_time,
+                })
                 : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pull_request_only });
         }
 
