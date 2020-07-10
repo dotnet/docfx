@@ -119,11 +119,11 @@ namespace Microsoft.Docs.Build
                 return (new List<Error>(), default);
             }
 
-            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file);
+            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file, monikers);
+
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
-            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
-            xref.Monikers = monikers;
             return (errors, xref);
         }
 

@@ -21,11 +21,12 @@ namespace Microsoft.Docs.Build
 
         string IXrefSpec.Uid => Uid.Value;
 
-        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile)
+        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile, MonikerList monikerList)
         {
             Uid = uid;
             Href = href;
             DeclaringFile = declaringFile;
+            Monikers = monikerList;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
