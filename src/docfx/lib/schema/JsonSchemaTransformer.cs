@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorLog _errorLog;
+        private readonly MonikerProvider _monikerProvider;
 
         private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject> _resolvedXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject>();
@@ -24,12 +25,18 @@ namespace Microsoft.Docs.Build
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
-        public JsonSchemaTransformer(MarkdownEngine markdownEngine, LinkResolver linkResolver, XrefResolver xrefResolver, ErrorLog errorLog)
+        public JsonSchemaTransformer(
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            ErrorLog errorLog,
+            MonikerProvider monikerProvider)
         {
             _markdownEngine = markdownEngine;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _errorLog = errorLog;
+            _monikerProvider = monikerProvider;
         }
 
         public JObject? GetResolvedXrefSpec(FilePath file, string uid)
@@ -118,6 +125,8 @@ namespace Microsoft.Docs.Build
                     () => LoadXrefProperty(definitions, file, uid, value, propertySchema, uidCount),
                     LazyThreadSafetyMode.PublicationOnly);
             }
+
+            xref.Monikers = _monikerProvider.GetFileLevelMonikers(file.FilePath).monikers;
 
             return xref;
         }
