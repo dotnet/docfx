@@ -17,24 +17,34 @@ namespace Microsoft.Docs.Build
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorLog _errorLog;
+        private readonly MonikerProvider _monikerProvider;
 
         private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
-        private readonly ConcurrentDictionary<(FilePath, string), JObject> _resolvedXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject>();
+        private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
 
         private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                  = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
-        public JsonSchemaTransformer(MarkdownEngine markdownEngine, LinkResolver linkResolver, XrefResolver xrefResolver, ErrorLog errorLog)
+        public JsonSchemaTransformer(
+            MarkdownEngine markdownEngine,
+            LinkResolver linkResolver,
+            XrefResolver xrefResolver,
+            ErrorLog errorLog,
+            MonikerProvider monikerProvider)
         {
             _markdownEngine = markdownEngine;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _errorLog = errorLog;
+            _monikerProvider = monikerProvider;
         }
 
-        public JObject? GetResolvedXrefSpec(FilePath file, string uid)
+        public JToken GetMustacheXrefSpec(FilePath file, string uid)
         {
-            return _resolvedXrefSpec.TryGetValue((file, uid), out var result) ? result : null;
+            var result = _mustacheXrefSpec.TryGetValue((file, uid), out var value) ? value : null;
+
+            // Ensure these well known properties does not fallback to mustache parent variable scope
+            return result ?? new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
         }
 
         public (List<Error> errors, JToken token) TransformContent(JsonSchema schema, Document file, JToken token)
@@ -98,10 +108,16 @@ namespace Microsoft.Docs.Build
             int uidCount)
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
-            var xref = new InternalXrefSpec(uid, href, file);
+            var monikers = _monikerProvider.GetFileLevelMonikers(file.FilePath).monikers;
+            var xref = new InternalXrefSpec(uid, href, file, monikers);
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
+                if (xrefProperty == "uid")
+                {
+                    continue;
+                }
+
                 if (!obj.TryGetValue(xrefProperty, out var value))
                 {
                     xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
@@ -239,14 +255,6 @@ namespace Microsoft.Docs.Build
                             newObject[key] = value;
                         }
                     }
-                    if (IsXrefSpec(obj, schema, out var uid))
-                    {
-                        if (obj.TryGetValue("href", out var href))
-                        {
-                            errors.Add(Errors.Metadata.AttributeReserved(href.GetSourceInfo()?.KeySourceInfo!, "href"));
-                        }
-                        newObject["href"] = PathUtility.GetRelativePathToFile(file.SiteUrl, GetXrefHref(file, uid, uidCount, obj.Parent == null));
-                    }
                     return (errors, newObject);
 
                 case JValue value:
@@ -304,17 +312,26 @@ namespace Microsoft.Docs.Build
 
                     return (errors, htmlWithLinks);
 
+                case JsonSchemaContentType.Uid:
                 case JsonSchemaContentType.Xref:
-                    // the content here must be an UID, not href
-                    var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
-                    errors.AddIfNotNull(xrefError);
+                    if (!_mustacheXrefSpec.ContainsKey((file.FilePath, content)))
+                    {
+                        // the content here must be an UID, not href
+                        var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
+                        errors.AddIfNotNull(xrefError);
 
-                    var xrefSpecObj = xrefSpec is null
-                        ? new JObject { ["name"] = value, ["href"] = null }
-                        : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+                        var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
 
-                    _resolvedXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
+                        // Ensure these well known properties does not fallback to mustache parent variable scope
+                        if (xrefSpecObj != null)
+                        {
+                            xrefSpecObj["uid"] ??= null;
+                            xrefSpecObj["name"] ??= xrefSpecObj["uid"] ?? null;
+                            xrefSpecObj["href"] ??= null;
+                        }
 
+                        _mustacheXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
+                    }
                     return (errors, value);
             }
 

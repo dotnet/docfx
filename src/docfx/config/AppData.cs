@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public static string GitRoot => Path.Combine(Root, "git6");
 
-        public static string DownloadsRoot => Path.Combine(Root, "downloads2");
+        public static string DownloadsRoot => Path.Combine(Root, "downloads3");
 
         public static string MutexRoot => Path.Combine(Root, "mutex");
 
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "msgraph-users.json");
 
-        public static string GetFileDownloadDir(string url)
+        public static string GetFileDownloadPath(string url)
         {
             return Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url));
         }

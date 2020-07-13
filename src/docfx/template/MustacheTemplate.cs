@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                 JObject obj => obj.GetValue(key, StringComparison.Ordinal),
                 JArray array when int.TryParse(key, out var index) && index >= 0 && index < array.Count => array[index],
                 JValue value when _jsonSchemaTransformer != null && file != null && value.Value is string str && key == "__xrefspec"
-                    => (JToken?)_jsonSchemaTransformer.Value.GetResolvedXrefSpec(file, str) ?? value,
+                    => _jsonSchemaTransformer.Value.GetMustacheXrefSpec(file, str),
                 _ => null,
             };
         }

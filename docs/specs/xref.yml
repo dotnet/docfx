@@ -561,24 +561,6 @@ outputs:
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/a.json","line":6,"column":14}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
 ---
-# href shouldn't be defined at same level with uid
-inputs:
-  docfx.yml: |
-  a.yml: |
-    ###YamlMime: TestData
-    uid: a
-    href: user-defined
-  _themes/ContentTemplate/schemas/TestData.schema.json: |
-    {
-      "properties": {
-        "uid": { "contentType": "uid" }
-      }
-    }
-outputs:
-  a.json: '{"href": "a.json"}'
-  .errors.log: |
-    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute href is reserved for use by Docs.","file":"a.yml","line":3,"column":1}
----
 # Xref property field which supports markdown content
 inputs:
   docfx.yml: |
@@ -1503,7 +1485,5 @@ outputs:
   136a42ac/docs/a.json:
   4667fedf/docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'.","file":"docs/v1/a.yml","line":5,"column":6}
-    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/v1/a.yml(5,6)', 'docs/v2/a.yml(5,6)'.","file":"docs/v2/a.yml","line":5,"column":6}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
