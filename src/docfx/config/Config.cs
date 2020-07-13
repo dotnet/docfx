@@ -100,12 +100,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the maximum suggestions of each file to output.
         /// </summary>
-        public int MaxFileSuggestions { get; private set; } = 100;
+        public int MaxFileSuggestions { get; private set; } = 20;
 
         /// <summary>
         /// Gets the maximum info of each file to output.
         /// </summary>
-        public int MaxFileInfos { get; private set; } = 100;
+        public int MaxFileInfos { get; private set; } = 20;
 
         /// <summary>
         /// Gets the global metadata added to each document.
