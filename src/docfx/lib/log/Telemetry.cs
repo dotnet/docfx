@@ -10,13 +10,18 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class Telemetry
     {
+        // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
+        private const int MaxEventPropertyLength = 8192;
+        private const int MaxChildrenLength = 5;
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
         private static readonly ConcurrentDictionary<FilePath, (string, string, string)> s_fileTypeCache =
             new ConcurrentDictionary<FilePath, (string, string, string)>();
@@ -71,6 +76,24 @@ namespace Microsoft.Docs.Build
             s_branch = CoalesceEmpty(branch);
             s_telemetryClient.Context.GlobalProperties["Repo"] = s_repo;
             s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
+        }
+
+        public static void TrackDocfxConfig(string docsetName, JObject docfxConfig)
+        {
+            var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
+            var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
+            if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
+            {
+                var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;
+                TryRemoveNestedObject(newValue!);
+                docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
+            }
+
+            var properties = new Dictionary<string, string>();
+            properties["DocsetName"] = docsetName;
+            properties["Config"] = docfxConfigTelemetryValue;
+            properties["ContentHash"] = hashCode;
+            TrackEvent("docfx.json", properties);
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)
@@ -133,6 +156,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static void TrackEvent(string name, IReadOnlyDictionary<string, string> properties)
+        {
+            var eventTelemetry = new EventTelemetry
+            {
+                Name = name,
+            };
+
+            foreach (var property in properties)
+            {
+                eventTelemetry.Properties[property.Key] = property.Value;
+            }
+
+            s_telemetryClient.TrackEvent(eventTelemetry);
+        }
+
         private static (string fileExtension, string documentType, string mimeType) GetFileType(FilePath filePath, ContentType contentType, string? mime)
         {
             return s_fileTypeCache.GetOrAdd(filePath, filePath =>
@@ -146,6 +184,27 @@ namespace Microsoft.Docs.Build
         private static string CoalesceEmpty(string? str)
         {
             return string.IsNullOrEmpty(str) ? "<null>" : str;
+        }
+
+        private static void TryRemoveNestedObject(this JObject graph)
+        {
+            foreach (var (key, value) in graph)
+            {
+                if (value is JObject propertyValue)
+                {
+                    foreach (var (nestedKey, nestedValue) in propertyValue)
+                    {
+                        if (nestedValue is JObject @object && @object.Count > MaxChildrenLength)
+                        {
+                            propertyValue[nestedKey] = new JObject();
+                        }
+                        if (nestedValue is JArray array && array.Count > MaxChildrenLength)
+                        {
+                            propertyValue[nestedKey] = new JArray();
+                        }
+                    }
+                }
+            }
         }
     }
 }
