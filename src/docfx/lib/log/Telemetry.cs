@@ -78,22 +78,22 @@ namespace Microsoft.Docs.Build
             s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
         }
 
-        public static void TrackDocfxConfig(string fileName, string docsetName, JObject docfxConfig)
+        public static void TrackDocfxConfig(string docsetName, JObject docfxConfig)
         {
-            var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;
-            var docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
+            var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
             var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
             if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
             {
+                var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;
                 TryRemoveNestedObject(newValue!);
                 docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
             }
 
-            var dimensions = new Dictionary<string, string>();
-            dimensions["DocsetName"] = docsetName;
-            dimensions["Config"] = docfxConfigTelemetryValue;
-            dimensions["ContentHash"] = hashCode;
-            TrackEvent(fileName, dimensions);
+            var properties = new Dictionary<string, string>();
+            properties["DocsetName"] = docsetName;
+            properties["Config"] = docfxConfigTelemetryValue;
+            properties["ContentHash"] = hashCode;
+            TrackEvent("docfx.json", properties);
         }
 
         public static void TrackOperationTime(string name, TimeSpan duration)
@@ -163,7 +163,6 @@ namespace Microsoft.Docs.Build
                 Name = name,
             };
 
-            properties = properties ?? new Dictionary<string, string>();
             foreach (var property in properties)
             {
                 eventTelemetry.Properties[property.Key] = property.Value;

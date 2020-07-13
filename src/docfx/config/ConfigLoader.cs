@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
             errors.AddRange(configErrors);
 
-            Telemetry.TrackDocfxConfig(Path.GetFileName(configPath), config.Name, docfxConfig);
+            Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
             return (errors, config, buildOptions, packageResolver, fileResolver);
         }
 
