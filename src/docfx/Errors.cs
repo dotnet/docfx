@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
             /// Failed to compute specific info of a commit.
             /// </summary>
             public static Error GitCloneIncomplete(string repoPath)
-                => new Error(ErrorLevel.Error, "git-clone-incomplete", $"Git repository '{repoPath}' is an incomplete clone, GitHub contributor list may not be accurate.");
+                => new Error(ErrorLevel.Warning, "git-clone-incomplete", $"Git repository '{repoPath}' is an incomplete clone, GitHub contributor list may not be accurate.");
 
             /// <summary>
             /// Git.exe isn't installed.
