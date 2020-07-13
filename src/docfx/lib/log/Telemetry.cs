@@ -80,11 +80,13 @@ namespace Microsoft.Docs.Build
 
         public static void TrackDocfxConfig(string fileName, string docsetName, JObject docfxConfig)
         {
-            var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
+            var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;
+            var docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
             var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
             if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
             {
-                docfxConfigTelemetryValue = SerializeConfigObjectWithMaxLength(docfxConfig);
+                TryRemoveNestedObject(newValue!);
+                docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
             }
 
             var dimensions = new Dictionary<string, string>();
@@ -185,19 +187,6 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(str) ? "<null>" : str;
         }
 
-        private static string SerializeConfigObjectWithMaxLength(JObject graph)
-        {
-            TryRemoveNestedObject(graph);
-            var result = JsonUtility.Serialize(graph);
-            if (result.Length <= MaxEventPropertyLength)
-            {
-                return result;
-            }
-
-            TryRemoveLongArray(graph);
-            return JsonUtility.Serialize(graph);
-        }
-
         private static void TryRemoveNestedObject(this JObject graph)
         {
             foreach (var (key, value) in graph)
@@ -215,17 +204,6 @@ namespace Microsoft.Docs.Build
                             propertyValue[nestedKey] = new JArray();
                         }
                     }
-                }
-            }
-        }
-
-        private static void TryRemoveLongArray(this JObject graph)
-        {
-            foreach (var (key, value) in graph)
-            {
-                if (value is JArray array && array.Count > MaxChildrenLength)
-                {
-                    graph[key] = new JArray();
                 }
             }
         }
