@@ -5,6 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
+    /// <summary>
+    /// Represents a javascript engine for a single thread
+    /// </summary>
     internal interface IJavaScriptEngine
     {
         JToken Run(string scriptPath, string methodName, JToken arg);

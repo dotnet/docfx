@@ -1901,6 +1901,59 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/c.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":15}
 ---
+# Content Validation - dup image alt text
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextDuplicated",
+            "message": "Alt text '{0}' is duplicated. Within an article, alt text must be unique.",
+            "code": "image-alt-text-duplicated",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="test alt text":::
+
+    :::image source="pig2.jpg" alt-text="test alt text":::
+
+    :::image source="pig1.jpg" alt-text="unique alt text":::
+
+    :::image type="complex" source="pig1.jpg" alt-text="test alt text1" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    :::image type="complex" source="pig2.jpg" alt-text="test alt text1" loc-scope="azure"::: 
+    text
+    :::image-end:::
+outputs:
+  a.json:
+  pig1.jpg:
+  pig2.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":0,"end_column":0}
+---
 # Hidden PR only validation rule result
 inputs:
   docfx.yml: |
@@ -2004,3 +2057,4 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
+

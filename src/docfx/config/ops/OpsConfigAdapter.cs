@@ -39,22 +39,16 @@ namespace Microsoft.Docs.Build
             _ => throw new NotSupportedException(),
         };
 
-        private static readonly string s_keyVaultEndPoint = s_docsEnvironment switch
-        {
-            DocsEnvironment.Prod => "https://kv-docs-build-prod.vault.azure.net",
-            DocsEnvironment.PPE => "https://kv-docs-build-sandbox.vault.azure.net",
-            DocsEnvironment.Internal => "https://kv-docs-build-internal.vault.azure.net",
-            DocsEnvironment.Perf => "https://kv-docs-build-perf.vault.azure.net",
-            _ => throw new NotSupportedException(),
-        };
-
         private static string ValidationServiceEndpoint => $"{s_buildServiceEndpoint}/route/validationmgt";
 
-        private static readonly Lazy<SecretClient> s_secretClient = new Lazy<SecretClient>(()
-            => new SecretClient(new Uri(s_keyVaultEndPoint), new DefaultAzureCredential()));
-
-        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken =
-            new Lazy<Task<Response<KeyVaultSecret>>>(() => s_secretClient.Value.GetSecretAsync("opBuildUserToken"));
+        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(
+            () => new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential()).GetSecretAsync(
+                s_docsEnvironment switch
+                {
+                    DocsEnvironment.Prod => "OpsBuildTokenProd",
+                    DocsEnvironment.PPE => "OpsBuildTokenSandbox",
+                    _ => throw new NotSupportedException(),
+                }));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;

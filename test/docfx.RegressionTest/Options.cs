@@ -21,5 +21,8 @@ namespace Microsoft.Docs.Build
 
         [Option("output-html")]
         public bool OutputHtml { get; set; } = false;
+
+        [Option("error-level")]
+        public ErrorLevel ErrorLevel { get; set; }
     }
 }

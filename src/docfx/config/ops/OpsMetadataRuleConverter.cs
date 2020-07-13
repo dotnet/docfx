@@ -11,6 +11,22 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsMetadataRuleConverter
     {
+        private static readonly Dictionary<string, string[]> s_ruleNameConvert = new Dictionary<string, string[]>()
+        {
+            { "Kind", new string[] { "unexpected-type" } },
+            { "Match", new string[] { "invalid-value" } },
+            { "Required", new string[] { "missing-attribute" } },
+            { "Requires", new string[] { "missing-paired-attribute" } },
+            { "List", new string[] { "invalid-paired-attribute", "invalid-value" } },
+            { "Either", new string[] { "missing-either-attribute" } },
+            { "Precludes", new string[] { "precluded-attributes" } },
+            { "Date", new string[] { "date-format-invalid", "date-out-of-range" } },
+            { "MicrosoftAlias", new string[] { "ms-alias-invalid" } },
+            { "Deprecated", new string[] { "attribute-deprecated" } },
+            { "Uniqueness", new string[] { "duplicate-attribute" } },
+            { "Length", new string[] { "string-length-invalid" } },
+        };
+
         public static string GenerateJsonSchema(string rulesContent, string allowlistsContent)
         {
             Log.Write(rulesContent);
@@ -120,25 +136,9 @@ namespace Microsoft.Docs.Build
         {
             attributeCustomRules = new Dictionary<string, dynamic>();
 
-            var ruleNameConvert = new Dictionary<string, string[]>()
-            {
-                { "Kind", new string[] { "unexpected-type" } },
-                { "Match", new string[] { "invalid-value" } },
-                { "Required", new string[] { "missing-attribute" } },
-                { "Requires", new string[] { "missing-paired-attribute" } },
-                { "List", new string[] { "invalid-paired-attribute", "invalid-value" } },
-                { "Either", new string[] { "missing-either-attribute" } },
-                { "Precludes", new string[] { "precluded-attributes" } },
-                { "Date", new string[] { "date-format-invalid", "date-out-of-range" } },
-                { "MicrosoftAlias", new string[] { "ms-alias-invalid" } },
-                { "Deprecated", new string[] { "attribute-deprecated" } },
-                { "Uniqueness", new string[] { "duplicate-attribute" } },
-                { "Length", new string[] { "string-length-invalid" } },
-            };
-
             foreach (var (ruleName, ruleInfo) in rulesInfo)
             {
-                if (ruleNameConvert.TryGetValue(ruleName, out var baseCodes))
+                if (s_ruleNameConvert.TryGetValue(ruleName, out var baseCodes))
                 {
                     foreach (var baseCode in baseCodes)
                     {

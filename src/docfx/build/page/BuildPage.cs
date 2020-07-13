@@ -132,16 +132,16 @@ namespace Microsoft.Docs.Build
             return (new List<Error>(), context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
-        private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata inputMetadata)
+        private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata userMetadata)
         {
             var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
 
-            if (!string.IsNullOrEmpty(inputMetadata.BreadcrumbPath))
+            if (!string.IsNullOrEmpty(userMetadata.BreadcrumbPath))
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveLink(
-                    inputMetadata.BreadcrumbPath,
-                    inputMetadata.BreadcrumbPath.Source is null ? file : context.DocumentProvider.GetDocument(inputMetadata.BreadcrumbPath.Source.File),
+                    userMetadata.BreadcrumbPath,
+                    userMetadata.BreadcrumbPath.Source is null ? file : context.DocumentProvider.GetDocument(userMetadata.BreadcrumbPath.Source.File),
                     file);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
@@ -157,8 +157,8 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(inputMetadata.TocRel)
-                ? inputMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel)
+                ? userMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
 
             if (context.Config.DryRun)
             {
@@ -167,12 +167,12 @@ namespace Microsoft.Docs.Build
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
-            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file.FilePath, inputMetadata.Author);
+            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file.FilePath, userMetadata.Author);
             errors.AddRange(contributorErrors);
             systemMetadata.ContributionInfo = contributionInfo;
 
             systemMetadata.Locale = context.BuildOptions.Locale;
-            systemMetadata.CanonicalUrl = file.CanonicalUrl;
+            systemMetadata.CanonicalUrl = userMetadata.PageType != "profile" ? file.CanonicalUrl : null;
             systemMetadata.Path = file.SitePath;
             systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{context.Config.HostName}", systemMetadata.Locale, context.Config.BasePath) + "/";
 
