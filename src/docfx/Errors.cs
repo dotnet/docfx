@@ -251,7 +251,7 @@ namespace Microsoft.Docs.Build
             /// Path to root of dependent repository
             /// </summary>
             /// Behavior: ❌ Message: ❌
-            public static Error EmptyPathToRoot(string url, SourceInfo source)
+            public static Error EmptyPathToRoot(string url, SourceInfo? source)
                 => new Error(ErrorLevel.Error, "empty-path-to-root", $"Path to root of dependent repository {url} cannot be empty, please specify it.", source);
         }
 

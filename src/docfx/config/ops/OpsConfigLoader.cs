@@ -99,7 +99,10 @@ namespace Microsoft.Docs.Build
         private static (List<Error>, (JObject obj, string path, string name)[]) GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
         {
             return
-                (config.DependentRepositories.Where(x => string.IsNullOrEmpty(x.PathToRoot)).Select(x => Errors.Config.EmptyPathToRoot(x.Url, x.PathToRoot.Source)).ToList(),
+                (config.DependentRepositories
+                    .Where(x => string.IsNullOrEmpty(x.PathToRoot))
+                    .Select(x => Errors.Config.EmptyPathToRoot(x.Url, x.PathToRoot.Source))
+                    .ToList(),
                 (from dep in config.DependentRepositories.Where(x => !string.IsNullOrEmpty(x.PathToRoot))
                 let path = Path.GetRelativePath(buildSourceFolder, dep.PathToRoot)
                 let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
