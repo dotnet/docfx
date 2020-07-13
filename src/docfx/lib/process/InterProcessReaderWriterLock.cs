@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         private static FileStream WaitFile(string name, string lockHash, FileAccess access, FileShare fileShare)
         {
             var path = Path.Combine(AppData.MutexRoot, lockHash);
-            var start = DateTime.UtcNow;
+            var lastPrintTime = DateTime.UtcNow;
 
             while (true)
             {
@@ -51,8 +51,10 @@ namespace Microsoft.Docs.Build
                 }
                 catch
                 {
-                    if (DateTime.UtcNow - start > TimeSpan.FromSeconds(30))
+                    var now = DateTime.UtcNow;
+                    if (now - lastPrintTime > TimeSpan.FromSeconds(30))
                     {
+                        lastPrintTime = now;
                         Log.Important($"Waiting for another process to access '{name}'", ConsoleColor.Yellow);
                     }
 

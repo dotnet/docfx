@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             FileResolver = fileResolver;
             SourceMap = sourceMap;
 
-            RepositoryProvider = new RepositoryProvider(buildOptions, config);
+            RepositoryProvider = new RepositoryProvider(errorLog, buildOptions, config);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
@@ -103,6 +103,7 @@ namespace Microsoft.Docs.Build
                 DocumentProvider,
                 MonikerProvider,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
+
             ContentValidator = new ContentValidator(config, FileResolver, errorLog, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
@@ -151,13 +152,13 @@ namespace Microsoft.Docs.Build
             JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, ContentValidator);
-            TocMap =
-                new TableOfContentsMap(ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
+            TocMap = new TableOfContentsMap(
+                ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
-            PublishModelBuilder =
-                new PublishModelBuilder(config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
-            MetadataValidator =
-                new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
+            PublishModelBuilder = new PublishModelBuilder(
+                config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
+            MetadataValidator = new MetadataValidator(
+                Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
         }
 
         public void Dispose()
