@@ -39,15 +39,16 @@ namespace Microsoft.Docs.Build
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            var (xrefEndpoint, xrefQueryTags, config) = ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
+            var (configErrors, xrefEndpoint, xrefQueryTags, config) = ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
+            errors.AddRange(configErrors);
             return (errors, xrefEndpoint, xrefQueryTags, config);
         }
 
-        private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
+        private static (List<Error>, string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
             string branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
-            var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
+            var (errors, dependencies) = GetDependencies(opsConfig, branch, buildSourceFolder);
 
             result["dependencies"] = new JObject(
                 from dep in dependencies
@@ -92,14 +93,14 @@ namespace Microsoft.Docs.Build
                 result["sourceMap"] = new JArray(monodoc.Select((_, index) => $".sourcemap-{index}.json"));
             }
 
-            return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
+            return (errors, opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
-        private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
+        private static (List<Error>, (JObject obj, string path, string name)[]) GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
         {
-            return (
-                from dep in config.DependentRepositories
-                where !string.IsNullOrEmpty(dep.PathToRoot)
+            return
+                (config.DependentRepositories.Where(x => string.IsNullOrEmpty(x.PathToRoot)).Select(x => Errors.Config.EmptyPathToRoot(x.Url, x.PathToRoot.Source)).ToList(),
+                (from dep in config.DependentRepositories.Where(x => !string.IsNullOrEmpty(x.PathToRoot))
                 let path = Path.GetRelativePath(buildSourceFolder, dep.PathToRoot)
                 let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
                 let obj = new JObject
@@ -108,7 +109,7 @@ namespace Microsoft.Docs.Build
                     ["includeInBuild"] = dep.IncludeInBuild,
                     ["branch"] = depBranch,
                 }
-                select (obj, path, dep.PathToRoot)).ToArray();
+                select (obj, path, dep.PathToRoot.Value)).ToArray());
         }
 
         private static JArray? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)

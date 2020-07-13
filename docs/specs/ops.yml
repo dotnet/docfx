@@ -274,3 +274,5 @@ repos:
         }
       articles/docfx.yml:
 outputs:
+  articles/.errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"empty-path-to-root","message":"Path to root of dependent repository https://github.com/ops1/template cannot be empty, please specify it.","file":".openpublishing.publish.config.json","line":4,"column":24}

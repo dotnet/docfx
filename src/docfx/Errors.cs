@@ -246,6 +246,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ✔️
             public static Error CommittishNotFound(string repo, string committish)
                 => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
+
+            /// <summary>
+            /// Path to root of dependent repository
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error EmptyPathToRoot(string url, SourceInfo source)
+                => new Error(ErrorLevel.Error, "empty-path-to-root", $"Path to root of dependent repository {url} cannot be empty, please specify it.", source);
         }
 
         public static class Link
