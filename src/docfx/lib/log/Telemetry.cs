@@ -45,7 +45,9 @@ namespace Microsoft.Docs.Build
                 s_metricConfiguration);
 
         private static readonly Metric s_githubRateLimitMetric =
-            s_telemetryClient.GetMetric(new MetricIdentifier(null, "GitHubRateLimit", "Remaining"), s_metricConfiguration);
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(null, "GitHubRateLimit", "Remaining", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                s_metricConfiguration);
 
         private static readonly Metric s_markdownElementCountMetric =
             s_telemetryClient.GetMetric(
@@ -108,7 +110,7 @@ namespace Microsoft.Docs.Build
 
         public static void TrackGitHubRateLimit(string remaining)
         {
-            s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining));
+            s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackBuildFileTypeCount(FilePath filePath, PublishItem publishItem)
