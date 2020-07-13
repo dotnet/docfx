@@ -11,11 +11,11 @@ namespace Microsoft.Docs.Build
     {
         public SourceInfo<string> Uid { get; }
 
-        public string Href { get; set; }
+        public string Href { get; }
 
         public Document DeclaringFile { get; }
 
-        public MonikerList Monikers { get; set; }
+        public MonikerList Monikers { get; }
 
         public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
 
