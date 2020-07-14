@@ -296,7 +296,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                     _context.LogWarning(
                         "unknown-language-code",
-                        $"{lang} was not a recognized language, alias or extension for parsing code snippet with tag name. Your code snippet may not be rendered. If this is the case, you can use range instead.",
+                        $"Unrecognized language value '{lang}' in code snippet '{obj.TagName}' in file '{obj.CodePath}'. Your code snippet might not render correctly. If this is the case, you can request a new value or use range instead.",
                         obj);
                 }
 
