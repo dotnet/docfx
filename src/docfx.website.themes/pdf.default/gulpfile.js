@@ -35,6 +35,4 @@ gulp.task('copy:font', function () {
         .pipe(copy('./fonts/'));
 });
 
-gulp.task('copy', ['copy:font']);
-
-gulp.task('default', ['concat']);
+gulp.task('default', gulp.parallel('concat', 'copy:font'));
