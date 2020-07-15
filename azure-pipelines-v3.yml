@@ -131,7 +131,7 @@ jobs:
   strategy:
     matrix:
       DocsRoot:
-        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 15
+        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
       sql-docs-pr:
