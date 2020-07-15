@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
         private const string AllowlistsApi = "https://ops/allowlists/";
         private const string DisallowlistsApi = "https://ops/disallowlists/";
+        private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
+        private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
         private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
 
@@ -67,6 +69,8 @@ namespace Microsoft.Docs.Build
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
                 (AllowlistsApi, GetAllowlists),
                 (DisallowlistsApi, GetDisallowlists),
+                (RegressionAllContentRulesApi, _ => GetRegressionAllContentRules()),
+                (RegressionAllMetadataSchemaApi, _ => GetRegressionAllMetadataSchema()),
             };
         }
 
@@ -203,6 +207,21 @@ namespace Microsoft.Docs.Build
             var headers = GetValidationServiceHeaders(url);
             var metadataRules = FetchValidationRules($"{ValidationServiceEndpoint}/rulesets/metadatarules", headers);
             var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/validation/allowlists", headers);
+
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+        }
+
+        private async Task<string> GetRegressionAllContentRules()
+        {
+            return await FetchValidationRules($"https://op-build-sandbox2.azurewebsites.net/route/validationmgt/rulesets/contentrules?name=_regression_all_");
+        }
+
+        private async Task<string> GetRegressionAllMetadataSchema()
+        {
+            var metadataRules =
+                FetchValidationRules($"https://op-build-sandbox2.azurewebsites.net/route/validationmgt/rulesets/metadatarules?name=_regression_all_");
+            var allowlists =
+                FetchValidationRules($"https://op-build-sandbox2.azurewebsites.net/route/validationmgt/validation/allowlists");
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
