@@ -160,6 +160,11 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
+        public string GetRelativePath(PathString path)
+        {
+            return Path.GetRelativePath(Value, path);
+        }
+
         private class PathStringJsonConverter : JsonConverter
         {
             public override bool CanConvert(Type objectType) => objectType == typeof(PathString);

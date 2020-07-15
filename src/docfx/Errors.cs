@@ -115,11 +115,11 @@ namespace Microsoft.Docs.Build
         public static class Logging
         {
             /// <summary>
-            /// Build errors is larger than <see cref="OutputConfig.MaxErrors"/>.
+            /// Build errors is larger than <see cref="OutputConfig.MaxFileErrors"/>.
             /// </summary>
             /// Behavior: ❌ Message: ❌
-            public static Error ExceedMaxErrors(int maxErrors, ErrorLevel level)
-                => new Error(level, "exceed-max-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer {level} logs will be ignored.");
+            public static Error ExceedFileMaxErrors(int maxErrors, ErrorLevel level, FilePath file)
+                => new Error(ErrorLevel.Info, "exceed-file-max-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer {level} logs in {file} will be ignored.", file);
 
             /// <summary>
             /// Build failure caused by English content when building localized docset.

@@ -97,9 +97,9 @@ namespace Microsoft.Docs.Build
 
         private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
         {
-            return (
-                from dep in config.DependentRepositories
-                let path = Path.GetRelativePath(buildSourceFolder, dep.PathToRoot)
+            return
+                (from dep in config.DependentRepositories
+                let path = new PathString(buildSourceFolder).GetRelativePath(dep.PathToRoot)
                 let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
                 let obj = new JObject
                 {
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                     ["includeInBuild"] = dep.IncludeInBuild,
                     ["branch"] = depBranch,
                 }
-                select (obj, path, dep.PathToRoot)).ToArray();
+                select (obj, path, dep.PathToRoot.Value)).ToArray();
         }
 
         private static JArray? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)

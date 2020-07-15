@@ -258,3 +258,22 @@ outputs:
     { "metadata": { "universal_conceptual_toc": "/dotnet-1/azure/sdk/toc.json", "universal_ref_toc": undefined } }
   a/docs-ref-conceptual-2/toc.json: |
     { "metadata": { "universal_conceptual_toc": undefined, "universal_ref_toc": "/dotnet-2/api/azure_ref_toc/toc.json" } }
+---
+# Should not thrown on empty dependency path to root
+repos:
+  https://github.com/ops1/empty-dep#live:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{ "build_source_folder": "articles" }],
+          "dependent_repositories": [{
+              "path_to_root": "",
+              "url": "https://github.com/ops1/template1",
+              "branch": "test"
+            }]
+        }
+      articles/docfx.yml:
+  https://github.com/ops1/template1#test:
+  - files:
+      ContentTemplate/schemas/TestData.schema.json: "{}"
+outputs:
