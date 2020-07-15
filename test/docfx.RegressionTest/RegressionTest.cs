@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
         private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
         {
-            var repositoryName = opts.DryRun ? $"dryrun.{opts.Repository}" : Path.GetFileName(opts.Repository);
+            var repositoryName = opts.DryRun ? $"dryrun.{Path.GetFileName(opts.Repository)}" : Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
             var repositoryPath = Path.Combine(workingFolder, repositoryName);
             var cachePath = Path.Combine(workingFolder, "cache");
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
 
         private static void EnsureTestData(Options opts)
         {
-            var repositoryName = opts.DryRun ? $"dryrun.{opts.Repository}" : Path.GetFileName(opts.Repository);
+            var repositoryName = opts.DryRun ? $"dryrun.{Path.GetFileName(opts.Repository)}" : Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
 
             if (!Directory.Exists(workingFolder))
