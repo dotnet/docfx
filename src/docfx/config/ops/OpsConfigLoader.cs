@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
         {
             return
                 (from dep in config.DependentRepositories
-                let path = Path.GetRelativePath(buildSourceFolder, dep.PathToRoot)
+                let path = new PathString(buildSourceFolder).GetRelativePath(dep.PathToRoot)
                 let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
                 let obj = new JObject
                 {
