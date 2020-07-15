@@ -131,7 +131,7 @@ jobs:
   strategy:
     matrix:
       DocsRoot:
-        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 60
+        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 15
       azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
       sql-docs-pr:
@@ -157,7 +157,7 @@ jobs:
       azure-docs-rest-apis:
         params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
       dynamics365-docs-odata-apis:
-        params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 130
+        params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 20
       mc-docs-pr:
         params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
       dynamics365smb-devitpro:
