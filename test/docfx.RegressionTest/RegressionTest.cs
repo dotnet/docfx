@@ -90,6 +90,17 @@ namespace Microsoft.Docs.Build
                     docfxConfig["outputUrlType"] = "ugly";
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
+
+                if (!string.IsNullOrEmpty(opts.MarkdownRuleApi))
+                {
+                    docfxConfig["markdownValidationRules"] = opts.MarkdownRuleApi;
+                }
+
+                if (!string.IsNullOrEmpty(opts.MetadataSchemaApi))
+                {
+                    docfxConfig["metadataSchema"] = opts.MetadataSchemaApi;
+                }
+
                 return JsonConvert.SerializeObject(docfxConfig);
             }
 
