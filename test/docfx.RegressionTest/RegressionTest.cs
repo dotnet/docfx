@@ -45,6 +45,11 @@ namespace Microsoft.Docs.Build
         private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
         {
             var repositoryName = Path.GetFileName(opts.Repository);
+            if (opts.DryRun)
+            {
+                repositoryName = $"dryrun.{repositoryName}";
+            }
+
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
             var repositoryPath = Path.Combine(workingFolder, repositoryName);
             var cachePath = Path.Combine(workingFolder, "cache");
@@ -108,7 +113,7 @@ namespace Microsoft.Docs.Build
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath, !opts.OutputHtml, docfxConfig);
+            var buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
             Compare(outputPath, opts.Repository, baseLinePath, buildTime, opts.Timeout, workingFolder, opts.ErrorLevel);
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -166,18 +171,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, bool legacyMode, string docfxConfig)
+        private static TimeSpan Build(string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
+            var legacyOption = !opts.OutputHtml ? "--legacy" : "";
+            var dryRunOption = opts.DryRun ? "--dry-run" : "";
+
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {(legacyMode ? "--legacy" : string.Empty)} --verbose --stdin",
+                arguments: $"restore {legacyOption} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {(legacyMode ? "--legacy" : string.Empty)} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {legacyOption} {dryRunOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
