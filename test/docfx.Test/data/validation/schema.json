@@ -5213,12 +5213,14 @@
       "date-format-invalid": {
         "severity": "suggestion",
         "code": "ms-date-invalid",
-        "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today."
+        "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
+        "pullRequestOnly": true
       },
       "date-out-of-range": {
         "severity": "suggestion",
         "code": "ms-date-invalid",
-        "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today."
+        "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
+        "pullRequestOnly": true
       }
     },
     "ms.component": {
@@ -5230,12 +5232,14 @@
     "description": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "pullRequestOnly": true
       },
       "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-description-within-docset",
-        "additionalMessage": "Description must be unique within a docset."
+        "additionalMessage": "Description must be unique within a docset.",
+        "pullRequestOnly": false
       },
       "string-length-invalid": {
         "severity": "suggestion",
