@@ -91,9 +91,9 @@ namespace Microsoft.Docs.Build
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
 
-                if (!string.IsNullOrEmpty(opts.MarkdownRuleApi))
+                if (!string.IsNullOrEmpty(opts.MarkdownRulesApi))
                 {
-                    docfxConfig["markdownValidationRules"] = opts.MarkdownRuleApi;
+                    docfxConfig["markdownValidationRules"] = opts.MarkdownRulesApi;
                 }
 
                 if (!string.IsNullOrEmpty(opts.MetadataSchemaApi))

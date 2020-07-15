@@ -25,8 +25,8 @@ namespace Microsoft.Docs.Build
         [Option("dry-run")]
         public bool DryRun { get; set; }
 
-        [Option("markdown-rule-api")]
-        public string? MarkdownRuleApi { get; set; }
+        [Option("markdown-rules-api")]
+        public string? MarkdownRulesApi { get; set; }
 
         [Option("metadata-schema-api")]
         public string? MetadataSchemaApi { get; set; }
