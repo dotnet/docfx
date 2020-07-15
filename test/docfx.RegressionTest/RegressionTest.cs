@@ -33,10 +33,10 @@ namespace Microsoft.Docs.Build
 
         private static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<Options>(args).WithParsed(Main);
+            Parser.Default.ParseArguments<Options>(args).WithParsed(Run);
         }
 
-        private static void Main(Options opts)
+        private static void Run(Options opts)
         {
             var repositoryName = opts.DryRun ? $"dryrun.{Path.GetFileName(opts.Repository)}" : Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
