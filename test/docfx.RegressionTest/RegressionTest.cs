@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(opts =>
                 {
-                    EnsureTestData(opts.Repository, opts.Branch);
+                    EnsureTestData(opts);
                     Test(opts);
                     PushChanges(opts.Repository);
                 });
@@ -44,12 +44,7 @@ namespace Microsoft.Docs.Build
 
         private static (string baseLinePath, string outputPath, string workingFolder, string repositoryPath, string docfxConfig) Prepare(Options opts)
         {
-            var repositoryName = Path.GetFileName(opts.Repository);
-            if (opts.DryRun)
-            {
-                repositoryName = $"dryrun.{repositoryName}";
-            }
-
+            var repositoryName = opts.DryRun ? $"dryrun.{opts.Repository}" : Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
             var repositoryPath = Path.Combine(workingFolder, repositoryName);
             var cachePath = Path.Combine(workingFolder, "cache");
@@ -122,44 +117,44 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static void EnsureTestData(string repository, string branch)
+        private static void EnsureTestData(Options opts)
         {
-            var testRepositoryName = Path.GetFileName(repository);
-            var testWorkingFolder = Path.Combine(s_testDataRoot, $"regression-test.{testRepositoryName}");
+            var repositoryName = opts.DryRun ? $"dryrun.{opts.Repository}" : Path.GetFileName(opts.Repository);
+            var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
 
-            if (!Directory.Exists(testWorkingFolder))
+            if (!Directory.Exists(workingFolder))
             {
-                Directory.CreateDirectory(testWorkingFolder);
-                Exec("git", $"init", cwd: testWorkingFolder);
-                Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: testWorkingFolder);
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
+                Directory.CreateDirectory(workingFolder);
+                Exec("git", $"init", cwd: workingFolder);
+                Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
+                Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
             }
 
             try
             {
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress --prune {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth, redirectStandardError: true);
+                Exec("git", $"{s_gitCmdAuth} fetch origin --progress --prune {repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth, redirectStandardError: true);
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains($"couldn't find remote ref {testRepositoryName}"))
+                if (ex.Message.Contains($"couldn't find remote ref {repositoryName}"))
                 {
                     // A new repo is added for the first time
-                    Exec("git", $"checkout -B {testRepositoryName} origin/template", cwd: testWorkingFolder);
-                    Exec("git", $"clean -xdff", cwd: testWorkingFolder);
-                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f --branch {branch} {repository} {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
+                    Exec("git", $"checkout -B {repositoryName} origin/template", cwd: workingFolder);
+                    Exec("git", $"clean -xdff", cwd: workingFolder);
+                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f --branch {opts.Branch} {opts.Repository} {repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
                     return;
                 }
                 throw;
             }
 
-            Exec("git", $"-c core.longpaths=true checkout --force origin/{testRepositoryName}", cwd: testWorkingFolder);
-            Exec("git", $"clean -xdff", cwd: testWorkingFolder);
+            Exec("git", $"-c core.longpaths=true checkout --force origin/{repositoryName}", cwd: workingFolder);
+            Exec("git", $"clean -xdff", cwd: workingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
-            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {branch} {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} submodule sync {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule update {submoduleUpdateFlags} --init --progress --force {testRepositoryName}", cwd: testWorkingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"clean -xdf", cwd: Path.Combine(testWorkingFolder, testRepositoryName));
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule sync {repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule update {submoduleUpdateFlags} --init --progress --force {repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, repositoryName));
         }
 
         private static void Clean(string outputPath)
