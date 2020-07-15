@@ -91,14 +91,14 @@ namespace Microsoft.Docs.Build
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
 
-                if (!string.IsNullOrEmpty(opts.MarkdownRulesApi))
+                if (opts.RegressionMarkdownRule)
                 {
-                    docfxConfig["markdownValidationRules"] = opts.MarkdownRulesApi;
+                    docfxConfig["markdownValidationRules"] = "https://ops/regressionallcontentrules/";
                 }
 
-                if (!string.IsNullOrEmpty(opts.MetadataSchemaApi))
+                if (opts.RegressionMetadataSchema)
                 {
-                    docfxConfig["metadataSchema"] = opts.MetadataSchemaApi;
+                    docfxConfig["metadataSchema"] = "https://ops/regressionallmetadataschema/";
                 }
 
                 return JsonConvert.SerializeObject(docfxConfig);
