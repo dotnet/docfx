@@ -166,6 +166,8 @@ jobs:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15
+      dryrun.azure-docs-pr:
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 35 --dry-run
 
   steps:
   # Install .NET Core sdk
