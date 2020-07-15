@@ -133,7 +133,7 @@ jobs:
       DocsRoot:
         params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 80
       sql-docs-pr:
         params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120
       docs:
