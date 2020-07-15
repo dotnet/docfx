@@ -166,7 +166,7 @@ jobs:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15
-      azure-docs-pr:
+      dryrun.azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run
 
   steps:
