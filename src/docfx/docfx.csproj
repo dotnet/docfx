@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.734" />
     <PackageReference Include="Microsoft.Graph" Version="3.8.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.16.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Jint" Version="3.0.0-beta-1828" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
