@@ -347,17 +347,17 @@ outputs:
     {
       "file_mapping": {
         "crrb/a.md": {
-          "type": "Content",
+          "type": "content",
           "output_relative_path": "crrb/a.html",
           "asset_id": "crrb/a"
         },
         "crrc/a.md": {
-          "type": "Content",
+          "type": "content",
           "output_relative_path": "crrc/a.html",
           "asset_id": "crrc/a"
         },
         "docs/a.md": {
-          "type": "Content",
+          "type": "content",
           "output_relative_path": "docs/a.html",
           "asset_id": "docs/a"
         }

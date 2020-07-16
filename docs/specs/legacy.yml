@@ -335,7 +335,7 @@ outputs:
     {
       "file_mapping":{
         "docs/v1/a.md:< netcore-2.0":{
-          "type":"Content",
+          "type":"content",
           "output_relative_path":"9d4e15fd/a.html",
           "asset_id":"a",
           "version": "< netcore-2.0",
@@ -343,7 +343,7 @@ outputs:
           "is_moniker_range": true
         },
         "docs/v2/a.md:netcore-2.0":{
-          "type":"Content",
+          "type":"content",
           "output_relative_path":"4667fedf/a.html",
           "asset_id":"a",
           "version": "netcore-2.0",

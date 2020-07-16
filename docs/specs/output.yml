@@ -774,7 +774,7 @@ outputs:
                 }
             ],
         },
-        "a/original.xml": { "type": "Content" }
+        "a/original.xml": { "type": "content" }
       }
     }
   filemap.json: |
@@ -783,13 +783,13 @@ outputs:
       {
           "b.md": 
           {
-              "type": "Content",
+              "type": "content",
               "output_relative_path": "b.html",
               "asset_id": "b"
           },
           "c.md": 
           {
-              "type": "Content",
+              "type": "content",
               "output_relative_path": "c.html",
               "asset_id": "c"
           }
@@ -801,4 +801,54 @@ outputs:
         {"asset_id": "b", "original": "a/b.original.xml", "source_relative_path": "a/b.original.xml"},
         {"asset_id": "c", "original": "a/original.xml", "source_relative_path": "a/original.xml"},
       ]
+    }
+---
+# Expose all toc reference to aggregated file map
+legacy: true
+inputs:
+  docfx.yml:
+  docs/a.md:
+  docs/TOC.md: |
+    # [file reference](a.md)
+  docs/a/TOC.md: |
+    # [file reference](../a.md)
+outputs:
+  docs/a.mta.json:
+  docs/a.raw.page.json:
+  docs/toc.json:
+  docs/a/toc.json:
+  op_aggregated_file_map_info.json: |
+    {
+      "aggregated_file_map_items": {
+          "docs/a.md": {
+              "dependencies": [
+                  {
+                      "from_file_path": "docs/a.md",
+                      "to_file_path": "docs/TOC.md",
+                      "dependency_type": "metadata"
+                  }
+              ],
+              "type": "content"
+          },
+          "docs/a/TOC.md": {
+              "dependencies": [
+                  {
+                      "from_file_path": "docs/a/TOC.md",
+                      "to_file_path": "docs/a.md",
+                      "dependency_type": "file"
+                  }
+              ],
+              "type": "toc"
+          },
+          "docs/TOC.md": {
+              "dependencies": [
+                  {
+                      "from_file_path": "docs/TOC.md",
+                      "to_file_path": "docs/a.md",
+                      "dependency_type": "file"
+                  }
+              ],
+              "type": "toc"
+          }
+      }
     }
