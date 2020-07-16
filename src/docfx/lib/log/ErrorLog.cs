@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             }
 
             var errorSink = error.FilePath is null ? _errorSink : _fileSink.GetOrAdd(error.FilePath, _ => new ErrorSink());
-            if (errorSink.Add(config, error, level))
+            if (errorSink.Add(error.FilePath is null ? null : config, error, level))
             {
                 WriteCore(error, level);
             }

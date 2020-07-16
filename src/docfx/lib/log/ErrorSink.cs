@@ -24,12 +24,7 @@ namespace Microsoft.Docs.Build
         {
             lock (_errors)
             {
-                if (config is null)
-                {
-                    return _errors.Add(error);
-                }
-
-                var exceedMaxAllowed = level switch
+                var exceedMaxAllowed = config is null ? false : level switch
                 {
                     ErrorLevel.Error => ErrorCount >= config.MaxFileErrors,
                     ErrorLevel.Warning => WarningCount >= config.MaxFileWarnings,
