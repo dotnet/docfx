@@ -3,6 +3,7 @@
 
 using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
@@ -10,6 +11,7 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class LegacyFileMapItem
     {
+        [JsonConverter(typeof(StringEnumConverter))]
         public LegacyItemType Type { get; set; }
 
         public string OutputRelativePath { get; set; }

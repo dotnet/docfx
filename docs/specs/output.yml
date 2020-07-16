@@ -774,7 +774,7 @@ outputs:
                 }
             ],
         },
-        "a/original.xml": { "type": "content" }
+        "a/original.xml": { "type": "Content" }
       }
     }
   filemap.json: |
@@ -783,13 +783,13 @@ outputs:
       {
           "b.md": 
           {
-              "type": "content",
+              "type": "Content",
               "output_relative_path": "b.html",
               "asset_id": "b"
           },
           "c.md": 
           {
-              "type": "content",
+              "type": "Content",
               "output_relative_path": "c.html",
               "asset_id": "c"
           }
@@ -828,7 +828,7 @@ outputs:
                       "dependency_type": "metadata"
                   }
               ],
-              "type": "content"
+              "type": "Content"
           },
           "docs/a/TOC.md": {
               "dependencies": [
@@ -838,7 +838,7 @@ outputs:
                       "dependency_type": "file"
                   }
               ],
-              "type": "toc"
+              "type": "Toc"
           },
           "docs/TOC.md": {
               "dependencies": [
@@ -848,7 +848,7 @@ outputs:
                       "dependency_type": "file"
                   }
               ],
-              "type": "toc"
+              "type": "Toc"
           }
       }
     }
