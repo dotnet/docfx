@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                           g => g.Key,
                           g => (g.First().fileMapItem, g.SelectMany(x => x.fileMapItem.Monikers).Distinct().OrderBy(_ => _, StringComparer.Ordinal).ToList())))
             {
-                if (fileMapItem.Type == "Resource")
+                if (fileMapItem.Type == LegacyItemType.Resource)
                 {
                     continue;
                 }
