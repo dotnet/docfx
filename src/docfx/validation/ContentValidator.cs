@@ -24,6 +24,14 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
         }
 
+        public void ValidateImage(Document file, string link, string? altText)
+        {
+            // validate image link and altText here
+            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))
+            {
+            }
+        }
+
         public void ValidateHeadings(Document file, List<ContentNode> nodes, bool isIncluded)
         {
             if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, isIncluded, out var documentType))

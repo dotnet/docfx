@@ -34,7 +34,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     break;
 
                 case LinkInline linkInline:
-                    linkInline.Url = _context.GetLink(linkInline.Url, linkInline);
+                    linkInline.Url = linkInline.IsImage
+                        ? _context.GetImageLink(linkInline.Url, linkInline, linkInline.Title)
+                        : _context.GetLink(linkInline.Url, linkInline);
                     foreach (var subBlock in linkInline)
                     {
                         UpdateLinks(subBlock);

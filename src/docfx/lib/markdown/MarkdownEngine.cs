@@ -296,6 +296,13 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
+        private string GetImageLink(string path, MarkdownObject origin, string? altText)
+        {
+            var link = GetLink(path, origin);
+            _contentValidator.ValidateImage((Document)InclusionContext.File, link, altText);
+            return link;
+        }
+
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
