@@ -118,8 +118,8 @@ namespace Microsoft.Docs.Build
             /// Build errors is larger than <see cref="OutputConfig.MaxFileErrors"/>.
             /// </summary>
             /// Behavior: ❌ Message: ❌
-            public static Error ExceedFileMaxErrors(int maxErrors, ErrorLevel level, FilePath file)
-                => new Error(ErrorLevel.Info, $"exceed-file-max-{level.ToString().ToLowerInvariant()}s", $"{level} count exceed '{maxErrors}'. Build will continue but newer {level} logs in {file} will be ignored.", file);
+            public static Error ExceedMaxFileErrors(int maxErrors, ErrorLevel level, FilePath file)
+                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", file);
 
             /// <summary>
             /// Build failure caused by English content when building localized docset.

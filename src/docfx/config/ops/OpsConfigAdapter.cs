@@ -12,6 +12,7 @@ using System.Web;
 using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
@@ -27,29 +28,10 @@ namespace Microsoft.Docs.Build
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
         private const string AllowlistsApi = "https://ops/allowlists/";
         private const string DisallowlistsApi = "https://ops/disallowlists/";
+        private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
+        private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
         private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
-
-        private static readonly string s_buildServiceEndpoint = s_docsEnvironment switch
-        {
-            DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
-            DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
-            DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
-            DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-            _ => throw new NotSupportedException(),
-        };
-
-        private static string ValidationServiceEndpoint => $"{s_buildServiceEndpoint}/route/validationmgt";
-
-        private static readonly Lazy<Task<Response<KeyVaultSecret>>> s_opBuildUserToken = new Lazy<Task<Response<KeyVaultSecret>>>(
-            () => new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential()).GetSecretAsync(
-                s_docsEnvironment switch
-                {
-                    DocsEnvironment.Prod => "OpsBuildTokenProd",
-                    DocsEnvironment.PPE => "OpsBuildTokenSandbox",
-                    _ => throw new NotSupportedException(),
-                }));
-
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
@@ -67,6 +49,8 @@ namespace Microsoft.Docs.Build
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
                 (AllowlistsApi, GetAllowlists),
                 (DisallowlistsApi, GetDisallowlists),
+                (RegressionAllContentRulesApi, _ => GetRegressionAllContentRules()),
+                (RegressionAllMetadataSchemaApi, _ => GetRegressionAllMetadataSchema()),
             };
         }
 
@@ -97,7 +81,7 @@ namespace Microsoft.Docs.Build
             var xrefEndpoint = queries["xref_endpoint"];
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
-            var fetchUrl = $"{s_buildServiceEndpoint}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
+            var fetchUrl = $"{BuildServiceEndpoint()}/v2/Queries/Docsets?git_repo_url={repository}&docset_query_status=Created";
             var docsetInfo = await Fetch(fetchUrl, value404: "[]");
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
@@ -174,35 +158,51 @@ namespace Microsoft.Docs.Build
 
         private Task<string> GetMonikerDefinition(Uri url)
         {
-            return Fetch($"{s_buildServiceEndpoint}/v2/monikertrees/allfamiliesproductsmonikers");
+            return Fetch($"{BuildServiceEndpoint()}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/rulesets/contentrules", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint()}/rulesets/contentrules", headers);
         }
 
         private async Task<string> GetAllowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/validation/allowlists", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint()}/validation/allowlists", headers);
         }
 
         private async Task<string> GetDisallowlists(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
 
-            return await FetchValidationRules($"{ValidationServiceEndpoint}/validation/disallowlists", headers);
+            return await FetchValidationRules($"{ValidationServiceEndpoint()}/validation/disallowlists", headers);
         }
 
         private async Task<string> GetMetadataSchema(Uri url)
         {
             var headers = GetValidationServiceHeaders(url);
-            var metadataRules = FetchValidationRules($"{ValidationServiceEndpoint}/rulesets/metadatarules", headers);
-            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint}/validation/allowlists", headers);
+            var metadataRules = FetchValidationRules($"{ValidationServiceEndpoint()}/rulesets/metadatarules", headers);
+            var allowlists = FetchValidationRules($"{ValidationServiceEndpoint()}/validation/allowlists", headers);
+
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+        }
+
+        private async Task<string> GetRegressionAllContentRules()
+        {
+            return await FetchValidationRules(
+                $"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/rulesets/contentrules?name=_regression_all_", null, DocsEnvironment.PPE);
+        }
+
+        private async Task<string> GetRegressionAllMetadataSchema()
+        {
+            var metadataRules = FetchValidationRules(
+                $"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/rulesets/metadatarules?name=_regression_all_", null, DocsEnvironment.PPE);
+            var allowlists = FetchValidationRules(
+                $"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/validation/allowlists", null, DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null)
+        private async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null, DocsEnvironment? environment = null)
         {
             try
             {
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
                                    request.Headers.TryAddWithoutValidation(key, value);
                                }
                            }
-                           await FillOpsToken(url, request);
+                           await FillOpsToken(url, request, environment);
                            var response = await _http.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
@@ -288,6 +288,29 @@ namespace Microsoft.Docs.Build
                 return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             }
         }
+
+        private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
+            => (environment ?? s_docsEnvironment) switch
+            {
+                DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
+                DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
+                DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
+                DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
+                _ => throw new NotSupportedException(),
+            };
+
+        private static string ValidationServiceEndpoint(DocsEnvironment? environment = null) =>
+            $"{BuildServiceEndpoint(environment)}/route/validationmgt";
+
+        private static Lazy<Task<Response<KeyVaultSecret>>> OpBuildUserToken(DocsEnvironment? environment = null)
+            => new Lazy<Task<Response<KeyVaultSecret>>>(
+            () => new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential()).GetSecretAsync(
+            (environment ?? s_docsEnvironment) switch
+            {
+                DocsEnvironment.Prod => "OpsBuildTokenProd",
+                DocsEnvironment.PPE => "OpsBuildTokenSandbox",
+                _ => throw new NotSupportedException(),
+            }));
 
         private static string GetHostName(string siteName)
         {
@@ -342,14 +365,14 @@ namespace Microsoft.Docs.Build
                 : DocsEnvironment.Prod;
         }
 
-        private static async Task FillOpsToken(string url, HttpRequestMessage request)
+        private static async Task FillOpsToken(string url, HttpRequestMessage request, DocsEnvironment? environment = null)
         {
-            if (url.StartsWith(s_buildServiceEndpoint) && !request.Headers.Contains("X-OP-BuildUserToken"))
+            if (url.StartsWith(BuildServiceEndpoint(environment)) && !request.Headers.Contains("X-OP-BuildUserToken"))
             {
                 // For development usage
                 try
                 {
-                    request.Headers.Add("X-OP-BuildUserToken", (await s_opBuildUserToken.Value).Value.Value);
+                    request.Headers.Add("X-OP-BuildUserToken", (await OpBuildUserToken(environment).Value).Value.Value);
                 }
                 catch (Exception ex)
                 {
