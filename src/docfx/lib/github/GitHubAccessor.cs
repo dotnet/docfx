@@ -48,6 +48,11 @@ namespace Microsoft.Docs.Build
 
         public (Error?, GitHubUser?) GetUserByLogin(SourceInfo<string> login)
         {
+            if (string.IsNullOrEmpty(login))
+            {
+                return default;
+            }
+
             var (error, user) = _userCache.GetOrAdd(login.Value, GetUserByLoginCore);
             if (user != null && !user.IsValid())
             {
@@ -59,6 +64,11 @@ namespace Microsoft.Docs.Build
 
         public (Error?, GitHubUser?) GetUserByEmail(string email, string owner, string name, string commit)
         {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(commit))
+            {
+                return default;
+            }
+
             var (error, user) = _userCache.GetOrAdd(email, _ => GetUserByEmailCore(email, owner, name, commit));
             return (error, user != null && user.IsValid() ? user : null);
         }
@@ -113,11 +123,6 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error?, IEnumerable<GitHubUser>)> GetUserByEmailCore(string email, string owner, string name, string commit)
         {
-            if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(commit))
-            {
-                return default;
-            }
-
             if (_unknownRepos.Contains((owner, name)))
             {
                 return default;
