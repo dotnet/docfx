@@ -3,27 +3,24 @@
 
 using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class LegacyFileMapItem
     {
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
+        public LegacyItemType Type { get; set; }
 
-        [JsonProperty(PropertyName = "output_relative_path")]
         public string OutputRelativePath { get; set; }
 
-        [JsonProperty(PropertyName = "asset_id")]
         public string AssetId { get; set; }
 
-        [JsonProperty(PropertyName = "version")]
         public string? Version { get; set; }
 
-        [JsonProperty(PropertyName = "is_moniker_range", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool IsMonikerRange { get; set; } = true;
 
-        [JsonProperty(PropertyName = "monikers")]
         public MonikerList Monikers { get; set; }
 
         public bool ShouldSerializeIsMonikerRange() => !string.IsNullOrEmpty(Version);
@@ -39,7 +36,7 @@ namespace Microsoft.Docs.Build
             {
                 case ContentType.Page:
                 case ContentType.Redirection:
-                    Type = "Content";
+                    Type = LegacyItemType.Content;
                     OutputRelativePath = PathUtility.NormalizeFile(
                         LegacyUtility.ChangeExtension(legacyOutputFilePathRelativeToBasePath, ".html"));
                     AssetId = legacySiteUrlRelativeToBasePath;
@@ -47,13 +44,19 @@ namespace Microsoft.Docs.Build
                     Monikers = monikers;
                     break;
                 case ContentType.Resource:
-                    Type = "Resource";
+                    Type = LegacyItemType.Resource;
                     OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
                     AssetId = legacySiteUrlRelativeToBasePath;
                     Version = version;
                     Monikers = monikers;
                     break;
                 case ContentType.TableOfContents:
+                    Type = LegacyItemType.Toc;
+                    OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
+                    AssetId = legacySiteUrlRelativeToBasePath;
+                    Version = version;
+                    Monikers = monikers;
+                    break;
                 default:
                     throw new NotSupportedException($"{contentType} is not supported");
             }
@@ -66,7 +69,7 @@ namespace Microsoft.Docs.Build
             string? version,
             MonikerList monikers)
         {
-            if (contentType == ContentType.TableOfContents || contentType == ContentType.Unknown)
+            if (contentType == ContentType.Unknown)
             {
                 return null;
             }
