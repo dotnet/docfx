@@ -12,6 +12,7 @@ using System.Web;
 using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Polly;
@@ -192,15 +193,16 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> GetRegressionAllContentRules()
         {
-            return await FetchValidationRules($"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/rulesets/contentrules?name=_regression_all_");
+            return await FetchValidationRules(
+                $"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/rulesets/contentrules?name=_regression_all_", null, DocsEnvironment.PPE);
         }
 
         private async Task<string> GetRegressionAllMetadataSchema()
         {
-            var metadataRules =
-                FetchValidationRules($"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/rulesets/metadatarules?name=_regression_all_");
-            var allowlists =
-                FetchValidationRules($"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/validation/allowlists");
+            var metadataRules = FetchValidationRules(
+                $"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/rulesets/metadatarules?name=_regression_all_", null, DocsEnvironment.PPE);
+            var allowlists = FetchValidationRules(
+                $"{ValidationServiceEndpoint(DocsEnvironment.PPE)}/validation/allowlists", null, DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
