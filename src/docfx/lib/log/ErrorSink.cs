@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly HashSet<Error> _errors = new HashSet<Error>(Error.Comparer);
 
+        private bool _exceedMax;
+
         public int ErrorCount { get; private set; }
 
         public int WarningCount { get; private set; }
@@ -20,11 +22,11 @@ namespace Microsoft.Docs.Build
 
         public int InfoCount { get; private set; }
 
-        public bool Add(Config? config, Error error, ErrorLevel level)
+        public ErrorSinkResult Add(Config? config, Error error, ErrorLevel level)
         {
             lock (_errors)
             {
-                var exceedMaxAllowed = config is null ? false : level switch
+                var exceedMaxAllowed = config != null && level switch
                 {
                     ErrorLevel.Error => ErrorCount >= config.MaxFileErrors,
                     ErrorLevel.Warning => WarningCount >= config.MaxFileWarnings,
@@ -33,19 +35,32 @@ namespace Microsoft.Docs.Build
                     _ => false,
                 };
 
-                if (exceedMaxAllowed || !_errors.Add(error))
+                if (exceedMaxAllowed)
                 {
-                    return false;
+                    if (!_exceedMax)
+                    {
+                        _exceedMax = true;
+                        return ErrorSinkResult.Exceed;
+                    }
+
+                    return ErrorSinkResult.Ignore;
                 }
 
-                return level switch
+                if (!_errors.Add(error))
+                {
+                    return ErrorSinkResult.Ignore;
+                }
+
+                var count = level switch
                 {
                     ErrorLevel.Error => ++ErrorCount,
                     ErrorLevel.Warning => ++WarningCount,
                     ErrorLevel.Suggestion => ++SuggestionCount,
                     ErrorLevel.Info => ++InfoCount,
                     _ => 0,
-                } > 0;
+                };
+
+                return ErrorSinkResult.Ok;
             }
         }
     }

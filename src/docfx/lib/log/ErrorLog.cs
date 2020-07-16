@@ -106,9 +106,24 @@ namespace Microsoft.Docs.Build
             }
 
             var errorSink = error.FilePath is null ? _errorSink : _fileSink.GetOrAdd(error.FilePath, _ => new ErrorSink());
-            if (errorSink.Add(error.FilePath is null ? null : config, error, level))
+
+            switch (errorSink.Add(error.FilePath is null ? null : config, error, level))
             {
-                WriteCore(error, level);
+                case ErrorSinkResult.Ok:
+                    WriteCore(error, level);
+                    break;
+
+                case ErrorSinkResult.Exceed when error.FilePath != null && config != null:
+                    var maxAllowed = level switch
+                    {
+                        ErrorLevel.Error => config.MaxFileErrors,
+                        ErrorLevel.Warning => config.MaxFileWarnings,
+                        ErrorLevel.Suggestion => config.MaxFileSuggestions,
+                        ErrorLevel.Info => config.MaxFileInfos,
+                        _ => 0,
+                    };
+                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.FilePath), level);
+                    break;
             }
 
             return level == ErrorLevel.Error;
