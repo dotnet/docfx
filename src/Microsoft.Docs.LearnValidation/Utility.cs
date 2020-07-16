@@ -7,7 +7,7 @@ namespace TripleCrownValidation
         private static Regex s_sshGitUrlRegex = new Regex(@"git@(?<host>.+?):(?<userName>.+?)\/(?<repoName>.+)\.git", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// Transform SSH URL to Https URL
+        /// Transform SSH URL to https URL
         /// </summary>
         public static string TransformGitUrl(string repoUrl)
         {

@@ -19,13 +19,13 @@ namespace TripleCrownValidation.Validators
             ManifestItems = manifestItems;
             BathPath = basePath;
 
-            ExtratItems();
+            ExtractItems();
         }
 
         public abstract bool Validate(Dictionary<string, IValidateModel> fullItemsDict);
         protected abstract HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem);
 
-        protected virtual void ExtratItems()
+        protected virtual void ExtractItems()
         {
             if (ManifestItems == null) return;
             Items = ManifestItems.Select(m =>

@@ -14,7 +14,7 @@ namespace TripleCrownValidation.Validators
         {
         }
 
-        protected override void ExtratItems()
+        protected override void ExtractItems()
         {
             if (ManifestItems == null) return;
             Items = ManifestItems.SelectMany(m =>

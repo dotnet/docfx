@@ -32,8 +32,8 @@ namespace TripleCrownValidation.DependencyMap
             var dependencyMapping = dependencyItems.Where(item => item.DependencyType == "uid").GroupBy(item => item.FromFilePath)
                 .ToDictionary(key => key.Key, value => value.GroupBy(v => v.ToFilePath).ToDictionary(vk => vk.Key, vv => vv.First()));
             
-            var learningPathes = _hierarchyItems.Where(item => item is PathValidateModel).ToList();
-            ProcessDependencyType(learningPathes, uidToFileMapping, dependencyMapping, false);
+            var learningPaths = _hierarchyItems.Where(item => item is PathValidateModel).ToList();
+            ProcessDependencyType(learningPaths, uidToFileMapping, dependencyMapping, false);
             
             var modules = _hierarchyItems.Where(item => item is ModuleValidateModel).ToList();
             ProcessDependencyType(modules, uidToFileMapping, dependencyMapping, true);
@@ -46,9 +46,9 @@ namespace TripleCrownValidation.DependencyMap
             File.WriteAllLines(_dependencyMapFile, dependencyItems.Select(di => JsonConvert.SerializeObject(di)));
         }
 
-        private void ProcessDependencyType(List<IValidateModel> hierachyItems, Dictionary<string, string> uidToFileMapping, Dictionary<string, Dictionary<string, DependencyItem>> dependencyMapping, bool isModule)
+        private void ProcessDependencyType(List<IValidateModel> hierarchyItems, Dictionary<string, string> uidToFileMapping, Dictionary<string, Dictionary<string, DependencyItem>> dependencyMapping, bool isModule)
         {
-            hierachyItems.ForEach(item =>
+            hierarchyItems.ForEach(item =>
             {
                 var fromFilePath = uidToFileMapping.ContainsKey(item.Uid)? uidToFileMapping[item.Uid] : null;
                 if (fromFilePath == null) return;
@@ -56,15 +56,15 @@ namespace TripleCrownValidation.DependencyMap
 
                 if (children != null && dependencyMapping.ContainsKey(fromFilePath))
                 {
-                    var toFilePathes = dependencyMapping[fromFilePath];
+                    var toFilePaths = dependencyMapping[fromFilePath];
 
                     children.ForEach(child =>
                     {
                         var toFilePath = uidToFileMapping.ContainsKey(child)? uidToFileMapping[child]: null;
                         if (toFilePath == null) return;
-                        if (toFilePathes.ContainsKey(toFilePath))
+                        if (toFilePaths.ContainsKey(toFilePath))
                         {
-                            toFilePathes[toFilePath].DependencyType = "hierarchy";
+                            toFilePaths[toFilePath].DependencyType = "hierarchy";
                         }
                     });
 
@@ -73,9 +73,9 @@ namespace TripleCrownValidation.DependencyMap
                     var achievementToFilePath = uidToFileMapping.ContainsKey(achievementUid) ? uidToFileMapping[achievementUid] : null;
                     if (achievementToFilePath == null) return;
 
-                    if (toFilePathes.ContainsKey(achievementToFilePath))
+                    if (toFilePaths.ContainsKey(achievementToFilePath))
                     {
-                        toFilePathes[achievementToFilePath].DependencyType = "achievement";
+                        toFilePaths[achievementToFilePath].DependencyType = "achievement";
                     }
                 }
             });
