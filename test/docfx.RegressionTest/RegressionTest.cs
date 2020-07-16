@@ -101,7 +101,11 @@ namespace Microsoft.Docs.Build
 
                 if (opts.RegressionMetadataSchema)
                 {
-                    docfxConfig["metadataSchema"] = "https://ops/regressionallmetadataschema/";
+                    docfxConfig["metadataSchema"] = new JArray()
+                    {
+                        Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                        "https://ops/regressionallmetadataschema/",
+                    };
                 }
 
                 return JsonConvert.SerializeObject(docfxConfig);
