@@ -14,14 +14,14 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.2.0-preview.4" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.0.3" />
-    <PackageReference Include="docs.validation" Version="1.0.0-beta-00192-815d5cd" />
+    <PackageReference Include="docs.validation" Version="1.0.0-beta-00208-a32d80f" />
     <PackageReference Include="DotLiquid" Version="2.0.361" />
     <PackageReference Include="Glob" Version="1.1.7" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.298" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.14.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.6" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.20" />
-    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.734" />
+    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.736" />
     <PackageReference Include="Microsoft.Graph" Version="3.8.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.16.1" />

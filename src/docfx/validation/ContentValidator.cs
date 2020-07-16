@@ -72,6 +72,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void ValidateSensitiveLanguage(string content, Document document)
+        {
+            if (TryGetValidationDocumentType(document.ContentType, document.Mime.Value, false, out var documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+
+                using (StringReader reader = new StringReader(content))
+                {
+                    var lineCount = 1;
+                    string? line = null;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var item = new TextItem()
+                        {
+                            Content = line,
+                            SourceInfo = new SourceInfo(document.FilePath, lineCount++, 0),
+                        };
+                        Write(_validator.ValidateText(item, validationContext).GetAwaiter().GetResult());
+                    }
+                }
+            }
+        }
+
         public void ValidateManifest(FilePath filePath, PublishItem publishItem)
         {
             if (TryGetValidationDocumentType(publishItem.ContentType, publishItem.Mime, false, out var documentType))
