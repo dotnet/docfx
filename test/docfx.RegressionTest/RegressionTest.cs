@@ -31,12 +31,12 @@ namespace Microsoft.Docs.Build
 
         private static (string name, string repository, bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
 
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
-            Parser.Default.ParseArguments<Options>(args).WithParsed(Run);
+            return Parser.Default.ParseArguments<Options>(args).MapResult(Run, _ => -9999);
         }
 
-        private static void Run(Options opts)
+        private static int Run(Options opts)
         {
             var repositoryName = opts.DryRun ? $"dryrun.{Path.GetFileName(opts.Repository)}" : Path.GetFileName(opts.Repository);
             var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
@@ -44,6 +44,7 @@ namespace Microsoft.Docs.Build
             EnsureTestData(opts, repositoryName, workingFolder);
             Test(opts, repositoryName, workingFolder);
             PushChanges(repositoryName, workingFolder);
+            return 0;
         }
 
         private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string repositoryName, string workingFolder)
