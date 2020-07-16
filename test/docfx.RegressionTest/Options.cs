@@ -25,6 +25,12 @@ namespace Microsoft.Docs.Build
         [Option("dry-run")]
         public bool DryRun { get; set; }
 
+        [Option("regression-markdown-rule")]
+        public bool RegressionMarkdownRule { get; set; }
+
+        [Option("regression-metadata-schema")]
+        public bool RegressionMetadataSchema { get; set; }
+
         [Option("error-level")]
         public ErrorLevel ErrorLevel { get; set; }
     }

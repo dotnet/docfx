@@ -133,17 +133,17 @@ jobs:
       DocsRoot:
         params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 80
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 80 --regression-markdown-rule --regression-metadata-schema
       sql-docs-pr:
-        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120
+        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-markdown-rule --regression-metadata-schema
       docs:
-        params: https://github.com/dotnet/docs --timeout 60
+        params: https://github.com/dotnet/docs --timeout 60 --regression-markdown-rule --regression-metadata-schema
       windowsserverdocs-pr:
-        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45
+        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-markdown-rule --regression-metadata-schema
       VBA-Docs:
-        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60
+        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-markdown-rule --regression-metadata-schema
       azure-devops-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30
+        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-markdown-rule --regression-metadata-schema
       vsts-docs-pr:
         params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
       AspNetCore.Docs:
@@ -167,7 +167,7 @@ jobs:
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15
       dryrun.azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 35 --dry-run
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 35 --dry-run --regression-markdown-rule --regression-metadata-schema
 
   steps:
   # Install .NET Core sdk
