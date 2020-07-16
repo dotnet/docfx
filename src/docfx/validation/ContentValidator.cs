@@ -29,6 +29,8 @@ namespace Microsoft.Docs.Build
             // validate image link and altText here
             if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))
             {
+                var validationContext = new ValidationContext { DocumentType = documentType, File = file.FilePath.Path};
+                Write(_validator.ValidateLink(new Link { UrlLink = link, AltText = altText, IsImage = true}, validationContext).GetAwaiter().GetResult());
             }
         }
 

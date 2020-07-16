@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
+            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
             var markdownValidationRules = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules);
             var allowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Allowlists);
             var disallowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Disallowlists);
