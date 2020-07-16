@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,29 +14,20 @@ namespace Microsoft.Docs.Build
     {
         private readonly object _outputLock = new object();
 
-        private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
-        private readonly ConcurrentHashSet<FilePath> _errorFiles = new ConcurrentHashSet<FilePath>();
-
         private Lazy<TextWriter> _output;
         private Config? _config;
         private SourceMap? _sourceMap;
 
-        private int _errorCount;
-        private int _warningCount;
-        private int _suggestionCount;
+        private ErrorSink _errorSink = new ErrorSink();
+        private ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
 
-        private ConcurrentDictionary<FilePath, int> _fileInfoCount = new ConcurrentDictionary<FilePath, int>();
-        private ConcurrentDictionary<FilePath, int> _fileSuggestionCount = new ConcurrentDictionary<FilePath, int>();
-        private ConcurrentDictionary<FilePath, int> _fileWarningCount = new ConcurrentDictionary<FilePath, int>();
-        private ConcurrentDictionary<FilePath, int> _fileErrorCount = new ConcurrentDictionary<FilePath, int>();
+        public int ErrorCount => _errorSink.ErrorCount + _fileSink.Values.Sum(sink => sink.ErrorCount);
 
-        public int ErrorCount => _errorCount;
+        public int WarningCount => _errorSink.WarningCount + _fileSink.Values.Sum(sink => sink.WarningCount);
 
-        public int WarningCount => _warningCount;
+        public int SuggestionCount => _errorSink.SuggestionCount + _fileSink.Values.Sum(sink => sink.SuggestionCount);
 
-        public int SuggestionCount => _suggestionCount;
-
-        public bool HasError(FilePath file) => _errorFiles.Contains(file);
+        public bool HasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
         public ErrorLog(string? outputPath = null)
         {
@@ -114,15 +105,10 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level, error.FilePath, out var errorCount))
+            var errorSink = error.FilePath is null ? _errorSink : _fileSink.GetOrAdd(error.FilePath, _ => new ErrorSink());
+            if (errorSink.Add(config, error, level))
             {
-                IncrementActualErrorCount(level);
                 WriteCore(error, level);
-
-                if (error.FilePath != null && errorCount == GetFileMaxCount(config, level))
-                {
-                    WriteCore(Errors.Logging.ExceedFileMaxErrors(GetFileMaxCount(config, level), level, error.FilePath), level);
-                }
             }
 
             return level == ErrorLevel.Error;
@@ -183,11 +169,6 @@ namespace Microsoft.Docs.Build
         {
             Telemetry.TrackErrorCount(error.Code, level, error.Name);
 
-            if (level == ErrorLevel.Error && error.FilePath != null)
-            {
-                _errorFiles.TryAdd(error.FilePath);
-            }
-
             if (_output != null)
             {
                 lock (_outputLock)
@@ -209,40 +190,6 @@ namespace Microsoft.Docs.Build
             return File.AppendText(outputFilePath);
         }
 
-        private int GetFileMaxCount(Config? config, ErrorLevel level)
-        {
-            if (config == null)
-            {
-                return int.MaxValue;
-            }
-
-            return level switch
-            {
-                ErrorLevel.Error => config.MaxFileErrors,
-                ErrorLevel.Warning => config.MaxFileWarnings,
-                ErrorLevel.Suggestion => config.MaxFileSuggestions,
-                ErrorLevel.Info => config.MaxFileInfos,
-                _ => int.MaxValue,
-            };
-        }
-
-        private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level, FilePath? filePath, out int errorCount)
-        {
-            errorCount = 0;
-            if (filePath == null)
-            {
-                return false;
-            }
-
-            if (TryGetFileCount(level, out var fileCount))
-            {
-                errorCount = fileCount.AddOrUpdate(filePath, 1, (_, oldCount) => ++oldCount);
-                return errorCount > GetFileMaxCount(config, level);
-            }
-
-            return false;
-        }
-
         private static ConsoleColor GetColor(ErrorLevel level)
         {
             return level switch
@@ -253,38 +200,6 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Info => ConsoleColor.DarkGray,
                 _ => ConsoleColor.DarkGray,
             };
-        }
-
-        private bool TryGetFileCount(ErrorLevel level, [NotNullWhen(returnValue: true)] out ConcurrentDictionary<FilePath, int>? fileCountDictionary)
-        {
-            fileCountDictionary = level switch
-            {
-                ErrorLevel.Error => _fileErrorCount,
-                ErrorLevel.Warning => _fileWarningCount,
-                ErrorLevel.Suggestion => _fileSuggestionCount,
-                ErrorLevel.Info => _fileInfoCount,
-                _ => null,
-            };
-
-            return fileCountDictionary != null;
-        }
-
-        private void IncrementActualErrorCount(ErrorLevel level)
-        {
-            switch (level)
-            {
-                case ErrorLevel.Error:
-                    Interlocked.Increment(ref _errorCount);
-                    break;
-                case ErrorLevel.Warning:
-                    Interlocked.Increment(ref _warningCount);
-                    break;
-                case ErrorLevel.Suggestion:
-                    Interlocked.Increment(ref _suggestionCount);
-                    break;
-                default:
-                    break;
-            }
         }
     }
 }
