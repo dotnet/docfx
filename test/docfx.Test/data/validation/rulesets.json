@@ -349,8 +349,7 @@
                 "code": "ms-date-invalid",
                 "format": "M/d/yyyy",
                 "relativeMax": "5:00:00:00",
-                "additionalErrorMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
-                "pullRequestOnly": true
+                "additionalErrorMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today."
             }
         ]
     },
@@ -384,8 +383,7 @@
                 ],
                 "multipleValues": false,
                 "severity": "SUGGESTION",
-                "code": "multiple-values",
-                "pullRequestOnly": true
+                "code": "multiple-values"
             },
             {
                 "type": "Uniqueness",
@@ -397,8 +395,7 @@
                 ],
                 "severity": "SUGGESTION",
                 "code": "duplicate-description-within-docset",
-                "additionalErrorMessage": "Description must be unique within a docset.",
-                "pullRequestOnly": false
+                "additionalErrorMessage": "Description must be unique within a docset."
             },
             {
                 "type": "Length",
