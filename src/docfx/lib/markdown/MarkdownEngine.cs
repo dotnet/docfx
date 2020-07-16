@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
         private string GetImageLink(string path, MarkdownObject origin, string? altText)
         {
             var link = GetLink(path, origin);
-            _contentValidator.ValidateImage((Document)InclusionContext.File, link, altText);
+            _contentValidator.ValidateImage((Document)InclusionContext.File, new SourceInfo<string>(link, origin.GetSourceInfo()), altText);
             return link;
         }
 

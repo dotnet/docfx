@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Microsoft.Docs.Build
         private ErrorLog _errorLog;
         private MonikerProvider _monikerProvider;
         private Lazy<PublishUrlMap> _publishUrlMap;
+        private ConcurrentHashSet<SourceInfo<string>> _links;
 
         public ContentValidator(Config config, FileResolver fileResolver, ErrorLog log, MonikerProvider monikerProvider, Lazy<PublishUrlMap> publishUrlMap)
         {
@@ -22,15 +24,23 @@ namespace Microsoft.Docs.Build
             _errorLog = log;
             _monikerProvider = monikerProvider;
             _publishUrlMap = publishUrlMap;
+            _links = new ConcurrentHashSet<SourceInfo<string>>();
         }
 
-        public void ValidateImage(Document file, string link, string? altText)
+        public void ValidateImage(Document file, SourceInfo<string> link, string? altText)
         {
             // validate image link and altText here
-            if (TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))
+            if (_links.TryAdd(link) && TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType, File = file.FilePath.Path};
-                Write(_validator.ValidateLink(new Link { UrlLink = link, AltText = altText, IsImage = true}, validationContext).GetAwaiter().GetResult());
+                var validationContext = new ValidationContext { DocumentType = documentType, File = file.FilePath.Path };
+                Write(_validator.ValidateLink(
+                    new Link
+                    {
+                        UrlLink = link,
+                        AltText = altText,
+                        IsImage = true,
+                        SourceInfo = link.Source,
+                    }, validationContext).GetAwaiter().GetResult());
             }
         }
 
