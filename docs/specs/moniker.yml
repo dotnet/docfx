@@ -523,7 +523,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '< netcore-2.0' is 'netcore-1.0', 'netcore-1.1', while file moniker range '> netcore-2.0' is 'netcore-2.1'.","file":"docs/v1/a.md","line":2,"column":15}
 ---
-# No intersection of file level monikers and zone monikers
+# No intersection of file level monikers and zone monikers produces empty HTML output
 inputs:
   docfx.yml: |
     monikerRange:
@@ -545,8 +545,10 @@ inputs:
       ]
     }
 outputs:
+  9d4e15fd/docs/a.json: |
+    { "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>" }
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","file":"docs/v1/a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","file":"docs/v1/a.md","line":2,"column":1}
 ---
 # Define uid with moniker range, refer to it with valid moniker in the same docset
 inputs:
@@ -1429,7 +1431,7 @@ outputs:
     {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range 'netcore-1.2': Moniker 'netcore-1.2' is not defined.","file":"docs/v1/a.md","line":2,"column":15}
     {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '<= netcore-1.2': Moniker 'netcore-1.2' is not defined.","file":"docs/v1/b.md","line":2,"column":1}
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', while file moniker range 'netcore-1.2' is ''.","file":"docs/v1/a.md","line":2,"column":15}
-    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No intersection between zone and file level monikers. The result of zone level range string '<= netcore-1.2' is '', while file level monikers is 'netcore-1.0'.","file":"docs/v1/b.md","line":2,"column":1}
+    {"message_severity":"warning","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string '<= netcore-1.2' is '', while file level monikers is 'netcore-1.0'.","file":"docs/v1/b.md","line":2,"column":1}
 ---
 # Resolving moniker zone in token should base on root file's moniker
 inputs:
