@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -14,27 +14,20 @@ namespace Microsoft.Docs.Build
     {
         private readonly object _outputLock = new object();
 
-        private readonly ConcurrentHashSet<Error> _errors = new ConcurrentHashSet<Error>(Error.Comparer);
-        private readonly ConcurrentHashSet<FilePath> _errorFiles = new ConcurrentHashSet<FilePath>();
-
         private Lazy<TextWriter> _output;
         private Config? _config;
         private SourceMap? _sourceMap;
 
-        private int _errorCount;
-        private int _warningCount;
-        private int _suggestionCount;
-        private int _infoCount;
+        private ErrorSink _errorSink = new ErrorSink();
+        private ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
 
-        private int _maxExceeded;
+        public int ErrorCount => _errorSink.ErrorCount + _fileSink.Values.Sum(sink => sink.ErrorCount);
 
-        public int ErrorCount => _errorCount;
+        public int WarningCount => _errorSink.WarningCount + _fileSink.Values.Sum(sink => sink.WarningCount);
 
-        public int WarningCount => _warningCount;
+        public int SuggestionCount => _errorSink.SuggestionCount + _fileSink.Values.Sum(sink => sink.SuggestionCount);
 
-        public int SuggestionCount => _suggestionCount;
-
-        public bool HasError(FilePath file) => _errorFiles.Contains(file);
+        public bool HasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
         public ErrorLog(string? outputPath = null)
         {
@@ -112,16 +105,25 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (ExceedMaxErrors(config, level))
+            var errorSink = error.FilePath is null ? _errorSink : _fileSink.GetOrAdd(error.FilePath, _ => new ErrorSink());
+
+            switch (errorSink.Add(error.FilePath is null ? null : config, error, level))
             {
-                if (Interlocked.Exchange(ref _maxExceeded, 1) == 0)
-                {
-                    WriteCore(Errors.Logging.ExceedMaxErrors(GetMaxCount(config, level), level), level);
-                }
-            }
-            else if (_errors.TryAdd(error) && !IncrementExceedMaxErrors(config, level))
-            {
-                WriteCore(error, level);
+                case ErrorSinkResult.Ok:
+                    WriteCore(error, level);
+                    break;
+
+                case ErrorSinkResult.Exceed when error.FilePath != null && config != null:
+                    var maxAllowed = level switch
+                    {
+                        ErrorLevel.Error => config.MaxFileErrors,
+                        ErrorLevel.Warning => config.MaxFileWarnings,
+                        ErrorLevel.Suggestion => config.MaxFileSuggestions,
+                        ErrorLevel.Info => config.MaxFileInfos,
+                        _ => 0,
+                    };
+                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.FilePath), level);
+                    break;
             }
 
             return level == ErrorLevel.Error;
@@ -182,11 +184,6 @@ namespace Microsoft.Docs.Build
         {
             Telemetry.TrackErrorCount(error.Code, level, error.Name);
 
-            if (level == ErrorLevel.Error && error.FilePath != null)
-            {
-                _errorFiles.TryAdd(error.FilePath);
-            }
-
             if (_output != null)
             {
                 lock (_outputLock)
@@ -206,51 +203,6 @@ namespace Microsoft.Docs.Build
             Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 
             return File.AppendText(outputFilePath);
-        }
-
-        private int GetMaxCount(Config? config, ErrorLevel level)
-        {
-            if (config == null)
-            {
-                return int.MaxValue;
-            }
-
-            return level switch
-            {
-                ErrorLevel.Error => config.MaxErrors,
-                ErrorLevel.Warning => config.MaxWarnings,
-                ErrorLevel.Suggestion => config.MaxSuggestions,
-                _ => int.MaxValue,
-            };
-        }
-
-        private bool ExceedMaxErrors(Config? config, ErrorLevel level)
-        {
-            if (config == null)
-            {
-                return false;
-            }
-
-            return level switch
-            {
-                ErrorLevel.Error => Volatile.Read(ref _errorCount) >= config.MaxErrors,
-                ErrorLevel.Warning => Volatile.Read(ref _warningCount) >= config.MaxWarnings,
-                ErrorLevel.Suggestion => Volatile.Read(ref _suggestionCount) >= config.MaxSuggestions,
-                ErrorLevel.Info => Volatile.Read(ref _infoCount) >= config.MaxInfos,
-                _ => false,
-            };
-        }
-
-        private bool IncrementExceedMaxErrors(Config? config, ErrorLevel level)
-        {
-            return level switch
-            {
-                ErrorLevel.Error => Interlocked.Increment(ref _errorCount) > (config?.MaxErrors ?? int.MaxValue),
-                ErrorLevel.Warning => Interlocked.Increment(ref _warningCount) > (config?.MaxWarnings ?? int.MaxValue),
-                ErrorLevel.Suggestion => Interlocked.Increment(ref _suggestionCount) > (config?.MaxSuggestions ?? int.MaxValue),
-                ErrorLevel.Info => Interlocked.Increment(ref _infoCount) > (config?.MaxInfos ?? int.MaxValue),
-                _ => false,
-            };
         }
 
         private static ConsoleColor GetColor(ErrorLevel level)

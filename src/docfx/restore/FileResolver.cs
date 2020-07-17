@@ -144,12 +144,12 @@ namespace Microsoft.Docs.Build
 
         private static string GetRestorePathFromUrl(string url)
         {
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "content"));
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url)));
         }
 
         private static string GetRestoreEtagPath(string url)
         {
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadDir(url), "etag"));
+            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag"));
         }
 
         private async Task<(string? filename, EntityTagHeaderValue? etag)> DownloadToTempFile(

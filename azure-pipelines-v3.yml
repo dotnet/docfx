@@ -130,18 +130,20 @@ jobs:
     name: DocFX
   strategy:
     matrix:
+      DocsRoot:
+        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 150
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 80 --regression-markdown-rule --regression-metadata-schema
       sql-docs-pr:
-        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120
+        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-markdown-rule --regression-metadata-schema
       docs:
-        params: https://github.com/dotnet/docs --timeout 60
+        params: https://github.com/dotnet/docs --timeout 60 --regression-markdown-rule --regression-metadata-schema
       windowsserverdocs-pr:
-        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45
+        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-markdown-rule --regression-metadata-schema
       VBA-Docs:
-        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60
+        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-markdown-rule --regression-metadata-schema
       azure-devops-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30
+        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-markdown-rule --regression-metadata-schema
       vsts-docs-pr:
         params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
       AspNetCore.Docs:
@@ -154,6 +156,8 @@ jobs:
         params: https://github.com/dotnet/roslyn-api-docs --branch live --timeout 105
       azure-docs-rest-apis:
         params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
+      dynamics365-docs-odata-apis:
+        params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 20
       mc-docs-pr:
         params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
       dynamics365smb-devitpro:
@@ -162,6 +166,8 @@ jobs:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15
+      dryrun.azure-docs-pr:
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 35 --dry-run --regression-markdown-rule --regression-metadata-schema
 
   steps:
   # Install .NET Core sdk
