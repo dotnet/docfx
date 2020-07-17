@@ -1,5 +1,6 @@
-using Microsoft.OpenPublishing.Build.DataContracts.PublishModel;
-using Microsoft.OpenPublishing.PluginHelper;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System;
@@ -10,19 +11,21 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using TripleCrownValidation.DependencyMap;
-using TripleCrownValidation.Models;
-using TripleCrownValidation.PartialPublish;
-using TripleCrownValidation.Validators;
 
 namespace TripleCrownValidation
 {
-    class Program
+    public static class TripleCrownValidation
     {
         private const string LogCode = "InvalidHierarchyItem";
         private const string PluginName = "TripleCrownPlugin";
 
-        static void Main(string[] args)
+        static void Run(
+            string repoUrl,
+            string repoBranch,
+            string docsetName,
+            string docsetPath,
+            string docsetPath,
+            )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var opt = new CommandLineOptions();

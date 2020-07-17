@@ -1,12 +1,12 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using TripleCrownValidation.Models;
-using TripleCrownValidation.TripleCrown;
-using TripleCrownValidation.XRef;
 
-namespace TripleCrownValidation.Validators
+namespace TripleCrownValidation
 {
     public class PathValidator : ValidatorBase
     {

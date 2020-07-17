@@ -1,13 +1,7 @@
-﻿using Microsoft.OpenPublishing.PluginHelper;
-using Newtonsoft.Json;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace TripleCrownValidation.XRef
+namespace TripleCrownValidation
 {
     public class XRefHelper
     {
@@ -18,23 +12,6 @@ namespace TripleCrownValidation.XRef
         {
             _client = new RestClient(endpoint);
             _tags = tags;
-        }
-
-        public XRefResult[] ResolveUid(string uid)
-        {
-            var request = new RestRequest("query");
-            request.AddParameter("uid", uid);
-            request.AddParameter("tags", _tags);
-            IRestResponse response = _client.Execute(request);
-            var content = response.Content; // raw content as string      
-
-            OPSLogger.LogToConsole("TripleCrownValidation resolveUid call: {0}", _client.BuildUri(request));
-            OPSLogger.LogToConsole("TripleCrownValidation resolveUid result: {0}", content);
-            if (!string.IsNullOrEmpty(content))
-            {
-                return JsonConvert.DeserializeObject<XRefResult[]>(content);
-            }
-            return null;
         }
     }
 }
