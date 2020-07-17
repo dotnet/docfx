@@ -104,6 +104,24 @@ namespace Microsoft.Docs.Build
             var (monikerErrors, configMonikers) = _rangeParser.Parse(configMonikerRange);
             errors.AddRange(monikerErrors);
 
+            // if replace_monikers is set, the other moniker related metadata will be ignored
+            if (metadata.ReplaceMonikers != null)
+            {
+                var (fileMonikerErrors, fileMonikers) = _rangeParser.Validate(metadata.ReplaceMonikers);
+                errors.AddRange(fileMonikerErrors);
+                var (intersectionError, intersection) =
+                    GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
+                errors.AddIfNotNull(intersectionError);
+                return (errors, intersection);
+            }
+
+            var excludeMonikers = new MonikerList(Array.Empty<string>());
+            if (metadata.ExcludeMonikers != null)
+            {
+                List<Error> excludeMonikerErrors;
+                (excludeMonikerErrors, excludeMonikers) = _rangeParser.Validate(metadata.ExcludeMonikers);
+                errors.AddRange(excludeMonikerErrors);
+            }
             if (metadata.MonikerRange != null)
             {
                 // For conceptual docset,
@@ -112,7 +130,7 @@ namespace Microsoft.Docs.Build
                 if (!_config.SkipMonikerValidation && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
-                    return (errors, configMonikers);
+                    return (errors, configMonikers.Except(excludeMonikers));
                 }
 
                 // monikerRange takes precedence over monikers since it is more likely from user configuration
@@ -126,7 +144,7 @@ namespace Microsoft.Docs.Build
                 var (intersectionError, intersection) =
                     GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
                 errors.AddIfNotNull(intersectionError);
-                return (errors, intersection);
+                return (errors, intersection.Except(excludeMonikers));
             }
             else if (metadata.Monikers != null)
             {
@@ -135,14 +153,18 @@ namespace Microsoft.Docs.Build
                 var (intersectionError, intersection) =
                     GetMonikerIntersection(metadata, configMonikerRange, configMonikers, fileMonikers, _config.SkipMonikerValidation);
                 errors.AddIfNotNull(intersectionError);
-                return (errors, intersection);
+                return (errors, intersection.Except(excludeMonikers));
             }
 
-            return (errors, configMonikers);
+            return (errors, configMonikers.Except(excludeMonikers));
         }
 
         private static (Error?, MonikerList) GetMonikerIntersection(
-            UserMetadata metadata, SourceInfo<string?> configMonikerRange, MonikerList configMonikers, MonikerList fileMonikers, bool skipMonikerValidation)
+            UserMetadata metadata,
+            SourceInfo<string?> configMonikerRange,
+            MonikerList configMonikers,
+            MonikerList fileMonikers,
+            bool skipMonikerValidation)
         {
             Error? error = null;
 
@@ -158,7 +180,11 @@ namespace Microsoft.Docs.Build
             var intersection = configMonikers.Intersect(fileMonikers);
             if (!intersection.HasMonikers)
             {
-                if (!string.IsNullOrEmpty(metadata.MonikerRange))
+                if (metadata.ReplaceMonikers != null)
+                {
+                    error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.ReplaceMonikers, fileMonikers);
+                }
+                else if (!string.IsNullOrEmpty(metadata.MonikerRange))
                 {
                     error = Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, metadata.MonikerRange, fileMonikers);
                 }

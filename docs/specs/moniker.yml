@@ -1924,3 +1924,82 @@ outputs:
     {"monikers":["netcore-1.0"]}
   4667fedf/a.json: |
     {"monikers":["netcore-2.0"]}
+---
+# Support excldue_monikers metadata
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/q.md: |
+    ---
+    exclude_monikers: netcore-2.0
+    monikerRange: '< netcore-4.0'
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-3.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-4.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  439a76d0/docs/q.json: |
+    {"monikers":["netcore-3.0"]}
+---
+# Support replace_monikers metadata
+# when it is set, the other moniker related metadatas are ignored
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/q.md: |
+    ---
+    replace_monikers: netcore-4.0
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-3.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-4.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  b59389ff/docs/q.json: |
+    {"monikers":["netcore-4.0"]}
+---
+# replace_monikers should intersect with the config monikers
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '<= netcore-2.0'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/q.md: |
+    ---
+    replace_monikers: netcore-3.0
+    ---
+    # Node
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-3.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '<= netcore-2.0' is 'netcore-1.0', 'netcore-2.0', while file monikers is 'netcore-3.0'.","file":"docs/v1/q.md","line":2,"column":19}
