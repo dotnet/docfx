@@ -73,15 +73,16 @@ namespace Microsoft.Docs.Build
 
             static string GetDocfxConfig(Options opts)
             {
-                // Git token for CRR restore
-                var http = new Dictionary<string, object>();
-                http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
-                http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
                 var docfxConfig = JObject.FromObject(new
                 {
-                    http,
-                    maxWarnings = 5000,
-                    maxInfos = 30000,
+                    http = new Dictionary<string, object>
+                    {
+                        ["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) },
+                        ["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) },
+                    },
+                    maxFileWarnings = 1000,
+                    maxFileSuggestions = 1000,
+                    maxFileInfos = 1000,
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
