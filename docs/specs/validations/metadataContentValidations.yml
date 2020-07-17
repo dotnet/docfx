@@ -1959,6 +1959,11 @@ inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
     metadataSchema: schema.json
+    customRules:
+      h1-missing:
+        severity: "warning"
+      heading-empty:
+        severity: "warning"
   schema.json: |
     {
       "required": ["title"],
@@ -2010,14 +2015,14 @@ inputs:
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
             "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
-            "severity": "WARNING",
+            "severity": "SUGGESTION",
             "code": "h1-missing"
           },
           {
             "type": "H1NotFirst",
             "message": "Markdown content is not allowed before H1.",
             "code": "h1-not-first",
-            "severity": "WARNING",
+            "severity": "SUGGESTION",
             "exclusions": [ "includes", "landingpage", "hubpage" ],
             "excludedDocfxVersions": [
               "v2"
@@ -2032,7 +2037,23 @@ inputs:
             "exclusions": [ "landingpage", "hubpage", "toc" ],
             "excludedDocfxVersions": [
               "v2"
-            ] ,
+            ],
+            "pullRequestOnly": true
+          },
+          {
+            "type": "NoContent",
+            "message": "{0} contains no content. Add content or remove the unused heading.",
+            "code": "heading-no-content",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
             "pullRequestOnly": true
           }
         ]
@@ -2055,6 +2076,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too long: 20 characters. Length should be <= 10.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":34,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"title-bad-length","message":"String 'title' is too long: 14 characters. Length should be <= 10.","file":"a.md","line":2,"end_line":2,"column":8,"end_column":22}
     {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
 
