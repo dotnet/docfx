@@ -489,11 +489,8 @@ namespace Microsoft.Docs.Build
             /// Config's monikerRange and monikerRange defined in yaml header has no intersection
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, SourceInfo<string?> monikerRange, IEnumerable<string> fileMonikers)
-                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file moniker range '{monikerRange}' is {StringUtility.Join(fileMonikers)}.", monikerRange);
-
-            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, SourceInfo<string?>[] monikers, IEnumerable<string> fileMonikers)
-                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}.", monikers.FirstOrDefault());
+            public static Error MonikeRangeOutOfScope(SourceInfo<string?> configMonikerRange, IEnumerable<string> configMonikers, IEnumerable<string> fileMonikers, SourceInfo? source)
+                => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}.", source);
         }
 
         public static class Markdown
