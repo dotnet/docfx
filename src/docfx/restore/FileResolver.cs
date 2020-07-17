@@ -90,14 +90,15 @@ namespace Microsoft.Docs.Build
         private string DownloadFromUrlCore(string url)
         {
             var filePath = GetRestorePathFromUrl(url);
-            if (_fetchOptions == FetchOptions.UseCache && File.Exists(filePath))
-            {
-                return filePath;
-            }
 
-            if (_fetchOptions == FetchOptions.NoFetch)
+            switch (_fetchOptions)
             {
-                throw Errors.System.NeedRestore(url).ToException();
+                case FetchOptions.UseCache when File.Exists(filePath):
+                case FetchOptions.NoFetch when File.Exists(filePath):
+                    return filePath;
+
+                case FetchOptions.NoFetch:
+                    throw Errors.System.NeedRestore(url).ToException();
             }
 
             var etagPath = GetRestoreEtagPath(url);
