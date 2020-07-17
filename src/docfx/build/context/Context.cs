@@ -164,7 +164,6 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             ErrorLog.Dispose();
-            FileResolver.Dispose();
             PackageResolver.Dispose();
             RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();

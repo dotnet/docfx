@@ -81,6 +81,7 @@ namespace Microsoft.Docs.Build
         {
             var logs = File.ReadAllLines(logPath).OrderBy(line => line, StringComparer.Ordinal);
             using var sw = new StreamWriter(File.Create(logPath));
+
             foreach (var log in logs)
             {
                 var obj = JObject.Parse(log);
@@ -91,12 +92,18 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                if (obj.ContainsKey("code")
-                    && obj["code"]!.Value<string>() == "yaml-syntax-error"
-                    && obj.ContainsKey("message"))
+                var code = obj.Value<string>("code");
+
+                switch (code)
                 {
-                    obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]!.Value<string>(), @"Idx: \d+", ""));
+                    case "exceed-max-file-errors":
+                        throw new Exception("Exceed max file errors, adjust regression test config to allow more error items.");
+
+                    case "yaml-syntax-error" when obj.ContainsKey("message"):
+                        obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]!.Value<string>(), @"Idx: \d+", ""));
+                        break;
                 }
+
                 sw.WriteLine(obj.ToString());
             }
         }
