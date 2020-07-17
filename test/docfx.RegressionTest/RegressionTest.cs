@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 Run,
                 _ =>
                 {
-                    SendPullRequestComments(crashed: true, "argument exception");
+                    SendPullRequestComments("regression-test argument exception");
                     return -9999;
                 });
         }
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                SendPullRequestComments(crashed: true, ex.ToString());
+                SendPullRequestComments(ex.ToString());
                 throw;
             }
             return 0;
@@ -358,15 +358,15 @@ namespace Microsoft.Docs.Build
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        private static Task SendPullRequestComments(bool crashed = false, string message = "")
+        private static Task SendPullRequestComments(string? crashedMessage = null)
         {
             var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
-            if (s_testResult.succeeded && !isTimeout && !crashed)
+            if (s_testResult.succeeded && !isTimeout && crashedMessage == null)
             {
                 return Task.CompletedTask;
             }
 
-            var statusIcon = crashed
+            var statusIcon = crashedMessage != null
                              ? "🚗🌳💥💥💥🤕🤕🤕"
                              : isTimeout
                                ? "🧭"
@@ -374,12 +374,12 @@ namespace Microsoft.Docs.Build
 
             var summary = $"{statusIcon}" +
                           $"<a href='{s_testResult.repository}'>{s_testResult.name}</a>" +
-                          (crashed
+                          (crashedMessage != null
                           ? ""
                           : $"({s_testResult.buildTime}{(isTimeout ? $" | exceed {s_testResult.timeout}s" : "")}" +
                             $"{(s_testResult.succeeded ? "" : $", {s_testResult.moreLines} more diff")}" +
                             $")");
-            var body = $"<details><summary>{summary}</summary>\n\n```diff\n{(crashed ? message : s_testResult.diff)}\n```\n\n</details>";
+            var body = $"<details><summary>{summary}</summary>\n\n```diff\n{crashedMessage ?? s_testResult.diff}\n```\n\n</details>";
 
             if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_NUMBER") ?? "", out var prNumber))
             {
