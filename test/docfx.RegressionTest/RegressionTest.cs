@@ -127,9 +127,17 @@ namespace Microsoft.Docs.Build
 
             Clean(outputPath);
 
-            var buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
-            Compare(opts, repositoryName, workingFolder, outputPath, baseLinePath, buildTime);
+            var buildTime = default(TimeSpan);
+            try
+            {
+                buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
+            }
+            catch (Exception ex)
+            {
+                SendPullRequestComments(crashed: true, ex.ToString());
+            }
 
+            Compare(opts, repositoryName, workingFolder, outputPath, baseLinePath, buildTime);
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"Test Pass {workingFolder}");
             Console.ResetColor();
@@ -345,34 +353,32 @@ namespace Microsoft.Docs.Build
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        private static Task SendPullRequestComments()
+        private static Task SendPullRequestComments(bool crashed = false, string message = "")
         {
             var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
-            if (s_testResult.succeeded && !isTimeout)
+            if (s_testResult.succeeded && !isTimeout && !crashed)
             {
                 return Task.CompletedTask;
             }
 
-            var statusIcon = s_testResult.succeeded
-                             ? !isTimeout
-                               ? "✔"
-                               : "🧭"
-                             : "⚠";
+            var statusIcon = crashed
+                             ? "🚗🌳💥💥💥🤕🤕🤕"
+                             : isTimeout
+                               ? "🧭"
+                               : "⚠";
+
             var summary = $"{statusIcon}" +
                           $"<a href='{s_testResult.repository}'>{s_testResult.name}</a>" +
-                          $"({s_testResult.buildTime}{(isTimeout ? $" | exceed {s_testResult.timeout}s" : "")}" +
-                          $"{(s_testResult.succeeded ? "" : $", {s_testResult.moreLines} more diff")}" +
-                          $")";
-            var body = $"<details><summary>{summary}</summary>\n\n```diff\n{s_testResult.diff}\n```\n\n</details>";
+                          (crashed
+                          ? ""
+                          : $"({s_testResult.buildTime}{(isTimeout ? $" | exceed {s_testResult.timeout}s" : "")}" +
+                            $"{(s_testResult.succeeded ? "" : $", {s_testResult.moreLines} more diff")}" +
+                            $")");
+            var body = $"<details><summary>{summary}</summary>\n\n```diff\n{(crashed ? message : s_testResult.diff)}\n```\n\n</details>";
 
             if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_NUMBER") ?? "", out var prNumber))
             {
                 return SendGitHubPullRequestComments(prNumber, body);
-            }
-
-            if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_ID") ?? "", out var prId))
-            {
-                return SendAzureDevOpsPullRequestComments(prId, body);
             }
 
             return Task.CompletedTask;
@@ -388,20 +394,6 @@ namespace Microsoft.Docs.Build
                 var response = await http.PostAsync(
                     $"https://api.github.com/repos/dotnet/docfx/issues/{prNumber}/comments",
                     new StringContent(JsonConvert.SerializeObject(new { body }), Encoding.UTF8, "application/json"));
-
-                response.EnsureSuccessStatusCode();
-            }
-        }
-
-        private static async Task SendAzureDevOpsPullRequestComments(int prId, string content)
-        {
-            using (var http = new HttpClient())
-            {
-                http.DefaultRequestHeaders.Add("Authorization", $"basic {BasicAuth(s_azureDevopsToken)}");
-
-                var response = await http.PostAsync(
-                    $"https://dev.azure.com/ceapex/Engineering/_apis/git/repositories/Docs.Build/pullRequests/{prId}/threads/comments?api-version=5.0",
-                    new StringContent(JsonConvert.SerializeObject(new { comments = new[] { new { content } } }), Encoding.UTF8, "application/json"));
 
                 response.EnsureSuccessStatusCode();
             }
