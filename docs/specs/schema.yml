@@ -199,7 +199,8 @@ outputs:
 inputs:
   docfx.yml: |
     customRules:
-      heading-not-found: error
+      heading-not-found: 
+        severity: error
   docs/a.yml: |
     #YamlMime:TestPage
     inlineDescription: >
