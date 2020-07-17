@@ -8,14 +8,6 @@ function exec([string] $cmd) {
     }
 }
 
-function test() {
-    if ($noTest) {
-        return
-    }
-
-    exec "dotnet test -c Release --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-}
-
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack -c Release -o $PSScriptRoot\drop"
@@ -45,7 +37,6 @@ function publishBinaryPackages() {
 
 try {
     pushd $PSScriptRoot
-    test
     if ($env:BUILD_REASON -ne "PullRequest") {
         publish
     }

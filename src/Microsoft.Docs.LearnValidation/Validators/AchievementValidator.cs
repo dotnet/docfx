@@ -46,7 +46,7 @@ namespace TripleCrownValidation
                 if(!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
                 }
 
                 item.IsValid = itemValid;
