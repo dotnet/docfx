@@ -26,7 +26,14 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  - bash: ./build.sh
+  # Run tests
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+    inputs:
+      command: test
+      configuration: Release
+      arguments: /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
@@ -48,7 +55,14 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  - bash: ./build.sh
+  # Run tests
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+    inputs:
+      command: test
+      configuration: Release
+      arguments: /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
@@ -70,9 +84,14 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # Running Tests
-  - powershell: ./build.ps1
-    displayName: Running tests
+  # Run tests
+  - task: DotNetCoreCLI@2
+    displayName: Run Tests
+    inputs:
+      command: test
+      configuration: Release
+      arguments: /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
@@ -87,6 +106,10 @@ jobs:
     displayName: 'Upload to codecov.io'
     env:
       CODECOV_TOKEN: $(CODECOV_TOKEN)
+
+  # Build Binaries
+  - powershell: ./build.ps1
+    displayName: Build Binaries
 
   # Build RegressionTest into Artifact 
   - powershell: |
