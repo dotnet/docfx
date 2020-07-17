@@ -46,14 +46,14 @@ namespace TripleCrownValidation
                     {
                         module.IsValid = false;
                         var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Module_InvalidChildren, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits)), module.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
                     }
 
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Unit_InvalidParent, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Unit_InvalidParent, module.Uid), unit.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
                     }
                 }
 
@@ -63,7 +63,7 @@ namespace TripleCrownValidation
                 if(unitCantFallback.Any())
                 {
                     module.IsDeleted = true;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Module_ChildrenCantFallback, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback)), module.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
                     skipPublishFilePathList.Add(ValidationHelper.GetSkipPublishFilePath(_docsetFolder, _repoRootPath, module.SourceRelativePath));
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
@@ -83,7 +83,7 @@ namespace TripleCrownValidation
                 {
                     learningpath.IsValid = false;
                     learningpath.IsDeleted = true;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_LearningPath_ChildrenCantFallback, LogMessageUtility.FormatMessage(LogCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback)), learningpath.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
                     skipPublishFilePathList.Add(ValidationHelper.GetSkipPublishFilePath(_docsetFolder, _repoRootPath, learningpath.SourceRelativePath));
                 }
             }

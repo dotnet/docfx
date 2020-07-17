@@ -50,7 +50,7 @@ namespace TripleCrownValidation
                                 "~" + tokenDependency.Substring(_docsetFolder.Length).ForwardSlashToBackSlash() 
                                 : tokenDependency;
 
-                            OPSLogger.LogUserError(LogCode.TripleCrown_Token_NotFound, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Token_NotFound), hierarchyItem.SourceRelativePath);
+                            Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_Token_NotFound, filePath: hierarchyItem.SourceRelativePath);
                             hierarchyItem.IsValid = false;
                             isValid = false;
                         }

@@ -5,12 +5,10 @@ namespace TripleCrownValidation
 {
     public class XRefHelper
     {
-        private RestClient _client;
         private string _tags;
 
         public XRefHelper(string endpoint, string tags)
         {
-            _client = new RestClient(endpoint);
             _tags = tags;
         }
     }
