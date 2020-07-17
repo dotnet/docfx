@@ -108,11 +108,6 @@ namespace Microsoft.Docs.Build
         public int MaxFileInfos { get; private set; } = 20;
 
         /// <summary>
-        /// Gets the maximum remove deduplication log count
-        /// </summary>
-        public int MaxRemoveDeduplicationLogCount { get; private set; } = 200;
-
-        /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
         public GlobalMetadata GlobalMetadata { get; private set; } = new GlobalMetadata();
