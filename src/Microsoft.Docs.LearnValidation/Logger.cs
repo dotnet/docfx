@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public static class Logger
     {
@@ -13,9 +13,9 @@ namespace TripleCrownValidation
         /// <summary>
         /// Delegate to write to .errors.log file
         /// </summary>
-        public static Action<LogItem>? WriteLog;
+        public static Action<LogItem> WriteLog;
 
-        public static void Log(ErrorLevel level, LogCode code, string message = "", string? filePath = null)
+        public static void Log(ErrorLevel level, ErrorCode code, string message = "", string filePath = null)
         {
             var logItem = new LogItem();
             WriteLog?.Invoke(logItem);
@@ -26,8 +26,8 @@ namespace TripleCrownValidation
     public class LogItem
     {
         public ErrorLevel ErrorLevel;
-        public LogCode LogCode;
-        public string? File;
+        public ErrorCode LogCode;
+        public string File;
     }
 
     public enum ErrorLevel
@@ -36,7 +36,7 @@ namespace TripleCrownValidation
         Error,
     }
 
-    public enum LogCode
+    public enum ErrorCode
     {
         TripleCrown_Achievement_MetadataError,
         TripleCrown_DependencyFile_NotExist,

@@ -5,7 +5,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class LegacyManifest
     {

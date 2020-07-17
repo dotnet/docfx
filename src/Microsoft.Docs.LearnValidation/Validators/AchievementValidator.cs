@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class AchievementValidator : ValidatorBase
     {
@@ -22,14 +22,14 @@ namespace TripleCrownValidation
             if (ManifestItems == null) return;
             Items = ManifestItems.SelectMany(m =>
             {
-                var path = Path.Combine(BathPath, m.Output.MetadataOutput.RelativePath);
+                var path = Path.Combine(BathPath, m.Output.MetadataOutput.RelativePath!);
                 if (!File.Exists(path))
                 {
                     path = m.Output.MetadataOutput.LinkToPath;
                 }
 
                 var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path));
-                achievements.ForEach(achievement => achievement.SourceRelativePath = m.SourceRelativePath);
+                achievements.ForEach(achievement => achievement.SourceRelativePath = m.SourceRelativePath!);
 
                 return achievements;
             }).Cast<IValidateModel>().ToList();
@@ -46,7 +46,7 @@ namespace TripleCrownValidation
                 if(!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
                 }
 
                 item.IsValid = itemValid;
@@ -56,9 +56,10 @@ namespace TripleCrownValidation
             return validationResult;
         }
 
-        protected override HierarchyItem? GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
-        {
-            return null;
-        }
+        /// <summary>
+        /// won't be called
+        /// </summary>
+        protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
+            => null;
     }
 }

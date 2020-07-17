@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class DependencyMapProcessor
     {
@@ -30,7 +30,7 @@ namespace TripleCrownValidation
             File.WriteAllText(_dependencyMapFile + ".bak", File.ReadAllText(_dependencyMapFile));
 
             // Update Dependency Type
-            var uidToFileMapping = _hierarchyItems.ToDictionary(key => key.Uid, value => Path.Combine(_docsetFolder, value.SourceRelativePath).BackSlashToForwardSlash());
+            var uidToFileMapping = _hierarchyItems.ToDictionary(key => key.Uid, value => Path.Combine(_docsetFolder, value.SourceRelativePath).Replace('/', '\\'));
             var dependencyMapping = dependencyItems.Where(item => item.DependencyType == "uid").GroupBy(item => item.FromFilePath)
                 .ToDictionary(key => key.Key, value => value.GroupBy(v => v.ToFilePath).ToDictionary(vk => vk.Key, vv => vv.First()));
             

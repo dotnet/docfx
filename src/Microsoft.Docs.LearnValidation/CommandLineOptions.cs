@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class CommandLineOptions
     {
@@ -26,29 +24,27 @@ namespace TripleCrownValidation
         public string SkipPublishFilePath = null;
         public bool IsServerBuild = false;
         public bool ContinueWithError = false;
-        List<string> Extras = null;
-
 
         public bool Parse(string[] args)
         {
             if (string.IsNullOrEmpty(DependencyFilePath) || !File.Exists(DependencyFilePath))
             {
-                Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_DependencyFile_NotExist);
+                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DependencyFile_NotExist);
                 return false;
             }
             if (string.IsNullOrEmpty(DocsetFolder))
             {
-                Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_DocsetFolder_IsNull);
+                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DocsetFolder_IsNull);
                 return false;
             }
             if (string.Compare(Locale, "en-us", true) != 0 && string.IsNullOrEmpty(RepoRootPath))
             {
-                Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_RepoRootPath_IsNull);
+                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_RepoRootPath_IsNull);
                 return false;
             }
             if (ContinueWithError && string.IsNullOrEmpty(OriginalManifestPath))
             {
-                Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_ManifestFile_NotExist);
+                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_ManifestFile_NotExist);
                 return false;
             }
 

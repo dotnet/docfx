@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     static class HierarchyGenerator
     {
@@ -43,7 +43,7 @@ namespace TripleCrownValidation
 
         internal static string GetHierarchyFullFileName(string manifestFilePath)
         {
-            return Path.Combine(Path.GetDirectoryName(manifestFilePath), HierarchyFileName);
+            return Path.Combine(Path.GetDirectoryName(manifestFilePath) ?? ".", HierarchyFileName);
         }
 
         private static RawAchievement ConvertValidationModelToAchievement(AchievementValidateModel achievement)

@@ -7,15 +7,15 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class PathValidator : ValidatorBase
     {
         private XRefHelper XrefHelper { get; set; }
-        private TripleCrownHelper TripleCrownHelper { get; set; }
+        private LearnValidationHelper TripleCrownHelper { get; set; }
         private string Locale { get; set; }
 
-        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, XRefHelper xrefHelper, TripleCrownHelper tripleCrownHelper, string locale)
+        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, XRefHelper xrefHelper, LearnValidationHelper tripleCrownHelper, string locale)
             : base(manifestItems, basePath)
         {
             XrefHelper = xrefHelper;
@@ -41,24 +41,24 @@ namespace TripleCrownValidation
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_MetadataError, result, item.SourceRelativePath);
                 }
 
                 if (path.Achievement == null)
                 {
-                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_NoTrophyBind, filePath: item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_NoTrophyBind, filePath: item.SourceRelativePath);
                 }
                 else if (path.Achievement is string achievementUID)
                 {
                     if (!fullItemsDict.ContainsKey(achievementUID))
                     {
                         itemValid = false;
-                        Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_TrophyNotFound, achievementUID, item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_TrophyNotFound, achievementUID, item.SourceRelativePath);
                     }
                     else if (!(fullItemsDict[achievementUID] is AchievementValidateModel achievement) || achievement.Type != AchievementType.Trophy)
                     {
                         itemValid = false;
-                        Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_NonSupportedAchievementType, achievementUID, item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_NonSupportedAchievementType, achievementUID, item.SourceRelativePath);
                     }
                 }
 
@@ -77,18 +77,18 @@ namespace TripleCrownValidation
                     if (XrefHelper != null)
                     {
                         itemValid = false;
-                        Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
                     }
                     else
                     {
-                        Logger.Log(ErrorLevel.Warning, LogCode.TripleCrown_LearningPath_DebugMode_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Warning, ErrorCode.TripleCrown_LearningPath_DebugMode_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
                     }
                 }
 
                 if (childrenNotModule.Any())
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, LogCode.TripleCrown_LearningPath_NonSupportedChildrenType, string.Join(",", childrenNotModule),
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_NonSupportedChildrenType, string.Join(",", childrenNotModule),
                         item.SourceRelativePath);
                 }
 

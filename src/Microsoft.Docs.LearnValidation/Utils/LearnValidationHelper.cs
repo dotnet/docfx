@@ -6,9 +6,9 @@ using System.Linq;
 using System.Net;
 using RestSharp;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
-    public class TripleCrownHelper
+    public class LearnValidationHelper
     {
         private enum CheckItemType
         {
@@ -22,7 +22,7 @@ namespace TripleCrownValidation
         private const string _defaultLocale = "en-us";
         private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
 
-        public TripleCrownHelper(string endpoint, string branch)
+        public LearnValidationHelper(string endpoint, string branch)
         {
             _client = new RestClient(endpoint);
             _branch = branch;

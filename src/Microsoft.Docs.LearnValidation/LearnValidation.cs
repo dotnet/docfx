@@ -5,14 +5,13 @@ using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public static class TripleCrownValidation
     {
@@ -24,50 +23,48 @@ namespace TripleCrownValidation
             string repoBranch,
             string docsetName,
             string docsetPath,
-            string docsetPath,
+            string publishFilePath,
+            string dependencyFilePath,
+            string manifestFilePath,
+            string environment,
+            bool isLocalizationBuild,
+            string fallbackDocsetPath = null
             )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var opt = new CommandLineOptions();
             var needUpdateManifest = false;
+            var opt = new CommandLineOptions();
 
             try
             {
-                if (opt.Parse(args))
-                {
-                    //OPSLogger.LogToConsole($"[{PluginName}] OPT args :\n{0}", JsonConvert.SerializeObject(opt, Formatting.Indented));
 
-                    if (!string.IsNullOrEmpty(opt.RepoRootPath))
-                    {
-                        ////OPSLogger.PathTrimPrefix = opt.RepoRootPath;
-                    }
+                Console.WriteLine($"[{PluginName}] OPT args :\n{0}", JsonConvert.SerializeObject(
+                    new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath},
+                    Formatting.Indented));
 
                     needUpdateManifest = ValidateHierarchy(opt).Result || !IsDefaultLocale(opt.Locale);
-                }
             }
             catch (Exception ex)
             {
-                //OPSLogger.LogSystemError(Microsoft.OpenPublishing.PluginHelper.LogCode.TripleCrown_InternalError, ex.ToString());
+                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_InternalError, ex.ToString());
             }
             finally
             {
                 if (needUpdateManifest)
                 {
-                    //UpdateManifestFile(opt.OriginalManifestPath, OPSLogger.LogItems, opt);
+                    UpdatePublishFile("", Logger.LogItems.ToList());
                 }
-
-                //OPSLogger.Flush(opt.LogFilePath, true, true);
             }
         }
 
         private static async Task<bool> ValidateHierarchy(CommandLineOptions opt)
         {
-            //OPSLogger.LogSystemInfo($"[{PluginName}] start to do local validation.");
+            Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var validator = new Validator(opt);
             var (isValid, hierarchyItems) = validator.Validate();
 
-            //OPSLogger.LogSystemInfo($"[{PluginName}] finished to do local validation.");
+            Console.WriteLine($"[{PluginName}] finished to do local validation.");
 
             if (IsDefaultLocale(opt.Locale))
             {
@@ -89,13 +86,13 @@ namespace TripleCrownValidation
                 return false;
             }
 
-            //OPSLogger.LogSystemInfo($"[{PluginName}] start to update dependency map.");
+            Console.WriteLine($"[{PluginName}] start to update dependency map.");
 
             // Update DependencyType & Remove Fragments
             var dpProcessor = new DependencyMapProcessor(opt.DependencyFilePath, hierarchyItems, opt.DocsetFolder);
             dpProcessor.UpdateDependencyMap();
 
-            //OPSLogger.LogSystemInfo($"[{PluginName}] finished to update dependency map.");
+            Console.WriteLine($"[{PluginName}] finished to update dependency map.");
 
             var hierarchy = HierarchyGenerator.GenerateHierarchy(hierarchyItems, opt.OriginalManifestPath);
             var repoUrl = Utility.TransformGitUrl(opt.RepoUrl);
@@ -109,7 +106,7 @@ namespace TripleCrownValidation
 
             if (!result.IsValid)
             {
-                //OPSLogger.LogUserError(Microsoft.OpenPublishing.PluginHelper.LogCode.TripleCrown_DrySyncError, result.Message);
+                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DrySyncError, result.Message);
             }
 
             return result.IsValid;
@@ -121,25 +118,23 @@ namespace TripleCrownValidation
             CommandLineOptions opt)
         {
             // Check loc token exist
-            //OPSLogger.LogSystemInfo($"[{PluginName}] start to check if token existed.");
+            Console.WriteLine($"[{PluginName}] start to check if token existed.");
 
-            var fallbackFolders = opt.FallbackFolders?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(ff => Path.Combine(opt.RepoRootPath, ff).BackSlashToForwardSlash())
-                .ToList();
-            var tokenValidator = new TokenValidator(opt.DependencyFilePath, hierarchyItems, opt.DocsetFolder, fallbackFolders);
+            // TODO: pass fallback path
+            var tokenValidator = new TokenValidator(opt.DependencyFilePath, hierarchyItems, opt.DocsetFolder, "");
             isValid = isValid && tokenValidator.Validate();
 
-            //OPSLogger.LogSystemInfo($"[{PluginName}] finished to check if token existed.");
+            Console.WriteLine($"[{PluginName}] finished to check if token existed.");
 
             // Partial publish
             if (opt.ContinueWithError)
             {
-                //OPSLogger.LogSystemInfo("[ContinueWithError]TripleCrown mark invalid module/learningpath begin.");
+                Console.WriteLine("[ContinueWithError]TripleCrown mark invalid module/learningpath begin.");
 
                 PartialPublishProcessor partialPublishProcessor = new PartialPublishProcessor(hierarchyItems, opt);
                 partialPublishProcessor.MarkInvalidHierarchyItem();
 
-                //OPSLogger.LogSystemInfo("[ContinueWithError]TripleCrown mark invalid module/learningpath finish.");
+                Console.WriteLine("[ContinueWithError]TripleCrown mark invalid module/learningpath finish.");
 
                 HierarchyGenerator.GenerateHierarchy(hierarchyItems, opt.OriginalManifestPath);
             }
@@ -165,7 +160,7 @@ namespace TripleCrownValidation
             }
             catch (Exception ex)
             {
-                //OPSLogger.LogSystemInfo($"[{PluginName}] exception occurs during dry sync step: {ex}");
+                Console.WriteLine($"[{PluginName}] exception occurs during dry sync step: {ex}");
                 // regard current hierarchy as valid if any unhandled exceptions occurs to avoid blocking build. 
                 return new ValidationResult(branch, locale, true, string.Empty);
             }
@@ -208,78 +203,12 @@ namespace TripleCrownValidation
         private static bool IsDefaultLocale(string locale)
             => string.Equals(locale, Constants.DefaultLocale, StringComparison.OrdinalIgnoreCase);
 
-        private static void UpdateManifestFile(string originalManifestPath, List<LogItem> logItems, CommandLineOptions opt)
+        private static void UpdatePublishFile(string publishFilePath, List<LogItem> logItems)
         {
-            try
-            {
-                foreach (var logItem in logItems.Where(l => l.File != null))
-                {
-                    logItem.File = ValidationHelper.GetLogItemFilePath(opt.DocsetFolder, opt.RepoRootPath, logItem.File);
-                }
-
-                bool isUpdated = false;
-
-                var errorLogItems = logItems.Where(l => l.File != null && l.MessageSeverity == MessageSeverity.Error).ToList();
-                var originalPaths = new HashSet<string>(errorLogItems.Select(l => l.File).Distinct());
-                var originalManifest = JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(originalManifestPath));
-                var newLogCodes = new string[] { LogCode };
-                foreach (var manifestFile in originalManifest.Files)
-                {
-                    if (originalPaths.Contains(manifestFile.Original))
-                    {
-                        isUpdated = true;
-                        manifestFile.LogCodes = manifestFile.LogCodes == null ? newLogCodes : manifestFile.LogCodes.Concat(newLogCodes).ToArray();
-                    }
-                }
-
-                if (File.Exists(HierarchyGenerator.GetHierarchyFullFileName(originalManifestPath)))
-                {
-                    /** NOTE! 
-                        Although Microsoft.OpenPublishing.Build.DataContracts.ItemToPublish.Metadata's type is Dictionary<string, object>, you can't set complex type in it.
-                        If you set a complex type directly in the Metadata, the build will always fail.
-                        DHS only support following types, for complex type, please convert it to string before setting the value in Metadata
-                        SupportedMetadataTypes = new List<Type>
-                        {
-                            typeof(string),
-                            typeof(string[]),
-                            typeof(bool),
-                            typeof(int),
-                            typeof(long),
-                            typeof(double),
-                            typeof(DateTime)
-                        }.AsReadOnly();
-                    **/
-                    //var newItemsToPublish = new[]{new Microsoft.OpenPublishing.Build.DataContracts.ItemToPublish
-                    //{
-                    //    RelativePath = HierarchyGenerator.HierarchyFileName,
-                    //    Type = Microsoft.OpenPublishing.Build.DataContracts.PublishItemType.Unknown,
-                    //    Metadata = new Dictionary<string, object>{ { "is_hidden", true } }
-                    //}};
-
-                    if (originalManifest.ItemsToPublish == null)
-                    {
-                        originalManifest.ItemsToPublish = newItemsToPublish;
-                        isUpdated = true;
-                    }
-                    else
-                    {
-                        if (!originalManifest.ItemsToPublish.Any(i => i.RelativePath == HierarchyGenerator.HierarchyFileName))
-                        {
-                            isUpdated = true;
-                            originalManifest.ItemsToPublish = originalManifest.ItemsToPublish.Concat(newItemsToPublish).ToArray();
-                        }
-                    }
-                }
-
-                if (isUpdated)
-                {
-                    File.WriteAllText(originalManifestPath, JsonConvert.SerializeObject(originalManifest));
-                }
-            }
-            catch (Exception ex)
-            {
-                //OPSLogger.LogSystemError(Microsoft.OpenPublishing.PluginHelper.LogCode.TripleCrown_ManifestFile_UpdateFailed, LogMessageUtility.FormatMessage(Microsoft.OpenPublishing.PluginHelper.LogCode.TripleCrown_ManifestFile_UpdateFailed, ex.ToString()));
-            }
+            // TODO:
+            // 1. update has_error property
+            // 2. publish hierarchy.json
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     partial class Validator
     {
@@ -16,12 +16,13 @@ namespace TripleCrownValidation
         private LegacyManifest _manifest;
         private string _outputBasePath;
         private XRefHelper _xrefHelper;
-        private TripleCrownHelper _tripleCrownHelper;
+        private LearnValidationHelper _tripleCrownHelper;
 
         public Validator(CommandLineOptions opt)
         {
             _opt = opt;
-            _tripleCrownHelper = new TripleCrownHelper(opt.TripleCrownEndpoint, opt.Branch);
+            _tripleCrownHelper = new LearnValidationHelper(opt.TripleCrownEndpoint, opt.Branch);
+            // TODO: remove this _xrefHelper
             _xrefHelper = string.IsNullOrEmpty(opt.XRefEndpoint) ? null : new XRefHelper(opt.XRefEndpoint, opt.XRefTags);
             _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(_opt.OriginalManifestPath));
             _outputBasePath = Path.GetDirectoryName(_opt.OriginalManifestPath);
@@ -61,7 +62,7 @@ namespace TripleCrownValidation
                 var files = string.Join(",", g.Select(i => i.SourceRelativePath));
                 foreach (var item in g)
                 {
-                    //OPSLogger.LogUserError(LogCode.TripleCrown_DuplicatedUid, LogMessageUtility.FormatMessage(LogCode.TripleCrown_DuplicatedUid, item.Uid, files), item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DuplicatedUid, message: $"{item.Uid} in {string.Join(", ", files)}", filePath: item.SourceRelativePath);
                 }
                 isValid = false;
                 return g.Select(gu => gu.SourceRelativePath);
