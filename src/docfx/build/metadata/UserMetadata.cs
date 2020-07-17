@@ -36,6 +36,8 @@ namespace Microsoft.Docs.Build
 
         public string? Robots { get; set; }
 
+        public PathString TildePath { get; private set; }
+
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
     }
