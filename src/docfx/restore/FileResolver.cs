@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     internal class FileResolver
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentHashSet<string> s_downloadedUrls = new ConcurrentHashSet<string>();
+        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadedUrls = new ConcurrentDictionary<string, Lazy<string>>();
 
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
@@ -56,11 +56,6 @@ namespace Microsoft.Docs.Build
 
         public string ResolveFilePath(SourceInfo<string> file)
         {
-            if (_fetchOptions != FetchOptions.NoFetch)
-            {
-                Download(file).GetAwaiter().GetResult();
-            }
-
             if (!UrlUtility.IsHttp(file))
             {
                 var localFilePath = Path.Combine(_docsetPath, file);
@@ -76,70 +71,64 @@ namespace Microsoft.Docs.Build
                 throw Errors.Link.FileNotFound(file).ToException();
             }
 
-            var filePath = GetRestorePathFromUrl(file);
-            if (!File.Exists(filePath))
-            {
-                throw Errors.System.NeedRestore(file).ToException();
-            }
-
-            return filePath;
+            return DownloadFromUrl(file);
         }
 
-        public async Task Download(SourceInfo<string> file)
+        public void Download(SourceInfo<string> file)
         {
-            if (!UrlUtility.IsHttp(file))
+            if (UrlUtility.IsHttp(file))
             {
-                return;
+                DownloadFromUrl(file);
+            }
+        }
+
+        private string DownloadFromUrl(SourceInfo<string> url)
+        {
+            return s_downloadedUrls.GetOrAdd(url, key => new Lazy<string>(() => DownloadFromUrlCore(key))).Value;
+        }
+
+        private string DownloadFromUrlCore(string url)
+        {
+            var filePath = GetRestorePathFromUrl(url);
+
+            switch (_fetchOptions)
+            {
+                case FetchOptions.UseCache when File.Exists(filePath):
+                case FetchOptions.NoFetch when File.Exists(filePath):
+                    return filePath;
+
+                case FetchOptions.NoFetch:
+                    throw Errors.System.NeedRestore(url).ToException();
             }
 
-            if (_fetchOptions == FetchOptions.NoFetch)
-            {
-                throw Errors.System.NeedRestore(file).ToException();
-            }
-
-            var filePath = GetRestorePathFromUrl(file);
-            if ((_fetchOptions == FetchOptions.UseCache || s_downloadedUrls.Contains(file)) && File.Exists(filePath))
-            {
-                return;
-            }
-
-            var etagPath = GetRestoreEtagPath(file);
+            var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);
 
-            using (InterProcessMutex.Create(filePath))
+            var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
+            if (!string.IsNullOrEmpty(etagContent))
             {
-                var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
-                if (!string.IsNullOrEmpty(etagContent))
-                {
-                    existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
-                }
+                existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
             }
 
-            var (tempFile, etag) = await DownloadToTempFile(file, existingEtag);
+            var (tempFile, etag) = DownloadToTempFile(url, existingEtag).GetAwaiter().GetResult();
             if (tempFile is null)
             {
                 // no change at all
-                return;
+                return filePath;
             }
 
             using (InterProcessMutex.Create(filePath))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
 
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                File.Move(tempFile, filePath);
+                File.Move(tempFile, filePath, overwrite: true);
 
                 if (etag != null)
                 {
                     File.WriteAllText(etagPath, etag.ToString());
                 }
+                return filePath;
             }
-
-            s_downloadedUrls.TryAdd(file);
         }
 
         private static string GetRestorePathFromUrl(string url)
