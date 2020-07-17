@@ -33,17 +33,31 @@ namespace Microsoft.Docs.Build
 
         private static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<Options>(args).MapResult(Run, _ => -9999);
+            return Parser.Default.ParseArguments<Options>(args).MapResult(
+                Run,
+                _ =>
+                {
+                    SendPullRequestComments(crashed: true, "argument exception");
+                    return -9999;
+                });
         }
 
         private static int Run(Options opts)
         {
-            var repositoryName = opts.DryRun ? $"dryrun.{Path.GetFileName(opts.Repository)}" : Path.GetFileName(opts.Repository);
-            var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
+            try
+            {
+                var repositoryName = opts.DryRun ? $"dryrun.{Path.GetFileName(opts.Repository)}" : Path.GetFileName(opts.Repository);
+                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{repositoryName}");
 
-            EnsureTestData(opts, repositoryName, workingFolder);
-            Test(opts, repositoryName, workingFolder);
-            PushChanges(repositoryName, workingFolder);
+                EnsureTestData(opts, repositoryName, workingFolder);
+                Test(opts, repositoryName, workingFolder);
+                PushChanges(repositoryName, workingFolder);
+            }
+            catch (Exception ex)
+            {
+                SendPullRequestComments(crashed: true, ex.ToString());
+                throw;
+            }
             return 0;
         }
 
@@ -126,16 +140,7 @@ namespace Microsoft.Docs.Build
             var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, repositoryName, workingFolder);
 
             Clean(outputPath);
-
-            var buildTime = default(TimeSpan);
-            try
-            {
-                buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
-            }
-            catch (Exception ex)
-            {
-                SendPullRequestComments(crashed: true, ex.ToString());
-            }
+            var buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
 
             Compare(opts, repositoryName, workingFolder, outputPath, baseLinePath, buildTime);
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
