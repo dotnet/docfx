@@ -191,7 +191,7 @@ namespace TripleCrownValidation
             {
                 RequestUri = new Uri(drySyncEndpoint),
                 Method = HttpMethod.Post,
-                Content = new StringContent(body, Encoding.UTF8, "applicaton/json")
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
             };
 
             using (var client = new HttpClient())
@@ -235,7 +235,7 @@ namespace TripleCrownValidation
                 if (File.Exists(HierarchyGenerator.GetHierarchyFullFileName(originalManifestPath)))
                 {
                     /** NOTE! 
-                        Althrogh Microsoft.OpenPublishing.Build.DataContracts.ItemToPublish.Metadata's type is Dictionary<string, object>, you can't set complex type in it.
+                        Although Microsoft.OpenPublishing.Build.DataContracts.ItemToPublish.Metadata's type is Dictionary<string, object>, you can't set complex type in it.
                         If you set a complex type directly in the Metadata, the build will always fail.
                         DHS only support following types, for complex type, please convert it to string before setting the value in Metadata
                         SupportedMetadataTypes = new List<Type>
