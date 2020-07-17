@@ -923,6 +923,14 @@ table th {
     font-weight: normal;
 }
 
+/* prevent NOTE sections from being split by a page break.*/
+@media print {
+   .NOTE, .TIP, .IMPORTANT, .CAUTION, .WARNING{
+       break-inside: avoid-page;
+       page-break-inside: avoid;
+    }
+}
+
 .inheritance ul {
     margin: 0;
     padding: 0;
