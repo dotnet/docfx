@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
             if (!monikers.HasMonikers)
             {
-                errors.Add(Errors.Versioning.MonikeRangeOutOfScope(rangeString, zoneLevelMonikers, fileLevelMonikers));
+                errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
                 return (errors, monikers);
             }
             return (errors, monikers);
