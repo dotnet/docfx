@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
             this MarkdownPipelineBuilder builder,
             Func<List<Error>> getErrors,
             Func<SourceInfo<string>, string> getLink,
+            Func<SourceInfo<string>, string, string> getImageLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
@@ -50,7 +51,7 @@ namespace Microsoft.Docs.Build
                 // The following code ensures we preserve the original html when changing links.
                 return HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                 {
-                    HtmlUtility.TransformLink(ref token, block, getLink);
+                    HtmlUtility.TransformLink(ref token, block, getLink, getImageLink);
                     HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
 
                     if (scanTags)

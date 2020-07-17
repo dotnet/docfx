@@ -1945,8 +1945,11 @@ inputs:
     text
     :::image-end:::
 
-    ![alt text 2](pig1.jpg)
-    ![alt text 2](pig2.jpg)
+    ![test alt text2](pig1.jpg)
+    ![test alt text2](pig2.jpg)
+
+    <img src="pig1.jpg" alt="test alt text3"></img>
+    <img src="pig2.jpg" alt="test alt text3"></img>
 outputs:
   a.json:
   pig1.jpg:
@@ -1956,5 +1959,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text 2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":15,"end_line":15,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text 2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":16,"end_line":16,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":15,"end_line":15,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":16,"end_line":16,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":18,"end_line":18,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":19,"end_line":19,"column":11,"end_column":19}

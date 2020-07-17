@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetImageLink, GetXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -298,8 +298,13 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(string path, MarkdownObject origin, string? altText)
         {
-            _contentValidator.ValidateImage((Document)InclusionContext.File, new SourceInfo<string>(path, origin.GetSourceInfo()), altText);
-            var link = GetLink(path, origin);
+            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), altText);
+        }
+
+        private string GetImageLink(SourceInfo<string> href, string? altText)
+        {
+            _contentValidator.ValidateImage((Document)InclusionContext.File, href, altText);
+            var link = GetLink(href);
             return link;
         }
 

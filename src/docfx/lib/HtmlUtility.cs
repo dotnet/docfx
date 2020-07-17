@@ -170,17 +170,39 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public static void TransformLink(ref HtmlToken token, MarkdownObject? block, Func<SourceInfo<string>, string> transform)
+        public static void TransformLink(
+            ref HtmlToken token,
+            MarkdownObject? block,
+            Func<SourceInfo<string>, string> transformLink,
+            Func<SourceInfo<string>, string, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
                 if (IsLink(ref token, attribute))
                 {
                     var source = block?.GetSourceInfo(attribute.ValueRange);
-                    var link = HttpUtility.HtmlEncode(transform(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source)));
+                    var link = HttpUtility.HtmlEncode(
+                        !IsImage(ref token, attribute) || transformImageLink == null
+                            ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
+                            : transformImageLink(
+                                new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
+                                GetAttributeValueByName("alt", ref token)));
 
                     attribute = attribute.WithValue(link);
                 }
+            }
+
+            static string GetAttributeValueByName(string name, ref HtmlToken token)
+            {
+                foreach (ref var attribute in token.Attributes.Span)
+                {
+                    if (attribute.NameIs(name))
+                    {
+                        return attribute.Value.ToString();
+                    }
+                }
+
+                return "";
             }
         }
 
@@ -404,7 +426,12 @@ namespace Microsoft.Docs.Build
 
         private static bool IsLink(ref HtmlToken token, in HtmlAttribute attribute)
         {
-            return (token.NameIs("a") && attribute.NameIs("href")) || (token.NameIs("img") && attribute.NameIs("src"));
+            return (token.NameIs("a") && attribute.NameIs("href")) || IsImage(ref token, attribute);
+        }
+
+        private static bool IsImage(ref HtmlToken token, in HtmlAttribute attribute)
+        {
+            return token.NameIs("img") && attribute.NameIs("src");
         }
 
         private static int CountWordInText(ReadOnlySpan<char> text)
