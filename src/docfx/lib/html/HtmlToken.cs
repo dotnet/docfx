@@ -67,5 +67,18 @@ namespace Microsoft.Docs.Build
             Attributes.CopyTo(attributes);
             Attributes = attributes;
         }
+
+        public string GetAttributeValueByName(string name)
+        {
+            foreach (ref var attribute in Attributes.Span)
+            {
+                if (attribute.NameIs(name))
+                {
+                    return attribute.Value.ToString();
+                }
+            }
+
+            return "";
+        }
     }
 }

@@ -186,23 +186,10 @@ namespace Microsoft.Docs.Build
                             ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
                             : transformImageLink(
                                 new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
-                                GetAttributeValueByName("alt", ref token)));
+                                token.GetAttributeValueByName("alt")));
 
                     attribute = attribute.WithValue(link);
                 }
-            }
-
-            static string GetAttributeValueByName(string name, ref HtmlToken token)
-            {
-                foreach (ref var attribute in token.Attributes.Span)
-                {
-                    if (attribute.NameIs(name))
-                    {
-                        return attribute.Value.ToString();
-                    }
-                }
-
-                return "";
             }
         }
 
@@ -431,7 +418,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsImage(ref HtmlToken token, in HtmlAttribute attribute)
         {
-            return token.NameIs("img") && attribute.NameIs("src");
+            return token.NameIs("img") && attribute.NameIs("src") && !attribute.Value.IsEmpty;
         }
 
         private static int CountWordInText(ReadOnlySpan<char> text)
