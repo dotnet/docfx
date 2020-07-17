@@ -1927,7 +1927,7 @@ outputs:
   4667fedf/a.json: |
     {"monikers":["netcore-2.0"]}
 ---
-# Support excldue_monikers metadata
+# Support exclude_monikers metadata
 inputs:
   docfx.yml: |
     monikerRange:
