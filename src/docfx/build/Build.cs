@@ -59,9 +59,12 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errorLog, buildOptions).Run();
                 var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
-                var validationRules = JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(
-                    fileResolver.ReadString(config.MarkdownValidationRules),
-                    config.MarkdownValidationRules.Source?.File);
+
+                var validationRules = !string.IsNullOrEmpty(config.MarkdownValidationRules.Value)
+                    ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(
+                        fileResolver.ReadString(config.MarkdownValidationRules),
+                        config.MarkdownValidationRules.Source?.File)
+                    : null;
                 errorLog.Configure(config, buildOptions.OutputPath, sourceMap, validationRules);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
                 Run(context);
