@@ -1,17 +1,15 @@
-using Microsoft.OpenPublishing.Build.DataContracts.PublishModel;
-using Microsoft.OpenPublishing.PluginHelper;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Microsoft.TripleCrown.DataContract.Quiz;
-using Microsoft.TripleCrown.DataContract.TaskValidation;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using TripleCrownValidation.Models;
 
-namespace TripleCrownValidation.Validators
+namespace TripleCrownValidation
 {
     public class UnitValidator : ValidatorBase
     {

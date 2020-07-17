@@ -3,10 +3,9 @@
 
 using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace TripleCrownValidation.Models
+namespace TripleCrownValidation
 {
     public class LegacyManifest
     {

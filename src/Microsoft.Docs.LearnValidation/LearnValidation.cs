@@ -1,5 +1,6 @@
-using Microsoft.OpenPublishing.Build.DataContracts.PublishModel;
-using Microsoft.OpenPublishing.PluginHelper;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System;
@@ -10,19 +11,21 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using TripleCrownValidation.DependencyMap;
-using TripleCrownValidation.Models;
-using TripleCrownValidation.PartialPublish;
-using TripleCrownValidation.Validators;
 
 namespace TripleCrownValidation
 {
-    class Program
+    public static class TripleCrownValidation
     {
         private const string LogCode = "InvalidHierarchyItem";
         private const string PluginName = "TripleCrownPlugin";
 
-        static void Main(string[] args)
+        static void Run(
+            string repoUrl,
+            string repoBranch,
+            string docsetName,
+            string docsetPath,
+            string docsetPath,
+            )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var opt = new CommandLineOptions();
@@ -188,7 +191,7 @@ namespace TripleCrownValidation
             {
                 RequestUri = new Uri(drySyncEndpoint),
                 Method = HttpMethod.Post,
-                Content = new StringContent(body, Encoding.UTF8, "application/json")
+                Content = new StringContent(body, Encoding.UTF8, "applicaton/json")
             };
 
             using (var client = new HttpClient())
@@ -232,7 +235,7 @@ namespace TripleCrownValidation
                 if (File.Exists(HierarchyGenerator.GetHierarchyFullFileName(originalManifestPath)))
                 {
                     /** NOTE! 
-                        Although Microsoft.OpenPublishing.Build.DataContracts.ItemToPublish.Metadata's type is Dictionary<string, object>, you can't set complex type in it.
+                        Althrogh Microsoft.OpenPublishing.Build.DataContracts.ItemToPublish.Metadata's type is Dictionary<string, object>, you can't set complex type in it.
                         If you set a complex type directly in the Metadata, the build will always fail.
                         DHS only support following types, for complex type, please convert it to string before setting the value in Metadata
                         SupportedMetadataTypes = new List<Type>
