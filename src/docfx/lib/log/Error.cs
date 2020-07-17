@@ -28,20 +28,8 @@ namespace Microsoft.Docs.Build
 
         public int EndColumn { get; }
 
-        public bool PullRequestOnly { get; }
-
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool pullRequestOnly = false)
-            : this(
-                level,
-                code,
-                message,
-                source?.File,
-                source?.Line ?? 0,
-                source?.Column ?? 0,
-                source?.EndLine ?? 0,
-                source?.EndColumn ?? 0,
-                name,
-                pullRequestOnly)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null)
+            : this(level, code, message, source?.File, source?.Line ?? 0, source?.Column ?? 0, source?.EndLine ?? 0, source?.EndColumn ?? 0, name)
         { }
 
         public Error(
@@ -53,8 +41,7 @@ namespace Microsoft.Docs.Build
             int column = 0,
             int endLine = 0,
             int endColumn = 0,
-            string? name = null,
-            bool pullRequestOnly = false)
+            string? name = null)
         {
             Level = level;
             Code = code;
@@ -65,7 +52,6 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndColumn = endColumn;
             Name = name;
-            PullRequestOnly = pullRequestOnly;
         }
 
         public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
@@ -84,8 +70,7 @@ namespace Microsoft.Docs.Build
                 Column,
                 EndLine,
                 EndColumn,
-                Name,
-                customRule.PullRequestOnly);
+                Name);
         }
 
         public Error WithLevel(ErrorLevel level)
@@ -106,24 +91,10 @@ namespace Microsoft.Docs.Build
             var file = originalPath == null ? FilePath?.Path : originalPath;
             var date_time = DateTime.UtcNow;
             var log_item_type = "user";
-            var pull_request_only = PullRequestOnly ? (bool?)true : null;
 
             return originalPath == null
-                ? JsonUtility.Serialize(new
-                {
-                    message_severity,
-                    log_item_type,
-                    Code,
-                    Message,
-                    file,
-                    line,
-                    end_line,
-                    column,
-                    end_column,
-                    pull_request_only,
-                    date_time,
-                })
-                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pull_request_only });
+                ? JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, line, end_line, column, end_column, date_time })
+                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)

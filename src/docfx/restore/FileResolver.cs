@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,7 +13,7 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal class FileResolver : IDisposable
+    internal class FileResolver
     {
         // NOTE: This line assumes each build runs in a new process
         private static readonly ConcurrentHashSet<string> s_downloadedUrls = new ConcurrentHashSet<string>();
@@ -29,8 +28,6 @@ namespace Microsoft.Docs.Build
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
-
-        private readonly Dictionary<string, InterProcessReaderWriterLock> _urlReaderLocks = new Dictionary<string, InterProcessReaderWriterLock>();
 
         public FileResolver(
             string docsetPath,
@@ -85,8 +82,6 @@ namespace Microsoft.Docs.Build
                 throw Errors.System.NeedRestore(file).ToException();
             }
 
-            EnterUrlReaderLock(file);
-
             return filePath;
         }
 
@@ -111,7 +106,7 @@ namespace Microsoft.Docs.Build
             var etagPath = GetRestoreEtagPath(file);
             var existingEtag = default(EntityTagHeaderValue);
 
-            using (InterProcessReaderWriterLock.CreateWriterLock(file))
+            using (InterProcessMutex.Create(filePath))
             {
                 var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
                 if (!string.IsNullOrEmpty(etagContent))
@@ -127,7 +122,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            using (InterProcessReaderWriterLock.CreateWriterLock(file))
+            using (InterProcessMutex.Create(filePath))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
 
@@ -145,17 +140,6 @@ namespace Microsoft.Docs.Build
             }
 
             s_downloadedUrls.TryAdd(file);
-        }
-
-        public void Dispose()
-        {
-            lock (_urlReaderLocks)
-            {
-                foreach (var item in _urlReaderLocks.Values)
-                {
-                    item.Dispose();
-                }
-            }
         }
 
         private static string GetRestorePathFromUrl(string url)
@@ -223,17 +207,6 @@ namespace Microsoft.Docs.Build
             }
 
             return await s_httpClient.SendAsync(message);
-        }
-
-        private void EnterUrlReaderLock(string file)
-        {
-            lock (_urlReaderLocks)
-            {
-                if (!_urlReaderLocks.ContainsKey(file))
-                {
-                    _urlReaderLocks.Add(file, InterProcessReaderWriterLock.CreateReaderLock(file));
-                }
-            }
         }
     }
 }
