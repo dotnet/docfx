@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class DependencyItem
     {

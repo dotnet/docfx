@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public abstract class ValidatorBase
     {
@@ -46,7 +46,7 @@ namespace TripleCrownValidation
 
         protected virtual void SetHierarchyData(IValidateModel item, ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
         {
-            item.SourceRelativePath = manifestItem.SourceRelativePath;
+            item.SourceRelativePath = manifestItem.SourceRelativePath!;
             item.AssetId = manifestItem.AssetId;
             item.MSDate = validatorHierarchyItem.MSDate;
             item.PublishUpdatedAt = validatorHierarchyItem.PublishUpdatedAt;

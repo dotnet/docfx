@@ -4,7 +4,7 @@
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public class ModuleValidateModel : ModuleSyncModel, IValidateModel
     {
@@ -20,11 +20,11 @@ namespace TripleCrownValidation
         public IValidateModel Parent { get; set; }
         
         public string MSDate { get; set; }
-        
+
         public string ServiceData { get; set; }
-        
+
         public string PublishUpdatedAt { get; set; }
-        
+
         public string PageKind { get; set; }
     }
 }

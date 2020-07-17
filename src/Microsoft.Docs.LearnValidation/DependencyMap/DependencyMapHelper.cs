@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
-namespace TripleCrownValidation
+namespace Microsoft.Docs.LearnValidation
 {
     public static class DependencyMapHelper
     {
@@ -22,8 +22,8 @@ namespace TripleCrownValidation
 
                     if (dependentInfo != null && !string.IsNullOrEmpty(dependentInfo.FromFilePath) && !string.IsNullOrEmpty(dependentInfo.ToFilePath))
                     {
-                        var normalizedToFilePath = dependentInfo.ToFilePath.BackSlashToForwardSlash();
-                        var normalizedFromFilePath = dependentInfo.FromFilePath.BackSlashToForwardSlash();
+                        var normalizedToFilePath = dependentInfo.ToFilePath.Replace('/', '\\');
+                        var normalizedFromFilePath = dependentInfo.FromFilePath.Replace('/', '\\');
 
                         dependencyItems.Add(
                             new DependencyItem

@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             return 0;
         }
 
-        private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string s_repositoryName, string workingFolder)
+        private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string workingFolder)
         {
             var repositoryPath = Path.Combine(workingFolder, s_repositoryName);
             var cachePath = Path.Combine(workingFolder, "cache");
@@ -140,12 +140,12 @@ namespace Microsoft.Docs.Build
 
         private static bool Test(Options opts, string workingFolder)
         {
-            var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, s_repositoryName, workingFolder);
+            var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder);
 
             Clean(outputPath);
             var buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
 
-            Compare(opts, s_repositoryName, workingFolder, outputPath, baseLinePath, buildTime);
+            Compare(opts, workingFolder, outputPath, baseLinePath, buildTime);
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"Test Pass {workingFolder}");
             Console.ResetColor();
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
                 cwd: repositoryPath);
         }
 
-        private static void Compare(Options opts, string s_repositoryName, string workingFolder, string outputPath, string existingOutputPath, TimeSpan buildTime)
+        private static void Compare(Options opts, string workingFolder, string outputPath, string existingOutputPath, TimeSpan buildTime)
         {
             // For temporary normalize: use 'NormalizeJsonFiles' for output files
             Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: opts.ErrorLevel);
@@ -394,17 +394,15 @@ namespace Microsoft.Docs.Build
 
         private static async Task SendGitHubPullRequestComments(int prNumber, string body)
         {
-            using (var http = new HttpClient())
-            {
-                http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-                http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
+            using var http = new HttpClient();
+            http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
+            http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
 
-                var response = await http.PostAsync(
-                    $"https://api.github.com/repos/dotnet/docfx/issues/{prNumber}/comments",
-                    new StringContent(JsonConvert.SerializeObject(new { body }), Encoding.UTF8, "application/json"));
+            var response = await http.PostAsync(
+                $"https://api.github.com/repos/dotnet/docfx/issues/{prNumber}/comments",
+                new StringContent(JsonConvert.SerializeObject(new { body }), Encoding.UTF8, "application/json"));
 
-                response.EnsureSuccessStatusCode();
-            }
+            response.EnsureSuccessStatusCode();
         }
     }
 }
