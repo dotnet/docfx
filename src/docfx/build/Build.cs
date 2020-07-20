@@ -149,6 +149,5 @@ namespace Microsoft.Docs.Build
                 fileResolver.ReadString(config.MarkdownValidationRules),
                 config.MarkdownValidationRules.Source?.File)
             : null;
-
     }
 }
