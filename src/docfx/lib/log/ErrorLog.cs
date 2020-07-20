@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                         ErrorLevel.Info => config.MaxFileInfos,
                         _ => 0,
                     };
-                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.FilePath), level);
+                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.FilePath), ErrorLevel.Info);
                     break;
             }
 
