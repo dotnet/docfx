@@ -74,7 +74,7 @@ namespace Microsoft.Docs.LearnValidation
         {
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
-            var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(config.Environment), config.RepoBranch);
+            var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(), config.RepoBranch);
             var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath);
             var (isValid, hierarchyItems) = validator.Validate();
 
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.LearnValidation
                 config.DocsetName,
                 repoUrl,
                 hierarchy,
-                GetDrySyncEndpoint(config.Environment));
+                GetDrySyncEndpoint());
 
             if (!result.IsValid)
             {
@@ -225,16 +225,8 @@ namespace Microsoft.Docs.LearnValidation
             throw new NotImplementedException();
         }
 
-        private static string GetDrySyncEndpoint(string environment)
-        {
-            // TODO: get dry-sync end-point from key-vault
-            throw new NotImplementedException();
-        }
+        private static string GetDrySyncEndpoint() => Environment.GetEnvironmentVariable("DOCS_DRY_SYNC_ENDPOINT");
 
-        private static string GetLearnValidationEndpoint(string environment)
-        {
-            // TODO: get learn-validation end-point from key-vault
-            throw new NotImplementedException();
-        }
+        private static string GetLearnValidationEndpoint() => Environment.GetEnvironmentVariable("DOCS_LEARN_VALIDATION_ENDPOINT");
     }
 }

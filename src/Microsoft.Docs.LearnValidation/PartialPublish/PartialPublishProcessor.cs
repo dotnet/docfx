@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.LearnValidation
@@ -12,7 +10,6 @@ namespace Microsoft.Docs.LearnValidation
     {
         private List<IValidateModel> _hierarchyItems;
         private string _docsetPath;
-        private string _skipPublishFilePath;
         private LearnValidationHelper _learnValidationHelper;
 
         public PartialPublishProcessor(List<IValidateModel> hierarchyItems, string docsetPath, LearnValidationHelper learnValidationHelper)
@@ -29,10 +26,6 @@ namespace Microsoft.Docs.LearnValidation
             var learningpaths = _hierarchyItems.Where(hi => hi is PathValidateModel).Select(hi => hi as PathValidateModel);
             
             List<string> skipPublishFilePathList = new List<string>();
-            if (File.Exists(_skipPublishFilePath))
-            {
-                skipPublishFilePathList = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_skipPublishFilePath));
-            }
 
             // Mark modules
             foreach (var module in modules)
@@ -84,8 +77,6 @@ namespace Microsoft.Docs.LearnValidation
                     // TODO: remove invalid path from publish.json
                 }
             }
-
-            File.WriteAllText(_skipPublishFilePath, JsonConvert.SerializeObject(skipPublishFilePathList, Formatting.Indented));
         }
     }
 }
