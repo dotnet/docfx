@@ -269,3 +269,23 @@ repos:
   - files:
       ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
+---
+# Support source_monikers
+repos:
+  https://github.com/redirection/source-monikers:
+  - files:
+      docfx.yml:
+      .openpublishing.redirection.json: |
+        { "redirections": [{"source_path": "a.md", "source_monikers": ["netcore-1.0", "netcore-2.0"], "redirect_URL": "/"}] }
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+  .publish.json: |
+    { "files": [{ "source_path": "a.md", "redirect_url": "/" }] }
