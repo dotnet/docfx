@@ -225,13 +225,13 @@ namespace Microsoft.Docs.LearnValidation
             throw new NotImplementedException();
         }
 
-        private static string GetDrySyncEndpoint(string environtment)
+        private static string GetDrySyncEndpoint(string environment)
         {
             // TODO: get dry-sync end-point from key-vault
             throw new NotImplementedException();
         }
 
-        private static string GetLearnValidationEndpoint(string environtment)
+        private static string GetLearnValidationEndpoint(string environment)
         {
             // TODO: get learn-validation end-point from key-vault
             throw new NotImplementedException();
