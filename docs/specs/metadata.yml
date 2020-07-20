@@ -351,3 +351,15 @@ outputs:
   a.json: |
     { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
 ---
+# Support tilde_path
+inputs:
+  docfx.yml:
+  a/a.md: |
+    ---
+    tilde_path: 'a'
+    ---
+    [link to b](~/b.md)
+  a/b.md:
+outputs:
+  a/a.json:
+  a/b.json:

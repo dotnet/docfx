@@ -41,19 +41,19 @@ namespace Microsoft.Docs.LearnValidation
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_MetadataError, result, item.SourceRelativePath);
                 }
 
                 if (unit.Tasks != null && unit.QuizAnswers != null)
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, unit.UId, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, unit.UId, item.SourceRelativePath);
                 }
 
                 if (unit.Parent == null || !(unit.Parent is ModuleValidateModel))
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_NoModuleParent, unit.UId, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_NoModuleParent, unit.UId, item.SourceRelativePath);
                 }
 
                 itemValid &= ValidateQuiz(unit.QuizAnswers, item);
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.LearnValidation
             return validationResult;
         }
 
-        private bool ValidateTaskValidation(ValidationTask[]? tasks, IValidateModel unit)
+        private bool ValidateTaskValidation(ValidationTask[] tasks, IValidateModel unit)
         {
             if (tasks == null) return true;
 
@@ -82,20 +82,20 @@ namespace Microsoft.Docs.LearnValidation
                 if (!_taskValidationTypeSet.Contains(azureResource.Type, StringComparer.OrdinalIgnoreCase))
                 {
                     validateResult = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Task_NonSupportedType, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Task_NonSupportedType, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
                 }
 
                 if (string.IsNullOrEmpty(azureResource.Name) && azureResource.Type.Count(t => t == '/') != 1)
                 {
                     validateResult = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Task_NonSupportedTypeFormat, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Task_NonSupportedTypeFormat, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
                 }
             }
 
             return validateResult;
         }
 
-        private bool ValidateQuiz(QuestionWithAnswer[]? quizAnswers, IValidateModel unit)
+        private bool ValidateQuiz(QuestionWithAnswer[] quizAnswers, IValidateModel unit)
         {
             if (quizAnswers == null) return true;
 
@@ -108,13 +108,13 @@ namespace Microsoft.Docs.LearnValidation
                 if (answerCount > 1)
                 {
                     validateResult = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Quiz_MultiAnswers, $"error index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Quiz_MultiAnswers, $"error index: {index}", unit.SourceRelativePath);
                 }
 
                 if (answerCount < 1)
                 {
                     validateResult = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Quiz_NoAnswer, $"error index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Quiz_NoAnswer, $"error index: {index}", unit.SourceRelativePath);
                 }
             }
 

@@ -39,6 +39,11 @@ namespace Microsoft.Docs.Build
                 new MetricIdentifier(
                     null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
 
+        private static readonly Metric s_fileLogCountMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(
+                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+
         private static readonly Metric s_buildFileTypeCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"),
@@ -106,6 +111,11 @@ namespace Microsoft.Docs.Build
         public static void TrackErrorCount(string code, ErrorLevel level, string? name)
         {
             s_errorCountMetric.TrackValue(1, code, level.ToString(), CoalesceEmpty(name), "User", s_os, s_version, s_repo, s_branch, s_correlationId);
+        }
+
+        public static void TrackFileLogCount(ErrorLevel level, FilePath? filePath)
+        {
+            s_fileLogCountMetric.TrackValue(1, level.ToString(), CoalesceEmpty(filePath?.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackGitHubRateLimit(string remaining)

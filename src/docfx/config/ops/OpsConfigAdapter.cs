@@ -12,9 +12,7 @@ using System.Web;
 using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Extensions.Http;
 
@@ -31,7 +29,7 @@ namespace Microsoft.Docs.Build
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
-        private static readonly DocsEnvironment s_docsEnvironment = GetDocsEnvironment();
+        public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorLog _errorLog;
         private readonly HttpClient _http = new HttpClient();
@@ -132,7 +130,7 @@ namespace Microsoft.Docs.Build
 
         private string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
-            var environment = s_docsEnvironment;
+            var environment = DocsEnvironment;
             if (!string.IsNullOrEmpty(xrefEndpoint) &&
                 string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
@@ -290,7 +288,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
-            => (environment ?? s_docsEnvironment) switch
+            => (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
                 DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
@@ -305,7 +303,7 @@ namespace Microsoft.Docs.Build
         private static Lazy<Task<Response<KeyVaultSecret>>> OpBuildUserToken(DocsEnvironment? environment = null)
             => new Lazy<Task<Response<KeyVaultSecret>>>(
             () => new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential()).GetSecretAsync(
-            (environment ?? s_docsEnvironment) switch
+            (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "OpsBuildTokenProd",
                 DocsEnvironment.PPE => "OpsBuildTokenSandbox",
@@ -316,7 +314,7 @@ namespace Microsoft.Docs.Build
         {
             return siteName switch
             {
-                "DocsAzureCN" => s_docsEnvironment switch
+                "DocsAzureCN" => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
@@ -324,7 +322,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "ppe.docs.azure.cn",
                     _ => throw new NotSupportedException(),
                 },
-                "dev.microsoft.com" => s_docsEnvironment switch
+                "dev.microsoft.com" => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
                     DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
@@ -332,12 +330,12 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
                     _ => throw new NotSupportedException(),
                 },
-                "rd.microsoft.com" => s_docsEnvironment switch
+                "rd.microsoft.com" => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "rd.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },
-                _ => s_docsEnvironment switch
+                _ => DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
                     DocsEnvironment.PPE => "ppe.docs.microsoft.com",
@@ -350,7 +348,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && s_docsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)

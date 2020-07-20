@@ -50,7 +50,7 @@ namespace Microsoft.Docs.LearnValidation
                                 "~" + tokenDependency.Substring(_docsetFolder.Length).Replace('\\', '/')
                                 : tokenDependency;
 
-                            Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Token_NotFound, filePath: hierarchyItem.SourceRelativePath);
+                            Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Token_NotFound, file: hierarchyItem.SourceRelativePath);
                             hierarchyItem.IsValid = false;
                             isValid = false;
                         }
