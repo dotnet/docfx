@@ -61,6 +61,7 @@ namespace Microsoft.Docs.Build
                 errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
                 Run(context);
+                new OpsPostProcessor(config, errorLog, buildOptions).Run();
                 return errorLog.ErrorCount > 0;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))

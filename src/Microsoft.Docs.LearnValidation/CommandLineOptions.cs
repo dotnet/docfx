@@ -29,22 +29,22 @@ namespace Microsoft.Docs.LearnValidation
         {
             if (string.IsNullOrEmpty(DependencyFilePath) || !File.Exists(DependencyFilePath))
             {
-                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DependencyFile_NotExist);
+                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DependencyFile_NotExist);
                 return false;
             }
             if (string.IsNullOrEmpty(DocsetFolder))
             {
-                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DocsetFolder_IsNull);
+                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DocsetFolder_IsNull);
                 return false;
             }
             if (string.Compare(Locale, "en-us", true) != 0 && string.IsNullOrEmpty(RepoRootPath))
             {
-                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_RepoRootPath_IsNull);
+                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_RepoRootPath_IsNull);
                 return false;
             }
             if (ContinueWithError && string.IsNullOrEmpty(OriginalManifestPath))
             {
-                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_ManifestFile_NotExist);
+                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_ManifestFile_NotExist);
                 return false;
             }
 
