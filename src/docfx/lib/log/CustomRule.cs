@@ -20,10 +20,7 @@ namespace Microsoft.Docs.Build
 
         public CustomRule() { }
 
-        public CustomRule(bool pullRequestOnly)
-        {
-            PullRequestOnly = pullRequestOnly;
-        }
+        public CustomRule(ErrorLevel? severity) => Severity = severity;
 
         public CustomRule(ErrorLevel? severity, string? code, string? additionalMessage, bool canonicalVersionOnly, bool pullRequestOnly)
         {

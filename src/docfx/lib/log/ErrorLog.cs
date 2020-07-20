@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    customRules.Add(validationRule.Code, new CustomRule(validationRule.PullRequestOnly));
+                    customRules.Add(validationRule.Code, new CustomRule(null, null, null, false, validationRule.PullRequestOnly));
                 }
             }
             return customRules;

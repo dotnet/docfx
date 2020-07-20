@@ -1410,8 +1410,7 @@ outputs:
 inputs:
   docfx.yml: |
     customRules:
-      invalid-toc-level: 
-        severity: warning
+      invalid-toc-level: warning
   docs/TOC.md: |
     # level 1
     ### level 3

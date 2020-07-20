@@ -251,8 +251,7 @@ outputs:
 inputs:
   docfx.yml: |
     customRules:
-      file-not-found: 
-        severity: error
+      file-not-found: error
   docs/a.md: |
     a [](b)
 outputs:

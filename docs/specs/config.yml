@@ -339,8 +339,7 @@ outputs:
 inputs:
   docfx.yml: |
     customRules:
-      file-not-found: 
-        severity: off
+      file-not-found: off
   docs/a.md: |
     [b](b.md)
 outputs:
@@ -363,13 +362,12 @@ outputs:
 inputs:
   docfx.yml: |
     customRules:
-      file-not-found: 
-        severity: off
+      file-not-found: off
     xref: xref.json
   a.md: '@System.String'
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"file-not-found","message":"Invalid file link: 'xref.json'.","file":"docfx.yml","line":4,"column":7}
+    {"message_severity":"error","code":"file-not-found","message":"Invalid file link: 'xref.json'.","file":"docfx.yml","line":3,"column":7}
 ---
 # Treat warnings as errors
 inputs:

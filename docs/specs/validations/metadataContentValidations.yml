@@ -1960,10 +1960,8 @@ inputs:
     markdownValidationRules: rules.json
     metadataSchema: schema.json
     customRules:
-      h1-missing:
-        severity: "warning"
-      heading-empty:
-        severity: "warning"
+      h1-missing: warning
+      heading-empty: warning
   schema.json: |
     {
       "required": ["title"],

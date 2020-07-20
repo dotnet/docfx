@@ -414,8 +414,7 @@ outputs:
 inputs:
   docfx.yml: |
     customRules:
-      bookmark-not-found: 
-        severity: error
+      bookmark-not-found: error
   docs/a.md: |
     [link to b](b.md#bookmark)
   docs/b.md:
