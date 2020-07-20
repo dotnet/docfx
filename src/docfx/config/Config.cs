@@ -300,7 +300,7 @@ namespace Microsoft.Docs.Build
         public bool RemoveHostName { get; private set; }
 
         /// <summary>
-        /// Determins if run learn-validation as post process
+        /// Determines if run learn-validation as post process
         /// </summary>
         public bool RunLearnValidation { get; private set; }
 
