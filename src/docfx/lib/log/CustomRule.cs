@@ -16,8 +16,19 @@ namespace Microsoft.Docs.Build
 
         public bool CanonicalVersionOnly { get; private set; }
 
+        public bool PullRequestOnly { get; private set; }
+
         public CustomRule() { }
 
         public CustomRule(ErrorLevel? severity) => Severity = severity;
+
+        public CustomRule(ErrorLevel? severity, string? code, string? additionalMessage, bool canonicalVersionOnly, bool pullRequestOnly)
+        {
+            Severity = severity;
+            Code = code;
+            AdditionalMessage = additionalMessage;
+            CanonicalVersionOnly = canonicalVersionOnly;
+            PullRequestOnly = pullRequestOnly;
+        }
     }
 }

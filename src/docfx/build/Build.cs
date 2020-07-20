@@ -2,8 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -58,7 +60,9 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errorLog, buildOptions).Run();
                 var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
-                errorLog.Configure(config, buildOptions.OutputPath, sourceMap);
+
+                var validationRules = GetContentValidationRules(config, fileResolver);
+                errorLog.Configure(config, buildOptions.OutputPath, sourceMap, validationRules);
                 using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
                 Run(context);
                 return errorLog.ErrorCount > 0;
@@ -139,5 +143,12 @@ namespace Microsoft.Docs.Build
                     break;
             }
         }
+
+        private static Dictionary<string, ValidationRules>? GetContentValidationRules(Config? config, FileResolver fileResolver)
+            => !string.IsNullOrEmpty(config?.MarkdownValidationRules.Value)
+            ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(
+                fileResolver.ReadString(config.MarkdownValidationRules),
+                config.MarkdownValidationRules.Source?.File)
+            : null;
     }
 }
