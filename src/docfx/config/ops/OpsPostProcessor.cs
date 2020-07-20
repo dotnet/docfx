@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            using (Progress.Start("Preprocessing monodoc XML files"))
+            using (Progress.Start("Postprocessing learn contents"))
             {
                 lock (s_lock)
                 {
