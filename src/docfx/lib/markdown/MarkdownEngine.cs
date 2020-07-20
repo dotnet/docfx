@@ -13,6 +13,7 @@ using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Validations.DocFx.Adapter;
 
@@ -298,6 +299,11 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(string path, MarkdownObject origin, string? altText)
         {
+            if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
+            {
+                altText = ToPlainText(origin);
+            }
+
             return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), altText);
         }
 

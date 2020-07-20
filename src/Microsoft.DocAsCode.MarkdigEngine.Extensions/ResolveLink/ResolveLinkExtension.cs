@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 case LinkInline linkInline:
                     linkInline.Url = linkInline.IsImage
-                        ? _context.GetImageLink(linkInline.Url, linkInline, GetAltText(linkInline))
+                        ? _context.GetImageLink(linkInline.Url, linkInline, null)
                         : _context.GetLink(linkInline.Url, linkInline);
                     foreach (var subBlock in linkInline)
                     {
@@ -67,37 +67,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     break;
 
                 default:
-                    break;
-            }
-        }
-
-        private string GetAltText(Inline inline)
-        {
-            var stringBuilder = new StringBuilder();
-            GenerateAltTextInLinkInline(inline, stringBuilder);
-            return stringBuilder.ToString();
-        }
-
-        private void GenerateAltTextInLinkInline(Inline inline, StringBuilder altTextBuilder)
-        {
-            switch (inline)
-            {
-                case LiteralInline literal:
-                    var content = literal.Content;
-                    altTextBuilder.Append(content.Text, content.Start, content.Length);
-                    break;
-                case CodeInline code:
-                    altTextBuilder.Append(code.Content);
-                    break;
-                case XrefInline xrefInline:
-                    var altText = xrefInline.GetAttributes().Properties.Where(p => p.Key == "data-raw-source").Select(p => p.Value).FirstOrDefault();
-                    altTextBuilder.Append(altText);
-                    break;
-                case ContainerInline containerInline:
-                    foreach (var subInline in containerInline)
-                    {
-                        GenerateAltTextInLinkInline(subInline, altTextBuilder);
-                    }
                     break;
             }
         }
