@@ -29,12 +29,20 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public SourceInfo<string?>[]? Monikers { get; private set; }
 
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public SourceInfo<string?>[]? ExcludeMonikers { get; private set; }
+
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public SourceInfo<string?>[]? ReplaceMonikers { get; private set; }
+
         public SourceInfo<string> Uid { get; private set; } = new SourceInfo<string>("");
 
         [JsonProperty("_tocRel")]
         public string? TocRel { get; private set; }
 
         public string? Robots { get; set; }
+
+        public PathString TildePath { get; private set; }
 
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();

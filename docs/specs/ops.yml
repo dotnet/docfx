@@ -24,12 +24,13 @@ outputs:
   b/b.json: '{ "open_to_public_contributors": false }'
 ---
 # Peak .openpublishing.publish.config.json for multiple docsets, dependencies and themes
+# Log warning for docset that are not provisioned, the rest can still proceed
 repos:
   https://github.com/ops1/dep#live:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{ "build_source_folder": "articles" }],
+          "docsets_to_publish": [{ "build_source_folder": "articles" }, { "docset_name": "bad_name", "build_source_folder": "a" }],
           "dependent_repositories": [{
               "path_to_root": "_themes",
               "url": "https://github.com/ops1/template",
@@ -41,7 +42,13 @@ repos:
               "include_in_build": true
             }]
         }
-      articles/docfx.yml:
+      a/docfx.yml: |
+        http:
+          https://op-build-prod.azurewebsites.net:
+            headers:
+              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
+      a/a.md:
+      articles/docfx.yml: 
       articles/a.yml: '#YamlMime:TestData'
       articles/b.md: '[!INCLUDE[](crr/token.md)]'
   https://github.com/ops1/template#test:
@@ -53,30 +60,15 @@ repos:
   https://github.com/ops1/crr#live1:
   - files:
       token.md: live1
+environments:
+  - DOCS_OPS_TOKEN
 outputs:
   articles/a.json:
   articles/b.json: |
     { "conceptual": "<p>live1</p>" }
   articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
----
-# Throw error for OPS repos that are not provisioned
-repos:
-  https://github.com/ops/provision:
-  - files:
-      .openpublishing.publish.config.json: |
-        {
-           "docsets_to_publish": [{ "docset_name": "bad_name" }]
-        }
-      docfx.yml: |
-        http:
-          https://op-build-prod.azurewebsites.net:
-            headers:
-              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
-environments:
-  - DOCS_OPS_TOKEN
-outputs:
-  .errors.log: |
+  a/.errors.log: |
     {"message_severity":"warning","code":"docset-not-provisioned"}
     {"message_severity":"warning","code":"docset-not-provisioned"}
 ---

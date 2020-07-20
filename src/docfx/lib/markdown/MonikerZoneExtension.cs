@@ -19,10 +19,14 @@ namespace Microsoft.Docs.Build
                 {
                     if (node is MonikerRangeBlock monikerRangeBlock)
                     {
+                        var monikers = parseMonikerRange(new SourceInfo<string?>(monikerRangeBlock.MonikerRange, monikerRangeBlock.GetSourceInfo()));
+                        if (!monikers.HasMonikers)
+                        {
+                            return null;
+                        }
+
                         monikerRangeBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("range", monikerRangeBlock.MonikerRange));
-                        monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(
-                            " ",
-                            parseMonikerRange(new SourceInfo<string?>(monikerRangeBlock.MonikerRange, monikerRangeBlock.GetSourceInfo()))));
+                        monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(" ", monikers));
                     }
                     return node;
                 });
