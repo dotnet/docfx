@@ -12,20 +12,15 @@ namespace Microsoft.Docs.LearnValidation
 {
     partial class Validator
     {
-        private CommandLineOptions _opt;
         private LegacyManifest _manifest;
         private string _outputBasePath;
-        private XRefHelper _xrefHelper;
-        private LearnValidationHelper _tripleCrownHelper;
+        private LearnValidationHelper _learnValidationHelper;
 
-        public Validator(CommandLineOptions opt)
+        public Validator(LearnValidationHelper learnValidationHelper, string manifestFilePath)
         {
-            _opt = opt;
-            _tripleCrownHelper = new LearnValidationHelper(opt.TripleCrownEndpoint, opt.Branch);
-            // TODO: remove this _xrefHelper
-            _xrefHelper = string.IsNullOrEmpty(opt.XRefEndpoint) ? null : new XRefHelper(opt.XRefEndpoint, opt.XRefTags);
-            _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(_opt.OriginalManifestPath));
-            _outputBasePath = Path.GetDirectoryName(_opt.OriginalManifestPath);
+            _learnValidationHelper = learnValidationHelper;
+            _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath));
+            _outputBasePath = Path.GetDirectoryName(manifestFilePath);
         }
 
         public (bool, List<IValidateModel>) Validate()
@@ -39,7 +34,7 @@ namespace Microsoft.Docs.LearnValidation
             var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath);
             var unitValidator = new UnitValidator(unitFiles, _outputBasePath);
             var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath);
-            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _xrefHelper, _tripleCrownHelper, _opt.Locale);
+            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _learnValidationHelper);
 
             //Add badge and trophy to achievements
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));

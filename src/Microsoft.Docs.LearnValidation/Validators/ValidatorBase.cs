@@ -11,10 +11,9 @@ namespace Microsoft.Docs.LearnValidation
 {
     public abstract class ValidatorBase
     {
-        protected List<LegacyManifestItem> ManifestItems { get; set; }
-        protected string BathPath { get; set; }
-        public bool IsValidated { get; private set; }
-        public List<IValidateModel> Items { get; set; } = new List<IValidateModel>();
+        protected List<LegacyManifestItem> ManifestItems { get; }
+        protected string BathPath { get; }
+        public List<IValidateModel> Items { get; protected set; } = new List<IValidateModel>();
 
         public ValidatorBase(List<LegacyManifestItem> manifestItems, string basePath)
         {

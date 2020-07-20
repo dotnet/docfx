@@ -69,7 +69,7 @@ namespace Microsoft.Docs.LearnValidation
         TripleCrown_Module_NonSupportedChildrenType,
         TripleCrown_Quiz_MultiAnswers,
         TripleCrown_Quiz_NoAnswer,
-        TripleCrown_RepoRootPath_IsNull,
+        TripleCrown_DocsetPathPath_IsNull,
         TripleCrown_Task_NonSupportedType,
         TripleCrown_Task_NonSupportedTypeFormat,
         TripleCrown_Token_NotFound,

@@ -11,18 +11,15 @@ namespace Microsoft.Docs.LearnValidation
     public class PartialPublishProcessor
     {
         private List<IValidateModel> _hierarchyItems;
-        private string _docsetFolder;
-        private string _repoRootPath;
+        private string _docsetPath;
         private string _skipPublishFilePath;
         private LearnValidationHelper _learnValidationHelper;
 
-        public PartialPublishProcessor(List<IValidateModel> hierarchyItems, CommandLineOptions opt)
+        public PartialPublishProcessor(List<IValidateModel> hierarchyItems, string docsetPath, LearnValidationHelper learnValidationHelper)
         {
             _hierarchyItems = hierarchyItems;
-            _docsetFolder = opt.DocsetFolder;
-            _skipPublishFilePath = opt.SkipPublishFilePath;
-            _repoRootPath = opt.RepoRootPath;
-            _learnValidationHelper = new LearnValidationHelper(opt.TripleCrownEndpoint, opt.Branch);
+            _docsetPath = docsetPath;
+            _learnValidationHelper = learnValidationHelper;
         }
 
         public void MarkInvalidHierarchyItem()

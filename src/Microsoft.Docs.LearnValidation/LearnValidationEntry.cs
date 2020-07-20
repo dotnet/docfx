@@ -15,8 +15,7 @@ namespace Microsoft.Docs.LearnValidation
 {
     public static class LearnValidationEntry
     {
-        private const string LogCode = "InvalidHierarchyItem";
-        private const string PluginName = "TripleCrownPlugin";
+        private const string PluginName = "LearnValidationPlugin";
 
         public static void Run(
             string repoUrl,
@@ -35,15 +34,28 @@ namespace Microsoft.Docs.LearnValidation
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var needUpdateManifest = false;
             Logger.WriteLog = writeLog;
-            var opt = new CommandLineOptions();
+            var config = new LearnValidationConfig(
+                repoUrl: repoUrl,
+                repoBranch: repoBranch,
+                docsetName: docsetName,
+                docsetPath: docsetPath,
+                publishFilePath: publishFilePath,
+                dependencyFilePath: dependencyFilePath,
+                manifestFilePath: manifestFilePath,
+                environment: environment,
+                fallbackDocsetPath: fallbackDocsetPath,
+                isLocalizationBuild: isLocalizationBuild);
 
             try
             {
-                Console.WriteLine($"[{PluginName}] OPT args :\n{0}", JsonConvert.SerializeObject(
-                    new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath},
+                if (config.Validate())
+                {
+                    Console.WriteLine($"[{PluginName}] config:\n{0}", JsonConvert.SerializeObject(
+                    new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
                     Formatting.Indented));
 
-                    needUpdateManifest = ValidateHierarchy(opt).Result || !IsDefaultLocale(opt.Locale);
+                    needUpdateManifest = ValidateHierarchy(config).Result || isLocalizationBuild;
+                }
             }
             catch (Exception ex)
             {
@@ -58,29 +70,30 @@ namespace Microsoft.Docs.LearnValidation
             }
         }
 
-        private static async Task<bool> ValidateHierarchy(CommandLineOptions opt)
+        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config)
         {
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
-            var validator = new Validator(opt);
+            var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(config.Environment), config.RepoBranch);
+            var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath);
             var (isValid, hierarchyItems) = validator.Validate();
 
             Console.WriteLine($"[{PluginName}] finished to do local validation.");
 
-            if (IsDefaultLocale(opt.Locale))
+            if (config.IsLocalizationBuild)
             {
-                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, opt);
+                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config);
             }
             else
             {
-                return ValidateHierarchyInOtherLocales(isValid, hierarchyItems, opt);
+                return ValidateHierarchyInOtherLocales(isValid, hierarchyItems, config, learnValidationHelper);
             }
         }
 
         private static async Task<bool> ValidateHierarchyInDefaultLocale(
             bool isValid,
             List<IValidateModel> hierarchyItems,
-            CommandLineOptions opt)
+            LearnValidationConfig config)
         {
             if (!isValid)
             {
@@ -90,20 +103,20 @@ namespace Microsoft.Docs.LearnValidation
             Console.WriteLine($"[{PluginName}] start to update dependency map.");
 
             // Update DependencyType & Remove Fragments
-            var dpProcessor = new DependencyMapProcessor(opt.DependencyFilePath, hierarchyItems, opt.DocsetFolder);
+            var dpProcessor = new DependencyMapProcessor(config.DependencyFilePath, hierarchyItems, config.DocsetPath);
             dpProcessor.UpdateDependencyMap();
 
             Console.WriteLine($"[{PluginName}] finished to update dependency map.");
 
-            var hierarchy = HierarchyGenerator.GenerateHierarchy(hierarchyItems, opt.OriginalManifestPath);
-            var repoUrl = Utility.TransformGitUrl(opt.RepoUrl);
+            var hierarchy = HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.ManifestFilePath);
+            var repoUrl = Utility.TransformGitUrl(config.RepoUrl);
             var result = await TryDrySync(
-                opt.Branch,
+                config.RepoBranch,
                 Constants.DefaultLocale,
-                opt.DocsetName,
+                config.DocsetName,
                 repoUrl,
                 hierarchy,
-                opt.DrySyncEndpoint);
+                GetDrySyncEndpoint(config.Environment));
 
             if (!result.IsValid)
             {
@@ -116,32 +129,32 @@ namespace Microsoft.Docs.LearnValidation
         private static bool ValidateHierarchyInOtherLocales(
             bool isValid,
             List<IValidateModel> hierarchyItems,
-            CommandLineOptions opt)
+            LearnValidationConfig config,
+            LearnValidationHelper learnValidationHelper)
         {
             // Check loc token exist
             Console.WriteLine($"[{PluginName}] start to check if token existed.");
 
-            // TODO: pass fallback path
-            var tokenValidator = new TokenValidator(opt.DependencyFilePath, hierarchyItems, opt.DocsetFolder, "");
+            var tokenValidator = new TokenValidator(config.DependencyFilePath, hierarchyItems, config.DocsetPath, config.FallbackDocsetPath);
             isValid = isValid && tokenValidator.Validate();
 
             Console.WriteLine($"[{PluginName}] finished to check if token existed.");
 
             // Partial publish
-            if (opt.ContinueWithError)
+            if (config.IsLocalizationBuild)
             {
-                Console.WriteLine("[ContinueWithError]TripleCrown mark invalid module/learningpath begin.");
+                Console.WriteLine("[ContinueWithError]LearnValidation mark invalid module/learningpath begin.");
 
-                PartialPublishProcessor partialPublishProcessor = new PartialPublishProcessor(hierarchyItems, opt);
+                PartialPublishProcessor partialPublishProcessor = new PartialPublishProcessor(hierarchyItems, config.DocsetPath, learnValidationHelper);
                 partialPublishProcessor.MarkInvalidHierarchyItem();
 
-                Console.WriteLine("[ContinueWithError]TripleCrown mark invalid module/learningpath finish.");
+                Console.WriteLine("[ContinueWithError]LearnValidation mark invalid module/learningpath finish.");
 
-                HierarchyGenerator.GenerateHierarchy(hierarchyItems, opt.OriginalManifestPath);
+                HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.ManifestFilePath);
             }
             else if (isValid)
             {
-                HierarchyGenerator.GenerateHierarchy(hierarchyItems, opt.OriginalManifestPath);
+                HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.ManifestFilePath);
             }
 
             return isValid;
@@ -209,6 +222,18 @@ namespace Microsoft.Docs.LearnValidation
             // TODO:
             // 1. update has_error property
             // 2. publish hierarchy.json
+            throw new NotImplementedException();
+        }
+
+        private static string GetDrySyncEndpoint(string environtment)
+        {
+            // TODO: get dry-sync end-point from key-vault
+            throw new NotImplementedException();
+        }
+
+        private static string GetLearnValidationEndpoint(string environtment)
+        {
+            // TODO: get learn-validation end-point from key-vault
             throw new NotImplementedException();
         }
     }
