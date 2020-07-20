@@ -1659,13 +1659,13 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v2/b.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v1/token3.md(2,1), docs/v2/b.md'","file":"docs/v1/token3.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No intersection between zone and file level monikers. The result of zone level range string '< netcore-1.1' is 'netcore-1.0', while file level monikers is 'netcore-1.2', 'netcore-2.0'.","file":"docs/v1/token3.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v2/b.md'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v2/b.md'","file":"docs/v2/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v2/b.md'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string '< netcore-1.1' is 'netcore-1.0', while file level monikers is 'netcore-1.2', 'netcore-2.0'.","file":"docs/v1/token3.md","line":1,"end_line":1,"column":1,"end_column":1}
   9d4e15fd/docs/a.json:
   9d4e15fd/docs/b.json:
+  976da3a9/docs/b.json:
 ---
 # Canonial Version Only Metadata Validation
 inputs:

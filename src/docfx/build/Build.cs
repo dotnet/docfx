@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
             var hasError = false;
             var restoreFetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
             var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
+
             Parallel.ForEach(docsets, docset =>
             {
                 if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))

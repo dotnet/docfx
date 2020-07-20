@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ErrorSink
     {
+        private const int MaxRemoveDeduplicationLogCount = 200;
+
         private readonly HashSet<Error> _errors = new HashSet<Error>(Error.Comparer);
 
         private bool _exceedMax;
@@ -37,6 +39,11 @@ namespace Microsoft.Docs.Build
 
                 if (exceedMaxAllowed)
                 {
+                    if (_errors.Count >= MaxRemoveDeduplicationLogCount || _errors.Add(error))
+                    {
+                        Telemetry.TrackFileLogCount(level, error.FilePath);
+                    }
+
                     if (!_exceedMax)
                     {
                         _exceedMax = true;
@@ -51,6 +58,7 @@ namespace Microsoft.Docs.Build
                     return ErrorSinkResult.Ignore;
                 }
 
+                Telemetry.TrackFileLogCount(level, error.FilePath);
                 var count = level switch
                 {
                     ErrorLevel.Error => ++ErrorCount,
