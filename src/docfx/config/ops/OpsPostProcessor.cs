@@ -49,7 +49,6 @@ namespace Microsoft.Docs.Build
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
                         fallbackDocsetPath: _buildOptions.FallbackDocsetPath);
-
                 }
             }
         }
