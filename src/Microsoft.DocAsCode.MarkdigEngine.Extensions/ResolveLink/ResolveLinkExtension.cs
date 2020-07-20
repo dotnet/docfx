@@ -86,6 +86,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var content = literal.Content;
                     altTextBuilder.Append(content.Text, content.Start, content.Length);
                     break;
+                case CodeInline code:
+                    altTextBuilder.Append(code.Content);
+                    break;
                 case XrefInline xrefInline:
                     var altText = xrefInline.GetAttributes().Properties.Where(p => p.Key == "data-raw-source").Select(p => p.Value).FirstOrDefault();
                     altTextBuilder.Append(altText);
