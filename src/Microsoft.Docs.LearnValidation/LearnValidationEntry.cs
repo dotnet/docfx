@@ -48,14 +48,11 @@ namespace Microsoft.Docs.LearnValidation
 
             try
             {
-                if (config.Validate())
-                {
-                    Console.WriteLine($"[{PluginName}] config:\n{0}", JsonConvert.SerializeObject(
-                    new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
-                    Formatting.Indented));
+                Console.WriteLine($"[{PluginName}] config:\n{0}", JsonConvert.SerializeObject(
+                new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
+                Formatting.Indented));
 
-                    needUpdateManifest = ValidateHierarchy(config).Result || isLocalizationBuild;
-                }
+                needUpdateManifest = ValidateHierarchy(config).Result || isLocalizationBuild;
             }
             catch (Exception ex)
             {
@@ -225,7 +222,7 @@ namespace Microsoft.Docs.LearnValidation
             throw new NotImplementedException();
         }
 
-        private static string GetDrySyncEndpoint() => Environment.GetEnvironmentVariable("DOCS_DRY_SYNC_ENDPOINT");
+        private static string GetDrySyncEndpoint() => Environment.GetEnvironmentVariable("DOCS_LEARN_DRY_SYNC_ENDPOINT");
 
         private static string GetLearnValidationEndpoint() => Environment.GetEnvironmentVariable("DOCS_LEARN_VALIDATION_ENDPOINT");
     }

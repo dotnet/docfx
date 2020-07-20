@@ -55,11 +55,13 @@ namespace Microsoft.Docs.LearnValidation
                     module.IsDeleted = true;
                     Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
                     // TODO: remove invalid module from publish.json
-                    foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
+                    skipPublishFilePathList.Add(module.SourceRelativePath);
+                    foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsDeleted = true;
                         // TODO: remove invalid units from publish.json
+                        skipPublishFilePathList.Add(unit.SourceRelativePath);
                     }
                 }
             }
@@ -75,8 +77,12 @@ namespace Microsoft.Docs.LearnValidation
                     learningpath.IsDeleted = true;
                     Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
                     // TODO: remove invalid path from publish.json
+                    skipPublishFilePathList.Add(learningpath.SourceRelativePath);
                 }
             }
         }
+
+        // TODO: use other ways rather than skip-publish-file.json to control delete from DHS, for skip-publish-file.json is not supported in v3
+        //File.WriteAllText(_skipPublishFilePath, JsonConvert.SerializeObject(skipPublishFilePathList, Formatting.Indented));
     }
 }

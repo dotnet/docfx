@@ -70,12 +70,8 @@ namespace Microsoft.Docs.LearnValidation
 
                 if (childrenCantFind.Any())
                 {
-#if DEBUG
-                    Logger.Log(LearnErrorLevel.Warning, LearnErrorCode.TripleCrown_LearningPath_DebugMode_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
-#else
                     itemValid = false;
                     Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
-#endif
                 }
 
                 if (childrenNotModule.Any())

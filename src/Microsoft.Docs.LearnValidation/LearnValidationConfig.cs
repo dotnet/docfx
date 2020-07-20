@@ -41,31 +41,5 @@ namespace Microsoft.Docs.LearnValidation
             FallbackDocsetPath = fallbackDocsetPath;
             IsLocalizationBuild = isLocalizationBuild;
         }
- 
-        public bool Validate()
-        {
-            if (string.IsNullOrEmpty(DependencyFilePath) || !File.Exists(DependencyFilePath))
-            {
-                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DependencyFile_NotExist);
-                return false;
-            }
-            if (string.IsNullOrEmpty(DocsetPath))
-            {
-                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DocsetFolder_IsNull);
-                return false;
-            }
-            if (IsLocalizationBuild && string.IsNullOrEmpty(DocsetPath))
-            {
-                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DocsetPathPath_IsNull);
-                return false;
-            }
-            if (IsLocalizationBuild && string.IsNullOrEmpty(ManifestFilePath))
-            {
-                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_ManifestFile_NotExist);
-                return false;
-            }
-
-            return true;
-        }
     }
 }
