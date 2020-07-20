@@ -1,17 +1,17 @@
-using Microsoft.OpenPublishing.Build.DataContracts.PublishModel;
-using Microsoft.OpenPublishing.PluginHelper;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Microsoft.TripleCrown.DataContract.Quiz;
-using Microsoft.TripleCrown.DataContract.TaskValidation;
+using Microsoft.TripleCrown.Hierarchy.DataContract.TaskValidation;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Quiz;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using TripleCrownValidation.Models;
 
-namespace TripleCrownValidation.Validators
+namespace Microsoft.Docs.LearnValidation
 {
     public class UnitValidator : ValidatorBase
     {
@@ -41,19 +41,19 @@ namespace TripleCrownValidation.Validators
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Unit_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_MetadataError, result, item.SourceRelativePath);
                 }
 
                 if (unit.Tasks != null && unit.QuizAnswers != null)
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Unit_ContainBothTaskAndQuiz, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Unit_ContainBothTaskAndQuiz, unit.UId), item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, unit.UId, item.SourceRelativePath);
                 }
 
                 if (unit.Parent == null || !(unit.Parent is ModuleValidateModel))
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Unit_NoModuleParent, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Unit_NoModuleParent, unit.UId), item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_NoModuleParent, unit.UId, item.SourceRelativePath);
                 }
 
                 itemValid &= ValidateQuiz(unit.QuizAnswers, item);
@@ -82,13 +82,13 @@ namespace TripleCrownValidation.Validators
                 if (!_taskValidationTypeSet.Contains(azureResource.Type, StringComparer.OrdinalIgnoreCase))
                 {
                     validateResult = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Task_NonSupportedType, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Task_NonSupportedType, index + 1, azureResource.Type), unit.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Task_NonSupportedType, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
                 }
 
                 if (string.IsNullOrEmpty(azureResource.Name) && azureResource.Type.Count(t => t == '/') != 1)
                 {
                     validateResult = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Task_NonSupportedTypeFormat, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Task_NonSupportedTypeFormat, index + 1, azureResource.Type), unit.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Task_NonSupportedTypeFormat, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
                 }
             }
 
@@ -108,13 +108,13 @@ namespace TripleCrownValidation.Validators
                 if (answerCount > 1)
                 {
                     validateResult = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Quiz_MultiAnswers, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Quiz_MultiAnswers, index + 1), unit.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Quiz_MultiAnswers, $"error index: {index}", unit.SourceRelativePath);
                 }
 
                 if (answerCount < 1)
                 {
                     validateResult = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Quiz_NoAnswer, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Quiz_NoAnswer, index + 1), unit.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Quiz_NoAnswer, $"error index: {index}", unit.SourceRelativePath);
                 }
             }
 
@@ -123,7 +123,7 @@ namespace TripleCrownValidation.Validators
 
         private HashSet<string> GetTaskValidationTypeSet()
         {
-            var executingFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var executingFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".";
             var taskValidationTypeFile = Path.Combine(executingFolder, "TaskValidationTypes.txt");
             var taskValidationTypeSet = new HashSet<string>();
 

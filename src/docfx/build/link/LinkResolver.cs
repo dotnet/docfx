@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
+        private readonly MetadataProvider _metadataProvider;
 
         public LinkResolver(
             Config config,
@@ -29,7 +30,8 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             XrefResolver xrefResolver,
             TemplateEngine templateEngine,
-            FileLinkMapBuilder fileLinkMapBuilder)
+            FileLinkMapBuilder fileLinkMapBuilder,
+            MetadataProvider metadataProvider)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -41,6 +43,7 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
+            _metadataProvider = metadataProvider;
         }
 
         public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile)
@@ -218,20 +221,20 @@ namespace Microsoft.Docs.Build
 
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
             {
-                // Treat ~/ as path relative to docset
-                pathToDocset = new PathString(relativePath.Substring(2).TrimStart('/', '\\'));
+                var (_, metadata) = _metadataProvider.GetMetadata(referencingFile);
+                pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath.Substring(2).TrimStart('/', '\\')));
             }
             else
             {
                 // Path relative to referencing file
                 var baseDirectory = Path.GetDirectoryName(referencingFile.Path) ?? "";
                 pathToDocset = new PathString(Path.Combine(baseDirectory, relativePath));
+            }
 
-                // the relative path could be outside docset
-                if (pathToDocset.Value.StartsWith("."))
-                {
-                    pathToDocset = new PathString(Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, pathToDocset.Value)));
-                }
+            // the relative path could be outside docset
+            if (pathToDocset.Value.StartsWith("."))
+            {
+                pathToDocset = new PathString(Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, pathToDocset.Value)));
             }
 
             // resolve from the current docset for files in dependencies

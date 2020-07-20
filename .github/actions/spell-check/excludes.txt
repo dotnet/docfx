@@ -50,4 +50,4 @@
 ^\.vsconfig$
 ^\.github/actions/spell-check/
 ^\.gitignore$
-TaskValidationTypes.txt$
+AzureResourceTypes.txt$

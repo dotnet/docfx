@@ -1,11 +1,13 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TripleCrownValidation.Models;
 
-namespace TripleCrownValidation.Validators
+namespace Microsoft.Docs.LearnValidation
 {
     public abstract class ValidatorBase
     {
@@ -44,7 +46,7 @@ namespace TripleCrownValidation.Validators
 
         protected virtual void SetHierarchyData(IValidateModel item, ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
         {
-            item.SourceRelativePath = manifestItem.SourceRelativePath;
+            item.SourceRelativePath = manifestItem.SourceRelativePath!;
             item.AssetId = manifestItem.AssetId;
             item.MSDate = validatorHierarchyItem.MSDate;
             item.PublishUpdatedAt = validatorHierarchyItem.PublishUpdatedAt;

@@ -134,7 +134,8 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 XrefResolver,
                 TemplateEngine,
-                FileLinkMapBuilder);
+                FileLinkMapBuilder,
+                MetadataProvider);
 
             MarkdownEngine = new MarkdownEngine(
                 Config,

@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <nullable>disable</nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.DocsLearning.Hierarchy.DataContract" Version="1.0.20197.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="RestSharp" Version="106.11.4" />
   </ItemGroup>
 
 </Project>

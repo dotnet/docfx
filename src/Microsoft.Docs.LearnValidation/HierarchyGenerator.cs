@@ -1,11 +1,13 @@
-﻿using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using TripleCrownValidation.Models;
 
-namespace TripleCrownValidation
+
+namespace Microsoft.Docs.LearnValidation
 {
     static class HierarchyGenerator
     {
@@ -41,7 +43,7 @@ namespace TripleCrownValidation
 
         internal static string GetHierarchyFullFileName(string manifestFilePath)
         {
-            return Path.Combine(Path.GetDirectoryName(manifestFilePath), HierarchyFileName);
+            return Path.Combine(Path.GetDirectoryName(manifestFilePath) ?? ".", HierarchyFileName);
         }
 
         private static RawAchievement ConvertValidationModelToAchievement(AchievementValidateModel achievement)

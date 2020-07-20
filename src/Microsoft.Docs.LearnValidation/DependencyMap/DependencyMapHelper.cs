@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TripleCrownValidation.DependencyMap
+namespace Microsoft.Docs.LearnValidation
 {
     public static class DependencyMapHelper
     {
@@ -23,8 +22,8 @@ namespace TripleCrownValidation.DependencyMap
 
                     if (dependentInfo != null && !string.IsNullOrEmpty(dependentInfo.FromFilePath) && !string.IsNullOrEmpty(dependentInfo.ToFilePath))
                     {
-                        var normalizedToFilePath = dependentInfo.ToFilePath.BackSlashToForwardSlash();
-                        var normalizedFromFilePath = dependentInfo.FromFilePath.BackSlashToForwardSlash();
+                        var normalizedToFilePath = dependentInfo.ToFilePath.Replace('/', '\\');
+                        var normalizedFromFilePath = dependentInfo.FromFilePath.Replace('/', '\\');
 
                         dependencyItems.Add(
                             new DependencyItem

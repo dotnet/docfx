@@ -1,7 +1,10 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
-namespace TripleCrownValidation.Models
+namespace Microsoft.Docs.LearnValidation
 {
     public class PathValidateModel : PathSyncModel, IValidateModel
     {
@@ -17,11 +20,11 @@ namespace TripleCrownValidation.Models
         public IValidateModel Parent { get; set; }
         
         public string MSDate { get; set; }
-        
+
         public string ServiceData { get; set; }
-        
+
         public string PublishUpdatedAt { get; set; }
-        
+
         public string PageKind { get; set; }
     }
 }

@@ -1,17 +1,14 @@
-﻿using Microsoft.OpenPublishing.PluginHelper;
-using Microsoft.TripleCrown.DataContract.ViewModel;
-using Newtonsoft.Json;
-using RestSharp;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using RestSharp;
 
-namespace TripleCrownValidation.TripleCrown
+namespace Microsoft.Docs.LearnValidation
 {
-    public class TripleCrownHelper
+    public class LearnValidationHelper
     {
         private enum CheckItemType
         {
@@ -25,7 +22,7 @@ namespace TripleCrownValidation.TripleCrown
         private const string _defaultLocale = "en-us";
         private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
 
-        public TripleCrownHelper(string endpoint, string branch)
+        public LearnValidationHelper(string endpoint, string branch)
         {
             _client = new RestClient(endpoint);
             _branch = branch;
@@ -51,16 +48,16 @@ namespace TripleCrownValidation.TripleCrown
 
             IRestResponse response = _client.Execute(request);
 
-            OPSLogger.LogToConsole("TripleCrownValidation check {0} call: {1}", type, response.ResponseUri);
-            OPSLogger.LogToConsole("TripleCrownValidation check {0} result: {1}", type, response.StatusCode);
+            Console.WriteLine("TripleCrownValidation check {0} call: {1}", type, response.ResponseUri);
+            Console.WriteLine("TripleCrownValidation check {0} result: {1}", type, response.StatusCode);
 
             if (response.StatusCode != HttpStatusCode.OK && _needBranchFallback)
             {
                 request.AddOrUpdateParameter("branch", "master");
                 response = _client.Execute(request);
 
-                OPSLogger.LogToConsole("TripleCrownValidation check {0} call: {1}", type, response.ResponseUri);
-                OPSLogger.LogToConsole("TripleCrownValidation check {0} result: {1}", type, response.StatusCode);
+                Console.WriteLine("TripleCrownValidation check {0} call: {1}", type, response.ResponseUri);
+                Console.WriteLine("TripleCrownValidation check {0} result: {1}", type, response.StatusCode);
             }
 
             return response.StatusCode == HttpStatusCode.OK;

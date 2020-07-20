@@ -3,10 +3,9 @@
 
 using System;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace TripleCrownValidation.Models
+namespace Microsoft.Docs.LearnValidation
 {
     public class LegacyManifest
     {
@@ -16,33 +15,33 @@ namespace TripleCrownValidation.Models
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class LegacyManifestItem
     {
-        public string? AssetId { get; set; }
+        public string AssetId { get; set; }
 
-        public string? SourceRelativePath { get; set; }
+        public string SourceRelativePath { get; set; }
 
         public string OriginalType { get; set; } = string.Empty;
 
-        public LegacyManifestOutput? Output { get; set; }
+        public LegacyManifestOutput Output { get; set; }
     }
 
 
     public class LegacyManifestOutput
     {
         [JsonProperty(".mta.json", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem? MetadataOutput { get; set; }
+        public LegacyManifestOutputItem MetadataOutput { get; set; }
     }
 
     public class LegacyManifestOutputItem
     {
         // output path relative to site base path
         [JsonProperty("relative_path")]
-        public string? RelativePath { get; set; }
+        public string RelativePath { get; set; }
 
         /// <summary>
         /// Gets or sets output absolute path, used when output not within build output directory
         /// e.g. resource's output when <see cref="OutputConfig.CopyResources"/> = false
         /// </summary>
         [JsonProperty("link_to_path")]
-        public string? LinkToPath { get; set; }
+        public string LinkToPath { get; set; }
     }
 }

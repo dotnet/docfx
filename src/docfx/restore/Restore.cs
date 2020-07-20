@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
                 // download dependencies to disk
                 Parallel.Invoke(
-                    () => RestoreFiles(errorLog, config, fileResolver).GetAwaiter().GetResult(),
+                    () => RestoreFiles(errorLog, config, fileResolver),
                     () => RestorePackages(errorLog, buildOptions, config, packageResolver));
                 return errorLog.ErrorCount > 0;
             }
@@ -71,9 +71,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task RestoreFiles(ErrorLog errorLog, Config config, FileResolver fileResolver)
+        private static void RestoreFiles(ErrorLog errorLog, Config config, FileResolver fileResolver)
         {
-            await ParallelUtility.ForEach(errorLog, config.GetFileReferences(), fileResolver.Download);
+            ParallelUtility.ForEach(errorLog, config.GetFileReferences(), fileResolver.Download);
         }
 
         private static void RestorePackages(ErrorLog errorLog, BuildOptions buildOptions, Config config, PackageResolver packageResolver)

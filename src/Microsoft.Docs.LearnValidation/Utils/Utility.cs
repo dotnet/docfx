@@ -1,13 +1,16 @@
-﻿using System.Text.RegularExpressions;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace TripleCrownValidation
+using System.Text.RegularExpressions;
+
+namespace Microsoft.Docs.LearnValidation
 {
     public static class Utility
     {
         private static Regex s_sshGitUrlRegex = new Regex(@"git@(?<host>.+?):(?<userName>.+?)\/(?<repoName>.+)\.git", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// Transform SSH URL to https URL
+        /// Transform SSH URL to Https URL
         /// </summary>
         public static string TransformGitUrl(string repoUrl)
         {

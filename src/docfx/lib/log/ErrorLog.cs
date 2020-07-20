@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,6 +18,7 @@ namespace Microsoft.Docs.Build
         private Lazy<TextWriter> _output;
         private Config? _config;
         private SourceMap? _sourceMap;
+        private Dictionary<string, CustomRule> _customRules = new Dictionary<string, CustomRule>();
 
         private ErrorSink _errorSink = new ErrorSink();
         private ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
@@ -34,10 +36,11 @@ namespace Microsoft.Docs.Build
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
-        public void Configure(Config config, string outputPath, SourceMap? sourceMap)
+        public void Configure(Config config, string outputPath, SourceMap? sourceMap, Dictionary<string, ValidationRules>? contentValidationRules = null)
         {
             _config = config;
             _sourceMap = sourceMap;
+            _customRules = MergeCustomRules(config, contentValidationRules);
 
             lock (_outputLock)
             {
@@ -80,7 +83,7 @@ namespace Microsoft.Docs.Build
         public bool Write(Error error, ErrorLevel? overwriteLevel = null)
         {
             var config = _config;
-            if (config != null && config.CustomRules.TryGetValue(error.Code, out var customRule))
+            if (config != null && _customRules.TryGetValue(error.Code, out var customRule))
             {
                 error = error.WithCustomRule(customRule);
             }
@@ -215,6 +218,34 @@ namespace Microsoft.Docs.Build
                 ErrorLevel.Info => ConsoleColor.DarkGray,
                 _ => ConsoleColor.DarkGray,
             };
+        }
+
+        private Dictionary<string, CustomRule> MergeCustomRules(Config? config, Dictionary<string, ValidationRules>? validationRules)
+        {
+            var customRules = config != null ? new Dictionary<string, CustomRule>(config.CustomRules) : new Dictionary<string, CustomRule>();
+
+            if (validationRules == null)
+            {
+                return customRules;
+            }
+
+            foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly))
+            {
+                if (config != null && customRules.TryGetValue(validationRule.Code, out var customRule))
+                {
+                    customRules[validationRule.Code] = new CustomRule(
+                            customRule.Severity,
+                            customRule.Code,
+                            customRule.AdditionalMessage,
+                            customRule.CanonicalVersionOnly,
+                            validationRule.PullRequestOnly);
+                }
+                else
+                {
+                    customRules.Add(validationRule.Code, new CustomRule(null, null, null, false, validationRule.PullRequestOnly));
+                }
+            }
+            return customRules;
         }
     }
 }

@@ -42,15 +42,27 @@ namespace Microsoft.Docs.Build
         {
             Assert.NotNull(
                 new FileResolver(".").ReadString(
-                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/README.md")));
         }
 
         [Fact]
-        public static async Task DownloadFile_NoFetch_Should_Fail()
+        public static void DownloadFile_NoFetch_Should_Fail()
         {
-            await Assert.ThrowsAsync<DocfxException>(() =>
+            Assert.Throws<DocfxException>(() =>
                 new FileResolver(".", fetchOptions: FetchOptions.NoFetch).Download(
-                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies-clean/master/README.md")));
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/dep.md")));
+        }
+
+        [Fact]
+        public static void Download_Read_File_In_Parallel_Should_Succeed()
+        {
+            var fileResolver = new FileResolver(".", fetchOptions: FetchOptions.Latest);
+
+            Parallel.For(0, 10, i =>
+            {
+                Assert.NotEmpty(fileResolver.ReadString(
+                    new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/extend1.yml")));
+            });
         }
 
         [Fact]

@@ -1,16 +1,12 @@
-﻿using Microsoft.OpenPublishing.PluginHelper;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TripleCrownValidation.DependencyMap;
-using TripleCrownValidation.Models;
-using TripleCrownValidation.TripleCrown;
 
-namespace TripleCrownValidation.PartialPublish
+namespace Microsoft.Docs.LearnValidation
 {
     public class PartialPublishProcessor
     {
@@ -18,7 +14,7 @@ namespace TripleCrownValidation.PartialPublish
         private string _docsetFolder;
         private string _repoRootPath;
         private string _skipPublishFilePath;
-        private TripleCrownHelper _tripleCrownHelper;
+        private LearnValidationHelper _learnValidationHelper;
 
         public PartialPublishProcessor(List<IValidateModel> hierarchyItems, CommandLineOptions opt)
         {
@@ -26,7 +22,7 @@ namespace TripleCrownValidation.PartialPublish
             _docsetFolder = opt.DocsetFolder;
             _skipPublishFilePath = opt.SkipPublishFilePath;
             _repoRootPath = opt.RepoRootPath;
-            _tripleCrownHelper = new TripleCrownHelper(opt.TripleCrownEndpoint, opt.Branch);
+            _learnValidationHelper = new LearnValidationHelper(opt.TripleCrownEndpoint, opt.Branch);
         }
 
         public void MarkInvalidHierarchyItem()
@@ -50,30 +46,30 @@ namespace TripleCrownValidation.PartialPublish
                     {
                         module.IsValid = false;
                         var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Module_InvalidChildren, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits)), module.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
                     }
 
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Unit_InvalidParent, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Unit_InvalidParent, module.Uid), unit.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
                     }
                 }
 
                 var unitsNeedCheck = module.Units.Where(u => !uidMapping.ContainsKey(u) || !uidMapping[u].IsValid).ToList();
-                var unitCantFallback = unitsNeedCheck.Where(u => !_tripleCrownHelper.IsUnit(u)).ToList();
+                var unitCantFallback = unitsNeedCheck.Where(u => !_learnValidationHelper.IsUnit(u)).ToList();
 
                 if(unitCantFallback.Any())
                 {
                     module.IsDeleted = true;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Module_ChildrenCantFallback, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback)), module.SourceRelativePath);
-                    skipPublishFilePathList.Add(ValidationHelper.GetSkipPublishFilePath(_docsetFolder, _repoRootPath, module.SourceRelativePath));
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
+                    // TODO: remove invalid module from publish.json
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsDeleted = true;
-                        skipPublishFilePathList.Add(ValidationHelper.GetSkipPublishFilePath(_docsetFolder, _repoRootPath, unit.SourceRelativePath));
+                        // TODO: remove invalid units from publish.json
                     }
                 }
             }
@@ -82,13 +78,13 @@ namespace TripleCrownValidation.PartialPublish
             foreach (var learningpath in learningpaths)
             {
                 var modulesNeedCheck = learningpath.Modules.Where(m => !uidMapping.ContainsKey(m) || !uidMapping[m].IsValid).ToList();
-                var moduleCantFallback = modulesNeedCheck.Where(m => !_tripleCrownHelper.IsModule(m)).ToList();
+                var moduleCantFallback = modulesNeedCheck.Where(m => !_learnValidationHelper.IsModule(m)).ToList();
                 if (moduleCantFallback.Any())
                 {
                     learningpath.IsValid = false;
                     learningpath.IsDeleted = true;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_LearningPath_ChildrenCantFallback, LogMessageUtility.FormatMessage(LogCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback)), learningpath.SourceRelativePath);
-                    skipPublishFilePathList.Add(ValidationHelper.GetSkipPublishFilePath(_docsetFolder, _repoRootPath, learningpath.SourceRelativePath));
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
+                    // TODO: remove invalid path from publish.json
                 }
             }
 

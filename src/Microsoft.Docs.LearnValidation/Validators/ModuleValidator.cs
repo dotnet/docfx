@@ -1,13 +1,13 @@
-using Microsoft.OpenPublishing.Build.DataContracts.PublishModel;
-using Microsoft.OpenPublishing.PluginHelper;
-using Microsoft.TripleCrown.DataContract.Common;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Common;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using TripleCrownValidation.Models;
 
-namespace TripleCrownValidation.Validators
+namespace Microsoft.Docs.LearnValidation
 {
     public class ModuleValidator : ValidatorBase
     {
@@ -34,24 +34,24 @@ namespace TripleCrownValidation.Validators
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Module_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_MetadataError, result, item.SourceRelativePath);
                 }
 
                 if (module.Achievement == null)
                 {
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Module_NoBadgeBind, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_NoBadgeBind), item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_NoBadgeBind, filePath: item.SourceRelativePath);
                 }
                 else if (module.Achievement is string achievementUID)
                 {
                     if (!fullItemsDict.ContainsKey(achievementUID))
                     {
                         itemValid = false;
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Module_BadgeNotFound, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_BadgeNotFound, achievementUID), item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_BadgeNotFound, achievementUID, item.SourceRelativePath);
                     }
                     else if (!(fullItemsDict[achievementUID] is AchievementValidateModel achievement) || achievement.Type != AchievementType.Badge)
                     {
                         itemValid = false;
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Module_NonSupportedAchievementType, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_NonSupportedAchievementType, achievementUID), item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_NonSupportedAchievementType, achievementUID, item.SourceRelativePath);
                     }
                 }
 
@@ -61,7 +61,7 @@ namespace TripleCrownValidation.Validators
                     if (fullItemsDict[u].Parent != null)
                     {
                         itemValid = false;
-                        OPSLogger.LogUserError(LogCode.TripleCrown_Module_MultiParents, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_MultiParents, fullItemsDict[u].Uid, fullItemsDict[u].Parent.Uid, module.Uid), item.SourceRelativePath);
+                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_MultiParents, $"{fullItemsDict[u].Uid}, {fullItemsDict[u].Parent?.Uid}, {module.Uid}", item.SourceRelativePath);
                     }
                     else
                     {
@@ -74,13 +74,13 @@ namespace TripleCrownValidation.Validators
                 if (childrenCantFind.Any())
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Module_ChildrenNotFound, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_ChildrenNotFound, string.Join(",", childrenCantFind)), item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
                 }
 
                 if (childrenNotUnit.Any())
                 {
                     itemValid = false;
-                    OPSLogger.LogUserError(LogCode.TripleCrown_Module_NonSupportedChildrenType, LogMessageUtility.FormatMessage(LogCode.TripleCrown_Module_NonSupportedChildrenType, string.Join(",", childrenNotUnit.Select(c => c.Uid))), item.SourceRelativePath);
+                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_NonSupportedChildrenType, string.Join(",", childrenNotUnit.Select(c => c.Uid)), item.SourceRelativePath);
                 }
 
                 item.IsValid = itemValid;
