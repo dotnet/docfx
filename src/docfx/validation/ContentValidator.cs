@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             _links = new ConcurrentHashSet<SourceInfo<string>>();
         }
 
-        public void ValidateImage(Document file, SourceInfo<string> link, string? altText)
+        public void ValidateImageLink(Document file, SourceInfo<string> link, string? altText)
         {
             // validate image link and altText here
             if (_links.TryAdd(link) && TryGetValidationDocumentType(file.ContentType, file.Mime.Value, false, out var documentType))

@@ -309,7 +309,7 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, string? altText)
         {
-            _contentValidator.ValidateImage((Document)InclusionContext.File, href, altText);
+            _contentValidator.ValidateImageLink((Document)InclusionContext.File, href, altText);
             var link = GetLink(href);
             return link;
         }
