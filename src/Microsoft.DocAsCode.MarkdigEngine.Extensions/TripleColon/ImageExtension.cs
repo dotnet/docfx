@@ -80,7 +80,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetImageLink(src, markdownObject, alt));
+
+            // alt is allowed to be empty for icon type image
+            if (string.IsNullOrEmpty(alt) && type == "icon")
+                htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
+            else
+                htmlAttributes.AddProperty("src", _context.GetImageLink(src, markdownObject, alt));
 
             if (type == "icon")
             {
