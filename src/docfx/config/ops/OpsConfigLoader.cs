@@ -92,6 +92,8 @@ namespace Microsoft.Docs.Build
                 result["sourceMap"] = new JArray(monodoc.Select((_, index) => $".sourcemap-{index}.json"));
             }
 
+            result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
+
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
@@ -132,6 +134,11 @@ namespace Microsoft.Docs.Build
             }
             return result.Count == 0 ? null : result;
         }
+
+        private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)
+            => docsetConfig?.CustomizedTasks != null
+            && docsetConfig.CustomizedTasks.TryGetValue("docset_postbuild", out var plugins)
+            && plugins.Any(plugin => plugin.EndsWith("TripleCrownValidation.ps1", StringComparison.OrdinalIgnoreCase));
 
         private static JObject GenerateJoinTocMetadata(OpsJoinTocConfig[] configs, string buildSourceFolder)
         {

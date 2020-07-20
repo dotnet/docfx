@@ -46,14 +46,14 @@ namespace Microsoft.Docs.LearnValidation
                     {
                         module.IsValid = false;
                         var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
                     }
 
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
                     }
                 }
 
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.LearnValidation
                 if(unitCantFallback.Any())
                 {
                     module.IsDeleted = true;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
                     // TODO: remove invalid module from publish.json
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.LearnValidation
                 {
                     learningpath.IsValid = false;
                     learningpath.IsDeleted = true;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
                     // TODO: remove invalid path from publish.json
                 }
             }

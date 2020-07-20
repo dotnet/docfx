@@ -300,6 +300,11 @@ namespace Microsoft.Docs.Build
         public bool RemoveHostName { get; private set; }
 
         /// <summary>
+        /// Determines if run learn-validation as post process
+        /// </summary>
+        public bool RunLearnValidation { get; private set; }
+
+        /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]

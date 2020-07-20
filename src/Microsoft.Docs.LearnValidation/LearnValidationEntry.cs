@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.LearnValidation
 {
-    public static class TripleCrownValidation
+    public static class LearnValidationEntry
     {
         private const string LogCode = "InvalidHierarchyItem";
         private const string PluginName = "TripleCrownPlugin";
 
-        static void Run(
+        public static void Run(
             string repoUrl,
             string repoBranch,
             string docsetName,
@@ -28,16 +28,17 @@ namespace Microsoft.Docs.LearnValidation
             string manifestFilePath,
             string environment,
             bool isLocalizationBuild,
+            Action<LearnLogItem> writeLog,
             string fallbackDocsetPath = null
             )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var needUpdateManifest = false;
+            Logger.WriteLog = writeLog;
             var opt = new CommandLineOptions();
 
             try
             {
-
                 Console.WriteLine($"[{PluginName}] OPT args :\n{0}", JsonConvert.SerializeObject(
                     new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath},
                     Formatting.Indented));
@@ -46,7 +47,7 @@ namespace Microsoft.Docs.LearnValidation
             }
             catch (Exception ex)
             {
-                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_InternalError, ex.ToString());
+                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_InternalError, ex.ToString());
             }
             finally
             {
@@ -106,7 +107,7 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!result.IsValid)
             {
-                Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_DrySyncError, result.Message);
+                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, result.Message);
             }
 
             return result.IsValid;
@@ -203,7 +204,7 @@ namespace Microsoft.Docs.LearnValidation
         private static bool IsDefaultLocale(string locale)
             => string.Equals(locale, Constants.DefaultLocale, StringComparison.OrdinalIgnoreCase);
 
-        private static void UpdatePublishFile(string publishFilePath, List<LogItem> logItems)
+        private static void UpdatePublishFile(string publishFilePath, List<LearnLogItem> logItems)
         {
             // TODO:
             // 1. update has_error property

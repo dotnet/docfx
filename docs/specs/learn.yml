@@ -1,0 +1,21 @@
+---
+# Draft run learn post validation
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+     .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "learn-pr",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+     learn-pr/docfx.json: '{}'
+outputs:
+  learn-pr/.errors.log: |
+    {"message_severity": "error", "log_item_type":"user", "code":"TripleCrown_InternalError"}
