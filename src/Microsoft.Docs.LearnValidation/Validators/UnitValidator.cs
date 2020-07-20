@@ -66,7 +66,7 @@ namespace Microsoft.Docs.LearnValidation
             return validationResult;
         }
 
-        private bool ValidateTaskValidation(ValidationTask[]? tasks, IValidateModel unit)
+        private bool ValidateTaskValidation(ValidationTask[] tasks, IValidateModel unit)
         {
             if (tasks == null) return true;
 
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.LearnValidation
             return validateResult;
         }
 
-        private bool ValidateQuiz(QuestionWithAnswer[]? quizAnswers, IValidateModel unit)
+        private bool ValidateQuiz(QuestionWithAnswer[] quizAnswers, IValidateModel unit)
         {
             if (quizAnswers == null) return true;
 
