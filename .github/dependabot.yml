@@ -6,4 +6,4 @@ updates:
   schedule:
     interval: daily
   ignore:
-  - dependency-name: docs-validation
+  - dependency-name: docs.validation
