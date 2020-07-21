@@ -55,16 +55,15 @@ namespace Microsoft.Docs.Build
 
         private void LogError(LearnLogItem item)
         {
-            _errorLog.Write(
-                new Error(MapLevel(item.ErrorLevel), item.ErrorCode.ToString(), item.Message, item.File is null ? null : new FilePath(item.File), 0));
+            var source = item.File is null ? null : new SourceInfo(new FilePath(item.File));
+            _errorLog.Write(new Error(MapLevel(item.ErrorLevel), item.ErrorCode.ToString(), item.Message, source));
 
-            ErrorLevel MapLevel(LearnErrorLevel level)
-                => level switch
-                {
-                    LearnErrorLevel.Error => ErrorLevel.Error,
-                    LearnErrorLevel.Warning => ErrorLevel.Warning,
-                    _ => ErrorLevel.Off,
-                };
+            static ErrorLevel MapLevel(LearnErrorLevel level) => level switch
+            {
+                LearnErrorLevel.Error => ErrorLevel.Error,
+                LearnErrorLevel.Warning => ErrorLevel.Warning,
+                _ => ErrorLevel.Off,
+            };
         }
     }
 }

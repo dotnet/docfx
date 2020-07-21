@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Error;
             }
 
-            if (config != null && error.FilePath != null && error.FilePath.Origin == FileOrigin.Fallback)
+            if (config != null && error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
             {
                 if (level == ErrorLevel.Error)
                 {
@@ -108,15 +108,15 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            var errorSink = error.FilePath is null ? _errorSink : _fileSink.GetOrAdd(error.FilePath, _ => new ErrorSink());
+            var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());
 
-            switch (errorSink.Add(error.FilePath is null ? null : config, error, level))
+            switch (errorSink.Add(error.Source?.File is null ? null : config, error, level))
             {
                 case ErrorSinkResult.Ok:
                     WriteCore(error, level);
                     break;
 
-                case ErrorSinkResult.Exceed when error.FilePath != null && config != null:
+                case ErrorSinkResult.Exceed when error.Source?.File != null && config != null:
                     var maxAllowed = level switch
                     {
                         ErrorLevel.Error => config.MaxFileErrors,
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                         ErrorLevel.Info => config.MaxFileInfos,
                         _ => 0,
                     };
-                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.FilePath), ErrorLevel.Info);
+                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.Source.File), ErrorLevel.Info);
                     break;
             }
 
@@ -160,7 +160,15 @@ namespace Microsoft.Docs.Build
                 Console.ForegroundColor = GetColor(errorLevel);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
-                output.WriteLine($"./{error.FilePath}({error.Line},{error.Column}): {error.Message}");
+
+                if (error.Source != null)
+                {
+                    output.WriteLine($"./{error.Source.File}({error.Source.Line},{error.Source.Column}): {error.Message}");
+                }
+                else
+                {
+                    output.WriteLine(error.Message);
+                }
             }
         }
 

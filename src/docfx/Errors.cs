@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error YamlHeaderSyntaxError(Error error)
-                => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.FilePath, error.Line, error.Column, error.EndLine, error.EndColumn);
+                => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.Source);
 
             /// <summary>
             /// Used duplicate yaml key in markdown yml header or schema document(yml).
