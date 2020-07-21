@@ -446,7 +446,7 @@ namespace Microsoft.Docs.Build
             ///   - Same uid defined in multiple .md files with different versions have different titles.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error UidPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
+            public static Error XrefPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
                 => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
         }
 

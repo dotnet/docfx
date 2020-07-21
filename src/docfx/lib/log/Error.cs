@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
 
         public Error WithOriginalPath(PathString? originalPath)
         {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, originalPath, PullRequestOnly);
         }
 
         public override string ToString()
@@ -81,9 +81,6 @@ namespace Microsoft.Docs.Build
             return JsonUtility.Serialize(new
             {
                 message_severity = Level,
-                log_item_type = "user",
-                pull_request_only = PullRequestOnly ? (bool?)true : null,
-                date_time = DateTime.UtcNow,
                 Code,
                 Message,
                 file,
@@ -91,12 +88,15 @@ namespace Microsoft.Docs.Build
                 end_line,
                 column,
                 end_column,
+                log_item_type = "user",
+                pull_request_only = PullRequestOnly ? (bool?)true : null,
+                date_time = DateTime.UtcNow,
             });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
-            return new DocfxException(isError ? this : WithLevel(ErrorLevel.Error), innerException);
+            return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
         }
 
         private class EqualityComparer : IEqualityComparer<Error>
