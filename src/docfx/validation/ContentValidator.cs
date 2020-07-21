@@ -19,7 +19,13 @@ namespace Microsoft.Docs.Build
         private Lazy<PublishUrlMap> _publishUrlMap;
         private ConcurrentHashSet<SourceInfo<string>> _links;
 
-        public ContentValidator(Config config, FileResolver fileResolver, ErrorLog log, MonikerProvider monikerProvider, MetadataProvider metadataProvider, Lazy<PublishUrlMap> publishUrlMap)
+        public ContentValidator(
+            Config config,
+            FileResolver fileResolver,
+            ErrorLog log,
+            MonikerProvider monikerProvider,
+            MetadataProvider metadataProvider,
+            Lazy<PublishUrlMap> publishUrlMap)
         {
             _validator = new Validator(GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules));
             _errorLog = log;
