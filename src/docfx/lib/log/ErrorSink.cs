@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ErrorSink
     {
-        private const int MaxRemoveDeduplicationLogCount = 200;
+        private const int MaxRemoveDeduplicationLogCount = 300;
 
         private readonly HashSet<Error> _errors = new HashSet<Error>(Error.Comparer);
 
