@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             var topicHref = GetTopicHref(node, errors);
             var topicUid = node.Value.Uid;
 
-            _contentValidator.ValidateTocBreadcrumbLinkExternal(node);
+            _contentValidator.ValidateTocBreadcrumbLinkExternal(filePath, node);
 
             var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                 filePath, rootPath, referencedFiles, referencedTocs, tocHref, errors);
