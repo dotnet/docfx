@@ -88,27 +88,24 @@ namespace Microsoft.Docs.Build
                 error = error.WithCustomRule(customRule);
             }
 
-            var level = error.Level;
-            if (level == ErrorLevel.Off)
+            if (error.Level == ErrorLevel.Off)
             {
                 return false;
             }
 
-            if (config != null && config.WarningsAsErrors && level == ErrorLevel.Warning)
+            if (config != null && config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
             {
-                level = ErrorLevel.Error;
+                error = error.WithLevel(ErrorLevel.Error);
             }
 
             if (config != null && error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
             {
-                if (level == ErrorLevel.Error)
+                if (error.Level == ErrorLevel.Error)
                 {
                     return Write(Errors.Logging.FallbackError(config.DefaultLocale));
                 }
                 return false;
             }
-
-            error = error.WithLevel(level);
 
             if (error.Source != null)
             {
@@ -124,7 +121,7 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case ErrorSinkResult.Exceed when error.Source?.File != null && config != null:
-                    var maxAllowed = level switch
+                    var maxAllowed = error.Level switch
                     {
                         ErrorLevel.Error => config.MaxFileErrors,
                         ErrorLevel.Warning => config.MaxFileWarnings,
@@ -132,11 +129,11 @@ namespace Microsoft.Docs.Build
                         ErrorLevel.Info => config.MaxFileInfos,
                         _ => 0,
                     };
-                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.Source.File));
+                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
                     break;
             }
 
-            return level == ErrorLevel.Error;
+            return error.Level == ErrorLevel.Error;
         }
 
         [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
