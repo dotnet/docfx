@@ -119,20 +119,25 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var ecma2Yaml in docsetConfig.ECMA2Yaml)
                 {
-                    result.Add(JsonUtility.ToJObject(ecma2Yaml));
+                    ConstructECMA2YamlConfig(result, ecma2Yaml);
                 }
             }
             else if (opsConfig.ECMA2Yaml != null)
             {
                 foreach (var ecma2Yaml in opsConfig.ECMA2Yaml)
                 {
-                    var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
-                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
-                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
-                    result.Add(ecma2YamlJObject);
+                    ConstructECMA2YamlConfig(result, ecma2Yaml);
                 }
             }
             return result.Count == 0 ? null : result;
+
+            void ConstructECMA2YamlConfig(JArray result, ECMA2YamlRepoConfig ecma2Yaml)
+            {
+                var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
+                ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
+                ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
+                result.Add(ecma2YamlJObject);
+            }
         }
 
         private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)
