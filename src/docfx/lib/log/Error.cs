@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
         public override string ToString()
         {
             var file = OriginalPath ?? Source?.File?.Path;
-            var source = OriginalPath is null ? null : Source;
+            var source = OriginalPath is null ? Source : null;
             var line = source?.Line ?? 0;
             var end_line = source?.EndLine ?? 0;
             var column = source?.Column ?? 0;
