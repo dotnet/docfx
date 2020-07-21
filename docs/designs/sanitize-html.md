@@ -17,7 +17,7 @@ Content authors can embed arbitrary HTML tags to markdown documents. These HTML 
 
 ### Out of scope
 
-- Sanitize links. It is tracked by a seperate feature
+- Sanitize links. It is tracked by a separate feature
 - Refactor HTML processing pipeline
 
 ## Technical Design
