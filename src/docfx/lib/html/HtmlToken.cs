@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             Attributes = attributes;
         }
 
-        public string GetAttributeValueByName(string name)
+        public string? GetAttributeValueByName(string name)
         {
             foreach (ref var attribute in Attributes.Span)
             {
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return "";
+            return null;
         }
     }
 }

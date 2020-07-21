@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             this MarkdownPipelineBuilder builder,
             Func<List<Error>> getErrors,
             Func<SourceInfo<string>, string> getLink,
-            Func<SourceInfo<string>, string, string> getImageLink,
+            Func<SourceInfo<string>, string?, string> getImageLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>

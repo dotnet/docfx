@@ -174,7 +174,7 @@ namespace Microsoft.Docs.Build
             ref HtmlToken token,
             MarkdownObject? block,
             Func<SourceInfo<string>, string> transformLink,
-            Func<SourceInfo<string>, string, string>? transformImageLink = null)
+            Func<SourceInfo<string>, string?, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
