@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildScope _buildScope;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
-        private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
+        private readonly IReadOnlyDictionary<FilePath, (string, MonikerList)> _redirectUrls;
         private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory,
             IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
 
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             return _redirectUrls.ContainsKey(file);
         }
 
-        public (Error?, string) GetRedirectUrl(FilePath file)
+        public (Error?, (string, MonikerList)) GetRedirectUrl(FilePath file)
         {
             var redirectionChain = new Stack<FilePath>();
             var redirectionFile = file;
@@ -87,9 +87,9 @@ namespace Microsoft.Docs.Build
             return file;
         }
 
-        private IReadOnlyDictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
+        private IReadOnlyDictionary<FilePath, (string, MonikerList)> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
         {
-            var redirectUrls = new Dictionary<FilePath, string>();
+            var redirectUrls = new Dictionary<FilePath, (string, MonikerList)>();
 
             foreach (var item in redirections)
             {
@@ -136,7 +136,15 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                if (!redirectUrls.TryAdd(filePath, absoluteRedirectUrl))
+                var monikers = default(MonikerList);
+                if (item.SourceMonikers != null)
+                {
+                    var monikerErrors = new List<Error>();
+                    (monikerErrors, monikers) = _monikerProvider.Validate(item.SourceMonikers);
+                    _errorLog.Write(monikerErrors);
+                }
+
+                if (!redirectUrls.TryAdd(filePath, (absoluteRedirectUrl, monikers)))
                 {
                     _errorLog.Write(Errors.Redirection.RedirectionConflict(redirectUrl, path));
                 }
@@ -159,11 +167,17 @@ namespace Microsoft.Docs.Build
                     // Expand redirect items array or object form
                     var redirections = model.Redirections.arrayForm
                         ?? model.Redirections.objectForm?.Select(
-                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
+                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value.url, SourceMonikers = pair.Value.monikers })
                         ?? Array.Empty<RedirectionItem>();
 
                     var renames = model.Renames.Select(
-                        pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value, RedirectDocumentId = true });
+                        pair => new RedirectionItem
+                        {
+                            SourcePath = pair.Key,
+                            RedirectUrl = pair.Value.url,
+                            SourceMonikers = pair.Value.monikers,
+                            RedirectDocumentId = true,
+                        });
 
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
@@ -175,6 +189,7 @@ namespace Microsoft.Docs.Build
                         select new RedirectionItem
                         {
                             SourcePath = new PathString(sourcePath),
+                            SourceMonikers = item.SourceMonikers,
                             RedirectUrl = item.RedirectUrl,
                             RedirectDocumentId = item.RedirectDocumentId,
                         }).OrderBy(item => item.RedirectUrl.Source).ToArray());
@@ -196,7 +211,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (IReadOnlyDictionary<FilePath, FilePath>, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)>) GetRenameAndRedirectionHistory(
-            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, string> redirectUrls)
+            RedirectionItem[] redirections, IReadOnlyDictionary<FilePath, (string url, MonikerList monikers)> redirectUrls)
         {
             // Convert the redirection target from redirect url to file path according to the version of redirect source
             var renameHistory = new Dictionary<FilePath, FilePath>();
@@ -205,12 +220,12 @@ namespace Microsoft.Docs.Build
             foreach (var item in redirections)
             {
                 var file = FilePath.Redirection(item.SourcePath);
-                if (!redirectUrls.TryGetValue(file, out var redirectUrl))
+                if (!redirectUrls.TryGetValue(file, out var value))
                 {
                     continue;
                 }
 
-                var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(redirectUrl);
+                var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(value.url);
                 var docs = _publishUrlMap.Value.GetFilesByUrl(trimmedRedirectUrl.ToLowerInvariant());
                 if (!docs.Any())
                 {

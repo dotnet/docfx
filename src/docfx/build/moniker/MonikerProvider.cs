@@ -43,6 +43,8 @@ namespace Microsoft.Docs.Build
             _monikerOrder = GetMonikerOrder(monikerDefinition);
         }
 
+        public (List<Error>, MonikerList) Validate(SourceInfo<string?>[] monikers) => _rangeParser.Validate(monikers);
+
         public int GetMonikerOrder(string moniker)
         {
             if (_monikerOrder.TryGetValue(moniker, out var value))

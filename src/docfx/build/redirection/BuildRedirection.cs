@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
             var errors = new List<Error>();
 
-            var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
+            var (redirectError, (redirectUrl, monikers)) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
             errors.AddIfNotNull(redirectError);
 
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             };
 
             context.ErrorLog.Write(errors);
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, null);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, monikers: monikers);
         }
     }
 }
