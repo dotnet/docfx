@@ -58,10 +58,10 @@ namespace Microsoft.Docs.Build
         public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
             var message_severity = level;
-            var line = Source?.Line;
-            var end_line = Source?.EndLine;
-            var column = Source?.Column;
-            var end_column = Source?.EndColumn;
+            var line = Source?.Line ?? 0;
+            var end_line = Source?.EndLine ?? 0;
+            var column = Source?.Column ?? 0;
+            var end_column = Source?.EndColumn ?? 0;
             var originalPath = Source?.File is null ? null : sourceMap?.GetOriginalFilePath(Source.File);
             var file = originalPath == null ? Source?.File?.Path : originalPath;
             var date_time = DateTime.UtcNow;
