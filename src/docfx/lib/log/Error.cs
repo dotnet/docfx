@@ -20,15 +20,25 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo? Source { get; }
 
+        public PathString? OriginalPath { get; }
+
         public bool PullRequestOnly { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source = null, string? name = null, bool pullRequestOnly = false)
+        public Error(
+            ErrorLevel level,
+            string code,
+            string message,
+            SourceInfo? source = null,
+            string? name = null,
+            PathString? originalPath = null,
+            bool pullRequestOnly = false)
         {
             Level = level;
             Code = code;
             Message = message;
             Source = source;
             Name = name;
+            OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
         }
 
@@ -45,50 +55,48 @@ namespace Microsoft.Docs.Build
                 string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
                 Source,
                 Name,
+                OriginalPath,
                 customRule.PullRequestOnly);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return new Error(level, Code, Message, Source, Name);
+            return level == Level ? this : new Error(level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
         }
 
-        public override string ToString() => ToString(Level, null);
-
-        public string ToString(ErrorLevel level, SourceMap? sourceMap)
+        public Error WithOriginalPath(PathString? originalPath)
         {
-            var message_severity = level;
-            var line = Source?.Line ?? 0;
-            var end_line = Source?.EndLine ?? 0;
-            var column = Source?.Column ?? 0;
-            var end_column = Source?.EndColumn ?? 0;
-            var originalPath = Source?.File is null ? null : sourceMap?.GetOriginalFilePath(Source.File);
-            var file = originalPath == null ? Source?.File?.Path : originalPath;
-            var date_time = DateTime.UtcNow;
-            var log_item_type = "user";
-            var pull_request_only = PullRequestOnly ? (bool?)true : null;
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
+        }
 
-            return originalPath == null
-                ? JsonUtility.Serialize(new
-                {
-                    message_severity,
-                    log_item_type,
-                    Code,
-                    Message,
-                    file,
-                    line,
-                    end_line,
-                    column,
-                    end_column,
-                    pull_request_only,
-                    date_time,
-                })
-                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pull_request_only });
+        public override string ToString()
+        {
+            var file = OriginalPath ?? Source?.File?.Path;
+            var source = OriginalPath is null ? null : Source;
+            var line = source?.Line ?? 0;
+            var end_line = source?.EndLine ?? 0;
+            var column = source?.Column ?? 0;
+            var end_column = source?.EndColumn ?? 0;
+
+            return JsonUtility.Serialize(new
+            {
+                message_severity = Level,
+                log_item_type = "user",
+                pull_request_only = PullRequestOnly ? (bool?)true : null,
+                date_time = DateTime.UtcNow,
+                Code,
+                Message,
+                file,
+                line,
+                end_line,
+                column,
+                end_column,
+            });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
-            return new DocfxException(this, innerException, isError ? (ErrorLevel?)ErrorLevel.Error : null);
+            return new DocfxException(isError ? this : WithLevel(ErrorLevel.Error), innerException);
         }
 
         private class EqualityComparer : IEqualityComparer<Error>
@@ -110,6 +118,7 @@ namespace Microsoft.Docs.Build
                        x.Message == y.Message &&
                        x.Name == y.Name &&
                        x.Source == y.Source &&
+                       x.OriginalPath == y.OriginalPath &&
                        x.PullRequestOnly == y.PullRequestOnly;
             }
 
@@ -121,6 +130,7 @@ namespace Microsoft.Docs.Build
                     obj.Message,
                     obj.Name,
                     obj.Source,
+                    obj.OriginalPath,
                     obj.PullRequestOnly);
             }
         }
