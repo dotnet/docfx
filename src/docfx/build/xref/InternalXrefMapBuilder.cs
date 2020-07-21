@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                 var conflictingNames = specsWithSameUid.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
                 if (conflictingNames.Count() > 1)
                 {
-                    _errorLog.Write(Errors.Xref.UidPropertyConflict(uid, xrefProperty, conflictingNames));
+                    _errorLog.Write(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
                 }
             }
 

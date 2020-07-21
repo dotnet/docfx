@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             foreach (var exception in exceptions)
             {
                 Log.Write(exception);
-                if (Write(exception.Error, exception.OverwriteLevel))
+                if (Write(exception.Error))
                 {
                     hasErrors = true;
                 }
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             return hasErrors;
         }
 
-        public bool Write(Error error, ErrorLevel? overwriteLevel = null)
+        public bool Write(Error error)
         {
             var config = _config;
             if (config != null && _customRules.TryGetValue(error.Code, out var customRule))
@@ -88,36 +88,40 @@ namespace Microsoft.Docs.Build
                 error = error.WithCustomRule(customRule);
             }
 
-            var level = overwriteLevel ?? error.Level;
-            if (level == ErrorLevel.Off)
+            if (error.Level == ErrorLevel.Off)
             {
                 return false;
             }
 
-            if (config != null && config.WarningsAsErrors && level == ErrorLevel.Warning)
+            if (config != null && config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
             {
-                level = ErrorLevel.Error;
+                error = error.WithLevel(ErrorLevel.Error);
             }
 
             if (config != null && error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
             {
-                if (level == ErrorLevel.Error)
+                if (error.Level == ErrorLevel.Error)
                 {
                     return Write(Errors.Logging.FallbackError(config.DefaultLocale));
                 }
                 return false;
             }
 
+            if (error.Source != null)
+            {
+                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File));
+            }
+
             var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());
 
-            switch (errorSink.Add(error.Source?.File is null ? null : config, error, level))
+            switch (errorSink.Add(error.Source?.File is null ? null : config, error))
             {
                 case ErrorSinkResult.Ok:
-                    WriteCore(error, level);
+                    WriteCore(error);
                     break;
 
                 case ErrorSinkResult.Exceed when error.Source?.File != null && config != null:
-                    var maxAllowed = level switch
+                    var maxAllowed = error.Level switch
                     {
                         ErrorLevel.Error => config.MaxFileErrors,
                         ErrorLevel.Warning => config.MaxFileWarnings,
@@ -125,11 +129,11 @@ namespace Microsoft.Docs.Build
                         ErrorLevel.Info => config.MaxFileInfos,
                         _ => 0,
                     };
-                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, level, error.Source.File), ErrorLevel.Info);
+                    WriteCore(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
                     break;
             }
 
-            return level == ErrorLevel.Error;
+            return error.Level == ErrorLevel.Error;
         }
 
         [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
@@ -151,13 +155,12 @@ namespace Microsoft.Docs.Build
         }
 
         [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
-        public static void PrintError(Error error, ErrorLevel? level = null)
+        public static void PrintError(Error error)
         {
             lock (Console.Out)
             {
-                var errorLevel = level ?? error.Level;
-                var output = errorLevel == ErrorLevel.Error ? Console.Error : Console.Out;
-                Console.ForegroundColor = GetColor(errorLevel);
+                var output = error.Level == ErrorLevel.Error ? Console.Error : Console.Out;
+                Console.ForegroundColor = GetColor(error.Level);
                 output.Write(error.Code + " ");
                 Console.ResetColor();
 
@@ -191,19 +194,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void WriteCore(Error error, ErrorLevel level)
+        private void WriteCore(Error error)
         {
-            Telemetry.TrackErrorCount(error.Code, level, error.Name);
+            Telemetry.TrackErrorCount(error.Code, error.Level, error.Name);
 
             if (_output != null)
             {
                 lock (_outputLock)
                 {
-                    _output.Value.WriteLine(error.ToString(level, _sourceMap));
+                    _output.Value.WriteLine(error.ToString());
                 }
             }
 
-            PrintError(error, level);
+            PrintError(error);
         }
 
         private TextWriter CreateOutput(string outputPath)
