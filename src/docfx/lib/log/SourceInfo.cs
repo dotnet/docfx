@@ -53,6 +53,12 @@ namespace Microsoft.Docs.Build
             EndColumn = endColumn;
         }
 
+        public static implicit operator SourceInfo(FilePath file) => new SourceInfo(file);
+
+        public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);
+
+        public static bool operator !=(SourceInfo? a, SourceInfo? b) => !Equals(a, b);
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as SourceInfo);

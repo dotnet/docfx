@@ -115,7 +115,10 @@ namespace Microsoft.Docs.Build
 
         public static void TrackFileLogCount(ErrorLevel level, FilePath? filePath)
         {
-            s_fileLogCountMetric.TrackValue(1, level.ToString(), CoalesceEmpty(filePath?.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId);
+            if (filePath != null)
+            {
+                s_fileLogCountMetric.TrackValue(1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId);
+            }
         }
 
         public static void TrackGitHubRateLimit(string remaining)

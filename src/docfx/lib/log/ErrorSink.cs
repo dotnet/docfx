@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_errors.Count >= MaxRemoveDeduplicationLogCount || _errors.Add(error))
                     {
-                        Telemetry.TrackFileLogCount(level, error.FilePath);
+                        Telemetry.TrackFileLogCount(level, error.Source?.File);
                     }
 
                     if (!_exceedMax)
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                     return ErrorSinkResult.Ignore;
                 }
 
-                Telemetry.TrackFileLogCount(level, error.FilePath);
+                Telemetry.TrackFileLogCount(level, error.Source?.File);
                 var count = level switch
                 {
                     ErrorLevel.Error => ++ErrorCount,

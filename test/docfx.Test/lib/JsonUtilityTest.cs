@@ -232,8 +232,8 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
                 Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedErrorLine, error.Line);
-                Assert.Equal(expectedErrorColumn, error.Column);
+                Assert.Equal(expectedErrorLine, error.Source.Line);
+                Assert.Equal(expectedErrorColumn, error.Source.Column);
             });
         }
 
@@ -276,22 +276,22 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
-                Assert.Equal(2, error.Line);
-                Assert.Equal(21, error.Column);
+                Assert.Equal(2, error.Source.Line);
+                Assert.Equal(21, error.Source.Column);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
-                Assert.Equal(3, error.Line);
-                Assert.Equal(9, error.Column);
+                Assert.Equal(3, error.Source.Line);
+                Assert.Equal(9, error.Source.Column);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
-                Assert.Equal(4, error.Line);
-                Assert.Equal(18, error.Column);
+                Assert.Equal(4, error.Source.Line);
+                Assert.Equal(18, error.Source.Column);
             });
         }
 
@@ -314,15 +314,15 @@ namespace Microsoft.Docs.Build
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal(4, error.Line);
-                Assert.Equal(27, error.Column);
+                Assert.Equal(4, error.Source.Line);
+                Assert.Equal(27, error.Source.Column);
                 Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
             },
             error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
-                Assert.Equal(5, error.Line);
-                Assert.Equal(22, error.Column);
+                Assert.Equal(5, error.Source.Line);
+                Assert.Equal(22, error.Source.Column);
                 Assert.Equal("Could not convert string to boolean: notBool.", error.Message);
             });
         }

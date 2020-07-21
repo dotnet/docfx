@@ -18,52 +18,16 @@ namespace Microsoft.Docs.Build
 
         public string? Name { get; }
 
-        public FilePath? FilePath { get; }
-
-        public int Line { get; }
-
-        public int Column { get; }
-
-        public int EndLine { get; }
-
-        public int EndColumn { get; }
+        public SourceInfo? Source { get; }
 
         public bool PullRequestOnly { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool pullRequestOnly = false)
-            : this(
-                level,
-                code,
-                message,
-                source?.File,
-                source?.Line ?? 0,
-                source?.Column ?? 0,
-                source?.EndLine ?? 0,
-                source?.EndColumn ?? 0,
-                name,
-                pullRequestOnly)
-        { }
-
-        public Error(
-            ErrorLevel level,
-            string code,
-            string message,
-            FilePath? file = null,
-            int line = 0,
-            int column = 0,
-            int endLine = 0,
-            int endColumn = 0,
-            string? name = null,
-            bool pullRequestOnly = false)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source = null, string? name = null, bool pullRequestOnly = false)
         {
             Level = level;
             Code = code;
             Message = message;
-            FilePath = file;
-            Line = line;
-            Column = column;
-            EndLine = endLine;
-            EndColumn = endColumn;
+            Source = source;
             Name = name;
             PullRequestOnly = pullRequestOnly;
         }
@@ -79,18 +43,14 @@ namespace Microsoft.Docs.Build
                 level,
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
                 string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
-                FilePath,
-                Line,
-                Column,
-                EndLine,
-                EndColumn,
+                Source,
                 Name,
                 customRule.PullRequestOnly);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn, Name);
+            return new Error(level, Code, Message, Source, Name);
         }
 
         public override string ToString() => ToString(Level, null);
@@ -98,12 +58,12 @@ namespace Microsoft.Docs.Build
         public string ToString(ErrorLevel level, SourceMap? sourceMap)
         {
             var message_severity = level;
-            int line = Line;
-            int end_line = EndLine;
-            int column = Column;
-            int end_column = EndColumn;
-            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath);
-            var file = originalPath == null ? FilePath?.Path : originalPath;
+            var line = Source?.Line;
+            var end_line = Source?.EndLine;
+            var column = Source?.Column;
+            var end_column = Source?.EndColumn;
+            var originalPath = Source?.File is null ? null : sourceMap?.GetOriginalFilePath(Source.File);
+            var file = originalPath == null ? Source?.File?.Path : originalPath;
             var date_time = DateTime.UtcNow;
             var log_item_type = "user";
             var pull_request_only = PullRequestOnly ? (bool?)true : null;
@@ -149,9 +109,8 @@ namespace Microsoft.Docs.Build
                        x.Code == y.Code &&
                        x.Message == y.Message &&
                        x.Name == y.Name &&
-                       x.FilePath == y.FilePath &&
-                       x.Line == y.Line &&
-                       x.Column == y.Column;
+                       x.Source == y.Source &&
+                       x.PullRequestOnly == y.PullRequestOnly;
             }
 
             public int GetHashCode(Error obj)
@@ -161,9 +120,8 @@ namespace Microsoft.Docs.Build
                     obj.Code,
                     obj.Message,
                     obj.Name,
-                    obj.FilePath,
-                    obj.Line,
-                    obj.Column);
+                    obj.Source,
+                    obj.PullRequestOnly);
             }
         }
     }
