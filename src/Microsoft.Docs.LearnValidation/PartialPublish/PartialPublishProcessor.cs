@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.LearnValidation
@@ -11,18 +9,14 @@ namespace Microsoft.Docs.LearnValidation
     public class PartialPublishProcessor
     {
         private List<IValidateModel> _hierarchyItems;
-        private string _docsetFolder;
-        private string _repoRootPath;
-        private string _skipPublishFilePath;
+        private string _docsetPath;
         private LearnValidationHelper _learnValidationHelper;
 
-        public PartialPublishProcessor(List<IValidateModel> hierarchyItems, CommandLineOptions opt)
+        public PartialPublishProcessor(List<IValidateModel> hierarchyItems, string docsetPath, LearnValidationHelper learnValidationHelper)
         {
             _hierarchyItems = hierarchyItems;
-            _docsetFolder = opt.DocsetFolder;
-            _skipPublishFilePath = opt.SkipPublishFilePath;
-            _repoRootPath = opt.RepoRootPath;
-            _learnValidationHelper = new LearnValidationHelper(opt.TripleCrownEndpoint, opt.Branch);
+            _docsetPath = docsetPath;
+            _learnValidationHelper = learnValidationHelper;
         }
 
         public void MarkInvalidHierarchyItem()
@@ -32,10 +26,6 @@ namespace Microsoft.Docs.LearnValidation
             var learningpaths = _hierarchyItems.Where(hi => hi is PathValidateModel).Select(hi => hi as PathValidateModel);
             
             List<string> skipPublishFilePathList = new List<string>();
-            if (File.Exists(_skipPublishFilePath))
-            {
-                skipPublishFilePathList = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_skipPublishFilePath));
-            }
 
             // Mark modules
             foreach (var module in modules)
@@ -65,11 +55,13 @@ namespace Microsoft.Docs.LearnValidation
                     module.IsDeleted = true;
                     Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
                     // TODO: remove invalid module from publish.json
-                    foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
+                    skipPublishFilePathList.Add(module.SourceRelativePath);
+                    foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsDeleted = true;
                         // TODO: remove invalid units from publish.json
+                        skipPublishFilePathList.Add(unit.SourceRelativePath);
                     }
                 }
             }
@@ -85,10 +77,12 @@ namespace Microsoft.Docs.LearnValidation
                     learningpath.IsDeleted = true;
                     Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
                     // TODO: remove invalid path from publish.json
+                    skipPublishFilePathList.Add(learningpath.SourceRelativePath);
                 }
             }
-
-            File.WriteAllText(_skipPublishFilePath, JsonConvert.SerializeObject(skipPublishFilePathList, Formatting.Indented));
         }
+
+        // TODO: use other ways rather than skip-publish-file.json to control delete from DHS, for skip-publish-file.json is not supported in v3
+        //File.WriteAllText(_skipPublishFilePath, JsonConvert.SerializeObject(skipPublishFilePathList, Formatting.Indented));
     }
 }

@@ -11,16 +11,12 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class PathValidator : ValidatorBase
     {
-        private XRefHelper XrefHelper { get; set; }
-        private LearnValidationHelper TripleCrownHelper { get; set; }
-        private string Locale { get; set; }
+        private LearnValidationHelper LearnValidationHelper { get; }
 
-        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, XRefHelper xrefHelper, LearnValidationHelper tripleCrownHelper, string locale)
+        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationHelper learnValidationHelper)
             : base(manifestItems, basePath)
         {
-            XrefHelper = xrefHelper;
-            TripleCrownHelper = tripleCrownHelper;
-            Locale = locale;
+            LearnValidationHelper = learnValidationHelper;
         }
 
         protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
@@ -62,7 +58,7 @@ namespace Microsoft.Docs.LearnValidation
                     }
                 }
 
-                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !TripleCrownHelper.IsModule(m)).ToList();
+                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !LearnValidationHelper.IsModule(m)).ToList();
 
                 var childrenNotModule = path.Modules.Except(childrenCantFind).Where(m =>
                 {
@@ -74,15 +70,8 @@ namespace Microsoft.Docs.LearnValidation
 
                 if (childrenCantFind.Any())
                 {
-                    if (XrefHelper != null)
-                    {
-                        itemValid = false;
-                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
-                    }
-                    else
-                    {
-                        Logger.Log(LearnErrorLevel.Warning, LearnErrorCode.TripleCrown_LearningPath_DebugMode_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
-                    }
+                    itemValid = false;
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
                 }
 
                 if (childrenNotModule.Any())
