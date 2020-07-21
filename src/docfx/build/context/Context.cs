@@ -104,7 +104,8 @@ namespace Microsoft.Docs.Build
                 MonikerProvider,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
-            ContentValidator = new ContentValidator(config, FileResolver, errorLog, MonikerProvider, MetadataProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+            ContentValidator = new ContentValidator(
+                config, FileResolver, errorLog, MonikerProvider, MetadataProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
