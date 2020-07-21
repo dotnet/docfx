@@ -115,29 +115,18 @@ namespace Microsoft.Docs.Build
         private static JArray? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
         {
             var result = new JArray();
-            if (docsetConfig?.ECMA2Yaml != null)
+            var ecma2YamlConfig = docsetConfig?.ECMA2Yaml ?? opsConfig.ECMA2Yaml;
+            if (ecma2YamlConfig != null)
             {
-                foreach (var ecma2Yaml in docsetConfig.ECMA2Yaml)
+                foreach (var ecma2Yaml in ecma2YamlConfig)
                 {
-                    ConstructECMA2YamlConfig(result, ecma2Yaml);
-                }
-            }
-            else if (opsConfig.ECMA2Yaml != null)
-            {
-                foreach (var ecma2Yaml in opsConfig.ECMA2Yaml)
-                {
-                    ConstructECMA2YamlConfig(result, ecma2Yaml);
+                    var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
+                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
+                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
+                    result.Add(ecma2YamlJObject);
                 }
             }
             return result.Count == 0 ? null : result;
-
-            void ConstructECMA2YamlConfig(JArray result, ECMA2YamlRepoConfig ecma2Yaml)
-            {
-                var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
-                ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
-                ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
-                result.Add(ecma2YamlJObject);
-            }
         }
 
         private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)
