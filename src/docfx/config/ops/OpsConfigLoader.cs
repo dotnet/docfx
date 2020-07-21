@@ -115,16 +115,10 @@ namespace Microsoft.Docs.Build
         private static JArray? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
         {
             var result = new JArray();
-            if (docsetConfig?.ECMA2Yaml != null)
+            var ecma2YamlConfig = docsetConfig?.ECMA2Yaml ?? opsConfig.ECMA2Yaml;
+            if (ecma2YamlConfig != null)
             {
-                foreach (var ecma2Yaml in docsetConfig.ECMA2Yaml)
-                {
-                    result.Add(JsonUtility.ToJObject(ecma2Yaml));
-                }
-            }
-            else if (opsConfig.ECMA2Yaml != null)
-            {
-                foreach (var ecma2Yaml in opsConfig.ECMA2Yaml)
+                foreach (var ecma2Yaml in ecma2YamlConfig)
                 {
                     var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
                     ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);

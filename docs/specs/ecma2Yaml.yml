@@ -121,13 +121,13 @@ repos:
           "docsets_to_publish": [
           { 
             "build_source_folder": "cat",
-          }],
-          "ECMA2Yaml": {
-            "SourceXmlFolder": "cat/xml",
-            "OutputYamlFolder": "cat/api",
-            "Flatten": true,
-            "SDPMode": true,
-          },
+            "ECMA2Yaml": {
+              "SourceXmlFolder": "cat/xml",
+              "OutputYamlFolder": "cat/api",
+              "Flatten": true,
+              "SDPMode": true,
+            }
+          }]
         }
       cat/docfx.yml: |
         files: '**/*.{md,yml}'
