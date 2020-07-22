@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                 var monikers = default(MonikerList);
                 if (item.SourceMonikers != null)
                 {
-                    var monikerErrors = new List<Error>();
+                    List<Error>? monikerErrors;
                     (monikerErrors, monikers) = _monikerProvider.Validate(item.SourceMonikers);
                     _errorLog.Write(monikerErrors);
                 }
@@ -166,8 +166,10 @@ namespace Microsoft.Docs.Build
 
                     // Expand redirect items array or object form
                     var redirections = model.Redirections.arrayForm
-                        ?? model.Redirections.objectForm?.Select(
+                        ?? model.Redirections.objectFormWithVersion?.Select(
                                 pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value.url, SourceMonikers = pair.Value.monikers })
+                        ?? model.Redirections.objectForm?.Select(
+                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
                         ?? Array.Empty<RedirectionItem>();
 
                     var renames = model.Renames.Select(
