@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
                 AssetId = legacySiteUrlRelativeToBasePath,
                 Original = fileManifest.Value.SourcePath,
                 SourceRelativePath = context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path,
-                OriginalType = GetOriginalType(document.ContentType),
+                OriginalType = GetOriginalType(document.ContentType, document.Mime),
                 Type = GetType(context, document.ContentType, document),
                 Output = output,
                 SkipNormalization = !(document.ContentType == ContentType.Resource),
@@ -152,13 +152,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOriginalType(ContentType type)
+        private static string GetOriginalType(ContentType type, string? mime)
         {
             switch (type)
             {
                 case ContentType.Page:
                 case ContentType.Redirection: // todo: support reference redirection
-                    return "Conceptual";
+                    return mime ?? "Conceptual";
                 case ContentType.Resource:
                     return "Resource";
                 case ContentType.TableOfContents:
