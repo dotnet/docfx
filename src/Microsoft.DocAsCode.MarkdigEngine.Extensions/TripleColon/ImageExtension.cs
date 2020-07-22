@@ -72,12 +72,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError("alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
             }
+
+            // add loc scope missing/invalid validation here
+
             if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
             {
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
+
+            // alt is allowed to be empty for icon type image
+            if (string.IsNullOrEmpty(alt) && type == "icon")
+                htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
+            else
+                htmlAttributes.AddProperty("src", _context.GetImageLink(src, markdownObject, alt));
 
             if (type == "icon")
             {

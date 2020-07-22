@@ -34,24 +34,24 @@ namespace Microsoft.Docs.LearnValidation
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_MetadataError, result, item.SourceRelativePath);
                 }
 
                 if (module.Achievement == null)
                 {
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_NoBadgeBind, filePath: item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_NoBadgeBind, file: item.SourceRelativePath);
                 }
                 else if (module.Achievement is string achievementUID)
                 {
                     if (!fullItemsDict.ContainsKey(achievementUID))
                     {
                         itemValid = false;
-                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_BadgeNotFound, achievementUID, item.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_BadgeNotFound, achievementUID, item.SourceRelativePath);
                     }
                     else if (!(fullItemsDict[achievementUID] is AchievementValidateModel achievement) || achievement.Type != AchievementType.Badge)
                     {
                         itemValid = false;
-                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_NonSupportedAchievementType, achievementUID, item.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_NonSupportedAchievementType, achievementUID, item.SourceRelativePath);
                     }
                 }
 
@@ -61,7 +61,7 @@ namespace Microsoft.Docs.LearnValidation
                     if (fullItemsDict[u].Parent != null)
                     {
                         itemValid = false;
-                        Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_MultiParents, $"{fullItemsDict[u].Uid}, {fullItemsDict[u].Parent?.Uid}, {module.Uid}", item.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_MultiParents, $"{fullItemsDict[u].Uid}, {fullItemsDict[u].Parent?.Uid}, {module.Uid}", item.SourceRelativePath);
                     }
                     else
                     {
@@ -74,13 +74,13 @@ namespace Microsoft.Docs.LearnValidation
                 if (childrenCantFind.Any())
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
                 }
 
                 if (childrenNotUnit.Any())
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Module_NonSupportedChildrenType, string.Join(",", childrenNotUnit.Select(c => c.Uid)), item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_NonSupportedChildrenType, string.Join(",", childrenNotUnit.Select(c => c.Uid)), item.SourceRelativePath);
                 }
 
                 item.IsValid = itemValid;

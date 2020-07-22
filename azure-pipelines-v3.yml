@@ -26,9 +26,16 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # Run tests
+  # dotnet build
   - task: DotNetCoreCLI@2
-    displayName: Run Tests
+    displayName: dotnet build
+    inputs:
+      command: build
+      arguments: -c Release
+
+  # dotnet test
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
     inputs:
       command: test
       arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
@@ -54,9 +61,16 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # Run tests
+  # dotnet build
   - task: DotNetCoreCLI@2
-    displayName: Run Tests
+    displayName: dotnet build
+    inputs:
+      command: build
+      arguments: -c Release
+
+  # dotnet test
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
     inputs:
       command: test
       arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
@@ -82,9 +96,16 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # Run tests
+  # dotnet build
   - task: DotNetCoreCLI@2
-    displayName: Run Tests
+    displayName: dotnet build
+    inputs:
+      command: build
+      arguments: -c Release
+
+  # dotnet test
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
     inputs:
       command: test
       arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"

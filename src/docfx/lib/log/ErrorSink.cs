@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ErrorSink
     {
-        private const int MaxRemoveDeduplicationLogCount = 200;
+        private const int MaxRemoveDeduplicationLogCount = 300;
 
         private readonly HashSet<Error> _errors = new HashSet<Error>(Error.Comparer);
 
@@ -24,11 +24,11 @@ namespace Microsoft.Docs.Build
 
         public int InfoCount { get; private set; }
 
-        public ErrorSinkResult Add(Config? config, Error error, ErrorLevel level)
+        public ErrorSinkResult Add(Config? config, Error error)
         {
             lock (_errors)
             {
-                var exceedMaxAllowed = config != null && level switch
+                var exceedMaxAllowed = config != null && error.Level switch
                 {
                     ErrorLevel.Error => ErrorCount >= config.MaxFileErrors,
                     ErrorLevel.Warning => WarningCount >= config.MaxFileWarnings,
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (_errors.Count >= MaxRemoveDeduplicationLogCount || _errors.Add(error))
                     {
-                        Telemetry.TrackFileLogCount(level, error.FilePath);
+                        Telemetry.TrackFileLogCount(error.Level, error.Source?.File);
                     }
 
                     if (!_exceedMax)
@@ -58,8 +58,8 @@ namespace Microsoft.Docs.Build
                     return ErrorSinkResult.Ignore;
                 }
 
-                Telemetry.TrackFileLogCount(level, error.FilePath);
-                var count = level switch
+                Telemetry.TrackFileLogCount(error.Level, error.Source?.File);
+                var count = error.Level switch
                 {
                     ErrorLevel.Error => ++ErrorCount,
                     ErrorLevel.Warning => ++WarningCount,

@@ -12,15 +12,12 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class DocfxException : Exception
     {
-        public ErrorLevel? OverwriteLevel { get; }
-
         public Error Error { get; }
 
-        public DocfxException(Error error, Exception? innerException = null, ErrorLevel? overwriteLevel = null)
+        public DocfxException(Error error, Exception? innerException = null)
             : base($"{error.Code}: {error.Message}", innerException)
         {
             Error = error;
-            OverwriteLevel = overwriteLevel;
         }
 
         public static bool IsDocfxException(Exception ex, out List<DocfxException> exceptions)

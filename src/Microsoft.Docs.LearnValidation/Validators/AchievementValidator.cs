@@ -46,7 +46,7 @@ namespace Microsoft.Docs.LearnValidation
                 if(!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    Logger.Log(ErrorLevel.Error, ErrorCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
                 }
 
                 item.IsValid = itemValid;

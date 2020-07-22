@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using ECMA2Yaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -18,6 +19,8 @@ namespace Microsoft.Docs.Build
         public bool OpenToPublicContributors { get; private set; }
 
         public string[] XrefQueryTags { get; private set; } = Array.Empty<string>();
+
+        public Dictionary<string, string[]>? CustomizedTasks { get; private set; }
 
         [JsonProperty(nameof(JoinTOCPlugin))]
         public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
