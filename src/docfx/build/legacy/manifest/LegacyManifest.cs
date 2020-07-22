@@ -152,21 +152,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetOriginalType(ContentType type, string? mime)
+        private static string GetOriginalType(ContentType type, string? mime) => type switch
         {
-            switch (type)
-            {
-                case ContentType.Page:
-                case ContentType.Redirection: // todo: support reference redirection
-                    return mime ?? "Conceptual";
-                case ContentType.Resource:
-                    return "Resource";
-                case ContentType.TableOfContents:
-                    return "Toc";
-                default:
-                    return string.Empty;
-            }
-        }
+            ContentType.Page => mime ?? "Conceptual",
+            ContentType.Redirection => "Conceptual", // todo: support reference redirection
+            ContentType.Resource => "Resource",
+            ContentType.TableOfContents => "Toc",
+            _ => string.Empty,
+        };
 
         private static string GetType(Context context, ContentType type, Document doc)
         {
