@@ -166,8 +166,6 @@ namespace Microsoft.Docs.Build
 
                     // Expand redirect items array or object form
                     var redirections = model.Redirections.arrayForm
-                        ?? model.Redirections.objectFormWithVersion?.Select(
-                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value.url, SourceMonikers = pair.Value.monikers })
                         ?? model.Redirections.objectForm?.Select(
                                 pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
                         ?? Array.Empty<RedirectionItem>();
@@ -176,8 +174,7 @@ namespace Microsoft.Docs.Build
                         pair => new RedirectionItem
                         {
                             SourcePath = pair.Key,
-                            RedirectUrl = pair.Value.url,
-                            SourceMonikers = pair.Value.monikers,
+                            RedirectUrl = pair.Value,
                             RedirectDocumentId = true,
                         });
 
