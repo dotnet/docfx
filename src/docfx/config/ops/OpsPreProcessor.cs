@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(item.Code))
             {
                 var source = item.File is null ? null : new SourceInfo(new FilePath(item.File), item.Line ?? 0, 0);
-                _errors.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
             }
 
             static ErrorLevel MapLevel(MessageSeverity level) => level switch

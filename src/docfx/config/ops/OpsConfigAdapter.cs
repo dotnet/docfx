@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                            var response = await _http.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
-                               _errors.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                               _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                            }
                            return response;
                        });
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
                 // Getting validation rules failure should not block build proceeding,
                 // catch and log the exception without rethrow.
                 Log.Write(ex);
-                _errors.Write(Errors.System.ValidationIncomplete());
+                _errors.Add(Errors.System.ValidationIncomplete());
                 return "{}";
             }
         }

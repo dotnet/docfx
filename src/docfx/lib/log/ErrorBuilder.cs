@@ -14,11 +14,6 @@ namespace Microsoft.Docs.Build
 
         public virtual bool FileHasError(FilePath file) => throw new NotSupportedException();
 
-        public void Write(Error error)
-        {
-            Add(error);
-        }
-
         public void AddRange(IEnumerable<Error> errors)
         {
             foreach (var error in errors)
@@ -27,15 +22,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void Write(IEnumerable<Error> errors)
-        {
-            foreach (var error in errors)
-            {
-                Add(error);
-            }
-        }
-
-        public void Write(IEnumerable<DocfxException> exceptions)
+        public void AddRange(IEnumerable<DocfxException> exceptions)
         {
             foreach (var exception in exceptions)
             {

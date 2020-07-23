@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 return conflicts.First();
             }
 
-            _errors.Write(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+            _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
 
             // redirection file is preferred than source file
             // otherwise, prefer the one based on FilePath
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
                 .Select(group => group.Key)
                 .ToList();
             var conflictingFiles = conflicts.ToDictionary(x => x.SourcePath, x => x.Monikers);
-            _errors.Write(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
+            _errors.Add(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
 
             return conflicts.OrderBy(x => x).Last();
         }
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
         {
             var file = _documentProvider.GetDocument(path);
             var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(path);
-            _errors.Write(monikerErrors);
+            _errors.AddRange(monikerErrors);
             var outputPath = _documentProvider.GetOutputPath(path);
             outputMapping.Add(new PublishUrlMapItem(file.SiteUrl, outputPath, monikers, path));
         }

@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
                 // https://github.com/libgit2/libgit2sharp/issues/1351
                 if (error != 0 /* GIT_ENOTFOUND */)
                 {
-                    _errors.Write(Errors.System.GitCloneIncomplete(_repository.Path));
+                    _errors.Add(Errors.System.GitCloneIncomplete(_repository.Path));
                     break;
                 }
 

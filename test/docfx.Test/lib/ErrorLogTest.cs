@@ -13,9 +13,9 @@ namespace Microsoft.Docs.Build
         {
             using var errors = new ErrorWriter();
             var errorLog = new ErrorLog(errors, new Config());
-            errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
-            errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
-            errorLog.Write(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
+            errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
+            errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
+            errorLog.Add(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
 
             Assert.Equal(1, errors.ErrorCount);
             Assert.Equal(1, errors.WarningCount);
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
             }
 
-            ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Write(testError));
+            ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Add(testError));
 
             Assert.Equal(config.MaxFileErrors * testFiles + testEmptyFileErrors, errors.ErrorCount);
         }

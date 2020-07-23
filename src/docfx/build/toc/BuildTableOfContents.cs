@@ -42,9 +42,9 @@ namespace Microsoft.Docs.Build
                         context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
-            context.ErrorLog.Write(errors);
+            context.ErrorBuilder.AddRange(errors);
 
-            if (!context.ErrorLog.FileHasError(file.FilePath) && !context.Config.DryRun)
+            if (!context.ErrorBuilder.FileHasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {

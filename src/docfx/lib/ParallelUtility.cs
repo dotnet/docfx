@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    errors.Write(dex);
+                    errors.AddRange(dex);
                 }
                 catch
                 {
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    errorLog.Write(dex);
+                    errorLog.AddRange(dex);
                 }
                 catch (OperationCanceledException oce)
                 {

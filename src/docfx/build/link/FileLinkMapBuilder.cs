@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(inclusionRoot);
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
 
-            _errors.Write(errors);
+            _errors.AddRange(errors);
             _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, monikers.MonikerGroup, targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
         }
 

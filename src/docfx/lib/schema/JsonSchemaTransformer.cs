@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
             {
                 recursionDetector.Push(uid);
                 var (transformErrors, transformedToken) = TransformContentCore(definitions, file, schema, value, uidCount);
-                _errors.Write(transformErrors);
+                _errors.AddRange(transformErrors);
                 return transformedToken;
             }
             finally

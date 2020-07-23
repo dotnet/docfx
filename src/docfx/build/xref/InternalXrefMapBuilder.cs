@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                         break;
                     }
             }
-            _errors.Write(errors);
+            _errors.AddRange(errors);
         }
 
         private (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(UserMetadata metadata, Document file)
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                 var duplicatedSources = (from spec in duplicatedSpecs where spec.Uid.Source != null select spec.Uid.Source).ToArray();
                 foreach (var spec in duplicatedSpecs)
                 {
-                    _errors.Write(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
+                    _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
                 }
             }
 
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                _errors.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
+                _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
             // uid conflicts with different values of the same xref property
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                 var conflictingNames = specsWithSameUid.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
                 if (conflictingNames.Count() > 1)
                 {
-                    _errors.Write(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
+                    _errors.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
                 }
             }
 

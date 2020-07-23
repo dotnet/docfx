@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     {
                         using var reader = new StreamReader(physicalPath);
                         var (errors, xrefMap) = YamlUtility.Deserialize<XrefMapModel>(reader, path);
-                        errorLog.Write(errors);
+                        errorLog.AddRange(errors);
                         foreach (var spec in xrefMap.References)
                         {
                             result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 {
                     using var reader = new StreamReader(entryStream);
                     var (errors, xrefMap) = YamlUtility.Deserialize<XrefMapModel>(reader, path);
-                    errorLog.Write(errors);
+                    errorLog.AddRange(errors);
                     foreach (var spec in xrefMap.References)
                     {
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                 {
                     using var reader = new StreamReader(entryStream);
                     var (errors, xrefMap) = JsonUtility.Deserialize<XrefMapModel>(reader, path);
-                    errorLog.Write(errors);
+                    errorLog.AddRange(errors);
                     foreach (var spec in xrefMap.References)
                     {
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));

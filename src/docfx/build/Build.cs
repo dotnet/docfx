@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errors.Write(dex);
+                errors.AddRange(dex);
                 return errors.HasError;
             }
             finally
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 ParallelUtility.ForEach(
-                    context.ErrorLog,
+                    context.ErrorBuilder,
                     context.PublishUrlMap.GetAllFiles(),
                     file => BuildFile(context, file));
             }
@@ -102,11 +102,11 @@ namespace Microsoft.Docs.Build
             Parallel.Invoke(
                 () => context.BookmarkValidator.Validate(),
                 () => context.ContentValidator.PostValidate(),
-                () => context.ErrorLog.Write(context.MetadataValidator.PostValidate()),
+                () => context.ErrorBuilder.AddRange(context.MetadataValidator.PostValidate()),
                 () => context.ContributionProvider.Save(),
                 () => context.RepositoryProvider.Save(),
-                () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
-                () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
+                () => context.ErrorBuilder.AddRange(context.GitHubAccessor.Save()),
+                () => context.ErrorBuilder.AddRange(context.MicrosoftGraphAccessor.Save()));
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel(context.BuildOptions.IsLocalizedBuild);

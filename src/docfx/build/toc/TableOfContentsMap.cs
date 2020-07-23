@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                 {
                     var errors = new List<Error>();
                     var toc = _tocParser.Parse(file, errors);
-                    _errors.Write(errors);
+                    _errors.AddRange(errors);
 
                     SplitToc(file, toc, tocs);
                 });
@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
                 {
                     var file = _documentProvider.GetDocument(path);
                     var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
-                    _errors.Write(errors);
+                    _errors.AddRange(errors);
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
                 });

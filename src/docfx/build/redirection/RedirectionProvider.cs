@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
 
                 if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                 {
-                    _errors.Write(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
+                    _errors.Add(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
                     continue;
                 }
 
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 var type = _buildScope.GetContentType(path);
                 if (type != ContentType.Page)
                 {
-                    _errors.Write(Errors.Redirection.RedirectionInvalid(redirectUrl, path));
+                    _errors.Add(Errors.Redirection.RedirectionInvalid(redirectUrl, path));
                     continue;
                 }
 
@@ -130,14 +130,14 @@ namespace Microsoft.Docs.Build
                             absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
                             break;
                         default:
-                            _errors.Write(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
+                            _errors.Add(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
                             break;
                     }
                 }
 
                 if (!redirectUrls.TryAdd(filePath, absoluteRedirectUrl))
                 {
-                    _errors.Write(Errors.Redirection.RedirectionConflict(redirectUrl, path));
+                    _errors.Add(Errors.Redirection.RedirectionConflict(redirectUrl, path));
                 }
             }
             return redirectUrls;
@@ -217,13 +217,13 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.RedirectDocumentId)
                     {
-                        _errors.Write(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                        _errors.Add(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
                     }
                     continue;
                 }
 
                 var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                _errors.Write(errors);
+                _errors.AddRange(errors);
 
                 var candidates = redirectionSourceMonikers.Count == 0
                                     ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList()
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.RedirectDocumentId && !renameHistory.TryAdd(candidate, file))
                     {
-                        _errors.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
+                        _errors.Add(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
                     }
                 }
             }

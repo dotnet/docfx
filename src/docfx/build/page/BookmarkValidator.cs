@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                _errors.Write(Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks));
+                _errors.Add(Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks));
             }
         }
     }
