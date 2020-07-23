@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     internal class TableOfContentsMap
     {
         private readonly Input _input;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly BuildScope _buildScope;
         private readonly TableOfContentsLoader _tocLoader;
         private readonly TableOfContentsParser _tocParser;
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
         public TableOfContentsMap(
-            ErrorLog errorLog,
+            ErrorBuilder errors,
             Input input,
             BuildScope buildScope,
             DependencyMapBuilder dependencyMapBuilder,
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             ContentValidator contentValidator)
         {
-            _errorLog = errorLog;
+            _errors = errors;
             _input = input;
             _buildScope = buildScope;
             _tocParser = tocParser;
@@ -173,11 +173,11 @@ namespace Microsoft.Docs.Build
                 var tocs = new ConcurrentBag<FilePath>();
 
                 // Parse and split TOC
-                ParallelUtility.ForEach(_errorLog, _buildScope.GetFiles(ContentType.TableOfContents), file =>
+                ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
                 {
                     var errors = new List<Error>();
                     var toc = _tocParser.Parse(file, errors);
-                    _errorLog.Write(errors);
+                    _errors.Write(errors);
 
                     SplitToc(file, toc, tocs);
                 });
@@ -185,11 +185,11 @@ namespace Microsoft.Docs.Build
                 var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
 
                 // Load TOC
-                ParallelUtility.ForEach(_errorLog, tocs, path =>
+                ParallelUtility.ForEach(_errors, tocs, path =>
                 {
                     var file = _documentProvider.GetDocument(path);
                     var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
-                    _errorLog.Write(errors);
+                    _errors.Write(errors);
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
                 });

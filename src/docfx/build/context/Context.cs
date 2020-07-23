@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public PackageResolver PackageResolver { get; }
 
-        public ErrorLog ErrorLog { get; }
+        public ErrorBuilder ErrorLog { get; }
 
         public Output Output { get; }
 
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
         public Context(
-            ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
+            ErrorBuilder errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
 
@@ -165,7 +165,6 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            ErrorLog.Dispose();
             PackageResolver.Dispose();
             RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();

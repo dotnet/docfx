@@ -14,10 +14,10 @@ namespace Microsoft.Docs.Build
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
             var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
-            ErrorLog.PrintErrors(errors);
+            ErrorWriter.PrintErrors(errors);
             if (docsets.Length == 0)
             {
-                ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
+                ErrorWriter.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
                 return 1;
             }
 
@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
 
             Parallel.ForEach(docsets, docset =>
             {
+                using var errors = new ErrorWriter(docset.outputPath);
+
                 if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
                 {
                     hasError = true;
@@ -38,6 +40,7 @@ namespace Microsoft.Docs.Build
                     hasError = true;
                 }
             });
+
             return hasError ? 1 : 0;
         }
 
@@ -45,39 +48,44 @@ namespace Microsoft.Docs.Build
         {
             var stopwatch = Stopwatch.StartNew();
 
-            using var errorLog = new ErrorLog(outputPath);
+            using var errorWriter = new ErrorWriter(outputPath);
             using var disposables = new DisposableCollector();
+
+            ErrorBuilder errors = errorWriter;
 
             try
             {
-                var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) =
-                    configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
-                if (errorLog.Write(errors))
+                var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
+                    errors, disposables, docsetPath, outputPath, options, fetchOptions);
+                if (errors.HasError)
                 {
                     return true;
                 }
 
-                new OpsPreProcessor(config, errorLog, buildOptions).Run();
-                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
+                new OpsPreProcessor(config, errors, buildOptions).Run();
 
+                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
                 var validationRules = GetContentValidationRules(config, fileResolver);
-                errorLog.Configure(config, buildOptions.OutputPath, sourceMap, validationRules);
-                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
+
+                errors = new ErrorLog(errors, config, sourceMap, validationRules);
+
+                using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap);
                 Run(context);
-                new OpsPostProcessor(config, errorLog, buildOptions).Run();
-                return errorLog.ErrorCount > 0;
+
+                new OpsPostProcessor(config, errors, buildOptions).Run();
+
+                return errors.HasError;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errorLog.Write(dex);
-                return errorLog.ErrorCount > 0;
+                errors.Write(dex);
+                return errors.HasError;
             }
             finally
             {
                 Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
                 Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                errorLog.PrintSummary();
+                errorWriter.PrintSummary();
             }
         }
 

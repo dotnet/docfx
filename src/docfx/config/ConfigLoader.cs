@@ -12,15 +12,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ConfigLoader
+    internal static class ConfigLoader
     {
-        private readonly ErrorLog _errorLog;
-
-        public ConfigLoader(ErrorLog errorLog)
-        {
-            _errorLog = errorLog;
-        }
-
         public static (List<Error> errors, (string docsetPath, string? outputPath)[]) FindDocsets(string workingDirectory, CommandLineOptions options)
         {
             var (errors, glob) = FindDocsetsGlob(workingDirectory);
@@ -56,8 +49,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public (List<Error>, Config, BuildOptions, PackageResolver, FileResolver) Load(
-            DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        public static (Config, BuildOptions, PackageResolver, FileResolver) Load(
+            ErrorBuilder errors, DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             // load and trace entry repository
             var repository = Repository.Create(docsetPath);
@@ -69,7 +62,6 @@ namespace Microsoft.Docs.Build
                 throw Errors.Config.ConfigNotFound(docsetPath).ToException();
             }
 
-            var errors = new List<Error>();
             var unionProperties = new string[] { "xref" };
 
             // Load configs available locally
@@ -91,7 +83,7 @@ namespace Microsoft.Docs.Build
 
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
-            var configAdapter = new OpsConfigAdapter(_errorLog, credentialProvider);
+            var configAdapter = new OpsConfigAdapter(errors, credentialProvider);
             var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
             disposables.Add(packageResolver);
 
@@ -107,10 +99,10 @@ namespace Microsoft.Docs.Build
             errors.AddRange(configErrors);
 
             Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
-            return (errors, config, buildOptions, packageResolver, fileResolver);
+            return (config, buildOptions, packageResolver, fileResolver);
         }
 
-        private static JObject LoadConfig(List<Error> errorBuilder, string fileName, string content)
+        private static JObject LoadConfig(ErrorBuilder errorBuilder, string fileName, string content)
         {
             var source = new FilePath(fileName);
             var (errors, config) = fileName.EndsWith(".yml", PathUtility.PathComparison)
@@ -134,8 +126,8 @@ namespace Microsoft.Docs.Build
             throw Errors.JsonSchema.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
         }
 
-        private JObject DownloadExtendConfig(
-            List<Error> errors,
+        private static JObject DownloadExtendConfig(
+            ErrorBuilder errors,
             string? locale,
             PreloadConfig config,
             string? xrefEndpoint,

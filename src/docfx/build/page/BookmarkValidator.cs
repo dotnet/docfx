@@ -8,15 +8,15 @@ namespace Microsoft.Docs.Build
 {
     internal class BookmarkValidator
     {
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
 
         private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
         private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>
             _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>();
 
-        public BookmarkValidator(ErrorLog errorLog)
+        public BookmarkValidator(ErrorBuilder errors)
         {
-            _errorLog = errorLog;
+            _errors = errors;
         }
 
         public void AddBookmarkReference(Document file, Document reference, string? fragment, bool isSelfBookmark, SourceInfo? source)
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                _errorLog.Write(Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks));
+                _errors.Write(Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks));
             }
         }
     }

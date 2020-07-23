@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorLog errorLog)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorBuilder errorLog)
         {
             using (Progress.Start("Loading external xref map"))
             {
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
+        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorBuilder errorLog)
         {
             using var stream = File.OpenRead(physicalPath);
             using var archive = new ZipArchive(stream);

@@ -14,10 +14,10 @@ namespace Microsoft.Docs.Build
         public static int Run(string workingDirectory, CommandLineOptions options)
         {
             var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
-            ErrorLog.PrintErrors(errors);
+            ErrorWriter.PrintErrors(errors);
             if (docsets.Length == 0)
             {
-                ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
+                ErrorWriter.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
                 return 1;
             }
 
@@ -37,49 +37,52 @@ namespace Microsoft.Docs.Build
             var stopwatch = Stopwatch.StartNew();
 
             using var disposables = new DisposableCollector();
-            using var errorLog = new ErrorLog(outputPath);
+            using var errorWriter = new ErrorWriter(outputPath);
+
+            ErrorBuilder errors = errorWriter;
 
             try
             {
                 // load configuration from current entry or fallback repository
-                var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) =
-                    configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
-                if (errorLog.Write(errors))
+                var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
+                    errors, disposables, docsetPath, outputPath, options, fetchOptions);
+
+                if (errors.HasError)
                 {
                     return true;
                 }
 
-                errorLog.Configure(config, buildOptions.OutputPath, null);
+                errors = new ErrorLog(errors, config);
 
                 // download dependencies to disk
                 Parallel.Invoke(
-                    () => RestoreFiles(errorLog, config, fileResolver),
-                    () => RestorePackages(errorLog, buildOptions, config, packageResolver));
-                return errorLog.ErrorCount > 0;
+                    () => RestoreFiles(errors, config, fileResolver),
+                    () => RestorePackages(errors, buildOptions, config, packageResolver));
+
+                return errors.HasError;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errorLog.Write(dex);
-                return errorLog.ErrorCount > 0;
+                errors.Write(dex);
+                return errors.HasError;
             }
             finally
             {
                 Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
                 Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                errorLog.PrintSummary();
+                errorWriter.PrintSummary();
             }
         }
 
-        private static void RestoreFiles(ErrorLog errorLog, Config config, FileResolver fileResolver)
+        private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)
         {
-            ParallelUtility.ForEach(errorLog, config.GetFileReferences(), fileResolver.Download);
+            ParallelUtility.ForEach(errors, config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(ErrorLog errorLog, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
+        private static void RestorePackages(ErrorBuilder errors, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
             ParallelUtility.ForEach(
-                errorLog,
+                errors,
                 GetPackages(config).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags));
 

@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
 
-        public OpsPreProcessor(Config config, ErrorLog errorLog, BuildOptions buildOptions)
+        public OpsPreProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions)
         {
             _config = config;
-            _errorLog = errorLog;
+            _errors = errors;
             _buildOptions = buildOptions;
         }
 
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(item.Code))
             {
                 var source = item.File is null ? null : new SourceInfo(new FilePath(item.File), item.Line ?? 0, 0);
-                _errorLog.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+                _errors.Write(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
             }
 
             static ErrorLevel MapLevel(MessageSeverity level) => level switch

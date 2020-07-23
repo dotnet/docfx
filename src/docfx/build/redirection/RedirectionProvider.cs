@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RedirectionProvider
     {
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
@@ -25,14 +25,14 @@ namespace Microsoft.Docs.Build
         public RedirectionProvider(
             string docsetPath,
             string hostName,
-            ErrorLog errorLog,
+            ErrorBuilder errors,
             BuildScope buildScope,
             Repository? repository,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
-            _errorLog = errorLog;
+            _errors = errors;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Loading redirections"))
             {
                 var (errors, redirections) = LoadRedirectionModel(docsetPath, repository);
-                _errorLog.Write(errors);
+                _errors.Write(errors);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
                 _history =
                    new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
 
                 if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                 {
-                    _errorLog.Write(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
+                    _errors.Write(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
                     continue;
                 }
 
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 var type = _buildScope.GetContentType(path);
                 if (type != ContentType.Page)
                 {
-                    _errorLog.Write(Errors.Redirection.RedirectionInvalid(redirectUrl, path));
+                    _errors.Write(Errors.Redirection.RedirectionInvalid(redirectUrl, path));
                     continue;
                 }
 
@@ -131,14 +131,14 @@ namespace Microsoft.Docs.Build
                             absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
                             break;
                         default:
-                            _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
+                            _errors.Write(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
                             break;
                     }
                 }
 
                 if (!redirectUrls.TryAdd(filePath, absoluteRedirectUrl))
                 {
-                    _errorLog.Write(Errors.Redirection.RedirectionConflict(redirectUrl, path));
+                    _errors.Write(Errors.Redirection.RedirectionConflict(redirectUrl, path));
                 }
             }
             return redirectUrls;
@@ -216,13 +216,13 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.RedirectDocumentId)
                     {
-                        _errorLog.Write(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                        _errors.Write(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
                     }
                     continue;
                 }
 
                 var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                _errorLog.Write(errors);
+                _errors.Write(errors);
 
                 var candidates = redirectionSourceMonikers.Count == 0
                                     ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList()
@@ -239,7 +239,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.RedirectDocumentId && !renameHistory.TryAdd(candidate, file))
                     {
-                        _errorLog.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
+                        _errors.Write(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
                     }
                 }
             }

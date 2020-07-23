@@ -1,0 +1,47 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Collections.Generic;
+
+namespace Microsoft.Docs.Build
+{
+    internal abstract class ErrorBuilder
+    {
+        public abstract bool HasError { get; }
+
+        public abstract void Add(Error error);
+
+        public virtual bool FileHasError(FilePath file) => throw new NotSupportedException();
+
+        public void Write(Error error)
+        {
+            Add(error);
+        }
+
+        public void AddRange(IEnumerable<Error> errors)
+        {
+            foreach (var error in errors)
+            {
+                Add(error);
+            }
+        }
+
+        public void Write(IEnumerable<Error> errors)
+        {
+            foreach (var error in errors)
+            {
+                Add(error);
+            }
+        }
+
+        public void Write(IEnumerable<DocfxException> exceptions)
+        {
+            foreach (var exception in exceptions)
+            {
+                Log.Write(exception);
+                Add(exception.Error);
+            }
+        }
+    }
+}

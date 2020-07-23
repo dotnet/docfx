@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             Repository? repository,
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder,
-            ErrorLog errorLog,
+            ErrorBuilder errorLog,
             TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,

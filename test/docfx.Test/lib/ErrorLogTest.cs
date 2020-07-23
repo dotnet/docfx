@@ -11,22 +11,22 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void DedupErrors()
         {
-            using var errorLog = new ErrorLog("DedupErrors");
-            errorLog.Configure(new Config(), ".", null);
+            using var errors = new ErrorWriter();
+            var errorLog = new ErrorLog(errors, new Config());
             errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
             errorLog.Write(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
             errorLog.Write(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
 
-            Assert.Equal(1, errorLog.ErrorCount);
-            Assert.Equal(1, errorLog.WarningCount);
+            Assert.Equal(1, errors.ErrorCount);
+            Assert.Equal(1, errors.WarningCount);
         }
 
         [Fact]
         public void MaxErrors()
         {
-            using var errorLog = new ErrorLog("MaxErrors");
+            using var errors = new ErrorWriter();
             var config = new Config();
-            errorLog.Configure(config, ".", null);
+            var errorLog = new ErrorLog(errors, config);
 
             var testFiles = 100;
             var testErrors = new List<Error>();
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
             ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Write(testError));
 
-            Assert.Equal(config.MaxFileErrors * testFiles + testEmptyFileErrors, errorLog.ErrorCount);
+            Assert.Equal(config.MaxFileErrors * testFiles + testEmptyFileErrors, errors.ErrorCount);
         }
     }
 }

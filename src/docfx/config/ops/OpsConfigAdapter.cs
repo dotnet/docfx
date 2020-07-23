@@ -31,13 +31,13 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
         private readonly Action<HttpRequestMessage> _credentialProvider;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new HttpClient();
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
 
-        public OpsConfigAdapter(ErrorLog errorLog, Action<HttpRequestMessage> credentialProvider)
+        public OpsConfigAdapter(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
         {
-            _errorLog = errorLog;
+            _errors = errors;
             _credentialProvider = credentialProvider;
             _apis = new (string, Func<Uri, Task<string>>)[]
             {
@@ -242,7 +242,7 @@ namespace Microsoft.Docs.Build
                            var response = await _http.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
-                               _errorLog.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                               _errors.Write(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                            }
                            return response;
                        });
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
                 // Getting validation rules failure should not block build proceeding,
                 // catch and log the exception without rethrow.
                 Log.Write(ex);
-                _errorLog.Write(Errors.System.ValidationIncomplete());
+                _errors.Write(Errors.System.ValidationIncomplete());
                 return "{}";
             }
         }
