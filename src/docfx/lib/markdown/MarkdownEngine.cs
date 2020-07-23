@@ -13,6 +13,7 @@ using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Validations.DocFx.Adapter;
 
@@ -60,7 +61,7 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink);
+            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
             var markdownValidationRules = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules);
             var allowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Allowlists);
             var disallowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Disallowlists);
@@ -212,7 +213,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetImageLink, GetXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -293,6 +294,23 @@ namespace Microsoft.Docs.Build
                 _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
             status.Errors.AddIfNotNull(error);
 
+            return link;
+        }
+
+        private string GetImageLink(string path, MarkdownObject origin, string? altText)
+        {
+            if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
+            {
+                altText = ToPlainText(origin);
+            }
+
+            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), altText);
+        }
+
+        private string GetImageLink(SourceInfo<string> href, string? altText)
+        {
+            _contentValidator.ValidateImageLink((Document)InclusionContext.File, href, altText);
+            var link = GetLink(href);
             return link;
         }
 

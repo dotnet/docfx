@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly MarkdownEngine _markdownEngine;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
 
         private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
@@ -29,13 +29,13 @@ namespace Microsoft.Docs.Build
             MarkdownEngine markdownEngine,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
-            ErrorLog errorLog,
+            ErrorBuilder errors,
             MonikerProvider monikerProvider)
         {
             _markdownEngine = markdownEngine;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
-            _errorLog = errorLog;
+            _errors = errors;
             _monikerProvider = monikerProvider;
         }
 
@@ -203,7 +203,7 @@ namespace Microsoft.Docs.Build
             {
                 recursionDetector.Push(uid);
                 var (transformErrors, transformedToken) = TransformContentCore(definitions, file, schema, value, uidCount);
-                _errorLog.Write(transformErrors);
+                _errors.AddRange(transformErrors);
                 return transformedToken;
             }
             finally

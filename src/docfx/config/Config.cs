@@ -95,12 +95,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the maximum warnings of each file to output.
         /// </summary>
-        public int MaxFileWarnings { get; private set; } = 10;
+        public int MaxFileWarnings { get; private set; } = 100;
 
         /// <summary>
         /// Gets the maximum suggestions of each file to output.
         /// </summary>
-        public int MaxFileSuggestions { get; private set; } = 20;
+        public int MaxFileSuggestions { get; private set; } = 100;
 
         /// <summary>
         /// Gets the maximum info of each file to output.

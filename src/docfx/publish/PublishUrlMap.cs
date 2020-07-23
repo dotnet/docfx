@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class PublishUrlMap
     {
         private readonly Config _config;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly BuildScope _buildScope;
         private readonly RedirectionProvider _redirectionProvider;
         private readonly DocumentProvider _documentProvider;
@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public PublishUrlMap(
             Config config,
-            ErrorLog errorLog,
+            ErrorBuilder errors,
             BuildScope buildScope,
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             TableOfContentsMap tocMap)
         {
             _config = config;
-            _errorLog = errorLog;
+            _errors = errors;
             _buildScope = buildScope;
             _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
@@ -92,14 +92,14 @@ namespace Microsoft.Docs.Build
             {
                 Parallel.Invoke(
                     () => ParallelUtility.ForEach(
-                        _errorLog, _redirectionProvider.Files.Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
+                        _errors, _redirectionProvider.Files.Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
                     () => ParallelUtility.ForEach(
-                        _errorLog,
+                        _errors,
                         _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html),
                         file => AddItem(builder, file)),
                     () => ParallelUtility.ForEach(
-                        _errorLog, _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
-                    () => ParallelUtility.ForEach(_errorLog, _tocMap.GetFiles(), file => AddItem(builder, file)));
+                        _errors, _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
+                    () => ParallelUtility.ForEach(_errors, _tocMap.GetFiles(), file => AddItem(builder, file)));
             }
 
             // resolve output path conflicts
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 return conflicts.First();
             }
 
-            _errorLog.Write(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+            _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
 
             // redirection file is preferred than source file
             // otherwise, prefer the one based on FilePath
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
                 .Select(group => group.Key)
                 .ToList();
             var conflictingFiles = conflicts.ToDictionary(x => x.SourcePath, x => x.Monikers);
-            _errorLog.Write(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
+            _errors.Add(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
 
             return conflicts.OrderBy(x => x).Last();
         }
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
         {
             var file = _documentProvider.GetDocument(path);
             var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(path);
-            _errorLog.Write(monikerErrors);
+            _errors.AddRange(monikerErrors);
             var outputPath = _documentProvider.GetOutputPath(path);
             outputMapping.Add(new PublishUrlMapItem(file.SiteUrl, outputPath, monikers, path));
         }

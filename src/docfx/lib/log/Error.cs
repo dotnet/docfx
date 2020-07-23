@@ -18,53 +18,27 @@ namespace Microsoft.Docs.Build
 
         public string? Name { get; }
 
-        public FilePath? FilePath { get; }
+        public SourceInfo? Source { get; }
 
-        public int Line { get; }
-
-        public int Column { get; }
-
-        public int EndLine { get; }
-
-        public int EndColumn { get; }
+        public PathString? OriginalPath { get; }
 
         public bool PullRequestOnly { get; }
-
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name = null, bool pullRequestOnly = false)
-            : this(
-                level,
-                code,
-                message,
-                source?.File,
-                source?.Line ?? 0,
-                source?.Column ?? 0,
-                source?.EndLine ?? 0,
-                source?.EndColumn ?? 0,
-                name,
-                pullRequestOnly)
-        { }
 
         public Error(
             ErrorLevel level,
             string code,
             string message,
-            FilePath? file = null,
-            int line = 0,
-            int column = 0,
-            int endLine = 0,
-            int endColumn = 0,
+            SourceInfo? source = null,
             string? name = null,
+            PathString? originalPath = null,
             bool pullRequestOnly = false)
         {
             Level = level;
             Code = code;
             Message = message;
-            FilePath = file;
-            Line = line;
-            Column = column;
-            EndLine = endLine;
-            EndColumn = endColumn;
+            Source = source;
             Name = name;
+            OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
         }
 
@@ -79,56 +53,50 @@ namespace Microsoft.Docs.Build
                 level,
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
                 string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
-                FilePath,
-                Line,
-                Column,
-                EndLine,
-                EndColumn,
+                Source,
                 Name,
+                OriginalPath,
                 customRule.PullRequestOnly);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return new Error(level, Code, Message, FilePath, Line, Column, EndLine, EndColumn, Name);
+            return level == Level ? this : new Error(level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
         }
 
-        public override string ToString() => ToString(Level, null);
-
-        public string ToString(ErrorLevel level, SourceMap? sourceMap)
+        public Error WithOriginalPath(PathString? originalPath)
         {
-            var message_severity = level;
-            int line = Line;
-            int end_line = EndLine;
-            int column = Column;
-            int end_column = EndColumn;
-            var originalPath = FilePath is null ? null : sourceMap?.GetOriginalFilePath(FilePath);
-            var file = originalPath == null ? FilePath?.Path : originalPath;
-            var date_time = DateTime.UtcNow;
-            var log_item_type = "user";
-            var pull_request_only = PullRequestOnly ? (bool?)true : null;
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, originalPath, PullRequestOnly);
+        }
 
-            return originalPath == null
-                ? JsonUtility.Serialize(new
-                {
-                    message_severity,
-                    log_item_type,
-                    Code,
-                    Message,
-                    file,
-                    line,
-                    end_line,
-                    column,
-                    end_column,
-                    pull_request_only,
-                    date_time,
-                })
-                : JsonUtility.Serialize(new { message_severity, log_item_type, Code, Message, file, pull_request_only });
+        public override string ToString()
+        {
+            var file = OriginalPath ?? Source?.File?.Path;
+            var source = OriginalPath is null ? Source : null;
+            var line = source?.Line ?? 0;
+            var end_line = source?.EndLine ?? 0;
+            var column = source?.Column ?? 0;
+            var end_column = source?.EndColumn ?? 0;
+
+            return JsonUtility.Serialize(new
+            {
+                message_severity = Level,
+                Code,
+                Message,
+                file,
+                line,
+                end_line,
+                column,
+                end_column,
+                log_item_type = "user",
+                pull_request_only = PullRequestOnly ? (bool?)true : null,
+                date_time = DateTime.UtcNow,
+            });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
-            return new DocfxException(this, innerException, isError ? (ErrorLevel?)ErrorLevel.Error : null);
+            return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
         }
 
         private class EqualityComparer : IEqualityComparer<Error>
@@ -149,9 +117,9 @@ namespace Microsoft.Docs.Build
                        x.Code == y.Code &&
                        x.Message == y.Message &&
                        x.Name == y.Name &&
-                       x.FilePath == y.FilePath &&
-                       x.Line == y.Line &&
-                       x.Column == y.Column;
+                       x.Source == y.Source &&
+                       x.OriginalPath == y.OriginalPath &&
+                       x.PullRequestOnly == y.PullRequestOnly;
             }
 
             public int GetHashCode(Error obj)
@@ -161,9 +129,9 @@ namespace Microsoft.Docs.Build
                     obj.Code,
                     obj.Message,
                     obj.Name,
-                    obj.FilePath,
-                    obj.Line,
-                    obj.Column);
+                    obj.Source,
+                    obj.OriginalPath,
+                    obj.PullRequestOnly);
             }
         }
     }

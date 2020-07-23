@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
 
-        public OpsPreProcessor(Config config, ErrorLog errorLog, BuildOptions buildOptions)
+        public OpsPreProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions)
         {
             _config = config;
-            _errorLog = errorLog;
+            _errors = errors;
             _buildOptions = buildOptions;
         }
 
@@ -71,19 +71,18 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(item.Code))
             {
-                _errorLog.Write(
-                    new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, item.File is null ? null : new FilePath(item.File), item.Line ?? 0));
+                var source = item.File is null ? null : new SourceInfo(new FilePath(item.File), item.Line ?? 0, 0);
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
             }
 
-            ErrorLevel MapLevel(MessageSeverity level)
-                => level switch
-                {
-                    MessageSeverity.Error => ErrorLevel.Error,
-                    MessageSeverity.Warning => ErrorLevel.Warning,
-                    MessageSeverity.Suggestion => ErrorLevel.Suggestion,
-                    MessageSeverity.Info => ErrorLevel.Info,
-                    _ => ErrorLevel.Off,
-                };
+            static ErrorLevel MapLevel(MessageSeverity level) => level switch
+            {
+                MessageSeverity.Error => ErrorLevel.Error,
+                MessageSeverity.Warning => ErrorLevel.Warning,
+                MessageSeverity.Suggestion => ErrorLevel.Suggestion,
+                MessageSeverity.Info => ErrorLevel.Info,
+                _ => ErrorLevel.Off,
+            };
         }
     }
 }

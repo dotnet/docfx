@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             // load toc tree
             var (errors, node, _, _) = context.TableOfContentsLoader.Load(file);
 
-            context.ContentValidator.ValidateTocDeprecated(file.FilePath);
+            context.ContentValidator.ValidateTocDeprecated(file);
 
             var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file.FilePath);
             errors.AddRange(metadataErrors);
@@ -42,9 +42,9 @@ namespace Microsoft.Docs.Build
                         context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
-            context.ErrorLog.Write(errors);
+            context.ErrorBuilder.AddRange(errors);
 
-            if (!context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun)
+            if (!context.ErrorBuilder.FileHasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {

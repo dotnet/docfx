@@ -3,6 +3,7 @@
 
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,13 +23,15 @@ namespace Microsoft.Docs.LearnValidation
             if (ManifestItems == null) return;
             Items = ManifestItems.SelectMany(m =>
             {
-                var path = Path.Combine(BathPath, m.Output.MetadataOutput.RelativePath!);
+                var path = Path.Combine(BathPath, m.Output.TocOutput.RelativePath!);
                 if (!File.Exists(path))
                 {
                     path = m.Output.MetadataOutput.LinkToPath;
                 }
 
-                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path));
+                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(
+                    JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)).Value<string>("content"));
+                
                 achievements.ForEach(achievement => achievement.SourceRelativePath = m.SourceRelativePath!);
 
                 return achievements;
@@ -46,7 +49,7 @@ namespace Microsoft.Docs.LearnValidation
                 if(!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
+                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
                 }
 
                 item.IsValid = itemValid;

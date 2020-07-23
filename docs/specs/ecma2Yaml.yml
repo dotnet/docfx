@@ -104,7 +104,7 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":0,"column":0}
   cat/api/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
   cat/8069edc7/api/catlibrary.json:
@@ -121,13 +121,13 @@ repos:
           "docsets_to_publish": [
           { 
             "build_source_folder": "cat",
-          }],
-          "ECMA2Yaml": {
-            "SourceXmlFolder": "cat/xml",
-            "OutputYamlFolder": "cat/api",
-            "Flatten": true,
-            "SDPMode": true,
-          },
+            "ECMA2Yaml": {
+              "SourceXmlFolder": "cat/xml",
+              "OutputYamlFolder": "cat/api",
+              "Flatten": true,
+              "SDPMode": true,
+            }
+          }]
         }
       cat/docfx.yml: |
         files: '**/*.{md,yml}'
@@ -408,8 +408,8 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"mouse/xml/CatLibrary/Cat`2.xml","line":undefined,"column":undefined}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"mouse/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
   cat/api/_splitted/catlibrary/toc.json:
   cat/mouse/api/copied-mouse/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:

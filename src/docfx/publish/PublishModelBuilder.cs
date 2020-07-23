@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class PublishModelBuilder
     {
         private readonly Config _config;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
         private readonly ContentValidator _contentValidator;
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public PublishModelBuilder(
             Config config,
-            ErrorLog errorLog,
+            ErrorBuilder errors,
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
             ContentValidator contentValidator,
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             SourceMap sourceMap)
         {
             _config = config;
-            _errorLog = errorLog;
+            _errors = errors;
             _monikerProvider = monikerProvider;
             _locale = buildOptions.Locale;
             _contentValidator = contentValidator;
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     document.ContentType,
                     document.Mime,
-                    _errorLog.HasError(sourcePath),
+                    _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);
                 publishItems.Add(sourcePath, publishItem);
             }

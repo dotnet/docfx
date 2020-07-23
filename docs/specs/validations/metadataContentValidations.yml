@@ -1944,15 +1944,183 @@ inputs:
     :::image type="complex" source="pig2.jpg" alt-text="test alt text1" loc-scope="azure"::: 
     text
     :::image-end:::
+
+    ![test alt text2](pig1.jpg)
+    ![test alt text2](pig2.jpg)
+
+    <img src="pig1.jpg" alt="test alt text3"></img>
+    <img src="pig2.jpg" alt="test alt text3"></img>
 outputs:
   a.json:
   pig1.jpg:
   pig2.jpg:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":15,"end_line":15,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":16,"end_line":16,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":18,"end_line":18,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":19,"end_line":19,"column":11,"end_column":19}
+---
+# Content Validation - image alt text missing
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextMissing",
+            "message": "Missing alternate text for image with link '{0}'. AltText is required for accessibility.",
+            "code": "missing-image-altText",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![](pig3.jpg)
+
+    <img src="pig4.jpg" alt=""></img>
+
+    ![`test alt text quote`](pig1.jpg)
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"invalid-image","message":"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"error","log_item_type":"user","code":"invalid-image","message":"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"missing-image-altText","message":"Missing alternate text for image with link 'pig3.jpg'. AltText is required for accessibility.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"missing-image-altText","message":"Missing alternate text for image with link 'pig4.jpg'. AltText is required for accessibility.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+---
+# Content Validation - image alt text bad length
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextBadLength",
+            "message": "AltText '{0}' is out of range at {1} characters. AltText must be between {2} and {3} characters.",
+            "code": "image-altText-with-badlength",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "defaultMinAltTextLength": 10,
+            "defaultMaxAltTextLength": 20
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="short":::
+    :::image type="content" source="pig1.jpg" alt-text="longlonglonglonglonglong":::
+
+    :::image type="complex" source="pig1.jpg" alt-text="short" loc-scope="azure"::: 
+    text
+    :::image-end:::
+    :::image type="complex" source="pig1.jpg" alt-text="longlonglonglonglonglong" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![short](pig1.jpg)
+    ![longlonglonglonglonglong](pig1.jpg)
+
+    <img src="pig1.jpg" alt="short"></img>
+    <img src="pig1.jpg" alt="longlonglonglonglonglong"></img>
+outputs:
+  pig1.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":12,"end_line":12,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":15,"end_line":15,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":14,"end_line":14,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+---
+# Content Validation - image alt text equals file name
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText '{0}' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="pig1":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="pig2" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![pig3](pig3.jpg)
+    
+    <img src="pig4.jpg" alt="pig4"></img>
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig1' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig2' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
 ---
 # Hidden PR only validation rule result
 inputs:

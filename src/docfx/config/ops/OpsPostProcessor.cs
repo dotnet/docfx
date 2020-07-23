@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
 
-        public OpsPostProcessor(Config config, ErrorLog errorLog, BuildOptions buildOptions)
+        public OpsPostProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions)
         {
             _config = config;
-            _errorLog = errorLog;
+            _errors = errors;
             _buildOptions = buildOptions;
         }
 
@@ -55,16 +55,15 @@ namespace Microsoft.Docs.Build
 
         private void LogError(LearnLogItem item)
         {
-            _errorLog.Write(
-                new Error(MapLevel(item.ErrorLevel), item.ErrorCode.ToString(), item.Message, item.File is null ? null : new FilePath(item.File), 0));
+            var source = item.File is null ? null : new SourceInfo(new FilePath(item.File));
+            _errors.Add(new Error(MapLevel(item.ErrorLevel), item.ErrorCode.ToString(), item.Message, source));
 
-            ErrorLevel MapLevel(LearnErrorLevel level)
-                => level switch
-                {
-                    LearnErrorLevel.Error => ErrorLevel.Error,
-                    LearnErrorLevel.Warning => ErrorLevel.Warning,
-                    _ => ErrorLevel.Off,
-                };
+            static ErrorLevel MapLevel(LearnErrorLevel level) => level switch
+            {
+                LearnErrorLevel.Error => ErrorLevel.Error,
+                LearnErrorLevel.Warning => ErrorLevel.Warning,
+                _ => ErrorLevel.Off,
+            };
         }
     }
 }

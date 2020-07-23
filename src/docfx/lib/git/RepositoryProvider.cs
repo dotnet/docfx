@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RepositoryProvider : IDisposable
     {
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
 
         private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
         private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath =
@@ -18,9 +18,9 @@ namespace Microsoft.Docs.Build
 
         public Repository? Repository { get; }
 
-        public RepositoryProvider(ErrorLog errorLog, BuildOptions buildOptions, Config config)
+        public RepositoryProvider(ErrorBuilder errors, BuildOptions buildOptions, Config config)
         {
-            _errorLog = errorLog;
+            _errors = errors;
             Repository = buildOptions.Repository;
 
             if (Repository != null && !config.DryRun && !buildOptions.IsLocalizedBuild)
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         {
             return _fileCommitProvidersByRepoPath.GetOrAdd(
                 repo.Path,
-                _ => new FileCommitProvider(_errorLog, repo, AppData.GetCommitCachePath(repo.Remote)));
+                _ => new FileCommitProvider(_errors, repo, AppData.GetCommitCachePath(repo.Remote)));
         }
     }
 }

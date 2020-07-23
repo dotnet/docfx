@@ -12,14 +12,14 @@ namespace Microsoft.Docs.LearnValidation
     public class DependencyMapProcessor
     {
         private List<IValidateModel> _hierarchyItems;
-        private string _docsetFolder;
+        private string _docsetPath;
         private string _dependencyMapFile;
 
-        public DependencyMapProcessor(string dependencyMapFile, List<IValidateModel> hierarchyItems, string docsetFolder)
+        public DependencyMapProcessor(string dependencyMapFile, List<IValidateModel> hierarchyItems, string docsetPath)
         {
             _dependencyMapFile = dependencyMapFile;
             _hierarchyItems = hierarchyItems;
-            _docsetFolder = docsetFolder;
+            _docsetPath = docsetPath;
         }
 
         public void UpdateDependencyMap()
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.LearnValidation
             File.WriteAllText(_dependencyMapFile + ".bak", File.ReadAllText(_dependencyMapFile));
 
             // Update Dependency Type
-            var uidToFileMapping = _hierarchyItems.ToDictionary(key => key.Uid, value => Path.Combine(_docsetFolder, value.SourceRelativePath).Replace('/', '\\'));
+            var uidToFileMapping = _hierarchyItems.ToDictionary(key => key.Uid, value => Path.Combine(_docsetPath, value.SourceRelativePath).Replace('/', '\\'));
             var dependencyMapping = dependencyItems.Where(item => item.DependencyType == "uid").GroupBy(item => item.FromFilePath)
                 .ToDictionary(key => key.Key, value => value.GroupBy(v => v.ToFilePath).ToDictionary(vk => vk.Key, vv => vv.First()));
             

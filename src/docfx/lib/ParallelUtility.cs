@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static void ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Action<T> action)
+        public static void ForEach<T>(ErrorBuilder errors, IEnumerable<T> source, Action<T> action)
         {
             var done = 0;
             var total = source.Count();
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    errorLog.Write(dex);
+                    errors.AddRange(dex);
                 }
                 catch
                 {
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
                 {
-                    errorLog.Write(dex);
+                    errorLog.AddRange(dex);
                 }
                 catch (OperationCanceledException oce)
                 {
