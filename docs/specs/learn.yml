@@ -1,5 +1,6 @@
 ---
 # Draft run learn post validation
+noDryRun: true
 repos:
   https://github.com/learn/learn-pr:
   - files:
@@ -17,7 +18,7 @@ repos:
         }
      learn-pr/docfx.json: '{}'
 outputs:
-  learn-pr/.errors.log: |
+  .errors.log: |
     {"message_severity":"error", "log_item_type":"user", "code":"TripleCrown_Unimplemented"}
   learn-pr/hierarchy.json: |
     {

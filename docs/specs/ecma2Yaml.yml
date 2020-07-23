@@ -99,12 +99,12 @@ repos:
       _themes/ContentTemplate/schemas/NetMember.schema.json: |
         {}
 outputs:
-  cat/.errors.log: |
-    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"xml/CatLibrary/Cat`2.xml"}
+  .errors.log: |
+    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"cat/xml/CatLibrary/Cat`2.xml"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
   cat/api/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
   cat/8069edc7/api/catlibrary.json:
@@ -214,8 +214,8 @@ repos:
         </Type>
       
 outputs:
-  cat/.errors.log: |
-    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"_repo.en-us/CatLibrary/Cat`2.xml"}
+  .errors.log: |
+    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"cat/CatLibrary/Cat`2.xml"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
@@ -402,14 +402,14 @@ repos:
       _themes/ContentTemplate/schemas/NetMember.schema.json: |
         {}
 outputs:
-  cat/.errors.log: |
-    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"xml/CatLibrary/Cat`2.xml"}
-    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"mouse/xml/CatLibrary/Cat`2.xml"}
+  .errors.log: |
+    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"cat/xml/CatLibrary/Cat`2.xml"}
+    {"message_severity":"warning","code":"ECMA2Yaml_ExceptionTypeNotFound","message":"Referenced exception type not found: None.Existing.Ex", "file":"cat/mouse/xml/CatLibrary/Cat`2.xml"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"xml/CatLibrary/Cat`2.xml","line":0,"column":0}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"mouse/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/mouse/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
   cat/api/_splitted/catlibrary/toc.json:
   cat/mouse/api/copied-mouse/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:

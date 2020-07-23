@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
     internal class CommandLineOptions
     {
         public string? Output;
+        public string? Log;
         public bool Legacy;
         public bool Verbose;
         public bool DryRun;

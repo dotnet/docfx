@@ -69,6 +69,11 @@ namespace Microsoft.Docs.Build
             return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, originalPath, PullRequestOnly);
         }
 
+        public Error WithSource(SourceInfo? source)
+        {
+            return new Error(Level, Code, Message, source, Name, OriginalPath, PullRequestOnly);
+        }
+
         public override string ToString()
         {
             var file = OriginalPath ?? Source?.File?.Path;

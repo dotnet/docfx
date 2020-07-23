@@ -11,35 +11,34 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static int Run(string workingDirectory, CommandLineOptions options)
-        {
-            var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
-            ErrorWriter.PrintErrors(errors);
-            if (docsets.Length == 0)
-            {
-                ErrorWriter.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
-                return 1;
-            }
-
-            var hasError = false;
-            Parallel.ForEach(docsets, docset =>
-            {
-                if (RestoreDocset(docset.docsetPath, docset.outputPath, options, FetchOptions.Latest))
-                {
-                    hasError = true;
-                }
-            });
-            return hasError ? 1 : 0;
-        }
-
-        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        public static bool Run(string workingDirectory, CommandLineOptions options)
         {
             var stopwatch = Stopwatch.StartNew();
+            using var errors = new ErrorWriter(options.Log);
 
+            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, options);
+            if (docsets.Length == 0)
+            {
+                errors.Add(Errors.Config.ConfigNotFound(workingDirectory));
+                return errors.HasError;
+            }
+
+            Parallel.ForEach(docsets, docset =>
+            {
+                RestoreDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
+            });
+
+            Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
+            Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            errors.PrintSummary();
+            return errors.HasError;
+        }
+
+        public static bool RestoreDocset(
+            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        {
             using var disposables = new DisposableCollector();
-            using var errorWriter = new ErrorWriter(outputPath);
-
-            ErrorBuilder errors = errorWriter;
+            errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
 
             try
             {
@@ -65,12 +64,6 @@ namespace Microsoft.Docs.Build
             {
                 errors.AddRange(dex);
                 return errors.HasError;
-            }
-            finally
-            {
-                Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-                Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                errorWriter.PrintSummary();
             }
         }
 

@@ -74,8 +74,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void Dispose()
+        {
+            lock (_outputLock)
+            {
+                if (_output.IsValueCreated)
+                {
+                    _output.Value.Dispose();
+                }
+            }
+        }
+
         [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
-        public static void PrintError(Error error)
+        private static void PrintError(Error error)
         {
             lock (Console.Out)
             {
@@ -95,29 +106,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void PrintErrors(List<Error> errors)
-        {
-            foreach (var error in errors)
-            {
-                PrintError(error);
-            }
-        }
-
-        public void Dispose()
-        {
-            lock (_outputLock)
-            {
-                if (_output.IsValueCreated)
-                {
-                    _output.Value.Dispose();
-                }
-            }
-        }
-
         private TextWriter CreateOutput(string outputPath)
         {
-            // add default build log file output path
-            var outputFilePath = Path.GetFullPath(Path.Combine(outputPath, ".errors.log"));
+            var outputFilePath = Path.GetFullPath(outputPath);
 
             Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 

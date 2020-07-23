@@ -174,6 +174,7 @@ namespace Microsoft.Docs.Build
                 {
                     "build", docsetPath,
                     "--output", randomOutputPath,
+                     "--log", Path.Combine(randomOutputPath, ".errors.log"),
                     dryRun ? "--dry-run" : null,
                     spec.Legacy ? "--legacy" : null,
                     spec.NoRestore ? "--no-restore" : null,
