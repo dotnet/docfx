@@ -26,6 +26,8 @@ namespace Microsoft.Docs.Build
 
         public override bool HasError => Volatile.Read(ref _errorCount) > 0;
 
+        public override bool FileHasError(FilePath file) => throw new NotSupportedException();
+
         public ErrorWriter(string? outputPath = null)
         {
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));

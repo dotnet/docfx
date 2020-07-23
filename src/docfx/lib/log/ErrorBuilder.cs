@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
@@ -12,7 +11,7 @@ namespace Microsoft.Docs.Build
 
         public abstract void Add(Error error);
 
-        public virtual bool FileHasError(FilePath file) => throw new NotSupportedException();
+        public abstract bool FileHasError(FilePath file);
 
         public void AddRange(IEnumerable<Error> errors)
         {
