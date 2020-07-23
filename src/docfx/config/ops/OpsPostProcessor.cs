@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
 
         private void PostProcessLearnValidation()
         {
-            if (!_config.RunLearnValidation)
+            if (!_config.RunLearnValidation || _config.DryRun)
             {
                 return;
             }

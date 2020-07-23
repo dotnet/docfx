@@ -53,6 +53,11 @@ namespace Microsoft.Docs.Build
             EndColumn = endColumn;
         }
 
+        public SourceInfo WithFile(FilePath file)
+        {
+            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn);
+        }
+
         public static implicit operator SourceInfo(FilePath file) => new SourceInfo(file);
 
         public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);

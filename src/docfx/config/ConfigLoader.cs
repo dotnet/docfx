@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Enumeration;
 using System.Linq;
@@ -14,12 +13,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class ConfigLoader
     {
-        public static (List<Error> errors, (string docsetPath, string? outputPath)[]) FindDocsets(string workingDirectory, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(ErrorBuilder errors, string workingDirectory, CommandLineOptions options)
         {
-            var (errors, glob) = FindDocsetsGlob(workingDirectory);
+            var glob = FindDocsetsGlob(errors, workingDirectory);
             if (glob is null)
             {
-                return (errors, new[] { (workingDirectory, options.Output) });
+                return new[] { (workingDirectory, options.Output) };
             }
 
             var files = new FileSystemEnumerable<string>(
@@ -36,14 +35,14 @@ namespace Microsoft.Docs.Build
                 },
             };
 
-            return (errors, (
+            return (
                 from file in files
                 let configPath = Path.GetRelativePath(workingDirectory, file)
                 where glob(configPath)
                 let docsetPath = Path.GetDirectoryName(file)
                 let docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath)
                 let outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder)
-                select (docsetPath, outputPath)).Distinct().ToArray());
+                select (docsetPath, outputPath)).Distinct().ToArray();
         }
 
         /// <summary>
@@ -160,14 +159,13 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static (List<Error>, Func<string, bool>?) FindDocsetsGlob(string workingDirectory)
+        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, string workingDirectory)
         {
-            var errors = new List<Error>();
             var (opsConfigErrors, opsConfig) = OpsConfigLoader.LoadOpsConfig(workingDirectory);
             errors.AddRange(opsConfigErrors);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
-                return (errors, docsetFolder =>
+                return docsetFolder =>
                 {
                     var docsetDirectoryName = Path.GetDirectoryName(docsetFolder);
                     if (docsetDirectoryName is null)
@@ -176,7 +174,7 @@ namespace Microsoft.Docs.Build
                     }
                     var sourceFolder = new PathString(docsetDirectoryName);
                     return opsConfig.DocsetsToPublish.Any(docset => docset.BuildSourceFolder.FolderEquals(sourceFolder));
-                });
+                };
             }
 
             var configPath = PathUtility.FindYamlOrJson(workingDirectory, "docsets");
@@ -190,10 +188,10 @@ namespace Microsoft.Docs.Build
                     : JsonUtility.Deserialize<DocsetsConfig>(content, source);
                 errors.AddRange(configErrors);
 
-                return (errors, GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude));
+                return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
             }
 
-            return (errors, null);
+            return null;
         }
 
         private static JObject LoadEnvironmentVariables()
