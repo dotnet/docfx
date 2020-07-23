@@ -168,14 +168,9 @@ namespace Microsoft.Docs.LearnValidation
         {
             if (string.IsNullOrEmpty(drySyncEndpoint))
             {
-                return new ValidationResult(branch, locale, false, "Hierarchy dry-sync endpoint not defined");
+                Console.WriteLine($"Skipping dry-sync for unset endpoint");
+                return new ValidationResult(branch, locale, true, "Hierarchy dry-sync endpoint not defined");
             }
-            else if (string.Equals(drySyncEndpoint, "spec-test"))
-            {
-                // UT skip validation
-                return new ValidationResult(branch, locale, true, "Skipped spec-test dry-sync try");
-            }
-
 
             try
             {

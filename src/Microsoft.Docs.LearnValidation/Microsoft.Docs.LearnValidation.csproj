@@ -13,8 +13,4 @@
     <PackageReference Include="RestSharp" Version="106.11.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="AzureResourceTypes.txt" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
 </Project>

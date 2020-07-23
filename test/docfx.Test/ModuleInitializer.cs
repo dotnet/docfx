@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT_TYPE", "Json");
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT_URL_TYPE", "Docs");
             Environment.SetEnvironmentVariable("DOCFX_COPY_RESOURCES", "true");
-            Environment.SetEnvironmentVariable("DOCS_LEARN_DRY_SYNC_ENDPOINT", "spec-test");
 
             TestQuirks.Verbose = true;
             TestUtility.MakeDebugAssertThrowException();

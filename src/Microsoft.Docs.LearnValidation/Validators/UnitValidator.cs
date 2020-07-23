@@ -123,7 +123,7 @@ namespace Microsoft.Docs.LearnValidation
 
         private HashSet<string> GetTaskValidationTypeSet()
         {
-            var taskValidationTypeFile = Path.Combine(AppContext.BaseDirectory, "AzureResourceTypes.txt");
+            var taskValidationTypeFile = Path.Combine(AppContext.BaseDirectory, "data/AzureResourceTypes.txt");
             var taskValidationTypeSet = new HashSet<string>();
 
             if (File.Exists(taskValidationTypeFile))
