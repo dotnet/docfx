@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly DictionarySlim<uint, Tree> s_emptyTree = new DictionarySlim<uint, Tree>();
 
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly Repository _repository;
         private readonly Lazy<GitCommitCache> _commitCache;
 
@@ -38,14 +38,14 @@ namespace Microsoft.Docs.Build
         private int _isDisposed;
         private Task? _warmup;
 
-        public FileCommitProvider(ErrorLog errorLog, Repository repository, string cacheFilePath)
+        public FileCommitProvider(ErrorBuilder errors, Repository repository, string cacheFilePath)
         {
             if (git_repository_open(out _repo, repository.Path) != 0)
             {
                 throw new ArgumentException($"Invalid git repo {repository.Path}");
             }
 
-            _errorLog = errorLog;
+            _errors = errors;
             _repository = repository;
             _commitCache = new Lazy<GitCommitCache>(() => new GitCommitCache(cacheFilePath));
         }
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
                 // https://github.com/libgit2/libgit2sharp/issues/1351
                 if (error != 0 /* GIT_ENOTFOUND */)
                 {
-                    _errorLog.Write(Errors.System.GitCloneIncomplete(_repository.Path));
+                    _errors.Add(Errors.System.GitCloneIncomplete(_repository.Path));
                     break;
                 }
 

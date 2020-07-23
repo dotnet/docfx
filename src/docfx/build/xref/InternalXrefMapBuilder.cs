@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefMapBuilder
     {
-        private readonly ErrorLog _errorLog;
+        private readonly ErrorBuilder _errors;
         private readonly TemplateEngine _templateEngine;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaTransformer _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
-            ErrorLog errorLog,
+            ErrorBuilder errors,
             TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             BuildScope buildScope,
             JsonSchemaTransformer jsonSchemaTransformer)
         {
-            _errorLog = errorLog;
+            _errors = errors;
             _templateEngine = templateEngine;
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
-                    _errorLog,
+                    _errors,
                     _buildScope.GetFiles(ContentType.Page),
                     file => Load(builder, file));
             }
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                         break;
                     }
             }
-            _errorLog.Write(errors);
+            _errors.AddRange(errors);
         }
 
         private (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(UserMetadata metadata, Document file)
@@ -152,7 +152,7 @@ namespace Microsoft.Docs.Build
                 var duplicatedSources = (from spec in duplicatedSpecs where spec.Uid.Source != null select spec.Uid.Source).ToArray();
                 foreach (var spec in duplicatedSpecs)
                 {
-                    _errorLog.Write(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
+                    _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
                 }
             }
 
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
-                _errorLog.Write(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
+                _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
             // uid conflicts with different values of the same xref property
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                 var conflictingNames = specsWithSameUid.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
                 if (conflictingNames.Count() > 1)
                 {
-                    _errorLog.Write(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
+                    _errors.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
                 }
             }
 

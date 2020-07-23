@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
             if (errors.Any(e => e.Level == ErrorLevel.Error))
             {
-                context.ErrorLog.Write(errors);
+                context.ErrorBuilder.AddRange(errors);
                 return;
             }
 
@@ -35,9 +35,9 @@ namespace Microsoft.Docs.Build
                 ? CreatePageOutput(context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
             errors.AddRange(outputErrors);
-            context.ErrorLog.Write(errors);
+            context.ErrorBuilder.AddRange(errors);
 
-            if (!context.ErrorLog.HasError(file.FilePath) && !context.Config.DryRun)
+            if (!context.ErrorBuilder.FileHasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Json)
                 {
