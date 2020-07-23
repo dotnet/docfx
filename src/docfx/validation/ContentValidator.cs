@@ -27,7 +27,9 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
-            _validator = new Validator(GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules));
+            _validator = new Validator(
+                GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules),
+                GetValidationPhysicalFilePath(fileResolver, config.Disallowlists));
             _errors = errors;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
