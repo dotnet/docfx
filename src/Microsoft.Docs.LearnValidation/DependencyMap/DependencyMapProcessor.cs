@@ -44,7 +44,6 @@ namespace Microsoft.Docs.LearnValidation
             dependencyItems.RemoveAll(di => di.DependencyType == "include" && di.ToFilePath == di.FromFilePath + ".md");
 
             //backup changed file
-            File.WriteAllLines(_dependencyMapFile + ".updated", dependencyItems.Select(di => JsonConvert.SerializeObject(di)));
             File.WriteAllLines(_dependencyMapFile, dependencyItems.Select(di => JsonConvert.SerializeObject(di)));
         }
 

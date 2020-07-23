@@ -3,9 +3,11 @@
 
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.LearnValidation
 {
@@ -29,7 +31,8 @@ namespace Microsoft.Docs.LearnValidation
         protected virtual void ExtractItems()
         {
             if (ManifestItems == null) return;
-            Items = ManifestItems.Select(m =>
+            var items = new ConcurrentBag<IValidateModel>();
+            Parallel.ForEach(ManifestItems, m =>
             {
                 var path = Path.Combine(BathPath, m.Output.MetadataOutput.RelativePath);
                 if (!File.Exists(path))
@@ -39,8 +42,9 @@ namespace Microsoft.Docs.LearnValidation
                 var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
                 var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, m);
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
-                return hierarchyItem;
-            }).Cast<IValidateModel>().ToList();
+                items.Add((IValidateModel)hierarchyItem);
+            });
+            Items = items.ToList();
         }
 
         protected virtual void SetHierarchyData(IValidateModel item, ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)

@@ -209,6 +209,8 @@ jobs:
         params: https://github.com/MicrosoftDocs/test --timeout 15
       dryrun.azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 35 --dry-run --regression-markdown-rule --regression-metadata-schema
+      learn-m365-pr:
+        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30
 
   steps:
   # Install .NET Core sdk
@@ -236,6 +238,7 @@ jobs:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
+      DOCS_LEARN_VALIDATION_ENDPOINT: $(DOCS_LEARN_VALIDATION_ENDPOINT)
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
