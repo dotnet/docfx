@@ -100,6 +100,11 @@ namespace Microsoft.Docs.Build
         private (List<Error> errors, MonikerList monikers) GetFileLevelMonikersCore(FilePath file)
         {
             var errors = new List<Error>();
+            if (file.Monikers.HasMonikers)
+            {
+                return (errors, file.Monikers);
+            }
+
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
             var configMonikerRange = GetConfigMonikerRange(file);

@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
 
-        private ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath, MonikerList monikers)> _buildOutput =
-            new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath, MonikerList monikers)>();
+        private ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
+            new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
 
         public PublishModelBuilder(
             Config config,
@@ -42,9 +42,9 @@ namespace Microsoft.Docs.Build
             _sourceMap = sourceMap;
         }
 
-        public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath = null, MonikerList monikers = default)
+        public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath = null)
         {
-            _buildOutput.TryAdd(file, (metadata, outputPath, monikers));
+            _buildOutput.TryAdd(file, (metadata, outputPath));
         }
 
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     buildOutput ? result.outputPath : null,
                     _sourceMap.GetOriginalFilePath(sourcePath) ?? sourcePath.Path,
                     _locale,
-                    result.monikers.HasMonikers ? result.monikers : monikers,
+                    monikers,
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     document.ContentType,
                     document.Mime,

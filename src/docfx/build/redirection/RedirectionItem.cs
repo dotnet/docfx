@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         public PathString SourcePath { get; set; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string?>[]? SourceMonikers { get; set; }
+        public SourceInfo<string?>[]? Monikers { get; set; }
 
         public SourceInfo<string> RedirectUrl { get; set; } = new SourceInfo<string>("");
 

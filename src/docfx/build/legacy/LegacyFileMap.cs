@@ -70,6 +70,12 @@ namespace Microsoft.Docs.Build
                             {
                                 return $"{item.path}:{item.fileMapItem.Version}";
                             }
+
+                            // redirection file with monikers
+                            else if (item.fileMapItem.Monikers.HasMonikers)
+                            {
+                                return $"{item.path}:{item.fileMapItem.Monikers.MonikerGroup}";
+                            }
                             else
                             {
                                 return item.path;
