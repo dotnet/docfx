@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
+        private readonly HashSet<PathString> _redirectPaths;
         private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory,
             IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
 
@@ -41,6 +42,7 @@ namespace Microsoft.Docs.Build
             {
                 var redirections = LoadRedirectionModel(errors, docsetPath, repository);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
+                _redirectPaths = _redirectUrls.Keys.Select(x => x.Path).ToHashSet();
                 _publishUrlMap = publishUrlMap;
                 _history =
                    new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(
@@ -48,10 +50,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool Contains(FilePath file)
-        {
-            return _redirectUrls.Keys.Select(x => x.Path).Contains(file.Path);
-        }
+        public bool Contains(FilePath file) => _redirectPaths.Contains(file.Path);
 
         public (Error?, string) GetRedirectUrl(FilePath file)
         {
