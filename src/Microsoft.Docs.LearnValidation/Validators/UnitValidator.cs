@@ -123,8 +123,7 @@ namespace Microsoft.Docs.LearnValidation
 
         private HashSet<string> GetTaskValidationTypeSet()
         {
-            var executingFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".";
-            var taskValidationTypeFile = Path.Combine(executingFolder, "TaskValidationTypes.txt");
+            var taskValidationTypeFile = Path.Combine(AppContext.BaseDirectory, "AzureResourceTypes.txt");
             var taskValidationTypeSet = new HashSet<string>();
 
             if (File.Exists(taskValidationTypeFile))
