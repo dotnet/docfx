@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             _sourceMap = sourceMap;
         }
 
-        public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath = null)
+        public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath)
         {
             _buildOutput.TryAdd(file, (metadata, outputPath));
         }

@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Main, path, default, default, default);
         }
 
-        public static FilePath Redirection(PathString path, MonikerList monikers = default)
+        public static FilePath Redirection(PathString path, MonikerList monikers)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
             return new FilePath(FileOrigin.Redirection, path, default, default, monikers);
@@ -115,11 +115,12 @@ namespace Microsoft.Docs.Build
 
                 default:
                     tags += $"[{Origin.ToString().ToLowerInvariant()}]";
-                    if (Monikers.HasMonikers)
-                    {
-                        tags += $"[{Monikers}]";
-                    }
                     break;
+            }
+
+            if (Monikers.HasMonikers)
+            {
+                tags += $"[{Monikers}]";
             }
 
             if (IsGitCommit)
@@ -150,7 +151,8 @@ namespace Microsoft.Docs.Build
             return Path.Equals(other.Path) &&
                    DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
-                   IsGitCommit == other.IsGitCommit;
+                   IsGitCommit == other.IsGitCommit &&
+                   Monikers == other.Monikers;
         }
 
         public int CompareTo(FilePath? other)

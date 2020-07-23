@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             };
 
             context.ErrorBuilder.AddRange(errors);
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, null);
         }
     }
 }
