@@ -29,6 +29,9 @@ namespace Microsoft.Docs.LearnValidation
     {
         [JsonProperty(".mta.json", NullValueHandling = NullValueHandling.Ignore)]
         public LegacyManifestOutputItem MetadataOutput { get; set; }
+
+        [JsonProperty(".json", NullValueHandling = NullValueHandling.Ignore)]
+        public LegacyManifestOutputItem TocOutput { get; set; }
     }
 
     public class LegacyManifestOutputItem
