@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
         public bool Contains(FilePath file)
         {
-            return _redirectUrls.ContainsKey(file);
+            return _redirectUrls.Keys.Select(x => x.Path).Contains(file.Path);
         }
 
         public (Error?, string) GetRedirectUrl(FilePath file)
