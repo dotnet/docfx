@@ -39,8 +39,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Loading redirections"))
             {
-                var (errors, redirections) = LoadRedirectionModel(docsetPath, repository);
-                _errors.Write(errors);
+                var redirections = LoadRedirectionModel(errors, docsetPath, repository);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
                 _history =
                    new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(
@@ -144,7 +143,7 @@ namespace Microsoft.Docs.Build
             return redirectUrls;
         }
 
-        private static (List<Error>, RedirectionItem[]) LoadRedirectionModel(string docsetPath, Repository? repository)
+        private static RedirectionItem[] LoadRedirectionModel(ErrorBuilder errors, string docsetPath, Repository? repository)
         {
             foreach (var fullPath in ProbeRedirectionFiles(docsetPath, repository))
             {
@@ -152,9 +151,11 @@ namespace Microsoft.Docs.Build
                 {
                     var content = File.ReadAllText(fullPath);
                     var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
-                    var (errors, model) = fullPath.EndsWith(".yml")
+                    var (loadErrors, model) = fullPath.EndsWith(".yml")
                         ? YamlUtility.Deserialize<RedirectionModel>(content, filePath)
                         : JsonUtility.Deserialize<RedirectionModel>(content, filePath);
+
+                    errors.AddRange(loadErrors);
 
                     // Expand redirect items array or object form
                     var redirections = model.Redirections.arrayForm
@@ -168,7 +169,7 @@ namespace Microsoft.Docs.Build
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
-                    return (errors, (
+                    return (
                         from item in redirections.Concat(renames)
                         let sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath))
                         where !sourcePath.StartsWith(".")
@@ -177,11 +178,11 @@ namespace Microsoft.Docs.Build
                             SourcePath = new PathString(sourcePath),
                             RedirectUrl = item.RedirectUrl,
                             RedirectDocumentId = item.RedirectDocumentId,
-                        }).OrderBy(item => item.RedirectUrl.Source).ToArray());
+                        }).OrderBy(item => item.RedirectUrl.Source).ToArray();
                 }
             }
 
-            return (new List<Error>(), Array.Empty<RedirectionItem>());
+            return Array.Empty<RedirectionItem>();
         }
 
         private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath, Repository? repository)
