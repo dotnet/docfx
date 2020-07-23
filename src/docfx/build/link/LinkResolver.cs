@@ -253,7 +253,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from redirection files
-            path = FilePath.Redirection(pathToDocset);
+            path = FilePath.Redirection(pathToDocset, default);
             if (_redirectionProvider.Contains(path))
             {
                 return _documentProvider.GetDocument(path);

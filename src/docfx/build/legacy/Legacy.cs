@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
 
                 LegacyManifest.Convert(docsetPath, context, documents);
                 var legacyDependencyMap = LegacyDependencyMap.Convert(docsetPath, context, dependencyMap);
+
+                // TODO: remove this since file map link is deprecated
                 LegacyFileMap.Convert(context, legacyDependencyMap, documents);
             }
         }

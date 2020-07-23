@@ -43,6 +43,8 @@ namespace Microsoft.Docs.Build
             _monikerOrder = GetMonikerOrder(monikerDefinition);
         }
 
+        public (List<Error>, MonikerList) Validate(SourceInfo<string?>[] monikers) => _rangeParser.Validate(monikers);
+
         public int GetMonikerOrder(string moniker)
         {
             if (_monikerOrder.TryGetValue(moniker, out var value))
@@ -98,6 +100,11 @@ namespace Microsoft.Docs.Build
         private (List<Error> errors, MonikerList monikers) GetFileLevelMonikersCore(FilePath file)
         {
             var errors = new List<Error>();
+            if (file.Monikers.HasMonikers)
+            {
+                return (errors, file.Monikers);
+            }
+
             var (_, metadata) = _metadataProvider.GetMetadata(file);
 
             var configMonikerRange = GetConfigMonikerRange(file);

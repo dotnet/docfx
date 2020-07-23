@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
+        private readonly HashSet<PathString> _redirectPaths;
         private readonly Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory,
             IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)> _history;
 
@@ -41,17 +42,15 @@ namespace Microsoft.Docs.Build
             {
                 var redirections = LoadRedirectionModel(errors, docsetPath, repository);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
+                _redirectPaths = _redirectUrls.Keys.Select(x => x.Path).ToHashSet();
+                _publishUrlMap = publishUrlMap;
                 _history =
                    new Lazy<(IReadOnlyDictionary<FilePath, FilePath> renameHistory, IReadOnlyDictionary<FilePath, (FilePath, SourceInfo?)> redirectionHistory)>(
                         () => GetRenameAndRedirectionHistory(redirections, _redirectUrls));
-                _publishUrlMap = publishUrlMap;
             }
         }
 
-        public bool Contains(FilePath file)
-        {
-            return _redirectUrls.ContainsKey(file);
-        }
+        public bool Contains(FilePath file) => _redirectPaths.Contains(file.Path);
 
         public (Error?, string) GetRedirectUrl(FilePath file)
         {
@@ -114,7 +113,15 @@ namespace Microsoft.Docs.Build
                 }
 
                 var absoluteRedirectUrl = redirectUrl.Value.Trim();
-                var filePath = FilePath.Redirection(path);
+
+                MonikerList monikers = default;
+                if (item.Monikers != null)
+                {
+                    List<Error> monikerErrors;
+                    (monikerErrors, monikers) = _monikerProvider.Validate(item.Monikers);
+                    _errors.AddRange(monikerErrors);
+                }
+                var filePath = FilePath.Redirection(path, monikers);
 
                 if (item.RedirectDocumentId)
                 {
@@ -164,7 +171,12 @@ namespace Microsoft.Docs.Build
                         ?? Array.Empty<RedirectionItem>();
 
                     var renames = model.Renames.Select(
-                        pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value, RedirectDocumentId = true });
+                        pair => new RedirectionItem
+                        {
+                            SourcePath = pair.Key,
+                            RedirectUrl = pair.Value,
+                            RedirectDocumentId = true,
+                        });
 
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
@@ -176,6 +188,7 @@ namespace Microsoft.Docs.Build
                         select new RedirectionItem
                         {
                             SourcePath = new PathString(sourcePath),
+                            Monikers = item.Monikers,
                             RedirectUrl = item.RedirectUrl,
                             RedirectDocumentId = item.RedirectDocumentId,
                         }).OrderBy(item => item.RedirectUrl.Source).ToArray();
@@ -205,13 +218,20 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in redirections)
             {
-                var file = FilePath.Redirection(item.SourcePath);
-                if (!redirectUrls.TryGetValue(file, out var redirectUrl))
+                MonikerList monikers = default;
+                if (item.Monikers != null)
+                {
+                    List<Error> monikerErrors;
+                    (monikerErrors, monikers) = _monikerProvider.Validate(item.Monikers);
+                    _errors.AddRange(monikerErrors);
+                }
+                var file = FilePath.Redirection(item.SourcePath, monikers);
+                if (!redirectUrls.TryGetValue(file, out var value))
                 {
                     continue;
                 }
 
-                var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(redirectUrl);
+                var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(value);
                 var docs = _publishUrlMap.Value.GetFilesByUrl(trimmedRedirectUrl.ToLowerInvariant());
                 if (!docs.Any())
                 {
