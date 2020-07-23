@@ -30,6 +30,7 @@ outputs:
 ---
 # Can generate hierarchy
 legacy: true
+noDryRun: true
 repos:
   https://github.com/learn/learn-pr:
   - files:
