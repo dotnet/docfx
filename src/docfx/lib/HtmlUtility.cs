@@ -337,7 +337,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static void ScanTags(ref HtmlToken token, MarkdownObject obj, List<Error> errors)
+        internal static void ScanTags(ref HtmlToken token, MarkdownObject obj, ErrorBuilder errors)
         {
             if (token.Type != HtmlTokenType.StartTag)
             {

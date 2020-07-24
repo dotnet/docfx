@@ -15,11 +15,9 @@ namespace Microsoft.Docs.Build
         private readonly bool _hasMonikerRangeFileMetadata;
         private readonly BuildScope _buildScope;
         private readonly JObject _globalMetadata;
-        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules
-            = new List<(Func<string, bool> glob, string key, JToken value)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
 
-        private readonly ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)> _metadataCache
-                   = new ConcurrentDictionary<FilePath, (List<Error> errors, UserMetadata metadata)>();
+        private readonly ConcurrentDictionary<FilePath, UserMetadata> _metadataCache = new ConcurrentDictionary<FilePath, UserMetadata>();
 
         public ICollection<string> HtmlMetaHidden { get; }
 
@@ -56,7 +54,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, UserMetadata metadata) GetMetadata(FilePath path)
+        public UserMetadata GetMetadata(ErrorBuilder errors, FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
 
@@ -65,17 +63,16 @@ namespace Microsoft.Docs.Build
                 case ContentType.Unknown:
                 case ContentType.Redirection when !_hasMonikerRangeFileMetadata:
                 case ContentType.Resource when !_hasMonikerRangeFileMetadata:
-                    return (new List<Error>(), new UserMetadata());
+                    return new UserMetadata();
 
                 default:
-                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(path, contentType));
+                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(errors, path, contentType));
             }
         }
 
-        private (List<Error> errors, UserMetadata metadata) GetMetadataCore(FilePath filePath, ContentType contentType)
+        private UserMetadata GetMetadataCore(ErrorBuilder errors, FilePath filePath, ContentType contentType)
         {
             var result = new JObject();
-            var errors = new List<Error>();
 
             JsonUtility.SetSourceInfo(result, new SourceInfo(filePath, 1, 1));
             JsonUtility.Merge(result, _globalMetadata);
@@ -92,9 +89,7 @@ namespace Microsoft.Docs.Build
 
             if (contentType == ContentType.Page || contentType == ContentType.TableOfContents)
             {
-                var (yamlHeaderErrors, yamlHeader) = LoadYamlHeader(filePath);
-                errors.AddRange(yamlHeaderErrors);
-
+                var yamlHeader = LoadYamlHeader(errors, filePath);
                 if (yamlHeader.Count > 0)
                 {
                     JsonUtility.Merge(result, yamlHeader);
@@ -102,49 +97,39 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var (validationErrors, metadata) = JsonUtility.ToObject<UserMetadata>(result);
+            var metadata = JsonUtility.ToObject<UserMetadata>(errors, result);
 
             metadata.RawJObject = result;
 
-            errors.AddRange(validationErrors);
-
-            return (errors, metadata);
+            return metadata;
         }
 
-        private (List<Error> errors, JObject yamlHeader) LoadYamlHeader(FilePath file)
+        private JObject LoadYamlHeader(ErrorBuilder errors, FilePath file)
         {
-            switch (file.Format)
+            return file.Format switch
             {
-                case FileFormat.Markdown:
-                    using (var reader = _input.ReadText(file))
-                    {
-                        return ExtractYamlHeader.Extract(reader, file);
-                    }
-                case FileFormat.Yaml:
-                    return LoadSchemaDocumentYamlHeader(_input.ReadYaml(file), file);
-                case FileFormat.Json:
-                    return LoadSchemaDocumentYamlHeader(_input.ReadJson(file), file);
-                default:
-                    return (new List<Error>(), new JObject());
-            }
+                FileFormat.Markdown => ExtractYamlHeader.Extract(errors, _input.ReadText(file), file),
+                FileFormat.Yaml => LoadSchemaDocumentYamlHeader(errors, _input.ReadYaml(errors, file), file),
+                FileFormat.Json => LoadSchemaDocumentYamlHeader(errors, _input.ReadJson(errors, file), file),
+                _ => new JObject(),
+            };
         }
 
-        private static (List<Error> errors, JObject metadata) LoadSchemaDocumentYamlHeader((List<Error>, JToken) document, FilePath file)
+        private static JObject LoadSchemaDocumentYamlHeader(ErrorBuilder errors, JToken token, FilePath file)
         {
-            var (errors, token) = document;
             var metadata = token is JObject tokenObj ? tokenObj["metadata"] : null;
 
             if (metadata != null)
             {
                 if (metadata is JObject obj)
                 {
-                    return (errors, obj);
+                    return obj;
                 }
 
                 errors.Add(Errors.Yaml.YamlHeaderNotObject(isArray: metadata is JArray, file));
             }
 
-            return (errors, new JObject());
+            return new JObject();
         }
     }
 }

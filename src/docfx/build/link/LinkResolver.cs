@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
 
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
             {
-                var (_, metadata) = _metadataProvider.GetMetadata(referencingFile);
+                var metadata = _metadataProvider.GetMetadata(new ErrorList(), referencingFile);
                 pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath.Substring(2).TrimStart('/', '\\')));
             }
             else

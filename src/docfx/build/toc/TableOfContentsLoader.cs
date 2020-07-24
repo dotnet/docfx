@@ -22,8 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
 
-        private readonly MemoryCache<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)> _cache =
-                     new MemoryCache<FilePath, (List<Error>, TableOfContentsNode, List<Document>, List<Document>)>();
+        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)> _cache =
+                     new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
@@ -47,22 +47,21 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
         }
 
-        public (List<Error> errors, TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
-            Load(Document file)
+        public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
+            Load(ErrorBuilder errors, Document file)
         {
             return _cache.GetOrAdd(file.FilePath, _ =>
             {
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
-                var errors = new List<Error>();
                 var node = LoadTocFile(file, file, referencedFiles, referencedTocs, errors);
 
-                return (errors, node, referencedFiles, referencedTocs);
+                return (node, referencedFiles, referencedTocs);
             });
         }
 
         private TableOfContentsNode LoadTocFile(
-            Document file, Document rootPath, List<Document> referencedFiles, List<Document> referencedTocs, List<Error> errors)
+            Document file, Document rootPath, List<Document> referencedFiles, List<Document> referencedTocs, ErrorBuilder errors)
         {
             // add to parent path
             t_recursionDetector.Value = t_recursionDetector.Value ?? ImmutableStack<Document>.Empty;
@@ -99,7 +98,7 @@ namespace Microsoft.Docs.Build
             Document rootPath,
             List<Document> referencedFiles,
             List<Document> referencedTocs,
-            List<Error> errors)
+            ErrorBuilder errors)
         {
             var newNodes = new SourceInfo<TableOfContentsNode>[nodes.Count];
 
@@ -107,7 +106,7 @@ namespace Microsoft.Docs.Build
             {
                 var newReferencedFiles = new List<Document>();
                 var newReferencedTocs = new List<Document>();
-                var newErrors = new List<Error>();
+                var newErrors = new ErrorList();
                 newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newReferencedTocs, newErrors);
                 lock (newNodes)
                 {
@@ -126,7 +125,7 @@ namespace Microsoft.Docs.Build
             Document rootPath,
             List<Document> referencedFiles,
             List<Document> referencedTocs,
-            List<Error> errors)
+            ErrorBuilder errors)
         {
             // process
             var tocHref = GetTocHref(node, errors);
@@ -168,7 +167,7 @@ namespace Microsoft.Docs.Build
             return new SourceInfo<TableOfContentsNode>(newNode, node);
         }
 
-        private MonikerList GetMonikers(TableOfContentsNode currentItem, List<Error> errors)
+        private MonikerList GetMonikers(TableOfContentsNode currentItem, ErrorBuilder errors)
         {
             var monikers = MonikerList.Union(GetMonikerLists(currentItem, errors));
 
@@ -182,7 +181,7 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private IEnumerable<MonikerList> GetMonikerLists(TableOfContentsNode currentItem, List<Error> errors)
+        private IEnumerable<MonikerList> GetMonikerLists(TableOfContentsNode currentItem, ErrorBuilder errors)
         {
             if (!string.IsNullOrEmpty(currentItem.Href))
             {
@@ -193,10 +192,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (currentItem.Document != null)
                 {
-                    var (monikerErrors, referenceFileMonikers) = _monikerProvider.GetFileLevelMonikers(currentItem.Document.FilePath);
-                    errors.AddRange(monikerErrors);
-
-                    yield return referenceFileMonikers;
+                    yield return _monikerProvider.GetFileLevelMonikers(errors, currentItem.Document.FilePath);
                 }
             }
 
@@ -207,7 +203,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, List<Error> errors)
+        private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, ErrorBuilder errors)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TocHref))
             {
@@ -230,7 +226,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private SourceInfo<string?> GetTopicHref(TableOfContentsNode tocInputModel, List<Error> errors)
+        private SourceInfo<string?> GetTopicHref(TableOfContentsNode tocInputModel, ErrorBuilder errors)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TopicHref))
             {
@@ -260,7 +256,7 @@ namespace Microsoft.Docs.Build
                 List<Document> referencedFiles,
                 List<Document> referencedTocs,
                 SourceInfo<string?> tocHref,
-                List<Error> errors)
+                ErrorBuilder errors)
         {
             if (string.IsNullOrEmpty(tocHref))
             {
@@ -306,7 +302,7 @@ namespace Microsoft.Docs.Build
             List<Document> referencedFiles,
             SourceInfo<string?> uid,
             SourceInfo<string?> topicHref,
-            List<Error> errors,
+            ErrorBuilder errors,
             bool addToReferencedFiles = true)
         {
             // process uid first
@@ -347,7 +343,7 @@ namespace Microsoft.Docs.Build
         }
 
         private Document? ResolveTocHref(
-            Document filePath, List<Document> referencedTocs, TocHrefType tocHrefType, SourceInfo<string> href, List<Error> errors)
+            Document filePath, List<Document> referencedTocs, TocHrefType tocHrefType, SourceInfo<string> href, ErrorBuilder errors)
         {
             switch (tocHrefType)
             {

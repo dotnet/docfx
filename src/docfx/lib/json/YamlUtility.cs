@@ -68,41 +68,34 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T DeserializeData<T>(TextReader data, FilePath? file) where T : class, new()
         {
-            var (_, token) = ParseCore(data, file);
-            return token?.ToObject<T>(JsonUtility.Serializer) ?? new T();
+            return ParseCore(new ErrorList(), data, file)?.ToObject<T>(JsonUtility.Serializer) ?? new T();
         }
 
-        public static (List<Error>, T) Deserialize<T>(string input, FilePath file) where T : class, new()
+        public static T Deserialize<T>(ErrorBuilder errors, string input, FilePath file) where T : class, new()
         {
             using var reader = new StringReader(input);
-            return Deserialize<T>(reader, file);
+            return Deserialize<T>(errors, reader, file);
         }
 
-        public static (List<Error>, T) Deserialize<T>(TextReader reader, FilePath file) where T : class, new()
+        public static T Deserialize<T>(ErrorBuilder errors, TextReader reader, FilePath file) where T : class, new()
         {
-            var (errors, token) = Parse(reader, file);
-            var (schemaErrors, value) = JsonUtility.ToObject<T>(token);
-            errors.AddRange(schemaErrors);
-            return (errors, value);
+            return JsonUtility.ToObject<T>(errors, Parse(errors, reader, file));
         }
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(string input, FilePath? file)
+        public static JToken Parse(ErrorBuilder errors, string input, FilePath? file)
         {
-            return Parse(new StringReader(input), file);
+            return Parse(errors, new StringReader(input), file);
         }
 
         /// <summary>
         /// Deserialize to JToken from string
         /// </summary>
-        public static (List<Error>, JToken) Parse(TextReader input, FilePath? file)
+        public static JToken Parse(ErrorBuilder errors, TextReader input, FilePath? file)
         {
-            var (errors, token) = ParseCore(input, file);
-            var (nullErrors, result) = token.RemoveNulls();
-            errors.AddRange(nullErrors);
-            return (errors, result);
+            return ParseCore(errors, input, file).RemoveNulls(errors);
         }
 
         private static string? ReadDocumentType(TextReader reader)
@@ -118,11 +111,10 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private static (List<Error>, JToken) ParseCore(TextReader input, FilePath? file)
+        private static JToken ParseCore(ErrorBuilder errors, TextReader input, FilePath? file)
         {
             try
             {
-                var errors = new List<Error>();
                 var result = ToJToken(
                     input,
                     onKeyDuplicate: key => errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
@@ -140,7 +132,7 @@ namespace Microsoft.Docs.Build
                         return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file));
                     });
 
-                return (errors, result);
+                return result;
             }
             catch (YamlException ex)
             {

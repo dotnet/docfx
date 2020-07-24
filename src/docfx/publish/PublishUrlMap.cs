@@ -151,8 +151,7 @@ namespace Microsoft.Docs.Build
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
         {
             var file = _documentProvider.GetDocument(path);
-            var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(path);
-            _errors.AddRange(monikerErrors);
+            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
             var outputPath = _documentProvider.GetOutputPath(path);
             outputMapping.Add(new PublishUrlMapItem(file.SiteUrl, outputPath, monikers, path));
         }

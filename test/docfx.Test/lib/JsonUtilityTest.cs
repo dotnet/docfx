@@ -187,7 +187,8 @@ namespace Microsoft.Docs.Build
         [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
         internal void TestNullValue(string json, string message, string errorCode, ErrorLevel errorLevel)
         {
-            var (errors, result) = JsonUtility.Parse(json.Replace('\'', '"'), null);
+            var errors = new ErrorList();
+            var result = JsonUtility.Parse(errors, json.Replace('\'', '"'), null);
             Assert.Collection(errors, error =>
             {
                 Assert.Equal(errorLevel, error.Level);
@@ -200,7 +201,7 @@ namespace Microsoft.Docs.Build
         public void TestEmptyString()
         {
             var json = string.Empty;
-            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Parse(json, null));
+            var exception = Assert.Throws<DocfxException>(() => JsonUtility.Parse(new ErrorList(), json, null));
         }
 
         [Theory]
@@ -258,8 +259,9 @@ namespace Microsoft.Docs.Build
 ""e"": ""e""}]", typeof(List<NotSealedClass>))]
         public void TestObjectTypeWithNotSealedType(string json, Type type)
         {
-            var (_, token) = JsonUtility.Parse(json, null);
-            var (errors, value) = JsonUtility.ToObject(token, type);
+            var errors = new ErrorList();
+            var token = JsonUtility.Parse(errors, json, null);
+            var value = JsonUtility.ToObject(errors, token, type);
             Assert.Empty(errors);
         }
 
@@ -390,8 +392,8 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void NullValueHasSourceInfo()
         {
-            var (_, json) = JsonUtility.Parse("{'a': null,'b': null}".Replace('\'', '"'), new FilePath("file"));
-            var (_, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
+            var json = JsonUtility.Parse(new ErrorList(), "{'a': null,'b': null}".Replace('\'', '"'), new FilePath("file"));
+            var obj = JsonUtility.ToObject<ClassWithSourceInfo>(new ErrorList(), json);
 
             Assert.NotNull(obj?.A);
 
@@ -409,9 +411,10 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void JsonWithTypeErrorsHasCorrectSourceInfo()
         {
-            var (_, json) = JsonUtility.Parse(
+            var json = JsonUtility.Parse(
+                new ErrorList(),
                 "{'next': {'a': ['a1','a2'],'b': 'b'}, 'c': 'c'}".Replace('\'', '"'), new FilePath("file"));
-            var (errors, obj) = JsonUtility.ToObject<ClassWithSourceInfo>(json);
+            var obj = JsonUtility.ToObject<ClassWithSourceInfo>(new ErrorList(), json);
 
             Assert.Null(obj.Next.A.Value);
             Assert.Equal("b", obj.Next.B);
@@ -480,11 +483,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
-        private static (List<Error>, T) DeserializeWithValidation<T>(string input) where T : class, new()
+        private static (ErrorList, T) DeserializeWithValidation<T>(string input) where T : class, new()
         {
-            var (errors, token) = JsonUtility.Parse(input, null);
-            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
-            errors.AddRange(mismatchingErrors);
+            var errors = new ErrorList();
+            var token = JsonUtility.Parse(errors, input, null);
+            var result = JsonUtility.ToObject<T>(errors, token);
             return (errors, result);
         }
 

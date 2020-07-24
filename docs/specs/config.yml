@@ -152,6 +152,9 @@ inputs:
   docs/a.md:
   docs/b.md:
 outputs:
+  docs/a.json: |
+    { "title": [1,2] }
+  docs/b.json:
   .errors.log: |
     {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docfx.yml","line":3,"column":5}
 ---
@@ -387,6 +390,7 @@ inputs:
           - 2
   docs/a.md:
 outputs:
+  docs/a.json:
   .errors.log: |
     {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docfx.yml","line":4,"column":7}
 ---

@@ -167,30 +167,26 @@ namespace Microsoft.Docs.Build
             return JObject.FromObject(model, s_serializer);
         }
 
-        public static (List<Error> errors, T value) Deserialize<T>(string json, FilePath file) where T : class, new()
+        public static T Deserialize<T>(ErrorBuilder errors, string json, FilePath file) where T : class, new()
         {
             using var reader = new StringReader(json);
-            return Deserialize<T>(reader, file);
+            return Deserialize<T>(errors, reader, file);
         }
 
-        public static (List<Error> errors, T value) Deserialize<T>(TextReader reader, FilePath file) where T : class, new()
+        public static T Deserialize<T>(ErrorBuilder errors, TextReader reader, FilePath file) where T : class, new()
         {
-            var (errors, token) = Parse(reader, file);
-            var (schemaErrors, value) = ToObject<T>(token);
-            errors.AddRange(schemaErrors);
-            return (errors, value);
+            return ToObject<T>(errors, Parse(errors, reader, file));
         }
 
         /// <summary>
         /// Creates an instance of the specified .NET type from the JToken with schema validation
         /// </summary>
-        public static (List<Error> errors, T value) ToObject<T>(JToken token) where T : class, new()
+        public static T ToObject<T>(ErrorBuilder errors, JToken token) where T : class, new()
         {
-            var (errors, obj) = ToObject(token, typeof(T));
-            return (errors, obj as T ?? new T());
+            return ToObject(errors, token, typeof(T)) as T ?? new T();
         }
 
-        public static (List<Error> errors, object? value) ToObject(JToken token, Type type)
+        public static object? ToObject(ErrorBuilder errors, JToken token, Type type)
         {
             try
             {
@@ -198,7 +194,8 @@ namespace Microsoft.Docs.Build
                 t_status.Value!.Push(status);
 
                 var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
-                return (status.Errors, value);
+                errors.AddRange(status.Errors);
+                return value;
             }
             finally
             {
@@ -210,17 +207,17 @@ namespace Microsoft.Docs.Build
         /// Parse a string to JToken.
         /// Validate null value during the process.
         /// </summary>
-        public static (List<Error> errors, JToken value) Parse(string json, FilePath file)
+        public static JToken Parse(ErrorBuilder errors, string json, FilePath file)
         {
-            return Parse(new StringReader(json), file);
+            return Parse(errors, new StringReader(json), file);
         }
 
-        public static (List<Error> errors, JToken value) Parse(TextReader json, FilePath file)
+        public static JToken Parse(ErrorBuilder errors, TextReader json, FilePath file)
         {
             try
             {
                 using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
-                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls();
+                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls(errors);
             }
             catch (JsonReaderException ex)
             {
@@ -323,9 +320,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Report warnings for null values inside arrays and remove nulls inside arrays.
         /// </summary>
-        public static (List<Error>, JToken) RemoveNulls(this JToken root)
+        public static JToken RemoveNulls(this JToken root, ErrorBuilder errors)
         {
-            var errors = new List<Error>();
             var nullArrayNodes = new List<(JToken, string)>();
 
             RemoveNullsCore(root, null);
@@ -337,7 +333,7 @@ namespace Microsoft.Docs.Build
             }
 
             // treat null JToken as empty JObject since it is from user input
-            return (errors, IsNullOrUndefined(root) ? new JObject() : root);
+            return IsNullOrUndefined(root) ? new JObject() : root;
 
             void RemoveNullsCore(JToken token, string? name)
             {

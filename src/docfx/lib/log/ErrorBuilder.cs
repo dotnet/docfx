@@ -13,6 +13,14 @@ namespace Microsoft.Docs.Build
 
         public abstract bool FileHasError(FilePath file);
 
+        public void AddIfNotNull(Error? error)
+        {
+            if (error != null)
+            {
+                Add(error);
+            }
+        }
+
         public void AddRange(IEnumerable<Error> errors)
         {
             foreach (var error in errors)

@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
+            DocumentProvider = new DocumentProvider(errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
