@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
 {
     internal class ContentValidator
     {
-        private Validator _validator;
-        private ErrorBuilder _errors;
-        private MonikerProvider _monikerProvider;
-        private MetadataProvider _metadataProvider;
-        private Lazy<PublishUrlMap> _publishUrlMap;
-        private ConcurrentHashSet<SourceInfo<string>> _links;
+        private readonly Validator _validator;
+        private readonly ErrorBuilder _errors;
+        private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly ConcurrentHashSet<SourceInfo<string>> _links;
 
         public ContentValidator(
             Config config,
