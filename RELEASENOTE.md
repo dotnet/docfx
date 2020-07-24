@@ -1,8 +1,10 @@
-Version Notes (Current Version: v2.57)
+Version Notes (Current Version: v2.56.2)
 =======================================
 
-v2.57(Pre-release)
+v2.56.2
 -----------
+1. Downgrade the severity of empty input files from `warning` to `suggestion`. (#6206)
+2. Fix style issue of NOTE sections in PDF. Thanks @Blake-Eryx! (#6211, #6271)
 
 v2.56.1
 -----------
