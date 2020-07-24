@@ -31,18 +31,19 @@ namespace Microsoft.Docs.LearnValidation
         protected virtual void ExtractItems()
         {
             if (ManifestItems == null) return;
-            var items = new ConcurrentBag<IValidateModel>();
-            Parallel.ForEach(ManifestItems, m =>
+            var items = new IValidateModel[ManifestItems.Count];
+            Parallel.For(0, ManifestItems.Count, idx =>
             {
-                var path = Path.Combine(BathPath, m.Output.MetadataOutput.RelativePath);
+                var manifestItem = ManifestItems[idx];
+                var path = Path.Combine(BathPath, manifestItem.Output.MetadataOutput.RelativePath);
                 if (!File.Exists(path))
                 {
-                    path = m.Output.MetadataOutput.LinkToPath;
+                    path = manifestItem.Output.MetadataOutput.LinkToPath;
                 }
                 var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
-                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, m);
+                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem);
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
-                items.Add((IValidateModel)hierarchyItem);
+                items[idx] = (IValidateModel)hierarchyItem;
             });
             Items = items.ToList();
         }
