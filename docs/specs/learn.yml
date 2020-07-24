@@ -27,7 +27,6 @@ outputs:
       "items":[]
     }
   learn-pr/full-dependent-list.txt.bak:
-  learn-pr/full-dependent-list.txt.updated:
 ---
 # Can generate hierarchy
 legacy: true
@@ -81,7 +80,6 @@ outputs:
   achievement.json:
   full-dependent-list.txt:
   full-dependent-list.txt.bak:
-  full-dependent-list.txt.updated:
   hierarchy.json: |
     {
       "achievements": [{"uid": "achievement2"},{"uid": "achievement1"}],

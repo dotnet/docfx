@@ -5,6 +5,7 @@ using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -69,13 +70,14 @@ namespace Microsoft.Docs.LearnValidation
 
         private static async Task<bool> ValidateHierarchy(LearnValidationConfig config)
         {
+            var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(), config.RepoBranch);
             var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath);
             var (isValid, hierarchyItems) = validator.Validate();
 
-            Console.WriteLine($"[{PluginName}] finished to do local validation.");
+            Console.WriteLine($"[{PluginName}] local validation done in {sw.ElapsedMilliseconds/1000}s");
 
             if (!config.IsLocalizationBuild)
             {
@@ -209,10 +211,13 @@ namespace Microsoft.Docs.LearnValidation
 
             using (var client = new HttpClient())
             {
+                Console.WriteLine($"[{PluginName}] start to call dry-sync...");
+                var sw = Stopwatch.StartNew();
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
                 var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
+                Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds/1000}s");
 
                 return results.First(r => string.Equals(r.Locale, Constants.DefaultLocale));
             }
