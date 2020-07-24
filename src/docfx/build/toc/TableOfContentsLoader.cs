@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
         private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
-            new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
+                   new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
 
         public TableOfContentsLoader(
             LinkResolver linkResolver,
