@@ -2245,4 +2245,51 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
-
+---
+#Content validation - h1 disallowed headings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    disallowlists: disallowed.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "DisallowedHeadings",
+            "message": "Heading '{0}' matches the text of a disallowed Docs template heading.",
+            "code": "disallowed-heading",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  disallowed.json: |
+    {
+     "list:header": {
+            "id": "list:header",
+            "dependent": null,
+            "desc": "Values for header",
+            "values": {
+                "Feedback": null,
+                "Is this page helpful?": null,
+            }
+     }
+    }
+  a.md: |
+    # Feedback
+    # header2
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"disallowed-heading","message":"Heading 'H1 'Feedback'' matches the text of a disallowed Docs template heading.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    
