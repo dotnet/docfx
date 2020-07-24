@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
-        private readonly MemoryCache<FilePath, (List<Error>, JToken)> _jsonTokenCache = new MemoryCache<FilePath, (List<Error>, JToken)>();
-        private readonly MemoryCache<FilePath, (List<Error>, JToken)> _yamlTokenCache = new MemoryCache<FilePath, (List<Error>, JToken)>();
+        private readonly MemoryCache<FilePath, JToken> _jsonTokenCache = new MemoryCache<FilePath, JToken>();
+        private readonly MemoryCache<FilePath, JToken> _yamlTokenCache = new MemoryCache<FilePath, JToken>();
         private readonly MemoryCache<PathString, byte[]?> _gitBlobCache = new MemoryCache<PathString, byte[]?>();
         private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
         private readonly PathString? _alternativeFallbackFolder;
@@ -122,35 +122,27 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Reads the specified file as JSON.
         /// </summary>
-        public (List<Error> errors, JToken token) ReadJson(FilePath file)
+        public JToken ReadJson(ErrorBuilder errors, FilePath file)
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return (new List<Error>(), _generatedContents[file]);
+                return _generatedContents[file];
             }
 
-            return _jsonTokenCache.GetOrAdd(file, path =>
-            {
-                using var reader = ReadText(path);
-                return JsonUtility.Parse(reader, path);
-            });
+            return _jsonTokenCache.GetOrAdd(file, path => JsonUtility.Parse(errors, ReadText(path), path));
         }
 
         /// <summary>
         /// Reads the specified file as YAML.
         /// </summary>
-        public (List<Error> errors, JToken token) ReadYaml(FilePath file)
+        public JToken ReadYaml(ErrorBuilder errors, FilePath file)
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return (new List<Error>(), _generatedContents[file]);
+                return _generatedContents[file];
             }
 
-            return _yamlTokenCache.GetOrAdd(file, path =>
-            {
-                using var reader = ReadText(path);
-                return YamlUtility.Parse(reader, path);
-            });
+            return _yamlTokenCache.GetOrAdd(file, path => YamlUtility.Parse(errors, ReadText(path), path));
         }
 
         /// <summary>

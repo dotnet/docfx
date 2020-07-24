@@ -12,23 +12,23 @@ namespace Microsoft.Docs.Build
 {
     internal class ContentValidator
     {
-        private Validator _validator;
-        private ErrorLog _errorLog;
-        private MonikerProvider _monikerProvider;
-        private MetadataProvider _metadataProvider;
-        private Lazy<PublishUrlMap> _publishUrlMap;
-        private ConcurrentHashSet<SourceInfo<string>> _links;
+        private readonly Validator _validator;
+        private readonly ErrorBuilder _errors;
+        private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly ConcurrentHashSet<SourceInfo<string>> _links;
 
         public ContentValidator(
             Config config,
             FileResolver fileResolver,
-            ErrorLog log,
+            ErrorBuilder errors,
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
             _validator = new Validator(GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules));
-            _errorLog = log;
+            _errors = errors;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
             _publishUrlMap = publishUrlMap;
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
             if (TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
-                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file.FilePath);
                 var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
                 var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, monikers);
                 var titleItem = new TitleItem
@@ -106,19 +106,17 @@ namespace Microsoft.Docs.Build
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
 
-                using (StringReader reader = new StringReader(content))
+                using var reader = new StringReader(content);
+                var lineCount = 1;
+                string? line = null;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    var lineCount = 1;
-                    string? line = null;
-                    while ((line = reader.ReadLine()) != null)
+                    var item = new TextItem()
                     {
-                        var item = new TextItem()
-                        {
-                            Content = line,
-                            SourceInfo = new SourceInfo(document.FilePath, lineCount++, 0),
-                        };
-                        Write(_validator.ValidateText(item, validationContext).GetAwaiter().GetResult());
-                    }
+                        Content = line,
+                        SourceInfo = new SourceInfo(document.FilePath, lineCount++, 0),
+                    };
+                    Write(_validator.ValidateText(item, validationContext).GetAwaiter().GetResult());
                 }
             }
         }
@@ -221,9 +219,9 @@ namespace Microsoft.Docs.Build
             return filePath;
         }
 
-        private bool Write(IEnumerable<ValidationError> validationErrors)
+        private void Write(IEnumerable<ValidationError> validationErrors)
         {
-            return _errorLog.Write(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, e.Message, (SourceInfo?)e.SourceInfo)));
+            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, e.Message, (SourceInfo?)e.SourceInfo)));
 
             static ErrorLevel GetLevel(ValidationSeverity severity) =>
                 severity switch
@@ -251,7 +249,7 @@ namespace Microsoft.Docs.Build
                     {
                         return false;
                     }
-                    var (_, metadata) = _metadataProvider.GetMetadata(filePath);
+                    var metadata = _metadataProvider.GetMetadata(_errors, filePath);
                     if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
                     {
                         return false;

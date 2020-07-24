@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorLog errorLog)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
             using (Progress.Start("Loading external xref map"))
             {
@@ -26,13 +26,12 @@ namespace Microsoft.Docs.Build
                     var physicalPath = fileResolver.ResolveFilePath(url);
                     if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                     {
-                        LoadZipFile(result, path, physicalPath, errorLog);
+                        LoadZipFile(result, path, physicalPath, errors);
                     }
                     else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                     {
                         using var reader = new StreamReader(physicalPath);
-                        var (errors, xrefMap) = YamlUtility.Deserialize<XrefMapModel>(reader, path);
-                        errorLog.Write(errors);
+                        var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                         foreach (var spec in xrefMap.References)
                         {
                             result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
@@ -74,7 +73,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorLog errorLog)
+        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorBuilder errors)
         {
             using var stream = File.OpenRead(physicalPath);
             using var archive = new ZipArchive(stream);
@@ -84,8 +83,7 @@ namespace Microsoft.Docs.Build
                 if (entry.FullName.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                 {
                     using var reader = new StreamReader(entryStream);
-                    var (errors, xrefMap) = YamlUtility.Deserialize<XrefMapModel>(reader, path);
-                    errorLog.Write(errors);
+                    var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
@@ -94,8 +92,7 @@ namespace Microsoft.Docs.Build
                 else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
                     using var reader = new StreamReader(entryStream);
-                    var (errors, xrefMap) = JsonUtility.Deserialize<XrefMapModel>(reader, path);
-                    errorLog.Write(errors);
+                    var xrefMap = JsonUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));

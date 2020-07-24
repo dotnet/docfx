@@ -38,6 +38,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsGitCommit { get; }
 
+        public MonikerList Monikers { get; }
+
         /// <summary>
         /// Creates an unknown file path.
         /// </summary>
@@ -50,46 +52,52 @@ namespace Microsoft.Docs.Build
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
 
-        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit)
+        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers)
         {
             Path = path;
             Origin = origin;
             DependencyName = dependencyName;
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
+            Monikers = monikers;
 
-            _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
+            _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, Monikers);
         }
 
         public static FilePath Content(PathString path)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Main, path, default, default);
+            return new FilePath(FileOrigin.Main, path, default, default, default);
         }
 
-        public static FilePath Redirection(PathString path)
+        public static FilePath Redirection(PathString path, MonikerList monikers)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Redirection, path, default, default);
+            return new FilePath(FileOrigin.Redirection, path, default, default, monikers);
         }
 
         public static FilePath Fallback(PathString path, bool isGitCommit = false)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Fallback, path, default, isGitCommit);
+            return new FilePath(FileOrigin.Fallback, path, default, isGitCommit, default);
         }
 
         public static FilePath Dependency(PathString path, PathString dependencyName)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
             Debug.Assert(path.StartsWithPath(dependencyName, out _));
-            return new FilePath(FileOrigin.Dependency, path, dependencyName, default);
+            return new FilePath(FileOrigin.Dependency, path, dependencyName, default, default);
         }
 
         public static FilePath Generated(PathString path)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Generated, path, default, default);
+            return new FilePath(FileOrigin.Generated, path, default, default, default);
+        }
+
+        public FilePath WithPath(PathString path)
+        {
+            return path == Path ? this : new FilePath(Origin, path, DependencyName, IsGitCommit, Monikers);
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
@@ -113,6 +121,11 @@ namespace Microsoft.Docs.Build
                 default:
                     tags += $"[{Origin.ToString().ToLowerInvariant()}]";
                     break;
+            }
+
+            if (Monikers.HasMonikers)
+            {
+                tags += $"[{Monikers}]";
             }
 
             if (IsGitCommit)
@@ -143,7 +156,8 @@ namespace Microsoft.Docs.Build
             return Path.Equals(other.Path) &&
                    DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
-                   IsGitCommit == other.IsGitCommit;
+                   IsGitCommit == other.IsGitCommit &&
+                   Monikers == other.Monikers;
         }
 
         public int CompareTo(FilePath? other)
@@ -167,6 +181,11 @@ namespace Microsoft.Docs.Build
             if (result == 0)
             {
                 result = IsGitCommit.CompareTo(other.IsGitCommit);
+            }
+
+            if (result == 0)
+            {
+                result = Monikers.CompareTo(other.Monikers);
             }
 
             return result;

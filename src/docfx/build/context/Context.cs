@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public PackageResolver PackageResolver { get; }
 
-        public ErrorLog ErrorLog { get; }
+        public ErrorBuilder ErrorBuilder { get; }
 
         public Output Output { get; }
 
@@ -73,12 +73,12 @@ namespace Microsoft.Docs.Build
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
         public Context(
-            ErrorLog errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
+            ErrorBuilder errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
 
             Config = config;
-            ErrorLog = errorLog;
+            ErrorBuilder = errorLog;
             BuildOptions = buildOptions;
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
@@ -93,11 +93,11 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            DocumentProvider = new DocumentProvider(config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
+            DocumentProvider = new DocumentProvider(errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
-                ErrorLog,
+                ErrorBuilder,
                 BuildScope,
                 buildOptions.Repository,
                 DocumentProvider,
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 buildOptions.Repository,
                 DependencyMapBuilder,
                 FileLinkMapBuilder,
-                ErrorLog,
+                ErrorBuilder,
                 TemplateEngine,
                 DocumentProvider,
                 MetadataProvider,
@@ -155,8 +155,8 @@ namespace Microsoft.Docs.Build
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(LinkResolver, XrefResolver, tocParser, MonikerProvider, DependencyMapBuilder, ContentValidator);
             TocMap = new TableOfContentsMap(
-                ErrorLog, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
-            PublishUrlMap = new PublishUrlMap(Config, ErrorLog, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
+                ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
+            PublishUrlMap = new PublishUrlMap(Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
             MetadataValidator = new MetadataValidator(
@@ -165,7 +165,6 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            ErrorLog.Dispose();
             PackageResolver.Dispose();
             RepositoryProvider.Dispose();
             GitHubAccessor.Dispose();

@@ -202,17 +202,18 @@ namespace Microsoft.Docs.Build
         {
             var legacyOption = !opts.OutputHtml ? "--legacy" : "";
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {legacyOption} --verbose --stdin",
+                arguments: $"restore {logOption} {legacyOption} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {legacyOption} {dryRunOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {legacyOption} {dryRunOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }

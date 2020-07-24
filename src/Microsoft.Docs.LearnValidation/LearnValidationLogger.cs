@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 
 namespace Microsoft.Docs.LearnValidation
 {
-    public static class Logger
+    public static class LearnValidationLogger
     {
         public static ConcurrentBag<LearnLogItem> LogItems { get; } = new ConcurrentBag<LearnLogItem>();
 
@@ -72,5 +72,6 @@ namespace Microsoft.Docs.LearnValidation
         TripleCrown_Unit_InvalidParent,
         TripleCrown_Unit_MetadataError,
         TripleCrown_Unit_NoModuleParent,
+        TripleCrown_Unimplemented,
     }
 }

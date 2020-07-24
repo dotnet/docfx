@@ -410,8 +410,8 @@ outputs:
     }
   docs/b.json:
   docs/c.png:
-  docs/.errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '~/docs/b.md'.","file":"a.md","line":3,"column":9}
+  .errors.log: |
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '~/docs/b.md'.","file":"docs/a.md","line":3,"column":9}
 ---
 # Links in <a> or <img> tags starting with ~
 inputs:
@@ -449,8 +449,8 @@ inputs:
     [!include[B2](~/../b.md)]
   b.md: Token
 outputs:
-  docs/.errors.log: |
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: '~/b.md'.","file":"a.md","line":1,"column":1}
+  .errors.log: |
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: '~/b.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # Links to self with empty href or query string only
 inputs:

@@ -5,9 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Markdig.Extensions.Yaml;
-using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -28,44 +26,37 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
         }
 
-        public TableOfContentsNode Parse(FilePath file, List<Error> errors)
+        public TableOfContentsNode Parse(FilePath file, ErrorBuilder errors)
         {
             return file.Format switch
             {
-                FileFormat.Yaml => Deserialize(_input.ReadYaml(file), errors),
-                FileFormat.Json => Deserialize(_input.ReadJson(file), errors),
+                FileFormat.Yaml => Deserialize(_input.ReadYaml(errors, file), errors),
+                FileFormat.Json => Deserialize(_input.ReadJson(errors, file), errors),
                 FileFormat.Markdown => ParseMarkdown(_input.ReadString(file), file, errors),
                 _ => throw new NotSupportedException($"'{file}' is an unknown TOC file"),
             };
         }
 
-        private static TableOfContentsNode Deserialize((List<Error>, JToken) input, List<Error> errors)
+        private static TableOfContentsNode Deserialize(JToken token, ErrorBuilder errors)
         {
-            var (inputErrors, token) = input;
-            errors.AddRange(inputErrors);
-
             if (token is JArray tocArray)
             {
                 // toc model
-                var (toObjectErrors, items) = JsonUtility.ToObject<List<SourceInfo<TableOfContentsNode>>>(tocArray);
-                errors.AddRange(toObjectErrors);
-                return new TableOfContentsNode { Items = items };
+                return new TableOfContentsNode { Items = JsonUtility.ToObject<List<SourceInfo<TableOfContentsNode>>>(errors, tocArray) };
             }
             else if (token is JObject tocObject)
             {
                 // toc root model
-                var (loadErrors, result) = JsonUtility.ToObject<TableOfContentsNode>(tocObject);
-                errors.AddRange(loadErrors);
-                return result;
+                return JsonUtility.ToObject<TableOfContentsNode>(errors, tocObject);
             }
+
             return new TableOfContentsNode();
         }
 
-        private TableOfContentsNode ParseMarkdown(string content, FilePath file, List<Error> errors)
+        private TableOfContentsNode ParseMarkdown(string content, FilePath file, ErrorBuilder errors)
         {
             var headingBlocks = new List<HeadingBlock>();
-            var (markupErrors, ast) = _markdownEngine.Parse(content, _documentProvider.GetDocument(file), MarkdownPipelineType.TocMarkdown);
-            errors.AddRange(markupErrors);
+            var ast = _markdownEngine.Parse(errors, content, _documentProvider.GetDocument(file), MarkdownPipelineType.TocMarkdown);
 
             foreach (var block in ast)
             {
@@ -87,7 +78,7 @@ namespace Microsoft.Docs.Build
             return new TableOfContentsNode { Items = BuildTree(errors, headingBlocks) };
         }
 
-        private static List<SourceInfo<TableOfContentsNode>> BuildTree(List<Error> errors, List<HeadingBlock> blocks)
+        private List<SourceInfo<TableOfContentsNode>> BuildTree(ErrorBuilder errors, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
@@ -130,7 +121,7 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private static SourceInfo<TableOfContentsNode>? GetItem(List<Error> errors, HeadingBlock block)
+        private SourceInfo<TableOfContentsNode>? GetItem(ErrorBuilder errors, HeadingBlock block)
         {
             var source = block.GetSourceInfo();
             var currentItem = new TableOfContentsNode();
@@ -164,49 +155,15 @@ namespace Microsoft.Docs.Build
                 {
                     currentItem.DisplayName = linkInline.Title;
                 }
-                currentItem.Name = GetLiteral(errors, linkInline);
+                currentItem.Name = new SourceInfo<string?>(_markdownEngine.ToPlainText(linkInline), linkInline.GetSourceInfo());
             }
 
             if (currentItem.Name.Value is null)
             {
-                currentItem.Name = GetLiteral(errors, block.Inline);
+                currentItem.Name = new SourceInfo<string?>(_markdownEngine.ToPlainText(block.Inline), block.Inline.GetSourceInfo());
             }
+
             return new SourceInfo<TableOfContentsNode>(currentItem, source);
-        }
-
-        private static SourceInfo<string?> GetLiteral(List<Error> errors, ContainerInline inline)
-        {
-            var result = new StringBuilder();
-            var child = inline.FirstChild;
-
-            while (child != null)
-            {
-                if (child is LiteralInline literal)
-                {
-                    var content = literal.Content;
-                    result.Append(content.Text, content.Start, content.Length);
-                    child = child.NextSibling;
-                }
-                else if (child is XrefInline xref)
-                {
-                    foreach (var pair in xref.GetAttributes().Properties)
-                    {
-                        if (pair.Key == "data-raw-source")
-                        {
-                            result.Append(pair.Value);
-                            break;
-                        }
-                    }
-                    child = child.NextSibling;
-                }
-                else
-                {
-                    errors.Add(Errors.TableOfContents.InvalidTocSyntax(inline.GetSourceInfo()));
-                    return default;
-                }
-            }
-
-            return new SourceInfo<string?>(result.ToString(), inline.GetSourceInfo());
         }
     }
 }

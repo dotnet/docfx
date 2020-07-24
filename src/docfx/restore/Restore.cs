@@ -11,75 +11,71 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static int Run(string workingDirectory, CommandLineOptions options)
-        {
-            var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
-            ErrorLog.PrintErrors(errors);
-            if (docsets.Length == 0)
-            {
-                ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
-                return 1;
-            }
-
-            var hasError = false;
-            Parallel.ForEach(docsets, docset =>
-            {
-                if (RestoreDocset(docset.docsetPath, docset.outputPath, options, FetchOptions.Latest))
-                {
-                    hasError = true;
-                }
-            });
-            return hasError ? 1 : 0;
-        }
-
-        public static bool RestoreDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        public static bool Run(string workingDirectory, CommandLineOptions options)
         {
             var stopwatch = Stopwatch.StartNew();
+            using var errors = new ErrorWriter(options.Log);
 
+            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, options);
+            if (docsets.Length == 0)
+            {
+                errors.Add(Errors.Config.ConfigNotFound(workingDirectory));
+                return errors.HasError;
+            }
+
+            Parallel.ForEach(docsets, docset =>
+            {
+                RestoreDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
+            });
+
+            Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
+            Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            errors.PrintSummary();
+            return errors.HasError;
+        }
+
+        public static bool RestoreDocset(
+            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        {
             using var disposables = new DisposableCollector();
-            using var errorLog = new ErrorLog(outputPath);
+            errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
 
             try
             {
                 // load configuration from current entry or fallback repository
-                var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) =
-                    configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
-                if (errorLog.Write(errors))
+                var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
+                    errors, disposables, docsetPath, outputPath, options, fetchOptions);
+
+                if (errors.HasError)
                 {
                     return true;
                 }
 
-                errorLog.Configure(config, buildOptions.OutputPath, null);
+                errors = new ErrorLog(errors, config);
 
                 // download dependencies to disk
                 Parallel.Invoke(
-                    () => RestoreFiles(errorLog, config, fileResolver),
-                    () => RestorePackages(errorLog, buildOptions, config, packageResolver));
-                return errorLog.ErrorCount > 0;
+                    () => RestoreFiles(errors, config, fileResolver),
+                    () => RestorePackages(errors, buildOptions, config, packageResolver));
+
+                return errors.HasError;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errorLog.Write(dex);
-                return errorLog.ErrorCount > 0;
-            }
-            finally
-            {
-                Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-                Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                errorLog.PrintSummary();
+                errors.AddRange(dex);
+                return errors.HasError;
             }
         }
 
-        private static void RestoreFiles(ErrorLog errorLog, Config config, FileResolver fileResolver)
+        private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)
         {
-            ParallelUtility.ForEach(errorLog, config.GetFileReferences(), fileResolver.Download);
+            ParallelUtility.ForEach(errors, config.GetFileReferences(), fileResolver.Download);
         }
 
-        private static void RestorePackages(ErrorLog errorLog, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
+        private static void RestorePackages(ErrorBuilder errors, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
             ParallelUtility.ForEach(
-                errorLog,
+                errors,
                 GetPackages(config).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags));
 

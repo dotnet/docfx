@@ -16,13 +16,13 @@ namespace Microsoft.Docs.Build
         private readonly GitHubAccessor _githubAccessor;
         private readonly BuildOptions _buildOptions;
         private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders =
-            new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+                     new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
 
         private readonly RepositoryProvider _repositoryProvider;
         private readonly SourceMap _sourceMap;
 
         private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls =
-            new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
+                     new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
 
         public ContributionProvider(
             Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
@@ -35,15 +35,13 @@ namespace Microsoft.Docs.Build
             _sourceMap = sourceMap;
         }
 
-        public (List<Error> errors, ContributionInfo?) GetContributionInfo(FilePath file, SourceInfo<string> authorName)
+        public ContributionInfo? GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
         {
-            var errors = new List<Error>();
-
             var fullPath = GetOriginalFullPath(file);
             var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath);
             if (repo is null)
             {
-                return (errors, null);
+                return null;
             }
 
             var updatedDateTime = GetUpdatedAt(file, repo, commits);
@@ -56,7 +54,7 @@ namespace Microsoft.Docs.Build
 
             if (!_config.ResolveGithubUsers)
             {
-                return (errors, contributionInfo);
+                return contributionInfo;
             }
 
             var contributionCommits = commits;
@@ -104,7 +102,7 @@ namespace Microsoft.Docs.Build
             contributionInfo.Author = author;
             contributionInfo.Contributors = contributors.Distinct().ToArray();
 
-            return (errors, contributionInfo);
+            return contributionInfo;
         }
 
         public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)

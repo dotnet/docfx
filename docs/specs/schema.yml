@@ -459,3 +459,32 @@ outputs:
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":2,"column":1}
   .publish.json: |
     {"files":[{"url":"/a/","source_path":"a.yml","has_error":true}]}
+---
+# .manifest.json original_type uses mime name
+inputs:
+  docfx.yml: 
+  a.yml: |
+    #YamlMime:TestPage
+    key: value
+  b.yml: |
+    #YamlMime:TestData
+  redirections.yml: |
+    redirections:
+      original_b.md: /b
+  _themes/ContentTemplate/schemas/TestData.schema.json: '{}'
+  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+  _themes/ContentTemplate/TestPage.html.primary.js: |
+    exports.transform = function (model) {
+      return model;
+    }
+outputs:
+  a.json:
+  b.json:
+  .manifest.json: |
+    {
+      "files": [
+        {"asset_id": "a", "original_type": "TestPage"},
+        {"asset_id": "b.json", "original_type": "TestData"},
+        {"asset_id": "original_b", "original_type": "Conceptual"},
+      ]
+    }

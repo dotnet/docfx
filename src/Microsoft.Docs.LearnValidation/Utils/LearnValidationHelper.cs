@@ -24,7 +24,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public LearnValidationHelper(string endpoint, string branch)
         {
-            _client = new RestClient(endpoint);
+            _client = string.IsNullOrEmpty(endpoint) ? null : new RestClient(endpoint);
             _branch = branch;
             _needBranchFallback = !_nofallbackBranches.Contains(_branch);
         }
@@ -41,6 +41,11 @@ namespace Microsoft.Docs.LearnValidation
 
         private bool CheckItemExist(CheckItemType type, string uid)
         {
+            if (_client == null)
+            {
+                return false;
+            }
+
             var requestString = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
             var request = new RestRequest(requestString);
 

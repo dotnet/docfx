@@ -11,73 +11,69 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static int Run(string workingDirectory, CommandLineOptions options)
+        public static bool Run(string workingDirectory, CommandLineOptions options)
         {
-            var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
-            ErrorLog.PrintErrors(errors);
+            var stopwatch = Stopwatch.StartNew();
+            using var errors = new ErrorWriter(options.Log);
+            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, options);
             if (docsets.Length == 0)
             {
-                ErrorLog.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
-                return 1;
+                errors.Add(Errors.Config.ConfigNotFound(workingDirectory));
+                return errors.HasError;
             }
 
-            var hasError = false;
             var restoreFetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
             var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
 
             Parallel.ForEach(docsets, docset =>
             {
-                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
+                if (!options.NoRestore && Restore.RestoreDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
                 {
-                    hasError = true;
                     return;
                 }
 
-                if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions))
-                {
-                    hasError = true;
-                }
+                BuildDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, buildFetchOptions);
             });
-            return hasError ? 1 : 0;
+
+            Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+            Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            errors.PrintSummary();
+            return errors.HasError;
         }
 
-        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        private static bool BuildDocset(
+            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            var stopwatch = Stopwatch.StartNew();
-
-            using var errorLog = new ErrorLog(outputPath);
+            errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
             using var disposables = new DisposableCollector();
 
             try
             {
-                var configLoader = new ConfigLoader(errorLog);
-                var (errors, config, buildOptions, packageResolver, fileResolver) =
-                    configLoader.Load(disposables, docsetPath, outputPath, options, fetchOptions);
-                if (errorLog.Write(errors))
+                var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
+                    errors, disposables, docsetPath, outputPath, options, fetchOptions);
+                if (errors.HasError)
                 {
                     return true;
                 }
 
-                new OpsPreProcessor(config, errorLog, buildOptions).Run();
-                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
+                new OpsPreProcessor(config, errors, buildOptions).Run();
 
+                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
                 var validationRules = GetContentValidationRules(config, fileResolver);
-                errorLog.Configure(config, buildOptions.OutputPath, sourceMap, validationRules);
-                using var context = new Context(errorLog, config, buildOptions, packageResolver, fileResolver, sourceMap);
+
+                errors = new ErrorLog(errors, config, sourceMap, validationRules);
+
+                using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap);
                 Run(context);
-                new OpsPostProcessor(config, errorLog, buildOptions).Run();
-                return errorLog.ErrorCount > 0;
+
+                new OpsPostProcessor(config, errors, buildOptions).Run();
+
+                return errors.HasError;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errorLog.Write(dex);
-                return errorLog.ErrorCount > 0;
-            }
-            finally
-            {
-                Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-                Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                errorLog.PrintSummary();
+                errors.AddRange(dex);
+                return errors.HasError;
             }
         }
 
@@ -86,7 +82,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Building files"))
             {
                 ParallelUtility.ForEach(
-                    context.ErrorLog,
+                    context.ErrorBuilder,
                     context.PublishUrlMap.GetAllFiles(),
                     file => BuildFile(context, file));
             }
@@ -94,11 +90,11 @@ namespace Microsoft.Docs.Build
             Parallel.Invoke(
                 () => context.BookmarkValidator.Validate(),
                 () => context.ContentValidator.PostValidate(),
-                () => context.ErrorLog.Write(context.MetadataValidator.PostValidate()),
+                () => context.ErrorBuilder.AddRange(context.MetadataValidator.PostValidate()),
                 () => context.ContributionProvider.Save(),
                 () => context.RepositoryProvider.Save(),
-                () => context.ErrorLog.Write(context.GitHubAccessor.Save()),
-                () => context.ErrorLog.Write(context.MicrosoftGraphAccessor.Save()));
+                () => context.ErrorBuilder.AddRange(context.GitHubAccessor.Save()),
+                () => context.ErrorBuilder.AddRange(context.MicrosoftGraphAccessor.Save()));
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel(context.BuildOptions.IsLocalizedBuild);

@@ -374,7 +374,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var (_, payload) = JsonUtility.Parse(json.Replace('\'', '"'), new FilePath("file"));
+            var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join(
@@ -406,7 +406,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")).value);
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
             foreach (var payload in payloads)
@@ -453,7 +453,7 @@ namespace Microsoft.Docs.Build
         {
             Assert.Equal(jsons.Length, isCanonicalVersions.Length);
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")).value).ToArray();
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}"))).ToArray();
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
             var validationErrors = new List<Error>();

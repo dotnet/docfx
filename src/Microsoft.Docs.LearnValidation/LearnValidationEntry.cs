@@ -5,6 +5,7 @@ using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -33,7 +34,7 @@ namespace Microsoft.Docs.LearnValidation
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var needUpdateManifest = false;
-            Logger.WriteLog = writeLog;
+            LearnValidationLogger.WriteLog = writeLog;
             var config = new LearnValidationConfig(
                 repoUrl: repoUrl,
                 repoBranch: repoBranch,
@@ -56,28 +57,29 @@ namespace Microsoft.Docs.LearnValidation
             }
             catch (Exception ex)
             {
-                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_InternalError, ex.ToString());
+                LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_InternalError, ex.ToString());
             }
             finally
             {
                 if (needUpdateManifest)
                 {
-                    UpdatePublishFile("", Logger.LogItems.ToList());
+                    UpdatePublishFile("", LearnValidationLogger.LogItems.ToList());
                 }
             }
         }
 
         private static async Task<bool> ValidateHierarchy(LearnValidationConfig config)
         {
+            var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(), config.RepoBranch);
             var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath);
             var (isValid, hierarchyItems) = validator.Validate();
 
-            Console.WriteLine($"[{PluginName}] finished to do local validation.");
+            Console.WriteLine($"[{PluginName}] local validation done in {sw.ElapsedMilliseconds/1000}s");
 
-            if (config.IsLocalizationBuild)
+            if (!config.IsLocalizationBuild)
             {
                 return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config);
             }
@@ -107,6 +109,7 @@ namespace Microsoft.Docs.LearnValidation
 
             var hierarchy = HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.ManifestFilePath);
             var repoUrl = Utility.TransformGitUrl(config.RepoUrl);
+
             var result = await TryDrySync(
                 config.RepoBranch,
                 Constants.DefaultLocale,
@@ -117,7 +120,7 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!result.IsValid)
             {
-                Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, result.Message);
+                LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, result.Message);
             }
 
             return result.IsValid;
@@ -165,6 +168,12 @@ namespace Microsoft.Docs.LearnValidation
             RawHierarchy hierarchy,
             string drySyncEndpoint)
         {
+            if (string.IsNullOrEmpty(drySyncEndpoint))
+            {
+                Console.WriteLine($"Skipping dry-sync for unset endpoint");
+                return new ValidationResult(branch, locale, true, "Hierarchy dry-sync endpoint not defined");
+            }
+
             try
             {
                 return await DrySync(branch, locale, docsetName, repoUrl, hierarchy, drySyncEndpoint);
@@ -202,24 +211,24 @@ namespace Microsoft.Docs.LearnValidation
 
             using (var client = new HttpClient())
             {
+                Console.WriteLine($"[{PluginName}] start to call dry-sync...");
+                var sw = Stopwatch.StartNew();
                 var response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadAsStringAsync();
                 var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
+                Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds/1000}s");
 
                 return results.First(r => string.Equals(r.Locale, Constants.DefaultLocale));
             }
         }
-
-        private static bool IsDefaultLocale(string locale)
-            => string.Equals(locale, Constants.DefaultLocale, StringComparison.OrdinalIgnoreCase);
 
         private static void UpdatePublishFile(string publishFilePath, List<LearnLogItem> logItems)
         {
             // TODO:
             // 1. update has_error property
             // 2. publish hierarchy.json
-            throw new NotImplementedException();
+            LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unimplemented, message: "LearnValidation update publish file not implemented!");
         }
 
         private static string GetDrySyncEndpoint() => Environment.GetEnvironmentVariable("DOCS_LEARN_DRY_SYNC_ENDPOINT");
