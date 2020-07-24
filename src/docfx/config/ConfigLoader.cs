@@ -68,8 +68,7 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
-            var (opsConfigErrors, xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(docsetPath, repository);
-            errors.AddRange(opsConfigErrors);
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, docsetPath, repository);
             var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
                 ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
                 : null;
@@ -77,8 +76,7 @@ namespace Microsoft.Docs.Build
             // Preload
             var preloadConfigObject = new JObject();
             JsonUtility.Merge(unionProperties, preloadConfigObject, envConfig, globalConfig, opsConfig, docfxConfig, cliConfig);
-            var (preloadErrors, preloadConfig) = JsonUtility.ToObject<PreloadConfig>(preloadConfigObject);
-            errors.AddRange(preloadErrors);
+            var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
@@ -94,21 +92,18 @@ namespace Microsoft.Docs.Build
             // Create full config
             var configObject = new JObject();
             JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
-            var (configErrors, config) = JsonUtility.ToObject<Config>(configObject);
-            errors.AddRange(configErrors);
+            var config = JsonUtility.ToObject<Config>(errors, configObject);
 
             Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
             return (config, buildOptions, packageResolver, fileResolver);
         }
 
-        private static JObject LoadConfig(ErrorBuilder errorBuilder, string fileName, string content)
+        private static JObject LoadConfig(ErrorBuilder errors, string fileName, string content)
         {
             var source = new FilePath(fileName);
-            var (errors, config) = fileName.EndsWith(".yml", PathUtility.PathComparison)
-                ? YamlUtility.Parse(content, source)
-                : JsonUtility.Parse(content, source);
-
-            errorBuilder.AddRange(errors);
+            var config = fileName.EndsWith(".yml", PathUtility.PathComparison)
+                ? YamlUtility.Parse(errors, content, source)
+                : JsonUtility.Parse(errors, content, source);
 
             if (config is JObject obj)
             {
@@ -161,8 +156,7 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, string workingDirectory)
         {
-            var (opsConfigErrors, opsConfig) = OpsConfigLoader.LoadOpsConfig(workingDirectory);
-            errors.AddRange(opsConfigErrors);
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, workingDirectory);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
@@ -183,10 +177,9 @@ namespace Microsoft.Docs.Build
                 var content = File.ReadAllText(configPath);
                 var source = new FilePath(Path.GetFileName(configPath));
 
-                var (configErrors, config) = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
-                    ? YamlUtility.Deserialize<DocsetsConfig>(content, source)
-                    : JsonUtility.Deserialize<DocsetsConfig>(content, source);
-                errors.AddRange(configErrors);
+                var config = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
+                    ? YamlUtility.Deserialize<DocsetsConfig>(errors, content, source)
+                    : JsonUtility.Deserialize<DocsetsConfig>(errors, content, source);
 
                 return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
             }

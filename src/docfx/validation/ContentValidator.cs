@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
             if (TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
-                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file.FilePath);
                 var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
                 var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, monikers);
                 var titleItem = new TitleItem
@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
                     {
                         return false;
                     }
-                    var (_, metadata) = _metadataProvider.GetMetadata(filePath);
+                    var metadata = _metadataProvider.GetMetadata(_errors, filePath);
                     if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
                     {
                         return false;

@@ -48,10 +48,8 @@ namespace Microsoft.Docs.Build
                 .ToHashSet();
         }
 
-        public List<Error> ValidateMetadata(JObject metadata, FilePath filePath)
+        public void ValidateMetadata(ErrorBuilder errors, JObject metadata, FilePath filePath)
         {
-            var errors = new List<Error>();
-
             foreach (var (key, value) in metadata)
             {
                 if (value is null)
@@ -68,7 +66,7 @@ namespace Microsoft.Docs.Build
             var mime = _buildScope.GetMime(contentType, filePath);
             var siteUrl = _documentProvider.GetDocsSiteUrl(filePath);
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
-            var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, _monikerProvider.GetFileLevelMonikers(filePath).monikers);
+            var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, _monikerProvider.GetFileLevelMonikers(errors, filePath));
 
             foreach (var schemaValidator in _schemaValidators)
             {
@@ -80,8 +78,6 @@ namespace Microsoft.Docs.Build
                     errors.AddRange(schemaValidator.Validate(metadata, isCanonicalVersion));
                 }
             }
-
-            return errors;
         }
 
         public List<Error> PostValidate()

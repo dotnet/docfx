@@ -1402,6 +1402,7 @@ inputs:
   monikerDefinition.json: |
     {}
 outputs:
+  docs/v1/a.json:
   .errors.log: |
     {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '>= netcore-2.0': Moniker 'netcore-2.0' is not defined.","file":"docfx.yml","line":2,"column":17}
 ---

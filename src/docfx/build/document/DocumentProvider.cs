@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DocumentProvider
     {
+        private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly BuildScope _buildScope;
         private readonly BuildOptions _buildOptions;
@@ -23,8 +24,14 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         public DocumentProvider(
-            Config config, BuildOptions buildOptions, BuildScope buildScope, TemplateEngine templateEngine, MonikerProvider monikerProvider)
+            ErrorBuilder errors,
+            Config config,
+            BuildOptions buildOptions,
+            BuildScope buildScope,
+            TemplateEngine templateEngine,
+            MonikerProvider monikerProvider)
         {
+            _errors = errors;
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
@@ -57,7 +64,7 @@ namespace Microsoft.Docs.Build
             }
             if (_config.OutputUrlType == OutputUrlType.Docs)
             {
-                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(path);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
                 outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
             }
 
@@ -166,7 +173,7 @@ namespace Microsoft.Docs.Build
 
             if (outputUrlType != OutputUrlType.Docs)
             {
-                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(filePath);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, filePath);
                 sitePath = Path.Combine(monikers.MonikerGroup ?? "", sitePath);
             }
             if (_config.LowerCaseUrl)

@@ -32,9 +32,9 @@ namespace Microsoft.Docs.LearnValidation
         {
             if (ManifestItems == null) return;
             var items = new IValidateModel[ManifestItems.Count];
-            Parallel.For(0, ManifestItems.Count, idx =>
+            Parallel.For(0, ManifestItems.Count, i =>
             {
-                var manifestItem = ManifestItems[idx];
+                var manifestItem = ManifestItems[i];
                 var path = Path.Combine(BathPath, manifestItem.Output.MetadataOutput.RelativePath);
                 if (!File.Exists(path))
                 {
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.LearnValidation
                 var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
                 var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem);
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
-                items[idx] = (IValidateModel)hierarchyItem;
+                items[i] = (IValidateModel)hierarchyItem;
             });
             Items = items.ToList();
         }

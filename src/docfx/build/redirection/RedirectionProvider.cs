@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
         public bool Contains(FilePath file) => _redirectPaths.Contains(file.Path);
 
-        public (Error?, string) GetRedirectUrl(FilePath file)
+        public string GetRedirectUrl(ErrorBuilder errors, FilePath file)
         {
             var redirectionChain = new Stack<FilePath>();
             var redirectionFile = file;
@@ -62,13 +62,14 @@ namespace Microsoft.Docs.Build
                 if (redirectionChain.Contains(redirectionFile))
                 {
                     redirectionChain.Push(redirectionFile);
-                    return (Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()), _redirectUrls[file]);
+                    errors.Add(Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()));
+                    return _redirectUrls[file];
                 }
                 redirectionChain.Push(redirectionFile);
                 redirectionFile = renamedFrom;
             }
 
-            return (null, _redirectUrls[file]);
+            return _redirectUrls[file];
         }
 
         public FilePath GetOriginalFile(FilePath file)
@@ -113,14 +114,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var absoluteRedirectUrl = redirectUrl.Value.Trim();
-
-                MonikerList monikers = default;
-                if (item.Monikers != null)
-                {
-                    List<Error> monikerErrors;
-                    (monikerErrors, monikers) = _monikerProvider.Validate(item.Monikers);
-                    _errors.AddRange(monikerErrors);
-                }
+                var monikers = item.Monikers is null ? default : _monikerProvider.Validate(_errors, item.Monikers);
                 var filePath = FilePath.Redirection(path, monikers);
 
                 if (item.RedirectDocumentId)
@@ -158,11 +152,9 @@ namespace Microsoft.Docs.Build
                 {
                     var content = File.ReadAllText(fullPath);
                     var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
-                    var (loadErrors, model) = fullPath.EndsWith(".yml")
-                        ? YamlUtility.Deserialize<RedirectionModel>(content, filePath)
-                        : JsonUtility.Deserialize<RedirectionModel>(content, filePath);
-
-                    errors.AddRange(loadErrors);
+                    var model = fullPath.EndsWith(".yml")
+                        ? YamlUtility.Deserialize<RedirectionModel>(errors, content, filePath)
+                        : JsonUtility.Deserialize<RedirectionModel>(errors, content, filePath);
 
                     // Expand redirect items array or object form
                     var redirections = model.Redirections.arrayForm
@@ -218,13 +210,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in redirections)
             {
-                MonikerList monikers = default;
-                if (item.Monikers != null)
-                {
-                    List<Error> monikerErrors;
-                    (monikerErrors, monikers) = _monikerProvider.Validate(item.Monikers);
-                    _errors.AddRange(monikerErrors);
-                }
+                var monikers = item.Monikers is null ? default : _monikerProvider.Validate(_errors, item.Monikers);
                 var file = FilePath.Redirection(item.SourcePath, monikers);
                 if (!redirectUrls.TryGetValue(file, out var value))
                 {
@@ -242,13 +228,11 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var (errors, redirectionSourceMonikers) = _monikerProvider.GetFileLevelMonikers(file);
-                _errors.AddRange(errors);
-
+                var redirectionSourceMonikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
                 var candidates = redirectionSourceMonikers.Count == 0
-                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Count == 0).ToList()
+                                    ? docs.Where(doc => _monikerProvider.GetFileLevelMonikers(_errors, doc).Count == 0).ToList()
                                     : docs.Where(
-                                        doc => _monikerProvider.GetFileLevelMonikers(doc).monikers.Intersect(redirectionSourceMonikers).Any()).ToList();
+                                        doc => _monikerProvider.GetFileLevelMonikers(_errors, doc).Intersect(redirectionSourceMonikers).Any()).ToList();
 
                 // skip circular redirection validation for url containing query string
                 if (candidates.Count > 0 && string.IsNullOrEmpty(redirectQuery))

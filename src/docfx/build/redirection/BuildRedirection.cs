@@ -13,12 +13,10 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
-            var errors = new List<Error>();
-
-            var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
-            errors.AddIfNotNull(redirectError);
-
+            var errors = context.ErrorBuilder;
+            var redirectUrl = context.RedirectionProvider.GetRedirectUrl(errors, file.FilePath);
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+
             var publishMetadata = new JObject
             {
                 ["redirect_url"] = redirectUrl,
@@ -27,7 +25,6 @@ namespace Microsoft.Docs.Build
                 ["canonical_url"] = file.CanonicalUrl,
             };
 
-            context.ErrorBuilder.AddRange(errors);
             context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, null);
         }
     }

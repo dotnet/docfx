@@ -27,13 +27,13 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string?> MonikerRange { get; private set; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string?>[]? Monikers { get; private set; }
+        public SourceInfo<string>[]? Monikers { get; private set; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string?>[]? ExcludeMonikers { get; private set; }
+        public SourceInfo<string>[]? ExcludeMonikers { get; private set; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string?>[]? ReplaceMonikers { get; private set; }
+        public SourceInfo<string>[]? ReplaceMonikers { get; private set; }
 
         public SourceInfo<string> Uid { get; private set; } = new SourceInfo<string>("");
 
