@@ -11,47 +11,41 @@ namespace Microsoft.Docs.Build
 {
     internal static class Build
     {
-        public static int Run(string workingDirectory, CommandLineOptions options)
+        public static bool Run(string workingDirectory, CommandLineOptions options)
         {
-            var (errors, docsets) = ConfigLoader.FindDocsets(workingDirectory, options);
-            ErrorWriter.PrintErrors(errors);
+            var stopwatch = Stopwatch.StartNew();
+            using var errors = new ErrorWriter(options.Log);
+            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, options);
             if (docsets.Length == 0)
             {
-                ErrorWriter.PrintError(Errors.Config.ConfigNotFound(workingDirectory));
-                return 1;
+                errors.Add(Errors.Config.ConfigNotFound(workingDirectory));
+                return errors.HasError;
             }
 
-            var hasError = false;
             var restoreFetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
             var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
 
             Parallel.ForEach(docsets, docset =>
             {
-                using var errors = new ErrorWriter(docset.outputPath);
-
-                if (!options.NoRestore && Restore.RestoreDocset(docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
+                if (!options.NoRestore && Restore.RestoreDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
                 {
-                    hasError = true;
                     return;
                 }
 
-                if (BuildDocset(docset.docsetPath, docset.outputPath, options, buildFetchOptions))
-                {
-                    hasError = true;
-                }
+                BuildDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, buildFetchOptions);
             });
 
-            return hasError ? 1 : 0;
+            Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
+            Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            errors.PrintSummary();
+            return errors.HasError;
         }
 
-        private static bool BuildDocset(string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        private static bool BuildDocset(
+            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            var stopwatch = Stopwatch.StartNew();
-
-            using var errorWriter = new ErrorWriter(outputPath);
+            errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
             using var disposables = new DisposableCollector();
-
-            ErrorBuilder errors = errorWriter;
 
             try
             {
@@ -80,12 +74,6 @@ namespace Microsoft.Docs.Build
             {
                 errors.AddRange(dex);
                 return errors.HasError;
-            }
-            finally
-            {
-                Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-                Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                errorWriter.PrintSummary();
             }
         }
 

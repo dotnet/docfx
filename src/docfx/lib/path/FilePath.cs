@@ -95,6 +95,11 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Generated, path, default, default, default);
         }
 
+        public FilePath WithPath(PathString path)
+        {
+            return path == Path ? this : new FilePath(Origin, path, DependencyName, IsGitCommit, Monikers);
+        }
+
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
 
         public static bool operator !=(FilePath? a, FilePath? b) => !Equals(a, b);

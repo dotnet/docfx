@@ -80,8 +80,8 @@ namespace Microsoft.Docs.Build
                 {
                     "restore" => Restore.Run(workingDirectory, options),
                     "build" => Build.Run(workingDirectory, options),
-                    _ => 0,
-                };
+                    _ => false,
+                } ? 1 : 0;
             }
         }
 
@@ -134,10 +134,11 @@ namespace Microsoft.Docs.Build
 
         private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
         {
-            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
+            syntax.DefineOption("log", ref options.Log, "Enable logging to the specified file path.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
+            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
             syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectories that contains docfx.yml/docfx.json.");
         }
 

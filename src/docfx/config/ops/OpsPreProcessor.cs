@@ -71,7 +71,14 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(item.Code))
             {
-                var source = item.File is null ? null : new SourceInfo(new FilePath(item.File), item.Line ?? 0, 0);
+                var file = item.File is null
+                    ? null
+                    : item.File.StartsWith("_repo.en-us/") || item.File.StartsWith("_repo.en-us\\")
+                        ? FilePath.Fallback(new PathString(item.File.Substring("_repo.en-us/".Length)))
+                        : FilePath.Content(new PathString(item.File));
+
+                var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);
+
                 _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
             }
 
