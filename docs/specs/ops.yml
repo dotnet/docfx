@@ -68,7 +68,7 @@ outputs:
     { "conceptual": "<p>live1</p>" }
   articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
-  a/.errors.log: |
+  .errors.log: |
     {"message_severity":"warning","code":"docset-not-provisioned"}
     {"message_severity":"warning","code":"docset-not-provisioned"}
 ---
