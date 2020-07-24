@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static T DeserializeData<T>(TextReader data, FilePath? file) where T : class, new()
         {
-            return ParseCore(new ErrorList(), data, file)?.ToObject<T>(JsonUtility.Serializer) ?? new T();
+            return ParseCore(ErrorBuilder.Null, data, file)?.ToObject<T>(JsonUtility.Serializer) ?? new T();
         }
 
         public static T Deserialize<T>(ErrorBuilder errors, string input, FilePath file) where T : class, new()

@@ -106,11 +106,9 @@ namespace Microsoft.Docs.Build
             {
                 var newReferencedFiles = new List<Document>();
                 var newReferencedTocs = new List<Document>();
-                var newErrors = new ErrorList();
-                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newReferencedTocs, newErrors);
+                newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newReferencedTocs, errors);
                 lock (newNodes)
                 {
-                    errors.AddRange(newErrors);
                     referencedFiles.AddRange(newReferencedFiles);
                     referencedTocs.AddRange(newReferencedTocs);
                 }
