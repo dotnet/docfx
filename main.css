@@ -1,0 +1,63 @@
+.main-header {
+  padding: 10px; 
+  background: #2193a8;
+  color: white;
+
+    
+    
+}
+
+
+.toggle-button {
+    
+    
+    padding-left: 1100px;
+}
+
+
+.main-nav__item {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-header-2 {
+
+    background: #5770fa;
+    border-style: solid;
+    
+}
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 160px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  background-color: #149669; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+   align-items: center;
+}
+
+li a {
+  display: block;
+  width: 60px;
+}
+
+.container{
+    
+      position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(39, 0, 255, 0.61);
+  color: white;
+  text-align: center;
+}
+
+
+/*
+.sidenav {
+    display: flex;
+    flex-direction: column;
+    
+}*/
