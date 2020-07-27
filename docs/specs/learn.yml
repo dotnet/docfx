@@ -170,7 +170,7 @@ outputs:
     }
   .errors.log: |
     {"message_severity":"error","code":"TripleCrown_Module_ChildrenNotFound","message":"unit-undefined","file":"module-invalid.yml"}
-    {"message_severity":"error","code":"TripleCrown_Module_MetadataError","message":"Required metadata achievement cannot be null or empty.\r\n","file":"module-invalid-1.yml"}
+    {"message_severity":"error","code":"TripleCrown_Module_MetadataError","message":"*Required metadata achievement cannot be null or empty*","file":"module-invalid-1.yml"}
     {"message_severity":"error","code":"TripleCrown_Module_NoBadgeBind","file":"module-invalid-1.yml"}
     {"message_severity":"error","code":"TripleCrown_Module_ChildrenCantFallback","message":"unit-undefined","file":"module-invalid.yml"}
     {"message_severity":"error","code":"TripleCrown_LearningPath_ChildrenCantFallback","message":"module-invalid","file":"path.yml"}
