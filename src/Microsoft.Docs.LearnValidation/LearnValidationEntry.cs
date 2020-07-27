@@ -202,12 +202,11 @@ namespace Microsoft.Docs.LearnValidation
             var publishModel = JsonConvert.DeserializeObject<LearnPublishModel>(File.ReadAllText(publishFilePath));
             publishModel.Files.RemoveAll(item => invalidFiles.Contains(item.SourcePath));
 
-            var filesWithError = logger.FilesWithError;
-            if (filesWithError.Count > 0)
+            if (logger.HasFileWithError)
             {
                 foreach (var item in publishModel.Files)
                 {
-                    item.HasError = item.HasError || filesWithError.Contains(item.SourcePath);
+                    item.HasError = item.HasError || logger.FileHasError(item.SourcePath);
                 }
             }
             File.WriteAllText(publishFilePath, JsonConvert.SerializeObject(publishModel));

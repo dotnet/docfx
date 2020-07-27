@@ -14,15 +14,17 @@ namespace Microsoft.Docs.LearnValidation
         /// Delegate to write to .errors.log file
         /// </summary>
         private readonly Action<LearnLogItem> _writeLog;
-        private readonly ConcurrentBag<string> _filesWithError;
+        private readonly HashSet<string> _filesWithError;
 
         public LearnValidationLogger(Action<LearnLogItem> writeLog)
         {
             _writeLog = writeLog;
-            _filesWithError = new ConcurrentBag<string>();
+            _filesWithError = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public HashSet<string> FilesWithError => _filesWithError.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        public bool HasFileWithError => _filesWithError.Count > 0;
+
+        public bool FileHasError(string file) => _filesWithError.Contains(file);
 
         public void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string message = "", string file = null)
         {
@@ -30,7 +32,10 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!string.IsNullOrEmpty(file))
             {
-                _filesWithError.Add(file);
+                lock (_filesWithError)
+                {
+                    _filesWithError.Add(file);
+                }
             }
         }
 
