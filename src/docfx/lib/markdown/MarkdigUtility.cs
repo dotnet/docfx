@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -154,13 +155,19 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case TripleColonBlock tripleColonBlock:
-                    var tartget = tripleColonBlock.GetAttributes().Properties.First(p => p.Key == "data-target");
-                    context.ZoneStack.Push(tartget.Value);
+                    var target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target");
+                    if (!object.Equals(target, default(KeyValuePair)))
+                    {
+                        context.ZoneStack.Push(target.Value);
+                    }
                     foreach (var child in tripleColonBlock)
                     {
                         Visit(child, context, action);
                     }
-                    context.ZoneStack.Pop();
+                    if (!object.Equals(target, default(KeyValuePair)))
+                    {
+                        context.ZoneStack.Pop();
+                    }
                     break;
 
                 case ContainerBlock block:
