@@ -403,7 +403,7 @@
             {
                 "type": "Length",
                 "contentTypes": [
-                  "conceptual"
+                    "conceptual"
                 ],
                 "MinLength": 2,
                 "MaxLength": 10,
