@@ -8,15 +8,15 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class InvalidFilesProvider
     {
-        private List<IValidateModel> _hierarchyItems;
-        private string _docsetPath;
-        private LearnValidationHelper _learnValidationHelper;
+        private readonly List<IValidateModel> _hierarchyItems;
+        private readonly LearnValidationHelper _learnValidationHelper;
+        private readonly LearnValidationLogger _logger;
 
-        public InvalidFilesProvider(List<IValidateModel> hierarchyItems, string docsetPath, LearnValidationHelper learnValidationHelper)
+        public InvalidFilesProvider(List<IValidateModel> hierarchyItems, LearnValidationHelper learnValidationHelper, LearnValidationLogger logger)
         {
             _hierarchyItems = hierarchyItems;
-            _docsetPath = docsetPath;
             _learnValidationHelper = learnValidationHelper;
+            _logger = logger;
         }
 
         public HashSet<string> GetFilesToDelete()
@@ -36,14 +36,14 @@ namespace Microsoft.Docs.LearnValidation
                     {
                         module.IsValid = false;
                         var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
+                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
                     }
 
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
+                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
                     }
                 }
 
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.LearnValidation
                 if(unitCantFallback.Any())
                 {
                     module.IsDeleted = true;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
+                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
                     invalidFiles.Add(module.SourceRelativePath);
                     foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.LearnValidation
                 {
                     learningpath.IsValid = false;
                     learningpath.IsDeleted = true;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
+                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
                     invalidFiles.Add(learningpath.SourceRelativePath);
                 }
             }

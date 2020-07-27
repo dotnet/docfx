@@ -126,7 +126,7 @@ repos:
      unit.yml: |
        ### YamlMime:ModuleUnit
        serviceData: "{\"uid\": \"unit\",\"durationInMinutes\":3}"
-     unit-1.yml: |
+     unita.yml: |
        ### YamlMime:ModuleUnit
        serviceData: "{\"uid\": \"learn.azure.access-blob-storage-metrics-from-code.1-introduction\",\"durationInMinutes\":3,\"tasks\":[],\"quizAnswers\":[]}"
      module-invalid.yml: |
@@ -158,8 +158,8 @@ outputs:
   module-invalid-1.raw.page.json:
   unit.mta.json:
   unit.raw.page.json:
-  unit-1.mta.json:
-  unit-1.raw.page.json:
+  unita.mta.json:
+  unita.raw.page.json:
   achievement.json:
   full-dependent-list.txt:
   hierarchy.json: |
@@ -174,12 +174,12 @@ outputs:
     {"message_severity":"error","code":"TripleCrown_Module_NoBadgeBind","file":"module-invalid-1.yml"}
     {"message_severity":"error","code":"TripleCrown_Module_ChildrenCantFallback","message":"unit-undefined","file":"module-invalid.yml"}
     {"message_severity":"error","code":"TripleCrown_LearningPath_ChildrenCantFallback","message":"module-invalid","file":"path.yml"}
-    {"message_severity":"error","code":"TripleCrown_Unit_ContainBothTaskAndQuiz","message":"learn.azure.access-blob-storage-metrics-from-code.1-introduction","file":"unit-1.yml"}
+    {"message_severity":"error","code":"TripleCrown_Unit_ContainBothTaskAndQuiz","message":"learn.azure.access-blob-storage-metrics-from-code.1-introduction","file":"unita.yml"}
   .publish.json: |
     {
       "files":[{"source_path":"achievement.yml"},
                {"source_path":"module-invalid-1.yml", "has_error":true},
                {"source_path":"module-valid.yml"},
                {"source_path":"unit.yml"},
-               {"source_path":"unit-1.yml", "has_error":true}]
+               {"source_path":"unita.yml", "has_error":true}]
     }

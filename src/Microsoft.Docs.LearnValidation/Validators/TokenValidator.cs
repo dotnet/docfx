@@ -9,17 +9,19 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class TokenValidator
     {
-        private List<IValidateModel> _hierarchyItems;
+        private readonly List<IValidateModel> _hierarchyItems;
         private readonly string _docsetFolder;
         private readonly string _dependencyMapFile;
         private readonly string _fallbackFolder;
+        private readonly LearnValidationLogger _logger;
 
-        public TokenValidator(string dependencyMapFile, List<IValidateModel> hierarchyItems, string docsetFolder, string fallbackFolder)
+        public TokenValidator(string dependencyMapFile, List<IValidateModel> hierarchyItems, string docsetFolder, string fallbackFolder, LearnValidationLogger logger)
         {
             _dependencyMapFile = dependencyMapFile;
             _hierarchyItems = hierarchyItems;
             _docsetFolder = docsetFolder;
             _fallbackFolder = fallbackFolder;
+            _logger = logger;
         }
 
         public bool Validate()
@@ -50,7 +52,7 @@ namespace Microsoft.Docs.LearnValidation
                                 "~" + tokenDependency.Substring(_docsetFolder.Length).Replace('\\', '/')
                                 : tokenDependency;
 
-                            LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Token_NotFound, file: hierarchyItem.SourceRelativePath);
+                            _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Token_NotFound, file: hierarchyItem.SourceRelativePath);
                             hierarchyItem.IsValid = false;
                             isValid = false;
                         }

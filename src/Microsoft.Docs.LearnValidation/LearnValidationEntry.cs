@@ -36,7 +36,6 @@ namespace Microsoft.Docs.LearnValidation
             )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            LearnValidationLogger.WriteLog = writeLog;
             var config = new LearnValidationConfig(
                 repoUrl: repoUrl,
                 repoBranch: repoBranch,
@@ -49,47 +48,42 @@ namespace Microsoft.Docs.LearnValidation
                 environment: environment,
                 fallbackDocsetPath: fallbackDocsetPath,
                 isLocalizationBuild: isLocalizationBuild);
+            var logger = new LearnValidationLogger(writeLog);
 
-            try
-            {
-                Console.WriteLine($"[{PluginName}] config:\n{0}", JsonConvert.SerializeObject(
+            Console.WriteLine($"[{PluginName}] config:\n{0}", JsonConvert.SerializeObject(
                 new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
                 Formatting.Indented));
 
-                ValidateHierarchy(config).GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_InternalError, ex.ToString());
-                throw;
-            }
+            ValidateHierarchy(config, logger).GetAwaiter().GetResult();
+            
         }
 
-        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config)
+        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger)
         {
             var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(), config.RepoBranch);
-            var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath);
+            var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath, logger);
             var (isValid, hierarchyItems) = validator.Validate();
 
             Console.WriteLine($"[{PluginName}] local validation done in {sw.ElapsedMilliseconds / 1000}s");
 
             if (!config.IsLocalizationBuild)
             {
-                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config);
+                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config, logger);
             }
             else
             {
-                return ValidateHierarchyInOtherLocales(isValid, hierarchyItems, config, learnValidationHelper);
+                return ValidateHierarchyInOtherLocales(isValid, hierarchyItems, config, learnValidationHelper, logger);
             }
         }
 
         private static async Task<bool> ValidateHierarchyInDefaultLocale(
             bool isValid,
             List<IValidateModel> hierarchyItems,
-            LearnValidationConfig config)
+            LearnValidationConfig config,
+            LearnValidationLogger logger)
         {
             if (!isValid)
             {
@@ -117,7 +111,7 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!result.IsValid)
             {
-                LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, result.Message);
+                logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, result.Message);
             }
 
             return result.IsValid;
@@ -127,14 +121,15 @@ namespace Microsoft.Docs.LearnValidation
             bool isValid,
             List<IValidateModel> hierarchyItems,
             LearnValidationConfig config,
-            LearnValidationHelper learnValidationHelper)
+            LearnValidationHelper learnValidationHelper,
+            LearnValidationLogger logger)
         {
-            var tokenValidator = new TokenValidator(config.DependencyFilePath, hierarchyItems, config.DocsetPath, config.FallbackDocsetPath);
+            var tokenValidator = new TokenValidator(config.DependencyFilePath, hierarchyItems, config.DocsetPath, config.FallbackDocsetPath, logger);
             isValid = isValid && tokenValidator.Validate();
-            InvalidFilesProvider partialPublishProcessor = new InvalidFilesProvider(hierarchyItems, config.DocsetPath, learnValidationHelper);
+            InvalidFilesProvider partialPublishProcessor = new InvalidFilesProvider(hierarchyItems, learnValidationHelper, logger);
             var filesToDelete = partialPublishProcessor.GetFilesToDelete();
             HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.DocsetOutputPath);
-            RemoveInvalidPublishItems(config.PublishFilePath, filesToDelete);
+            RemoveInvalidPublishItems(config.PublishFilePath, filesToDelete, logger);
 
             return isValid;
         }
@@ -202,16 +197,17 @@ namespace Microsoft.Docs.LearnValidation
             }
         }
 
-        private static void RemoveInvalidPublishItems(string publishFilePath, HashSet<string> invalidFiles)
+        private static void RemoveInvalidPublishItems(string publishFilePath, HashSet<string> invalidFiles, LearnValidationLogger logger)
         {
             var publishModel = JsonConvert.DeserializeObject<LearnPublishModel>(File.ReadAllText(publishFilePath));
             publishModel.Files.RemoveAll(item => invalidFiles.Contains(item.SourcePath));
 
-            if (LearnValidationLogger.FilesWithError.Count > 0)
+            var filesWithError = logger.FilesWithError;
+            if (filesWithError.Count > 0)
             {
                 foreach (var item in publishModel.Files)
                 {
-                    item.HasError = item.HasError || LearnValidationLogger.FilesWithError.Contains(item.SourcePath);
+                    item.HasError = item.HasError || filesWithError.Contains(item.SourcePath);
                 }
             }
             File.WriteAllText(publishFilePath, JsonConvert.SerializeObject(publishModel));
