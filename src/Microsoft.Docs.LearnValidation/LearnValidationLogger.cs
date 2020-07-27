@@ -24,7 +24,13 @@ namespace Microsoft.Docs.LearnValidation
 
         public bool HasFileWithError => _filesWithError.Count > 0;
 
-        public bool FileHasError(string file) => _filesWithError.Contains(file);
+        public bool FileHasError(string file)
+        {
+            lock (_filesWithError)
+            {
+                return _filesWithError.Contains(file);
+            }
+        }
 
         public void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string message = "", string file = null)
         {
