@@ -2,13 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Microsoft.Docs.LearnValidation
 {
     public static class LearnValidationLogger
     {
-        public static ConcurrentBag<LearnLogItem> LogItems { get; } = new ConcurrentBag<LearnLogItem>();
+        public static HashSet<string> FilesWithError { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Delegate to write to .errors.log file
@@ -16,7 +16,14 @@ namespace Microsoft.Docs.LearnValidation
         public static Action<LearnLogItem> WriteLog;
 
         public static void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string message = "", string file = null)
-            => WriteLog?.Invoke(new LearnLogItem(errorLevel, errorCode, message, file));
+        {
+            WriteLog?.Invoke(new LearnLogItem(errorLevel, errorCode, message, file));
+
+            if (!string.IsNullOrEmpty(file))
+            {
+                FilesWithError.Add(file);
+            }
+        }
     }
 
     public class LearnLogItem

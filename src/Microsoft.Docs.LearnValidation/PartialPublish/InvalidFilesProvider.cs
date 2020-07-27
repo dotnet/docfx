@@ -6,26 +6,26 @@ using System.Linq;
 
 namespace Microsoft.Docs.LearnValidation
 {
-    public class PartialPublishProcessor
+    public class InvalidFilesProvider
     {
         private List<IValidateModel> _hierarchyItems;
         private string _docsetPath;
         private LearnValidationHelper _learnValidationHelper;
 
-        public PartialPublishProcessor(List<IValidateModel> hierarchyItems, string docsetPath, LearnValidationHelper learnValidationHelper)
+        public InvalidFilesProvider(List<IValidateModel> hierarchyItems, string docsetPath, LearnValidationHelper learnValidationHelper)
         {
             _hierarchyItems = hierarchyItems;
             _docsetPath = docsetPath;
             _learnValidationHelper = learnValidationHelper;
         }
 
-        public void MarkInvalidHierarchyItem()
+        public HashSet<string> GetFilesToDelete()
         {
             var uidMapping = _hierarchyItems.Where(h => !(h is AchievementValidateModel)).GroupBy(h => h.Uid).ToDictionary(key => key.Key, value => value.First());
             var modules = _hierarchyItems.Where(hi => hi is ModuleValidateModel).Select(hi => hi as ModuleValidateModel);
             var learningpaths = _hierarchyItems.Where(hi => hi is PathValidateModel).Select(hi => hi as PathValidateModel);
             
-            List<string> skipPublishFilePathList = new List<string>();
+            List<string> invalidFiles = new List<string>();
 
             // Mark modules
             foreach (var module in modules)
@@ -54,14 +54,12 @@ namespace Microsoft.Docs.LearnValidation
                 {
                     module.IsDeleted = true;
                     LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
-                    // TODO: remove invalid module from publish.json
-                    skipPublishFilePathList.Add(module.SourceRelativePath);
+                    invalidFiles.Add(module.SourceRelativePath);
                     foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsDeleted = true;
-                        // TODO: remove invalid units from publish.json
-                        skipPublishFilePathList.Add(unit.SourceRelativePath);
+                        invalidFiles.Add(unit.SourceRelativePath);
                     }
                 }
             }
@@ -76,13 +74,12 @@ namespace Microsoft.Docs.LearnValidation
                     learningpath.IsValid = false;
                     learningpath.IsDeleted = true;
                     LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
-                    // TODO: remove invalid path from publish.json
-                    skipPublishFilePathList.Add(learningpath.SourceRelativePath);
+                    invalidFiles.Add(learningpath.SourceRelativePath);
                 }
             }
+
+            return invalidFiles.ToHashSet();
         }
 
-        // TODO: use other ways rather than skip-publish-file.json to control delete from DHS, for skip-publish-file.json is not supported in v3
-        //File.WriteAllText(_skipPublishFilePath, JsonConvert.SerializeObject(skipPublishFilePathList, Formatting.Indented));
     }
 }

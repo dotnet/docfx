@@ -13,7 +13,7 @@ namespace Microsoft.Docs.LearnValidation
     {
         internal static string HierarchyFileName = "hierarchy.json";
 
-        internal static RawHierarchy GenerateHierarchy(List<IValidateModel> hierarchyItems, string manifestFilePath)
+        internal static RawHierarchy GenerateHierarchy(List<IValidateModel> hierarchyItems, string docsetOutputPath)
         {
             var hierarchy = new RawHierarchy();
             foreach (var item in hierarchyItems)
@@ -35,15 +35,10 @@ namespace Microsoft.Docs.LearnValidation
                 hierarchy.Items.Add(ConvertValidationModelToHierarchyItem(item));
             }
 
-            var hierarchyFullFileName = GetHierarchyFullFileName(manifestFilePath);
+            var hierarchyFullFileName = Path.Combine(docsetOutputPath, HierarchyFileName);
             File.WriteAllText(hierarchyFullFileName, JsonConvert.SerializeObject(hierarchy));
 
             return hierarchy;
-        }
-
-        internal static string GetHierarchyFullFileName(string manifestFilePath)
-        {
-            return Path.Combine(Path.GetDirectoryName(manifestFilePath) ?? ".", HierarchyFileName);
         }
 
         private static RawAchievement ConvertValidationModelToAchievement(AchievementValidateModel achievement)
