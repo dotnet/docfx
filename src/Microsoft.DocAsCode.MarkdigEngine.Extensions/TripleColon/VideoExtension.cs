@@ -20,6 +20,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var src = string.Empty;
             var title = string.Empty;
             var maxWidth = string.Empty;
+            var thumbnail = string.Empty;
+            var uploadDate = string.Empty;
+            var duration = string.Empty;
+
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -35,6 +39,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     case "source":
                         src = value;
                         break;
+                    case "thumbnail":
+                        thumbnail = value;
+                        break;
+                    case "upload-date":
+                        uploadDate = value;
+                        break;
+                    case "duration":
+                        duration = value;
+                        break;
                     default:
                         logError($"Video reference '{src}' is invalid per the schema. Unexpected attribute: '{name}'.");
                         return false;
@@ -46,7 +59,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 logError("source is a required attribute. Please ensure you have specified a source attribute.");
                 return false;
             }
-            if(!src.Contains("channel9.msdn.com") &&
+            if (string.IsNullOrEmpty(thumbnail))
+            {
+                logError("thumbnail is a required attribute. Please ensure you have specified a thumbnail attribute.");
+                return false;
+            }
+            if (string.IsNullOrEmpty(uploadDate))
+            {
+                logError("upload-date is a required attribute. Please ensure you have specified a upload-date attribute.");
+                return false;
+            }
+            if (!src.Contains("channel9.msdn.com") &&
                 !src.Contains("youtube.com/embed") &&
                 !src.Contains("microsoft.com/en-us/videoplayer/embed"))
             {
@@ -76,6 +99,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return false;
                 }
                 htmlAttributes.AddProperty("style", $"max-width:{maxWidth}px;");
+            }
+
+            if (!string.IsNullOrEmpty(thumbnail))
+            {
+                htmlAttributes.AddProperty("thumbnail", thumbnail);
+            }
+
+            if (!string.IsNullOrEmpty(uploadDate))
+            {
+                htmlAttributes.AddProperty("upload-date", uploadDate);
+            }
+
+            if (!string.IsNullOrEmpty(duration))
+            {
+                htmlAttributes.AddProperty("duration", duration);
             }
 
             return true;
