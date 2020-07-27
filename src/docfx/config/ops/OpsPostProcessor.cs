@@ -42,6 +42,7 @@ namespace Microsoft.Docs.Build
                         repoBranch: _buildOptions.Repository?.Branch,
                         docsetName: _config.Name,
                         docsetPath: _buildOptions.DocsetPath,
+                        docsetOutputPath: _buildOptions.OutputPath,
                         publishFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, ".publish.json")),
                         dependencyFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, "full-dependent-list.txt")),
                         manifestFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, _config.BasePath, ".manifest.json")),

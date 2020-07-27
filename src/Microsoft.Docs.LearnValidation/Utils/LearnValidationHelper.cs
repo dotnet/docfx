@@ -53,16 +53,16 @@ namespace Microsoft.Docs.LearnValidation
 
             IRestResponse response = _client.Execute(request);
 
-            Console.WriteLine("TripleCrownValidation check {0} call: {1}", type, response.ResponseUri);
-            Console.WriteLine("TripleCrownValidation check {0} result: {1}", type, response.StatusCode);
+            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
+            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
 
             if (response.StatusCode != HttpStatusCode.OK && _needBranchFallback)
             {
                 request.AddOrUpdateParameter("branch", "master");
                 response = _client.Execute(request);
 
-                Console.WriteLine("TripleCrownValidation check {0} call: {1}", type, response.ResponseUri);
-                Console.WriteLine("TripleCrownValidation check {0} result: {1}", type, response.StatusCode);
+                Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
+                Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
             }
 
             return response.StatusCode == HttpStatusCode.OK;

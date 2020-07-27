@@ -3,20 +3,49 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Docs.LearnValidation
 {
-    public static class LearnValidationLogger
+    public class LearnValidationLogger
     {
-        public static ConcurrentBag<LearnLogItem> LogItems { get; } = new ConcurrentBag<LearnLogItem>();
-
         /// <summary>
         /// Delegate to write to .errors.log file
         /// </summary>
-        public static Action<LearnLogItem> WriteLog;
+        private readonly Action<LearnLogItem> _writeLog;
+        private readonly HashSet<string> _filesWithError;
 
-        public static void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string message = "", string file = null)
-            => WriteLog?.Invoke(new LearnLogItem(errorLevel, errorCode, message, file));
+        public LearnValidationLogger(Action<LearnLogItem> writeLog)
+        {
+            _writeLog = writeLog;
+            _filesWithError = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        public bool HasFileWithError => _filesWithError.Count > 0;
+
+        public bool FileHasError(string file)
+        {
+            lock (_filesWithError)
+            {
+                return _filesWithError.Contains(file);
+            }
+        }
+
+        public void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string message = "", string file = null)
+        {
+            _writeLog?.Invoke(new LearnLogItem(errorLevel, errorCode, message, file));
+
+            if (!string.IsNullOrEmpty(file))
+            {
+                lock (_filesWithError)
+                {
+                    _filesWithError.Add(file);
+                }
+            }
+        }
+
+
     }
 
     public class LearnLogItem

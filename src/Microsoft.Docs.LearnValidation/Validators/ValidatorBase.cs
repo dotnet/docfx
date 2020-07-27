@@ -3,7 +3,6 @@
 
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,14 +12,16 @@ namespace Microsoft.Docs.LearnValidation
 {
     public abstract class ValidatorBase
     {
+        protected LearnValidationLogger Logger { get; }
         protected List<LegacyManifestItem> ManifestItems { get; }
         protected string BathPath { get; }
         public List<IValidateModel> Items { get; protected set; } = new List<IValidateModel>();
 
-        public ValidatorBase(List<LegacyManifestItem> manifestItems, string basePath)
+        public ValidatorBase(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
         {
             ManifestItems = manifestItems;
             BathPath = basePath;
+            Logger = logger;
 
             ExtractItems();
         }
