@@ -401,15 +401,26 @@
                 "pullRequestOnly": false
             },
             {
-                "type": "Length",
+              "type": "Length",
+              "contentTypes": [
+                "conceptual"
+              ],
+              "MinLength": 2,
+              "MaxLength": 10,
+              "severity": "SUGGESTION",
+              "code": "description-bad-length",
+              "additionalErrorMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
+            },
+            {
+                "type": "Required",
                 "contentTypes": [
-                  "conceptual"
+                    "conceptual",
+                    "include"
                 ],
-                "MinLength":  2,
-                "MaxLength": 10,
                 "severity": "SUGGESTION",
-                "code": "description-bad-length",
-                "additionalErrorMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
+                "code": "ms-date-missing",
+                "additionalErrorMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
+                "disabled": true
             }
         ]
     }
