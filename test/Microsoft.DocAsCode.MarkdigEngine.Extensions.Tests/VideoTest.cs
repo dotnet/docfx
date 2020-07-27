@@ -29,6 +29,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [InlineData(@":::video source=""https://www.microsoft.com/en-us/videoplayer/embed/wV11_nbT2XE"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"":::", @"<p><div class=""embeddedvideo"">
 <iframe src=""https://www.microsoft.com/en-us/videoplayer/embed/wV11_nbT2XE"" allowFullScreen=""true"" frameBorder=""0"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"">
 </div></p>")]
+        [InlineData(@":::video source=""https://www.microsoft.com/en-us/videoplayer/embed/RE1XVQS"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::", @"<p><div class=""embeddedvideo"">
+<iframe src=""https://www.microsoft.com/en-us/videoplayer/embed/RE1XVQS"" allowFullScreen=""true"" frameBorder=""0"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"">
+</div></p>")]
         public void VideoTestBlockGeneral(string source, string expected)
         {
             TestUtility.VerifyMarkup(source, expected);
