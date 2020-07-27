@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                             IsVisible = MarkdigUtility.IsVisible(headingBlock),
                             IsCanonicalVersion = isCanonicalVersion,
                             Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
-                            Monikers = fileLevelMoniker.ToList(),
+                            Monikers = context.ZoneMoniker.ToList(),
                         };
                     }
                     else if (node is LeafBlock leafBlock)
