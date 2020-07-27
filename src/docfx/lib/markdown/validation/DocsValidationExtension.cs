@@ -50,6 +50,8 @@ namespace Microsoft.Docs.Build
                             RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
                             IsVisible = MarkdigUtility.IsVisible(headingBlock),
                             IsCanonicalVersion = isCanonicalVersion,
+                            Zone = context.ZoneStack.Peek(),
+                            Monikers = fileLevelMoniker.ToList(),
                         };
                     }
                     else if (node is LeafBlock leafBlock)

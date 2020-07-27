@@ -153,6 +153,16 @@ namespace Microsoft.Docs.Build
                     context.FileStack.Pop();
                     break;
 
+                case TripleColonBlock tripleColonBlock:
+                    var tartget = tripleColonBlock.GetAttributes().Properties.First(p => p.Key == "data-target");
+                    context.ZoneStack.Push(tartget.Value);
+                    foreach (var child in tripleColonBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+                    context.ZoneStack.Pop();
+                    break;
+
                 case ContainerBlock block:
                     foreach (var child in block)
                     {
