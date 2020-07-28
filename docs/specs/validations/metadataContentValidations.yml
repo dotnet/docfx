@@ -1197,6 +1197,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":5,"end_line":5,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"g.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
@@ -1330,12 +1331,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":6,"end_line":6,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":22,"end_line":22,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":34,"end_line":34,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":6,"end_line":6,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":1,"end_column":1}
 ---
 #Content validation - multiple-h1s in docs zone
 inputs:
