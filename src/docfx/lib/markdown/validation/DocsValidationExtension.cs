@@ -61,6 +61,8 @@ namespace Microsoft.Docs.Build
                             SourceInfo = node.GetSourceInfo(),
                             IsVisible = MarkdigUtility.IsVisible(leafBlock),
                             IsCanonicalVersion = isCanonicalVersion,
+                            Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
+                            Monikers = context.ZoneMoniker.ToList(),
                         };
                     }
 
