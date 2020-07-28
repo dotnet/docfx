@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
             disposables.Add(packageResolver);
 
-            var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, packageResolver);
+            var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver);
             var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
             var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath, outputPath, repository, preloadConfig);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);

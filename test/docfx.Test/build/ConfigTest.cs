@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master")]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch)
         {
-            LocalizationUtility.TryGetFallbackRepository(remote, branch, out var sourceRemote, out var sourceBranch);
+            var (sourceRemote, sourceBranch) = LocalizationUtility.GetFallbackRepository(remote, branch);
 
             Assert.Equal(expectedSourceRemote, sourceRemote);
             Assert.Equal(expectedSourceBranch, sourceBranch);
