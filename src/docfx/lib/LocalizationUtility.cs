@@ -45,17 +45,17 @@ namespace Microsoft.Docs.Build
 
         public static string? GetFallbackDocsetPath(string docsetPath, Repository? repository, PackagePath? fallbackRepository, PackageResolver packageResolver)
         {
-            var docsetSourceFolder = repository == null
-                ? docsetPath.Split('/').Last()
-                : Path.GetRelativePath(repository.Path, docsetPath);
-            var fallbackRemote = fallbackRepository?.Url;
-            var fallbackBranch = fallbackRepository?.Branch;
-            if (fallbackRemote == null && repository != null)
+            if (repository == null)
             {
-                (fallbackRemote, fallbackBranch) = GetFallbackRepository(repository.Remote, repository.Branch);
+                return null;
             }
+
+            var (fallbackRemote, fallbackBranch) = fallbackRepository?.Type == PackageType.Git
+                ? (fallbackRepository?.Url, fallbackRepository?.Branch)
+                : GetFallbackRepository(repository!.Remote, repository.Branch);
             if (fallbackRemote != null)
             {
+                var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
                 foreach (var branch in new[] { fallbackBranch, "master" })
                 {
                     if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
