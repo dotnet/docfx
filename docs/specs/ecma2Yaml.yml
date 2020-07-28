@@ -21,7 +21,6 @@ repos:
         files: '**/*.{md,yml}'
         template: ../_themes
         monikerDefinition: monikerDefinition.json
-        skipMonikerValidation: true
       cat/monikerDefinition.json: |
         {
           "monikers": [
@@ -132,7 +131,6 @@ repos:
         files: '**/*.{md,yml}'
         template: ../_themes
         monikerDefinition: monikerDefinition.json
-        skipMonikerValidation: true
       cat/monikerDefinition.json: |
         {
           "monikers": [
@@ -255,7 +253,6 @@ repos:
         files: '**/*.{md,yml}'
         template: ../_themes
         monikerDefinition: monikerDefinition.json
-        skipMonikerValidation: true
       cat/monikerDefinition.json: |
         {
           "monikers": [

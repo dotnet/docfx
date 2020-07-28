@@ -41,6 +41,11 @@ namespace Microsoft.Docs.Build
         public MonikerList Monikers { get; }
 
         /// <summary>
+        /// Skip moniker validation for YAML files
+        /// </summary>
+        public bool SkipMonikerValidation { get; }
+
+        /// <summary>
         /// Creates an unknown file path.
         /// </summary>
         public FilePath(string path)
@@ -48,6 +53,7 @@ namespace Microsoft.Docs.Build
             Path = new PathString(path);
             Format = GetFormat(path);
             Origin = FileOrigin.External;
+            SkipMonikerValidation = path.EndsWith(".yml");
 
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
@@ -60,6 +66,7 @@ namespace Microsoft.Docs.Build
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
             Monikers = monikers;
+            SkipMonikerValidation = path.Value.EndsWith(".yml");
 
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, Monikers);
         }
