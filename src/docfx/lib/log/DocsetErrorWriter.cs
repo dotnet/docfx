@@ -29,12 +29,9 @@ namespace Microsoft.Docs.Build
             // Convert from path relative to docset to path relative to working directory
             if (!_docsetBasePath.IsDefault)
             {
-                if (error.Source != null && error.Source.File.Origin != FileOrigin.Dependency)
+                if (error.Source != null)
                 {
-                    error = error.WithSource(
-                        error.Source.WithFile(
-                            error.Source.File.WithPath(
-                                _docsetBasePath.Concat(error.Source.File.Path))));
+                    error = error.WithSource(error.Source.WithFile(error.Source.File.WithPath(_docsetBasePath.Concat(error.Source.File.Path))));
                 }
 
                 if (error.OriginalPath != null)
