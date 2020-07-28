@@ -50,10 +50,11 @@ namespace Microsoft.Docs.LearnValidation
                 isLocalizationBuild: isLocalizationBuild);
             var logger = new LearnValidationLogger(writeLog);
 
-            Console.WriteLine($"[{PluginName}] config:\n{0}", JsonConvert.SerializeObject(
+            var configStr = JsonConvert.SerializeObject(
                 new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
-                Formatting.Indented));
+                Formatting.Indented);
 
+            Console.WriteLine($"[{PluginName}] config:\n{configStr}");
             ValidateHierarchy(config, logger).GetAwaiter().GetResult();
             
         }
