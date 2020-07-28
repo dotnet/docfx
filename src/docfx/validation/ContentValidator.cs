@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, file.Mime.Value, isIncluded, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file.FilePath, 1, 1) };
+                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file.FilePath) };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
