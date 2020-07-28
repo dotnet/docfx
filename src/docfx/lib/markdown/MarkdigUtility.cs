@@ -155,19 +155,26 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case TripleColonBlock tripleColonBlock:
-                    //var target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target");
-                    var target = tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target") ?
-                        tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target") :
-                        tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-pivot");
-                    if (!object.Equals(target, default(KeyValuePair)))
+                    string? target = null;
+                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
                     {
-                        context.ZoneStack.Push(target.Value);
+                        target = "pivot";
                     }
+                    else
+                    {
+                        target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
+                    }
+                    if (!string.IsNullOrEmpty(target))
+                    {
+                        context.ZoneStack.Push(target);
+                    }
+
                     foreach (var child in tripleColonBlock)
                     {
                         Visit(child, context, action);
                     }
-                    if (!object.Equals(target, default(KeyValuePair)))
+
+                    if (!string.IsNullOrEmpty(target))
                     {
                         context.ZoneStack.Pop();
                     }
