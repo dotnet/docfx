@@ -1260,6 +1260,7 @@ outputs:
     {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
 #Content validation - h1 in zone
 inputs:
@@ -1429,10 +1430,8 @@ outputs:
   i.json:
   j.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"b.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"h.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
 ---
 # Canonial Version Only H1 Unique Check
 inputs:
