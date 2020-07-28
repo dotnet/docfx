@@ -30,6 +30,12 @@ namespace Microsoft.Docs.Build
         public string DefaultLocale { get; private set; } = "en-us";
 
         /// <summary>
+        /// Specify the fallback repository url.
+        /// For localization build, it takes precedence over convention-calculated url.
+        /// </summary>
+        public PackagePath? FallbackRepository { get; private set; }
+
+        /// <summary>
         /// The extend file addresses
         /// The addresses can be absolute url or relative path
         /// </summary>
