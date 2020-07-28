@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
             {
                 if (url.StartsWith(templateRepoUrlPrefix) || _config.DocsGitTokenType.Equals(DocsGitTokenType.SystemServiceAccount))
                 {
-                    throw Errors.System.RestoreDependentRepositoryFailed(url, committish).ToException(ex);
+                    throw Errors.DependencyRepository.RestoreDependentRepositoryFailed(url, committish).ToException(ex);
                 }
                 else
                 {
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (url.StartsWith(templateRepoUrlPrefix))
                     {
-                        throw Errors.System.RestoreDependentRepositoryFailed(url, committish).ToException(ex);
+                        throw Errors.DependencyRepository.RestoreDependentRepositoryFailed(url, committish).ToException(ex);
                     }
                     else
                     {

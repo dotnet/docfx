@@ -2,9 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -14,17 +13,16 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine : IDisposable
     {
         private readonly string _templateDir;
+        private readonly string _schemaDir;
         private readonly string _contentTemplateDir;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<IJavaScriptEngine> _js;
-        private readonly IReadOnlyDictionary<string, Lazy<TemplateSchema>> _schemas;
+        private readonly ConcurrentDictionary<string, TemplateSchema?> _schemas = new ConcurrentDictionary<string, TemplateSchema?>();
         private readonly MustacheTemplate _mustacheTemplate;
-        private readonly Config _config;
 
         public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
-            _config = config;
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
@@ -32,10 +30,9 @@ namespace Microsoft.Docs.Build
             };
 
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
-            var schemaDir = Path.Combine(_contentTemplateDir, "schemas");
+            _schemaDir = Path.Combine(_contentTemplateDir, "schemas");
 
             _global = LoadGlobalTokens();
-            _schemas = LoadSchemas(schemaDir, _contentTemplateDir);
             _liquid = new LiquidTemplate(_templateDir);
 
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
@@ -47,22 +44,28 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
-        public bool IsPage(string? mime)
+        public bool IsHtml(ContentType contentType, string? mime)
         {
-            return mime is null || !_schemas.TryGetValue(mime, out var schemaTemplate) || schemaTemplate.Value.IsPage;
+            return contentType switch
+            {
+                ContentType.Redirection => true,
+                ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || _mustacheTemplate.HasTemplate($"{mime}.html"),
+                ContentType.TableOfContents => _mustacheTemplate.HasTemplate($"{mime}.html"),
+                _ => false,
+            };
         }
 
-        public static bool IsConceptual(string? mime)
-        {
-            return string.Equals(mime, "Conceptual", StringComparison.OrdinalIgnoreCase);
-        }
+        public static bool IsConceptual(string? mime) => mime == "Conceptual";
+
+        public static bool IsLandingData(string? mime) => mime == "LandingData";
+
+        public static bool IsMigratedFromMarkdown(string? mime) => mime == "Hub" || mime == "Landing" || mime == "LandingData";
 
         public TemplateSchema GetSchema(SourceInfo<string?> schemaName)
         {
-            var name = schemaName.Value;
-            return !string.IsNullOrEmpty(name) && _schemas.TryGetValue(name, out var schemaTemplate)
-               ? schemaTemplate.Value
-               : throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
+            var name = schemaName.Value ?? throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
+
+            return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
         }
 
         public string RunLiquid(Document file, TemplateModel model)
@@ -110,17 +113,6 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public static bool IsLandingData(string? mime)
-        {
-            return mime != null && string.Equals(typeof(LandingData).Name, mime, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static bool IsMigratedFromMarkdown(string? mime)
-        {
-            var migratedMimeTypes = new string[] { "Hub", "Landing", nameof(LandingData) };
-            return mime != null && migratedMimeTypes.Contains(mime, StringComparer.OrdinalIgnoreCase);
-        }
-
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
@@ -137,19 +129,20 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private IReadOnlyDictionary<string, Lazy<TemplateSchema>>
-            LoadSchemas(string schemaDir, string contentTemplateDir)
+        private TemplateSchema? GetSchemaCore(string schemaName)
         {
-            var schemas = Directory.Exists(schemaDir)
-                ? (from k in Directory.EnumerateFiles(schemaDir, "*.schema.json", SearchOption.TopDirectoryOnly)
-                   let fileName = Path.GetFileName(k)
-                   select fileName.Substring(0, fileName.Length - ".schema.json".Length))
-                   .ToDictionary(
-                    schemaName => schemaName, schemaName => new Lazy<TemplateSchema>(() => new TemplateSchema(schemaName, schemaDir, contentTemplateDir)))
-                : new Dictionary<string, Lazy<TemplateSchema>>();
+            var schemaFilePath = IsLandingData(schemaName)
+                ? Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")
+                : Path.Combine(_schemaDir, $"{schemaName}.schema.json");
 
-            schemas.Add("LandingData", new Lazy<TemplateSchema>(() => new TemplateSchema("LandingData", schemaDir, contentTemplateDir)));
-            return schemas;
+            if (!File.Exists(schemaFilePath))
+            {
+                return null;
+            }
+
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
+
+            return new TemplateSchema(jsonSchema, new JsonSchemaValidator(jsonSchema, forceError: true));
         }
     }
 }

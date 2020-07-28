@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 
@@ -25,7 +24,7 @@ namespace Microsoft.Docs.Build
                 ["canonical_url"] = file.CanonicalUrl,
             };
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, null);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, outputPath: null);
         }
     }
 }
