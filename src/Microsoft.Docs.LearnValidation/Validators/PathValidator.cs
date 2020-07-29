@@ -13,8 +13,8 @@ namespace Microsoft.Docs.LearnValidation
     {
         private LearnValidationHelper LearnValidationHelper { get; }
 
-        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationHelper learnValidationHelper)
-            : base(manifestItems, basePath)
+        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationHelper learnValidationHelper, LearnValidationLogger logger)
+            : base(manifestItems, basePath, logger)
         {
             LearnValidationHelper = learnValidationHelper;
         }
@@ -37,24 +37,24 @@ namespace Microsoft.Docs.LearnValidation
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_MetadataError, file: item.SourceRelativePath, result);
                 }
 
                 if (path.Achievement == null)
                 {
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_NoTrophyBind, file: item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_NoTrophyBind, file: item.SourceRelativePath);
                 }
                 else if (path.Achievement is string achievementUID)
                 {
                     if (!fullItemsDict.ContainsKey(achievementUID))
                     {
                         itemValid = false;
-                        LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_TrophyNotFound, achievementUID, item.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_TrophyNotFound, file: item.SourceRelativePath, achievementUID);
                     }
                     else if (!(fullItemsDict[achievementUID] is AchievementValidateModel achievement) || achievement.Type != AchievementType.Trophy)
                     {
                         itemValid = false;
-                        LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_NonSupportedAchievementType, achievementUID, item.SourceRelativePath);
+                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_NonSupportedAchievementType, file: item.SourceRelativePath, achievementUID);
                     }
                 }
 
@@ -71,14 +71,13 @@ namespace Microsoft.Docs.LearnValidation
                 if (childrenCantFind.Any())
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenNotFound, string.Join(",", childrenCantFind), item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenNotFound, file: item.SourceRelativePath, string.Join(",", childrenCantFind));
                 }
 
                 if (childrenNotModule.Any())
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_NonSupportedChildrenType, string.Join(",", childrenNotModule),
-                        item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_NonSupportedChildrenType, file: item.SourceRelativePath, string.Join(",", childrenNotModule));
                 }
 
                 item.IsValid = itemValid;

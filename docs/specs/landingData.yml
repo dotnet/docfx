@@ -28,7 +28,7 @@ inputs:
   docfx.yml:
   docs/index.yml: |
     ### YamlMime:YamlDocument
-    documentType: LandingData
+    documentType: landingData
     sections:
     - title: Service
       items:

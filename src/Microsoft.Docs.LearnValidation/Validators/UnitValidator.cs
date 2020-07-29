@@ -17,8 +17,8 @@ namespace Microsoft.Docs.LearnValidation
     {
         private HashSet<string> _taskValidationTypeSet;
 
-        public UnitValidator(List<LegacyManifestItem> manifestItems, string basePath)
-              : base(manifestItems, basePath)
+        public UnitValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
+              : base(manifestItems, basePath, logger)
         {
             _taskValidationTypeSet = GetTaskValidationTypeSet();
         }
@@ -41,19 +41,19 @@ namespace Microsoft.Docs.LearnValidation
                 if (!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_MetadataError, file: item.SourceRelativePath, result);
                 }
 
                 if (unit.Tasks != null && unit.QuizAnswers != null)
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, unit.UId, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, file: item.SourceRelativePath, unit.UId);
                 }
 
                 if (unit.Parent == null || !(unit.Parent is ModuleValidateModel))
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_NoModuleParent, unit.UId, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_NoModuleParent, file: item.SourceRelativePath, unit.UId);
                 }
 
                 itemValid &= ValidateQuiz(unit.QuizAnswers, item);
@@ -82,13 +82,13 @@ namespace Microsoft.Docs.LearnValidation
                 if (!_taskValidationTypeSet.Contains(azureResource.Type, StringComparer.OrdinalIgnoreCase))
                 {
                     validateResult = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Task_NonSupportedType, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Task_NonSupportedType, file: unit.SourceRelativePath, index + 1,  azureResource.Type);
                 }
 
                 if (string.IsNullOrEmpty(azureResource.Name) && azureResource.Type.Count(t => t == '/') != 1)
                 {
                     validateResult = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Task_NonSupportedTypeFormat, $"{azureResource.Type} at index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Task_NonSupportedTypeFormat, file: unit.SourceRelativePath, index + 1, azureResource.Type);
                 }
             }
 
@@ -108,13 +108,13 @@ namespace Microsoft.Docs.LearnValidation
                 if (answerCount > 1)
                 {
                     validateResult = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Quiz_MultiAnswers, $"error index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Quiz_MultiAnswers, file: unit.SourceRelativePath, index + 1);
                 }
 
                 if (answerCount < 1)
                 {
                     validateResult = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Quiz_NoAnswer, $"error index: {index}", unit.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Quiz_NoAnswer, file: unit.SourceRelativePath, index + 1);
                 }
             }
 

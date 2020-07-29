@@ -18,8 +18,6 @@ repos:
         }
      learn-pr/docfx.json: '{}'
 outputs:
-  .errors.log: |
-    {"message_severity":"error", "log_item_type":"user", "code":"TripleCrown_Unimplemented"}
   learn-pr/hierarchy.json: |
     {
       "achievements":[],
@@ -86,5 +84,102 @@ outputs:
       "invalid_items": [],
       "items":[{"asset_id":"path"},{"asset_id":"module"},{"asset_id":"unit"}]
     }
+  .publish.json: |
+    {
+      "files":[{"source_path":"achievement.yml"},
+               {"source_path":"module.yml"},
+               {"source_path":"path.yml"},
+               {"source_path":"unit.yml"}]
+    }
+---
+# Loc-build remote invalid items from .publish.json
+legacy: true
+noDryRun: true
+locale: zh-CN
+environments: 
+- DOCS_LEARN_VALIDATION_ENDPOINT
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+    .openpublishing.publish.config.json:
+  https://github.com/learn/learn-pr.zh-CN:
+  - files:
+     .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+     docfx.json: '{}'
+     path.yml: |
+       ### YamlMime:LearningPath
+       serviceData: "{\"uid\": \"learning-path\",\"achievement\":{\"uid\":\"achievement1\",\"type\":\"trophy\"},\"modules\":[\"module-valid\", \"module-invalid\"]}"
+     module-valid.yml: |
+       ### YamlMime:Module
+       serviceData: "{\"uid\": \"module-valid\",\"achievement\":{\"uid\":\"achievement2\",\"type\":\"badge\"},\"units\":[\"unit\"]}"
+     unit.yml: |
+       ### YamlMime:ModuleUnit
+       serviceData: "{\"uid\": \"unit\",\"durationInMinutes\":3}"
+     unita.yml: |
+       ### YamlMime:ModuleUnit
+       serviceData: "{\"uid\": \"learn.azure.access-blob-storage-metrics-from-code.1-introduction\",\"durationInMinutes\":3,\"tasks\":[],\"quizAnswers\":[]}"
+     module-invalid.yml: |
+       ### YamlMime:Module
+       serviceData: "{\"uid\": \"module-invalid\",\"achievement\":{\"uid\":\"achievement3\",\"type\":\"badge\"},\"units\":[\"unit-undefined\"]}"
+     # invalid module(achievement undefined) with remote-existing unit to create a 'has_error' case
+     module-invalid-1.yml: |
+       ### YamlMime:Module
+       serviceData: "{\"uid\": \"module-invalid-1\",\"units\":[\"learn.azure.access-blob-storage-metrics-from-code.1-introduction\"]}"
+     achievement.yml: |
+       ### YamlMime:Achievement
+         uid: achievement
+     _themes/ContentTemplate/schemas/LearningPath.schema.json: '{}'
+     _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+     _themes/ContentTemplate/schemas/Module.schema.json: '{}'
+     _themes/ContentTemplate/Module.html.primary.tmpl:
+     _themes/ContentTemplate/schemas/ModuleUnit.schema.json: '{}'
+     _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+     _themes/ContentTemplate/schemas/Achievement.schema.json:
+outputs:
+  achievement.json:
+  path.mta.json:
+  path.raw.page.json:
+  module-valid.mta.json:
+  module-valid.raw.page.json:
+  module-invalid.mta.json:
+  module-invalid.raw.page.json:
+  module-invalid-1.mta.json:
+  module-invalid-1.raw.page.json:
+  unit.mta.json:
+  unit.raw.page.json:
+  unita.mta.json:
+  unita.raw.page.json:
+  achievement.json:
+  full-dependent-list.txt:
+  hierarchy.json: |
+    {
+      "achievements": [{"uid": "achievement3"},{"uid": "achievement2"},{"uid": "achievement1"}],
+      "invalid_items": ["module-invalid-1","learn.azure.access-blob-storage-metrics-from-code.1-introduction"],
+      "items":[{"asset_id":"module-valid"},{"asset_id":"unit"}]
+    }
   .errors.log: |
-    {"message_severity":"error", "log_item_type":"user", "code":"TripleCrown_Unimplemented"}
+    {"message_severity":"error","code":"TripleCrown_Module_ChildrenNotFound","message":"Children Uid(s): unit-undefined can't be found.","file":"module-invalid.yml"}
+    {"message_severity":"error","code":"TripleCrown_Module_MetadataError","message":"*Required metadata achievement cannot be null or empty*","file":"module-invalid-1.yml"}
+    {"message_severity":"error","code":"TripleCrown_Module_NoBadgeBind","file":"module-invalid-1.yml"}
+    {"message_severity":"error","code":"TripleCrown_Module_ChildrenCantFallback","message":"This module and it's child units will fallback to en-us. Child units (unit-undefined) are invalid or missing and also not exist in en-us repository.","file":"module-invalid.yml"}
+    {"message_severity":"error","code":"TripleCrown_LearningPath_ChildrenCantFallback","message":"This learning path will fallback to en-us. Child modules (module-invalid) are invalid or missing and also not exist in en-us repository.","file":"path.yml"}
+    {"message_severity":"error","code":"TripleCrown_Unit_ContainBothTaskAndQuiz","message":"Unit (learn.azure.access-blob-storage-metrics-from-code.1-introduction) can't have both Quiz and Task Validation.","file":"unita.yml"}
+  .publish.json: |
+    {
+      "files":[{"source_path":"achievement.yml"},
+               {"source_path":"module-invalid-1.yml", "has_error":true},
+               {"source_path":"module-valid.yml"},
+               {"source_path":"unit.yml"},
+               {"source_path":"unita.yml", "has_error":true}]
+    }

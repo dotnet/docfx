@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 context.Output.Copy(outputPath, file.FilePath);
             }
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, null, outputPath);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata: null, outputPath);
         }
     }
 }

@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.IO;
-
 namespace Microsoft.Docs.LearnValidation
 {
     public class LearnValidationConfig
@@ -11,6 +9,7 @@ namespace Microsoft.Docs.LearnValidation
         public readonly string RepoBranch;
         public readonly string DocsetName;
         public readonly string DocsetPath;
+        public readonly string DocsetOutputPath;
         public readonly string PublishFilePath;
         public readonly string DependencyFilePath;
         public readonly string ManifestFilePath;
@@ -23,6 +22,7 @@ namespace Microsoft.Docs.LearnValidation
             string repoBranch,
             string docsetName,
             string docsetPath,
+            string docsetOutputPath,
             string publishFilePath,
             string dependencyFilePath,
             string manifestFilePath,
@@ -34,6 +34,7 @@ namespace Microsoft.Docs.LearnValidation
             RepoBranch = repoBranch;
             DocsetName = docsetName;
             DocsetPath = docsetPath;
+            DocsetOutputPath = docsetOutputPath;
             PublishFilePath = publishFilePath;
             DependencyFilePath = dependencyFilePath;
             ManifestFilePath = manifestFilePath;

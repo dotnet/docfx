@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<JsonSchemaTransformer>? _jsonSchemaTransformer;
         private readonly ParserPipeline _parserPipeline;
 
-        private readonly ConcurrentDictionary<string, Lazy<BlockToken>> _templates =
-            new ConcurrentDictionary<string, Lazy<BlockToken>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, BlockToken?> _templates =
+                     new ConcurrentDictionary<string, BlockToken?>(PathUtility.PathComparer);
 
         public MustacheTemplate(string templateDir, JObject? global = null, Lazy<JsonSchemaTransformer>? jsonSchemaTransformer = null)
         {
@@ -35,10 +35,17 @@ namespace Microsoft.Docs.Build
             _parserPipeline = new ParserPipelineBuilder().Build();
         }
 
-        public string Render(string templateFileName, JToken model, FilePath? file = null)
+        public bool HasTemplate(string templateName)
+        {
+            return File.Exists(Path.Combine(_templateDir, $"{templateName}.primary.tmpl")) ||
+                   File.Exists(Path.Combine(_templateDir, $"{templateName}.tmpl"));
+        }
+
+        public string Render(string templateName, JToken model, FilePath? file = null)
         {
             var context = new Stack<JToken>();
-            var template = GetTemplate(templateFileName);
+            var template = GetTemplate($"{templateName}.primary.tmpl") ?? GetTemplate($"{templateName}.tmpl") ??
+                throw Errors.Template.MustacheNotFound(Path.Combine(_templateDir, $"{templateName}.tmpl")).ToException();
 
             var result = new StringBuilder(1024);
             context.Push(model);
@@ -60,7 +67,10 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case PartialToken partial:
-                        Render(GetTemplate(partial.Content.ToString()), result, context, file);
+                        var template = GetTemplate(partial.Content.ToString()) ?? GetTemplate($"{partial.Content}.tmpl.partial") ??
+                            throw Errors.Template.MustacheNotFound(Path.Combine(_templateDir, $"{partial.Content}.tmpl.partial")).ToException();
+
+                        Render(template, result, context, file);
                         break;
 
                     case InvertedSectionToken invertedSection:
@@ -187,20 +197,20 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private BlockToken GetTemplate(string name)
+        private BlockToken? GetTemplate(string name)
         {
-            return _templates.GetOrAdd(name, key => new Lazy<BlockToken>(() =>
+            return _templates.GetOrAdd(name, key =>
             {
                 var fileName = Path.Combine(_templateDir, name);
                 if (!File.Exists(fileName))
                 {
-                    fileName = Path.Combine(_templateDir, name + ".tmpl.partial");
+                    return null;
                 }
 
                 var template = MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
 
                 return MustacheParser.Parse(template, s_defaultTags, 0, _parserPipeline);
-            })).Value;
+            });
         }
     }
 }

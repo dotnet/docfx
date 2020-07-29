@@ -44,6 +44,8 @@ namespace Microsoft.Docs.Build
 
         public PathString TildePath { get; private set; }
 
+        public bool IsArchived { get; private set; }
+
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
     }

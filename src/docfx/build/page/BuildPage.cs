@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var (output, metadata) = file.IsPage
+            var (output, metadata) = file.IsHtml
                 ? CreatePageOutput(errors, context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
                 }
 
-                if (context.Config.Legacy && file.IsPage)
+                if (context.Config.Legacy && file.IsHtml)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadataPath, metadata);
@@ -227,22 +227,21 @@ namespace Microsoft.Docs.Build
 
         private static JObject LoadSchemaDocument(ErrorBuilder errors, Context context, JToken token, Document file)
         {
-            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
-
             if (!(token is JObject obj))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
+            var schemaValidator = context.TemplateEngine.GetSchemaValidator(file.Mime);
+            var schemaValidationErrors = schemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
             var validatedObj = new JObject();
             JsonUtility.Merge(validatedObj, obj);
 
             // transform model via json schema
-            if (file.IsPage)
+            if (file.IsHtml)
             {
                 // transform metadata via json schema
                 var userMetadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
@@ -250,7 +249,8 @@ namespace Microsoft.Docs.Build
                 context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file.FilePath);
             }
 
-            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schemaTemplate.JsonSchema, file, validatedObj);
+            var schema = context.TemplateEngine.GetSchema(file.Mime);
+            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
 
             if (context.Config.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
@@ -315,7 +315,7 @@ namespace Microsoft.Docs.Build
 
             // Generate SDP content
             var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
-            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model, file.FilePath);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html", model, file.FilePath);
 
             return ProcessHtml(context, file, content);
         }

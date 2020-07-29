@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (!_config.SkipMonikerValidation && configMonikerRange.Value is null)
+            if (file.Format == FileFormat.Markdown && configMonikerRange.Value is null)
             {
                 errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString));
                 return default;
@@ -111,14 +111,14 @@ namespace Microsoft.Docs.Build
                     // For conceptual docset,
                     // Moniker range not defined in docfx.yml/docfx.json,
                     // user should not define it in file metadata
-                    if (!_config.SkipMonikerValidation && configMonikerRange.Value is null)
+                    if (file.Format == FileFormat.Markdown && configMonikerRange.Value is null)
                     {
                         errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
                         return configMonikers;
                     }
                 }
 
-                return GetMonikerIntersection(errors, configMonikerRange, configMonikers, fileMonikers, source, _config.SkipMonikerValidation);
+                return GetMonikerIntersection(errors, configMonikerRange, configMonikers, fileMonikers, source, file.Format != FileFormat.Markdown);
             }
 
             return configMonikers;

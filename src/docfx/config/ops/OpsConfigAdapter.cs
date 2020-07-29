@@ -124,7 +124,6 @@ namespace Microsoft.Docs.Build
                 allowlists = AllowlistsApi,
                 disallowlists = DisallowlistsApi,
                 xref = xrefMaps,
-                skipMonikerValidation = docset.use_template,
             });
         }
 

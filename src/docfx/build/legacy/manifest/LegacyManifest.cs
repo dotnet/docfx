@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             var output = new LegacyManifestOutput
             {
-                MetadataOutput = (document.ContentType == ContentType.Page && !document.IsPage) || document.ContentType == ContentType.Resource
+                MetadataOutput = (document.ContentType == ContentType.Page && !document.IsHtml) || document.ContentType == ContentType.Resource
                 ? null
                 : new LegacyManifestOutputItem
                 {
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
 
             if (document.ContentType == ContentType.Page || document.ContentType == ContentType.Redirection)
             {
-                if (document.IsPage)
+                if (document.IsHtml)
                 {
                     output.PageOutput = new LegacyManifestOutputItem
                     {
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetType(Context context, ContentType type, Document doc)
         {
-            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !doc.IsPage)
+            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !doc.IsHtml)
             {
                 return "Toc";
             }

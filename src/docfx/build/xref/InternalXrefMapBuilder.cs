@@ -119,9 +119,9 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, Document file)
         {
-            var schemaTemplate = _templateEngine.GetSchema(file.Mime);
+            var schema = _templateEngine.GetSchema(file.Mime);
 
-            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schemaTemplate.JsonSchema, file, token);
+            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
         private InternalXrefSpec AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
