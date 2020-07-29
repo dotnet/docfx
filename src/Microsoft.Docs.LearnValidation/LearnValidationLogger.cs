@@ -33,7 +33,7 @@ namespace Microsoft.Docs.LearnValidation
             {LearnErrorCode.TripleCrown_LearningPath_ChildrenNotFound, "Children Uid(s): {0} can't be found."},
             {LearnErrorCode.TripleCrown_LearningPath_NonSupportedChildrenType, "Invalid children: ({0}). LearningPath can only have Modules as children."},
             {LearnErrorCode.TripleCrown_Token_NotFound, "Token ({0}) can't be found in current repository."},
-            {LearnErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, "Unit ({0}) can't have both Quize and Task Validation."},
+            {LearnErrorCode.TripleCrown_Unit_ContainBothTaskAndQuiz, "Unit ({0}) can't have both Quiz and Task Validation."},
             {LearnErrorCode.TripleCrown_Unit_NoModuleParent, "Unit ({0}) must belong to a valid Module."},
             {LearnErrorCode.TripleCrown_Task_NonSupportedType, "The {0}(th) task's azure resource type ({1}) is invalid."},
             {LearnErrorCode.TripleCrown_Task_NonSupportedTypeFormat, "The {0}(th) task's azure resource type ({1}) is invalid. Type must be formatted as '*/*' when name is specified."},
