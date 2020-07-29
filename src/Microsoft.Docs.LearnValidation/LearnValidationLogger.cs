@@ -39,6 +39,11 @@ namespace Microsoft.Docs.LearnValidation
             {LearnErrorCode.TripleCrown_Task_NonSupportedTypeFormat, "The {0}(th) task's azure resource type ({1}) is invalid. Type must be formatted as '*/*' when name is specified."},
             {LearnErrorCode.TripleCrown_Quiz_MultiAnswers, "The {0}(th) question can only have one correct answer."},
             {LearnErrorCode.TripleCrown_Quiz_NoAnswer, "The {0}(th) question must have one correct answer."},
+            {LearnErrorCode.TripleCrown_Achievement_MetadataError, "{0}"},
+            {LearnErrorCode.TripleCrown_DrySyncError, "{0}"},
+            {LearnErrorCode.TripleCrown_LearningPath_MetadataError, "{0}"},
+            {LearnErrorCode.TripleCrown_Module_MetadataError, "{0}"},
+            {LearnErrorCode.TripleCrown_Unit_MetadataError, "{0}"},
         };
 
         public LearnValidationLogger(Action<LearnLogItem> writeLog)
@@ -57,9 +62,9 @@ namespace Microsoft.Docs.LearnValidation
             }
         }
 
-        public void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string file, params object[] message)
+        public void Log(LearnErrorLevel errorLevel, LearnErrorCode errorCode, string file, params object[] messageArgs)
         {
-            _writeLog?.Invoke(new LearnLogItem(errorLevel, errorCode, FormatMessage(errorCode, message), file));
+            _writeLog?.Invoke(new LearnLogItem(errorLevel, errorCode, string.Format(s_errorMessageMapping[errorCode], messageArgs), file));
 
             if (!string.IsNullOrEmpty(file))
             {
@@ -68,19 +73,6 @@ namespace Microsoft.Docs.LearnValidation
                     _filesWithError.Add(file);
                 }
             }
-        }
-
-        private string FormatMessage(LearnErrorCode errorCode, object[] message)
-        {
-            if (s_errorMessageMapping.TryGetValue(errorCode, out var formatString))
-            {
-                return string.Format(formatString, message ?? Array.Empty<object>());
-            }
-            else if (message != null && message[0] is string str)
-            {
-                return str;
-            }
-            return "";
         }
     }
 
