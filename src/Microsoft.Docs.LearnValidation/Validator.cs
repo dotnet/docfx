@@ -59,7 +59,7 @@ namespace Microsoft.Docs.LearnValidation
                 var files = string.Join(",", g.Select(i => i.SourceRelativePath));
                 foreach (var item in g)
                 {
-                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DuplicatedUid, message: $"{item.Uid} in {string.Join(", ", files)}", file: item.SourceRelativePath);
+                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DuplicatedUid, file: item.SourceRelativePath, item.Uid, files);
                 }
                 isValid = false;
                 return g.Select(gu => gu.SourceRelativePath);
