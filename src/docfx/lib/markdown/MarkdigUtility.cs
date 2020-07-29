@@ -156,13 +156,13 @@ namespace Microsoft.Docs.Build
 
                 case TripleColonBlock tripleColonBlock:
                     string? target = null;
-                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
-                    {
-                        target = "pivot";
-                    }
-                    else
+                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
                     {
                         target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
+                    }
+                    else if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
+                    {
+                        target = "pivot";
                     }
                     if (!string.IsNullOrEmpty(target))
                     {
