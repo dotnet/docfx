@@ -209,7 +209,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetImageLink, GetXref, IsArchive)
+                .UseHtml(GetErrors, GetLink, GetImageLink, GetXref, IsArchived)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
             return _metadataProvider.GetMetadata(GetErrors(), path).Layout;
         }
 
-        private bool IsArchive(FilePath path)
+        private bool IsArchived(FilePath path)
         {
             return _metadataProvider.GetMetadata(GetErrors(), path).IsArchived;
         }

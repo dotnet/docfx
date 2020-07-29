@@ -731,9 +731,10 @@ inputs:
     globalMetadata:
       is_archived: true
   a.md: |
-    <div onclick="alert();" data-source="docs"></div>
+    <div><script></script></div>
 outputs:
-  a.json:
+  a.json: |
+    { "conceptual": "<div></div>" }
 ---
 # Content Validation - Setex Headings
 inputs:

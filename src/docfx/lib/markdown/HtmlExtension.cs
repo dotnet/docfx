@@ -18,13 +18,13 @@ namespace Microsoft.Docs.Build
             Func<SourceInfo<string>, string> getLink,
             Func<SourceInfo<string>, string?, string> getImageLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
-            Func<FilePath, bool> isArchive)
+            Func<FilePath, bool> isArchived)
         {
             return builder.Use(document =>
             {
                 var errors = getErrors();
                 var file = (Document)InclusionContext.File;
-                var scanTags = TemplateEngine.IsConceptual(file.Mime) && !isArchive(file.FilePath);
+                var scanTags = TemplateEngine.IsConceptual(file.Mime) && !isArchived(file.FilePath);
 
                 document.Visit(node =>
                 {
