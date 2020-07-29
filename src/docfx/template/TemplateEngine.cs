@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return JObject.Parse(content);
+                    return JToken.Parse(content);
                 }
                 catch
                 {
