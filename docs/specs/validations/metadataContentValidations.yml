@@ -725,6 +725,17 @@ outputs:
     {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":4,"column":2}
     {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
 ---
+# Suppress disallowed HTML on archive content
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      is_archived: true
+  a.md: |
+    <div><script></script></div>
+outputs:
+  a.json: |
+    { "conceptual": "<div></div>" }
+---
 # Content Validation - Setex Headings
 inputs:
   docfx.yml: |
