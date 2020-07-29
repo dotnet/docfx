@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
         {
             _validator = new Validator(
                 GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules),
+                GetValidationPhysicalFilePath(fileResolver, config.Allowlists),
                 GetValidationPhysicalFilePath(fileResolver, config.Disallowlists));
             _errors = errors;
             _monikerProvider = monikerProvider;

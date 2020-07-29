@@ -2334,4 +2334,49 @@ outputs:
   a.json:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"disallowed-heading","message":"Heading 'H1 'Feedback'' matches the text of a disallowed Docs template heading.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    
+---
+#Content validation - h1 in moniker
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    monikerRange:
+      'v1/**': '< netcore-2.0'
+      'v2/**': '>= netcore-2.0'
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1InMoniker",
+            "message": "H1s are not allowed in moniker sections. Each article should have one and only one H1.",
+            "code": "h1-in-moniker",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Create your first pipeline
+  v2/b.md: |
+    ::: moniker range=">= netcore-2.0"
+    # Create your first pipeline
+    ::: moniker-end
+outputs:
+  a.json:
+  4667fedf/v2/b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-moniker","message":"H1s are not allowed in moniker sections. Each article should have one and only one H1.","file":"v2/b.md","line":2,"end_line":2,"column":1,"end_column":1}
