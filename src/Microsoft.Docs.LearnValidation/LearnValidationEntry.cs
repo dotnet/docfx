@@ -112,7 +112,7 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!result.IsValid)
             {
-                logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, result.Message);
+                logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DrySyncError, file: null, result.Message);
             }
 
             return result.IsValid;

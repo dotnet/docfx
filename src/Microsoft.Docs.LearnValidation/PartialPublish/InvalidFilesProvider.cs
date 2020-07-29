@@ -36,14 +36,14 @@ namespace Microsoft.Docs.LearnValidation
                     {
                         module.IsValid = false;
                         var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, string.Join(",", invalidUnits), module.SourceRelativePath);
+                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, file: module.SourceRelativePath, string.Join(",", invalidUnits));
                     }
 
                     foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, module.Uid, unit.SourceRelativePath);
+                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, file: unit.SourceRelativePath, module.Uid);
                     }
                 }
 
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.LearnValidation
                 if(unitCantFallback.Any())
                 {
                     module.IsDeleted = true;
-                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, string.Join(", ", unitCantFallback), module.SourceRelativePath);
+                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, file: module.SourceRelativePath, string.Join(", ", unitCantFallback));
                     invalidFiles.Add(module.SourceRelativePath);
                     foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u)))
                     {
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.LearnValidation
                 {
                     learningpath.IsValid = false;
                     learningpath.IsDeleted = true;
-                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, string.Join(", ", moduleCantFallback), learningpath.SourceRelativePath);
+                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_LearningPath_ChildrenCantFallback, file: learningpath.SourceRelativePath, string.Join(", ", moduleCantFallback));
                     invalidFiles.Add(learningpath.SourceRelativePath);
                 }
             }

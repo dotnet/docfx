@@ -169,12 +169,12 @@ outputs:
       "items":[{"asset_id":"module-valid"},{"asset_id":"unit"}]
     }
   .errors.log: |
-    {"message_severity":"error","code":"TripleCrown_Module_ChildrenNotFound","message":"unit-undefined","file":"module-invalid.yml"}
+    {"message_severity":"error","code":"TripleCrown_Module_ChildrenNotFound","message":"Children Uid(s): unit-undefined can't be found.","file":"module-invalid.yml"}
     {"message_severity":"error","code":"TripleCrown_Module_MetadataError","message":"*Required metadata achievement cannot be null or empty*","file":"module-invalid-1.yml"}
     {"message_severity":"error","code":"TripleCrown_Module_NoBadgeBind","file":"module-invalid-1.yml"}
-    {"message_severity":"error","code":"TripleCrown_Module_ChildrenCantFallback","message":"unit-undefined","file":"module-invalid.yml"}
-    {"message_severity":"error","code":"TripleCrown_LearningPath_ChildrenCantFallback","message":"module-invalid","file":"path.yml"}
-    {"message_severity":"error","code":"TripleCrown_Unit_ContainBothTaskAndQuiz","message":"learn.azure.access-blob-storage-metrics-from-code.1-introduction","file":"unita.yml"}
+    {"message_severity":"error","code":"TripleCrown_Module_ChildrenCantFallback","message":"This module and it's child units will fallback to en-us. Child units (unit-undefined) are invalid or missing and also not exist in en-us repository.","file":"module-invalid.yml"}
+    {"message_severity":"error","code":"TripleCrown_LearningPath_ChildrenCantFallback","message":"This learning path will fallback to en-us. Child modules (module-invalid) are invalid or missing and also not exist in en-us repository.","file":"path.yml"}
+    {"message_severity":"error","code":"TripleCrown_Unit_ContainBothTaskAndQuiz","message":"Unit (learn.azure.access-blob-storage-metrics-from-code.1-introduction) can't have both Quiz and Task Validation.","file":"unita.yml"}
   .publish.json: |
     {
       "files":[{"source_path":"achievement.yml"},
