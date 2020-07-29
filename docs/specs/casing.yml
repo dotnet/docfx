@@ -75,7 +75,7 @@ outputs:
   OfficeUpdates/common/office/a.json:
   OfficeUpdates/common/office/media/icons/small-business.svg: "SVG"
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '~/a.md'.","file":"common/Office/a.md","line":1,"column":36}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '~/a.md'.","file":"OfficeUpdates/common/Office/a.md","line":1,"column":36}
 ---
 # Route config is case insensitive on windows and mac
 os: windows, osx
