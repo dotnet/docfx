@@ -262,7 +262,7 @@ inputs:
   docs/page.yml: |
     #YamlMime:TestPage
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
-  _themes/ContentTemplate/TestPage.html.primary.js:
+  _themes/ContentTemplate/TestPage.html.tmpl:
   _themes/ContentTemplate/schemas/TestPage.schema.json: "{}"
 outputs:
   docs/a.json: |
@@ -419,10 +419,7 @@ inputs:
         }
       }
     }
-  _themes/ContentTemplate/TestData.html.primary.js: |
-    exports.transform = function (model) {
-      return model.prop;
-    }
+  _themes/ContentTemplate/TestData.html.tmpl:
 outputs:
   a.json: |
     {"metadata": {"href": "b"}}
@@ -454,6 +451,7 @@ inputs:
       var authorCount = model.authors.length;
       return model;
     }
+  _themes/ContentTemplate/TestPage.html.tmpl: |
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":2,"column":1}
@@ -473,10 +471,7 @@ inputs:
       original_b.md: /b
   _themes/ContentTemplate/schemas/TestData.schema.json: '{}'
   _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
-  _themes/ContentTemplate/TestPage.html.primary.js: |
-    exports.transform = function (model) {
-      return model;
-    }
+  _themes/ContentTemplate/TestPage.html.tmpl:
 outputs:
   a.json:
   b.json:

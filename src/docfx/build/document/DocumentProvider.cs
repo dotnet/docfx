@@ -53,15 +53,31 @@ namespace Microsoft.Docs.Build
         {
             var file = GetDocument(path);
             var outputPath = file.SitePath;
-            if ((file.ContentType == ContentType.Page && file.IsPage) ||
-                file.ContentType == ContentType.Redirection ||
-                file.ContentType == ContentType.TableOfContents)
+
+            switch (file.ContentType)
             {
-                var fileExtension = _config.Legacy && file.IsPage
-                    ? ".raw.page.json"
-                    : _config.OutputType == OutputType.Html ? ".html" : ".json";
-                outputPath = Path.ChangeExtension(outputPath, fileExtension);
+                case ContentType.Page:
+                case ContentType.Redirection:
+                    var fileExtension = _config.OutputType switch
+                    {
+                        OutputType.Html => file.IsHtml ? ".html" : ".json",
+                        OutputType.Json => _config.Legacy && file.IsHtml ? ".raw.page.json" : ".json",
+                        _ => throw new NotSupportedException(),
+                    };
+                    outputPath = Path.ChangeExtension(outputPath, fileExtension);
+                    break;
+
+                case ContentType.TableOfContents:
+                    var tocExtension = _config.OutputType switch
+                    {
+                        OutputType.Html => file.IsHtml ? ".html" : ".json",
+                        OutputType.Json => ".json",
+                        _ => throw new NotSupportedException(),
+                    };
+                    outputPath = Path.ChangeExtension(outputPath, tocExtension);
+                    break;
             }
+
             if (_config.OutputUrlType == OutputUrlType.Docs)
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
@@ -78,8 +94,8 @@ namespace Microsoft.Docs.Build
             {
                 return file.SiteUrl;
             }
-            var sitePath = FilePathToSitePath(path, file.ContentType, OutputUrlType.Docs, file.IsPage);
-            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsPage);
+            var sitePath = FilePathToSitePath(path, file.ContentType, OutputUrlType.Docs, file.IsHtml);
+            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsHtml);
         }
 
         public (string documentId, string versionIndependentId) GetDocumentId(FilePath path)
@@ -139,21 +155,21 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _buildScope.GetMime(contentType, path);
-            var isPage = (contentType == ContentType.Page || contentType == ContentType.Redirection) && _templateEngine.IsPage(mime);
+            var isHtml = _templateEngine.IsHtml(contentType, mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isPage);
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isPage);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isPage);
+            var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isPage);
+            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isHtml);
         }
 
-        private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isPage)
+        private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
         {
             var sitePath = ApplyRoutes(filePath.Path).Value;
             if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
             {
-                if (contentType == ContentType.Page && !isPage)
+                if (contentType == ContentType.Page && !isHtml)
                 {
                     sitePath = Path.ChangeExtension(sitePath, ".json");
                 }
@@ -183,17 +199,17 @@ namespace Microsoft.Docs.Build
             return sitePath.Replace('\\', '/');
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isPage)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
         {
-            var url = PathToRelativeUrl(path, contentType, outputUrlType, isPage);
+            var url = PathToRelativeUrl(path, contentType, outputUrlType, isHtml);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isPage)
+        private static string PathToRelativeUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
         {
             var url = path.Replace('\\', '/');
 
-            if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isPage))
+            if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isHtml))
             {
                 if (outputUrlType != OutputUrlType.Ugly)
                 {
@@ -216,12 +232,12 @@ namespace Microsoft.Docs.Build
         /// In docs, canonical URL is later overwritten by template JINT code.
         /// TODO: need to handle the logic difference when template code is removed.
         /// </summary>
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, bool isPage)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, bool isHtml)
         {
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.OutputUrlType, isPage);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.OutputUrlType, isHtml);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";

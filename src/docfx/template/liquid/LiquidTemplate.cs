@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
             if (template is null)
             {
-                throw Errors.System.LiquidNotFound(mimeType).ToException(isError: false);
+                throw Errors.Template.LiquidNotFound(mimeType).ToException(isError: false);
             }
 
             var registers = new Hash

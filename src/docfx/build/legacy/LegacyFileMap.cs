@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        if (document.ContentType == ContentType.Page && !document.IsPage)
+                        if (document.ContentType == ContentType.Page && !document.IsHtml)
                         {
                             return;
                         }

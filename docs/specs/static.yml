@@ -8,7 +8,7 @@ inputs:
 outputs: 
   docs/a/index.json:
   .errors.log: |
-    {"message_severity":"warning","code":"liquid-not-found","message":"Liquid template used to generate HTML is not found for mimeType 'Conceptual', the output HTML will not be generated.","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"liquid-not-found","file":"docs/a.md","line":1,"column":1}
 ---
 # Source file name ending with spaces should not crash
 inputs:
@@ -26,6 +26,24 @@ inputs:
   _themes/Conceptual.html.liquid:
 outputs:
   docs/a b/index.html:
+---
+# Treat TOC as JSON when toc.html.tmpl is missing
+inputs: 
+  docfx.yml: |
+    outputType: html
+  TOC.md:
+outputs: 
+  toc.json:
+---
+# Treat TOC as HTML when toc.html.tmpl is present
+inputs: 
+  docfx.yml: |
+    outputType: html
+  TOC.md:
+  _themes/ContentTemplate/toc.html.tmpl:
+outputs: 
+  toc.html:
+  toc.json:
 ---
 # Apply template and produce html page when output type is html
 # Index page should be handled specially
