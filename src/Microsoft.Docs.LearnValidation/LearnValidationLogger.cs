@@ -72,9 +72,15 @@ namespace Microsoft.Docs.LearnValidation
 
         private string FormatMessage(LearnErrorCode errorCode, object[] message)
         {
-            return s_errorMessageMapping.TryGetValue(errorCode, out var formatString)
-                ? string.Format(formatString, message ?? Array.Empty<object>())
-                : "";
+            if (s_errorMessageMapping.TryGetValue(errorCode, out var formatString))
+            {
+                return string.Format(formatString, message ?? Array.Empty<object>());
+            }
+            else if (message != null && message[0] is string str)
+            {
+                return str;
+            }
+            return "";
         }
     }
 
