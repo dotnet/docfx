@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> _metadataBuilder;
         private static readonly ThreadLocal<bool?> t_isCanonicalVersion = new ThreadLocal<bool?>();
 
+        public JsonSchema Schema => _schema;
+
         public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
         {
             _schema = schema;

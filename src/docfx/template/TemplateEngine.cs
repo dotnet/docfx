@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<IJavaScriptEngine> _js;
-        private readonly ConcurrentDictionary<string, TemplateSchema?> _schemas = new ConcurrentDictionary<string, TemplateSchema?>();
+        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas = new ConcurrentDictionary<string, JsonSchemaValidator?>();
         private readonly MustacheTemplate _mustacheTemplate;
 
         public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
@@ -61,7 +61,12 @@ namespace Microsoft.Docs.Build
 
         public static bool IsMigratedFromMarkdown(string? mime) => mime == "Hub" || mime == "Landing" || mime == "LandingData";
 
-        public TemplateSchema GetSchema(SourceInfo<string?> schemaName)
+        public JsonSchema GetSchema(SourceInfo<string?> schemaName)
+        {
+            return GetSchemaValidator(schemaName).Schema;
+        }
+
+        public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> schemaName)
         {
             var name = schemaName.Value ?? throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
 
@@ -129,7 +134,7 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private TemplateSchema? GetSchemaCore(string schemaName)
+        private JsonSchemaValidator? GetSchemaCore(string schemaName)
         {
             var schemaFilePath = IsLandingData(schemaName)
                 ? Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")
@@ -142,7 +147,7 @@ namespace Microsoft.Docs.Build
 
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
 
-            return new TemplateSchema(jsonSchema, new JsonSchemaValidator(jsonSchema, forceError: true));
+            return new JsonSchemaValidator(jsonSchema, forceError: true);
         }
     }
 }

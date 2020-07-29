@@ -227,15 +227,14 @@ namespace Microsoft.Docs.Build
 
         private static JObject LoadSchemaDocument(ErrorBuilder errors, Context context, JToken token, Document file)
         {
-            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
-
             if (!(token is JObject obj))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
+            var schemaValidator = context.TemplateEngine.GetSchemaValidator(file.Mime);
+            var schemaValidationErrors = schemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
             var validatedObj = new JObject();
@@ -250,7 +249,8 @@ namespace Microsoft.Docs.Build
                 context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file.FilePath);
             }
 
-            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schemaTemplate.JsonSchema, file, validatedObj);
+            var schema = context.TemplateEngine.GetSchema(file.Mime);
+            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
 
             if (context.Config.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
