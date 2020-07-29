@@ -20,7 +20,7 @@ outputs:
 inputs:
   docfx.yml:
   a.yml: |
-    #YamlMime:TestData
+    #YamlMime:testdata
     prop: value
   _themes/ContentTemplate/TestData.json.js: |
     exports.transform = function (model) {

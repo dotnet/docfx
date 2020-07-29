@@ -18,8 +18,10 @@ namespace Microsoft.Docs.Build
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<IJavaScriptEngine> _js;
-        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas = new ConcurrentDictionary<string, JsonSchemaValidator?>();
         private readonly MustacheTemplate _mustacheTemplate;
+
+        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
+                   = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
 
         public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
@@ -55,11 +57,16 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public static bool IsConceptual(string? mime) => mime == "Conceptual";
+        public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
 
-        public static bool IsLandingData(string? mime) => mime == "LandingData";
+        public static bool IsLandingData(string? mime) => "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
 
-        public static bool IsMigratedFromMarkdown(string? mime) => mime == "Hub" || mime == "Landing" || mime == "LandingData";
+        public static bool IsMigratedFromMarkdown(string? mime)
+        {
+            return "Hub".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
+                   "Landing".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
+                   "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
+        }
 
         public JsonSchema GetSchema(SourceInfo<string?> schemaName)
         {
