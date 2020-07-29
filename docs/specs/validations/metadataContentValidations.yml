@@ -1203,6 +1203,51 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"h.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
+# Content validation - comments shouldn't trigger H1 not first
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before H1.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    [//]: # (START>DO_NOT_EDIT)
+    [//]: # (IMPORTANT:Do not edit any of the content between here and the END>DO_NOT_EDIT.)
+    [//]: # (Any modifications should be made in the .xml files in the ModernDev repo.)
+    # AppSourceCop Rule AS0024
+    [//]: # (IMPORTANT: END>DO_NOT_EDIT)
+    <!-- comment -->
+    # h1
+  b.md: |
+    See this markdown
+    # AppSourceCop
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
 #Content validation - h1-missing in docs zone
 inputs:
   docfx.yml: |
