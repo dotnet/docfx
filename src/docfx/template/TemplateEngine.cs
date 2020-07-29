@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             {
                 ContentType.Redirection => true,
                 ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || _mustacheTemplate.HasTemplate($"{mime}.html"),
-                ContentType.TableOfContents => _mustacheTemplate.HasTemplate($"{mime}.html"),
+                ContentType.TableOfContents => _mustacheTemplate.HasTemplate($"toc.html"),
                 _ => false,
             };
         }

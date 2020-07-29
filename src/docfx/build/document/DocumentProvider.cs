@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                     var fileExtension = _config.OutputType switch
                     {
                         OutputType.Html => file.IsHtml ? ".html" : ".json",
-                        OutputType.Json => _config.Legacy ? ".raw.page.json" : ".json",
+                        OutputType.Json => _config.Legacy && file.IsHtml ? ".raw.page.json" : ".json",
                         _ => throw new NotSupportedException(),
                     };
                     outputPath = Path.ChangeExtension(outputPath, fileExtension);

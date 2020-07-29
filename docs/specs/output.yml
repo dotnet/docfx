@@ -696,7 +696,7 @@ outputs:
   .publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a/original.xml", "has_error": true },
+        {"url": "/a.json", "source_path": "a/original.xml", "has_error": true },
         {"url": "/b", "source_path": "a/b.original.xml"},
         {"url": "/c", "source_path": "a/original.xml"},
       ]

@@ -35,6 +35,16 @@ inputs:
 outputs: 
   toc.json:
 ---
+# Treat TOC as HTML when toc.html.tmpl is present
+inputs: 
+  docfx.yml: |
+    outputType: html
+  TOC.md:
+  _themes/ContentTemplate/toc.html.tmpl:
+outputs: 
+  toc.html:
+  toc.json:
+---
 # Apply template and produce html page when output type is html
 # Index page should be handled specially
 # Resource file should not be prettify
