@@ -765,3 +765,30 @@ repos:
 outputs:
   docs/toc.json: |
     {"items":[{"href":"a"}]}
+---
+# loc repo consume _repo.en-us repo in op config
+locale: zh-cn
+repos:
+  https://docs.com/org-en-us/page-fallback#master:
+    - files:
+        docfx.yml:
+        docs/b.md: |
+          [link in a](a.md)
+  https://docs.com/org-loc/page-fallback.zh-cn#master:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{ "build_source_folder": "docs" }],
+            "dependent_repositories": [{
+                "path_to_root": "_repo.en-us",
+                "url": "https://docs.com/org-en-us/page-fallback",
+                "branch": "unexist"
+              }]
+          }
+        docs/docfx.yml: |
+        docs/a.md: |
+          [link in b](b.md)
+          [!include[](b.md)]
+outputs:
+  docs/a.json: |
+    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}

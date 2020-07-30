@@ -43,19 +43,24 @@ namespace Microsoft.Docs.Build
             return s_lrmAdjustment.Replace(text, me => $"{me.Groups[1]}{me.Groups[2]}&lrm;{me.Groups[3]}{me.Groups[4]}");
         }
 
-        public static string? GetFallbackDocsetPath(string docsetPath, Repository? repository, PackageResolver packageResolver)
+        public static string? GetFallbackDocsetPath(string docsetPath, Repository? repository, PackagePath? fallbackRepository, PackageResolver packageResolver)
         {
-            if (repository != null)
+            if (repository == null)
+            {
+                return null;
+            }
+
+            var (fallbackRemote, fallbackBranch) = fallbackRepository?.Type == PackageType.Git
+                ? (fallbackRepository?.Url, fallbackRepository?.Branch)
+                : GetFallbackRepository(repository!.Remote, repository.Branch);
+            if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
-                if (TryGetFallbackRepository(repository?.Remote, repository?.Branch, out var fallbackRemote, out var fallbackBranch))
+                foreach (var branch in new[] { fallbackBranch, "master" })
                 {
-                    foreach (var branch in new[] { fallbackBranch, "master" })
+                    if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                     {
-                        if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
-                        {
-                            return Path.Combine(fallbackRepoPath, docsetSourceFolder);
-                        }
+                        return Path.Combine(fallbackRepoPath, docsetSourceFolder);
                     }
                 }
             }
@@ -107,23 +112,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static bool TryGetFallbackRepository(
-            string? remote,
-            string? branch,
-            [NotNullWhen(true)] out string? fallbackRemote,
-            [NotNullWhen(true)] out string? fallbackBranch)
+        internal static (string? fallbackRemote, string? fallbackBranch) GetFallbackRepository(string? remote, string? branch)
         {
-            fallbackRemote = null;
-            fallbackBranch = null;
-
             if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
             {
-                return false;
+                return default;
             }
 
-            if (TryRemoveLocale(remote, out fallbackRemote, out _))
+            if (TryRemoveLocale(remote, out var fallbackRemote, out _))
             {
-                fallbackBranch = branch;
+                var fallbackBranch = branch;
                 if (TryRemoveLocale(branch, out var branchWithoutLocale, out _))
                 {
                     fallbackBranch = branchWithoutLocale;
@@ -134,10 +132,10 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = contributionBranch;
                 }
 
-                return true;
+                return (fallbackRemote, fallbackBranch);
             }
 
-            return false;
+            return default;
         }
 
         private static bool TryRemoveLocale(string name, [NotNullWhen(true)] out string? nameWithoutLocale, [NotNullWhen(true)] out string? locale)

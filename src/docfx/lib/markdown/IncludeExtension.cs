@@ -2,19 +2,17 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
 {
     internal static class IncludeExtension
     {
-        public static MarkdownPipelineBuilder UseExpandInclude(this MarkdownPipelineBuilder builder, MarkdownContext context, Func<List<Error>> getErrors)
+        public static MarkdownPipelineBuilder UseExpandInclude(this MarkdownPipelineBuilder builder, MarkdownContext context, Func<ErrorBuilder> getErrors)
         {
             var pipeline = CreateMarkdownPipeline(builder);
             var inlinePipeline = CreateMarkdownPipeline(builder, inlineOnly: true);
@@ -37,7 +35,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static void ExpandInclude(
-            MarkdownContext context, MarkdownObject document, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
+            MarkdownContext context, MarkdownObject document, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
             document.Visit(obj =>
             {
@@ -58,7 +56,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static void ExpandInclusionBlock(
-            MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
+            MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
             var (content, file) = context.ReadFile(inclusionBlock.IncludedFilePath, inclusionBlock);
             if (content is null)
@@ -82,7 +80,7 @@ namespace Microsoft.Docs.Build
         }
 
         private static void ExpandInclusionInline(
-            MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, List<Error> errors)
+            MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
             var (content, file) = context.ReadFile(inclusionInline.IncludedFilePath, inclusionInline);
             if (content is null)

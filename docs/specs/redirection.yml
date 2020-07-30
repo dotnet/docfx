@@ -223,8 +223,8 @@ inputs:
 outputs:
   sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
-  sccm/.errors.log: |
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings.","file":"redirections.yml","line":3,"column":18}
+  .errors.log: |
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings.","file":"sccm/redirections.yml","line":3,"column":18}
 ---
 # redirect to empty URL
 inputs:
@@ -369,6 +369,7 @@ outputs:
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
 # Hub/Landing page is treated as *.md when calculating document id
+os: windows, osx
 inputs:
   docfx.yml: |
     product: Azure
@@ -381,7 +382,7 @@ inputs:
   articles/active-directory-b2c/index.yml : |
     ### YamlMime:Hub
   articles/active-directory-b2c/test.yml : |
-    ### YamlMime:Landing
+    ### YamlMime:landing
   _themes/ContentTemplate/schemas/Hub.schema.json:
   _themes/ContentTemplate/Hub.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Landing.schema.json:
@@ -564,3 +565,94 @@ inputs:
       ]
     }
 outputs:
+---
+# Support monikers for rediction
+repos:
+  https://github.com/redirection/source-monikers:
+  - files:
+      docfx.yml: |
+        monikerDefinition: monikerDefinition.json
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "monikers": ["netcore-1.0", "netcore-2.0"], "redirect_URL": "/b"}, 
+            {"source_path": "a.md", "monikers": "netcore-2.1", "redirect_URL": "/c"}]
+         }
+      monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+          ]
+        }
+outputs:
+  .publish.json: |
+    { 
+      "files": 
+        [
+          { "source_path": "a.md", "redirect_url": "/c", "moniker_group": "e277e62e" },
+          { "source_path": "a.md", "redirect_url": "/b", "moniker_group": "e2dfe8fd" }
+        ]
+    }
+  filemap.json: |
+    {
+      "file_mapping": 
+        {
+            "a.md:e2dfe8fd": {
+                "type": "Content",
+                "output_relative_path": "e2dfe8fd/a.html",
+                "asset_id": "a",
+                "monikers": [
+                    "netcore-1.0",
+                    "netcore-2.0"
+                ]
+            },
+            "a.md:e277e62e": {
+                "type": "Content",
+                "output_relative_path": "e277e62e/a.html",
+                "asset_id": "a",
+                "monikers": [
+                    "netcore-2.1"
+                ]
+            }
+        }
+    }
+---
+# Redirection with overlapping monikers
+repos:
+  https://github.com/redirection/source-monikers-overlapping:
+  - files:
+      docfx.yml: |
+        monikerDefinition: monikerDefinition.json
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "monikers": ["netcore-1.0", "netcore-2.0"], "redirect_URL": "/b"}, 
+            {"source_path": "a.md", "monikers": "netcore-2.0", "redirect_URL": "/c"}]
+         }
+      monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+          ]
+        }
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/a': 'a.md [redirection][netcore-1.0, netcore-2.0]<'netcore-1.0', 'netcore-2.0'>', 'a.md [redirection][netcore-2.0]<'netcore-2.0'>'.","line":0,"column":0}
+  .publish.json: |
+    {
+      "files": [
+        {
+          "url": "/a",
+          "source_path": "a.md",
+          "moniker_group": "e2dfe8fd",
+          "locale": "en-us",
+          "redirect_url": "/b",
+        }
+      ]
+    }

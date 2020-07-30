@@ -267,7 +267,9 @@ outputs:
 # Circle toc referencing 1
 inputs:
   docfx.yml: |
-    files: docs/TOC.md
+    files:
+    - docs/TOC.md
+    - docs/index.md
   docs/TOC.md: |
     # [Topic1](index.md) #
     ## Reference toc
@@ -280,18 +282,22 @@ inputs:
     ## [Reference TOC back](../TOC.md)
   docs/index.md:
 outputs:
+  docs/index.json:
   .errors.log: |
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'.","file":"docs/TOC.md","line":1,"column":1}
 ---
 # Circle toc referencing 2
 inputs:
   docfx.yml: |
-    files: docs/TOC.md
+    files:
+    - docs/TOC.md
+    - docs/index.md
   docs/TOC.md: |
     # [Topic1](index.md) #
     ## [Reference itself](TOC.md)
   docs/index.md:
 outputs:
+  docs/index.json:
   .errors.log: |
     {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/TOC.md'.","file":"docs/TOC.md","line":1,"column":1}
 ---

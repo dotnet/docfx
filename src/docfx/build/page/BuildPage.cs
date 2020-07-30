@@ -16,26 +16,18 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Page);
 
-            var errors = new List<Error>();
-
-            var (loadErrors, sourceModel) = Load(context, file);
-            errors.AddRange(loadErrors);
-
-            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddRange(monikerErrors);
-
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
-            if (errors.Any(e => e.Level == ErrorLevel.Error))
+            var errors = context.ErrorBuilder;
+            var sourceModel = Load(errors, context, file);
+            if (context.ErrorBuilder.FileHasError(file.FilePath))
             {
-                context.ErrorBuilder.AddRange(errors);
                 return;
             }
 
-            var (outputErrors, output, metadata) = file.IsPage
-                ? CreatePageOutput(context, file, sourceModel)
+            var (output, metadata) = file.IsHtml
+                ? CreatePageOutput(errors, context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
-            errors.AddRange(outputErrors);
-            context.ErrorBuilder.AddRange(errors);
+
+            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
 
             if (!context.ErrorBuilder.FileHasError(file.FilePath) && !context.Config.DryRun)
             {
@@ -52,7 +44,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
                 }
 
-                if (context.Config.Legacy && file.IsPage)
+                if (context.Config.Legacy && file.IsHtml)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadataPath, metadata);
@@ -62,24 +54,21 @@ namespace Microsoft.Docs.Build
             context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata, outputPath);
         }
 
-        private static (List<Error> errors, object output, JObject metadata) CreatePageOutput(
-            Context context, Document file, JObject sourceModel)
+        private static (object output, JObject metadata) CreatePageOutput(
+            ErrorBuilder errors, Context context, Document file, JObject sourceModel)
         {
-            var errors = new List<Error>();
             var outputMetadata = new JObject();
             var outputModel = new JObject();
 
-            var (inputMetadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-            errors.AddRange(inputMetadataErrors);
-            var (systemMetadataErrors, systemMetadata) = CreateSystemMetadata(context, file, userMetadata);
-            errors.AddRange(systemMetadataErrors);
+            var userMetadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
+            var systemMetadata = CreateSystemMetadata(errors, context, file, userMetadata);
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
             if (context.Config.DryRun && TemplateEngine.IsConceptual(file.Mime) && context.Config.OutputType != OutputType.Html)
             {
-                return (errors, new JObject(), new JObject());
+                return (new JObject(), new JObject());
             }
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
@@ -101,40 +90,39 @@ namespace Microsoft.Docs.Build
 
             if (context.Config.OutputType == OutputType.Json && !context.Config.Legacy)
             {
-                return (errors, outputModel, JsonUtility.SortProperties(outputMetadata));
+                return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, JsonUtility.SortProperties(outputModel), file);
             if (context.Config.OutputType == OutputType.Json)
             {
-                return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
+                return (templateModel, JsonUtility.SortProperties(templateMetadata));
             }
 
             try
             {
                 var html = context.TemplateEngine.RunLiquid(file, templateModel);
-                return (errors, html, JsonUtility.SortProperties(templateMetadata));
+                return (html, JsonUtility.SortProperties(templateMetadata));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 errors.AddRange(dex.Select(ex => ex.Error));
-                return (errors, templateModel, JsonUtility.SortProperties(templateMetadata));
+                return (templateModel, JsonUtility.SortProperties(templateMetadata));
             }
         }
 
-        private static (List<Error> errors, object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
+        private static (object output, JObject metadata) CreateDataOutput(Context context, Document file, JObject sourceModel)
         {
             if (context.Config.DryRun)
             {
-                return (new List<Error>(), new JObject(), new JObject());
+                return (new JObject(), new JObject());
             }
 
-            return (new List<Error>(), context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
+            return (context.TemplateEngine.RunJavaScript($"{file.Mime}.json.js", sourceModel), new JObject());
         }
 
-        private static (List<Error>, SystemMetadata) CreateSystemMetadata(Context context, Document file, UserMetadata userMetadata)
+        private static SystemMetadata CreateSystemMetadata(ErrorBuilder errors, Context context, Document file, UserMetadata userMetadata)
         {
-            var errors = new List<Error>();
             var systemMetadata = new SystemMetadata();
 
             if (!string.IsNullOrEmpty(userMetadata.BreadcrumbPath))
@@ -147,9 +135,7 @@ namespace Microsoft.Docs.Build
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
 
-            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddRange(monikerErrors);
-            systemMetadata.Monikers = monikers;
+            systemMetadata.Monikers = context.MonikerProvider.GetFileLevelMonikers(errors, file.FilePath);
 
             if (IsCustomized404Page(file))
             {
@@ -157,19 +143,16 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel)
-                ? userMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
 
             if (context.Config.DryRun)
             {
-                return (errors, systemMetadata);
+                return systemMetadata;
             }
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
-            var (contributorErrors, contributionInfo) = context.ContributionProvider.GetContributionInfo(file.FilePath, userMetadata.Author);
-            errors.AddRange(contributorErrors);
-            systemMetadata.ContributionInfo = contributionInfo;
+            systemMetadata.ContributionInfo = context.ContributionProvider.GetContributionInfo(errors, file.FilePath, userMetadata.Author);
 
             systemMetadata.Locale = context.BuildOptions.Locale;
             systemMetadata.CanonicalUrl = userMetadata.PageType != "profile" ? file.CanonicalUrl : null;
@@ -198,93 +181,80 @@ namespace Microsoft.Docs.Build
                     $"https://{context.Config.HostName}", "pdfstore", systemMetadata.Locale, $"{context.Config.Product}.{context.Config.Name}", "{branchName}");
             }
 
-            return (errors, systemMetadata);
+            return systemMetadata;
         }
 
-        private static (List<Error> errors, JObject model) Load(Context context, Document file)
+        private static JObject Load(ErrorBuilder errors, Context context, Document file)
         {
             return file.FilePath.Format switch
             {
-                FileFormat.Markdown => LoadMarkdown(context, file),
-                FileFormat.Yaml => LoadYaml(context, file),
-                FileFormat.Json => LoadJson(context, file),
+                FileFormat.Markdown => LoadMarkdown(errors, context, file),
+                FileFormat.Yaml => LoadYaml(errors, context, file),
+                FileFormat.Json => LoadJson(errors, context, file),
                 _ => throw new InvalidOperationException(),
             };
         }
 
-        private static (List<Error> errors, JObject model) LoadMarkdown(Context context, Document file)
+        private static JObject LoadMarkdown(ErrorBuilder errors, Context context, Document file)
         {
-            var errors = new List<Error>();
             var content = context.Input.ReadString(file.FilePath);
             errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
             context.ContentValidator.ValidateSensitiveLanguage(content, file);
 
-            var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-            errors.AddRange(metadataErrors);
+            var userMetadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
 
-            errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
+            context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file.FilePath);
 
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
-            var (markupErrors, html) = context.MarkdownEngine.ToHtml(content, file, MarkdownPipelineType.Markdown, conceptual);
-            errors.AddRange(markupErrors);
+            var html = context.MarkdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, conceptual);
 
             context.ContentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
             ProcessConceptualHtml(conceptual, context, file, html);
 
-            return (errors, context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual));
+            return context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
         }
 
-        private static (List<Error> errors, JObject model) LoadYaml(Context context, Document file)
+        private static JObject LoadYaml(ErrorBuilder errors, Context context, Document file)
         {
-            var (errors, token) = context.Input.ReadYaml(file.FilePath);
-
-            return LoadSchemaDocument(context, errors, token, file);
+            return LoadSchemaDocument(errors, context, context.Input.ReadYaml(errors, file.FilePath), file);
         }
 
-        private static (List<Error> errors, JObject model) LoadJson(Context context, Document file)
+        private static JObject LoadJson(ErrorBuilder errors, Context context, Document file)
         {
-            var (errors, token) = context.Input.ReadJson(file.FilePath);
-
-            return LoadSchemaDocument(context, errors, token, file);
+            return LoadSchemaDocument(errors, context, context.Input.ReadJson(errors, file.FilePath), file);
         }
 
-        private static (List<Error> errors, JObject model) LoadSchemaDocument(Context context, List<Error> errors, JToken token, Document file)
+        private static JObject LoadSchemaDocument(ErrorBuilder errors, Context context, JToken token, Document file)
         {
-            var schemaTemplate = context.TemplateEngine.GetSchema(file.Mime);
-
             if (!(token is JObject obj))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file.FilePath, 1, 1), JTokenType.Object, token.Type).ToException();
             }
 
             // validate via json schema
-            var schemaValidationErrors = schemaTemplate.JsonSchemaValidator.Validate(obj);
+            var schemaValidator = context.TemplateEngine.GetSchemaValidator(file.Mime);
+            var schemaValidationErrors = schemaValidator.Validate(obj);
             errors.AddRange(schemaValidationErrors);
 
             var validatedObj = new JObject();
             JsonUtility.Merge(validatedObj, obj);
 
             // transform model via json schema
-            if (file.IsPage)
+            if (file.IsHtml)
             {
                 // transform metadata via json schema
-                var (metadataErrors, userMetadata) = context.MetadataProvider.GetMetadata(file.FilePath);
+                var userMetadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
                 JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
-                errors.AddRange(metadataErrors);
-
-                errors.AddRange(context.MetadataValidator.ValidateMetadata(userMetadata.RawJObject, file.FilePath));
+                context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file.FilePath);
             }
 
-            var (schemaTransformError, transformedToken) = context.JsonSchemaTransformer.TransformContent(schemaTemplate.JsonSchema, file, validatedObj);
-            errors.AddRange(schemaTransformError);
-            var pageModel = (JObject)transformedToken;
+            var schema = context.TemplateEngine.GetSchema(file.Mime);
+            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
 
             if (context.Config.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {
-                var (deserializeErrors, landingData) = JsonUtility.ToObject<LandingData>(pageModel);
-                errors.AddRange(deserializeErrors);
-
+                var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
                 var razorHtml = RazorTemplate.Render(file.Mime, landingData).GetAwaiter().GetResult();
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
@@ -294,7 +264,7 @@ namespace Microsoft.Docs.Build
                 });
             }
 
-            return (errors, pageModel);
+            return pageModel;
         }
 
         private static (TemplateModel model, JObject metadata) CreateTemplateModel(Context context, JObject pageModel, Document file)
@@ -345,7 +315,7 @@ namespace Microsoft.Docs.Build
 
             // Generate SDP content
             var model = context.TemplateEngine.RunJavaScript($"{file.Mime}.html.primary.js", pageModel);
-            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html.primary.tmpl", model, file.FilePath);
+            var content = context.TemplateEngine.RunMustache($"{file.Mime}.html", model, file.FilePath);
 
             return ProcessHtml(context, file, content);
         }

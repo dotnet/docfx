@@ -403,13 +403,24 @@
             {
                 "type": "Length",
                 "contentTypes": [
-                  "conceptual"
+                    "conceptual"
                 ],
-                "MinLength":  2,
+                "MinLength": 2,
                 "MaxLength": 10,
                 "severity": "SUGGESTION",
                 "code": "description-bad-length",
                 "additionalErrorMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
+            },
+            {
+                "type": "Required",
+                "contentTypes": [
+                    "conceptual",
+                    "include"
+                ],
+                "severity": "SUGGESTION",
+                "code": "ms-date-missing",
+                "additionalErrorMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
+                "disabled": true
             }
         ]
     }

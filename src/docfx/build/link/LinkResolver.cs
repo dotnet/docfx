@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
 
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
             {
-                var (_, metadata) = _metadataProvider.GetMetadata(referencingFile);
+                var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, referencingFile);
                 pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath.Substring(2).TrimStart('/', '\\')));
             }
             else
@@ -253,7 +253,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from redirection files
-            path = FilePath.Redirection(pathToDocset);
+            path = FilePath.Redirection(pathToDocset, default);
             if (_redirectionProvider.Contains(path))
             {
                 return _documentProvider.GetDocument(path);

@@ -13,48 +13,45 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.TableOfContents);
 
+            var errors = context.ErrorBuilder;
+
             // load toc tree
-            var (errors, node, _, _) = context.TableOfContentsLoader.Load(file);
+            var (node, _, _) = context.TableOfContentsLoader.Load(errors, file);
 
             context.ContentValidator.ValidateTocDeprecated(file);
 
-            var (metadataErrors, metadata) = context.MetadataProvider.GetMetadata(file.FilePath);
-            errors.AddRange(metadataErrors);
+            var metadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
+            context.MetadataValidator.ValidateMetadata(errors, metadata.RawJObject, file.FilePath);
 
-            errors.AddRange(context.MetadataValidator.ValidateMetadata(metadata.RawJObject, file.FilePath));
-
-            var (validationErrors, tocMetadata) = JsonUtility.ToObject<TableOfContentsMetadata>(metadata.RawJObject);
-            errors.AddRange(validationErrors);
+            var tocMetadata = JsonUtility.ToObject<TableOfContentsMetadata>(errors, metadata.RawJObject);
 
             var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, file.SitePath);
-
-            // TODO: improve error message for toc monikers overlap
-            var (monikerErrors, monikers) = context.MonikerProvider.GetFileLevelMonikers(file.FilePath);
-            errors.AddRange(monikerErrors);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
 
             // enable pdf
             if (context.Config.OutputPdf)
             {
+                var monikers = context.MonikerProvider.GetFileLevelMonikers(errors, file.FilePath);
                 model.Metadata.PdfAbsolutePath = "/" +
                     UrlUtility.Combine(
                         context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
             }
 
-            context.ErrorBuilder.AddRange(errors);
-
             if (!context.ErrorBuilder.FileHasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {
+                    if (file.IsHtml)
+                    {
+                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                        var html = context.TemplateEngine.RunMustache($"toc.html", viewModel, file.FilePath);
+                        context.Output.WriteText(outputPath, html);
+                    }
+
                     // Just for current PDF build. toc.json is used for generate PDF outline
                     var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                     context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
-
-                    var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
-                    var html = context.TemplateEngine.RunMustache($"toc.html.tmpl", viewModel, file.FilePath);
-                    context.Output.WriteText(outputPath, html);
                 }
                 else
                 {
@@ -63,7 +60,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, null, context.DocumentProvider.GetOutputPath(file.FilePath));
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata: null, outputPath);
         }
     }
 }

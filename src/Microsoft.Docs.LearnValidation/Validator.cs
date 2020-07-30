@@ -12,15 +12,17 @@ namespace Microsoft.Docs.LearnValidation
 {
     partial class Validator
     {
-        private LegacyManifest _manifest;
-        private string _outputBasePath;
-        private LearnValidationHelper _learnValidationHelper;
+        private readonly LegacyManifest _manifest;
+        private readonly string _outputBasePath;
+        private readonly LearnValidationHelper _learnValidationHelper;
+        private readonly LearnValidationLogger _logger;
 
-        public Validator(LearnValidationHelper learnValidationHelper, string manifestFilePath)
+        public Validator(LearnValidationHelper learnValidationHelper, string manifestFilePath, LearnValidationLogger logger)
         {
             _learnValidationHelper = learnValidationHelper;
             _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath));
             _outputBasePath = Path.GetDirectoryName(manifestFilePath);
+            _logger = logger;
         }
 
         public (bool, List<IValidateModel>) Validate()
@@ -31,10 +33,10 @@ namespace Microsoft.Docs.LearnValidation
             var achievementFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "Achievements", StringComparison.OrdinalIgnoreCase)).ToList();
 
             var hierarchyItems = new List<IValidateModel>();
-            var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath);
-            var unitValidator = new UnitValidator(unitFiles, _outputBasePath);
-            var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath);
-            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _learnValidationHelper);
+            var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath, _logger);
+            var unitValidator = new UnitValidator(unitFiles, _outputBasePath, _logger);
+            var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath, _logger);
+            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _learnValidationHelper, _logger);
 
             //Add badge and trophy to achievements
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
@@ -57,7 +59,7 @@ namespace Microsoft.Docs.LearnValidation
                 var files = string.Join(",", g.Select(i => i.SourceRelativePath));
                 foreach (var item in g)
                 {
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DuplicatedUid, message: $"{item.Uid} in {string.Join(", ", files)}", file: item.SourceRelativePath);
+                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DuplicatedUid, file: item.SourceRelativePath, item.Uid, files);
                 }
                 isValid = false;
                 return g.Select(gu => gu.SourceRelativePath);

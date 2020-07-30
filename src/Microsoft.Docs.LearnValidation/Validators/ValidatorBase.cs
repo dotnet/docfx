@@ -6,19 +6,22 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.LearnValidation
 {
     public abstract class ValidatorBase
     {
+        protected LearnValidationLogger Logger { get; }
         protected List<LegacyManifestItem> ManifestItems { get; }
         protected string BathPath { get; }
         public List<IValidateModel> Items { get; protected set; } = new List<IValidateModel>();
 
-        public ValidatorBase(List<LegacyManifestItem> manifestItems, string basePath)
+        public ValidatorBase(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
         {
             ManifestItems = manifestItems;
             BathPath = basePath;
+            Logger = logger;
 
             ExtractItems();
         }
@@ -29,18 +32,21 @@ namespace Microsoft.Docs.LearnValidation
         protected virtual void ExtractItems()
         {
             if (ManifestItems == null) return;
-            Items = ManifestItems.Select(m =>
+            var items = new IValidateModel[ManifestItems.Count];
+            Parallel.For(0, ManifestItems.Count, i =>
             {
-                var path = Path.Combine(BathPath, m.Output.MetadataOutput.RelativePath);
+                var manifestItem = ManifestItems[i];
+                var path = Path.Combine(BathPath, manifestItem.Output.MetadataOutput.RelativePath);
                 if (!File.Exists(path))
                 {
-                    path = m.Output.MetadataOutput.LinkToPath;
+                    path = manifestItem.Output.MetadataOutput.LinkToPath;
                 }
                 var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
-                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, m);
+                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem);
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
-                return hierarchyItem;
-            }).Cast<IValidateModel>().ToList();
+                items[i] = (IValidateModel)hierarchyItem;
+            });
+            Items = items.ToList();
         }
 
         protected virtual void SetHierarchyData(IValidateModel item, ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)

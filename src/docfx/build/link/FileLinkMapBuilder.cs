@@ -28,10 +28,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(inclusionRoot);
+            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, inclusionRoot);
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
 
-            _errors.AddRange(errors);
             _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, monikers.MonikerGroup, targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
         }
 

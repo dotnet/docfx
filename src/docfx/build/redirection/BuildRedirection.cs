@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 
@@ -13,12 +12,10 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.ContentType == ContentType.Redirection);
 
-            var errors = new List<Error>();
-
-            var (redirectError, redirectUrl) = context.RedirectionProvider.GetRedirectUrl(file.FilePath);
-            errors.AddIfNotNull(redirectError);
-
+            var errors = context.ErrorBuilder;
+            var redirectUrl = context.RedirectionProvider.GetRedirectUrl(errors, file.FilePath);
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+
             var publishMetadata = new JObject
             {
                 ["redirect_url"] = redirectUrl,
@@ -27,8 +24,7 @@ namespace Microsoft.Docs.Build
                 ["canonical_url"] = file.CanonicalUrl,
             };
 
-            context.ErrorBuilder.AddRange(errors);
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, null);
+            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, outputPath: null);
         }
     }
 }

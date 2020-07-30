@@ -12,12 +12,12 @@ namespace Microsoft.Docs.Build
 {
     internal class ContentValidator
     {
-        private Validator _validator;
-        private ErrorBuilder _errors;
-        private MonikerProvider _monikerProvider;
-        private MetadataProvider _metadataProvider;
-        private Lazy<PublishUrlMap> _publishUrlMap;
-        private ConcurrentHashSet<SourceInfo<string>> _links;
+        private readonly Validator _validator;
+        private readonly ErrorBuilder _errors;
+        private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links;
 
         public ContentValidator(
             Config config,
@@ -35,13 +35,13 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
             _publishUrlMap = publishUrlMap;
-            _links = new ConcurrentHashSet<SourceInfo<string>>();
+            _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
         }
 
         public void ValidateImageLink(Document file, SourceInfo<string> link, string? altText)
         {
             // validate image link and altText here
-            if (_links.TryAdd(link) && TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
+            if (_links.TryAdd((file.FilePath, link)) && TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType, File = file.FilePath.Path };
                 Write(_validator.ValidateLink(
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
 
             if (TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
-                var (_, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file.FilePath);
                 var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
                 var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, monikers);
                 var titleItem = new TitleItem
@@ -252,7 +252,7 @@ namespace Microsoft.Docs.Build
                     {
                         return false;
                     }
-                    var (_, metadata) = _metadataProvider.GetMetadata(filePath);
+                    var metadata = _metadataProvider.GetMetadata(_errors, filePath);
                     if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
                     {
                         return false;

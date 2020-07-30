@@ -175,11 +175,7 @@ namespace Microsoft.Docs.Build
                 // Parse and split TOC
                 ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
                 {
-                    var errors = new List<Error>();
-                    var toc = _tocParser.Parse(file, errors);
-                    _errors.AddRange(errors);
-
-                    SplitToc(file, toc, tocs);
+                    SplitToc(file, _tocParser.Parse(file, _errors), tocs);
                 });
 
                 var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
@@ -188,8 +184,7 @@ namespace Microsoft.Docs.Build
                 ParallelUtility.ForEach(_errors, tocs, path =>
                 {
                     var file = _documentProvider.GetDocument(path);
-                    var (errors, _, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
-                    _errors.AddRange(errors);
+                    var (_, referencedDocuments, referencedTocs) = _tocLoader.Load(_errors, file);
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
                 });

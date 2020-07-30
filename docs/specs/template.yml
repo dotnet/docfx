@@ -20,18 +20,32 @@ outputs:
 inputs:
   docfx.yml:
   a.yml: |
-    #YamlMime:TestData
+    #YamlMime:TestObject
     prop: value
-  _themes/ContentTemplate/TestData.json.js: |
+  b.yml: |
+    #YamlMime:TestArray
+    props:
+    - p1
+    - p2
+  _themes/ContentTemplate/TestObject.json.js: |
     exports.transform = function (model) {
       return {
         content: JSON.stringify({result: model.prop + " has run js data transform"})
       }
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestObject.schema.json: "{}"
+  _themes/ContentTemplate/TestArray.json.js: |
+    exports.transform = function (model) {
+      return {
+        content: JSON.stringify(model.props)
+      }
+    }
+  _themes/ContentTemplate/schemas/TestArray.schema.json: "{}"
 outputs:
   a.json: |
     {"result": "value has run js data transform"}
+  b.json: |
+    ['p1', 'p2']
 ---
 # Run data-transform if provided in legacy mode, by default return {"content": "serialized json"}
 legacy: true

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ECMA2Yaml;
@@ -12,35 +11,34 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static (List<Error>, OpsConfig?) LoadOpsConfig(string workingDirectory)
+        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, string workingDirectory)
         {
             var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
             if (!File.Exists(fullPath))
             {
-                return (new List<Error>(), null);
+                return default;
             }
 
             var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
-            return JsonUtility.Deserialize<OpsConfig>(File.ReadAllText(fullPath), filePath);
+            return JsonUtility.Deserialize<OpsConfig>(errors, File.ReadAllText(fullPath), filePath);
         }
 
-        public static (List<Error> errors, string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(
-            string docsetPath, Repository? repository)
+        public static (string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(
+            ErrorBuilder errors, string docsetPath, Repository? repository)
         {
             if (repository is null)
             {
-                return (new List<Error>(), default, default, default);
+                return (default, default, default);
             }
 
-            var (errors, opsConfig) = LoadOpsConfig(repository.Path);
+            var opsConfig = LoadOpsConfig(errors, repository.Path);
             if (opsConfig is null)
             {
-                return (new List<Error>(), default, default, default);
+                return (default, default, default);
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            var (xrefEndpoint, xrefQueryTags, config) = ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
-            return (errors, xrefEndpoint, xrefQueryTags, config);
+            return ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
         }
 
         private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
@@ -64,6 +62,8 @@ namespace Microsoft.Docs.Build
 
             result["editRepositoryUrl"] = opsConfig.GitRepositoryUrlOpenToPublicContributors;
             result["editRepositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors;
+            result["fallbackRepository"] = dependencies.FirstOrDefault(
+                dep => dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase)).obj;
 
             var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(
                 config => config.BuildSourceFolder.FolderEquals(buildSourceFolder));

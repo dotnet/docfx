@@ -101,6 +101,7 @@ namespace Microsoft.Docs.Build
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
                 { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
+                { "DOCS_LEARN_VALIDATION_ENDPOINT", Environment.GetEnvironmentVariable("DOCS_LEARN_VALIDATION_ENDPOINT") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
             };
@@ -174,6 +175,7 @@ namespace Microsoft.Docs.Build
                 {
                     "build", docsetPath,
                     "--output", randomOutputPath,
+                     "--log", Path.Combine(randomOutputPath, ".errors.log"),
                     dryRun ? "--dry-run" : null,
                     spec.Legacy ? "--legacy" : null,
                     spec.NoRestore ? "--no-restore" : null,

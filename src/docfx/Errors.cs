@@ -88,28 +88,6 @@ namespace Microsoft.Docs.Build
 
             public static Error MetadataValidationRuleset(string ruleset)
                 => new Error(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}.");
-
-            /// <summary>
-            /// Liquid is not found for current mime type.
-            /// </summary>
-            /// Behavior: ❌ Message: ❌
-            public static Error LiquidNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template used to generate HTML is not found for mimeType '{source}', the output HTML will not be generated.", source);
-
-            /// <summary>
-            /// Failed to restore dependent repository
-            /// Examples:
-            ///   - System service account is a member of org but is not SSO enabled.
-            ///   - System service account does not have sufficient permission to restore template repo.
-            /// </summary>
-            /// Behavior: ✔️ Message: ✔️
-            public static Error RestoreDependentRepositoryFailed(string url, string branch)
-            {
-                var message = $"Failed to restore dependent repository `{url}#{branch}`. "
-                        + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). "
-                        + $"If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.";
-                return new Error(ErrorLevel.Error, "restore-dependent-repository-failed", message);
-            }
         }
 
         public static class Logging
@@ -719,6 +697,21 @@ namespace Microsoft.Docs.Build
         public static class DependencyRepository
         {
             /// <summary>
+            /// Failed to restore dependent repository
+            /// Examples:
+            ///   - System service account is a member of org but is not SSO enabled.
+            ///   - System service account does not have sufficient permission to restore template repo.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RestoreDependentRepositoryFailed(string url, string branch)
+            {
+                var message = $"Failed to restore dependent repository `{url}#{branch}`. "
+                        + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). "
+                        + $"If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.";
+                return new Error(ErrorLevel.Error, "restore-dependent-repository-failed", message);
+            }
+
+            /// <summary>
             /// Repository owner did not re-authorize his/her GitHub account to Docs Build with SSO.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
@@ -753,6 +746,23 @@ namespace Microsoft.Docs.Build
                     + $"This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/";
                 return new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", message);
             }
+        }
+
+        public static class Template
+        {
+            /// <summary>
+            /// Liquid is not found for current mime type.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error LiquidNotFound(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
+
+            /// <summary>
+            /// Mustache is not found for current mime type.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error MustacheNotFound(string templateFileName)
+                => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
         }
     }
 }

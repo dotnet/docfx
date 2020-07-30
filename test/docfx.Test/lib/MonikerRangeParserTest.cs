@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             "azure-sqldw-latest azuresqldb-current")]
         public void TestEvaluateMonikerRange(string rangeString, string expectedMonikers)
         {
-            var (_, monikers) = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString));
+            var monikers = _monikerRangeParser.Parse(new ErrorList(), new SourceInfo<string>(rangeString));
             var result = monikers.ToList();
             result.Sort(StringComparer.Ordinal);
             Assert.Equal(expectedMonikers, string.Join(' ', result));
@@ -127,15 +127,17 @@ namespace Microsoft.Docs.Build
         [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ''.")]
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
-            var (errors,_) = _monikerRangeParser.Parse(new SourceInfo<string>(rangeString));
+            var errors = new ErrorList();
+            _monikerRangeParser.Parse(errors, new SourceInfo<string>(rangeString));
             Assert.Contains(errorMessage, errors.Select(x => x.Message));
         }
 
         [Fact]
         public void TestNullDefinitionShouldFail()
         {
+            var errors = new ErrorList();
             var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
-            var (errors, _) = monikerRangeParser.Parse(new SourceInfo<string>("netcore-1.0"));
+            monikerRangeParser.Parse(errors, new SourceInfo<string>("netcore-1.0"));
             Assert.Collection(errors, error =>
             {
                 Assert.Equal("moniker-range-invalid", error.Code);

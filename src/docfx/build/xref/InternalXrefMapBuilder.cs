@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 ParallelUtility.ForEach(
                     _errors,
                     _buildScope.GetFiles(ContentType.Page),
-                    file => Load(builder, file));
+                    file => Load(_errors, builder, file));
             }
 
             var xrefmap =
@@ -65,9 +65,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private void Load(
-            ListBuilder<InternalXrefSpec> xrefs,
-            FilePath path)
+        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath path)
         {
             var file = _documentProvider.GetDocument(path);
             if (file.ContentType != ContentType.Page)
@@ -75,15 +73,12 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var errors = new List<Error>();
             switch (file.FilePath.Format)
             {
                 case FileFormat.Markdown:
                     {
-                        var (fileMetaErrors, fileMetadata) = _metadataProvider.GetMetadata(file.FilePath);
-                        errors.AddRange(fileMetaErrors);
-                        var (markdownErrors, spec) = LoadMarkdown(fileMetadata, file);
-                        errors.AddRange(markdownErrors);
+                        var fileMetadata = _metadataProvider.GetMetadata(errors, file.FilePath);
+                        var spec = LoadMarkdown(errors, fileMetadata, file);
                         if (spec != null)
                         {
                             xrefs.Add(spec);
@@ -92,48 +87,41 @@ namespace Microsoft.Docs.Build
                     }
                 case FileFormat.Yaml:
                     {
-                        var (yamlErrors, token) = _input.ReadYaml(file.FilePath);
-                        errors.AddRange(yamlErrors);
-                        var (schemaErrors, specs) = LoadSchemaDocument(token, file);
-                        errors.AddRange(schemaErrors);
+                        var token = _input.ReadYaml(errors, file.FilePath);
+                        var specs = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
                         break;
                     }
                 case FileFormat.Json:
                     {
-                        var (jsonErrors, token) = _input.ReadJson(file.FilePath);
-                        errors.AddRange(jsonErrors);
-                        var (schemaErrors, specs) = LoadSchemaDocument(token, file);
-                        errors.AddRange(schemaErrors);
+                        var token = _input.ReadJson(errors, file.FilePath);
+                        var specs = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
                         break;
                     }
             }
-            _errors.AddRange(errors);
         }
 
-        private (List<Error> errors, InternalXrefSpec? spec) LoadMarkdown(UserMetadata metadata, Document file)
+        private InternalXrefSpec? LoadMarkdown(ErrorBuilder errors, UserMetadata metadata, Document file)
         {
             if (string.IsNullOrEmpty(metadata.Uid))
             {
-                return (new List<Error>(), default);
+                return default;
             }
 
-            var (errors, monikers) = _monikerProvider.GetFileLevelMonikers(file.FilePath);
+            var monikers = _monikerProvider.GetFileLevelMonikers(errors, file.FilePath);
             var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file, monikers);
 
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
-            return (errors, xref);
+            return xref;
         }
 
-        private (List<Error> errors, IReadOnlyList<InternalXrefSpec> specs) LoadSchemaDocument(
-            JToken token,
-            Document file)
+        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, Document file)
         {
-            var schemaTemplate = _templateEngine.GetSchema(file.Mime);
+            var schema = _templateEngine.GetSchema(file.Mime);
 
-            return _jsonSchemaTransformer.LoadXrefSpecs(schemaTemplate.JsonSchema, file, token);
+            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
         private InternalXrefSpec AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)

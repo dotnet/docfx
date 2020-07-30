@@ -13,8 +13,8 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class AchievementValidator : ValidatorBase
     {
-        public AchievementValidator(List<LegacyManifestItem> manifestItems, string basePath)
-            :base(manifestItems, basePath)
+        public AchievementValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
+            :base(manifestItems, basePath, logger)
         {
         }
 
@@ -29,8 +29,7 @@ namespace Microsoft.Docs.LearnValidation
                     path = m.Output.MetadataOutput.LinkToPath;
                 }
 
-                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(
-                    JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)).Value<string>("content"));
+                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path));
                 
                 achievements.ForEach(achievement => achievement.SourceRelativePath = m.SourceRelativePath!);
 
@@ -49,7 +48,7 @@ namespace Microsoft.Docs.LearnValidation
                 if(!string.IsNullOrEmpty(result))
                 {
                     itemValid = false;
-                    LearnValidationLogger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Achievement_MetadataError, result, item.SourceRelativePath);
+                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Achievement_MetadataError, file: item.SourceRelativePath, result);
                 }
 
                 item.IsValid = itemValid;

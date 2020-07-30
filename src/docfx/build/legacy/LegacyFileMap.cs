@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        if (document.ContentType == ContentType.Page && !document.IsPage)
+                        if (document.ContentType == ContentType.Page && !document.IsHtml)
                         {
                             return;
                         }
@@ -69,6 +69,12 @@ namespace Microsoft.Docs.Build
                             if (!string.IsNullOrEmpty(item.fileMapItem.Version))
                             {
                                 return $"{item.path}:{item.fileMapItem.Version}";
+                            }
+
+                            // redirection file with monikers
+                            else if (item.fileMapItem.Monikers.HasMonikers)
+                            {
+                                return $"{item.path}:{item.fileMapItem.Monikers.MonikerGroup}";
                             }
                             else
                             {

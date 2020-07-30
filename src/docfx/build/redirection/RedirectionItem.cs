@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -10,6 +11,9 @@ namespace Microsoft.Docs.Build
     internal class RedirectionItem
     {
         public PathString SourcePath { get; set; }
+
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public SourceInfo<string>[]? Monikers { get; set; }
 
         public SourceInfo<string> RedirectUrl { get; set; } = new SourceInfo<string>("");
 

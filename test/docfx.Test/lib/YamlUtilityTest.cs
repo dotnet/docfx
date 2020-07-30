@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
   - item2
 : value
 ";
-            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Parse(yaml, null));
+            var exception = Assert.Throws<DocfxException>(() => YamlUtility.Parse(new ErrorList(), yaml, null));
         }
 
         [Fact]
@@ -272,7 +272,8 @@ valueRequired: a
 Key1: 0
 Key1: 1
 ";
-            var (errors, result) = YamlUtility.Parse(yaml, null);
+            var errors = new ErrorList();
+            var result = YamlUtility.Parse(errors, yaml, null);
             Assert.Collection(
                 errors,
                 e => Assert.Equal("Key 'Key1' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.", e.Message));
@@ -287,7 +288,8 @@ items:
  - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
         {
-            var (errors, value) = YamlUtility.Parse(yaml, new FilePath("file"));
+            var errors = new ErrorList();
+            var value = YamlUtility.Parse(errors, yaml, new FilePath("file"));
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any
@@ -306,11 +308,11 @@ items:
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
-        private static (List<Error> errors, T model) DeserializeWithValidation<T>(string json) where T : class, new()
+        private static (ErrorList errors, T model) DeserializeWithValidation<T>(string json) where T : class, new()
         {
-            var (errors, token) = YamlUtility.Parse(json, null);
-            var (mismatchingErrors, result) = JsonUtility.ToObject<T>(token);
-            errors.AddRange(mismatchingErrors);
+            var errors = new ErrorList();
+            var token= YamlUtility.Parse(errors, json, null);
+            var result = JsonUtility.ToObject<T>(errors, token);
             return (errors, result);
         }
 

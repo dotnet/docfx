@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Syntax;
@@ -15,16 +14,17 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseHtml(
             this MarkdownPipelineBuilder builder,
-            Func<List<Error>> getErrors,
+            Func<ErrorBuilder> getErrors,
             Func<SourceInfo<string>, string> getLink,
             Func<SourceInfo<string>, string?, string> getImageLink,
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
+            Func<FilePath, bool> isArchived)
         {
             return builder.Use(document =>
             {
                 var errors = getErrors();
-                var file = InclusionContext.File as Document;
-                var scanTags = file != null && file.ContentType == ContentType.Page && TemplateEngine.IsConceptual(file.Mime);
+                var file = (Document)InclusionContext.File;
+                var scanTags = TemplateEngine.IsConceptual(file.Mime) && !isArchived(file.FilePath);
 
                 document.Visit(node =>
                 {
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 });
             });
 
-            string ProcessHtml(string html, MarkdownObject block, List<Error> errors, bool scanTags)
+            string ProcessHtml(string html, MarkdownObject block, ErrorBuilder errors, bool scanTags)
             {
                 // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
                 // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.

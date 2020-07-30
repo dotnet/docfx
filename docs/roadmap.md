@@ -28,9 +28,9 @@ The highest priority of docfx v3 is to support <https://docs.microsoft.com>. It 
 
 ### Phase 5: Learn Contents
 
-- [ ] Microsoft Learn contents
+- [ ] Microsoft Learn contents _(in progress)_
 
 ### Phase 6: Future
 
 - [ ] PDF _(in progress)_
-- [ ] Tweak <https://docs.microsoft.com> template for community needs
+- [ ] Tweak <https://docs.microsoft.com> template for community needs _(started)_

@@ -1402,6 +1402,7 @@ inputs:
   monikerDefinition.json: |
     {}
 outputs:
+  docs/v1/a.json:
   .errors.log: |
     {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range '>= netcore-2.0': Moniker 'netcore-2.0' is not defined.","file":"docfx.yml","line":2,"column":17}
 ---
@@ -1778,10 +1779,9 @@ outputs:
     {"message_severity":"warning","code":"null-array-value","message":"'monikers' contains null value, the null value has been removed.","file":"docs/v1/TOC.md","line":3,"column":4}
     {"message_severity":"warning","code":"duplicate-moniker-config","message":"Both 'monikers' and 'monikerRange' are defined, 'monikers' is ignored."}
 ---
-# Should be OK for reference versioning docset to skip moniker range in config file
+# Skip moniker validation for .yml files
 inputs:
   docfx.yml: |
-    skipMonikerValidation: true
     monikerDefinition: monikerDefinition.json
   docs/a.yml: |
     ### YamlMime:TestData
@@ -1789,6 +1789,10 @@ inputs:
       monikers: 
       - NETcore-2.0
       - netcore-1.0
+  docs/b.md: |
+    ---
+    monikers: netcore-1.0
+    ---
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
@@ -1810,6 +1814,8 @@ inputs:
 outputs:
   e2dfe8fd/docs/a.json: |
     {"metadata":{"monikers":["netcore-1.0","netcore-2.0"]}}
+  .errors.log: |
+    {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '' is '', while file monikers is 'netcore-1.0'.","file":"docs/b.md","line":2,"column":11}
 ---
 # Group config is ignored with groups missing in docfx.json of v2
 inputs:
@@ -1870,7 +1876,6 @@ inputs:
         ],
         "dest": "docs",
         "monikerDefinition": "monikerDefinition.json",
-        "skipMonikerValidation": true,
       }
     }
   monikerDefinition.json: |
@@ -1909,7 +1914,6 @@ inputs:
         ],
         "dest": "docs",
         "monikerDefinition": "monikerDefinition.json",
-        "skipMonikerValidation": true,
       }
     }
   monikerDefinition.json: |

@@ -81,19 +81,17 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public (List<Error> errors, MarkdownDocument ast) Parse(string content, Document file, MarkdownPipelineType pipelineType)
+        public MarkdownDocument Parse(ErrorBuilder errors, string content, Document file, MarkdownPipelineType pipelineType)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    var status = new Status();
+                    var status = new Status(errors);
 
                     t_status.Value!.Push(status);
 
-                    var ast = Markdown.Parse(content, _pipelines[(int)pipelineType]);
-
-                    return (status.Errors, ast);
+                    return Markdown.Parse(content, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
@@ -102,19 +100,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public (List<Error> errors, string html) ToHtml(string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
+        public string ToHtml(ErrorBuilder errors, string markdown, Document file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    var status = new Status(conceptual);
+                    var status = new Status(errors, conceptual);
 
                     t_status.Value!.Push(status);
 
-                    var html = Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
-
-                    return (status.Errors, html);
+                    return Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
@@ -213,7 +209,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetImageLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetImageLink, GetXref, IsArchived)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -263,7 +259,7 @@ namespace Microsoft.Docs.Build
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.GetSourceInfo(line)));
         }
 
-        private static List<Error> GetErrors()
+        private static ErrorBuilder GetErrors()
         {
             return t_status.Value!.Peek().Errors;
         }
@@ -275,7 +271,12 @@ namespace Microsoft.Docs.Build
 
         private string? GetLayout(FilePath path)
         {
-            return _metadataProvider.GetMetadata(path).metadata.Layout;
+            return _metadataProvider.GetMetadata(GetErrors(), path).Layout;
+        }
+
+        private bool IsArchived(FilePath path)
+        {
+            return _metadataProvider.GetMetadata(GetErrors(), path).IsArchived;
         }
 
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
@@ -347,18 +348,12 @@ namespace Microsoft.Docs.Build
 
         private MonikerList ParseMonikerRange(SourceInfo<string?> monikerRange)
         {
-            var status = t_status.Value!.Peek();
-            var (monikerErrors, monikers) = _monikerProvider.GetZoneLevelMonikers(((Document)InclusionContext.RootFile).FilePath, monikerRange);
-            status.Errors.AddRange(monikerErrors);
-            return monikers;
+            return _monikerProvider.GetZoneLevelMonikers(GetErrors(), ((Document)InclusionContext.RootFile).FilePath, monikerRange);
         }
 
         private MonikerList GetFileLevelMonikers()
         {
-            var status = t_status.Value!.Peek();
-            var (monikerErrors, monikers) = _monikerProvider.GetFileLevelMonikers(((Document)InclusionContext.RootFile).FilePath);
-            status.Errors.AddRange(monikerErrors);
-            return monikers;
+            return _monikerProvider.GetFileLevelMonikers(GetErrors(), ((Document)InclusionContext.RootFile).FilePath);
         }
 
         private string? GetCanonicalVersion()
@@ -370,10 +365,11 @@ namespace Microsoft.Docs.Build
         {
             public ConceptualModel? Conceptual { get; }
 
-            public List<Error> Errors { get; } = new List<Error>();
+            public ErrorBuilder Errors { get; }
 
-            public Status(ConceptualModel? conceptual = null)
+            public Status(ErrorBuilder errors, ConceptualModel? conceptual = null)
             {
+                Errors = errors;
                 Conceptual = conceptual;
             }
         }

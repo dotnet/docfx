@@ -67,10 +67,9 @@ namespace Microsoft.Docs.Build
         public bool IsExperimental { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the current document is schema data
-        /// TODO: merge this with ContentType
+        /// Gets a value indicating whether the current document is output as HTML.
         /// </summary>
-        public bool IsPage { get; }
+        public bool IsHtml { get; }
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -83,7 +82,7 @@ namespace Microsoft.Docs.Build
             ContentType contentType,
             SourceInfo<string?> mime,
             bool isExperimental,
-            bool isPage = true)
+            bool isHtml = true)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
 
@@ -94,7 +93,7 @@ namespace Microsoft.Docs.Build
             ContentType = contentType;
             Mime = mime;
             IsExperimental = isExperimental;
-            IsPage = isPage;
+            IsHtml = isHtml;
 
             Debug.Assert(SiteUrl.StartsWith('/'));
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");
