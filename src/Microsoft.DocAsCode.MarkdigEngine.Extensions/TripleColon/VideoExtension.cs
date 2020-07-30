@@ -140,7 +140,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else
             {
                 if (tripleColonObj is Block) renderer.WriteLine("<p>");
-
             }
 
             if (currentType != "complex")
