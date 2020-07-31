@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
 
             foreach (ref var attribute in token.Attributes.Span)
             {
-                if (attribute.NameIs("style"))
+                if (attribute.NameIs("style") || attribute.Name.Span.StartsWith("on", StringComparison.OrdinalIgnoreCase))
                 {
                     attribute = default;
                 }
