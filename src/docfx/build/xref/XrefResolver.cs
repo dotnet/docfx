@@ -219,11 +219,24 @@ namespace Microsoft.Docs.Build
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, DependencyType.Uid, referencingFile.ContentType);
+                var dependencyType = GetDependencyType(referencingFile.Mime, spec.DeclaringFile.Mime);
+                _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, dependencyType, referencingFile.ContentType);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
                 return (spec, href);
             }
             return default;
         }
+
+        private static DependencyType GetDependencyType(string? referencingMime, string? declaringMime)
+            => (referencingMime, declaringMime) switch
+            {
+                var h when
+                    h == ("LearningPath", "Module") ||
+                    h == ("Module", "ModuleUnit") => DependencyType.Hierarchy,
+                var a when
+                    a == ("LearningPath", "Achievement") ||
+                    a == ("Module", "Achievement") => DependencyType.Achievement,
+                _ => DependencyType.Uid,
+            };
     }
 }
