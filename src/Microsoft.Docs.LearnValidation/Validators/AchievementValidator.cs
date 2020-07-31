@@ -3,7 +3,6 @@
 
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,8 +28,7 @@ namespace Microsoft.Docs.LearnValidation
                     path = m.Output.MetadataOutput.LinkToPath;
                 }
 
-                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(
-                    JsonConvert.DeserializeObject<JObject>(File.ReadAllText(path)).Value<string>("content"));
+                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path));
                 
                 achievements.ForEach(achievement => achievement.SourceRelativePath = m.SourceRelativePath!);
 

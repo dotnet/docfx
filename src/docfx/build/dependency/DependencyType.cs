@@ -24,5 +24,18 @@ namespace Microsoft.Docs.Build
         /// To generate the correct preview link for TOC files in PR comment.
         /// </summary>
         Metadata,
+
+        /// <summary>
+        /// Learn specific uid dependency:
+        /// LearningPath -> Module
+        /// Module -> ModuleUnit
+        /// </summary>
+        Hierarchy,
+
+        /// <summary>
+        /// Learn specific uid dependency:
+        /// LearningPath|Module -> Achievement
+        /// </summary>
+        Achievement,
     }
 }
