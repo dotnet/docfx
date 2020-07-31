@@ -24,7 +24,6 @@ outputs:
       "invalid_items":[],
       "items":[]
     }
-  learn-pr/full-dependent-list.txt.bak:
 ---
 # Can generate hierarchy
 legacy: true
@@ -77,7 +76,6 @@ outputs:
   unit.raw.page.json:
   achievement.json:
   full-dependent-list.txt:
-  full-dependent-list.txt.bak:
   hierarchy.json: |
     {
       "achievements": [{"uid": "achievement2"},{"uid": "achievement1"}],
@@ -90,6 +88,152 @@ outputs:
                {"source_path":"module.yml"},
                {"source_path":"path.yml"},
                {"source_path":"unit.yml"}]
+    }
+---
+# Can produce proper dependency type
+inputs:
+  docfx.yml:
+  path.yml: |
+    ### YamlMime:LearningPath
+    uid: path
+    modules: ['module1', 'module2']
+    achievement: trophy
+  module1.yml: |
+    ### YamlMime:Module
+    uid: module1
+    units: ['unit1a', 'unit1b']
+    achievement: badge1
+  module2.yml: |
+    ### YamlMime:Module
+    uid: module2
+    units: ['unit2']
+    achievement: badge2
+  unit1a.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit1a
+  unit1b.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit1b
+  unit2.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit2
+  achievement.yml: |
+    ### YamlMime:Achievement
+    achievements:
+    - uid: trophy
+    - uid: badge1
+    - uid: badge2
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "modules": {"items": {"contentType": "xref"}},
+        "achievement": {"contentType": "xref"}
+      }
+    }
+  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Module.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "units": {"items": {"contentType": "xref" }},
+        "achievement": {"contentType": "xref"}
+      }
+    }
+  _themes/ContentTemplate/Module.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Achievement.schema.json: |
+    {
+      "properties": {
+        "achievements": { 
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}}
+          }
+        }
+      }
+    }
+outputs:
+  path.json:
+  module1.json:
+  module2.json:
+  unit1a.json:
+  unit1b.json:
+  unit2.json:
+  achievement.json:
+  full-dependent-list.txt: |
+    {"dependency_type":"achievement","from_file_path":"*module1.yml*","to_file_path":"*achievement.yml*"}
+    {"dependency_type":"achievement","from_file_path":"*module2.yml*","to_file_path":"*achievement.yml*"}
+    {"dependency_type":"achievement","from_file_path":"*path.yml*","to_file_path":"*achievement.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*module1.yml*","to_file_path":"*unit1a.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*module1.yml*","to_file_path":"*unit1b.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*module2.yml*","to_file_path":"*unit2.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*path.yml*","to_file_path":"*module1.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*path.yml*","to_file_path":"*module2.yml*"}
+  op_aggregated_file_map_info.json: |
+    {
+      "aggregated_file_map_items": {
+        "module1.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "module1.yml",
+              "to_file_path": "achievement.yml",
+              "dependency_type": "achievement"
+            },
+            {
+              "from_file_path": "module1.yml",
+              "to_file_path": "unit1a.yml",
+              "dependency_type": "hierarchy"
+            },
+            {
+              "from_file_path": "module1.yml",
+              "to_file_path": "unit1b.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "module2.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "module2.yml",
+              "to_file_path": "achievement.yml",
+              "dependency_type": "achievement"
+            },
+            {
+              "from_file_path": "module2.yml",
+              "to_file_path": "unit2.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "path.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "path.yml",
+              "to_file_path": "achievement.yml",
+              "dependency_type": "achievement"
+            },
+            {
+              "from_file_path": "path.yml",
+              "to_file_path": "module1.yml",
+              "dependency_type": "hierarchy"
+            },
+            {
+              "from_file_path": "path.yml",
+              "to_file_path": "module2.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "unit1a.yml": {},
+        "unit1b.yml": {},
+        "unit2.yml": {}
+      }
     }
 ---
 # Loc-build remote invalid items from .publish.json
