@@ -227,15 +227,13 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private static DependencyType GetDependencyType(string? referencingMime, string? declaringMime)
-            => (referencingMime, declaringMime) switch
+        private static DependencyType GetDependencyType(string? fromMime, string? toMime)
+            => (fromMime, toMime) switch
             {
-                var h when
-                    h == ("LearningPath", "Module") ||
-                    h == ("Module", "ModuleUnit") => DependencyType.Hierarchy,
-                var a when
-                    a == ("LearningPath", "Achievement") ||
-                    a == ("Module", "Achievement") => DependencyType.Achievement,
+                ("LearningPath", "Module") => DependencyType.Hierarchy,
+                ("Module", "ModuleUnit") => DependencyType.Hierarchy,
+                ("LearningPath", "Achievement") => DependencyType.Achievement,
+                ("Module", "Achievement") => DependencyType.Achievement,
                 _ => DependencyType.Uid,
             };
     }
