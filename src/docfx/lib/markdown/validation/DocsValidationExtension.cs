@@ -50,6 +50,8 @@ namespace Microsoft.Docs.Build
                             RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
                             IsVisible = MarkdigUtility.IsVisible(headingBlock),
                             IsCanonicalVersion = isCanonicalVersion,
+                            Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
+                            Monikers = context.ZoneMoniker.ToList(),
                         };
                     }
                     else if (node is LeafBlock leafBlock)
@@ -59,6 +61,8 @@ namespace Microsoft.Docs.Build
                             SourceInfo = node.GetSourceInfo(),
                             IsVisible = MarkdigUtility.IsVisible(leafBlock),
                             IsCanonicalVersion = isCanonicalVersion,
+                            Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
+                            Monikers = context.ZoneMoniker.ToList(),
                         };
                     }
 
