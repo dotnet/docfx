@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -107,6 +108,8 @@ namespace Microsoft.Docs.Build
 
             // TODO: decouple files and dependencies from legacy.
             var dependencyMap = context.DependencyMapBuilder.Build();
+
+            MemoryCache.Clear();
 
             Parallel.Invoke(
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),

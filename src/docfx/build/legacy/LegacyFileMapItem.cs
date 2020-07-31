@@ -62,18 +62,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static LegacyFileMapItem? Instance(
+        public static LegacyFileMapItem Instance(
             string legacyOutputFilePathRelativeToBasePath,
             string legacySiteUrlRelativeToBasePath,
             ContentType contentType,
             string? version,
             MonikerList monikers)
         {
-            if (contentType == ContentType.Unknown)
-            {
-                return null;
-            }
-
             return new LegacyFileMapItem(
                 legacyOutputFilePathRelativeToBasePath, legacySiteUrlRelativeToBasePath, contentType, version, monikers);
         }

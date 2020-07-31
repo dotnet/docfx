@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
 
             // resolve output path conflicts
             var publishMapWithoutOutputPathConflicts =
-                builder.ToList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
+                builder.AsList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
 
             // resolve publish url conflicts
             return publishMapWithoutOutputPathConflicts

@@ -3,8 +3,10 @@
 
 namespace System.Collections.Concurrent
 {
-    internal interface IMemoryMonitor
+    internal interface IMemoryCache
     {
         void OnMemoryLow();
+
+        void Clear();
     }
 }

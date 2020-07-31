@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
             }
 
             var xrefmap =
-                from spec in builder.ToList()
+                from spec in builder.AsList()
                 group spec by spec.Uid.Value into g
                 let uid = g.Key
                 let spec = AggregateXrefSpecs(uid, g.ToArray())
