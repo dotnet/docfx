@@ -28,6 +28,6 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public IReadOnlyList<T> ToList() => _array;
+        public IReadOnlyList<T> AsList() => _array;
     }
 }

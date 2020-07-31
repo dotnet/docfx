@@ -27,8 +27,8 @@ namespace Microsoft.Docs.Build
                     ConvertDocumentToLegacyManifestItem(docsetPath, context, fileManifest, dictionaryBuilder, listBuilder);
                 });
 
-                var monikerGroups = dictionaryBuilder.ToDictionary();
-                var convertedItems = listBuilder.ToList();
+                var monikerGroups = dictionaryBuilder.AsDictionary();
+                var convertedItems = listBuilder.AsList();
                 context.Output.WriteJson(
                     Path.Combine(context.Config.BasePath, ".manifest.json"),
                     new

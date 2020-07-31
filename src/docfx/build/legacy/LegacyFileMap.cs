@@ -26,10 +26,14 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
-                        if (document.ContentType == ContentType.Page && !document.IsHtml)
+
+                        switch (document.ContentType)
                         {
-                            return;
+                            case ContentType.Unknown:
+                            case ContentType.Page when !document.IsHtml:
+                                return;
                         }
+
                         var legacyOutputFilePathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
                         var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
 
@@ -39,15 +43,13 @@ namespace Microsoft.Docs.Build
                             document.ContentType,
                             fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);
-                        if (fileItem != null)
-                        {
-                            listBuilder.Add((context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path, fileItem));
-                            filemapBuilder.Add((document.FilePath.Path, fileItem));
-                        }
+
+                        listBuilder.Add((context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path, fileItem));
+                        filemapBuilder.Add((document.FilePath.Path, fileItem));
                     });
 
-                Convert(context, filemapBuilder.ToList());
-                LegacyAggregatedFileMap.Convert(context, listBuilder.ToList(), dependencyMap);
+                Convert(context, filemapBuilder.AsList());
+                LegacyAggregatedFileMap.Convert(context, listBuilder.AsList(), dependencyMap);
             }
         }
 
