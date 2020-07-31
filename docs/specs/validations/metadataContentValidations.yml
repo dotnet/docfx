@@ -1211,7 +1211,6 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":5,"end_line":5,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"h.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
 # Content validation - comments shouldn't trigger H1 not first
@@ -1253,11 +1252,26 @@ inputs:
   b.md: |
     See this markdown
     # AppSourceCop
+  c.md: |
+    <!-- comment -->
+    # h1
+  d.md: |
+    <!-- comment 
+    -->
+    # h1
+  e.md: |
+    <!-- comment 
+    --><div>text</text>
+    # h1
 outputs:
   a.json:
   b.json:
+  c.json:
+  d.json:
+  e.json:
   .errors.log: |
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
 #Content validation - h1-missing in docs zone
 inputs:
