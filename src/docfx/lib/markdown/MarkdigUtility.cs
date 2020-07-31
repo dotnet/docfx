@@ -292,7 +292,7 @@ namespace Microsoft.Docs.Build
             {
                 var nodeVisible = node switch
                 {
-                    HtmlBlock htmlBlock => HtmlUtility.IsVisible(string.Join("", htmlBlock.Lines.Lines)),
+                    HtmlBlock htmlBlock => HtmlUtility.IsVisible(htmlBlock.Lines.ToString()),
                     HtmlInline htmlInline => HtmlUtility.IsVisible(htmlInline.Tag),
                     LinkReferenceDefinition _ => false,
                     ThematicBreakBlock _ => false,
