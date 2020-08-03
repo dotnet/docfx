@@ -802,25 +802,8 @@ repos:
         docs/toc.md: |
           # a 
           ### b
-  https://docs.com/error-from-fallback.zh-cn#live:
+  https://github.com/error-from-fallback.zh-cn#live:
     - files:
-        .openpublishing.publish.config.json: |
-          {
-            "docsets_to_publish": [
-              {
-                "locale": "zh-cn"
-              }
-            ],
-            "dependent_repositories": [
-              {
-                "path_to_root": "_repo.en-us",
-                "url": "https://github.com/error-from-fallback",
-                "branch_mapping": {
-                  "live": "live"
-                }
-              }
-            ]
-          }
         docfx.yml:
 outputs:
   .errors.log: |
