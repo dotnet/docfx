@@ -70,6 +70,7 @@ namespace Microsoft.Docs.Build
             { "time", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "datetime" } },
             { "u", null },
             { "var", null },
+            { "wbr", null },
 
             // Image and multimedia
             { "img", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align" } },
