@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                     File.WriteAllLines(GetDestinationPath(destRelativePaths[0]), lines);
                     for (var i = 1; i < destRelativePaths.Length; i++)
                     {
-                        File.Copy(GetDestinationPath(destRelativePaths[0]), GetDestinationPath(destRelativePaths[i]));
+                        File.Copy(GetDestinationPath(destRelativePaths[0]), GetDestinationPath(destRelativePaths[i]), overwrite: true);
                     }
                 });
             }
