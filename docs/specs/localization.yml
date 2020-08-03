@@ -799,7 +799,7 @@ repos:
   https://github.com/error-from-fallback#live:
     - files:
         docfx.yml:
-        docs/toc.md: |
+        docs/TOC.md: |
           # a 
           ### b
   https://github.com/error-from-fallback.zh-cn#live:
