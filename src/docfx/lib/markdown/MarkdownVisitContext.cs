@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<SourceInfo?> Parents => FileStack.Reverse().Skip(1).Select(f => f.Source);
 
+        public int TripleColonCount { get; set; } = 0;
+
         public Document Document => FileStack.Peek();
 
         public bool IsInclude => FileStack.Count >= 2;

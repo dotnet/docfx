@@ -154,9 +154,21 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case ContainerBlock block:
-                    foreach (var child in block)
+                    if (block is TripleColonBlock)
                     {
-                        Visit(child, context, action);
+                        context.TripleColonCount++;
+                        foreach (var child in block)
+                        {
+                            Visit(child, context, action);
+                        }
+                        context.TripleColonCount--;
+                    }
+                    else
+                    {
+                        foreach (var child in block)
+                        {
+                            Visit(child, context, action);
+                        }
                     }
                     break;
 

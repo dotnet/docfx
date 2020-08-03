@@ -32,6 +32,8 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
+                var codeBlockItemList = new List<CodeBlockItem>();
+
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
@@ -76,6 +78,32 @@ namespace Microsoft.Docs.Build
                         }
                     }
 
+                    CodeBlockItem? codeBlockItem = null;
+                    if (node.GetType().Name.Equals(nameof(CodeBlock)) && context.TripleColonCount == 0)
+                    {
+                        codeBlockItem = new CodeBlockItem
+                        {
+                            Type = CodeBlockTypeEnum.CodeBlock,
+                            SourceInfo = node.GetSourceInfo(),
+                        };
+                    }
+                    else if (node is FencedCodeBlock fencedCodeBlock)
+                    {
+                        codeBlockItem = new CodeBlockItem
+                        {
+                            Type = CodeBlockTypeEnum.FencedCodeBlock,
+                            Info = fencedCodeBlock.Info,
+                            Arguments = fencedCodeBlock.Arguments,
+                            IsOpen = fencedCodeBlock.IsOpen,
+                            SourceInfo = fencedCodeBlock.GetSourceInfo(),
+                        };
+                    }
+
+                    if (codeBlockItem != null)
+                    {
+                        codeBlockItemList.Add(codeBlockItem);
+                    }
+
                     return false;
                 });
 
@@ -83,6 +111,11 @@ namespace Microsoft.Docs.Build
                 foreach (var (inclusion, inclusionNodes) in inclusionDocumentNodes)
                 {
                     contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
+                }
+
+                foreach (var codeBlockItem in codeBlockItemList)
+                {
+                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, false);
                 }
             });
         }

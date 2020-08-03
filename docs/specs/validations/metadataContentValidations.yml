@@ -1097,7 +1097,7 @@ outputs:
   a.json:
   .errors.log: |
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: 'image.png'.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"code-block-indented","message":"Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple colons.","file":"a.md","line":5,"end_line":5,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"code-block-indented","message":"Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple colons.","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
 ---
 #Content validation - h1-not-first in docs zone
 inputs:
@@ -2256,4 +2256,189 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
-
+---
+# Content validation - codeblock validation indented checking
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "rules": [
+          {
+            "type": "CodeBlockIndented",
+            "message": "Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple backticks (```).",
+            "code": "code-block-indented",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    :::image type="complex" source="image.png" alt-text="triple-colon test":::
+         this is an intented codeblock included in triple colon block
+    :::image-end:::
+         this is an intented codeblock
+    ```
+         this is a fenced codeblock
+    ```
+    ``` csharp
+         this is a fenced codeblock
+    ```
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: 'image.png'.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"code-block-indented","message":"Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple backticks (```).","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+---
+# Content validation - codeblock validation unclosed
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "rules": [
+          {
+            "type": "CodeBlockUnclosed",
+            "message": "Unclosed code block. Code blocks must begin and end with triple backticks (```).",
+            "code": "code-block-unclosed",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ```
+      this is a closed fenced codeblock
+    ```
+    ```
+      this is an unclosed fenced codeblock
+    
+         this is an intented codeblock
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"code-block-unclosed","message":"Unclosed code block. Code blocks must begin and end with triple backticks (```).","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+---
+# Content validation - codeblock language missing
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "rules": [
+          {
+            "type": "CodeLanguageMissing",
+            "message": "Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.",
+            "code": "dev-language-missing",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ```
+      this is a fenced codeblock without language
+    ```
+    ```csharp beta-1.0
+      this is a fenced codeblock
+    ```
+         this is an intented codeblock
+    ```
+      code body
+    ```csharp
+      code body2
+    ```
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
+---
+# Content validation - codeblock language invalid
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    allowlists: allowlist.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "rules": [
+          {
+            "type": "CodeLanguageInvalid",
+            "message": "Dev language '{0}' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.",
+            "code": "dev-language-invalid",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  allowlist.json: |
+    {
+      "list:devlang": {
+        "id": "list:devlang",
+        "dependent": null,
+        "desc": "Values for codeblock language",
+        "values": {
+            "C#": null,
+            "csharp beta-2.0": null,
+            "csharp": null
+        }
+      }
+    }
+  a.md: |
+    ```csharp beta-1.0
+      this is a fenced codeblock
+    ```
+    ```csharp beta-2.0
+      this is a fenced codeblock
+    ```
+    ```c#
+      this is a fenced codeblock
+    ```
+    ```csharp
+      this is a fenced codeblock
+    ```
+    ```
+      this is a fenced codeblock
+    ```
+         this is an intented codeblock
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'csharp beta-1.0' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'c#' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
