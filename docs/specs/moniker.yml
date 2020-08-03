@@ -123,6 +123,44 @@ outputs:
       }
     }
 ---
+# Header in moniker zone should be extracted properly
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/**': '<= netcore-1.2'
+    monikerDefinition: monikerDefinition.json
+  docs/a.md: |
+    ::: moniker range="<=netcore-1.0"
+    # Header for netcore-1.0
+    
+    content netcore-1.0
+    ::: moniker-end
+    
+    ::: moniker range="netcore-1.1"
+    content netcore-1.1
+    ::: moniker-end
+    
+    <!-- This is comment -->
+    ::: moniker range=">=netcore-1.2"
+    # Header for netcore-1.2
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" }
+      ]
+    }
+outputs:
+  2420f88b/docs/a.json: |
+    {
+      "conceptual": "<div data-moniker=\"netcore-1.0\"><p>content netcore-1.0</p></div><div data-moniker=\"netcore-1.1\"><p>content netcore-1.1</p></div><div data-moniker=\"netcore-1.2\"></div>",
+      "title": "Header for netcore-1.0",
+      "rawTitle": "<div data-moniker=\"netcore-1.0\"><h1 id=\"header-for-netcore-10\">Header for netcore-1.0</h1></div><div data-moniker=\"netcore-1.2\"><h1 id=\"header-for-netcore-12\">Header for netcore-1.2</h1></div>",
+      "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"],
+    }
+---
 # Moniker Zone syntax
 inputs:
   docfx.yml: |
