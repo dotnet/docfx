@@ -794,16 +794,15 @@ outputs:
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
 ---
 # Remove duplicated fallback-error
-DryRun: true
 locale: zh-cn
 repos:
-  https://github.com/MS/test:
+  https://github.com/error-from-fallback#live:
     - files:
         docfx.yml:
         docs/toc.md: |
           # a 
           ### b
-  https://docs.com/error-from-source-legacy.zh-cn:
+  https://docs.com/error-from-fallback.zh-cn#live:
     - files:
         .openpublishing.publish.config.json: |
           {
@@ -815,9 +814,9 @@ repos:
             "dependent_repositories": [
               {
                 "path_to_root": "_repo.en-us",
-                "url": "https://github.com/MS/test",
+                "url": "https://github.com/error-from-fallback",
                 "branch_mapping": {
-                  "test": "test"
+                  "live": "live"
                 }
               }
             ]
