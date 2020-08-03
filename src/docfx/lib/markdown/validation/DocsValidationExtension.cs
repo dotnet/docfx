@@ -38,11 +38,9 @@ namespace Microsoft.Docs.Build
                 var fileLevelMoniker = getFileLevelMonikers();
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
-                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
+                    HeadingValidation(node, context, markdownEngine, documentNodes, inclusionDocumentNodes, canonicalVersion, fileLevelMoniker);
 
-                    HeadingValidation(node, context, isCanonicalVersion, markdownEngine, documentNodes, inclusionDocumentNodes);
-
-                    CodeBlockValidation(node, context, isCanonicalVersion, codeBlockItemList);
+                    CodeBlockValidation(node, context, codeBlockItemList, canonicalVersion, fileLevelMoniker);
 
                     return false;
                 });
@@ -60,8 +58,10 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static void HeadingValidation(MarkdownObject node, MarkdownVisitContext context, bool? isCanonicalVersion, MarkdownEngine markdownEngine, List<ContentNode> documentNodes, Dictionary<Document, List<ContentNode>> inclusionDocumentNodes)
+        private static void HeadingValidation(MarkdownObject node, MarkdownVisitContext context, MarkdownEngine markdownEngine, List<ContentNode> documentNodes, Dictionary<Document, List<ContentNode>> inclusionDocumentNodes, string? canonicalVersion, MonikerList fileLevelMoniker)
         {
+            var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
+
             ContentNode? documentNode = null;
             if (node is HeadingBlock headingBlock)
             {
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void CodeBlockValidation(MarkdownObject node, MarkdownVisitContext context, bool? isCanonicalVersion, List<CodeBlockItem> codeBlockItemList)
+        private static void CodeBlockValidation(MarkdownObject node, MarkdownVisitContext context, List<CodeBlockItem> codeBlockItemList, string? canonicalVersion, MonikerList fileLevelMoniker)
         {
             CodeBlockItem? codeBlockItem = null;
 
