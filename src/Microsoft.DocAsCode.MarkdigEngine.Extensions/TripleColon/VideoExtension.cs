@@ -66,7 +66,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (string.IsNullOrEmpty(src))
             {
                 logError("source is a required attribute. Please ensure you have specified a source attribute.");
-  
+                return false;
+
             }
             if (string.IsNullOrEmpty(thumbnail))
             {
@@ -145,7 +146,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (currentType != "complex")
             {
                 renderer.WriteLine("<div class=\"embeddedvideo\">");
-                renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine(">");
+                renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine("></iframe>");
                 renderer.WriteLine("</div>");
                 if (tripleColonObj is ContainerBlock
                     && (tripleColonObj as ContainerBlock).LastChild != null)
@@ -163,7 +164,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 var htmlId = GetHtmlId(markdownObject);
                 renderer.WriteLine("<div class=\"embeddedvideo\">");
-                renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine(">");
+                renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine("></iframe>");
                 renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
                 renderer.WriteChildren(tripleColonObj as ContainerBlock);
                 renderer.WriteLine("</div>");
