@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        public bool Reder(HtmlRenderer renderer, MarkdownObject obj, Action<string> logWarning)
+        public bool Render(HtmlRenderer renderer, MarkdownObject obj, Action<string> logWarning)
         {
             var tripleColonObj = (ITripleColon)obj;
 
