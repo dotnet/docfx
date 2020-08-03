@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links;
+        private readonly List<Func<string, bool>> _sensitiveLanguageValidationExcludeRules = new List<Func<string, bool>>();
 
         public ContentValidator(
             Config config,
@@ -36,6 +37,11 @@ namespace Microsoft.Docs.Build
             _metadataProvider = metadataProvider;
             _publishUrlMap = publishUrlMap;
             _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
+
+            foreach (var exclusion in config.SensitiveLanguageValidationExcludes)
+            {
+                _sensitiveLanguageValidationExcludeRules.Add(GlobUtility.CreateGlobMatcher(exclusion));
+            }
         }
 
         public void ValidateImageLink(Document file, SourceInfo<string> link, string? altText)
@@ -105,6 +111,11 @@ namespace Microsoft.Docs.Build
 
         public void ValidateSensitiveLanguage(string content, Document document)
         {
+            if (_sensitiveLanguageValidationExcludeRules.Any(glob => glob(document.FilePath.Path)))
+            {
+                return;
+            }
+
             if (TryGetValidationDocumentType(document, document.Mime.Value, false, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
