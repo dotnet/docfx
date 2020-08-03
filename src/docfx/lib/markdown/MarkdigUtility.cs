@@ -168,10 +168,12 @@ namespace Microsoft.Docs.Build
                         context.ZoneStack.Push(target);
                     }
 
+                    context.TripleColonCount++;
                     foreach (var child in tripleColonBlock)
                     {
                         Visit(child, context, action);
                     }
+                    context.TripleColonCount--;
 
                     if (!string.IsNullOrEmpty(target))
                     {
