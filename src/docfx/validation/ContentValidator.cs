@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType};
+                var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
             }
         }

@@ -58,7 +58,14 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static void HeadingValidation(MarkdownObject node, MarkdownVisitContext context, MarkdownEngine markdownEngine, List<ContentNode> documentNodes, Dictionary<Document, List<ContentNode>> inclusionDocumentNodes, string? canonicalVersion, MonikerList fileLevelMoniker)
+        private static void HeadingValidation(
+            MarkdownObject node,
+            MarkdownVisitContext context,
+            MarkdownEngine markdownEngine,
+            List<ContentNode> documentNodes,
+            Dictionary<Document, List<ContentNode>> inclusionDocumentNodes,
+            string? canonicalVersion,
+            MonikerList fileLevelMoniker)
         {
             var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
 
@@ -106,8 +113,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void CodeBlockValidation(MarkdownObject node, MarkdownVisitContext context, List<CodeBlockItem> codeBlockItemList, string? canonicalVersion, MonikerList fileLevelMoniker)
+        private static void CodeBlockValidation(
+            MarkdownObject node,
+            MarkdownVisitContext context,
+            List<CodeBlockItem> codeBlockItemList,
+            string? canonicalVersion,
+            MonikerList fileLevelMoniker)
         {
+            var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
+
             CodeBlockItem? codeBlockItem = null;
 
             if (node is FencedCodeBlock fencedCodeBlock)
@@ -119,14 +133,16 @@ namespace Microsoft.Docs.Build
                     Arguments = fencedCodeBlock.Arguments,
                     IsOpen = fencedCodeBlock.IsOpen,
                     SourceInfo = fencedCodeBlock.GetSourceInfo(),
+                    IsCanonicalVersion = isCanonicalVersion,
                 };
             }
-            else if (node is CodeBlock codeBlock && context.TripleColonStack.Count() == 0)
+            else if (node is CodeBlock codeBlock && context.TripleColonStack.Count == 0)
             {
                 codeBlockItem = new CodeBlockItem
                 {
                     Type = CodeBlockTypeEnum.CodeBlock,
                     SourceInfo = codeBlock.GetSourceInfo(),
+                    IsCanonicalVersion = isCanonicalVersion,
                 };
             }
 
