@@ -792,3 +792,19 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# Remove duplicated fallback-error
+locale: zh-cn
+repos:
+  https://github.com/error-from-fallback#live:
+    - files:
+        docfx.yml:
+        docs/TOC.md: |
+          # a 
+          ### b
+  https://github.com/error-from-fallback.zh-cn#live:
+    - files:
+        docfx.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}

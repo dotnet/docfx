@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             {
                 if (error.Level == ErrorLevel.Error)
                 {
-                    _errors.Add(Errors.Logging.FallbackError(_config.DefaultLocale));
+                    Add(Errors.Logging.FallbackError(_config.DefaultLocale));
                 }
                 return;
             }
