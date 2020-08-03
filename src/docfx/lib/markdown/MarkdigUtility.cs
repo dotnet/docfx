@@ -168,12 +168,12 @@ namespace Microsoft.Docs.Build
                         context.ZoneStack.Push(target);
                     }
 
-                    context.TripleColonCount++;
+                    context.TripleColonStack.Push(tripleColonBlock.Extension);
                     foreach (var child in tripleColonBlock)
                     {
                         Visit(child, context, action);
                     }
-                    context.TripleColonCount--;
+                    context.TripleColonStack.Pop();
 
                     if (!string.IsNullOrEmpty(target))
                     {
@@ -182,21 +182,9 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case ContainerBlock block:
-                    if (block is TripleColonBlock)
+                    foreach (var child in block)
                     {
-                        context.TripleColonCount++;
-                        foreach (var child in block)
-                        {
-                            Visit(child, context, action);
-                        }
-                        context.TripleColonCount--;
-                    }
-                    else
-                    {
-                        foreach (var child in block)
-                        {
-                            Visit(child, context, action);
-                        }
+                        Visit(child, context, action);
                     }
                     break;
 
