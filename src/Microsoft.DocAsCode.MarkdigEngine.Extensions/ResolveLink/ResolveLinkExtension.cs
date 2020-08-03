@@ -3,8 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
+    using System.Linq;
+    using System.Text;
     using Markdig;
     using Markdig.Renderers;
+    using Markdig.Renderers.Html;
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
 
@@ -34,13 +37,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     break;
 
                 case LinkInline linkInline:
-                    linkInline.Url = _context.GetLink(linkInline.Url, linkInline);
+                    linkInline.Url = linkInline.IsImage
+                        ? _context.GetImageLink(linkInline.Url, linkInline, null)
+                        : _context.GetLink(linkInline.Url, linkInline);
                     foreach (var subBlock in linkInline)
                     {
                         UpdateLinks(subBlock);
                     }
                     break;
-
                 case ContainerBlock containerBlock:
                     foreach (var subBlock in containerBlock)
                     {

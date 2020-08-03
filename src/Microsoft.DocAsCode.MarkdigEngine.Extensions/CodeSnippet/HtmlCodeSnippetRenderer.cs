@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -17,120 +18,125 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
-        private readonly MarkdownContext _context;
-        private const string tagPrefix = "snippet";
-        private const string warningMessageId = "codeIncludeNotFound";
-        private const string defaultWarningMessage = "It looks like the sample you are looking for does not exist.";
-        private const string warningTitleId = "warning";
-        private const string defaultWarningTitle = "<h5>WARNING</h5>";
-
-        public static readonly IReadOnlyDictionary<string, List<string>> LanguageAlias = new Dictionary<string, List<string>>
-        {
-            { "actionscript", new List<string>{".as" } },
-            { "arduino", new List<string>{".ino" } },
-            { "assembly", new List<string>{"nasm", ".asm" } },
-            { "batchfile", new List<string>{".bat", ".cmd" } },
-            { "cpp", new List<string>{"c", "c++", "objective-c", "obj-c", "objc", "objectivec", ".c", ".cpp", ".h", ".hpp", ".cc" } },
-            { "csharp", new List<string>{"cs", ".cs" } },
-            { "cuda", new List<string>{".cu", ".cuh" } },
-            { "d", new List<string>{"dlang", ".d" } },
-            { "erlang", new List<string>{".erl" } },
-            { "fsharp", new List<string>{"fs", ".fs", ".fsi", ".fsx" } },
-            { "go", new List<string>{"golang", ".go" } },
-            { "haskell", new List<string>{".hs" } },
-            { "html", new List<string>{".html", ".jsp", ".asp", ".aspx", ".ascx" } },
-            { "cshtml", new List<string>{".cshtml", "aspx-cs", "aspx-csharp" } },
-            { "vbhtml", new List<string>{".vbhtml", "aspx-vb" } },
-            { "java", new List<string>{".java", ".gradle" } },
-            { "javascript", new List<string>{"js", "node", ".js", "json", ".json" } },
-            { "lisp", new List<string>{".lisp", ".lsp" } },
-            { "lua", new List<string>{".lua" } },
-            { "matlab", new List<string>{".matlab" } },
-            { "pascal", new List<string>{".pas" } },
-            { "perl", new List<string>{".pl" } },
-            { "php", new List<string>{".php" } },
-            { "powershell", new List<string>{"posh", ".ps1" } },
-            { "processing", new List<string>{".pde" } },
-            { "python", new List<string>{".py" } },
-            { "r", new List<string>{".r" } },
-            { "ruby", new List<string>{"ru", ".ru", ".ruby" } },
-            { "rust", new List<string>{".rs" } },
-            { "scala", new List<string>{".scala" } },
-            { "shell", new List<string>{"sh", "bash", ".sh", ".bash" } },
-            { "smalltalk", new List<string>{".st" } },
-            { "sql", new List<string>{".sql" } },
-            { "swift", new List<string>{".swift" } },
-            { "typescript", new List<string>{"ts", ".ts" } },
-            { "xaml", new List<string>{".xaml" } },
-            { "xml", new List<string>{"xsl", "xslt", "xsd", "wsdl", ".xml", ".csdl", ".edmx", ".xsl", ".xslt", ".xsd", ".wsdl" } },
-            { "vb", new List<string>{"vbnet", "vbscript", ".vb", ".bas", ".vbs", ".vba" } }
-        };
-
+        private const string TagPrefix = "snippet";
+        private const string WarningMessageId = "codeIncludeNotFound";
+        private const string DefaultWarningMessage = "It looks like the sample you are looking for does not exist.";
+        private const string WarningTitleId = "warning";
+        private const string DefaultWarningTitle = "<h5>WARNING</h5>";
 
         // C# code snippet comment block: // <[/]snippetname>
-        private static readonly string CFamilyCodeSnippetCommentStartLineTemplate = "//<{tagname}>";
-        private static readonly string CFamilyCodeSnippetCommentEndLineTemplate = "//</{tagname}>";
+        private const string CFamilyCodeSnippetCommentStartLineTemplate = "//<{tagname}>";
+        private const string CFamilyCodeSnippetCommentEndLineTemplate = "//</{tagname}>";
 
         // C# code snippet region block: start -> #region snippetname, end -> #endregion
-        private static readonly string CSharpCodeSnippetRegionStartLineTemplate = "#region{tagname}";
-        private static readonly string CSharpCodeSnippetRegionEndLineTemplate = "#endregion";
+        private const string CSharpCodeSnippetRegionStartLineTemplate = "#region{tagname}";
+        private const string CSharpCodeSnippetRegionEndLineTemplate = "#endregion";
 
         // VB code snippet comment block: ' <[/]snippetname>
-        private static readonly string BasicFamilyCodeSnippetCommentStartLineTemplate = "'<{tagname}>";
-        private static readonly string BasicFamilyCodeSnippetCommentEndLineTemplate = "'</{tagname}>";
+        private const string BasicFamilyCodeSnippetCommentStartLineTemplate = "'<{tagname}>";
+        private const string BasicFamilyCodeSnippetCommentEndLineTemplate = "'</{tagname}>";
 
         // VB code snippet Region block: start -> # Region "snippetname", end -> # End Region
-        private static readonly string VBCodeSnippetRegionRegionStartLineTemplate = "#region{tagname}";
-        private static readonly string VBCodeSnippetRegionRegionEndLineTemplate = "#endregion";
+        private const string VBCodeSnippetRegionRegionStartLineTemplate = "#region{tagname}";
+        private const string VBCodeSnippetRegionRegionEndLineTemplate = "#endregion";
 
         // XML code snippet block: <!-- <[/]snippetname> -->
-        private static readonly string MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate = "<!--<{tagname}>-->";
-        private static readonly string MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate = "<!--</{tagname}>-->";
+        private const string MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate = "<!--<{tagname}>-->";
+        private const string MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate = "<!--</{tagname}>-->";
 
         // Sql code snippet block: -- <[/]snippetname>
-        private static readonly string SqlFamilyCodeSnippetCommentStartLineTemplate = "--<{tagname}>";
-        private static readonly string SqlFamilyCodeSnippetCommentEndLineTemplate = "--</{tagname}>";
+        private const string SqlFamilyCodeSnippetCommentStartLineTemplate = "--<{tagname}>";
+        private const string SqlFamilyCodeSnippetCommentEndLineTemplate = "--</{tagname}>";
 
         // Python code snippet comment block: # <[/]snippetname>
-        private static readonly string ScriptFamilyCodeSnippetCommentStartLineTemplate = "#<{tagname}>";
-        private static readonly string ScriptFamilyCodeSnippetCommentEndLineTemplate = "#</{tagname}>";
+        private const string ScriptFamilyCodeSnippetCommentStartLineTemplate = "#<{tagname}>";
+        private const string ScriptFamilyCodeSnippetCommentEndLineTemplate = "#</{tagname}>";
 
         // Batch code snippet comment block: rem <[/]snippetname>
-        private static readonly string BatchFileCodeSnippetRegionStartLineTemplate = "rem<{tagname}>";
-        private static readonly string BatchFileCodeSnippetRegionEndLineTemplate = "rem</{tagname}>";
+        private const string BatchFileCodeSnippetRegionStartLineTemplate = "rem<{tagname}>";
+        private const string BatchFileCodeSnippetRegionEndLineTemplate = "rem</{tagname}>";
 
         // Erlang code snippet comment block: % <[/]snippetname>
-        private static readonly string ErlangCodeSnippetRegionStartLineTemplate = "%<{tagname}>";
-        private static readonly string ErlangCodeSnippetRegionEndLineTemplate = "%</{tagname}>";
+        private const string ErlangCodeSnippetRegionStartLineTemplate = "%<{tagname}>";
+        private const string ErlangCodeSnippetRegionEndLineTemplate = "%</{tagname}>";
 
         // Lisp code snippet comment block: ; <[/]snippetname>
-        private static readonly string LispCodeSnippetRegionStartLineTemplate = ";<{tagname}>";
-        private static readonly string LispCodeSnippetRegionEndLineTemplate = ";</{tagname}>";
+        private const string LispCodeSnippetRegionStartLineTemplate = ";<{tagname}>";
+        private const string LispCodeSnippetRegionEndLineTemplate = ";</{tagname}>";
+
+        // css code snippet comment block: ; <[/]snippetname>
+        private const string CSSCodeSnippetRegionStartLineTemplate = "/*<{tagname}>*/";
+        private const string CSSCodeSnippetRegionEndLineTemplate = "/*</{tagname}>*/";
+
+        private static readonly IReadOnlyDictionary<string, string[]> s_languageAlias = new Dictionary<string, string[]>
+        {
+            { "actionscript", new string[] {"as" } },
+            { "arduino", new string[] {"ino" } },
+            { "assembly", new string[] {"nasm", "asm" } },
+            { "batchfile", new string[] {"bat", "cmd" } },
+            { "css", Array.Empty<string>() },
+            { "cpp", new string[] {"c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
+            { "csharp", new string[] {"cs"} },
+            { "cuda", new string[] {"cu", "cuh" } },
+            { "d", new string[] {"dlang"} },
+            { "everything", new string[] {"example" } }, //this is the catch all to try and process unforseen languages
+            { "erlang", new string[] {"erl" } },
+            { "fsharp", new string[] {"fs", "fsi", "fsx" } },
+            { "go", new string[] {"golang" } },
+            { "handlebars", new string[] {"hbs" } },
+            { "haskell", new string[] {"hs" } },
+            { "html", new string[] { "jsp", "asp", "aspx", "ascx" } },
+            { "cshtml", new string[] {"aspx-cs", "aspx-csharp" } },
+            { "vbhtml", new string[] {"aspx-vb" } },
+            { "java", new string[] {"gradle" } },
+            { "javascript", new string[] {"js", "node", "json" } },
+            { "lisp", new string[] {"lsp" } },
+            { "lua", Array.Empty<string>() },
+            { "matlab", Array.Empty<string>() },
+            { "pascal", new string[] {"pas" } },
+            { "perl", new string[] {"pl" } },
+            { "php", Array.Empty<string>() },
+            { "powershell", new string[] {"posh", "ps1" } },
+            { "processing", new string[] {"pde" } },
+            { "python", new string[] {"py" } },
+            { "r", Array.Empty<string>() },
+            { "react", new string[] {"tsx" } },
+            { "ruby", new string[] {"ru", "erb", "rb", "" } },
+            { "rust", new string[] {"rs" } },
+            { "scala", Array.Empty<string>() },
+            { "shell", new string[] {"sh", "bash" } },
+            { "smalltalk", new string[] {"st" } },
+            { "sql", Array.Empty<string>() },
+            { "swift", Array.Empty<string>() },
+            { "typescript", new string[] {"ts" } },
+            { "xaml", Array.Empty<string>() },
+            { "xml", new string[] {"xsl", "xslt", "xsd", "wsdl", "csdl", "edmx" } },
+            { "vb", new string[] {"vbnet", "vbscript", "bas", "vbs", "vba" } }
+        };
+
+        private static readonly Dictionary<string, string> s_languageByFileExtension = new Dictionary<string, string>();
 
         // If we ever come across a language that has not been defined above, we shouldn't break the build.
         // We can at least try it with a default language, "C#" for now, and try and resolve the code snippet.
-        private static readonly string DefaultSnippetLanguage = ".cs";
+        private static readonly HashSet<CodeSnippetExtractor> s_defaultExtractors = new HashSet<CodeSnippetExtractor>();
 
         // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private static readonly IReadOnlyDictionary<string, List<CodeSnippetExtractor>> s_codeLanguageExtractors = BuildCodeLanguageExtractors();
+        private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors = new Dictionary<string, HashSet<CodeSnippetExtractor>>();
 
-        public HtmlCodeSnippetRenderer(MarkdownContext context)
-        {
-            _context = context;
-        }
+        private readonly MarkdownContext _context;
 
-        private static IReadOnlyDictionary<string, List<CodeSnippetExtractor>> BuildCodeLanguageExtractors()
+        static HtmlCodeSnippetRenderer()
         {
-            var result = new Dictionary<string, List<CodeSnippetExtractor>>();
+            BuildFileExtensionLanguageMap();
 
             AddExtractorItems(new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript" },
+            AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript" },
                 new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "xml", "xaml", "html", "cshtml", "vbhtml" },
+            AddExtractorItems(new[] { "xml", "xaml", "handlebars", "html", "cshtml", "php", "react", "ruby", "vbhtml" },
                 new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "haskell", "lua", "sql" },
                 new CodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate));
@@ -146,42 +152,75 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new CodeSnippetExtractor(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate));
             AddExtractorItems(new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false));
+            AddExtractorItems(new[] { "css" },
+                new CodeSnippetExtractor(CSSCodeSnippetRegionStartLineTemplate, CSSCodeSnippetRegionEndLineTemplate, false));
 
-            return result;
-
-            void AddExtractorItems(string[] languages, CodeSnippetExtractor extractor)
+            static void BuildFileExtensionLanguageMap()
             {
+                foreach (var (language, aliases) in s_languageAlias)
+                {
+                    Debug.Assert(!language.StartsWith('.'));
+
+                    s_languageByFileExtension.Add(language, language);
+                    s_languageByFileExtension.Add($".{language}", language);
+
+                    foreach (var alias in aliases)
+                    {
+                        Debug.Assert(!alias.StartsWith('.'));
+
+                        s_languageByFileExtension.Add(alias, language);
+                        s_languageByFileExtension.Add($".{alias}", language);
+                    }
+                }
+            }
+
+            static void AddExtractorItems(string[] languages, CodeSnippetExtractor extractor)
+            {
+                s_defaultExtractors.Add(extractor);
+
                 foreach (var language in languages)
                 {
                     AddExtractorItem(language, extractor);
+                    AddExtractorItem($".{language}", extractor);
 
-                    if (LanguageAlias.ContainsKey(language))
+                    if (s_languageAlias.TryGetValue(language, out var aliases))
                     {
-                        foreach (var alias in LanguageAlias[language])
+                        foreach (var alias in aliases)
                         {
                             AddExtractorItem(alias, extractor);
+                            AddExtractorItem($".{alias}", extractor);
                         }
                     }
                 }
             }
 
-            void AddExtractorItem(string language, CodeSnippetExtractor extractor)
+            static void AddExtractorItem(string language, CodeSnippetExtractor extractor)
             {
-                if (result.ContainsKey(language))
+                if (s_languageExtractors.TryGetValue(language, out var extractors))
                 {
-                    result[language].Add(extractor);
+                    extractors.Add(extractor);
                 }
                 else
                 {
-                    result[language] = new List<CodeSnippetExtractor> { extractor };
+                    s_languageExtractors[language] = new HashSet<CodeSnippetExtractor> { extractor };
                 }
             }
+        }
+
+        public HtmlCodeSnippetRenderer(MarkdownContext context)
+        {
+            _context = context;
+        }
+
+        public static string GetLanguageByFileExtension(string extension)
+        {
+            return s_languageByFileExtension.TryGetValue(extension, out var result) ? result : null;
         }
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
             var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, codeSnippet);
-            
+
             if (content == null)
             {
                 _context.LogWarning("codesnippet-not-found", $"Invalid code snippet link: '{codeSnippet.CodePath}'.", codeSnippet);
@@ -251,29 +290,25 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return GetNoteBookContent(content, obj.TagName, obj);
                 }
 
-                List<CodeSnippetExtractor> extractors;
-                if (!s_codeLanguageExtractors.TryGetValue(lang, out extractors))
+                if (!s_languageExtractors.TryGetValue(lang, out var extractors))
                 {
-                    s_codeLanguageExtractors.TryGetValue(DefaultSnippetLanguage, out extractors);
+                    extractors = s_defaultExtractors;
 
                     _context.LogWarning(
                         "unknown-language-code",
-                        $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead",
+                        $"Unrecognized language value '{lang}' in code snippet '{obj.TagName}' in file '{obj.CodePath}'. Your code snippet might not render correctly. If this is the case, you can request a new value or use range instead.",
                         obj);
                 }
 
-                if (extractors != null)
+                var tagWithPrefix = TagPrefix + obj.TagName;
+                foreach (var extractor in extractors)
                 {
-                    var tagWithPrefix = tagPrefix + obj.TagName;
-                    foreach (var extractor in extractors)
+                    HashSet<int> tagLines = new HashSet<int>();
+                    var tagToCoderangeMapping = extractor.GetAllTags(allLines, ref tagLines);
+                    if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
+                        || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
                     {
-                        HashSet<int> tagLines = new HashSet<int>();
-                        var tagToCoderangeMapping = extractor.GetAllTags(allLines, ref tagLines);
-                        if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
-                            || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
-                        {
-                            return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
-                        }
+                        return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
                     }
                 }
             }
@@ -433,8 +468,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private string GetWarning()
         {
-            var warningTitle = _context.GetToken(warningTitleId) ?? defaultWarningTitle;
-            var warningMessage = _context.GetToken(warningMessageId) ?? defaultWarningMessage;
+            var warningTitle = _context.GetToken(WarningTitleId) ?? DefaultWarningTitle;
+            var warningMessage = _context.GetToken(WarningMessageId) ?? DefaultWarningMessage;
 
             return $@"<div class=""WARNING"">
 {warningTitle}

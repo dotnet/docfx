@@ -72,12 +72,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError("alt-text is a required attribute. Please ensure you have specified an alt-text attribute.");
             }
+
+            // add loc scope missing/invalid validation here
+
             if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
             {
                 return false;
             }
             htmlAttributes = new HtmlAttributes();
-            htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
+
+            // alt is allowed to be empty for icon type image
+            if (string.IsNullOrEmpty(alt) && type == "icon")
+                htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
+            else
+                htmlAttributes.AddProperty("src", _context.GetImageLink(src, markdownObject, alt));
 
             if (type == "icon")
             {
@@ -93,7 +101,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        public bool Render(HtmlRenderer renderer, MarkdownObject obj, Action<string> logWarning)
+        public bool Reder(HtmlRenderer renderer, MarkdownObject obj, Action<string> logWarning)
         {
             var tripleColonObj = (ITripleColon)obj;
 
@@ -116,9 +124,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if (currentBorder && tripleColonObj is Block)
+            if (currentBorder)
             {
-                renderer.WriteLine("<p class=\"mx-imgBorder\">");
+                if (tripleColonObj is Block)
+                {
+                    renderer.WriteLine("<p class=\"mx-imgBorder\">");
+                } else
+                {
+                    renderer.WriteLine("<span class=\"mx-imgBorder\">");
+                }
+
             }
             else
             {
@@ -142,6 +157,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (currentType != "complex")
             {
                 renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+
+                if(tripleColonObj is ContainerBlock
+                    && (tripleColonObj as ContainerBlock).LastChild != null)
+                {
+                    var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
+                    renderer.WriteChildren(inline);
+                }
+                
             }
             else
             {
@@ -165,6 +188,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 renderer.WriteLine("</p>");
             } else
             {
+                if(currentBorder) renderer.WriteLine("</span>");
                 renderer.WriteChildren(tripleColonObj as ContainerInline);
             }
             return true;
