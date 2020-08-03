@@ -76,8 +76,8 @@ namespace Microsoft.Docs.Build
                     case MonikerRangeBlock _:
                         return (i, token);
                     case InclusionBlock inclusionBlock:
-                        var (_, candidata) = GetFirstHeadingCandidate((MarkdownDocument)inclusionBlock[0]);
-                        return (i, candidata);
+                        var (_, candidate) = GetFirstHeadingCandidate((MarkdownDocument)inclusionBlock[0]);
+                        return (i, candidate);
                     default:
                         return default;
                 }
