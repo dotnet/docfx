@@ -35,6 +35,8 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n  \n  ", false)]
         [InlineData("  \n\n  \n\n  ", false)]
         [InlineData("  \n <!--comments--> \n  ", false)]
+        [InlineData("  \n <!--comments \n--> \n  ", false)]
+        [InlineData("  \n <!--comments \n--> <div>text</div>\n  ", true)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
             var markdownDocument = Markdown.Parse(markdownContent, _markdownPipeline);

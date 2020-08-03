@@ -59,14 +59,21 @@ namespace Microsoft.Docs.Build
         /// Writes the input lines to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void WriteLines(string destRelativePath, string[] lines)
+        public void WriteLines(string[] destRelativePaths, IEnumerable<string> lines)
         {
             EnsureNoDryRun();
 
-            _queue.Post(() =>
+            if (destRelativePaths.Length > 0)
             {
-                File.WriteAllLines(GetDestinationPath(destRelativePath), lines);
-            });
+                _queue.Post(() =>
+                {
+                    File.WriteAllLines(GetDestinationPath(destRelativePaths[0]), lines);
+                    for (var i = 1; i < destRelativePaths.Length; i++)
+                    {
+                        File.Copy(GetDestinationPath(destRelativePaths[0]), GetDestinationPath(destRelativePaths[i]), overwrite: true);
+                    }
+                });
+            }
         }
 
         /// <summary>

@@ -206,7 +206,7 @@ namespace Microsoft.Docs.Build
                     }
                 });
 
-                return (allFiles, files.ToDictionary());
+                return (allFiles, files.AsDictionary());
             }
         }
 

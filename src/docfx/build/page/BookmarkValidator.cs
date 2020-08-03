@@ -38,9 +38,9 @@ namespace Microsoft.Docs.Build
 
         public void Validate()
         {
-            var bookmarksByFile = _bookmarksByFile.ToDictionary();
+            var bookmarksByFile = _bookmarksByFile.AsDictionary();
 
-            foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.ToList())
+            foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.AsList())
             {
                 // #top is HTMl predefined URL, which points to the top of the page
                 if (bookmark == "top")

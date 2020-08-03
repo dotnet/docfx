@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public Stack<MonikerList> ZoneMonikerStack { get; private set; }
 
+        public Stack<string> ZoneStack { get; private set; }
+
         public Stack<SourceInfo<Document>> FileStack { get; private set; }
 
         public IEnumerable<SourceInfo?> Parents => FileStack.Reverse().Skip(1).Select(f => f.Source);
@@ -26,6 +28,7 @@ namespace Microsoft.Docs.Build
         {
             FileStack = new Stack<SourceInfo<Document>>();
             ZoneMonikerStack = new Stack<MonikerList>();
+            ZoneStack = new Stack<string>();
             FileStack.Push(new SourceInfo<Document>(document));
         }
     }

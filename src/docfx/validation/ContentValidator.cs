@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
-        private readonly ConcurrentHashSet<SourceInfo<string>> _links;
+        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links;
 
         public ContentValidator(
             Config config,
@@ -35,13 +35,13 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
             _publishUrlMap = publishUrlMap;
-            _links = new ConcurrentHashSet<SourceInfo<string>>();
+            _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
         }
 
         public void ValidateImageLink(Document file, SourceInfo<string> link, string? altText)
         {
             // validate image link and altText here
-            if (_links.TryAdd(link) && TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
+            if (_links.TryAdd((file.FilePath, link)) && TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType, File = file.FilePath.Path };
                 Write(_validator.ValidateLink(
@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, file.Mime.Value, isIncluded, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file.FilePath) };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
         }

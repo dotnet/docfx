@@ -91,14 +91,6 @@ namespace Microsoft.Docs.LearnValidation
                 return false;
             }
 
-            Console.WriteLine($"[{PluginName}] start to update dependency map.");
-
-            // Update DependencyType & Remove Fragments
-            var dpProcessor = new DependencyMapProcessor(config.DependencyFilePath, hierarchyItems, config.DocsetPath);
-            dpProcessor.UpdateDependencyMap();
-
-            Console.WriteLine($"[{PluginName}] finished to update dependency map.");
-
             var hierarchy = HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.DocsetOutputPath);
             var repoUrl = Utility.TransformGitUrl(config.RepoUrl);
 

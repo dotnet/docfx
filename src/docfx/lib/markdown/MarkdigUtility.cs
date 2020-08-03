@@ -153,6 +153,32 @@ namespace Microsoft.Docs.Build
                     context.FileStack.Pop();
                     break;
 
+                case TripleColonBlock tripleColonBlock:
+                    string? target = null;
+                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
+                    {
+                        target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
+                    }
+                    else if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
+                    {
+                        target = "pivot";
+                    }
+                    if (!string.IsNullOrEmpty(target))
+                    {
+                        context.ZoneStack.Push(target);
+                    }
+
+                    foreach (var child in tripleColonBlock)
+                    {
+                        Visit(child, context, action);
+                    }
+
+                    if (!string.IsNullOrEmpty(target))
+                    {
+                        context.ZoneStack.Pop();
+                    }
+                    break;
+
                 case ContainerBlock block:
                     if (block is TripleColonBlock)
                     {
@@ -278,7 +304,7 @@ namespace Microsoft.Docs.Build
             {
                 var nodeVisible = node switch
                 {
-                    HtmlBlock htmlBlock => htmlBlock.Lines.Lines.Any(line => HtmlUtility.IsVisible(line.Slice.ToString())),
+                    HtmlBlock htmlBlock => HtmlUtility.IsVisible(htmlBlock.Lines.ToString()),
                     HtmlInline htmlInline => HtmlUtility.IsVisible(htmlInline.Tag),
                     LinkReferenceDefinition _ => false,
                     ThematicBreakBlock _ => false,
