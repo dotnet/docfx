@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var codeBlockItem in codeBlockItemList)
                 {
-                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, false);
+                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
                 }
             });
         }

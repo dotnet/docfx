@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateCodeBlock(Document file, CodeBlockItem codeBlockItem, bool v)
+        public void ValidateCodeBlock(Document file, CodeBlockItem codeBlockItem)
         {
             if (TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
             {
