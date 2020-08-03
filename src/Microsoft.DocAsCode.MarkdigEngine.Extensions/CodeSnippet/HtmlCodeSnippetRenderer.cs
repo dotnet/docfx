@@ -157,16 +157,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             static void BuildFileExtensionLanguageMap()
             {
-                foreach (var (language, aliases) in s_languageAlias)
+                foreach (var (language, aliases) in s_languageAlias.Select(i => (i.Key, i.Value)))
                 {
-                    Debug.Assert(!language.StartsWith('.'));
+                    Debug.Assert(!language.StartsWith("."));
 
                     s_languageByFileExtension.Add(language, language);
                     s_languageByFileExtension.Add($".{language}", language);
 
                     foreach (var alias in aliases)
                     {
-                        Debug.Assert(!alias.StartsWith('.'));
+                        Debug.Assert(!alias.StartsWith("."));
 
                         s_languageByFileExtension.Add(alias, language);
                         s_languageByFileExtension.Add($".{alias}", language);
