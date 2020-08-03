@@ -37,7 +37,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 (code, message, origin, line) => Logger.LogWarning(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
                 (code, message, origin, line) => Logger.LogError(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
                 ReadFile,
-                GetLink);
+                GetLink,
+                GetImageLink);
         }
 
         public MarkupResult Markup(string content, string filePath)
@@ -193,6 +194,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
             return path;
         }
+
+        private string GetImageLink(string href, MarkdownObject origin, string? altText) => GetLink(href, origin);
 
         private void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
         {

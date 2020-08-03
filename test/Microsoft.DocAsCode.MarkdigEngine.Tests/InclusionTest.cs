@@ -858,8 +858,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             TestUtility.WriteToFile("r/r.md", r);
             TestUtility.WriteToFile("r/b/token.md", token);
             var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
-            var expected = @"<p>
-<img src=""~/r/b/example.svg"" role=""presentation"">
+            var expected = @"<p><img src=""~/r/b/example.svg"" role=""presentation"">
 </p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
