@@ -154,30 +154,29 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case TripleColonBlock tripleColonBlock:
-                    string? target = null;
-                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
+                    if (tripleColonBlock.Extension.Name == "zone")
                     {
-                        target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
-                    }
-                    else if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
-                    {
-                        target = "pivot";
-                    }
-                    if (!string.IsNullOrEmpty(target))
-                    {
-                        context.ZoneStack.Push(target);
-                    }
-
-                    context.TripleColonStack.Push(tripleColonBlock.Extension);
-                    foreach (var child in tripleColonBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-                    context.TripleColonStack.Pop();
-
-                    if (!string.IsNullOrEmpty(target))
-                    {
-                        context.ZoneStack.Pop();
+                        string? target = null;
+                        if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
+                        {
+                            target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
+                        }
+                        else if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
+                        {
+                            target = "pivot";
+                        }
+                        if (!string.IsNullOrEmpty(target))
+                        {
+                            context.ZoneStack.Push(target);
+                        }
+                        foreach (var child in tripleColonBlock)
+                        {
+                            Visit(child, context, action);
+                        }
+                        if (!string.IsNullOrEmpty(target))
+                        {
+                            context.ZoneStack.Pop();
+                        }
                     }
                     break;
 

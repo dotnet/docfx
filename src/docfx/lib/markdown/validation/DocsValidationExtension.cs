@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
                     IsCanonicalVersion = isCanonicalVersion,
                 };
             }
-            else if (node is CodeBlock codeBlock && context.TripleColonStack.Count == 0)
+            else if (node is CodeBlock codeBlock)
             {
                 codeBlockItem = new CodeBlockItem
                 {

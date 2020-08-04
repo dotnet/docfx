@@ -17,8 +17,6 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<SourceInfo?> Parents => FileStack.Reverse().Skip(1).Select(f => f.Source);
 
-        public Stack<ITripleColonExtensionInfo> TripleColonStack { get; private set; }
-
         public Document Document => FileStack.Peek();
 
         public bool IsInclude => FileStack.Count >= 2;
@@ -31,7 +29,6 @@ namespace Microsoft.Docs.Build
             ZoneMonikerStack = new Stack<MonikerList>();
             ZoneStack = new Stack<string>();
             FileStack.Push(new SourceInfo<Document>(document));
-            TripleColonStack = new Stack<ITripleColonExtensionInfo>();
         }
     }
 }
