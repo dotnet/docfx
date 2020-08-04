@@ -32,15 +32,18 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
-                var codeBlockItemList = new List<CodeBlockItem>();
+                var codeBlockItemList = new List<(bool IsIncluded, CodeBlockItem codeBlockItem)>();
 
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
+
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
-                    HeadingValidation(node, context, markdownEngine, documentNodes, inclusionDocumentNodes, canonicalVersion, fileLevelMoniker);
+                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
 
-                    CodeBlockValidation(node, context, codeBlockItemList, canonicalVersion, fileLevelMoniker);
+                    BuildHeadingNodes(node, context, markdownEngine, documentNodes, inclusionDocumentNodes, isCanonicalVersion);
+
+                    BuildCodeBlockNodes(node, context, codeBlockItemList, isCanonicalVersion);
 
                     return false;
                 });
@@ -51,51 +54,43 @@ namespace Microsoft.Docs.Build
                     contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
                 }
 
-                foreach (var codeBlockItem in codeBlockItemList)
+                foreach (var codeBlock in codeBlockItemList)
                 {
-                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
+                    contentValidator.ValidateCodeBlock(currentFile, codeBlock.codeBlockItem, codeBlock.IsIncluded);
                 }
             });
         }
 
-        private static void HeadingValidation(
+        private static void BuildHeadingNodes(
             MarkdownObject node,
             MarkdownVisitContext context,
             MarkdownEngine markdownEngine,
             List<ContentNode> documentNodes,
             Dictionary<Document, List<ContentNode>> inclusionDocumentNodes,
-            string? canonicalVersion,
-            MonikerList fileLevelMoniker)
+            bool? isCanonicalVersion)
         {
-            var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
-
             ContentNode? documentNode = null;
             if (node is HeadingBlock headingBlock)
             {
-                documentNode = new Heading
-                {
-                    Level = headingBlock.Level,
-                    SourceInfo = headingBlock.GetSourceInfo(),
-                    ParentSourceInfoList = context.Parents?.Cast<object?>().ToList() ?? new List<object?>(),
-                    Content = GetHeadingContent(headingBlock), // used for reporting
-                    HeadingChar = headingBlock.HeaderChar,
-                    RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
-                    IsVisible = MarkdigUtility.IsVisible(headingBlock),
-                    IsCanonicalVersion = isCanonicalVersion,
-                    Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
-                    Monikers = context.ZoneMoniker.ToList(),
-                };
+                var headingNode = CreateValidationNode<Heading>(context, isCanonicalVersion);
+
+                headingNode.Level = headingBlock.Level;
+                headingNode.SourceInfo = headingBlock.GetSourceInfo();
+                headingNode.Content = GetHeadingContent(headingBlock); // used for reporting
+                headingNode.HeadingChar = headingBlock.HeaderChar;
+                headingNode.RenderedPlainText = markdownEngine.ToPlainText(headingBlock); // used for validation
+                headingNode.IsVisible = MarkdigUtility.IsVisible(headingBlock);
+
+                documentNode = headingNode;
             }
             else if (node is LeafBlock leafBlock)
             {
-                documentNode = new ContentNode
-                {
-                    SourceInfo = node.GetSourceInfo(),
-                    IsVisible = MarkdigUtility.IsVisible(leafBlock),
-                    IsCanonicalVersion = isCanonicalVersion,
-                    Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
-                    Monikers = context.ZoneMoniker.ToList(),
-                };
+                var contentNode = CreateValidationNode<ContentNode>(context, isCanonicalVersion);
+
+                contentNode.SourceInfo = node.GetSourceInfo();
+                contentNode.IsVisible = MarkdigUtility.IsVisible(leafBlock);
+
+                documentNode = contentNode;
             }
 
             if (documentNode != null)
@@ -113,42 +108,35 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void CodeBlockValidation(
+        private static void BuildCodeBlockNodes(
             MarkdownObject node,
             MarkdownVisitContext context,
-            List<CodeBlockItem> codeBlockItemList,
-            string? canonicalVersion,
-            MonikerList fileLevelMoniker)
+            List<(bool IsInclude, CodeBlockItem codeBlockItem)> codeBlockItemList,
+            bool? isCanonicalVersion)
         {
-            var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
-
             CodeBlockItem? codeBlockItem = null;
 
-            if (node is FencedCodeBlock fencedCodeBlock)
+            if (node is FencedCodeBlock || node.GetType().Name.Equals(nameof(CodeBlock)))
             {
-                codeBlockItem = new CodeBlockItem
+                codeBlockItem = CreateValidationNode<CodeBlockItem>(context, isCanonicalVersion);
+                codeBlockItem.SourceInfo = node.GetSourceInfo();
+
+                if (node is FencedCodeBlock fencedCodeBlock)
                 {
-                    Type = CodeBlockTypeEnum.FencedCodeBlock,
-                    Info = fencedCodeBlock.Info,
-                    Arguments = fencedCodeBlock.Arguments,
-                    IsOpen = fencedCodeBlock.IsOpen,
-                    SourceInfo = fencedCodeBlock.GetSourceInfo(),
-                    IsCanonicalVersion = isCanonicalVersion,
-                };
-            }
-            else if (node.GetType().Name.Equals(nameof(CodeBlock)))
-            {
-                codeBlockItem = new CodeBlockItem
+                    codeBlockItem.Type = CodeBlockTypeEnum.FencedCodeBlock;
+                    codeBlockItem.Info = fencedCodeBlock.Info;
+                    codeBlockItem.Arguments = fencedCodeBlock.Arguments;
+                    codeBlockItem.IsOpen = fencedCodeBlock.IsOpen;
+                }
+                else
                 {
-                    Type = CodeBlockTypeEnum.CodeBlock,
-                    SourceInfo = node.GetSourceInfo(),
-                    IsCanonicalVersion = isCanonicalVersion,
-                };
+                    codeBlockItem.Type = CodeBlockTypeEnum.CodeBlock;
+                }
             }
 
             if (codeBlockItem != null)
             {
-                codeBlockItemList.Add(codeBlockItem);
+                codeBlockItemList.Add((context.IsInclude, codeBlockItem));
             }
         }
 
@@ -160,6 +148,18 @@ namespace Microsoft.Docs.Build
             }
 
             return MonikerList.IsCanonicalVersion(canonicalVersion, fileLevelMonikerList);
+        }
+
+        private static T CreateValidationNode<T>(MarkdownVisitContext context, bool? isCanonicalVersion)
+            where T : ValidationNode, new()
+        {
+            return new T()
+            {
+                IsCanonicalVersion = isCanonicalVersion,
+                ParentSourceInfoList = context.Parents?.Cast<object?>().ToList() ?? new List<object?>(),
+                Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
+                Monikers = context.ZoneMoniker.ToList(),
+            };
         }
 
         private static string GetHeadingContent(HeadingBlock headingBlock)

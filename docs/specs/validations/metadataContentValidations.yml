@@ -2487,6 +2487,7 @@ inputs:
         ]
       }
     }
+  image.png: 
   a.md: |
     ---
     title: Axes object (Excel)
@@ -2498,8 +2499,8 @@ inputs:
          this is an intented codeblock
 outputs:
   a.json:
+  image.png:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: 'image.png'.","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"code-block-indented","message":"Indented code blocks aren't allowed. Use a Markdown code block surrounded by triple backticks (```).","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
 ---
 # Content validation - codeblock validation unclosed
