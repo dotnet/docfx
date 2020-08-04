@@ -513,9 +513,9 @@ outputs:
   docs/a.json: |
     { "conceptual": "<a href='javascript:window.open(&quot;https://shell.azure.com&quot;, &quot;_blank&quot;, &quot;toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no&quot;)'>"}
   docs/b.json: |
-    { "conceptual": "<p><a onclick=\"javascript:window.open('https://shell.azure.com', '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no')\"><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
+    { "conceptual": "<p><a><image src='https://shell.azure.com/images/launchcloudshell.png'></image></a></p>\n" }
   docs/c.json: |
-    { "conceptual": "<p><a onclick='javascript:window.open(\"https://shell.azure.com\", \"_blank\", \"toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no\")'><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
+    { "conceptual": "<p><a><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
   .errors.log: |
     {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
     {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
