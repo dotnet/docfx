@@ -49,6 +49,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (updatedCode == string.Empty)
             {
+                logWarning($"It looks like your code snippet was not rendered. Try range instead.");
                 return false;
             }
             renderer.WriteLine("<pre>");
@@ -131,12 +132,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError("Language is not set, and your source has no file type. Cannot infer language.");
             }
-            var language = HtmlCodeSnippetRenderer.LanguageAlias.Where(oo => oo.Value.Contains(fileExtension) || oo.Value.Contains($".{fileExtension}")).FirstOrDefault();
-            if(string.IsNullOrEmpty(language.Key))
+            var language = HtmlCodeSnippetRenderer.GetLanguageByFileExtension(fileExtension);
+            if(string.IsNullOrEmpty(language))
             {
                 logError("Language is not set, and we could not infer language from the file type.");
             }
-            return language.Key;
+            return language;
         }
 
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)

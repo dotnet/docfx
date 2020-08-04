@@ -815,25 +815,29 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             TestUtility.WriteToFile("includes/source.md", includeContent);
             var marked = TestUtility.MarkupWithoutSourceInfo(source, "a.md");
 
-            var expected = @"<p class=""mx-imgBorder"">
+            var expected = @"<p><span class=""mx-imgBorder"">
 <a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""~/media/example.jpg"" alt=""example"">
 </a>
+</span>
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""~/media/example.jpg"" alt=""example"">
 </a>
+</span>
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""~/media/example.jpg"" alt=""example"">
 </a>
+</span>
 </p>
-<p class=""mx-imgBorder"">
+<p><span class=""mx-imgBorder"">
 <a href=""~/media/example.jpg#lightbox"" data-linktype=""relative-path"">
 <img src=""~/media/example.jpg"" alt=""example"">
 </a>
+</span>
 </p>
 ";
 
@@ -858,8 +862,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
             TestUtility.WriteToFile("r/r.md", r);
             TestUtility.WriteToFile("r/b/token.md", token);
             var marked = TestUtility.MarkupWithoutSourceInfo(r, "r/r.md");
-            var expected = @"<p>
-<img src=""~/r/b/example.svg"" role=""presentation"">
+            var expected = @"<p><img src=""~/r/b/example.svg"" role=""presentation"">
 </p>
 ";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
