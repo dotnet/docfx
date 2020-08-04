@@ -27,7 +27,10 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
-            _validator = new Validator(GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules));
+            _validator = new Validator(
+                GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules),
+                GetValidationPhysicalFilePath(fileResolver, config.Allowlists),
+                GetValidationPhysicalFilePath(fileResolver, config.Disallowlists));
             _errors = errors;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
@@ -56,7 +59,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, file.Mime.Value, isIncluded, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file.FilePath) };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
         }

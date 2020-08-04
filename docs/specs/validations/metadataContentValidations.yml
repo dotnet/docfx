@@ -347,7 +347,7 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":1}
+    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":0}
 ---
 # Validate included markdown files within Yaml file
 inputs:
@@ -385,7 +385,7 @@ outputs:
     }
   docs/b.json:
   .errors.log: |
-    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"docs/b.md","line":1}
+    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"docs/b.md","line":0}
 ---
 # Skip content validation for yaml files
 inputs:
@@ -1207,12 +1207,71 @@ outputs:
   j.json:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"h.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":4,"end_line":4,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Content validation - comments shouldn't trigger H1 not first
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before H1.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    [//]: # (START>DO_NOT_EDIT)
+    [//]: # (IMPORTANT:Do not edit any of the content between here and the END>DO_NOT_EDIT.)
+    [//]: # (Any modifications should be made in the .xml files in the ModernDev repo.)
+    # AppSourceCop Rule AS0024
+    [//]: # (IMPORTANT: END>DO_NOT_EDIT)
+    <!-- comment -->
+    # h1
+  b.md: |
+    See this markdown
+    # AppSourceCop
+  c.md: |
+    <!-- comment -->
+    # h1
+  d.md: |
+    <!-- comment 
+    -->
+    # h1
+  e.md: |
+    <!-- comment 
+    --><div>text</text>
+    # h1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
 #Content validation - h1-missing in docs zone
 inputs:
@@ -1269,8 +1328,9 @@ outputs:
   e.json:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 #Content validation - h1 in zone
 inputs:
@@ -1340,12 +1400,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":6,"end_line":6,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":22,"end_line":22,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'target=chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":34,"end_line":34,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":6,"end_line":6,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":1,"end_column":1}
 ---
 #Content validation - multiple-h1s in docs zone
 inputs:
@@ -1440,10 +1498,8 @@ outputs:
   i.json:
   j.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"b.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"h.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
 ---
 # Canonial Version Only H1 Unique Check
 inputs:
@@ -2308,8 +2364,100 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"title-missing","message":"Missing required attribute: 'title'. Add a title string to show in search engine results.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too long: 20 characters. Length should be <= 10.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":34,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"title-bad-length","message":"String 'title' is too long: 14 characters. Length should be <= 10.","file":"a.md","line":2,"end_line":2,"column":8,"end_column":22}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":7,"end_line":7,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
-
+---
+#Content validation - h1 disallowed headings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    disallowlists: disallowed.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "DisallowedHeadings",
+            "message": "Heading '{0}' matches the text of a disallowed Docs template heading.",
+            "code": "disallowed-heading",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  disallowed.json: |
+    {
+     "list:header": {
+            "id": "list:header",
+            "dependent": null,
+            "desc": "Values for header",
+            "values": {
+                "Feedback": null,
+                "Is this page helpful?": null,
+            }
+     }
+    }
+  a.md: |
+    # Feedback
+    # header2
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"disallowed-heading","message":"Heading 'H1 'Feedback'' matches the text of a disallowed Docs template heading.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+#Content validation - h1 in moniker
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    monikerRange:
+      'v1/**': '< netcore-2.0'
+      'v2/**': '>= netcore-2.0'
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1InMoniker",
+            "message": "H1s are not allowed in moniker sections. Each article should have one and only one H1.",
+            "code": "h1-in-moniker",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Create your first pipeline
+  v2/b.md: |
+    ::: moniker range=">= netcore-2.0"
+    # Create your first pipeline
+    ::: moniker-end
+outputs:
+  a.json:
+  4667fedf/v2/b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-moniker","message":"H1s are not allowed in moniker sections. Each article should have one and only one H1.","file":"v2/b.md","line":2,"end_line":2,"column":1,"end_column":1}

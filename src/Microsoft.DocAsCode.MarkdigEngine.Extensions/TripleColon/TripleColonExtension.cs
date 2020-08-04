@@ -15,18 +15,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class TripleColonExtension : IMarkdownExtension
     {
         private readonly MarkdownContext _context;
-        private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
+        private readonly IDictionary<string, ITripleColonExtensionInfo> _extensionsBlock;
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensionsInline;
 
         public TripleColonExtension(MarkdownContext context)
         {
             _context = context;
-            _extensions = (new ITripleColonExtensionInfo[]
+            _extensionsBlock = (new ITripleColonExtensionInfo[]
             {
                 new ZoneExtension(),
                 new ChromelessFormExtension(),
                 new ImageExtension(context),
                 new CodeExtension(context),
+                new VideoExtension()
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
 
@@ -34,12 +35,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 new ImageExtension(context),
                 new VideoExtension()
-            }).ToDictionary(x => x.Name);
+           }).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            var parser = new TripleColonBlockParser(_context, _extensions);
+            var parser = new TripleColonBlockParser(_context, _extensionsBlock);
             if (pipeline.BlockParsers.Contains<CustomContainerParser>())
             {
                 pipeline.BlockParsers.InsertBefore<CustomContainerParser>(parser);

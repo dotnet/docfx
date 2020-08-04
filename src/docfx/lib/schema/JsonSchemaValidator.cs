@@ -521,7 +521,7 @@ namespace Microsoft.Docs.Build
 
         private void PostValidateDocsetUnique(List<(Error, bool?)> errors)
         {
-            var validatedMetadata = _metadataBuilder.ToList();
+            var validatedMetadata = _metadataBuilder.AsList();
             var validatedMetadataGroups = validatedMetadata
                 .Where(k => IsStrictHaveValue(k.value))
                 .GroupBy(

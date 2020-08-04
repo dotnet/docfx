@@ -2,43 +2,149 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.Docs.Build;
 
 namespace System.Collections.Concurrent
 {
-    internal class MemoryCache<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IMemoryMonitor where TKey : notnull
+    internal static class MemoryCache
     {
-        public MemoryCache()
-            : base()
-        {
-            MemoryMonitor.AddMemoryMonitor(this);
-        }
+        private const int PollingInterval = 10 * 1000;
+        private const int MemoryLimitPercentage = 80;
 
-        public MemoryCache(IEqualityComparer<TKey> comparer)
-            : base(comparer)
-        {
-            MemoryMonitor.AddMemoryMonitor(this);
-        }
+        private static readonly List<WeakReference<IMemoryCache>> s_caches = new List<WeakReference<IMemoryCache>>();
+        private static int s_lastGen2Count = 0;
 
-        public void OnMemoryLow()
+        static MemoryCache()
         {
-            // Drop half of our items randomly on each low memory condition
-            var countToRemove = Count / 2;
-            var removedCount = 0;
-            var random = RandomUtility.Random;
-
-            foreach (var item in this)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (random.Next(2) == 1 && TryRemove(item.Key, out _) && removedCount++ > countToRemove)
+                new Thread(MonitorMemory) { IsBackground = true }.Start();
+            }
+        }
+
+        public static void Clear()
+        {
+            ForEach(cache => cache.Clear());
+        }
+
+        public static void AddMemoryMonitor(IMemoryCache monitor)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                lock (s_caches)
                 {
-                    break;
+                    s_caches.Add(new WeakReference<IMemoryCache>(monitor));
                 }
             }
+        }
 
-            if (removedCount > 0)
+        private static unsafe void MonitorMemory(object? obj)
+        {
+            var lastLogTime = DateTime.MinValue;
+
+            try
             {
-                Log.Write($"Memory cache removed {removedCount} items on low memory");
+                while (true)
+                {
+                    Thread.Sleep(PollingInterval);
+
+                    // Ensure GC after last notification
+                    var gen2Count = GC.CollectionCount(2);
+                    if (gen2Count == s_lastGen2Count)
+                    {
+                        continue;
+                    }
+                    s_lastGen2Count = gen2Count;
+
+                    MEMORYSTATUSEX memoryStatus = default;
+                    memoryStatus.dwLength = (uint)sizeof(MEMORYSTATUSEX);
+
+                    if (!GlobalMemoryStatusEx(ref memoryStatus))
+                    {
+                        Log.Write("GlobalMemoryStatusEx failed");
+                        break;
+                    }
+
+                    if (DateTime.Now > lastLogTime)
+                    {
+                        Log.Write(@$"GlobalMemoryStatusEx:
+dwMemoryLoad: {memoryStatus.dwMemoryLoad}
+ullAvailPhys: {memoryStatus.ullAvailPhys}
+ullTotalPhys: {memoryStatus.ullTotalPhys}
+ullAvailVirtual: {memoryStatus.ullAvailVirtual}
+ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
+
+                        lastLogTime = DateTime.Now + TimeSpan.FromMinutes(1);
+                    }
+
+                    if (memoryStatus.dwMemoryLoad < MemoryLimitPercentage)
+                    {
+                        continue;
+                    }
+
+                    Log.Important($"WARNING: Low memory {memoryStatus.dwMemoryLoad}", ConsoleColor.Red);
+
+                    ForEach(cache => cache.OnMemoryLow());
+                }
             }
+            catch (Exception ex)
+            {
+                try
+                {
+                    Log.Write("Memory monitor failure:");
+                    Log.Write(ex);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private static void ForEach(Action<IMemoryCache> action)
+        {
+            lock (s_caches)
+            {
+                var cleanup = false;
+
+                foreach (var cache in s_caches)
+                {
+                    if (cache.TryGetTarget(out var target))
+                    {
+                        action(target);
+                    }
+                    else
+                    {
+                        cleanup = true;
+                    }
+                }
+
+                if (cleanup)
+                {
+                    s_caches.RemoveAll(item => !item.TryGetTarget(out _));
+                }
+            }
+        }
+
+        [DllImport("kernel32.dll")]
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
+        [StructLayout(LayoutKind.Sequential)]
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1307", Justification = "Interop")]
+        private struct MEMORYSTATUSEX
+        {
+            // The length field must be set to the size of this data structure.
+            internal uint dwLength;
+            internal uint dwMemoryLoad;
+            internal ulong ullTotalPhys;
+            internal ulong ullAvailPhys;
+            internal ulong ullTotalPageFile;
+            internal ulong ullAvailPageFile;
+            internal ulong ullTotalVirtual;
+            internal ulong ullAvailVirtual;
+            internal ulong ullAvailExtendedVirtual;
         }
     }
 }

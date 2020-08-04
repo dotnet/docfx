@@ -17,7 +17,6 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public IReadOnlyDictionary<TKey, TValue> ToDictionary()
-            => _dictionary;
+        public IReadOnlyDictionary<TKey, TValue> AsDictionary() => _dictionary;
     }
 }

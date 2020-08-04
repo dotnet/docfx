@@ -70,6 +70,7 @@ namespace Microsoft.Docs.Build
             { "time", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "datetime" } },
             { "u", null },
             { "var", null },
+            { "wbr", null },
 
             // Image and multimedia
             { "img", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align" } },
@@ -330,7 +331,7 @@ namespace Microsoft.Docs.Build
 
             foreach (ref var attribute in token.Attributes.Span)
             {
-                if (attribute.NameIs("style"))
+                if (attribute.NameIs("style") || attribute.Name.Span.StartsWith("on", StringComparison.OrdinalIgnoreCase))
                 {
                     attribute = default;
                 }
