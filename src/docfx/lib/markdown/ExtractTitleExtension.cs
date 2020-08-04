@@ -25,29 +25,21 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                var (index, candidate) = GetFirstHeadingCandidate(document);
+                var foundedTitleCount = 0;
+                var candidate = GetNextHeadingCandidate(document, foundedTitleCount++);
                 if (candidate != null)
                 {
                     if (candidate is HeadingBlock headingBlock && headingBlock.Level <= 3)
                     {
                         heading = headingBlock;
-                        document.RemoveAt(index);
                     }
                     else if (candidate is MonikerRangeBlock)
                     {
                         heading = new List<MonikerRangeBlock>();
-                        while (candidate is MonikerRangeBlock || !candidate.IsVisible())
+                        while (candidate is MonikerRangeBlock monikerRangeBlock)
                         {
-                            if (candidate is MonikerRangeBlock monikerRangeBlock)
-                            {
-                                ((List<MonikerRangeBlock>)heading).AddIfNotNull(ExtractTitleFromMonikerZone(monikerRangeBlock));
-                            }
-                            index++;
-                            if (index >= document.Count)
-                            {
-                                break;
-                            }
-                            candidate = document[index!];
+                            ((List<MonikerRangeBlock>)heading).AddIfNotNull(ExtractTitleFromMonikerZone(monikerRangeBlock));
+                            candidate = GetNextHeadingCandidate(document, foundedTitleCount++);
                         }
                     }
 
@@ -61,28 +53,49 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static (int index, MarkdownObject? token) GetFirstHeadingCandidate(MarkdownDocument document)
+        private static MarkdownObject? GetNextHeadingCandidate(MarkdownDocument document, int skip)
         {
-            for (int i = 0; i < document.Count; i++)
+            var (left, headingCadidate) = GetCandidate(document, skip);
+            if (left == 0)
             {
-                var token = document[i];
-                if (!token.IsVisible())
-                {
-                    continue;
-                }
-                switch (token)
-                {
-                    case HeadingBlock _:
-                    case MonikerRangeBlock _:
-                        return (i, token);
-                    case InclusionBlock inclusionBlock:
-                        var (_, candidate) = GetFirstHeadingCandidate((MarkdownDocument)inclusionBlock[0]);
-                        return (i, candidate);
-                    default:
-                        return default;
-                }
+                return headingCadidate;
             }
             return default;
+
+            (int left, MarkdownObject? candidate) GetCandidate(MarkdownDocument document, int skip)
+            {
+                MarkdownObject? candidate = null;
+                for (int i = 0; i < document.Count; i++)
+                {
+                    var token = document[i];
+                    if (!token.IsVisible())
+                    {
+                        continue;
+                    }
+                    switch (token)
+                    {
+                        case HeadingBlock heading when heading.Level <= 3:
+                            document.RemoveAt(i);
+                            candidate = token;
+                            break;
+                        case MonikerRangeBlock _:
+                            candidate = token;
+                            break;
+                        case InclusionBlock inclusionBlock:
+                            (skip, candidate) = GetCandidate((MarkdownDocument)inclusionBlock[0], skip);
+                            break;
+                        default:
+                            skip = -1;
+                            break;
+                    }
+                    if (skip == 0 || skip == -1)
+                    {
+                        break;
+                    }
+                    skip--;
+                }
+                return (skip, candidate);
+            }
         }
 
         private static MonikerRangeBlock? ExtractTitleFromMonikerZone(MonikerRangeBlock monikerRangeBlock)
