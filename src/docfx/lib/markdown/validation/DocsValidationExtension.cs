@@ -136,12 +136,12 @@ namespace Microsoft.Docs.Build
                     IsCanonicalVersion = isCanonicalVersion,
                 };
             }
-            else if (node is CodeBlock codeBlock)
+            else if (node.GetType().Name.Equals(nameof(CodeBlock)))
             {
                 codeBlockItem = new CodeBlockItem
                 {
                     Type = CodeBlockTypeEnum.CodeBlock,
-                    SourceInfo = codeBlock.GetSourceInfo(),
+                    SourceInfo = node.GetSourceInfo(),
                     IsCanonicalVersion = isCanonicalVersion,
                 };
             }
