@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
             var (content, file) = context.ReadFile(inclusionBlock.IncludedFilePath, inclusionBlock);
-            if (content is null)
+            if (content is null || file is null)
             {
                 errors.Add(Errors.Markdown.IncludeNotFound(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
                 return;
@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
             using (InclusionContext.PushInclusion(file))
             {
                 var child = Markdown.Parse(content, pipeline);
+                child.SetFilePath((Document)file);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
                 inclusionBlock.Add(child);
                 inclusionBlock.ResolvedFilePath = file;
@@ -103,6 +104,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (block is LeafBlock leaf && leaf.Inline != null)
                     {
+                        leaf.Inline.SetFilePath((Document)file);
                         inclusionInline.AppendChild(leaf.Inline);
                     }
                 }
