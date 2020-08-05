@@ -765,10 +765,10 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
         }
 
-        public static class ECMA2Yaml
+        public static class SourceMap
         {
-            public static Error DuplicateXml(string yamlFile, IEnumerable<PathString> xmlFiles)
-                => new Error(ErrorLevel.Warning, "duplciate-xml", $"'{yamlFile}' is duplicated from {StringUtility.Join(xmlFiles)}");
+            public static Error DuplicateContent(string key, IEnumerable<PathString> originalFiles)
+                => new Error(ErrorLevel.Warning, "duplciate-content", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
         }
     }
 }

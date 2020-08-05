@@ -403,9 +403,9 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
-    {"message_severity":"warning","code":"duplciate-xml","message":"'api/CatLibrary.yml' is duplicated from 'mouse/xml/ns-CatLibrary.xml', 'xml/ns-CatLibrary.xml'","line":0,"column":0}
-    {"message_severity":"warning","code":"duplciate-xml","message":"'api/CatLibrary.Cat-2.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
-    {"message_severity":"warning","code":"duplciate-xml","message":"'api/CatLibrary.Cat-2.-ctor.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplciate-content","message":"'api/CatLibrary.yml' is duplicated from 'mouse/xml/ns-CatLibrary.xml', 'xml/ns-CatLibrary.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplciate-content","message":"'api/CatLibrary.Cat-2.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplciate-content","message":"'api/CatLibrary.Cat-2.-ctor.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
 
   cat/api/_splitted/catlibrary/toc.json:
   cat/api/copied-mouse/_splitted/catlibrary/toc.json:

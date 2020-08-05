@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
                             var value = new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, originalPath.Value)));
                             if (!_map.TryAdd(key, value))
                             {
-                                errors.Add(Errors.ECMA2Yaml.DuplicateXml(key, new List<PathString> { _map[key], value }));
+                                errors.Add(Errors.SourceMap.DuplicateContent(key, new List<PathString> { _map[key], value }));
                             }
                         }
                     }
