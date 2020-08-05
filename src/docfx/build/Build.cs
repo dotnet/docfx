@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errors, buildOptions).Run();
 
-                var sourceMap = new SourceMap(new PathString(buildOptions.DocsetPath), config, fileResolver);
+                var sourceMap = new SourceMap(errors, new PathString(buildOptions.DocsetPath), config, fileResolver);
                 var validationRules = GetContentValidationRules(config, fileResolver);
 
                 errors = new ErrorLog(errors, config, sourceMap, validationRules);
