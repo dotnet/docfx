@@ -305,12 +305,6 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public ECMA2YamlRepoConfig[]? Monodoc { get; private set; }
 
-        /// <summary>
-        /// Paths to exclude for sensitive language validations
-        /// </summary>
-        [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] SensitiveLanguageValidationExcludes { get; private set; } = Array.Empty<string>();
-
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)
