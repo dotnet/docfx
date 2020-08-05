@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Markdig;
+using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -70,25 +71,29 @@ namespace Microsoft.Docs.Build
             bool? isCanonicalVersion)
         {
             ContentNode? documentNode = null;
-            if (node is HeadingBlock headingBlock)
+
+            switch (node)
             {
-                var headingNode = CreateValidationNode<Heading>(context, isCanonicalVersion, headingBlock);
+                case HeadingBlock headingBlock:
+                    var headingNode = CreateValidationNode<Heading>(context, isCanonicalVersion, headingBlock);
 
-                headingNode.Level = headingBlock.Level;
-                headingNode.Content = GetHeadingContent(headingBlock); // used for reporting
-                headingNode.HeadingChar = headingBlock.HeaderChar;
-                headingNode.RenderedPlainText = markdownEngine.ToPlainText(headingBlock); // used for validation
-                headingNode.IsVisible = MarkdigUtility.IsVisible(headingBlock);
+                    headingNode.Level = headingBlock.Level;
+                    headingNode.Content = GetHeadingContent(headingBlock); // used for reporting
+                    headingNode.HeadingChar = headingBlock.HeaderChar;
+                    headingNode.RenderedPlainText = markdownEngine.ToPlainText(headingBlock); // used for validation
+                    headingNode.IsVisible = MarkdigUtility.IsVisible(headingBlock);
 
-                documentNode = headingNode;
-            }
-            else if (node is LeafBlock leafBlock)
-            {
-                var contentNode = CreateValidationNode<ContentNode>(context, isCanonicalVersion, leafBlock);
+                    documentNode = headingNode;
+                    break;
 
-                contentNode.IsVisible = MarkdigUtility.IsVisible(leafBlock);
+                case LeafBlock leafBlock:
+                    var contentNode = CreateValidationNode<ContentNode>(context, isCanonicalVersion, leafBlock);
+                    contentNode.IsVisible = MarkdigUtility.IsVisible(leafBlock);
+                    documentNode = contentNode;
+                    break;
 
-                documentNode = contentNode;
+                default:
+                    break;
             }
 
             if (documentNode != null)
@@ -114,21 +119,27 @@ namespace Microsoft.Docs.Build
         {
             CodeBlockItem? codeBlockItem = null;
 
-            if (node is FencedCodeBlock || node.GetType().Name.Equals(nameof(CodeBlock)))
+            switch (node)
             {
-                codeBlockItem = CreateValidationNode<CodeBlockItem>(context, isCanonicalVersion, node);
+                case FencedCodeBlock fencedCodeBlock:
+                    codeBlockItem = CreateValidationNode<CodeBlockItem>(context, isCanonicalVersion, node);
 
-                if (node is FencedCodeBlock fencedCodeBlock)
-                {
                     codeBlockItem.Type = CodeBlockTypeEnum.FencedCodeBlock;
                     codeBlockItem.Info = fencedCodeBlock.Info;
                     codeBlockItem.Arguments = fencedCodeBlock.Arguments;
                     codeBlockItem.IsOpen = fencedCodeBlock.IsOpen;
-                }
-                else
-                {
+                    break;
+
+                case YamlFrontMatterBlock yamlFrontMatterBlock:
+                    break;
+
+                case CodeBlock codeBlock:
+                    codeBlockItem = CreateValidationNode<CodeBlockItem>(context, isCanonicalVersion, codeBlock);
                     codeBlockItem.Type = CodeBlockTypeEnum.CodeBlock;
-                }
+                    break;
+
+                default:
+                    break;
             }
 
             if (codeBlockItem != null)
