@@ -710,7 +710,7 @@ outputs:
   docs/toc.json: |
     {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
   .errors.log: |
-    {"message_severity":"suggestion","code":"yaml-duplicate-key","message":"Key 'topicHref' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.","file":"docs/TOC.yml","line":3,"column":3}
+    {"message_severity":"warning","code":"yaml-duplicate-key","message":"Key 'topicHref' is already defined, remove the duplicate key.","file":"docs/TOC.yml","line":3,"column":3}
     {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists.","file":"docs/TOC.yml","line":4,"column":12}
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
