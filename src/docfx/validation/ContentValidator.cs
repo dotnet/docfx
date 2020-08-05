@@ -55,6 +55,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void ValidateCodeBlock(Document file, CodeBlockItem codeBlockItem, bool isIncluded)
+        {
+            if (TryGetValidationDocumentType(file, file.Mime.Value, isIncluded, out var documentType))
+            {
+                var validationContext = new ValidationContext { DocumentType = documentType };
+                Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
         public void ValidateHeadings(Document file, List<ContentNode> nodes, bool isIncluded)
         {
             if (TryGetValidationDocumentType(file, file.Mime.Value, isIncluded, out var documentType))

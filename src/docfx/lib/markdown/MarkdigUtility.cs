@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
                     context.FileStack.Pop();
                     break;
 
-                case TripleColonBlock tripleColonBlock:
+                case TripleColonBlock tripleColonBlock when tripleColonBlock.Extension is ZoneExtension:
                     string? target = null;
                     if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
                     {
@@ -167,16 +167,17 @@ namespace Microsoft.Docs.Build
                     {
                         context.ZoneStack.Push(target);
                     }
-
                     foreach (var child in tripleColonBlock)
                     {
                         Visit(child, context, action);
                     }
-
                     if (!string.IsNullOrEmpty(target))
                     {
                         context.ZoneStack.Pop();
                     }
+                    break;
+
+                case TripleColonBlock tripleColonBlock:
                     break;
 
                 case ContainerBlock block:
