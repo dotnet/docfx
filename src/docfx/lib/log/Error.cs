@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -48,6 +49,19 @@ namespace Microsoft.Docs.Build
             level = isCanonicalVersion != null && customRule.CanonicalVersionOnly
                 ? (isCanonicalVersion.Value ? level : ErrorLevel.Off)
                 : level;
+
+            if (level != ErrorLevel.Off && customRule.Exclude.Any())
+            {
+                foreach (var exclusion in customRule.Exclude)
+                {
+                    var matcher = GlobUtility.CreateGlobMatcher(exclusion);
+                    if (matcher(OriginalPath ?? Source?.File?.Path ?? string.Empty))
+                    {
+                        level = ErrorLevel.Off;
+                        break;
+                    }
+                }
+            }
 
             return new Error(
                 level,

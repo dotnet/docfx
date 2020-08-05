@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -17,6 +18,9 @@ namespace Microsoft.Docs.Build
         public bool CanonicalVersionOnly { get; private set; }
 
         public bool PullRequestOnly { get; private set; }
+
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[] Exclude { get; private set; } = Array.Empty<string>();
 
         public CustomRule() { }
 
