@@ -1,3 +1,4 @@
+
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -32,6 +33,7 @@ namespace Microsoft.Docs.Build
                     if (candidate is HeadingBlock headingBlock && headingBlock.Level <= 3)
                     {
                         heading = headingBlock;
+                        document.Remove(headingBlock);
                     }
                     else if (candidate is MonikerRangeBlock)
                     {
@@ -75,7 +77,6 @@ namespace Microsoft.Docs.Build
                     switch (token)
                     {
                         case HeadingBlock heading when heading.Level <= 3:
-                            document.RemoveAt(i);
                             candidate = token;
                             break;
                         case MonikerRangeBlock _:
