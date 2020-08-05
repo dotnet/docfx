@@ -72,10 +72,9 @@ namespace Microsoft.Docs.Build
             ContentNode? documentNode = null;
             if (node is HeadingBlock headingBlock)
             {
-                var headingNode = CreateValidationNode<Heading>(context, isCanonicalVersion);
+                var headingNode = CreateValidationNode<Heading>(context, isCanonicalVersion, headingBlock);
 
                 headingNode.Level = headingBlock.Level;
-                headingNode.SourceInfo = headingBlock.GetSourceInfo();
                 headingNode.Content = GetHeadingContent(headingBlock); // used for reporting
                 headingNode.HeadingChar = headingBlock.HeaderChar;
                 headingNode.RenderedPlainText = markdownEngine.ToPlainText(headingBlock); // used for validation
@@ -85,9 +84,8 @@ namespace Microsoft.Docs.Build
             }
             else if (node is LeafBlock leafBlock)
             {
-                var contentNode = CreateValidationNode<ContentNode>(context, isCanonicalVersion);
+                var contentNode = CreateValidationNode<ContentNode>(context, isCanonicalVersion, leafBlock);
 
-                contentNode.SourceInfo = node.GetSourceInfo();
                 contentNode.IsVisible = MarkdigUtility.IsVisible(leafBlock);
 
                 documentNode = contentNode;
@@ -118,8 +116,7 @@ namespace Microsoft.Docs.Build
 
             if (node is FencedCodeBlock || node.GetType().Name.Equals(nameof(CodeBlock)))
             {
-                codeBlockItem = CreateValidationNode<CodeBlockItem>(context, isCanonicalVersion);
-                codeBlockItem.SourceInfo = node.GetSourceInfo();
+                codeBlockItem = CreateValidationNode<CodeBlockItem>(context, isCanonicalVersion, node);
 
                 if (node is FencedCodeBlock fencedCodeBlock)
                 {
@@ -150,7 +147,7 @@ namespace Microsoft.Docs.Build
             return MonikerList.IsCanonicalVersion(canonicalVersion, fileLevelMonikerList);
         }
 
-        private static T CreateValidationNode<T>(MarkdownVisitContext context, bool? isCanonicalVersion)
+        private static T CreateValidationNode<T>(MarkdownVisitContext context, bool? isCanonicalVersion, MarkdownObject markdownNode)
             where T : ValidationNode, new()
         {
             return new T()
@@ -159,6 +156,7 @@ namespace Microsoft.Docs.Build
                 ParentSourceInfoList = context.Parents?.Cast<object?>().ToList() ?? new List<object?>(),
                 Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
                 Monikers = context.ZoneMoniker.ToList(),
+                SourceInfo = markdownNode.GetSourceInfo(),
             };
         }
 
