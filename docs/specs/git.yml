@@ -736,3 +736,21 @@ repos:
 outputs:
   docs/a.json:
   crrb/b.json:
+---
+# Respect user-assigned content_git_url & original_content_git_url
+repos:
+  https://docascode@github.com/testowner/testrepo.git#master-content-git-url:
+    - files:
+        docfx.yml:
+        index.md: |
+          ---
+          content_git_url: https://github.com/user-assigned/repo/blob/user/index.md
+          original_content_git_url: https://github.com/user-assigned/original/blob/original/index.md
+          ---
+outputs:
+  index.json: |
+    {
+      "content_git_url": "https://github.com/user-assigned/repo/blob/user/index.md",
+      "original_content_git_url": "https://github.com/user-assigned/original/blob/original/index.md",
+      "gitcommit": "https://github.com/testowner/testrepo/blob/450790f8a588ed8d96f4cb931c744d3855b7a809/index.md",
+    }

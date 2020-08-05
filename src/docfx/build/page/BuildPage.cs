@@ -166,7 +166,9 @@ namespace Microsoft.Docs.Build
                 = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
 
             (systemMetadata.ContentGitUrl, systemMetadata.OriginalContentGitUrl, systemMetadata.OriginalContentGitUrlTemplate)
-                = context.ContributionProvider.GetGitUrl(file.FilePath);
+                = userMetadata.ContentGitUrl != null || userMetadata.OriginalContentGitUrl != null || userMetadata.OriginalContentGitUrlTemplate != null
+                  ? (userMetadata.ContentGitUrl, userMetadata.OriginalContentGitUrl, userMetadata.OriginalContentGitUrlTemplate)
+                  : context.ContributionProvider.GetGitUrl(file.FilePath);
             systemMetadata.Gitcommit = context.ContributionProvider.GetGitCommitUrl(file.FilePath);
 
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
