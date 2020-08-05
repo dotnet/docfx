@@ -50,18 +50,7 @@ namespace Microsoft.Docs.Build
                 ? (isCanonicalVersion.Value ? level : ErrorLevel.Off)
                 : level;
 
-            if (level != ErrorLevel.Off && customRule.Exclude.Any())
-            {
-                foreach (var exclusion in customRule.Exclude)
-                {
-                    var matcher = GlobUtility.CreateGlobMatcher(exclusion);
-                    if (matcher(OriginalPath ?? Source?.File?.Path ?? string.Empty))
-                    {
-                        level = ErrorLevel.Off;
-                        break;
-                    }
-                }
-            }
+            level = CheckExclusions(level, customRule);
 
             return new Error(
                 level,
@@ -116,6 +105,22 @@ namespace Microsoft.Docs.Build
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
             return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
+        }
+
+        private ErrorLevel CheckExclusions(ErrorLevel currentLevel, CustomRule customRule)
+        {
+            if (currentLevel != ErrorLevel.Off && customRule.Exclude.Any())
+            {
+                foreach (var exclusion in customRule.Exclude)
+                {
+                    var matcher = customRule.GetCachedGlobMatcher(exclusion);
+                    if (matcher(OriginalPath ?? Source?.File?.Path ?? string.Empty))
+                    {
+                        return ErrorLevel.Off;
+                    }
+                }
+            }
+            return currentLevel;
         }
 
         private class EqualityComparer : IEqualityComparer<Error>
