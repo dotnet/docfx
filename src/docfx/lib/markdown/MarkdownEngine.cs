@@ -16,6 +16,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Validations.DocFx.Adapter;
+using MarkdigMarkdown = Markdig.Markdown;
 
 namespace Microsoft.Docs.Build
 {
@@ -91,7 +92,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    return Markdown.Parse(content, _pipelines[(int)pipelineType]);
+                    return MarkdigMarkdown.Parse(content, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
@@ -110,7 +111,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    return Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
+                    return MarkdigMarkdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {

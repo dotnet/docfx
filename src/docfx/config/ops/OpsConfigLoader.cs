@@ -89,7 +89,21 @@ namespace Microsoft.Docs.Build
             if (monodoc != null)
             {
                 result["monodoc"] = monodoc;
-                result["sourceMap"] = new JArray(monodoc.Select((_, index) => $".sourcemap-{index}.json"));
+                result["sourceMap"] = new JArray(monodoc.Select((_, index) => $".sourcemap-ecma-{index}.json"));
+            }
+
+            var maml2YamlMonikerPath = GetMAML2YamlMonikerPath(docsetConfig, opsConfig, buildSourceFolder);
+            if (maml2YamlMonikerPath != null)
+            {
+                result["maml2YamlMonikerMappingPath"] = maml2YamlMonikerPath;
+                if (result.ContainsKey("sourceMap"))
+                {
+                    ((JArray)result["sourceMap"]!).AddRange(new JArray(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json")));
+                }
+                else
+                {
+                    result["sourceMap"] = new JArray(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json"));
+                }
             }
 
             result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
@@ -124,6 +138,20 @@ namespace Microsoft.Docs.Build
                     ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
                     ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
                     result.Add(ecma2YamlJObject);
+                }
+            }
+            return result.Count == 0 ? null : result;
+        }
+
+        private static JArray? GetMAML2YamlMonikerPath(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
+        {
+            var result = new JArray();
+            var maml2YamlMonikerPath = docsetConfig?.MAML2YamlMonikerMappingPath ?? opsConfig.MAML2YamlMonikerMappingPath;
+            if (maml2YamlMonikerPath != null)
+            {
+                foreach (var monikerPath in maml2YamlMonikerPath)
+                {
+                    result.Add(Path.GetRelativePath(buildSourceFolder, monikerPath));
                 }
             }
             return result.Count == 0 ? null : result;

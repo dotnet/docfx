@@ -3,12 +3,18 @@
 
 using System.IO;
 using ECMA2Yaml;
+using MAML2Yaml.Lib;
+using ECMALogItem = ECMA2Yaml.LogItem;
+using ECMAMessageSeverity = ECMA2Yaml.MessageSeverity;
+using MAMLLogItem = MAML2Yaml.Lib.Logging.LogItem;
+using MAMLMessageSeverity = MAML2Yaml.Lib.Logging.MessageSeverity;
 
 namespace Microsoft.Docs.Build
 {
     internal class OpsPreProcessor
     {
-        private static readonly object s_lock = new object();
+        private static readonly object s_ecma = new object();
+        private static readonly object s_maml = new object();
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
@@ -24,6 +30,7 @@ namespace Microsoft.Docs.Build
         public void Run()
         {
             PreProcessMonoDocXml();
+            PreProcessMAML();
         }
 
         private void PreProcessMonoDocXml()
@@ -35,7 +42,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Preprocessing monodoc XML files"))
             {
-                lock (s_lock)
+                lock (s_ecma)
                 {
                     for (var index = 0; index < _config.Monodoc.Length; index++)
                     {
@@ -67,7 +74,32 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void LogError(LogItem item)
+        private void PreProcessMAML()
+        {
+            if (_config.MAML2YamlMonikerMappingPath is null)
+            {
+                return;
+            }
+
+            using (Progress.Start("Preprocessing MAML markdown files"))
+            {
+                lock (s_maml)
+                {
+                    for (var index = 0; index < _config.MAML2YamlMonikerMappingPath.Length; index++)
+                    {
+                        var monikerMappingPath = _config.MAML2YamlMonikerMappingPath[index];
+
+                        MAML2YamlConverter.Run(
+                            docsetPath: _buildOptions.DocsetPath,
+                            monikerMappingPath: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monikerMappingPath)),
+                            logWriter: LogError,
+                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-{index}.json"));
+                    }
+                }
+            }
+        }
+
+        private void LogError(ECMALogItem item)
         {
             if (!string.IsNullOrEmpty(item.Code))
             {
@@ -82,12 +114,35 @@ namespace Microsoft.Docs.Build
                 _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
             }
 
-            static ErrorLevel MapLevel(MessageSeverity level) => level switch
+            static ErrorLevel MapLevel(ECMAMessageSeverity level) => level switch
             {
-                MessageSeverity.Error => ErrorLevel.Error,
-                MessageSeverity.Warning => ErrorLevel.Warning,
-                MessageSeverity.Suggestion => ErrorLevel.Suggestion,
-                MessageSeverity.Info => ErrorLevel.Info,
+                ECMAMessageSeverity.Error => ErrorLevel.Error,
+                ECMAMessageSeverity.Warning => ErrorLevel.Warning,
+                ECMAMessageSeverity.Suggestion => ErrorLevel.Suggestion,
+                ECMAMessageSeverity.Info => ErrorLevel.Info,
+                _ => ErrorLevel.Off,
+            };
+        }
+
+        private void LogError(MAMLLogItem item)
+        {
+            if (!string.IsNullOrEmpty(item.Code))
+            {
+                var file = item.File is null
+                    ? null
+                    : FilePath.Content(new PathString(item.File));
+
+                var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);
+
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+            }
+
+            static ErrorLevel MapLevel(MAMLMessageSeverity level) => level switch
+            {
+                MAMLMessageSeverity.Error => ErrorLevel.Error,
+                MAMLMessageSeverity.Warning => ErrorLevel.Warning,
+                MAMLMessageSeverity.Suggestion => ErrorLevel.Suggestion,
+                MAMLMessageSeverity.Info => ErrorLevel.Info,
                 _ => ErrorLevel.Off,
             };
         }

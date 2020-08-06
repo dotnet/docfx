@@ -7,6 +7,7 @@ using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using MarkdigMarkdown = Markdig.Markdown;
 
 namespace Microsoft.Docs.Build
 {
@@ -72,7 +73,7 @@ namespace Microsoft.Docs.Build
 
             using (InclusionContext.PushInclusion(file))
             {
-                var child = Markdown.Parse(content, pipeline);
+                var child = MarkdigMarkdown.Parse(content, pipeline);
                 child.SetFilePath((Document)file);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
                 inclusionBlock.Add(child);
@@ -97,7 +98,7 @@ namespace Microsoft.Docs.Build
 
             using (InclusionContext.PushInclusion(file))
             {
-                var child = Markdown.Parse(content, pipeline);
+                var child = MarkdigMarkdown.Parse(content, pipeline);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
 
                 foreach (var block in child)

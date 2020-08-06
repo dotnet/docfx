@@ -305,6 +305,12 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public ECMA2YamlRepoConfig[]? Monodoc { get; private set; }
 
+        /// <summary>
+        /// Determines and configures build to convert MAML markdown files to SDP yaml files as input
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[]? MAML2YamlMonikerMappingPath { get; private set; }
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)

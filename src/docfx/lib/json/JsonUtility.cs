@@ -297,6 +297,14 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException();
         }
 
+        public static void AddRange(this JArray container, JArray arr)
+        {
+            foreach (var item in arr)
+            {
+                container.Add(item);
+            }
+        }
+
         /// <summary>
         /// Sets the property value. Prefer this method when you need to propagate source info.
         /// </summary>
