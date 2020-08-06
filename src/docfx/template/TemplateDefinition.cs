@@ -1,13 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+
 namespace Microsoft.Docs.Build
 {
-    public enum PackageType
+    internal class TemplateDefinition
     {
-        None,
-        File,
-        Folder,
-        Git,
+        public Dictionary<string, string> Definitions { get; set; } = new Dictionary<string, string>();
     }
 }

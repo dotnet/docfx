@@ -66,7 +66,8 @@ namespace Microsoft.Docs.Build
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
-            if (context.Config.DryRun && TemplateEngine.IsConceptual(file.Mime) && context.Config.OutputType != OutputType.Html)
+            // TODO: For the SDP, we can let the scheme to tell whether the property will be generated as a bookmark
+            if (context.Config.DryRun)
             {
                 return (new JObject(), new JObject());
             }

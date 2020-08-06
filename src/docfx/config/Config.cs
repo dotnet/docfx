@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string>[] MetadataSchema { get; private set; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
-        /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
+        /// Get the template folder or git repository url (like https://github.com/docs/theme#master) or public template definition file (like https://static.docs.com/ui/latest/schemas/schema_config.json)
         /// </summary>
         public PackagePath Template { get; private set; } = new PackagePath();
 

@@ -35,8 +35,16 @@ namespace Microsoft.Docs.Build
         {
             if (UrlUtility.IsHttp(value))
             {
-                Type = PackageType.Git;
-                (Url, Branch) = SplitGitUrl(value);
+                if (value.EndsWith(".json"))
+                {
+                    Type = PackageType.File;
+                    Url = value;
+                }
+                else
+                {
+                    Type = PackageType.Git;
+                    (Url, Branch) = SplitGitUrl(value);
+                }
             }
             else
             {
@@ -56,6 +64,7 @@ namespace Microsoft.Docs.Build
         {
             PackageType.Folder => Path,
             PackageType.Git => $"{Url}#{Branch}",
+            PackageType.File => Url,
             _ => $"{Url}, (type: {Type.ToString()})",
         };
 
