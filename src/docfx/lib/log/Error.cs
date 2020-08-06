@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -46,11 +45,15 @@ namespace Microsoft.Docs.Build
         public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
         {
             var level = customRule.Severity ?? Level;
-            level = isCanonicalVersion != null && customRule.CanonicalVersionOnly
-                ? (isCanonicalVersion.Value ? level : ErrorLevel.Off)
-                : level;
+            if (isCanonicalVersion != null && customRule.CanonicalVersionOnly)
+            {
+                level = isCanonicalVersion.Value ? level : ErrorLevel.Off;
+            }
 
-            level = CheckExclusions(level, customRule);
+            if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? string.Empty))
+            {
+                level = ErrorLevel.Off;
+            }
 
             return new Error(
                 level,
@@ -105,22 +108,6 @@ namespace Microsoft.Docs.Build
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
             return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
-        }
-
-        private ErrorLevel CheckExclusions(ErrorLevel currentLevel, CustomRule customRule)
-        {
-            if (currentLevel != ErrorLevel.Off && customRule.Exclude.Any())
-            {
-                foreach (var exclusion in customRule.Exclude)
-                {
-                    var matcher = customRule.GetCachedGlobMatcher(exclusion);
-                    if (matcher(OriginalPath ?? Source?.File?.Path ?? string.Empty))
-                    {
-                        return ErrorLevel.Off;
-                    }
-                }
-            }
-            return currentLevel;
         }
 
         private class EqualityComparer : IEqualityComparer<Error>

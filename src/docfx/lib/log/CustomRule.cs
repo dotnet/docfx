@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
+using System.Threading;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[] Exclude { get; private set; } = Array.Empty<string>();
 
-        private ConcurrentDictionary<string, Func<string, bool>> _globMatcherCache = new ConcurrentDictionary<string, Func<string, bool>>();
+        private Func<string, bool>? _globMatcherCache;
 
         public CustomRule() { }
 
@@ -38,21 +38,11 @@ namespace Microsoft.Docs.Build
             PullRequestOnly = pullRequestOnly;
         }
 
-        public Func<string, bool> GetCachedGlobMatcher(string glob)
+        public bool ExcludeMatches(string file)
         {
-            if (!_globMatcherCache.ContainsKey(glob))
-            {
-                _globMatcherCache.TryAdd(glob, GlobUtility.CreateGlobMatcher(glob));
-            }
+            var match = LazyInitializer.EnsureInitialized(ref _globMatcherCache, () => GlobUtility.CreateGlobMatcher(Exclude, Array.Empty<string>()));
 
-            if (_globMatcherCache.TryGetValue(glob, out var matcher))
-            {
-                return matcher;
-            }
-            else
-            {
-                return GlobUtility.CreateGlobMatcher(glob);
-            }
+            return match(file);
         }
     }
 }
