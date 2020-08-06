@@ -198,6 +198,7 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseMonikerZone(ParseMonikerRange)
                 .UseApexValidation(_validatorProvider, GetLayout)
+                .UseEnsureParent()
                 .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
@@ -226,7 +227,8 @@ namespace Microsoft.Docs.Build
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
-            builder.UseFilePath()
+            builder.UseEnsureParent()
+                   .UseFilePath()
                    .UseYamlFrontMatter()
                    .UseXref()
                    .UsePreciseSourceLocation();
@@ -239,22 +241,22 @@ namespace Microsoft.Docs.Build
             return _templateEngine.GetToken(key);
         }
 
-        private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
+        private static void LogInfo(string code, string message, MarkdownObject? origin, int? line)
         {
             Log.Write($"{code}: {message}");
         }
 
-        private static void LogError(string code, string message, MarkdownObject origin, int? line)
+        private static void LogError(string code, string message, MarkdownObject? origin, int? line)
         {
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.GetSourceInfo(line)));
         }
 
-        private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
+        private static void LogWarning(string code, string message, MarkdownObject? origin, int? line)
         {
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.GetSourceInfo(line)));
         }
 
-        private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
+        private static void LogSuggestion(string code, string message, MarkdownObject? origin, int? line)
         {
             t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.GetSourceInfo(line)));
         }
