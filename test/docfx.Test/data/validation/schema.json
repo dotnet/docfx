@@ -5080,7 +5080,7 @@
       "tutorial": null
     }
   },
-  "customRules": {
+  "rules": {
     "author": {
       "unexpected-type": {
         "severity": "suggestion",

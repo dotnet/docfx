@@ -1415,7 +1415,7 @@ outputs:
 # turn skip-level toc error to warning
 inputs:
   docfx.yml: |
-    customRules:
+    rules:
       invalid-toc-level: warning
   docs/TOC.md: |
     # level 1

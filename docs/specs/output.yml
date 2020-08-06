@@ -250,7 +250,7 @@ outputs:
 # Manifest includes files with errors
 inputs:
   docfx.yml: |
-    customRules:
+    rules:
       file-not-found: error
   docs/a.md: |
     a [](b)

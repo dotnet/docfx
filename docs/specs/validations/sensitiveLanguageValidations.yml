@@ -3,7 +3,7 @@
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
-    customRules:
+    rules:
       sensitive-language:
         exclude:
           - x/y/**/*.md
