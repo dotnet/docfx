@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file.FilePath);
-            var xref = new InternalXrefSpec(uid, href, file, monikers);
+            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
