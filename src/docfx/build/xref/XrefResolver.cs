@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
             if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
                 var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
-                return (spec.Value, href);
+                return ((spec.Value.Href != null && spec.Value.Href.Length == 0) || (spec.Value.Href == null)) ? default : (spec.Value, href);
             }
             return default;
         }
