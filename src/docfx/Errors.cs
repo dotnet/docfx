@@ -767,8 +767,8 @@ namespace Microsoft.Docs.Build
 
         public static class SourceMap
         {
-            public static Error DuplicateContent(string key, IEnumerable<PathString> originalFiles)
-                => new Error(ErrorLevel.Warning, "duplicate-content", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
+            public static Error DuplicateSourceMapItem(string key, IEnumerable<PathString> originalFiles)
+                => new Error(ErrorLevel.Warning, "duplicate-source-map-item", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
         }
     }
 }
