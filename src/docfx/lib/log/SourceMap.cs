@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly IDictionary<PathString, PathString> _map = new Dictionary<PathString, PathString>();
 
-        public SourceMap(PathString docsetPath, Config config, FileResolver fileResolver)
+        public SourceMap(ErrorBuilder errors, PathString docsetPath, Config config, FileResolver fileResolver)
         {
             foreach (var sourceMap in config.SourceMap)
             {
@@ -24,9 +24,12 @@ namespace Microsoft.Docs.Build
                     {
                         if (originalPath != null)
                         {
-                            _map.Add(
-                                new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, path))),
-                                new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, originalPath.Value))));
+                            var key = new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, path)));
+                            var value = new PathString(Path.GetRelativePath(docsetPath, Path.Combine(sourceMapDirectory, originalPath.Value)));
+                            if (!_map.TryAdd(key, value))
+                            {
+                                errors.Add(Errors.SourceMap.DuplicateContent(key, new List<PathString> { _map[key], value }));
+                            }
                         }
                     }
                 }

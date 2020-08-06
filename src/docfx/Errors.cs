@@ -764,5 +764,11 @@ namespace Microsoft.Docs.Build
             public static Error MustacheNotFound(string templateFileName)
                 => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
         }
+
+        public static class SourceMap
+        {
+            public static Error DuplicateContent(string key, IEnumerable<PathString> originalFiles)
+                => new Error(ErrorLevel.Warning, "duplicate-content", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
+        }
     }
 }

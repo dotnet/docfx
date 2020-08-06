@@ -222,6 +222,7 @@ outputs:
 ---
 # Run ECMA2Yaml multiple times
 # Support ECMA2Yaml.id to configure toc output path
+# warn on duplciated xml files
 os: windows, osx
 skipInputCheck: true
 repos:
@@ -243,7 +244,7 @@ repos:
             {
               "id": "copied-mouse",
               "SourceXmlFolder": "cat/mouse/xml",
-              "OutputYamlFolder": "cat/mouse/api",
+              "OutputYamlFolder": "cat/api",
               "Flatten": true,
               "SDPMode": true,
             },
@@ -402,12 +403,13 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
-    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/mouse/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+    {"message_severity":"warning","code":"duplicate-content","message":"'api/CatLibrary.yml' is duplicated from 'mouse/xml/ns-CatLibrary.xml', 'xml/ns-CatLibrary.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplicate-content","message":"'api/CatLibrary.Cat-2.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplicate-content","message":"'api/CatLibrary.Cat-2.-ctor.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
+
   cat/api/_splitted/catlibrary/toc.json:
-  cat/mouse/api/copied-mouse/_splitted/catlibrary/toc.json:
+  cat/api/copied-mouse/_splitted/catlibrary/toc.json:
   cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
-  cat/8069edc7/mouse/api/catlibrary.cat-2.-ctor.json:
   cat/8069edc7/api/catlibrary.json:
-  cat/8069edc7/mouse/api/catlibrary.json:
   cat/api/toc.json:
-  cat/mouse/api/copied-mouse/toc.json:
+  cat/api/copied-mouse/toc.json:
