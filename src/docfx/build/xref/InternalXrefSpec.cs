@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -21,12 +22,17 @@ namespace Microsoft.Docs.Build
 
         string IXrefSpec.Uid => Uid.Value;
 
-        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile, MonikerList monikerList)
+        // TODO: change to use xrefSpec type to express what kind of xref spec it is: e.g. achievement, module
+        [JsonIgnore]
+        internal string? DeclaringPropertyName { get; }
+
+        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile, MonikerList monikerList, string? declaringPropertyName = null)
         {
             Uid = uid;
             Href = href;
             DeclaringFile = declaringFile;
             Monikers = monikerList;
+            DeclaringPropertyName = declaringPropertyName;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)

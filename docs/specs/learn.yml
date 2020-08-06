@@ -91,6 +91,7 @@ outputs:
     }
 ---
 # Can produce proper dependency type
+# basic path->module; module->unit; path|module->achievement;
 inputs:
   docfx.yml:
   path.yml: |
@@ -232,6 +233,150 @@ outputs:
         },
         "unit1a.yml": {},
         "unit1b.yml": {},
+        "unit2.yml": {}
+      }
+    }
+---
+# Can produce proper dependency type
+# fallback patha->pathb.achievement;modulea->moduleb.achievement;
+inputs:
+  docfx.yml:
+  path.yml: |
+    ### YamlMime:LearningPath
+    uid: path
+    modules: ['module1']
+    achievement: trophy
+    trophy:
+      uid: trophy
+  patha.yml: |
+    ### YamlMime:LearningPath
+    uid: patha
+    modules: ['module1']
+    achievement: trophy
+  module1.yml: |
+    ### YamlMime:Module
+    uid: module1
+    units: ['unit1']
+    achievement: badge
+    badge:
+      uid: badge
+  module2.yml: |
+    ### YamlMime:Module
+    uid: module2
+    units: ['unit2']
+    achievement: badge
+  unit1.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit1
+  unit2.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit2
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "modules": {"items": {"contentType": "xref"}},
+        "achievement": {"contentType": "xref"},
+        "trophy": {
+          "properties": {"uid" : {"contentType": "uid"}}
+        }
+      }
+    }
+  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Module.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "units": {"items": {"contentType": "xref" }},
+        "achievement": {"contentType": "xref"},
+        "badge": {
+          "properties": {"uid" : {"contentType": "uid"}}
+        }
+      }
+    }
+  _themes/ContentTemplate/Module.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Achievement.schema.json: |
+    {
+      "properties": {
+        "achievements": { 
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}}
+          }
+        }
+      }
+    }
+outputs:
+  path.json:
+  patha.json:
+  module1.json:
+  module2.json:
+  unit1.json:
+  unit2.json:
+  full-dependent-list.txt: |
+    {"dependency_type":"achievement","from_file_path":"*module2.yml*","to_file_path":"*module1.yml*"}
+    {"dependency_type":"achievement","from_file_path":"*patha.yml*","to_file_path":"*path.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*module1.yml*","to_file_path":"*unit1.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*module2.yml*","to_file_path":"*unit2.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*path.yml*","to_file_path":"*module1.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*patha.yml*","to_file_path":"*module1.yml*"}
+
+  op_aggregated_file_map_info.json: |
+    {
+      "aggregated_file_map_items": {
+        "module1.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "module1.yml",
+              "to_file_path": "unit1.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "module2.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "module2.yml",
+              "to_file_path": "module1.yml",
+              "dependency_type": "achievement"
+            },
+            {
+              "from_file_path": "module2.yml",
+              "to_file_path": "unit2.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "path.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "path.yml",
+              "to_file_path": "module1.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "patha.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "patha.yml",
+              "to_file_path": "module1.yml",
+              "dependency_type": "hierarchy"
+            },
+            {
+              "from_file_path": "patha.yml",
+              "to_file_path": "path.yml",
+              "dependency_type": "achievement"
+            }
+          ]
+        },
+        "unit1.yml": {},
         "unit2.yml": {}
       }
     }
