@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
                 MarkdigUtility.Visit(document, new MarkdownVisitContext(currentFile), (node, context) =>
                 {
-                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, context.ZoneMoniker);
+                    var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, node.GetZoneLevelMonikers());
 
                     BuildHeadingNodes(node, context, markdownEngine, documentNodes, inclusionDocumentNodes, isCanonicalVersion);
 
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                     codeBlockItem.IsOpen = fencedCodeBlock.IsOpen;
                     break;
 
-                case YamlFrontMatterBlock yamlFrontMatterBlock:
+                case YamlFrontMatterBlock _:
                     break;
 
                 case CodeBlock codeBlock:
@@ -152,10 +152,10 @@ namespace Microsoft.Docs.Build
         {
             if (zoneLevelMonikerList.HasMonikers)
             {
-                return MonikerList.IsCanonicalVersion(canonicalVersion, zoneLevelMonikerList);
+                return zoneLevelMonikerList.IsCanonicalVersion(canonicalVersion);
             }
 
-            return MonikerList.IsCanonicalVersion(canonicalVersion, fileLevelMonikerList);
+            return fileLevelMonikerList.IsCanonicalVersion(canonicalVersion);
         }
 
         private static T CreateValidationNode<T>(MarkdownVisitContext context, bool? isCanonicalVersion, MarkdownObject markdownNode)
@@ -165,8 +165,8 @@ namespace Microsoft.Docs.Build
             {
                 IsCanonicalVersion = isCanonicalVersion,
                 ParentSourceInfoList = context.Parents?.Cast<object?>().ToList() ?? new List<object?>(),
-                Zone = context.ZoneStack.TryPeek(out var z) ? z : null,
-                Monikers = context.ZoneMoniker.ToList(),
+                Zone = markdownNode.GetZone(),
+                Monikers = markdownNode.GetZoneLevelMonikers().ToList(),
                 SourceInfo = markdownNode.GetSourceInfo(),
             };
         }

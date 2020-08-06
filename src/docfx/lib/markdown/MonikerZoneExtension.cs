@@ -25,6 +25,7 @@ namespace Microsoft.Docs.Build
                             return null;
                         }
 
+                        monikerRangeBlock.ParsedMonikers = monikers;
                         monikerRangeBlock.GetAttributes().Properties.Remove(new KeyValuePair<string, string>("range", monikerRangeBlock.MonikerRange));
                         monikerRangeBlock.GetAttributes().AddPropertyIfNotExist("data-moniker", string.Join(" ", monikers));
                     }

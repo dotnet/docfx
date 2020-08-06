@@ -16,6 +16,39 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
+        public static string? GetZone(this MarkdownObject obj)
+        {
+            foreach (var item in obj.GetPathToRoot())
+            {
+                if (item is TripleColonBlock block && block.Extension is ZoneExtension)
+                {
+                    var properties = block.TryGetAttributes()?.Properties;
+                    if (properties is null)
+                    {
+                        return null;
+                    }
+
+                    return properties.FirstOrDefault(p => p.Key == "data-target").Value ??
+                          (properties.Any(p => p.Key == "data-pivot") ? "pivot" : null);
+                }
+            }
+
+            return null;
+        }
+
+        public static MonikerList GetZoneLevelMonikers(this MarkdownObject obj)
+        {
+            foreach (var item in obj.GetPathToRoot())
+            {
+                if (item is MonikerRangeBlock block)
+                {
+                    return block.ParsedMonikers is MonikerList list ? list : default;
+                }
+            }
+
+            return default;
+        }
+
         /// <summary>
         /// Traverse the markdown object graph, returns true to skip the current node.
         /// </summary>
@@ -68,18 +101,6 @@ namespace Microsoft.Docs.Build
 
             switch (obj)
             {
-                case MonikerRangeBlock monikerRangeBlock:
-                    var monikers = monikerRangeBlock.GetAttributes()
-                                                    .Properties.First(p => p.Key == "data-moniker")
-                                                    .Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                    context.ZoneMonikerStack.Push(new MonikerList(monikers));
-                    foreach (var child in monikerRangeBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-                    context.ZoneMonikerStack.Pop();
-                    break;
-
                 case InclusionBlock inclusionBlock:
                     context.FileStack.Push(new SourceInfo<Document>((Document)inclusionBlock.ResolvedFilePath, inclusionBlock.GetSourceInfo()));
                     foreach (var child in inclusionBlock)
@@ -89,31 +110,9 @@ namespace Microsoft.Docs.Build
                     context.FileStack.Pop();
                     break;
 
-                case TripleColonBlock tripleColonBlock when tripleColonBlock.Extension is ZoneExtension:
-                    string? target = null;
-                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
-                    {
-                        target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
-                    }
-                    else if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
-                    {
-                        target = "pivot";
-                    }
-                    if (!string.IsNullOrEmpty(target))
-                    {
-                        context.ZoneStack.Push(target);
-                    }
-                    foreach (var child in tripleColonBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-                    if (!string.IsNullOrEmpty(target))
-                    {
-                        context.ZoneStack.Pop();
-                    }
-                    break;
-
-                case TripleColonBlock tripleColonBlock:
+                case TripleColonBlock tripleColonBlock when tripleColonBlock.Extension is ImageExtension ||
+                                                            tripleColonBlock.Extension is VideoExtension ||
+                                                            tripleColonBlock.Extension is CodeExtension:
                     break;
 
                 case ContainerBlock block:
