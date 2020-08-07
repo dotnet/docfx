@@ -61,24 +61,27 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)
         {
-            var options = new List<Option>
+            using (PerfScope.Start($"Calling Microsoft Graph API: {alias}"))
             {
-                new QueryOption("$select", "id,mailNickname"),
-                new QueryOption("$filter", $"mailNickname eq '{alias}'"),
-            };
+                var options = new List<Option>
+                {
+                    new QueryOption("$select", "id,mailNickname"),
+                    new QueryOption("$filter", $"mailNickname eq '{alias}'"),
+                };
 
-            try
-            {
-                var users = await Policy
-                    .Handle<ServiceException>()
-                    .RetryAsync(3)
-                    .ExecuteAsync(() => _msGraphClient!.Users.Request(options).GetAsync());
+                try
+                {
+                    var users = await Policy
+                        .Handle<ServiceException>()
+                        .RetryAsync(3)
+                        .ExecuteAsync(() => _msGraphClient!.Users.Request(options).GetAsync());
 
-                return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
-            }
-            catch (Exception e)
-            {
-                return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
+                    return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
+                }
+                catch (Exception e)
+                {
+                    return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
+                }
             }
         }
     }
