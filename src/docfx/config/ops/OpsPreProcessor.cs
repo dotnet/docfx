@@ -1,13 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+extern alias maml;
+
 using System.IO;
 using ECMA2Yaml;
-using MAML2Yaml.Lib;
 using ECMALogItem = ECMA2Yaml.LogItem;
 using ECMAMessageSeverity = ECMA2Yaml.MessageSeverity;
-using MAMLLogItem = MAML2Yaml.Lib.Logging.LogItem;
-using MAMLMessageSeverity = MAML2Yaml.Lib.Logging.MessageSeverity;
+using MAML2YamlConverter = maml::MAML2Yaml.Lib.MAML2YamlConverter;
+using MAMLLogItem = maml::MAML2Yaml.Lib.Logging.LogItem;
+using MAMLMessageSeverity = maml::MAML2Yaml.Lib.Logging.MessageSeverity;
 
 namespace Microsoft.Docs.Build
 {
@@ -76,7 +78,7 @@ namespace Microsoft.Docs.Build
 
         private void PreProcessMAML()
         {
-            if (_config.MAML2YamlMonikerMappingPath is null)
+            if (_config.MAMLMonikerPath is null)
             {
                 return;
             }
@@ -85,9 +87,9 @@ namespace Microsoft.Docs.Build
             {
                 lock (s_maml)
                 {
-                    for (var index = 0; index < _config.MAML2YamlMonikerMappingPath.Length; index++)
+                    for (var index = 0; index < _config.MAMLMonikerPath.Length; index++)
                     {
-                        var monikerMappingPath = _config.MAML2YamlMonikerMappingPath[index];
+                        var monikerMappingPath = _config.MAMLMonikerPath[index];
 
                         MAML2YamlConverter.Run(
                             docsetPath: _buildOptions.DocsetPath,

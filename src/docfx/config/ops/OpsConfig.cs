@@ -32,6 +32,6 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("monikerPath")]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? MAML2YamlMonikerMappingPath { get; set; }
+        public string[]? MonikerPath { get; set; }
     }
 }

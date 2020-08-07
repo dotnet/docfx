@@ -84,26 +84,20 @@ namespace Microsoft.Docs.Build
 
             result["fileMetadata"] =
                 GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>(), buildSourceFolder);
+            result["sourceMap"] = new JArray();
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
             if (monodoc != null)
             {
                 result["monodoc"] = monodoc;
-                result["sourceMap"] = new JArray(monodoc.Select((_, index) => $".sourcemap-ecma-{index}.json"));
+                ((JArray)result["sourceMap"]!).AddRange(new JArray(monodoc.Select((_, index) => $".sourcemap-ecma-{index}.json")));
             }
 
             var maml2YamlMonikerPath = GetMAML2YamlMonikerPath(docsetConfig, opsConfig, buildSourceFolder);
             if (maml2YamlMonikerPath != null)
             {
-                result["maml2YamlMonikerMappingPath"] = maml2YamlMonikerPath;
-                if (result.ContainsKey("sourceMap"))
-                {
-                    ((JArray)result["sourceMap"]!).AddRange(new JArray(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json")));
-                }
-                else
-                {
-                    result["sourceMap"] = new JArray(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json"));
-                }
+                result["mamlMonikerPath"] = maml2YamlMonikerPath;
+                ((JArray)result["sourceMap"]!).AddRange(new JArray(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json")));
             }
 
             result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
@@ -146,7 +140,7 @@ namespace Microsoft.Docs.Build
         private static JArray? GetMAML2YamlMonikerPath(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
         {
             var result = new JArray();
-            var maml2YamlMonikerPath = docsetConfig?.MAML2YamlMonikerMappingPath ?? opsConfig.MAML2YamlMonikerMappingPath;
+            var maml2YamlMonikerPath = docsetConfig?.MonikerPath ?? opsConfig.MonikerPath;
             if (maml2YamlMonikerPath != null)
             {
                 foreach (var monikerPath in maml2YamlMonikerPath)

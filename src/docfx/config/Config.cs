@@ -309,7 +309,7 @@ namespace Microsoft.Docs.Build
         /// Determines and configures build to convert MAML markdown files to SDP yaml files as input
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? MAML2YamlMonikerMappingPath { get; private set; }
+        public string[]? MAMLMonikerPath { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

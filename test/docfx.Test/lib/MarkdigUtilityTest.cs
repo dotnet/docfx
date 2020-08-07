@@ -3,7 +3,6 @@
 
 using Markdig;
 using Xunit;
-using MarkdigMarkdown = Markdig.Markdown;
 
 namespace Microsoft.Docs.Build
 {
@@ -40,7 +39,7 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n <!--comments \n--> <div>text</div>\n  ", true)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
-            var markdownDocument = MarkdigMarkdown.Parse(markdownContent, _markdownPipeline);
+            var markdownDocument = Markdig.Markdown.Parse(markdownContent, _markdownPipeline);
 
             Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDocument));
         }
