@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
 
             // need to url decode uid from input content
             var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
-            if (xrefError != null || xrefSpec is null || resolvedHref == null || resolvedHref.Length == 0)
+            if (xrefError != null || xrefSpec is null || string.IsNullOrEmpty(resolvedHref))
             {
                 return (xrefError, null, alt ?? "", null);
             }
