@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -297,7 +298,7 @@ namespace Microsoft.Docs.Build
             throw new NotSupportedException();
         }
 
-        public static void AddRange(this JArray container, JArray arr)
+        public static void AddRange(this JArray container, IEnumerable arr)
         {
             foreach (var item in arr)
             {

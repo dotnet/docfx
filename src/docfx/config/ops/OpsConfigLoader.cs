@@ -84,22 +84,23 @@ namespace Microsoft.Docs.Build
 
             result["fileMetadata"] =
                 GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>(), buildSourceFolder);
-            result["sourceMap"] = new JArray();
+            var sourceMaps = new JArray();
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
             if (monodoc != null)
             {
                 result["monodoc"] = monodoc;
-                ((JArray)result["sourceMap"]!).AddRange(new JArray(monodoc.Select((_, index) => $".sourcemap-ecma-{index}.json")));
+                sourceMaps.AddRange(monodoc.Select((_, index) => $".sourcemap-ecma-{index}.json"));
             }
 
             var maml2YamlMonikerPath = GetMAML2YamlMonikerPath(docsetConfig, opsConfig, buildSourceFolder);
             if (maml2YamlMonikerPath != null)
             {
                 result["mamlMonikerPath"] = maml2YamlMonikerPath;
-                ((JArray)result["sourceMap"]!).AddRange(new JArray(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json")));
+                sourceMaps.AddRange(maml2YamlMonikerPath.Select((_, index) => $".sourcemap-maml-{index}.json"));
             }
 
+            result["sourceMap"] = sourceMaps;
             result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
