@@ -1487,3 +1487,24 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
+---
+# When href doesn't exist, should display the alt but not the text.
+inputs:
+  docfx.yml: |
+    xref:
+    - xrefmap.json
+  xrefmap.json: |
+    {
+      "references":[{
+          "uid": "SlackAPI.Block",
+          "name": "Block",
+          "fullName": "SlackAPI.Block"
+      }]
+    }
+  docs/a.md: |
+    str <xref href="SlackAPI.Block?alt=SlackAPI.Block&text=Block" data-throw-if-not-resolved="True"></xref>
+outputs:
+  docs/a.json: |
+    {
+      "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
+    }
