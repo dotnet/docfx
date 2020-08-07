@@ -26,15 +26,20 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        /// <summary>
-        /// Trace back markdown objects all the way up to root, starting with <paramref name="obj"/> itself.
-        /// </summary>
-        public static IEnumerable<MarkdownObject> GetPathToRoot(this MarkdownObject obj)
+        public static IEnumerable<MarkdownObject> GetPathToRootInclusive(this MarkdownObject obj)
+        {
+            yield return obj;
+
+            foreach (var item in obj.GetPathToRootExclusive())
+            {
+                yield return item;
+            }
+        }
+
+        public static IEnumerable<MarkdownObject> GetPathToRootExclusive(this MarkdownObject obj)
         {
             while (true)
             {
-                yield return obj;
-
                 var parent = obj switch
                 {
                     Block block => block.Parent ?? obj.GetData(s_parentKey) as MarkdownObject,
@@ -46,7 +51,10 @@ namespace Microsoft.Docs.Build
                 {
                     break;
                 }
+
                 obj = parent;
+
+                yield return obj;
             }
         }
 

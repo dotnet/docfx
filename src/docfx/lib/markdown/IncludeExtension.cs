@@ -76,7 +76,6 @@ namespace Microsoft.Docs.Build
                 child.SetFilePath((Document)file);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
                 inclusionBlock.Add(child);
-                inclusionBlock.ResolvedFilePath = file;
             }
         }
 
@@ -108,8 +107,6 @@ namespace Microsoft.Docs.Build
                         inclusionInline.AppendChild(leaf.Inline);
                     }
                 }
-
-                inclusionInline.ResolvedFilePath = file;
             }
         }
 
