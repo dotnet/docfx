@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
 
             using (InclusionContext.PushInclusion(file))
             {
-                var child = Markdown.Parse(content, pipeline);
+                var child = Markdig.Markdown.Parse(content, pipeline);
                 child.SetFilePath((Document)file);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
                 inclusionBlock.Add(child);
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
 
             using (InclusionContext.PushInclusion(file))
             {
-                var child = Markdown.Parse(content, pipeline);
+                var child = Markdig.Markdown.Parse(content, pipeline);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
 
                 foreach (var block in child)
