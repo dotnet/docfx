@@ -341,7 +341,7 @@ outputs:
 # Adjust error level using custom errors
 inputs:
   docfx.yml: |
-    customRules:
+    rules:
       file-not-found: off
   docs/a.md: |
     [b](b.md)
@@ -352,7 +352,7 @@ outputs:
 # Adjust error message using custom errors
 inputs:
   docfx.yml: |
-    customRules:
+    rules:
       file-not-found:
         severity: error
         additionalMessage: 'NOTE:'

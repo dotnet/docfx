@@ -413,7 +413,7 @@ outputs:
 # do not output file if bookmark-not-found is treated as error
 inputs:
   docfx.yml: |
-    customRules:
+    rules:
       bookmark-not-found: error
   docs/a.md: |
     [link to b](b.md#bookmark)

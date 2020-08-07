@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 either = new List<List<string>>(),
                 precludes = new List<List<string>>(),
                 enumDependencies = new EnumDependenciesSchema(),
-                customRules = new Dictionary<string, Dictionary<string, dynamic>>(),
+                rules = new Dictionary<string, Dictionary<string, dynamic>>(),
             };
 
             foreach (var (attribute, attributeRules) in rules)
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
 
                 if (TryGetAttributeCustomRules(rulesInfo, out var attributeCustomRules))
                 {
-                    schema.customRules.Add(attribute, attributeCustomRules);
+                    schema.rules.Add(attribute, attributeCustomRules);
                 }
 
                 if (rulesInfo.ContainsKey("Uniqueness"))

@@ -1792,7 +1792,7 @@ inputs:
               "maxLength": 10
           }
       },
-      "customRules": {
+      "rules": {
           "title": {
               "duplicate-attribute": {
                   "severity": "suggestion",
@@ -2250,7 +2250,7 @@ inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
     metadataSchema: schema.json
-    customRules:
+    rules:
       h1-missing: warning
       heading-empty: warning
   schema.json: |
@@ -2274,7 +2274,7 @@ inputs:
               "maxLength": 10
           }
       },
-      "customRules": {
+      "rules": {
           "title": {
               "string-length-invalid": {
                   "severity": "suggestion",

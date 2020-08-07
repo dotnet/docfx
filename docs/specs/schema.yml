@@ -198,7 +198,7 @@ outputs:
 # Support schema documents with inline markdown content
 inputs:
   docfx.yml: |
-    customRules:
+    rules:
       heading-not-found: error
   docs/a.yml: |
     #YamlMime:TestPage
