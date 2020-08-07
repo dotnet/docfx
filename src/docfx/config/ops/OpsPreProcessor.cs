@@ -15,8 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsPreProcessor
     {
-        private static readonly object s_ecma = new object();
-        private static readonly object s_maml = new object();
+        private static readonly object s_lock = new object();
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
@@ -44,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Preprocessing monodoc XML files"))
             {
-                lock (s_ecma)
+                lock (s_lock)
                 {
                     for (var index = 0; index < _config.Monodoc.Length; index++)
                     {
@@ -85,7 +84,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Preprocessing MAML markdown files"))
             {
-                lock (s_maml)
+                lock (s_lock)
                 {
                     for (var index = 0; index < _config.MAMLMonikerPath.Length; index++)
                     {
