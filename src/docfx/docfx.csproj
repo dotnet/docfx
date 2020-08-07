@@ -23,9 +23,7 @@
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.20" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.738" />
     <!--using alias for Markdig namespace collision--> 
-    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.57-beta">
-      <Aliases>maml</Aliases>
-    </PackageReference>
+    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.57-beta" Aliases="maml" />
     <PackageReference Include="Microsoft.Graph" Version="3.9.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.17.1" />
