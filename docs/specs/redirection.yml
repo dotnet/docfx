@@ -656,3 +656,15 @@ outputs:
         }
       ]
     }
+---
+# Give a warning when source-path not specified in .openpublishing.redirection.json
+repos:
+  https://docs.com/ops/redirect-1:
+  - files:
+      docfx.yml:
+      .openpublishing.redirection.json: |
+        { "redirections": [{"redirect_url": "/"}] }
+outputs:
+  .publish.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"source-path-not-specified","message":"There is no 'source-path' defined in .openpublishing.redirection.json file.","line":1,"column":39}

@@ -173,6 +173,18 @@ namespace Microsoft.Docs.Build
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
+                    // Give a warning when source-path not specified in .openpublishing.redirection.json
+                    if (fullPath.EndsWith(".openpublishing.redirection.json"))
+                    {
+                        foreach (var item in redirections)
+                        {
+                            if (item.SourcePath.IsDefault)
+                            {
+                                errors.Add(Errors.Redirection.SourcePathNotSpecified(item.RedirectUrl));
+                            }
+                        }
+                    }
+
                     return (
                         from item in redirections.Concat(renames)
                         let sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath))
