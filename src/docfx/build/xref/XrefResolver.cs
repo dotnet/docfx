@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
 
             // need to url decode uid from input content
             var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
-            if (xrefError != null || xrefSpec is null || resolvedHref == null)
+            if (xrefError != null || xrefSpec is null || resolvedHref == null || resolvedHref?.Length == 0)
             {
                 return (xrefError, null, alt ?? "", null);
             }
@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
             if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
                 var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
-                return ((spec.Value.Href != null && spec.Value.Href.Length == 0) || (spec.Value.Href == null)) ? default : (spec.Value, href);
+                return (spec.Value, href);
             }
             return default;
         }

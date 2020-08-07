@@ -1508,5 +1508,3 @@ outputs:
     {
       "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
     }
-  .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'SlackAPI.Block'.","file":"docs/a.md","line":1,"column":5}
