@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                             fallbackOutputDirectory: fallbackOutputDirectory,
                             logWriter: LogError,
                             logContentBaseDirectory: _buildOptions.DocsetPath,
-                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-{index}.json"),
+                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-ecma-{index}.json"),
                             config: monodocConfig);
                     }
                 }
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                             docsetPath: _buildOptions.DocsetPath,
                             monikerMappingPath: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monikerMappingPath)),
                             logWriter: LogError,
-                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-{index}.json"));
+                            sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-maml-{index}.json"));
                     }
                 }
             }

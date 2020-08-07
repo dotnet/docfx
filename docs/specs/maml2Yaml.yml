@@ -1,5 +1,4 @@
 # Support MAML2Yaml ops config
-os: windows, osx
 skipInputCheck: true
 repos:
   https://github.com/ops/ecma-yaml:
@@ -14,8 +13,10 @@ repos:
             ]
           }]
         }
-      docfx.yml:
-      mapping/monikerMapping.json:
+      docfx.yml: |
+        files: '**/*.yml'
+      docs-conceptual/toc.yml:
+      mapping/monikerMapping.json: |
         {
           "v1.0": {
             "packageRoot": "samples-v1.0",
@@ -25,11 +26,11 @@ repos:
             "serviceMap": "mapping/serviceMapping.json"
           }
         }
-      mapping/serviceMapping.json:
+      mapping/serviceMapping.json: |
         {
           "Add-History": "Microsoft.PowerShell.Core"
         }
-      samples-v1.0/Microsoft.PowerShell.Core/Microsoft.PowerShell.Core.md: 
+      samples-v1.0/Microsoft.PowerShell.Core/Microsoft.PowerShell.Core.md: |
         ---
         Download Help Link: https://aka.ms/powershell71-help
         Help Version: 7.1.0.0
@@ -271,7 +272,16 @@ repos:
         [Get-PSReadLineOption](/powershell/module/psreadline/get-psreadlineoption)
 
         [Set-PSReadLineOption](/powershell/module/psreadline/set-psreadlineoption)
-
+      _themes/ContentTemplate/schemas/PowershellCmdlet.schema.json: |
+        {"properties":{"uid":{"contentType":"uid"}}}
+      _themes/ContentTemplate/schemas/PowershellModule.schema.json: '{}'
 outputs:
+  samples-v1.0/toc.json:
+  docs-conceptual/toc.json:
+  samples-v1.0/microsoft.powershell.core/add-history.json:
+  samples-v1.0/microsoft.powershell.core/index.json:
   .errors.log: |
- 
+    {"message_severity":"info","code":"MAML2Yaml_Info","message":"Generated reference toc with service mapping."}
+    {"message_severity":"info","code":"MAML2Yaml_Info","message":"Dumped toc at *toc.yml"}
+    {"message_severity":"info","code":"MAML2Yaml_Info","message":"Setup metadata for fusion toc."}
+    {"message_severity":"info","code":"MAML2Yaml_Info","message":"Run MAML2Yaml under package samples-v1.0."}
