@@ -1,4 +1,5 @@
 # Support MAML2Yaml ops config
+os: windows, osx
 skipInputCheck: true
 repos:
   https://github.com/ops/ecma-yaml:
