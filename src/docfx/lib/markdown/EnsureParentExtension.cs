@@ -28,22 +28,11 @@ namespace Microsoft.Docs.Build
 
         public static IEnumerable<MarkdownObject> GetPathToRootInclusive(this MarkdownObject obj)
         {
-            while (true)
+            yield return obj;
+
+            foreach (var item in obj.GetPathToRootExclusive())
             {
-                yield return obj;
-
-                var parent = obj switch
-                {
-                    Block block => block.Parent ?? obj.GetData(s_parentKey) as MarkdownObject,
-                    Inline inline => inline.Parent ?? obj.GetData(s_parentKey) as MarkdownObject,
-                    _ => null,
-                };
-
-                if (parent is null)
-                {
-                    break;
-                }
-                obj = parent;
+                yield return item;
             }
         }
 
