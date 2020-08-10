@@ -16,7 +16,8 @@ namespace Microsoft.Docs.Build
     internal class FileResolver
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<string, Lazy<string>> s_downloadedUrls = new ConcurrentDictionary<string, Lazy<string>>();
+        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls
+                          = new ConcurrentDictionary<(string, string), Lazy<string>>();
 
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
@@ -84,7 +85,7 @@ namespace Microsoft.Docs.Build
 
         private string DownloadFromUrl(SourceInfo<string> url)
         {
-            return s_downloadedUrls.GetOrAdd(url, key => new Lazy<string>(() => DownloadFromUrlCore(key))).Value;
+            return s_urls.GetOrAdd((AppData.DownloadsRoot, url), _ => new Lazy<string>(() => DownloadFromUrlCore(url))).Value;
         }
 
         private string DownloadFromUrlCore(string url)
