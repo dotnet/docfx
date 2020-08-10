@@ -236,8 +236,9 @@ inputs:
       a.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"redirection-is-empty","message":"The key or value of redirection 'sccm/mdm/index.md: ' is null or empty.","file":"redirections.yml","line":2,"column":22}
-    {"message_severity":"error","code":"redirection-is-empty","message":"The key or value of redirection 'a.md: ' is null or empty.","file":"redirections.yml","line":4,"column":8}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","file":"redirections.yml","line":2,"column":22}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","file":"redirections.yml","line":3,"column":7}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","file":"redirections.yml","line":4,"column":8}
 ---
 # The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
 inputs:
@@ -656,3 +657,27 @@ outputs:
         }
       ]
     }
+---
+# There is no 'source-path' defined for 'redirect_url': '/'
+repos:
+  https://docs.com/ops/redirect-1:
+  - files:
+      docfx.yml:
+      .openpublishing.redirection.json: |
+        { "redirections": [{"redirect_url": "/"}] }
+outputs:
+  .publish.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","line":1,"column":39}
+---
+# The 'sourth-path' and 'redirect-url' are both null
+repos:
+  https://docs.com/ops/redirect-2:
+  - files:
+      docfx.yml:
+      .openpublishing.redirection.json: |
+        { "redirections": [{}] }
+outputs:
+  .publish.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","line":0,"column":0}
