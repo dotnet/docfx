@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
-                    List<RedirectionItem> results = new List<RedirectionItem>();
+                    var results = new List<RedirectionItem>();
                     foreach (var item in redirections.Concat(renames))
                     {
                         if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
@@ -178,13 +178,17 @@ namespace Microsoft.Docs.Build
                         }
 
                         var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
-                        results.Add(new RedirectionItem
+
+                        if (!sourcePath.StartsWith("."))
                         {
-                            SourcePath = new PathString(sourcePath),
-                            Monikers = item.Monikers,
-                            RedirectUrl = item.RedirectUrl,
-                            RedirectDocumentId = item.RedirectDocumentId,
-                        });
+                            results.Add(new RedirectionItem
+                            {
+                                SourcePath = new PathString(sourcePath),
+                                Monikers = item.Monikers,
+                                RedirectUrl = item.RedirectUrl,
+                                RedirectDocumentId = item.RedirectDocumentId,
+                            });
+                        }
                     }
 
                     return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
