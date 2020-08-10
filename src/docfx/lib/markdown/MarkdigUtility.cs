@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Extensions.Yaml;
@@ -16,68 +17,37 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdigUtility
     {
-        private static readonly object s_filePathKey = new object();
-
-        public static Document GetFilePath(this MarkdownObject? obj)
+        public static string? GetZone(this MarkdownObject obj)
         {
-            while (true)
+            foreach (var item in obj.GetPathToRootInclusive())
             {
-                switch (obj)
+                if (item is TripleColonBlock block && block.Extension is ZoneExtension)
                 {
-                    case Block block when block.Parent is null || block.Parent is InclusionBlock:
-                    case Inline inline when inline.Parent is null || inline.Parent is InclusionInline:
-                        return obj.GetData(s_filePathKey) as Document ?? (Document)InclusionContext.File;
+                    var properties = block.TryGetAttributes()?.Properties;
+                    if (properties is null)
+                    {
+                        return null;
+                    }
 
-                    case Block block:
-                        obj = block.Parent;
-                        break;
-
-                    case Inline inline:
-                        obj = inline.Parent;
-                        break;
-
-                    default:
-                        return (Document)InclusionContext.File;
+                    return properties.FirstOrDefault(p => p.Key == "data-target").Value ??
+                          (properties.Any(p => p.Key == "data-pivot") ? "pivot" : null);
                 }
             }
+
+            return null;
         }
 
-        public static void SetFilePath(this MarkdownObject obj, Document value)
+        public static MonikerList GetZoneLevelMonikers(this MarkdownObject obj)
         {
-            obj.SetData(s_filePathKey, value);
-        }
-
-        public static SourceInfo? GetSourceInfo(this MarkdownObject? obj, int? line = null)
-        {
-            var path = GetFilePath(obj).FilePath;
-
-            if (line != null)
+            foreach (var item in obj.GetPathToRootInclusive())
             {
-                return new SourceInfo(path, line.Value + 1, 0);
+                if (item is MonikerRangeBlock block)
+                {
+                    return block.ParsedMonikers is MonikerList list ? list : default;
+                }
             }
 
-            if (obj is null)
-            {
-                return new SourceInfo(path, 0, 0);
-            }
-
-            // Line info in markdown object is zero based, turn it into one based.
-            return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
-        }
-
-        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
-        {
-            var path = GetFilePath(obj).FilePath;
-
-            var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
-            var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
-
-            return new SourceInfo(path, start.line + 1, start.column + 1, end.line + 1, end.column + 1);
-
-            static (int line, int column) OffSet(int line1, int column1, int line2, int column2)
-            {
-                return line2 == 0 ? (line1, column1 + column2) : (line1 + line2, column2);
-            }
+            return default;
         }
 
         /// <summary>
@@ -112,102 +82,6 @@ namespace Microsoft.Docs.Build
             else if (obj is LeafBlock leaf)
             {
                 Visit(leaf.Inline, action);
-            }
-        }
-
-        /// <summary>
-        /// Traverse the markdown object graph, returns true to skip the current node.
-        /// </summary>
-        public static void Visit(this MarkdownObject? obj, MarkdownVisitContext context, Func<MarkdownObject, MarkdownVisitContext, bool> action)
-        {
-            if (obj is null)
-            {
-                return;
-            }
-
-            if (action(obj, context))
-            {
-                return;
-            }
-
-            switch (obj)
-            {
-                case MonikerRangeBlock monikerRangeBlock:
-                    var monikers = monikerRangeBlock.GetAttributes()
-                                                    .Properties.First(p => p.Key == "data-moniker")
-                                                    .Value.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                    context.ZoneMonikerStack.Push(new MonikerList(monikers));
-                    foreach (var child in monikerRangeBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-                    context.ZoneMonikerStack.Pop();
-                    break;
-
-                case InclusionBlock inclusionBlock:
-                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionBlock.ResolvedFilePath, inclusionBlock.GetSourceInfo()));
-                    foreach (var child in inclusionBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-                    context.FileStack.Pop();
-                    break;
-
-                case TripleColonBlock tripleColonBlock:
-                    string? target = null;
-                    if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-target"))
-                    {
-                        target = tripleColonBlock.GetAttributes().Properties.FirstOrDefault(p => p.Key == "data-target").Value;
-                    }
-                    else if (tripleColonBlock.GetAttributes().Properties.Any(p => p.Key == "data-pivot"))
-                    {
-                        target = "pivot";
-                    }
-                    if (!string.IsNullOrEmpty(target))
-                    {
-                        context.ZoneStack.Push(target);
-                    }
-
-                    foreach (var child in tripleColonBlock)
-                    {
-                        Visit(child, context, action);
-                    }
-
-                    if (!string.IsNullOrEmpty(target))
-                    {
-                        context.ZoneStack.Pop();
-                    }
-                    break;
-
-                case ContainerBlock block:
-                    foreach (var child in block)
-                    {
-                        Visit(child, context, action);
-                    }
-                    break;
-
-                case InclusionInline inclusionInline:
-                    context.FileStack.Push(new SourceInfo<Document>((Document)inclusionInline.ResolvedFilePath, inclusionInline.GetSourceInfo()));
-                    foreach (var child in inclusionInline)
-                    {
-                        Visit(child, context, action);
-                    }
-                    context.FileStack.Pop();
-                    break;
-
-                case ContainerInline inline:
-                    foreach (var child in inline)
-                    {
-                        Visit(child, context, action);
-                    }
-                    break;
-
-                case LeafBlock leaf:
-                    Visit(leaf.Inline, context, action);
-                    break;
-
-                default:
-                    break;
             }
         }
 

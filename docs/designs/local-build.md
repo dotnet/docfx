@@ -63,7 +63,7 @@ _Example Response:_
 {
    "monikerDefinition": "https://api.docs.com/config/monikerDefinition",
    "metadataSchema": "https://api.docs.com/config/metadataSchema",
-   "customRules": {
+   "rules": {
      "h1-missing": {
        "severity": "error"
      }

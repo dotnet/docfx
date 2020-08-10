@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error YamlDuplicateKey(SourceInfo? source, string key)
-                => new Error(ErrorLevel.Suggestion, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
+                => new Error(ErrorLevel.Warning, "yaml-duplicate-key", $"Key '{key}' is already defined, remove the duplicate key.", source);
 
             /// <summary>
             /// Used unknown YamlMime.
@@ -763,6 +763,12 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ❌
             public static Error MustacheNotFound(string templateFileName)
                 => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
+        }
+
+        public static class SourceMap
+        {
+            public static Error DuplicateSourceMapItem(string key, IEnumerable<PathString> originalFiles)
+                => new Error(ErrorLevel.Warning, "duplicate-source-map-item", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
         }
     }
 }

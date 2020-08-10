@@ -3,6 +3,11 @@
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
+    rules:
+      sensitive-language:
+        exclude:
+          - x/y/**/*.md
+          - a/b/**/*.md
   rules.json: |
     {
       "text": {
@@ -22,14 +27,19 @@ inputs:
   file2.md: There is#whitelist-with-special chars in the content, this will error
   file3.md: This is no sensitive language in this file, something like masterclass is ok.
   file4.md: Blacklist at the start, ends with Master
+  a/b/c/file.md: skipped bad language check for master due to exclusion
+  n/m/o/file.md: not skipped bad language check for master due to exclusion
 outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'whitelist' is sensitive and should not be used in content or code.","file":"file2.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'blacklist' is sensitive and should not be used in content or code.","file":"file4.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file4.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":1,"end_line":1,"column":0,"end_column":0}
   file1.json:
   file2.json:
   file3.json:
   file4.json:
+  a/b/c/file.json:
+  n/m/o/file.json:
 ---

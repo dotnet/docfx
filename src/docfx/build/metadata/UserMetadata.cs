@@ -46,6 +46,12 @@ namespace Microsoft.Docs.Build
 
         public bool IsArchived { get; private set; }
 
+        public string? ContentGitUrl { get; private set; }
+
+        public string? OriginalContentGitUrl { get; private set; }
+
+        public string? OriginalContentGitUrlTemplate { get; private set; }
+
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
     }
