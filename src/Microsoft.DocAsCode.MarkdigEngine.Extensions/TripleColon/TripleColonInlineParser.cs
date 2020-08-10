@@ -41,7 +41,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Closed = false,
                 Line = line,
                 Column = column,
-                Span = new SourceSpan(processor.LineIndex, slice.End),
             };
 
             var logError = new Action<string>(message => _context.LogError($"invalid-{extensionName}", message, inline));
