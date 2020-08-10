@@ -12,14 +12,14 @@ namespace Microsoft.Docs.Build
     internal class PackageResolver : IDisposable
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentHashSet<(string, bool)> s_downloadedGitRepositories = new ConcurrentHashSet<(string, bool)>();
+        private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories
+                          = new ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>>();
 
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
         private readonly Repository? _repository;
 
-        private readonly ConcurrentDictionary<PackagePath, Lazy<string>> _packagePath = new ConcurrentDictionary<PackagePath, Lazy<string>>();
         private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
         public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, Repository? repository)
@@ -46,18 +46,30 @@ namespace Microsoft.Docs.Build
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
-            return _packagePath.GetOrAdd(package, key => new Lazy<string>(() => ResolvePackageCore(key, options))).Value;
+            switch (package.Type)
+            {
+                case PackageType.Git:
+                    var gitPath = DownloadGitRepository(package, options);
+                    EnterGitReaderLock(gitPath);
+                    return gitPath;
+
+                default:
+                    var dir = Path.Combine(_docsetPath, package.Path);
+                    if (!Directory.Exists(dir))
+                    {
+                        throw Errors.Config.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
+                    }
+                    return dir;
+            }
         }
 
-        public void DownloadPackage(PackagePath path, PackageFetchOptions options)
+        public void DownloadPackage(PackagePath package, PackageFetchOptions options)
         {
-            if (path.Type == PackageType.Git)
+            switch (package.Type)
             {
-                DownloadGitRepository(
-                    path.Url,
-                    path.Branch,
-                    options.HasFlag(PackageFetchOptions.DepthOne),
-                    path is DependencyConfig dependency && dependency.IncludeInBuild);
+                case PackageType.Git:
+                    DownloadGitRepository(package, options);
+                    break;
             }
         }
 
@@ -72,71 +84,53 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string ResolvePackageCore(PackagePath package, PackageFetchOptions options)
+        private PathString DownloadGitRepository(PackagePath path, PackageFetchOptions options)
         {
-            if (_fetchOptions != FetchOptions.NoFetch)
-            {
-                DownloadPackage(package, options);
-            }
-
-            switch (package.Type)
-            {
-                case PackageType.Git:
-                    var gitPath = GetGitRepositoryPath(package.Url, package.Branch);
-                    var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
-                    EnterGitReaderLock(gitPath);
-
-                    if (!File.Exists(gitDocfxHead))
-                    {
-                        throw Errors.System.NeedRestore($"{package.Url}#{package.Branch}").ToException();
-                    }
-                    return gitPath;
-
-                default:
-                    var dir = Path.Combine(_docsetPath, package.Path);
-                    if (!Directory.Exists(dir))
-                    {
-                        throw Errors.Config.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
-                    }
-                    return dir;
-            }
+            return s_gitRepositories.GetOrAdd((AppData.GitRoot, path.Url, path.Branch), _ => new Lazy<PathString>(() =>
+                DownloadGitRepositoryCore(
+                    path.Url,
+                    path.Branch,
+                    options.HasFlag(PackageFetchOptions.DepthOne),
+                    path is DependencyConfig dependency && dependency.IncludeInBuild))).Value;
         }
 
-        private void DownloadGitRepository(string url, string committish, bool depthOne, bool fetchContributionBranch)
+        private PathString DownloadGitRepositoryCore(string url, string committish, bool depthOne, bool fetchContributionBranch)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
 
-            if (_fetchOptions == FetchOptions.UseCache && File.Exists(gitDocfxHead))
+            switch (_fetchOptions)
             {
-                return;
+                case FetchOptions.UseCache when File.Exists(gitDocfxHead):
+                case FetchOptions.NoFetch when File.Exists(gitDocfxHead):
+                    return gitPath;
+
+                case FetchOptions.NoFetch:
+                    throw Errors.System.NeedRestore($"{url}#{committish}").ToException();
             }
 
             using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
             {
-                if (!s_downloadedGitRepositories.Contains((gitPath, depthOne)))
+                DeleteIfExist(gitDocfxHead);
+                using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                 {
-                    DeleteIfExist(gitDocfxHead);
-                    using (PerfScope.Start($"Downloading '{url}#{committish}'"))
-                    {
-                        DownloadGitRepositoryCore(gitPath, url, committish, depthOne);
-                    }
-                    File.WriteAllText(gitDocfxHead, committish);
-                    Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
-
-                    s_downloadedGitRepositories.TryAdd((gitPath, depthOne));
+                    InitFetchCheckoutGitRepository(gitPath, url, committish, depthOne);
                 }
+                File.WriteAllText(gitDocfxHead, committish);
+                Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
             }
 
-            // ensure contribution branch for CRR included in build
+            // Ensure contribution branch for CRR included in build
             if (fetchContributionBranch)
             {
                 var crrRepository = Repository.Create(gitPath, committish, url);
                 LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
             }
+
+            return gitPath;
         }
 
-        private void DownloadGitRepositoryCore(string cwd, string url, string committish, bool depthOne)
+        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, bool depthOne)
         {
             var fetchOption = "--update-head-ok --prune --force";
             var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
