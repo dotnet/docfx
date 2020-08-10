@@ -170,28 +170,21 @@ namespace Microsoft.Docs.Build
                     List<RedirectionItem> results = new List<RedirectionItem>();
                     foreach (var item in redirections.Concat(renames))
                     {
+                        if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
+                        {
+                            // Give a missing-attribute warning when source_path or redirect_url not specified
+                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path or redirect_url"));
+                            continue;
+                        }
+
                         var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
-                        if (!string.IsNullOrEmpty(item.RedirectUrl.Value) && !item.SourcePath.IsDefault)
+                        results.Add(new RedirectionItem
                         {
-                            results.Add(new RedirectionItem
-                            {
-                                SourcePath = new PathString(sourcePath),
-                                Monikers = item.Monikers,
-                                RedirectUrl = item.RedirectUrl,
-                                RedirectDocumentId = item.RedirectDocumentId,
-                            });
-                        }
-
-                        if (item.SourcePath.IsDefault)
-                        {
-                            // Give a missing-attribute warning when source-path not specified
-                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path"));
-                        }
-
-                        if (string.IsNullOrEmpty(item.RedirectUrl.Value))
-                        {
-                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "redirect_url"));
-                        }
+                            SourcePath = new PathString(sourcePath),
+                            Monikers = item.Monikers,
+                            RedirectUrl = item.RedirectUrl,
+                            RedirectDocumentId = item.RedirectDocumentId,
+                        });
                     }
 
                     return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
