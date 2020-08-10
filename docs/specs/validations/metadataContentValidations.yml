@@ -2118,6 +2118,7 @@ inputs:
   pig2.jpg:
   pig3.jpg:
   pig4.jpg:
+  pig5.jpg:
   a.md: |
     :::image type="content" source="pig1.jpg" alt-text="":::
 
@@ -2129,12 +2130,13 @@ inputs:
 
     <img src="pig4.jpg" alt=""></img>
 
-    ![`test alt text quote`](pig1.jpg)
+    ![`test alt text quote`](pig5.jpg)
 outputs:
   pig1.jpg:
   pig2.jpg:
   pig3.jpg:
   pig4.jpg:
+  pig5.jpg:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"invalid-image","message":"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"error","log_item_type":"user","code":"invalid-image","message":"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
@@ -2531,6 +2533,10 @@ inputs:
   a.md: |
     ```
       this is a closed fenced codeblock
+      second line
+      third line
+
+      fifth line
     ```
     ```
       this is an unclosed fenced codeblock
@@ -2641,6 +2647,40 @@ inputs:
       this is a fenced codeblock
     ```
          this is an intented codeblock
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'csharp beta-1.0' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'c#' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+---
+# Content validation - links LinkTextPresent validation
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "LinkTextPresent",
+            "message": "Missing link text for link '{0}'. Add appropriate text. ",
+            "code": "link-text-missing",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    [![](inner_link)](outer_link#lightbox)
+    [![](inner_link)](outer_link)
 outputs:
   a.json:
   .errors.log: |
