@@ -314,12 +314,6 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected.", source);
 
             /// <summary>
-            /// The key or value of redirection is null or empty.
-            /// </summary>
-            public static Error RedirectionIsNullOrEmpty(SourceInfo<string> source, string from)
-                => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty.", source);
-
-            /// <summary>
             /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
             /// can't decide which entry to use when computing document id.
             /// </summary>

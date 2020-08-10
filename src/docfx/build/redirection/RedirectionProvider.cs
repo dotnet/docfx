@@ -95,12 +95,6 @@ namespace Microsoft.Docs.Build
                 var path = item.SourcePath;
                 var redirectUrl = item.RedirectUrl;
 
-                if (item.SourcePath.IsDefault || string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
-                {
-                    _errors.Add(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
-                    continue;
-                }
-
                 if (!_buildScope.Glob(path))
                 {
                     continue;
@@ -177,7 +171,7 @@ namespace Microsoft.Docs.Build
                     foreach (var item in redirections.Concat(renames))
                     {
                         var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
-                        if (item.RedirectUrl.Source != null && !item.SourcePath.IsNull)
+                        if (!string.IsNullOrEmpty(item.RedirectUrl.Value) && !item.SourcePath.IsDefault)
                         {
                             results.Add(new RedirectionItem
                             {
@@ -188,13 +182,13 @@ namespace Microsoft.Docs.Build
                             });
                         }
 
-                        if (item.SourcePath.IsNull)
+                        if (item.SourcePath.IsDefault)
                         {
                             // Give a missing-attribute warning when source-path not specified
                             errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path"));
                         }
 
-                        if (item.RedirectUrl.Source == null)
+                        if (string.IsNullOrEmpty(item.RedirectUrl.Value))
                         {
                             errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "redirect_url"));
                         }

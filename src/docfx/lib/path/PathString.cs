@@ -29,8 +29,6 @@ namespace Microsoft.Docs.Build
 
         public bool IsDefault => string.IsNullOrEmpty(_value);
 
-        public bool IsNull => _value == null;
-
         public PathString(string value) => _value = PathUtility.Normalize(value);
 
         public PathString GetFileName() => new PathString { _value = Path.GetFileName(Value) };
