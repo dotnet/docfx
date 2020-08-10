@@ -327,9 +327,9 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error RedirectionUrlNotFound(string from, SourceInfo<string> source)
             {
-                var message = $"Can't preserve document ID for redirected file '{from}' " +
-                            $"because redirect URL '{source}' is invalid or is a relative path to a file in another repo. " +
-                            "Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.";
+                var message = $"Can't redirect document ID for redirected file '{from}' " +
+                            $"because redirect URL '{source}' is invalid or is in a different docset. " +
+                            "Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.";
                 return new Error(ErrorLevel.Suggestion, "redirection-url-not-found", message, source);
             }
 
