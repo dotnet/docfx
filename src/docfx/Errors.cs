@@ -325,7 +325,7 @@ namespace Microsoft.Docs.Build
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RedirectionUrlNotFound(string from, SourceInfo<string> source)
+            public static Error RedirectUrlInvalid(string from, SourceInfo<string> source)
             {
                 var message = $"Can't redirect document ID for redirected file '{from}' " +
                             $"because redirect URL '{source}' is invalid or is in a different docset. " +

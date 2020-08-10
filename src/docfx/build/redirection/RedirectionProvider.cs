@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
                             absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
                             break;
                         default:
-                            _errors.Add(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
+                            _errors.Add(Errors.Redirection.RedirectUrlInvalid(path, redirectUrl));
                             break;
                     }
                 }
@@ -231,7 +231,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.RedirectDocumentId)
                     {
-                        _errors.Add(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                        _errors.Add(Errors.Redirection.RedirectUrlInvalid(item.SourcePath, item.RedirectUrl));
                     }
                     continue;
                 }
