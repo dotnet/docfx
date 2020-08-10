@@ -7,7 +7,7 @@ trigger:
 pr:
 - v3
 variables:
-  dotnetVersion: 3.1.300
+  dotnetVersion: 3.1.302
   runCodesignValidationInjection: false
 
 jobs:
@@ -211,7 +211,7 @@ jobs:
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15
       dryrun.azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 35 --dry-run --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 40 --dry-run --regression-markdown-rule --regression-metadata-schema
       learn-m365-pr:
         params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30
 
