@@ -142,7 +142,11 @@ namespace Microsoft.Docs.Build
                 return _generatedContents[file];
             }
 
-            return _yamlTokenCache.GetOrAdd(file, path => YamlUtility.Parse(errors, ReadText(path), path));
+            return _yamlTokenCache.GetOrAdd(file, path =>
+            {
+                using var reader = ReadText(path);
+                return YamlUtility.Parse(errors, reader, path);
+            });
         }
 
         /// <summary>
