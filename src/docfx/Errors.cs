@@ -341,16 +341,6 @@ namespace Microsoft.Docs.Build
 
             public static Error CircularRedirection(SourceInfo? source, IEnumerable<FilePath> redirectionChain)
                 => new Error(ErrorLevel.Warning, "circular-redirection", $"Build has identified circular redirection: {string.Join(" --> ", redirectionChain)}.", source);
-
-            /// <summary>
-            /// If the source-path defined in .openpublishing.redirection.json cannot be found,
-            /// should give this warning to users.
-            /// </summary>
-            /// Behavior: ✔️ Message: ✔️
-            public static Error SourcePathNotSpecified(SourceInfo<string> source)
-            {
-                return new Error(ErrorLevel.Warning, "source-path-not-specified", $"There is no 'source-path' defined in .openpublishing.redirection.json file.", source);
-            }
         }
 
         public static class TableOfContents

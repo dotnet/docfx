@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                 var path = item.SourcePath;
                 var redirectUrl = item.RedirectUrl;
 
-                if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
+                if (item.SourcePath.IsDefault || string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
                 {
                     _errors.Add(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
                     continue;
@@ -173,29 +173,34 @@ namespace Microsoft.Docs.Build
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
-                    // Give a warning when source-path not specified in .openpublishing.redirection.json
-                    if (fullPath.EndsWith(".openpublishing.redirection.json"))
+                    List<RedirectionItem> results = new List<RedirectionItem>();
+                    foreach (var item in redirections.Concat(renames))
                     {
-                        foreach (var item in redirections)
+                        var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
+                        if (item.RedirectUrl.Source != null && !item.SourcePath.IsNull)
                         {
-                            if (item.SourcePath.IsDefault)
+                            results.Add(new RedirectionItem
                             {
-                                errors.Add(Errors.Redirection.SourcePathNotSpecified(item.RedirectUrl));
-                            }
+                                SourcePath = new PathString(sourcePath),
+                                Monikers = item.Monikers,
+                                RedirectUrl = item.RedirectUrl,
+                                RedirectDocumentId = item.RedirectDocumentId,
+                            });
+                        }
+
+                        if (item.SourcePath.IsNull)
+                        {
+                            // Give a missing-attribute warning when source-path not specified
+                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path"));
+                        }
+
+                        if (item.RedirectUrl.Source == null)
+                        {
+                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "redirect_url"));
                         }
                     }
 
-                    return (
-                        from item in redirections.Concat(renames)
-                        let sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath))
-                        where !sourcePath.StartsWith(".")
-                        select new RedirectionItem
-                        {
-                            SourcePath = new PathString(sourcePath),
-                            Monikers = item.Monikers,
-                            RedirectUrl = item.RedirectUrl,
-                            RedirectDocumentId = item.RedirectDocumentId,
-                        }).OrderBy(item => item.RedirectUrl.Source).ToArray();
+                    return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
                 }
             }
 
