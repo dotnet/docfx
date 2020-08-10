@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             {
                 if (error.Level == ErrorLevel.Error)
                 {
-                    _errors.Add(Errors.Logging.FallbackError(_config.DefaultLocale));
+                    Add(Errors.Logging.FallbackError(_config.DefaultLocale));
                 }
                 return;
             }
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
 
         private Dictionary<string, CustomRule> MergeCustomRules(Config? config, Dictionary<string, ValidationRules>? validationRules)
         {
-            var customRules = config != null ? new Dictionary<string, CustomRule>(_config.CustomRules) : new Dictionary<string, CustomRule>();
+            var customRules = config != null ? new Dictionary<string, CustomRule>(_config.Rules) : new Dictionary<string, CustomRule>();
 
             if (validationRules == null)
             {

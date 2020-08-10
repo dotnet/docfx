@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomRule> CustomRules { get; } = new Dictionary<string, CustomRule>();
+        public Dictionary<string, CustomRule> Rules { get; } = new Dictionary<string, CustomRule>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -304,6 +304,12 @@ namespace Microsoft.Docs.Build
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
         public ECMA2YamlRepoConfig[]? Monodoc { get; private set; }
+
+        /// <summary>
+        /// Determines and configures build to convert MAML markdown files to SDP yaml files as input
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[]? MAMLMonikerPath { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

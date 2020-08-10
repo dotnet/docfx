@@ -263,6 +263,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, CustomRule>> CustomRules { get; } = new Dictionary<string, Dictionary<string, CustomRule>>();
+        public Dictionary<string, Dictionary<string, CustomRule>> Rules { get; } = new Dictionary<string, Dictionary<string, CustomRule>>();
     }
 }

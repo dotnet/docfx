@@ -29,5 +29,9 @@ namespace Microsoft.Docs.Build
         [JsonProperty(nameof(ECMA2Yaml))]
         [JsonConverter(typeof(OneOrManyConverter))]
         public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; private set; }
+
+        [JsonProperty("monikerPath")]
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[]? MonikerPath { get; set; }
     }
 }

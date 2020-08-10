@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file.FilePath);
                 var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
-                var isCanonicalVersion = MonikerList.IsCanonicalVersion(canonicalVersion, monikers);
+                var isCanonicalVersion = monikers.IsCanonicalVersion(canonicalVersion);
                 var titleItem = new TitleItem
                 {
                     IsCanonicalVersion = isCanonicalVersion,

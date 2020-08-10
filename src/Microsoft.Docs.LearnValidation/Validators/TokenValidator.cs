@@ -19,8 +19,8 @@ namespace Microsoft.Docs.LearnValidation
         {
             _dependencyMapFile = dependencyMapFile;
             _hierarchyItems = hierarchyItems;
-            _docsetFolder = docsetFolder;
-            _fallbackFolder = fallbackFolder;
+            _docsetFolder = docsetFolder?.Replace('/', '\\');
+            _fallbackFolder = fallbackFolder?.Replace('/', '\\');
             _logger = logger;
         }
 

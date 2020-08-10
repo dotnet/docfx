@@ -276,7 +276,7 @@ Key1: 1
             var result = YamlUtility.Parse(errors, yaml, null);
             Assert.Collection(
                 errors,
-                e => Assert.Equal("Key 'Key1' is already defined, remove the duplicate key. NOTE: This Suggestion will become a Warning on 06/30/2020.", e.Message));
+                e => Assert.Equal("Key 'Key1' is already defined, remove the duplicate key.", e.Message));
             Assert.Equal("1", result.Value<string>("Key1"));
         }
 

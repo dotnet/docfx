@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -31,6 +30,16 @@ namespace Microsoft.Docs.Build
         public MonikerList(IEnumerable<string> monikers)
         {
             _monikers = monikers.Select(m => m.ToLowerInvariant()).Distinct().OrderBy(m => m, StringComparer.Ordinal).ToArray();
+        }
+
+        public bool? IsCanonicalVersion(string? canonicalVersion)
+        {
+            if (_monikers is null || canonicalVersion is null)
+            {
+                return null;
+            }
+
+            return _monikers.Contains(canonicalVersion);
         }
 
         public bool Intersects(MonikerList other)
@@ -158,21 +167,6 @@ namespace Microsoft.Docs.Build
         public static bool operator !=(MonikerList left, MonikerList right)
         {
             return !(left == right);
-        }
-
-        public static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList monikerList)
-        {
-            if (canonicalVersion is null)
-            {
-                return null;
-            }
-
-            if (!monikerList.HasMonikers)
-            {
-                return null;
-            }
-
-            return monikerList.Contains(canonicalVersion);
         }
 
         private class MonikerListJsonConverter : JsonConverter

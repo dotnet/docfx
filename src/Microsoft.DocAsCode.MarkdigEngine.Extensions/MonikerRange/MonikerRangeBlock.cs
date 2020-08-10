@@ -9,8 +9,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class MonikerRangeBlock : ContainerBlock
     {
         public string MonikerRange { get; set; }
+
+        public object ParsedMonikers { get; set; }
+
         public int ColonCount { get; set; }
         public bool Closed { get; set; }
+
         public MonikerRangeBlock(BlockParser parser) : base(parser)
         {
         }

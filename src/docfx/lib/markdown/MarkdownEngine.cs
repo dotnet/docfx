@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    return Markdown.Parse(content, _pipelines[(int)pipelineType]);
+                    return Markdig.Markdown.Parse(content, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    return Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
+                    return Markdig.Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
@@ -175,22 +175,26 @@ namespace Microsoft.Docs.Build
         private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
         {
             return new MarkdownPipelineBuilder()
+                .UseHeadingIdRewriter()
+                .UseTabGroup(_markdownContext)
+                .UseInteractiveCode()
+
+                // Place markdown rewriters before `EnsureParent` as rewriters breaks parent chain.
+                .UseEnsureParent()
+                .UseFilePath()
                 .UseYamlFrontMatter()
                 .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
                 .UseAutoLinks()
-                .UseHeadingIdRewriter()
                 .UseIncludeFile(_markdownContext)
                 .UseCodeSnippet(_markdownContext)
                 .UseFencedCodeLangPrefix()
                 .UseQuoteSectionNote(_markdownContext)
                 .UseXref()
                 .UseEmojiAndSmiley(false)
-                .UseTabGroup(_markdownContext)
                 .UseMonikerRange(_markdownContext)
-                .UseInteractiveCode()
                 .UseRow(_markdownContext)
                 .UseNestedColumn(_markdownContext)
                 .UseTripleColon(_markdownContext)
@@ -198,7 +202,6 @@ namespace Microsoft.Docs.Build
                 .UseTelemetry()
                 .UseMonikerZone(ParseMonikerRange)
                 .UseApexValidation(_validatorProvider, GetLayout)
-                .UseFilePath()
 
                 // Extensions before this line sees inclusion AST twice:
                 // - Once AST for the entry file without InclusionBlock expanded
@@ -226,7 +229,8 @@ namespace Microsoft.Docs.Build
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
-            builder.UseFilePath()
+            builder.UseEnsureParent()
+                   .UseFilePath()
                    .UseYamlFrontMatter()
                    .UseXref()
                    .UsePreciseSourceLocation();
@@ -239,24 +243,36 @@ namespace Microsoft.Docs.Build
             return _templateEngine.GetToken(key);
         }
 
-        private static void LogInfo(string code, string message, MarkdownObject origin, int? line)
+        private static void LogInfo(string code, string message, MarkdownObject? origin, int? line)
         {
             Log.Write($"{code}: {message}");
         }
 
-        private static void LogError(string code, string message, MarkdownObject origin, int? line)
+        private static void LogError(string code, string message, MarkdownObject? origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Error, code, message, origin.GetSourceInfo(line)));
+            LogItem(ErrorLevel.Error, code, message, origin, line);
         }
 
-        private static void LogWarning(string code, string message, MarkdownObject origin, int? line)
+        private static void LogWarning(string code, string message, MarkdownObject? origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Warning, code, message, origin.GetSourceInfo(line)));
+            LogItem(ErrorLevel.Warning, code, message, origin, line);
         }
 
-        private static void LogSuggestion(string code, string message, MarkdownObject origin, int? line)
+        private static void LogSuggestion(string code, string message, MarkdownObject? origin, int? line)
         {
-            t_status.Value!.Peek().Errors.Add(new Error(ErrorLevel.Suggestion, code, message, origin.GetSourceInfo(line)));
+            LogItem(ErrorLevel.Suggestion, code, message, origin, line);
+        }
+
+        private static void LogItem(ErrorLevel level, string code, string message, MarkdownObject? origin, int? line)
+        {
+            // At parser stage, we are unable to reliably access GetPathToRoot method,
+            // use InclusionContext to report syntax diagnostics.
+            var source = new SourceInfo(
+                ((Document)InclusionContext.File).FilePath,
+                line is null ? (origin?.Line + 1) ?? 0 : (line.Value + 1),
+                line is null ? (origin?.Column + 1) ?? 0 : 0);
+
+            t_status.Value!.Peek().Errors.Add(new Error(level, code, message, source));
         }
 
         private static ErrorBuilder GetErrors()

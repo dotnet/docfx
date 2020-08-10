@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
 
             // need to url decode uid from input content
             var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
-            if (xrefError != null || xrefSpec is null || resolvedHref == null)
+            if (xrefError != null || xrefSpec is null || string.IsNullOrEmpty(resolvedHref))
             {
                 return (xrefError, null, alt ?? "", null);
             }
@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                var dependencyType = GetDependencyType(referencingFile.Mime, spec.DeclaringFile.Mime);
+                var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, dependencyType, referencingFile.ContentType);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
                 return (spec, href);
@@ -227,14 +227,26 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private static DependencyType GetDependencyType(string? fromMime, string? toMime)
-            => (fromMime, toMime) switch
+        private static DependencyType GetDependencyType(Document referencingFile, InternalXrefSpec xref)
+        {
+            if (!string.Equals(referencingFile.Mime, "LearningPath", StringComparison.Ordinal)
+                && !string.Equals(referencingFile.Mime, "Module", StringComparison.Ordinal))
             {
-                ("LearningPath", "Module") => DependencyType.Hierarchy,
-                ("Module", "ModuleUnit") => DependencyType.Hierarchy,
-                ("LearningPath", "Achievement") => DependencyType.Achievement,
-                ("Module", "Achievement") => DependencyType.Achievement,
-                _ => DependencyType.Uid,
-            };
+                return DependencyType.Uid;
+            }
+
+            switch ((referencingFile.Mime.Value, xref.DeclaringFile.Mime.Value))
+            {
+                case ("LearningPath", "Module"):
+                case ("Module", "ModuleUnit"):
+                    return DependencyType.Hierarchy;
+                case ("LearningPath", "Achievement"):
+                case ("Module", "Achievement"):
+                case ("LearningPath", "LearningPath") when string.Equals(xref.DeclaringPropertyName, "trophy", StringComparison.OrdinalIgnoreCase):
+                case ("Module", "Module") when string.Equals(xref.DeclaringPropertyName, "badge", StringComparison.OrdinalIgnoreCase):
+                    return DependencyType.Achievement;
+            }
+            return DependencyType.Uid;
+        }
     }
 }

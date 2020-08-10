@@ -648,7 +648,7 @@ namespace Microsoft.Docs.Build
             }
 
             if (!string.IsNullOrEmpty(error.Name) &&
-                schema.CustomRules.TryGetValue(error.Name, out var attributeCustomRules) &&
+                schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
                 attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
                 return error.WithCustomRule(customRule, isCanonicalVersion);
@@ -682,7 +682,7 @@ namespace Microsoft.Docs.Build
 
         private bool CanonicalVersionOnly(string key, string code)
         {
-            return _schema.CustomRules.TryGetValue(key, out var customRules) &&
+            return _schema.Rules.TryGetValue(key, out var customRules) &&
                 customRules.TryGetValue(code, out var customRule) &&
                 customRule.CanonicalVersionOnly;
         }

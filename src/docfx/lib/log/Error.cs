@@ -45,9 +45,15 @@ namespace Microsoft.Docs.Build
         public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
         {
             var level = customRule.Severity ?? Level;
-            level = isCanonicalVersion != null && customRule.CanonicalVersionOnly
-                ? (isCanonicalVersion.Value ? level : ErrorLevel.Off)
-                : level;
+            if (isCanonicalVersion != null && customRule.CanonicalVersionOnly)
+            {
+                level = isCanonicalVersion.Value ? level : ErrorLevel.Off;
+            }
+
+            if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? string.Empty))
+            {
+                level = ErrorLevel.Off;
+            }
 
             return new Error(
                 level,

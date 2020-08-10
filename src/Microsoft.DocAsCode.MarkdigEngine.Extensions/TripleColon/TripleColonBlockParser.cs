@@ -70,8 +70,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.GetType() == typeof(ImageExtension))
             {
-                if(htmlAttributes != null
-                && !ImageExtension.RequiresClosingTripleColon(attributes))
+                if (!ImageExtension.RequiresClosingTripleColon(attributes))
                 {
                     return BlockState.None;
                 }
@@ -79,7 +78,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 processor.NewBlocks.Push(block);
                 block.EndingTripleColons = true;
                 return BlockState.ContinueDiscard;
-            } else
+            }
+            else if (extension.GetType() == typeof(VideoExtension))
+            {
+                if (!VideoExtension.RequiresClosingTripleColon(attributes))
+                {
+                    return BlockState.None;
+                }
+
+                processor.NewBlocks.Push(block);
+                block.EndingTripleColons = true;
+                return BlockState.ContinueDiscard;
+            }
+
             {
                 processor.NewBlocks.Push(block);
             }
@@ -97,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var slice = processor.Line;
             var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
 
-            if(((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension)
+            if (((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension) || ((TripleColonBlock)block).Extension.GetType() != typeof(VideoExtension)
                 || endingTripleColons)
             {
                 if (processor.IsBlankLine)
