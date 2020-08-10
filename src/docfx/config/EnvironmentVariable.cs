@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
 
         public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
 
-        public static bool UpdateCacheSync { get; } = bool.TryParse(GetValue("DOCFX_UPDATE_CACHE_SYNC"), out bool updateCacheSync) && updateCacheSync;
-
         private static string? GetValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);
