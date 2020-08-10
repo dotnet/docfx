@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.738" />
     <!-- TODO: use reference alias to resolve markdown namespace-class name collision
     https://github.com/NuGet/Home/issues/4989 -->
-    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.57-beta"/>
+    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.63"/>
     <PackageReference Include="Microsoft.Graph" Version="3.9.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.17.1" />
