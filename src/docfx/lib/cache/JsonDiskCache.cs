@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             {
                 if (HasExpired(value))
                 {
-                    // Update expired items synchroniously, for pull request build, items never expire.
+                    // Update expired items synchronously, for pull request build, items never expire.
                     Update(key, valueFactory).GetAwaiter().GetResult();
                 }
                 return (default, value);
