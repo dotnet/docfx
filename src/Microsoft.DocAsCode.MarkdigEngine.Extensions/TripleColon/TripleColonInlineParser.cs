@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
+            var startPosition = processor.GetSourcePosition(slice.Start, out var line, out var column);
+
             if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
                 return false;
@@ -37,8 +39,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var inline = new TripleColonInline(this)
             {
                 Closed = false,
-                Column = 0,
-                Line = processor.LineIndex,
+                Line = line,
+                Column = column,
                 Span = new SourceSpan(processor.LineIndex, slice.End),
             };
 
@@ -54,6 +56,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             inline.Extension = extension;
             inline.Attributes = attributes;
             inline.RenderProperties = renderProperties;
+            inline.Span = new SourceSpan(startPosition, processor.GetSourcePosition(slice.Start - 1));
 
             if (htmlAttributes != null)
             {
