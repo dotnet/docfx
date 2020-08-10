@@ -129,7 +129,11 @@ namespace Microsoft.Docs.Build
                 return _generatedContents[file];
             }
 
-            return _jsonTokenCache.GetOrAdd(file, path => JsonUtility.Parse(errors, ReadText(path), path));
+            return _jsonTokenCache.GetOrAdd(file, path =>
+            {
+                using var reader = ReadText(path);
+                return JsonUtility.Parse(errors, reader, path);
+            });
         }
 
         /// <summary>
