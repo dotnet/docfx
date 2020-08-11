@@ -34,9 +34,9 @@ namespace Microsoft.Docs.Build
         private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
         private readonly MarkdownPipeline[] _pipelines;
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
-        private Lazy<PublishUrlMap> _publishUrlMap;
+        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
         public MarkdownEngine(
             Config config,
@@ -340,17 +340,18 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand)
+        private (string? href, string display) GetXref(
+            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
                 ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
                 : uid.HasValue
-                ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
-                : default;
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                    : default;
 
-            if (!isShorthand)
+            if (!suppressXrefNotFound)
             {
                 status.Errors.AddIfNotNull(error);
             }

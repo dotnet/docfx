@@ -24,15 +24,15 @@ namespace Microsoft.Docs.Build
 
         // TODO: change to use xrefSpec type to express what kind of xref spec it is: e.g. achievement, module
         [JsonIgnore]
-        internal string? DeclaringPropertyName { get; }
+        internal string? DeclaringPropertyPath { get; }
 
-        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile, MonikerList monikerList, string? declaringPropertyName = null)
+        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile, MonikerList monikerList, string? declaringPropertyPath = null)
         {
             Uid = uid;
             Href = href;
             DeclaringFile = declaringFile;
             Monikers = monikerList;
-            DeclaringPropertyName = declaringPropertyName;
+            DeclaringPropertyPath = declaringPropertyPath;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
