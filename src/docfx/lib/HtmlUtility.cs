@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
             ref HtmlReader reader,
             ref HtmlToken token,
             MarkdownObject? block,
-            MarkdownEngine.GetXrefDelegate resolveXref)
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             if (!token.NameIs("xref"))
             {
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
             var rawSource = default(string);
             var href = default(string);
             var uid = default(string);
-            var warnOnXrefNotFound = true;
+            var suppressXrefNotFound = false;
 
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
@@ -239,17 +239,16 @@ namespace Microsoft.Docs.Build
                 }
                 else if (attribute.NameIs("data-throw-if-not-resolved"))
                 {
-                    warnOnXrefNotFound = bool.TryParse(attribute.Value.ToString(), out var warn) ? warn : true;
+                    suppressXrefNotFound = bool.TryParse(attribute.Value.Span, out var warn) ? !warn : false;
                 }
             }
 
-            var isShorthand = (rawHtml ?? rawSource)?.StartsWith("@") ?? false;
+            suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
             var (resolvedHref, display) = resolveXref(
                 href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo(token.Range)),
                 uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo(token.Range)),
-                isShorthand: isShorthand,
-                warnOnXrefNotFound: warnOnXrefNotFound);
+                suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
                 ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()

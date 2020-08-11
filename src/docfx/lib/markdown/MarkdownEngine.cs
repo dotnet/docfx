@@ -38,9 +38,6 @@ namespace Microsoft.Docs.Build
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        public delegate (string? href, string display) GetXrefDelegate(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand, bool warnOnXrefNotFound = true);
-
         public MarkdownEngine(
             Config config,
             Input input,
@@ -344,7 +341,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (string? href, string display) GetXref(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand, bool warnOnXrefNotFound = true)
+            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {
             var status = t_status.Value!.Peek();
 
@@ -354,7 +351,7 @@ namespace Microsoft.Docs.Build
                     ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
                     : default;
 
-            if (!isShorthand && warnOnXrefNotFound)
+            if (!suppressXrefNotFound)
             {
                 status.Errors.AddIfNotNull(error);
             }

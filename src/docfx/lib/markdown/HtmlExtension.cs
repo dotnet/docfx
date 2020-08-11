@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             Func<ErrorBuilder> getErrors,
             Func<SourceInfo<string>, string> getLink,
             Func<SourceInfo<string>, string?, string> getImageLink,
-            MarkdownEngine.GetXrefDelegate resolveXref,
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
             Func<FilePath, bool> isArchived)
         {
             return builder.Use(document =>

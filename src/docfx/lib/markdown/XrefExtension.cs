@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
@@ -13,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseXref(
             this MarkdownPipelineBuilder builder,
-            MarkdownEngine.GetXrefDelegate resolveXref)
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {
@@ -24,9 +25,9 @@ namespace Microsoft.Docs.Build
                     if (node is XrefInline xref)
                     {
                         var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
-                        var isShorthand = raw.StartsWith("@");
+                        var suppressXrefNotFound = raw.StartsWith("@");
                         var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
-                        var (href, display) = resolveXref(source, null, isShorthand);
+                        var (href, display) = resolveXref(source, null, suppressXrefNotFound);
 
                         if (href is null)
                         {

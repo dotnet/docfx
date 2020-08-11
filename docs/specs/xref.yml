@@ -951,7 +951,7 @@ outputs:
 inputs:
   docfx.yml:
   a.md: |
-    1. <xref href="xref-error" data-throw-if-not-resolved="true" data-raw-source="xref-error"></xref>
+    1. <xref href="xref-error" data-throw-if-not-resolved="True" data-raw-source="xref-error"></xref>
     2. <xref href="xref-suppress" data-throw-if-not-resolved="False" data-raw-source="xref-suppress"></xref>
 outputs:
   a.json: |
