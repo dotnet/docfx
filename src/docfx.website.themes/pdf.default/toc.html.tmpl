@@ -65,32 +65,6 @@ full license information.}} {{!master(layout/_master.tmpl)}}
 </div>
 <div class="TocNavigationVertical" id="toc">
   <ul class="tocBase tocLevel1">
-    {{#items}}
-    <li>
-      {{# href }}
-      <a class="normal" href="{{ href }}">{{ name }}</a> {{/ href }} {{^ href }}
-      <a class="normal slidedown" href="javascript:void(0)">{{ name }}</a> {{/ href }} {{# items.0 }}
-      <ul class="tocLevel{{level}}">
-        {{/ items.0 }} {{#items}}
-        <li>
-          {{# href }}
-          <a class="normal" href="{{ href }}">{{ name }}</a> {{/ href }} {{^ href }}
-          <a class="normal slidedown" href="javascript:void(0)">{{ name }}</a> {{/ href }} {{# items.0 }}
-          <ul class="tocLevel{{level}}">
-            {{/ items.0 }} {{#items}}
-            <li>
-              {{# href }}
-              <a class="normal" href="{{ href }}">{{ name }}</a> {{/ href }} {{^ href }}
-              <a class="normal slidedown" href="javascript:void(0)">{{ name }}</a> {{/ href }}
-            </li>
-            {{/items}} {{# items.0 }}
-          </ul>
-          {{/ items.0 }}
-        </li>
-        {{/items}} {{# items.0 }}
-      </ul>
-      {{/ items.0 }}
-    </li>
-    {{/items}}
+    {{>partials/toc.li}}
   </ul>
 </div>
