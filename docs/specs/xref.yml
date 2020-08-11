@@ -939,13 +939,26 @@ inputs:
   docfx.yml:
   docs/a.md: |
     <table>
-    <tr>A=<xref href="Me" data-throw-if-not-resolved="False" data-raw-source="@Me"></xref></tr>
+    <tr>A=<xref href="Me" data-raw-source="@Me"></xref></tr>
 
     <tr>A</tr>
     </table>
 outputs:
   docs/a.json: |
     { "conceptual": "<table><tr>A=@Me</tr><tr>A</tr></table>"}
+---
+# Support data-throw-if-not-resolved attribute user written <xref> (not in mustache)
+inputs:
+  docfx.yml:
+  a.md: |
+    1. <xref href="xref-error" data-throw-if-not-resolved="true" data-raw-source="xref-error"></xref>
+    2. <xref href="xref-suppress" data-throw-if-not-resolved="False" data-raw-source="xref-suppress"></xref>
+outputs:
+  a.json: |
+    { "conceptual": "<ol><li>xref-error</li> <li>xref-suppress</li></ol>"}
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'xref-error'.","file":"a.md","line":1,"column":4}
+
 ---
 # support <xref uid="uid"></xref>
 inputs:

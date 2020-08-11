@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             var actual = HtmlUtility.TransformHtml(
                 input,
                 (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformXref(
-                    ref reader, ref token, null, (href, uid, isShorthand) => (xref, display)));
+                    ref reader, ref token, null, (href, uid, isShorthand, warnOnXrefNotFound) => (xref, display)));
 
             Assert.Equal(output, actual);
         }

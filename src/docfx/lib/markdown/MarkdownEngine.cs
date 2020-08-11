@@ -34,9 +34,12 @@ namespace Microsoft.Docs.Build
         private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
         private readonly MarkdownPipeline[] _pipelines;
 
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
-        private Lazy<PublishUrlMap> _publishUrlMap;
+        public delegate (string? href, string display) GetXrefDelegate(
+            SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand, bool warnOnXrefNotFound = true);
 
         public MarkdownEngine(
             Config config,
@@ -326,7 +329,6 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, string? altText)
         {
-            _contentValidator.ValidateImageLink((Document)InclusionContext.File, href, altText);
             var link = GetLink(href);
             return link;
         }
@@ -340,17 +342,18 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand)
+        private (string? href, string display) GetXref(
+            SourceInfo<string>? href, SourceInfo<string>? uid, bool isShorthand, bool warnOnXrefNotFound = true)
         {
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
                 ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
                 : uid.HasValue
-                ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
-                : default;
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                    : default;
 
-            if (!isShorthand)
+            if (!isShorthand && warnOnXrefNotFound)
             {
                 status.Errors.AddIfNotNull(error);
             }

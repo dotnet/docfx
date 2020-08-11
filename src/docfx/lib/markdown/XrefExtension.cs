@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
@@ -14,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseXref(
             this MarkdownPipelineBuilder builder,
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+            MarkdownEngine.GetXrefDelegate resolveXref)
         {
             return builder.Use(document =>
             {
