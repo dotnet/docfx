@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    return Markdig.Markdown.Parse(content, _pipelines[(int)pipelineType]);
+                    return Markdown.Parse(content, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
 
                     t_status.Value!.Push(status);
 
-                    return Markdig.Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
+                    return Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
