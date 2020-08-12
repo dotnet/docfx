@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Validators
 {
-    using System;
-
-    using Markdig.Syntax;
-
     internal class MarkdownLambdaObjectValidator<TObject> : IMarkdownObjectValidator where TObject : class, IMarkdownObject
     {
         private Action<IMarkdownObject> _preAction;
@@ -16,8 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Validators
         public MarkdownLambdaObjectValidator(
             Action<TObject> validator,
             Action<IMarkdownObject> preAction,
-            Action<IMarkdownObject> postAction
-            )
+            Action<IMarkdownObject> postAction)
         {
             _preAction = preAction;
             _validator = validator;
@@ -28,7 +26,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Validators
         {
             _preAction?.Invoke(markdownObject);
         }
-
 
         public void Validate(IMarkdownObject markdownObject)
         {

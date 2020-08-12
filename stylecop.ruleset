@@ -146,7 +146,10 @@
     <Rule Id="CA2240" Action="Warning" />
     <Rule Id="CA2241" Action="Warning" />
     <Rule Id="CA2242" Action="Warning" />
-    <Rule Id="CA5351" Action="Warning" />
+    <!-- CA5350:Do Not Use Weak Cryptographic Algorithms -->
+    <Rule Id="CA5350" Action="None" />
+    <!-- CA5351:Do Not Use Broken Cryptographic Algorithms -->
+    <Rule Id="CA5351" Action="None" />
   </Rules>
   <Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
     <Rule Id="MEN002" Action="Warning" />

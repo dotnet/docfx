@@ -1,19 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Syntax;
-
     public class QuoteSectionNoteParser : BlockParser
     {
-        private List<string> _noteTypes = new List<string>{ "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
+        private readonly List<string> _noteTypes = new List<string> { "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
         private readonly MarkdownContext _context;
 
         public QuoteSectionNoteParser(MarkdownContext context)
@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private bool TryParseFromLine(BlockProcessor processor, QuoteSectionNoteBlock block)
         {
-            int originalColumn = processor.Column;
+            var originalColumn = processor.Column;
             block.QuoteType = QuoteSectionNoteType.MarkdownQuote;
 
             if (processor.CurrentChar != '[')
@@ -141,9 +141,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 // "> [!NOTE] content" is invalid, go to end to see it.
                 processor.NextChar();
-                while (processor.CurrentChar.IsSpaceOrTab()) processor.NextChar();
-                var isNoteVideoDiv = (infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase))   ||
-                                     (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase)) ||
+                while (processor.CurrentChar.IsSpaceOrTab())
+                {
+                    processor.NextChar();
+                }
+
+                var isNoteVideoDiv = infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase) ||
+                                     infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase) ||
                                      IsNoteType(infoString);
                 if (processor.CurrentChar != '\0' && isNoteVideoDiv)
                 {
@@ -163,7 +167,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase))
             {
                 block.QuoteType = QuoteSectionNoteType.DFMSection;
-                string attribute = infoString.Substring(5, infoString.Length - 6).Trim();
+                var attribute = infoString.Substring(5, infoString.Length - 6).Trim();
                 if (attribute.Length >= 2 && attribute.First() == '`' && attribute.Last() == '`')
                 {
                     block.SectionAttributeString = attribute.Substring(1, attribute.Length - 2).Trim();
@@ -177,7 +181,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase))
             {
-                string link = infoString.Substring(7, infoString.Length - 8);
+                var link = infoString.Substring(7, infoString.Length - 8);
                 if (link.StartsWith(" http://") || link.StartsWith(" https://"))
                 {
                     block.QuoteType = QuoteSectionNoteType.DFMVideo;
@@ -188,14 +192,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             processor.GoToColumn(originalColumn);
             return false;
-        }
-
-        private bool IsRestLineEmpty(BlockProcessor processor, int movedCharCount)
-        {
-            int column = processor.Column;
-            while (movedCharCount-- > 0) processor.NextChar();
-            while (processor.CurrentChar.IsSpaceOrTab()) processor.NextChar();
-            return processor.CurrentChar == '\0';
         }
 
         private bool IsNoteType(string infoString)

@@ -1,21 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+using Markdig.Helpers;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-
-    using Markdig.Helpers;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
         private const string TagPrefix = "snippet";
@@ -70,48 +70,48 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static readonly IReadOnlyDictionary<string, string[]> s_languageAlias = new Dictionary<string, string[]>
         {
-            { "actionscript", new string[] {"as" } },
-            { "arduino", new string[] {"ino" } },
-            { "assembly", new string[] {"nasm", "asm" } },
-            { "batchfile", new string[] {"bat", "cmd" } },
+            { "actionscript", new string[] { "as" } },
+            { "arduino", new string[] { "ino" } },
+            { "assembly", new string[] { "nasm", "asm" } },
+            { "batchfile", new string[] { "bat", "cmd" } },
             { "css", Array.Empty<string>() },
-            { "cpp", new string[] {"c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
-            { "csharp", new string[] {"cs"} },
-            { "cuda", new string[] {"cu", "cuh" } },
-            { "d", new string[] {"dlang"} },
-            { "everything", new string[] {"example" } }, //this is the catch all to try and process unforseen languages
-            { "erlang", new string[] {"erl" } },
-            { "fsharp", new string[] {"fs", "fsi", "fsx" } },
-            { "go", new string[] {"golang" } },
-            { "handlebars", new string[] {"hbs" } },
-            { "haskell", new string[] {"hs" } },
+            { "cpp", new string[] { "c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
+            { "csharp", new string[] { "cs" } },
+            { "cuda", new string[] { "cu", "cuh" } },
+            { "d", new string[] { "dlang" } },
+            { "everything", new string[] { "example" } }, // this is the catch all to try and process unforseen languages
+            { "erlang", new string[] { "erl" } },
+            { "fsharp", new string[] { "fs", "fsi", "fsx" } },
+            { "go", new string[] { "golang" } },
+            { "handlebars", new string[] { "hbs" } },
+            { "haskell", new string[] { "hs" } },
             { "html", new string[] { "jsp", "asp", "aspx", "ascx" } },
-            { "cshtml", new string[] {"aspx-cs", "aspx-csharp" } },
-            { "vbhtml", new string[] {"aspx-vb" } },
-            { "java", new string[] {"gradle" } },
-            { "javascript", new string[] {"js", "node", "json" } },
-            { "lisp", new string[] {"lsp" } },
+            { "cshtml", new string[] { "aspx-cs", "aspx-csharp" } },
+            { "vbhtml", new string[] { "aspx-vb" } },
+            { "java", new string[] { "gradle" } },
+            { "javascript", new string[] { "js", "node", "json" } },
+            { "lisp", new string[] { "lsp" } },
             { "lua", Array.Empty<string>() },
             { "matlab", Array.Empty<string>() },
-            { "pascal", new string[] {"pas" } },
-            { "perl", new string[] {"pl" } },
+            { "pascal", new string[] { "pas" } },
+            { "perl", new string[] { "pl" } },
             { "php", Array.Empty<string>() },
-            { "powershell", new string[] {"posh", "ps1" } },
-            { "processing", new string[] {"pde" } },
-            { "python", new string[] {"py" } },
+            { "powershell", new string[] { "posh", "ps1" } },
+            { "processing", new string[] { "pde" } },
+            { "python", new string[] { "py" } },
             { "r", Array.Empty<string>() },
-            { "react", new string[] {"tsx" } },
-            { "ruby", new string[] {"ru", "erb", "rb", "" } },
-            { "rust", new string[] {"rs" } },
+            { "react", new string[] { "tsx" } },
+            { "ruby", new string[] { "ru", "erb", "rb", "" } },
+            { "rust", new string[] { "rs" } },
             { "scala", Array.Empty<string>() },
-            { "shell", new string[] {"sh", "bash" } },
-            { "smalltalk", new string[] {"st" } },
+            { "shell", new string[] { "sh", "bash" } },
+            { "smalltalk", new string[] { "st" } },
             { "sql", Array.Empty<string>() },
             { "swift", Array.Empty<string>() },
-            { "typescript", new string[] {"ts" } },
+            { "typescript", new string[] { "ts" } },
             { "xaml", Array.Empty<string>() },
-            { "xml", new string[] {"xsl", "xslt", "xsd", "wsdl", "csdl", "edmx" } },
-            { "vb", new string[] {"vbnet", "vbscript", "bas", "vbs", "vba" } }
+            { "xml", new string[] { "xsl", "xslt", "xsd", "wsdl", "csdl", "edmx" } },
+            { "vb", new string[] { "vbnet", "vbscript", "bas", "vbs", "vba" } },
         };
 
         private static readonly Dictionary<string, string> s_languageByFileExtension = new Dictionary<string, string>();
@@ -123,8 +123,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
-        // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors = new Dictionary<string, HashSet<CodeSnippetExtractor>>();
+        // Later we can move the repository's supported/custom language names, aliases,
+        // extensions and corresponding comments regexes to docfx build configuration
+        private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors
+                          = new Dictionary<string, HashSet<CodeSnippetExtractor>>();
 
         private readonly MarkdownContext _context;
 
@@ -132,27 +134,42 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             BuildFileExtensionLanguageMap();
 
-            AddExtractorItems(new[] { "vb", "vbhtml" },
+            AddExtractorItems(
+                new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript" },
+            AddExtractorItems(
+                new[]
+                {
+                    "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript",
+                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript",
+                },
                 new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "xml", "xaml", "handlebars", "html", "cshtml", "php", "react", "ruby", "vbhtml" },
+            AddExtractorItems(
+                new[] { "xml", "xaml", "handlebars", "html", "cshtml", "php", "react", "ruby", "vbhtml" },
                 new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "haskell", "lua", "sql" },
+            AddExtractorItems(
+                new[] { "haskell", "lua", "sql" },
                 new CodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineTemplate, SqlFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "perl", "powershell", "python", "r", "ruby", "shell" },
+            AddExtractorItems(
+                new[] { "perl", "powershell", "python", "r", "ruby", "shell" },
                 new CodeSnippetExtractor(ScriptFamilyCodeSnippetCommentStartLineTemplate, ScriptFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "batchfile" },
+            AddExtractorItems(
+                new[] { "batchfile" },
                 new CodeSnippetExtractor(BatchFileCodeSnippetRegionStartLineTemplate, BatchFileCodeSnippetRegionEndLineTemplate));
-            AddExtractorItems(new[] { "csharp", "cshtml" },
+            AddExtractorItems(
+                new[] { "csharp", "cshtml" },
                 new CodeSnippetExtractor(CSharpCodeSnippetRegionStartLineTemplate, CSharpCodeSnippetRegionEndLineTemplate, false));
-            AddExtractorItems(new[] { "erlang", "matlab" },
+            AddExtractorItems(
+                new[] { "erlang", "matlab" },
                 new CodeSnippetExtractor(ErlangCodeSnippetRegionStartLineTemplate, ErlangCodeSnippetRegionEndLineTemplate));
-            AddExtractorItems(new[] { "lisp" },
+            AddExtractorItems(
+                new[] { "lisp" },
                 new CodeSnippetExtractor(LispCodeSnippetRegionStartLineTemplate, LispCodeSnippetRegionEndLineTemplate));
-            AddExtractorItems(new[] { "vb", "vbhtml" },
+            AddExtractorItems(
+                new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false));
-            AddExtractorItems(new[] { "css" },
+            AddExtractorItems(
+                new[] { "css" },
                 new CodeSnippetExtractor(CSSCodeSnippetRegionStartLineTemplate, CSSCodeSnippetRegionEndLineTemplate, false));
 
             static void BuildFileExtensionLanguageMap()
@@ -217,6 +234,62 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return s_languageByFileExtension.TryGetValue(extension, out var result) ? result : null;
         }
 
+        public string GetContent(string content, CodeSnippet obj)
+        {
+            var allLines = ReadAllLines(content).ToArray();
+
+            // code range priority: tag > #L1 > start/end > range > default
+            if (!string.IsNullOrEmpty(obj.TagName))
+            {
+                var lang = obj.Language ?? Path.GetExtension(obj.CodePath);
+
+                if (obj.IsNotebookCode)
+                {
+                    return GetNoteBookContent(content, obj.TagName, obj);
+                }
+
+                if (!s_languageExtractors.TryGetValue(lang, out var extractors))
+                {
+                    extractors = s_defaultExtractors;
+
+                    _context.LogWarning(
+                        "unknown-language-code",
+                        $"Unrecognized language value '{lang}' in code snippet '{obj.TagName}' in file '{obj.CodePath}'. Your code snippet might not render correctly. If this is the case, you can request a new value or use range instead.",
+                        obj);
+                }
+
+                var tagWithPrefix = TagPrefix + obj.TagName;
+                foreach (var extractor in extractors)
+                {
+                    var tagLines = new HashSet<int>();
+                    var tagToCoderangeMapping = extractor.GetAllTags(allLines, ref tagLines);
+                    if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
+                        || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
+                    {
+                        return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
+                    }
+                }
+            }
+            else if (obj.BookMarkRange != null)
+            {
+                return GetCodeLines(allLines, obj, new List<CodeRange> { obj.BookMarkRange });
+            }
+            else if (obj.StartEndRange != null)
+            {
+                return GetCodeLines(allLines, obj, new List<CodeRange> { obj.StartEndRange });
+            }
+            else if (obj.CodeRanges != null)
+            {
+                return GetCodeLines(allLines, obj, obj.CodeRanges);
+            }
+            else
+            {
+                return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange { Start = 0, End = allLines.Length } });
+            }
+
+            return string.Empty;
+        }
+
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
             var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, codeSnippet);
@@ -248,7 +321,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return string.Empty;
             }
 
-            string sourceJsonPath = $"$..cells[?(@.metadata.name=='{tagName}')].source";
+            var sourceJsonPath = $"$..cells[?(@.metadata.name=='{tagName}')].source";
             JToken sourceObject = null;
             try
             {
@@ -266,70 +339,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return string.Empty;
             }
 
-            StringBuilder showCode = new StringBuilder();
-            string[] lines = ((JArray)sourceObject).ToObject<string[]>();
-            for (int i = 0; i < lines.Length; i++)
+            var showCode = new StringBuilder();
+            var lines = ((JArray)sourceObject).ToObject<string[]>();
+            for (var i = 0; i < lines.Length; i++)
             {
                 showCode.Append(lines[i]);
             }
 
             return showCode.ToString();
-        }
-
-        public string GetContent(string content, CodeSnippet obj)
-        {
-            var allLines = ReadAllLines(content).ToArray();
-
-            // code range priority: tag > #L1 > start/end > range > default
-            if (!string.IsNullOrEmpty(obj.TagName))
-            {
-                var lang = obj.Language ?? Path.GetExtension(obj.CodePath);
-
-                if (obj.IsNotebookCode)
-                {
-                    return GetNoteBookContent(content, obj.TagName, obj);
-                }
-
-                if (!s_languageExtractors.TryGetValue(lang, out var extractors))
-                {
-                    extractors = s_defaultExtractors;
-
-                    _context.LogWarning(
-                        "unknown-language-code",
-                        $"Unrecognized language value '{lang}' in code snippet '{obj.TagName}' in file '{obj.CodePath}'. Your code snippet might not render correctly. If this is the case, you can request a new value or use range instead.",
-                        obj);
-                }
-
-                var tagWithPrefix = TagPrefix + obj.TagName;
-                foreach (var extractor in extractors)
-                {
-                    HashSet<int> tagLines = new HashSet<int>();
-                    var tagToCoderangeMapping = extractor.GetAllTags(allLines, ref tagLines);
-                    if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
-                        || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
-                    {
-                        return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
-                    }
-                }
-            }
-            else if (obj.BookMarkRange != null)
-            {
-                return GetCodeLines(allLines, obj, new List<CodeRange> { obj.BookMarkRange });
-            }
-            else if (obj.StartEndRange != null)
-            {
-                return GetCodeLines(allLines, obj, new List<CodeRange> { obj.StartEndRange });
-            }
-            else if (obj.CodeRanges != null)
-            {
-                return GetCodeLines(allLines, obj, obj.CodeRanges);
-            }
-            else
-            {
-                return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange { Start = 0, End = allLines.Length } });
-            }
-
-            return string.Empty;
         }
 
         private static IEnumerable<string> ReadAllLines(string content)
@@ -344,15 +361,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
         {
-            List<string> codeLines = new List<string>();
-            StringBuilder showCode = new StringBuilder();
-            int commonIndent = int.MaxValue;
+            var codeLines = new List<string>();
+            var showCode = new StringBuilder();
+            var commonIndent = int.MaxValue;
 
             foreach (var codeRange in codeRanges)
             {
-                for (int lineNumber = Math.Max(codeRange.Start - 1, 0); lineNumber < Math.Min(codeRange.End, allLines.Length); lineNumber++)
+                for (var lineNumber = Math.Max(codeRange.Start - 1, 0); lineNumber < Math.Min(codeRange.End, allLines.Length); lineNumber++)
                 {
-                    if (ignoreLines != null && ignoreLines.Contains(lineNumber)) continue;
+                    if (ignoreLines != null && ignoreLines.Contains(lineNumber))
+                    {
+                        continue;
+                    }
 
                     if (IsBlankLine(allLines[lineNumber]))
                     {
@@ -360,15 +380,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                     else
                     {
-                        int indentSpaces = 0;
-                        string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
+                        var indentSpaces = 0;
+                        var rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
                         commonIndent = Math.Min(commonIndent, indentSpaces);
                         codeLines.Add(rawCodeLine);
                     }
                 }
             }
 
-            int dedent = obj.DedentLength == null || obj.DedentLength < 0 ? commonIndent : (int)obj.DedentLength;
+            var dedent = obj.DedentLength == null || obj.DedentLength < 0 ? commonIndent : (int)obj.DedentLength;
 
             foreach (var rawCodeLine in codeLines)
             {
@@ -380,27 +400,30 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private string DedentString(string source, int dedent)
         {
-            int validDedent = Math.Min(dedent, source.Length);
-            for (int i = 0; i < validDedent; i++)
+            var validDedent = Math.Min(dedent, source.Length);
+            for (var i = 0; i < validDedent; i++)
             {
-                if (source[i] != ' ') return source.Substring(i);
+                if (source[i] != ' ')
+                {
+                    return source.Substring(i);
+                }
             }
             return source.Substring(validDedent);
         }
 
         private bool IsBlankLine(string line)
         {
-            return line == "";
+            return string.IsNullOrEmpty(line);
         }
 
         private string CountAndReplaceIndentSpaces(string line, out int count)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             count = 0;
 
-            for (int i = 0; i < line.Length; i++)
+            for (var i = 0; i < line.Length; i++)
             {
-                char c = line[i];
+                var c = line[i];
                 if (c == ' ')
                 {
                     sb.Append(' ');
@@ -408,10 +431,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 else if (c == '\t')
                 {
-                    int newCount = CharHelper.AddTab(count);
+                    var newCount = CharHelper.AddTab(count);
                     sb.Append(' ', newCount - count);
                     count = newCount;
-
                 }
                 else
                 {
@@ -423,49 +445,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return sb.ToString();
         }
 
-        private bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
-        {
-            if (allCodeRanges.Count() == 0) return true;
-
-            for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count(); rangeNumber++)
-            {
-                var range = allCodeRanges[rangeNumber];
-                if (lineNumber >= range.Start && lineNumber <= range.End)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private int GetTagLineNumber(string[] lines, string tagLine)
-        {
-            for (int index = 0; index < lines.Length; index++)
-            {
-                var line = lines[index];
-                var targetColumn = 0;
-                var match = true;
-
-                for (int column = 0; column < line.Length; column++)
-                {
-                    var c = line[column];
-                    if (c != ' ')
-                    {
-                        if (targetColumn >= tagLine.Length || tagLine[targetColumn] != Char.ToUpper(c))
-                        {
-                            match = false;
-                            break;
-                        }
-
-                        targetColumn++;
-                    }
-                }
-
-                if (match && targetColumn == tagLine.Length) return index + 1;
-            }
-
-            return -1;
-        }
-
         private string GetWarning()
         {
             var warningTitle = _context.GetToken(WarningTitleId) ?? DefaultWarningTitle;
@@ -475,13 +454,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {warningTitle}
 <p>{warningMessage}</p>
 </div>";
-
         }
 
         public static bool TryGetLineRanges(string query, out List<CodeRange> codeRanges)
         {
             codeRanges = null;
-            if (string.IsNullOrEmpty(query)) return false;
+            if (string.IsNullOrEmpty(query))
+            {
+                return false;
+            }
 
             var rangesSplit = query.Split(new[] { ',' });
 
@@ -506,12 +487,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static bool TryGetLineRange(string query, out CodeRange codeRange, bool withL = true)
         {
             codeRange = null;
-            if (string.IsNullOrEmpty(query)) return false;
+            if (string.IsNullOrEmpty(query))
+            {
+                return false;
+            }
 
             int endLine;
 
             var splitLine = query.Split(new[] { '-' });
-            if (splitLine.Length > 2) return false;
+            if (splitLine.Length > 2)
+            {
+                return false;
+            }
 
             var result = TryGetLineNumber(splitLine[0], out var startLine, withL);
             endLine = startLine;
@@ -529,12 +516,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static bool TryGetLineNumber(string lineNumberString, out int lineNumber, bool withL = true)
         {
             lineNumber = int.MaxValue;
-            if (string.IsNullOrEmpty(lineNumberString)) return true;
+            if (string.IsNullOrEmpty(lineNumberString))
+            {
+                return true;
+            }
 
-            if (withL && (lineNumberString.Length < 2 || Char.ToUpper(lineNumberString[0]) != 'L')) return false;
+            if (withL && (lineNumberString.Length < 2 || char.ToUpperInvariant(lineNumberString[0]) != 'L'))
+            {
+                return false;
+            }
 
             return int.TryParse(withL ? lineNumberString.Substring(1) : lineNumberString, out lineNumber);
-
         }
     }
 }

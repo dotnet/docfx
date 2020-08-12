@@ -1,17 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using System.Net;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-    using System.Net;
-
     public class ChromelessFormExtension : ITripleColonExtensionInfo
     {
         public string Name => "form";
+
         public bool SelfClosing => true;
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
@@ -42,20 +43,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if (action == string.Empty)
+            if (string.IsNullOrEmpty(action))
             {
                 logError("Form action must be specified.");
                 return false;
             }
-            if (submitText == string.Empty)
+            if (string.IsNullOrEmpty(submitText))
             {
                 logError("Submit text must be specified.");
                 return false;
             }
 
-
             htmlAttributes = new HtmlAttributes();
-            if (model != string.Empty)
+            if (!string.IsNullOrEmpty(model))
             {
                 htmlAttributes.AddProperty("data-model", model);
             }

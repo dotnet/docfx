@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-
     public class XrefInlineParser : InlineParser
     {
         private const string StartString = "<xref:";
@@ -35,15 +35,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 c = slice.NextChar();
             }
 
-            while(c != startChar && c != '>')
+            while (c != startChar && c != '>')
             {
                 href.Append(c);
                 c = slice.NextChar();
             }
 
-            if(startChar != '\0')
+            if (startChar != '\0')
             {
-                if(c != startChar)
+                if (c != startChar)
                 {
                     return false;
                 }
@@ -51,7 +51,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 c = slice.NextChar();
             }
 
-            if (c != '>') return false;
+            if (c != '>')
+            {
+                return false;
+            }
+
             slice.NextChar();
 
             var xrefInline = new XrefInline
@@ -59,7 +63,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Href = href.ToString().Trim(),
                 Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out var line, out var column), processor.GetSourcePosition(slice.Start - 1)),
                 Line = line,
-                Column = column
+                Column = column,
             };
 
             var htmlAttributes = xrefInline.GetAttributes();

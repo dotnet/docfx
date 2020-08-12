@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using Markdig;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using Markdig;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-
     public class LineNumberExtension : IMarkdownExtension
     {
         private readonly Func<object, string> _getFilePath;
@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-
         }
 
         /// <summary>
@@ -40,7 +39,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <param name="context"></param>
         private static void AddSourceInfoInDataEntry(MarkdownObject markdownObject, string filePath)
         {
-            if (markdownObject == null || filePath == null) return;
+            if (markdownObject == null || filePath == null)
+            {
+                return;
+            }
 
             // set linenumber for its children recursively
             if (markdownObject is ContainerBlock containerBlock)

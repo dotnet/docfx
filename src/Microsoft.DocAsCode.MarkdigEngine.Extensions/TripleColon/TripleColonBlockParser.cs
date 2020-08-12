@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-
     public class TripleColonBlockParser : BlockParser
     {
         private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
@@ -202,8 +202,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     b.Append(c);
                     c = slice.NextChar();
-                } while (c.IsAlphaNumeric() || c == '-');
-                name = b.ToString().ToLower();
+                }
+                while (c.IsAlphaNumeric() || c == '-');
+                name = b.ToString().ToLowerInvariant();
                 return true;
             }
             return false;

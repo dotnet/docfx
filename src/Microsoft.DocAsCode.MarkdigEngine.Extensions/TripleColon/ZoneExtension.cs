@@ -1,20 +1,22 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Markdig.Parsers;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-
     public class ZoneExtension : ITripleColonExtensionInfo
     {
         private static readonly Regex pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
         private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
+
         public string Name => "zone";
+
         public bool SelfClosing => false;
 
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
@@ -56,12 +58,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
 
-            if (target == string.Empty && pivot == string.Empty)
+            if (string.IsNullOrEmpty(target) && string.IsNullOrEmpty(pivot))
             {
                 logError("Either target or privot must be specified.");
                 return false;
             }
-            if (target == "pdf" && pivot != string.Empty)
+            if (target == "pdf" && !string.IsNullOrEmpty(pivot))
             {
                 logError("Pivot not permitted on pdf target.");
                 return false;
@@ -69,18 +71,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             htmlAttributes = new HtmlAttributes();
             htmlAttributes.AddClass("zone");
-            if (target != string.Empty)
+            if (!string.IsNullOrEmpty(target))
             {
                 htmlAttributes.AddClass("has-target");
                 htmlAttributes.AddProperty("data-target", target);
             }
-            if (pivot != string.Empty)
+            if (!string.IsNullOrEmpty(pivot))
             {
                 htmlAttributes.AddClass("has-pivot");
                 htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(pivotReplaceCommasRegex, " "));
             }
             return true;
         }
+
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             while (container != null)
