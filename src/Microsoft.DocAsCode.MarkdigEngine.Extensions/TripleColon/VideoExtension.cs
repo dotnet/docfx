@@ -1,17 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-    using System;
-    using System.Collections.Generic;
-
     public class VideoExtension : ITripleColonExtensionInfo
     {
         public string Name => "video";
+
         public bool SelfClosing => true;
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
@@ -67,7 +68,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 logError("source is a required attribute. Please ensure you have specified a source attribute.");
                 return false;
-
             }
             if (string.IsNullOrEmpty(thumbnail))
             {
@@ -125,7 +125,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var id = GetHtmlId(markdownObject);
-            if (type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
+            if (type == "complex")
+            {
+                htmlAttributes.AddProperty("aria-describedby", id);
+            }
 
             return true;
         }
@@ -140,7 +143,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                if (tripleColonObj is Block) renderer.WriteLine("<p>");
+                if (tripleColonObj is Block)
+                {
+                    renderer.WriteLine("<p>");
+                }
             }
 
             if (currentType != "complex")

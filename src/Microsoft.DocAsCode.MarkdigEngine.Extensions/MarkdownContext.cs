@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using Markdig.Syntax;
-
     public class MarkdownContext
     {
         /// <summary>
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <summary>
         /// Log info
         /// </summary>
-        public LogActionDelegate LogInfo{ get; }
+        public LogActionDelegate LogInfo { get; }
 
         /// <summary>
         /// Log suggestion

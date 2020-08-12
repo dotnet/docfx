@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Markdig;
+using Markdig.Extensions.CustomContainers;
+using Markdig.Parsers;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig;
-    using Markdig.Extensions.CustomContainers;
-    using Markdig.Parsers;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     public class TripleColonExtension : IMarkdownExtension
     {
         private readonly MarkdownContext _context;
@@ -27,15 +27,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new ChromelessFormExtension(),
                 new ImageExtension(context),
                 new CodeExtension(context),
-                new VideoExtension()
+                new VideoExtension(),
+
                 // todo: moniker range, row, etc...
             }).ToDictionary(x => x.Name);
 
             _extensionsInline = (new ITripleColonExtensionInfo[]
             {
                 new ImageExtension(context),
-                new VideoExtension()
-           }).ToDictionary(x => x.Name);
+                new VideoExtension(),
+            }).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
@@ -52,7 +53,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var inlineParser = new TripleColonInlineParser(_context, _extensionsInline);
             pipeline.InlineParsers.InsertBefore<InlineParser>(inlineParser);
-
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
@@ -68,9 +68,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public interface ITripleColonExtensionInfo
     {
         string Name { get; }
+
         bool SelfClosing { get; }
+
         bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject);
+
         bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
+
         bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning);
     }
 }

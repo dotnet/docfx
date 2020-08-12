@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-
     public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
     {
         private readonly MarkdownContext _context;
@@ -41,8 +41,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private void WriteNote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
         {
-            var noteHeading = _context.GetToken(obj.NoteTypeString.ToLower()) ?? $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
-            renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpper()}\"").WriteAttributes(obj).WriteLine(">");
+            var noteHeading = _context.GetToken(obj.NoteTypeString.ToLowerInvariant()) ?? $"<h5>{obj.NoteTypeString.ToUpperInvariant()}</h5>";
+            renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpperInvariant()}\"").WriteAttributes(obj).WriteLine(">");
             var savedImplicitParagraph = renderer.ImplicitParagraph;
             renderer.ImplicitParagraph = false;
             renderer.WriteLine(noteHeading);
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private void WriteSection(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
         {
-            string attribute = string.IsNullOrEmpty(obj.SectionAttributeString) ?
+            var attribute = string.IsNullOrEmpty(obj.SectionAttributeString) ?
                         string.Empty :
                         $" {obj.SectionAttributeString}";
             renderer.Write("<div").Write(attribute).WriteAttributes(obj).WriteLine(">");
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 link = link.Replace("http", "https");
             }
-            if (Uri.TryCreate(link, UriKind.Absolute, out Uri videoLink))
+            if (Uri.TryCreate(link, UriKind.Absolute, out var videoLink))
             {
                 var host = videoLink.Host;
                 var query = videoLink.Query;

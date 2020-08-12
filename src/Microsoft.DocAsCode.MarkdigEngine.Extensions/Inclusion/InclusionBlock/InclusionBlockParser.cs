@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Helpers;
+using Markdig.Parsers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-
     public class InclusionBlockParser : BlockParser
     {
         private const string StartString = "[!include";
@@ -46,7 +46,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.None;
             }
 
-            while (line.CurrentChar.IsSpaceOrTab()) line.NextChar();
+            while (line.CurrentChar.IsSpaceOrTab())
+            {
+                line.NextChar();
+            }
+
             if (line.CurrentChar != '\0')
             {
                 return BlockState.None;

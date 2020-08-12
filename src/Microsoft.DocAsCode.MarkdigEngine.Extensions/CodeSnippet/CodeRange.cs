@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class CodeRange
     {
         public int Start { get; set; }
+
         public int End { get; set; }
     }
 }

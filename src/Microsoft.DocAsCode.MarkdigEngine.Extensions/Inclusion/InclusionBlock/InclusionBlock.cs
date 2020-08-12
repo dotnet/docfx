@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Parsers;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
-    using Markdig.Syntax;
-
     public class InclusionBlock : ContainerBlock
     {
         public string Title { get; set; }
@@ -14,9 +14,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
 
-        public InclusionBlock(BlockParser parser): base(parser)
+        public InclusionBlock(BlockParser parser)
+            : base(parser)
         {
-
         }
     }
 }
