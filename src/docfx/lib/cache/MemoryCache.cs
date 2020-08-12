@@ -15,7 +15,7 @@ namespace System.Collections.Concurrent
         private const int MemoryLimitPercentage = 70;
 
         private static readonly List<WeakReference<IMemoryCache>> s_caches = new List<WeakReference<IMemoryCache>>();
-        private static int s_lastGen2Count = 0;
+        private static int s_lastGen2Count;
 
         static MemoryCache()
         {

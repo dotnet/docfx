@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
         /// Gets whether to generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion.
         /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
         /// </summary>
-        public bool OutputPdf { get; private set; } = false;
+        public bool OutputPdf { get; private set; }
 
         /// <summary>
         /// Gets Output Url type
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
         /// When enabled, updated_at for each document will be the last build time
         /// for the latest commit that touches that document.
         /// </summary>
-        public bool UpdateTimeAsCommitBuildTime { get; private set; } = false;
+        public bool UpdateTimeAsCommitBuildTime { get; private set; }
 
         /// <summary>
         /// When enabled, update the state of commit build time for this build.
