@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                         }
                         break;
                     }
-                    builder.Append(line).Append("\n");
+                    builder.Append(line).Append('\n');
                 }
 
                 return new JObject();
