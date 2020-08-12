@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Markdig;
 using Markdig.Syntax;
@@ -18,24 +19,21 @@ namespace Microsoft.Docs.Build
             return builder.Use(document => document.SetData(s_filePathKey, InclusionContext.File));
         }
 
-        public static Document GetFilePath(this MarkdownObject? obj)
+        public static Document GetFilePath(this MarkdownObject obj)
         {
-            if (obj != null)
+            foreach (var item in obj.GetPathToRootInclusive())
             {
-                foreach (var item in obj.GetPathToRootInclusive())
+                var file = item.GetData(s_filePathKey);
+                if (file != null)
                 {
-                    var file = item.GetData(s_filePathKey);
-                    if (file != null)
-                    {
-                        return (Document)file;
-                    }
+                    return (Document)file;
                 }
             }
 
-            return (Document)InclusionContext.File;
+            throw new InvalidOperationException();
         }
 
-        public static SourceInfo? GetSourceInfo(this MarkdownObject? obj, int? line = null)
+        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, int? line = null)
         {
             var path = GetFilePath(obj).FilePath;
 

@@ -105,6 +105,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             offset -= blocks.Count;
 
+            pair.Item3.Remove();
             var title = new TabTitleBlock
             {
                 Inline = pair.Item3,

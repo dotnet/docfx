@@ -70,8 +70,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (extension.GetType() == typeof(ImageExtension))
             {
-                if (htmlAttributes != null
-                && !ImageExtension.RequiresClosingTripleColon(attributes))
+                if (!ImageExtension.RequiresClosingTripleColon(attributes))
                 {
                     return BlockState.None;
                 }
@@ -82,8 +81,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else if (extension.GetType() == typeof(VideoExtension))
             {
-                if (htmlAttributes != null
-                && !VideoExtension.RequiresClosingTripleColon(attributes))
+                if (!VideoExtension.RequiresClosingTripleColon(attributes))
                 {
                     return BlockState.None;
                 }

@@ -217,6 +217,7 @@ namespace Microsoft.Docs.Build
             var rawSource = default(string);
             var href = default(string);
             var uid = default(string);
+            var suppressXrefNotFound = false;
 
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
@@ -236,14 +237,18 @@ namespace Microsoft.Docs.Build
                 {
                     uid = HttpUtility.HtmlDecode(attribute.Value.ToString());
                 }
+                else if (attribute.NameIs("data-throw-if-not-resolved"))
+                {
+                    suppressXrefNotFound = bool.TryParse(attribute.Value.Span, out var warn) ? !warn : false;
+                }
             }
 
-            var isShorthand = (rawHtml ?? rawSource)?.StartsWith("@") ?? false;
+            suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
             var (resolvedHref, display) = resolveXref(
                 href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo(token.Range)),
                 uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo(token.Range)),
-                isShorthand);
+                suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
                 ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()

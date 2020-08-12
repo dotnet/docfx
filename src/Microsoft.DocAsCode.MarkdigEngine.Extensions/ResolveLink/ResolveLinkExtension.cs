@@ -45,6 +45,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         UpdateLinks(subBlock);
                     }
                     break;
+
+                case AutolinkInline autolinkInline when !autolinkInline.IsEmail:
+                    autolinkInline.Url = _context.GetLink(autolinkInline.Url, autolinkInline);
+                    break;
+
                 case ContainerBlock containerBlock:
                     foreach (var subBlock in containerBlock)
                     {

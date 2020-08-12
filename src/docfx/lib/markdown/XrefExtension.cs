@@ -25,9 +25,9 @@ namespace Microsoft.Docs.Build
                     if (node is XrefInline xref)
                     {
                         var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
-                        var isShorthand = raw.StartsWith("@");
+                        var suppressXrefNotFound = raw.StartsWith("@");
                         var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
-                        var (href, display) = resolveXref(source, null, isShorthand);
+                        var (href, display) = resolveXref(source, null, suppressXrefNotFound);
 
                         if (href is null)
                         {

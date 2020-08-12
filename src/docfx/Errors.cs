@@ -314,12 +314,6 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "redirection-invalid", $"File '{path}' is redirected to '{source}'. Only content files can be redirected.", source);
 
             /// <summary>
-            /// The key or value of redirection is null or empty.
-            /// </summary>
-            public static Error RedirectionIsNullOrEmpty(SourceInfo<string> source, string from)
-                => new Error(ErrorLevel.Error, "redirection-is-empty", $"The key or value of redirection '{from}: {source}' is null or empty.", source);
-
-            /// <summary>
             /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
             /// can't decide which entry to use when computing document id.
             /// </summary>
@@ -331,12 +325,12 @@ namespace Microsoft.Docs.Build
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RedirectionUrlNotFound(string from, SourceInfo<string> source)
+            public static Error RedirectUrlInvalid(string from, SourceInfo<string> source)
             {
-                var message = $"Can't preserve document ID for redirected file '{from}' " +
-                            $"because redirect URL '{source}' is invalid or is a relative path to a file in another repo. " +
-                            "Replace the redirect URL with a valid absolute URL, or set redirect_document_id to false in .openpublishing.redirection.json.";
-                return new Error(ErrorLevel.Suggestion, "redirection-url-not-found", message, source);
+                var message = $"Can't redirect document ID for redirected file '{from}' " +
+                            $"because redirect URL '{source}' is invalid or is in a different docset. " +
+                            "Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.";
+                return new Error(ErrorLevel.Suggestion, "redirect-url-invalid", message, source);
             }
 
             public static Error CircularRedirection(SourceInfo? source, IEnumerable<FilePath> redirectionChain)

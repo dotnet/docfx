@@ -23,17 +23,9 @@ namespace Microsoft.Docs.Build
                 return errors.HasError;
             }
 
-            var restoreFetchOptions = options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache;
-            var buildFetchOptions = options.NoRestore ? FetchOptions.NoFetch : FetchOptions.UseCache;
-
             Parallel.ForEach(docsets, docset =>
             {
-                if (!options.NoRestore && Restore.RestoreDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, restoreFetchOptions))
-                {
-                    return;
-                }
-
-                BuildDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, buildFetchOptions);
+                BuildDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options);
             });
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
@@ -42,19 +34,29 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        private static bool BuildDocset(
-            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        private static void BuildDocset(
+            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options)
         {
             errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
             using var disposables = new DisposableCollector();
 
             try
             {
+                var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
                     errors, disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errors.HasError)
                 {
-                    return true;
+                    return;
+                }
+
+                if (!options.NoRestore)
+                {
+                    Restore.RestoreDocset(errors, config, buildOptions, packageResolver, fileResolver);
+                    if (errors.HasError)
+                    {
+                        return;
+                    }
                 }
 
                 new OpsPreProcessor(config, errors, buildOptions).Run();
@@ -68,13 +70,10 @@ namespace Microsoft.Docs.Build
                 Run(context);
 
                 new OpsPostProcessor(config, errors, buildOptions).Run();
-
-                return errors.HasError;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 errors.AddRange(dex);
-                return errors.HasError;
             }
         }
 
