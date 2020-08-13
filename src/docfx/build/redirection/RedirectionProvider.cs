@@ -95,12 +95,6 @@ namespace Microsoft.Docs.Build
                 var path = item.SourcePath;
                 var redirectUrl = item.RedirectUrl;
 
-                if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(redirectUrl))
-                {
-                    _errors.Add(Errors.Redirection.RedirectionIsNullOrEmpty(redirectUrl, path));
-                    continue;
-                }
-
                 if (!_buildScope.Glob(path))
                 {
                     continue;
@@ -131,7 +125,7 @@ namespace Microsoft.Docs.Build
                             absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
                             break;
                         default:
-                            _errors.Add(Errors.Redirection.RedirectionUrlNotFound(path, redirectUrl));
+                            _errors.Add(Errors.Redirection.RedirectUrlInvalid(path, redirectUrl));
                             break;
                     }
                 }
@@ -173,17 +167,31 @@ namespace Microsoft.Docs.Build
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
-                    return (
-                        from item in redirections.Concat(renames)
-                        let sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath))
-                        where !sourcePath.StartsWith(".")
-                        select new RedirectionItem
+                    var results = new List<RedirectionItem>();
+                    foreach (var item in redirections.Concat(renames))
+                    {
+                        if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
                         {
-                            SourcePath = new PathString(sourcePath),
-                            Monikers = item.Monikers,
-                            RedirectUrl = item.RedirectUrl,
-                            RedirectDocumentId = item.RedirectDocumentId,
-                        }).OrderBy(item => item.RedirectUrl.Source).ToArray();
+                            // Give a missing-attribute warning when source_path or redirect_url not specified
+                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path or redirect_url"));
+                            continue;
+                        }
+
+                        var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
+
+                        if (!sourcePath.StartsWith("."))
+                        {
+                            results.Add(new RedirectionItem
+                            {
+                                SourcePath = new PathString(sourcePath),
+                                Monikers = item.Monikers,
+                                RedirectUrl = item.RedirectUrl,
+                                RedirectDocumentId = item.RedirectDocumentId,
+                            });
+                        }
+                    }
+
+                    return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
                 }
             }
 
@@ -223,7 +231,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (item.RedirectDocumentId)
                     {
-                        _errors.Add(Errors.Redirection.RedirectionUrlNotFound(item.SourcePath, item.RedirectUrl));
+                        _errors.Add(Errors.Redirection.RedirectUrlInvalid(item.SourcePath, item.RedirectUrl));
                     }
                     continue;
                 }

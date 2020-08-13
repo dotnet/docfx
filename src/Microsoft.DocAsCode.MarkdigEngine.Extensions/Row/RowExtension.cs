@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig;
+using Markdig.Extensions.CustomContainers;
+using Markdig.Renderers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig;
-    using Markdig.Extensions.CustomContainers;
-    using Markdig.Renderers;
-
     public class RowExtension : IMarkdownExtension
     {
         private readonly MarkdownContext _context;

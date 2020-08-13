@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+
+using Markdig.Syntax;
+using Microsoft.DocAsCode.MarkdigEngine.Validators;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.MarkdigEngine.Validators;
-
     public static class MarkdownObjectRewriterFactory
     {
         public static IMarkdownObjectRewriter FromValidators(

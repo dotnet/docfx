@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Immutable;
+
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Collections.Immutable;
-
-    using Markdig.Syntax;
-
     public class TabGroupBlock : ContainerBlock
     {
         public string Id { get; set; }
@@ -15,7 +15,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public ImmutableArray<TabItemBlock> Items { get; set; }
 
-        public TabGroupBlock(string id, ImmutableArray<TabItemBlock> blocks, int startLine, int startSpan, int activeTabIndex) : base(null)
+        public TabGroupBlock(string id, ImmutableArray<TabItemBlock> blocks, int startLine, int startSpan, int activeTabIndex)
+            : base(null)
         {
             Id = id;
             ActiveTabIndex = activeTabIndex;
@@ -29,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var length = blocks.Length;
-            Span = new SourceSpan(startSpan, blocks[length-1].Content.Span.End);
+            Span = new SourceSpan(startSpan, blocks[length - 1].Content.Span.End);
         }
     }
 }

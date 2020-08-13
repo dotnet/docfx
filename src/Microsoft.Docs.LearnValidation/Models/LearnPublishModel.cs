@@ -16,16 +16,4 @@ namespace Microsoft.Docs.LearnValidation.Models
         [JsonExtensionData]
         public JObject ExtensionData { get; private set; }
     }
-
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class LearnPublishItem
-    {
-        public string SourcePath { get; set; }
-
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool HasError { get; set; }
-
-        [JsonExtensionData]
-        public JObject ExtensionData { get; private set; }
-    }
 }

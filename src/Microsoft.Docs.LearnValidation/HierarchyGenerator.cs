@@ -1,24 +1,26 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-
+using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
-    static class HierarchyGenerator
+    internal static class HierarchyGenerator
     {
-        internal static string HierarchyFileName = "hierarchy.json";
+        private const string HierarchyFileName = "hierarchy.json";
 
         internal static RawHierarchy GenerateHierarchy(List<IValidateModel> hierarchyItems, string docsetOutputPath)
         {
             var hierarchy = new RawHierarchy();
             foreach (var item in hierarchyItems)
             {
-                if (item.IsDeleted) continue;
+                if (item.IsDeleted)
+                {
+                    continue;
+                }
 
                 if (!item.IsValid)
                 {
@@ -49,7 +51,7 @@ namespace Microsoft.Docs.LearnValidation
                 Summary = achievement.Summary,
                 Title = achievement.Title,
                 Type = achievement.Type,
-                Uid = achievement.Uid
+                Uid = achievement.Uid,
             };
         }
 
@@ -61,7 +63,7 @@ namespace Microsoft.Docs.LearnValidation
                 MSDate = validationItem.MSDate,
                 PageKind = validationItem.PageKind,
                 ServiceData = validationItem.ServiceData,
-                UpdatedAt = validationItem.PublishUpdatedAt
+                UpdatedAt = validationItem.PublishUpdatedAt,
             };
         }
     }

@@ -31,10 +31,10 @@ namespace Microsoft.Docs.LearnValidation
             var dependencyItems = DependencyMapHelper.LoadDependentFileInfo(_dependencyMapFile);
 
             var dependencyMapping = dependencyItems.Where(item => item.DependencyType == "include"
-                && item.ToFilePath != item.FromFilePath + ".md" // not fragment 
-                && (item.ToFilePath.EndsWith(".md") || item.ToFilePath.EndsWith(".yml")) // token extension 
+                && item.ToFilePath != item.FromFilePath + ".md" // not fragment
+                && (item.ToFilePath.EndsWith(".md") || item.ToFilePath.EndsWith(".yml")) // token extension
                 && (!item.ToFilePath.StartsWith(_fallbackFolder))) // not fallback
-                .GroupBy(item => item.FromFilePath).ToDictionary(key => key.Key, value => value.Select(v=>v.ToFilePath).Distinct().ToList());
+                .GroupBy(item => item.FromFilePath).ToDictionary(key => key.Key, value => value.Select(v => v.ToFilePath).Distinct().ToList());
 
             // LearningPath will not check token, required from Bodhi
             // Refer to workitem https://ceapex.visualstudio.com/Engineering/_workitems/edit/64285/
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.LearnValidation
 
                 if (dependencyMapping.ContainsKey(file))
                 {
-                    foreach(var tokenDependency in dependencyMapping[file])
+                    foreach (var tokenDependency in dependencyMapping[file])
                     {
                         if (!File.Exists(tokenDependency))
                         {

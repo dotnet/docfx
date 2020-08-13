@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Markdig;
 using Markdig.Syntax;
@@ -14,11 +15,14 @@ namespace Microsoft.Docs.Build
     internal static class EnsureParentExtension
     {
         private static readonly object s_parentKey = new object();
+        private static readonly object s_parsedKey = new object();
 
         public static MarkdownPipelineBuilder UseEnsureParent(this MarkdownPipelineBuilder builder)
         {
             return builder.Use(document =>
             {
+                document.SetData(s_parsedKey, true);
+
                 foreach (var block in document)
                 {
                     EnsureParent(block, document);
@@ -55,6 +59,12 @@ namespace Microsoft.Docs.Build
                 obj = parent;
 
                 yield return obj;
+            }
+
+            if (obj.GetData(s_parsedKey) is null)
+            {
+                throw new InvalidOperationException(
+                    "This operation is not supported in a markdig parser extension, move it to the render extension or the DocumentProcessed handler.");
             }
         }
 

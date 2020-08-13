@@ -1,19 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-    using System;
-    using System.Collections.Generic;
-
     public class ImageExtension : ITripleColonExtensionInfo
     {
         private readonly MarkdownContext _context;
 
         public string Name => "image";
+
         public bool SelfClosing => true;
 
         public ImageExtension(MarkdownContext context)
@@ -74,29 +75,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             // add loc scope missing/invalid validation here
-
             if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
             {
                 return false;
             }
-            htmlAttributes = new HtmlAttributes();
-
-            // alt is allowed to be empty for icon type image
-            if (string.IsNullOrEmpty(alt) && type == "icon")
-                htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
-            else
-                htmlAttributes.AddProperty("src", _context.GetImageLink(src, markdownObject, alt));
-
-            if (type == "icon")
-            {
-                htmlAttributes.AddProperty("role", "presentation");
-            }
-            else
-            {
-                htmlAttributes.AddProperty("alt", alt);
-            }
-            var id = GetHtmlId(markdownObject);
-            if (type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
             return true;
         }
@@ -109,9 +91,38 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 currentType = "content";
             }
-            tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); //it's okay if this is null
-            tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); //it's okay if this is null
-            tripleColonObj.Attributes.TryGetValue("link", out var currentLink); //it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("link", out var currentLink); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("alt-text", out var alt); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("source", out var src); // it's okay if this is null
+
+            var htmlAttributes = new HtmlAttributes();
+
+            // alt is allowed to be empty for icon type image
+            if (string.IsNullOrEmpty(alt) && currentType == "icon")
+            {
+                htmlAttributes.AddProperty("src", _context.GetLink(src, obj));
+            }
+            else
+            {
+                htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt));
+            }
+
+            if (currentType == "icon")
+            {
+                htmlAttributes.AddProperty("role", "presentation");
+            }
+            else
+            {
+                htmlAttributes.AddProperty("alt", alt);
+            }
+            var htmlId = GetHtmlId(obj);
+            if (currentType == "complex")
+            {
+                htmlAttributes.AddProperty("aria-describedby", htmlId);
+            }
+
             if (!bool.TryParse(currentBorderStr, out var currentBorder))
             {
                 if (currentType == "icon")
@@ -129,15 +140,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if (tripleColonObj is Block)
                 {
                     renderer.WriteLine("<p class=\"mx-imgBorder\">");
-                } else
+                }
+                else
                 {
                     renderer.WriteLine("<span class=\"mx-imgBorder\">");
                 }
-
             }
             else
             {
-                if(tripleColonObj is Block) renderer.WriteLine("<p>");
+                if (tripleColonObj is Block)
+                {
+                    renderer.WriteLine("<p>");
+                }
             }
             if (!string.IsNullOrEmpty(currentLink))
             {
@@ -156,15 +170,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             if (currentType != "complex")
             {
-                renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+                renderer.Write("<img").WriteAttributes(htmlAttributes).WriteLine(">");
 
-                if(tripleColonObj is ContainerBlock
+                if (tripleColonObj is ContainerBlock
                     && (tripleColonObj as ContainerBlock).LastChild != null)
                 {
                     var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
                     renderer.WriteChildren(inline);
                 }
-                
             }
             else
             {
@@ -173,8 +186,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                     return false;
                 }
-                var htmlId = GetHtmlId(obj);
-                renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+                renderer.Write("<img").WriteAttributes(htmlAttributes).WriteLine(">");
                 renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
                 renderer.WriteChildren(tripleColonObj as ContainerBlock);
                 renderer.WriteLine("</div>");
@@ -186,9 +198,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (tripleColonObj is Block)
             {
                 renderer.WriteLine("</p>");
-            } else
+            }
+            else
             {
-                if(currentBorder) renderer.WriteLine("</span>");
+                if (currentBorder)
+                {
+                    renderer.WriteLine("</span>");
+                }
+
                 renderer.WriteChildren(tripleColonObj as ContainerInline);
             }
             return true;

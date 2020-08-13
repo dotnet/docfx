@@ -477,6 +477,7 @@ repos:
         Link to [absolute link with bookmark](/docs/d.md#title-1)
         Link to [empty]()
         :::image type="content" source="e.png" alt-text="Link to image":::
+        Link to <https://autolink>
       docs/v1/e.png:
       docs/v2/b.md: |
         Link to @a
@@ -512,7 +513,20 @@ outputs:
   docs/a/toc.json:
   .links.json: |
     {
-      "links":[{"source_url":"/docs/a/toc.json","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/a/TOC.yml","source_line":2},{"source_url":"/docs/a/toc.json","target_url":"b.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/a/TOC.yml","source_line":4},{"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v2/b.md","source_line":1},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":1},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":2},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":4},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":5},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":6},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":1},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":8},{"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":3},{"source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/TOC.yml","source_line":2,"source_url":"/docs/toc.json","source_moniker_group":"9d4e15fd","target_url":"/docs/b"}]
+      "links":[
+        {"source_url":"/docs/a/toc.json","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/a/TOC.yml","source_line":2},
+        {"source_url":"/docs/a/toc.json","target_url":"b.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/a/TOC.yml","source_line":4},
+        {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v2/b.md","source_line":1},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":1},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":2},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":4},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":5},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":6},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":8},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":3},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"https://autolink","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 9},
+        {"source_url":"/docs/toc.json","source_moniker_group":"9d4e15fd","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/TOC.yml","source_line":2}
+      ]
     }
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/v1/b.md","line":3,"column":9}

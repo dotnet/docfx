@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-
     public class TabItemBlock
     {
         public string Id { get; }

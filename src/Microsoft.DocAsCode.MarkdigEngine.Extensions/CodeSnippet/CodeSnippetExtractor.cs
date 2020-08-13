@@ -1,27 +1,29 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+using Markdig.Helpers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using Markdig.Helpers;
-
     public class CodeSnippetExtractor
     {
-        private static readonly Regex TagnameFormat = new Regex(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly string StartLineTemplate;
-        private readonly string EndLineTemplate;
-        private readonly bool IsEndLineContainsTagName;
         public const string TagNamePlaceHolder = "{tagname}";
+
+        private static readonly Regex TagnameFormat = new Regex(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private readonly string _startLineTemplate;
+        private readonly string _endLineTemplate;
+        private readonly bool _isEndLineContainsTagName;
 
         public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)
         {
-            this.StartLineTemplate = startLineTemplate;
-            this.EndLineTemplate = endLineTemplate;
-            this.IsEndLineContainsTagName = isEndLineContainsTagName;
+            this._startLineTemplate = startLineTemplate;
+            this._endLineTemplate = endLineTemplate;
+            this._isEndLineContainsTagName = isEndLineContainsTagName;
         }
 
         public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)
@@ -29,19 +31,19 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var result = new Dictionary<string, CodeRange>(StringComparer.OrdinalIgnoreCase);
             var tagStack = new Stack<string>();
 
-            for(int index = 0; index < lines.Length; index++)
+            for (var index = 0; index < lines.Length; index++)
             {
                 var line = lines[index];
 
-                if(MatchTag(line, EndLineTemplate, out var tagName, IsEndLineContainsTagName))
+                if (MatchTag(line, _endLineTemplate, out var tagName, _isEndLineContainsTagName))
                 {
                     tagLines.Add(index);
-                    if (!IsEndLineContainsTagName)
+                    if (!_isEndLineContainsTagName)
                     {
                         tagName = tagStack.Count > 0 ? tagStack.Pop() : string.Empty;
                     }
 
-                    if(result.ContainsKey(tagName))
+                    if (result.ContainsKey(tagName))
                     {
                         if (result[tagName].End == 0)
                         {
@@ -53,13 +55,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     continue;
                 }
 
-                if (MatchTag(line, StartLineTemplate, out tagName))
+                if (MatchTag(line, _startLineTemplate, out tagName))
                 {
                     tagLines.Add(index);
                     result[tagName] = new CodeRange { Start = index + 2 };
                     tagStack.Push(tagName);
                 }
-
             }
 
             return result;
@@ -68,51 +69,72 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private bool MatchTag(string line, string template, out string tagName, bool containTagname = true)
         {
             tagName = string.Empty;
-            if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template)) return false;
+            if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template))
+            {
+                return false;
+            }
 
             var splitedTemplate = template.Split(new[] { TagNamePlaceHolder }, StringSplitOptions.None);
             var beforeTagName = splitedTemplate[0];
             var afterTagName = splitedTemplate.Length == 2 ? splitedTemplate[1] : string.Empty;
 
-            int column = 0;
-            int index = 0;
+            var column = 0;
+            var index = 0;
 
             // match before
             while (column < line.Length && index < beforeTagName.Length)
             {
                 if (!CharHelper.IsWhitespace(line[column]))
                 {
-                    if (char.ToLower(line[column]) != beforeTagName[index]) return false;
+                    if (char.ToLowerInvariant(line[column]) != beforeTagName[index])
+                    {
+                        return false;
+                    }
+
                     index++;
                 }
                 column++;
             }
 
-            if (index != beforeTagName.Length) return false;
+            if (index != beforeTagName.Length)
+            {
+                return false;
+            }
 
-            //match tagname
+            // match tagname
             var sb = new StringBuilder();
-            while(column < line.Length && (afterTagName == string.Empty || line[column] != afterTagName[0]))
+            while (column < line.Length && (string.IsNullOrEmpty(afterTagName) || line[column] != afterTagName[0]))
             {
                 sb.Append(line[column]);
                 column++;
             }
-            tagName = sb.ToString().Trim().ToLower();
+            tagName = sb.ToString().Trim().ToLowerInvariant();
 
-            //match after tagname
+            // match after tagname
             index = 0;
-            while(column < line.Length && index < afterTagName.Length)
+            while (column < line.Length && index < afterTagName.Length)
             {
                 if (!CharHelper.IsWhitespace(line[column]))
                 {
-                    if (char.ToLower(line[column]) != afterTagName[index]) return false;
+                    if (char.ToLowerInvariant(line[column]) != afterTagName[index])
+                    {
+                        return false;
+                    }
+
                     index++;
                 }
                 column++;
             }
 
-            if (index != afterTagName.Length) return false;
-            while (column < line.Length && CharHelper.IsWhitespace(line[column])) column++;
+            if (index != afterTagName.Length)
+            {
+                return false;
+            }
+
+            while (column < line.Length && CharHelper.IsWhitespace(line[column]))
+            {
+                column++;
+            }
 
             return column == line.Length && (!containTagname || TagnameFormat.IsMatch(tagName));
         }

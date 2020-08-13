@@ -1196,7 +1196,7 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.yml","line":6,"column":8}
 ---
-# uid reference first in yaml toc
+# href reference first in yaml toc
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -1212,18 +1212,31 @@ inputs:
     - name: Uid Not Found
       uid: c
       href: b.md
+    - name: Href Not found
+      uid: a
+      href: c.md
+    - name: Both Href And Uid Not Found
+      uid: c
+      href: c.md
+    - name: Both Href And Uid Not defined
+      uid:
+      href:
 outputs:
   docs/a.json:
   docs/b.json:
   docs/toc.json: |
     {
       "items": [
-        { "name":"Uid Ref","href":"a","monikers": undefined },
-        { "name":"Uid Not Found","href":"b","monikers": undefined }
+        { "name":"Uid Ref","href":"b","monikers": undefined },
+        { "name":"Uid Not Found","href":"b","monikers": undefined },
+        { "name":"Href Not found", "href":"c.md","uid":"a" },
+        { "name":"Both Href And Uid Not Found","href":"c.md","uid":"c" },
+        { "name":"Both Href And Uid Not defined" }
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'c'.","file":"docs/TOC.yml","line":5,"column":8}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/TOC.yml","line":12,"column":9}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/TOC.yml","line":9,"column":9}
 ---
 # uid reference with monikers in yaml toc
 inputs:

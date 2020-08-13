@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-
     public class TripleColonInlineParser : InlineParser
     {
         private readonly MarkdownContext _context;
@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public override bool Match(InlineProcessor processor, ref StringSlice slice)
         {
+            var startPosition = processor.GetSourcePosition(slice.Start, out var line, out var column);
+
             if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
                 return false;
@@ -34,12 +36,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            var inline = new TripleColonInline(this)
+            var inline = new TripleColonInline()
             {
                 Closed = false,
-                Column = 0,
-                Line = processor.LineIndex,
-                Span = new SourceSpan(processor.LineIndex, slice.End),
+                Line = line,
+                Column = column,
             };
 
             var logError = new Action<string>(message => _context.LogError($"invalid-{extensionName}", message, inline));
@@ -54,6 +55,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             inline.Extension = extension;
             inline.Attributes = attributes;
             inline.RenderProperties = renderProperties;
+            inline.Span = new SourceSpan(startPosition, processor.GetSourcePosition(slice.Start - 1));
 
             if (htmlAttributes != null)
             {

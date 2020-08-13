@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        public static bool RestoreDocset(
+        public static void RestoreDocset(
             ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             using var disposables = new DisposableCollector();
@@ -48,23 +48,25 @@ namespace Microsoft.Docs.Build
 
                 if (errors.HasError)
                 {
-                    return true;
+                    return;
                 }
 
                 errors = new ErrorLog(errors, config);
-
-                // download dependencies to disk
-                Parallel.Invoke(
-                    () => RestoreFiles(errors, config, fileResolver),
-                    () => RestorePackages(errors, buildOptions, config, packageResolver));
-
-                return errors.HasError;
+                RestoreDocset(errors, config, buildOptions, packageResolver, fileResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 errors.AddRange(dex);
-                return errors.HasError;
             }
+        }
+
+        public static void RestoreDocset(
+            ErrorBuilder errors, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
+        {
+            // download dependencies to disk
+            Parallel.Invoke(
+                () => RestoreFiles(errors, config, fileResolver),
+                () => RestorePackages(errors, buildOptions, config, packageResolver));
         }
 
         private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)

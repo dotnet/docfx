@@ -1,13 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig;
+using Markdig.Parsers;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig;
-    using Markdig.Parsers;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-
     public class QuoteSectionNoteExtension : IMarkdownExtension
     {
         private readonly MarkdownContext _context;
@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _context = context;
         }
 
-        void IMarkdownExtension.Setup(MarkdownPipelineBuilder pipeline)
+        public void Setup(MarkdownPipelineBuilder pipeline)
         {
             if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
             {
@@ -25,11 +25,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        void IMarkdownExtension.Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
             if (renderer is HtmlRenderer htmlRenderer)
             {
-                QuoteSectionNoteRender quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
+                var quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
 
                 if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
                 {

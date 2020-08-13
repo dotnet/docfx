@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Linq;
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Linq;
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-
-    class XrefInlineShortParser : InlineParser
+    internal class XrefInlineShortParser : InlineParser
     {
         private const string ContinuableCharacters = ".,;:!?~";
         private const string StopCharacters = @"""'<>[]|";
@@ -42,7 +42,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private bool MatchXrefShortcut(InlineProcessor processor, ref StringSlice slice)
         {
-            if (!slice.CurrentChar.IsAlpha()) return false;
+            if (!slice.CurrentChar.IsAlpha())
+            {
+                return false;
+            }
 
             var saved = slice;
 
@@ -67,13 +70,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 c = slice.NextChar();
             }
 
-
             var xrefInline = new XrefInline
             {
                 Href = href.ToString(),
                 Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out var line, out var column), processor.GetSourcePosition(slice.Start - 1)),
                 Line = line,
-                Column = column
+                Column = column,
             };
 
             var htmlAttributes = xrefInline.GetAttributes();
@@ -113,7 +115,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Href = href.ToString(),
                 Span = new SourceSpan(processor.GetSourcePosition(saved.Start, out var line, out var column), processor.GetSourcePosition(slice.Start - 1)),
                 Line = line,
-                Column = column
+                Column = column,
             };
 
             var htmlAttributes = xrefInline.GetAttributes();

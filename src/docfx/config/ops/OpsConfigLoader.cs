@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 sourceMaps.AddRange(monodoc.Select((_, index) => $".sourcemap-ecma-{index}.json"));
             }
 
-            var maml2YamlMonikerPath = GetMAML2YamlMonikerPath(docsetConfig, opsConfig, buildSourceFolder);
+            var maml2YamlMonikerPath = GetMAML2YamlMonikerPath(docsetConfig, opsConfig);
             if (maml2YamlMonikerPath != null)
             {
                 result["mamlMonikerPath"] = maml2YamlMonikerPath;
@@ -139,18 +139,12 @@ namespace Microsoft.Docs.Build
             return result.Count == 0 ? null : result;
         }
 
-        private static JArray? GetMAML2YamlMonikerPath(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
+        private static JArray? GetMAML2YamlMonikerPath(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig)
         {
-            var result = new JArray();
             var maml2YamlMonikerPath = docsetConfig?.MonikerPath ?? opsConfig.MonikerPath;
-            if (maml2YamlMonikerPath != null)
-            {
-                foreach (var monikerPath in maml2YamlMonikerPath)
-                {
-                    result.Add(Path.GetRelativePath(buildSourceFolder, monikerPath));
-                }
-            }
-            return result.Count == 0 ? null : result;
+            return maml2YamlMonikerPath == null || maml2YamlMonikerPath.Length == 0
+                ? null
+                : new JArray(maml2YamlMonikerPath);
         }
 
         private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)

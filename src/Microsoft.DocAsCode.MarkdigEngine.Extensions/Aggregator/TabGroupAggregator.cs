@@ -1,22 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Text.RegularExpressions;
-
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-
     public class TabGroupAggregator : BlockAggregator<HeadingBlock>
     {
-        private static readonly Regex HrefRegex = new Regex(@"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
+        private static readonly Regex HrefRegex = new Regex(
+            @"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
 
         protected override bool AggregateCore(HeadingBlock headBlock, BlockAggregateContext context)
         {
@@ -25,7 +26,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return false;
             }
-            int offset = 1;
+            var offset = 1;
             var items = new List<TabItemBlock>();
             var list = new List<Block>();
             while (true)
@@ -66,18 +67,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             List<TabItemBlock> items,
             int startLine,
             int startSpan,
-            int offset
-            )
+            int offset)
         {
-            var groupId = GetMd5String((items[0]?.Content?.ToString() ?? string.Empty)).Replace("/", "-").Remove(10);
+            var groupId = GetMd5String(items[0]?.Content?.ToString() ?? string.Empty).Replace("/", "-").Remove(10);
 
-            context.AggregateTo(new TabGroupBlock(
+            context.AggregateTo(
+                new TabGroupBlock(
                                 groupId,
                                 items.ToImmutableArray(),
                                 startLine,
                                 startSpan,
                                 0),
-                                offset);
+                offset);
         }
 
         private static string GetMd5String(string content)
@@ -105,11 +106,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             offset -= blocks.Count;
 
+            pair.Item3.Remove();
             var title = new TabTitleBlock
             {
                 Inline = pair.Item3,
                 Line = pair.Item3.Line,
-                Span = pair.Item3.Span
+                Span = pair.Item3.Span,
             };
             var content = new TabContentBlock(blocks);
 

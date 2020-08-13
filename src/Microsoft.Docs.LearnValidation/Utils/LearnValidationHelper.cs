@@ -13,13 +13,14 @@ namespace Microsoft.Docs.LearnValidation
         private enum CheckItemType
         {
             Unit,
-            Module
-        };
+            Module,
+        }
+
+        private const string _defaultLocale = "en-us";
 
         private RestClient _client;
         private string _branch;
         private bool _needBranchFallback;
-        private const string _defaultLocale = "en-us";
         private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
 
         public LearnValidationHelper(string endpoint, string branch)
@@ -51,7 +52,7 @@ namespace Microsoft.Docs.LearnValidation
 
             AppendHeaderAndParameter(request);
 
-            IRestResponse response = _client.Execute(request);
+            var response = _client.Execute(request);
 
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);

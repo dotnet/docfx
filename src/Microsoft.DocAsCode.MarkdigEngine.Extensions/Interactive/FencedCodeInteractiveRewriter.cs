@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Net;
+
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Net;
-
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-
     public class FencedCodeInteractiveRewriter : InteractiveBaseRewriter
     {
         public override IMarkdownObject Rewrite(IMarkdownObject markdownObject)
@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (markdownObject is FencedCodeBlock fencedCode && !string.IsNullOrEmpty(fencedCode.Info))
             {
                 var attributes = fencedCode.GetAttributes();
-                var language = GetLanguage(fencedCode.Info, out bool isInteractive);
+                var language = GetLanguage(fencedCode.Info, out var isInteractive);
 
                 if (string.IsNullOrEmpty(language) || !isInteractive)
                 {

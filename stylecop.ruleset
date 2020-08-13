@@ -62,6 +62,10 @@
     <Rule Id="CA1049" Action="Warning" />
     <!-- CA1051: Do not declare visible instance fields -->
     <Rule Id="CA1051" Action="None" />
+    <!-- CA1054: URI-like parameters should not be strings -->
+    <Rule Id="CA1054" Action="None" />
+    <!-- CA1055: URI-like return values should not be strings -->
+    <Rule Id="CA1055" Action="None" />
     <!-- CA1056: URI properties should not be strings -->
     <Rule Id="CA1056" Action="None" />
     <!-- CA1060: Move pinvokes to native methods class -->
@@ -92,6 +96,8 @@
     <Rule Id="CA1724" Action="None" />
     <!-- CA1806DoNotIgnoreMethodResults -->
     <Rule Id="CA1806" Action="None" />
+    <!-- CA1812: Avoid uninstantiated internal classes -->
+    <Rule Id="CA1812" Action="None" />
     <Rule Id="CA1814" Action="None" />
     <!-- CA1815: should override Equals -->
     <Rule Id="CA1815" Action="None" />
@@ -146,7 +152,10 @@
     <Rule Id="CA2240" Action="Warning" />
     <Rule Id="CA2241" Action="Warning" />
     <Rule Id="CA2242" Action="Warning" />
-    <Rule Id="CA5351" Action="Warning" />
+    <!-- CA5350:Do Not Use Weak Cryptographic Algorithms -->
+    <Rule Id="CA5350" Action="None" />
+    <!-- CA5351:Do Not Use Broken Cryptographic Algorithms -->
+    <Rule Id="CA5351" Action="None" />
   </Rules>
   <Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
     <Rule Id="MEN002" Action="Warning" />

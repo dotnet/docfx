@@ -1,13 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+extern alias maml;
+
 using System.IO;
 using ECMA2Yaml;
 using ECMALogItem = ECMA2Yaml.LogItem;
 using ECMAMessageSeverity = ECMA2Yaml.MessageSeverity;
-using MAML2YamlConverter = MAML2Yaml.Lib.MAML2YamlConverter;
-using MAMLLogItem = MAML2Yaml.Lib.Logging.LogItem;
-using MAMLMessageSeverity = MAML2Yaml.Lib.Logging.MessageSeverity;
+using MAML2YamlConverter = maml::MAML2Yaml.Lib.MAML2YamlConverter;
+using MAMLLogItem = maml::MAML2Yaml.Lib.Logging.LogItem;
+using MAMLMessageSeverity = maml::MAML2Yaml.Lib.Logging.MessageSeverity;
 
 namespace Microsoft.Docs.Build
 {

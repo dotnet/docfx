@@ -1,14 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Parsers;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Parsers;
-    using Markdig.Syntax;
-
     public class QuoteSectionNoteBlock : ContainerBlock
     {
-        public QuoteSectionNoteBlock(BlockParser parser) : base(parser)
+        public QuoteSectionNoteBlock(BlockParser parser)
+            : base(parser)
         {
         }
 
@@ -28,6 +29,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         MarkdownQuote = 0,
         DFMSection,
         DFMNote,
-        DFMVideo
+        DFMVideo,
     }
 }
