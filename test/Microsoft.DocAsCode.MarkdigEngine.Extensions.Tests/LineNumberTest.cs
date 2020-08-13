@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using Xunit;
-
     public class LineNumberTest
     {
         [Fact]
@@ -48,7 +48,7 @@ line1
 
             TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md", files: new Dictionary<string, string>
             {
-                { "LineNumber/Program.cs", content }
+                { "LineNumber/Program.cs", content },
             });
         }
 

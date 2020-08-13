@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             Document file, Document rootPath, List<Document> referencedFiles, List<Document> referencedTocs, ErrorBuilder errors)
         {
             // add to parent path
-            t_recursionDetector.Value = t_recursionDetector.Value ?? ImmutableStack<Document>.Empty;
+            t_recursionDetector.Value ??= ImmutableStack<Document>.Empty;
 
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, ErrorBuilder errors)
+        private static SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel, ErrorBuilder errors)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TocHref))
             {
@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private SourceInfo<string?> GetTopicHref(TableOfContentsNode tocInputModel, ErrorBuilder errors)
+        private static SourceInfo<string?> GetTopicHref(TableOfContentsNode tocInputModel, ErrorBuilder errors)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TopicHref))
             {

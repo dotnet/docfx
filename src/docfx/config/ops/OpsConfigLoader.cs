@@ -110,15 +110,15 @@ namespace Microsoft.Docs.Build
         {
             return
                 (from dep in config.DependentRepositories
-                let path = new PathString(buildSourceFolder).GetRelativePath(dep.PathToRoot)
-                let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
-                let obj = new JObject
-                {
-                    ["url"] = dep.Url,
-                    ["includeInBuild"] = dep.IncludeInBuild,
-                    ["branch"] = depBranch,
-                }
-                select (obj, path, dep.PathToRoot.Value)).ToArray();
+                 let path = new PathString(buildSourceFolder).GetRelativePath(dep.PathToRoot)
+                 let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
+                 let obj = new JObject
+                 {
+                     ["url"] = dep.Url,
+                     ["includeInBuild"] = dep.IncludeInBuild,
+                     ["branch"] = depBranch,
+                 }
+                 select (obj, path, dep.PathToRoot.Value)).ToArray();
         }
 
         private static JArray? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)

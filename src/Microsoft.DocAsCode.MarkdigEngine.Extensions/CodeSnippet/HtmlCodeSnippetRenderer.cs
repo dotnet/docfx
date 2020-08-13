@@ -359,7 +359,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        private string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
+        private static string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
         {
             var codeLines = new List<string>();
             var showCode = new StringBuilder();
@@ -398,7 +398,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return showCode.ToString();
         }
 
-        private string DedentString(string source, int dedent)
+        private static string DedentString(string source, int dedent)
         {
             var validDedent = Math.Min(dedent, source.Length);
             for (var i = 0; i < validDedent; i++)
@@ -411,12 +411,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return source.Substring(validDedent);
         }
 
-        private bool IsBlankLine(string line)
+        private static bool IsBlankLine(string line)
         {
             return string.IsNullOrEmpty(line);
         }
 
-        private string CountAndReplaceIndentSpaces(string line, out int count)
+        private static string CountAndReplaceIndentSpaces(string line, out int count)
         {
             var sb = new StringBuilder();
             count = 0;

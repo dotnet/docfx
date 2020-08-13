@@ -9,7 +9,8 @@ namespace Microsoft.Docs.Build
     {
         [Theory]
         [InlineData("<no xref>", "<no xref>")]
-        [InlineData("<xref/>",
+        [InlineData(
+            "<xref/>",
             "{{#uid.__xrefspec}}" +
             "  {{#href}}" +
             "    <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
@@ -17,9 +18,9 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
-            "{{/uid.__xrefspec}}"
-            )]
-        [InlineData("<xref uid='{{uid}}'/>",
+            "{{/uid.__xrefspec}}")]
+        [InlineData(
+            "<xref uid='{{uid}}'/>",
             "{{#uid.__xrefspec}}" +
             "  {{#href}}" +
             "    <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
@@ -27,9 +28,9 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
-            "{{/uid.__xrefspec}}"
-            )]
-        [InlineData("<xref uid='{{namespace}}'/>",
+            "{{/uid.__xrefspec}}")]
+        [InlineData(
+            "<xref uid='{{namespace}}'/>",
             "{{#namespace.__xrefspec}}" +
             "  {{#href}}" +
             "    <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
@@ -37,9 +38,9 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
-            "{{/namespace.__xrefspec}}"
-            )]
-        [InlineData("<xref uid='{{ uid }}' template='partials/dotnet/xref-name.tmpl' />",
+            "{{/namespace.__xrefspec}}")]
+        [InlineData(
+            "<xref uid='{{ uid }}' template='partials/dotnet/xref-name.tmpl' />",
             "{{#uid.__xrefspec}}" +
             "  {{#href}}" +
             "    {{> partials/dotnet/xref-name.tmpl}}" +
@@ -47,9 +48,9 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "  {{/href}}" +
-            "{{/uid.__xrefspec}}"
-            )]
-        [InlineData("<xref uid='{{ . }}'/>",
+            "{{/uid.__xrefspec}}")]
+        [InlineData(
+            "<xref uid='{{ . }}'/>",
             "{{#..__xrefspec}}" +
             "{{#href}}" +
             "  <a href='{{href}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
@@ -57,9 +58,9 @@ namespace Microsoft.Docs.Build
             "{{^href}}" +
             "  <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "{{/href}}" +
-            "{{/..__xrefspec}}"
-            )]
-        [InlineData("<xref uid='{{ . }}' title='{{title}}'/>",
+            "{{/..__xrefspec}}")]
+        [InlineData(
+            "<xref uid='{{ . }}' title='{{title}}'/>",
             "{{#..__xrefspec}}" +
             "{{#href}}" +
             "  <a href='{{href}}' title='{{title}}'> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </a>" +
@@ -67,8 +68,7 @@ namespace Microsoft.Docs.Build
             "{{^href}}" +
             "  <span> {{#name}}{{.}}{{/name}}{{^name}}{{uid}}{{/name}} </span>" +
             "{{/href}}" +
-            "{{/..__xrefspec}}"
-            )]
+            "{{/..__xrefspec}}")]
         [InlineData(
             "<xref href='{{uid-from-href}}' title='{{name}}'>" +
             "  <h3>{{name}}</h3>" +
@@ -87,8 +87,7 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    </span>" +
             "  {{/href}}" +
-            "{{/uid-from-href.__xrefspec}}"
-            )]
+            "{{/uid-from-href.__xrefspec}}")]
         [InlineData(
             "<xref uid='{{uid-higher-priority}}' href='{{uid}}' title='{{name}}'>" +
             "  <h3>{{name}}</h3>" +
@@ -107,8 +106,7 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    </span>" +
             "  {{/href}}" +
-            "{{/uid-higher-priority.__xrefspec}}"
-            )]
+            "{{/uid-higher-priority.__xrefspec}}")]
         [InlineData(
             "<xref uid='{{url}}'></xref>",
             "{{#url.__xrefspec}}" +
@@ -125,8 +123,7 @@ namespace Microsoft.Docs.Build
             "  {{^href}}" +
             "    </span>" +
             "  {{/href}}" +
-            "{{/url.__xrefspec}}"
-            )]
+            "{{/url.__xrefspec}}")]
         public void ProcessXrefTag(string template, string expected)
         {
             template = template.Replace('\'', '"');

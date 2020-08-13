@@ -78,7 +78,7 @@ namespace Microsoft.Docs.LearnValidation
             return (isValid, hierarchyItems);
         }
 
-        private List<IValidateModel> ExtractAchievementFromModuleOrPath(List<IValidateModel> items, bool isModule)
+        private static List<IValidateModel> ExtractAchievementFromModuleOrPath(List<IValidateModel> items, bool isModule)
         {
             var achievements = new List<IValidateModel>();
             foreach (var item in items)

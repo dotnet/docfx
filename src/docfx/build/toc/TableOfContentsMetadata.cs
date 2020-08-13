@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject ExtensionData { get; } = new JObject();
 
-        public bool ShouldSerializeMonikerRange() => false;
+        public static bool ShouldSerializeMonikerRange() => false;
 
-        public bool ShouldSerializeMonikers() => false;
+        public static bool ShouldSerializeMonikers() => false;
     }
 }
