@@ -82,54 +82,26 @@ namespace Microsoft.Docs.Build
         private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
         {
             var (topLevelToc, _, _) = Load(_documentProvider.GetDocument(FilePath.Content(new PathString(topLevelTocFilePath))));
-
-            var itemsToMatch = new Dictionary<string, SourceInfo<TableOfContentsNode>>();
-            var duplicatedName = new HashSet<string>();
-            foreach (var child in referenceToc.Items)
-            {
-                var key = child.Value.Name;
-                if (string.IsNullOrEmpty(key))
-                {
-                    _errors.Add(Errors.JsonSchema.MissingAttribute(key, "name"));
-                }
-                else if (!duplicatedName.Add(key!))
-                {
-                    _errors.Add(Errors.TableOfContents.DuplicateJoinTocName(key!));
-                    itemsToMatch.Remove(key!);
-                }
-                else
-                {
-                    itemsToMatch.Add(key!, child);
-                }
-            }
-
-            TraverseAndMerge(topLevelToc, itemsToMatch);
+            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
             return topLevelToc;
         }
 
-        private void TraverseAndMerge(TableOfContentsNode node, Dictionary<string, SourceInfo<TableOfContentsNode>> itemsToMatch)
+        private void TraverseAndMerge(TableOfContentsNode node, List<SourceInfo<TableOfContentsNode>> itemsToMatch, HashSet<TableOfContentsNode> matched)
         {
             if (node.ExtensionData.TryGetValue("children", out var token) && token is JArray array)
             {
                 node.ExtensionData.Remove("children");
                 foreach (JValue v in array)
                 {
-                    if (v.Value is string str)
+                    if (v.Value is string pattern)
                     {
-                        var keysMatched = new HashSet<string>();
-                        var pattern = str[0..^1];
-                        foreach (var (key, value) in itemsToMatch)
+                        foreach (var item in itemsToMatch)
                         {
-                            if (key.StartsWith(pattern))
+                            if (item.Value.Name != null && !matched.Contains(item) && GlobUtility.CreateGlob(pattern).IsMatch(item.Value.Name))
                             {
-                                node.Items.Add(value);
-                                keysMatched.Add(key);
+                                matched.Add(item);
+                                node.Items.Add(item);
                             }
-                        }
-
-                        foreach (var key in keysMatched)
-                        {
-                            itemsToMatch.Remove(key);
                         }
                     }
                 }
@@ -137,7 +109,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var child in node.Items)
             {
-                TraverseAndMerge(child, itemsToMatch);
+                TraverseAndMerge(child, itemsToMatch, matched);
             }
         }
 
@@ -145,7 +117,7 @@ namespace Microsoft.Docs.Build
             Document file, Document rootPath, List<Document> referencedFiles, List<Document> referencedTocs, ErrorBuilder errors)
         {
             // add to parent path
-            t_recursionDetector.Value = t_recursionDetector.Value ?? ImmutableStack<Document>.Empty;
+            t_recursionDetector.Value ??= ImmutableStack<Document>.Empty;
 
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(file))

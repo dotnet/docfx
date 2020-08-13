@@ -1654,7 +1654,6 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":6,"column":8}
-    {"message_severity":"warning","code":"duplicate-join-toc-name","message":"Join TOC name 'duplicate' is duplicated","file":"a/api/TOC.yml","line":8,"column":9}
   a/api/toc.json: |
     {
         "metadata": {"open_to_public_contributors": false},
@@ -1680,7 +1679,7 @@ outputs:
                             },
                             {
                                 "name": "Other",
-                                "items": [{"name": "no.match"}]
+                                "items": [{"name": "duplicate"}, {"name": "duplicate"}, {"name": "no.match"}]
                             }
                         ]
                     }
