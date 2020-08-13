@@ -85,6 +85,17 @@ namespace Microsoft.Docs.Build
                     fileMetadata.SetProperty(key, value);
                 }
             }
+
+            if (filePath.OriginPath != null)
+            {
+                foreach (var (glob, key, value) in _rules)
+                {
+                    if (glob(filePath.OriginPath.Path))
+                    {
+                        fileMetadata.SetProperty(key, value);
+                    }
+                }
+            }
             JsonUtility.Merge(result, fileMetadata);
 
             if (contentType == ContentType.Page || contentType == ContentType.TableOfContents)

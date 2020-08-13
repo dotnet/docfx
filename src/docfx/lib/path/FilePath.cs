@@ -33,6 +33,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public FileOrigin Origin { get; }
 
+        public FilePath? OriginPath { get; }
+
         /// <summary>
         /// Indicate if the file is from git commit history.
         /// </summary>
@@ -52,7 +54,7 @@ namespace Microsoft.Docs.Build
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
 
-        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers)
+        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers, FilePath? originPath = null)
         {
             Path = path;
             Origin = origin;
@@ -60,6 +62,7 @@ namespace Microsoft.Docs.Build
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
             Monikers = monikers;
+            OriginPath = originPath;
 
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, Monikers);
         }
@@ -89,10 +92,10 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Dependency, path, dependencyName, default, default);
         }
 
-        public static FilePath Generated(PathString path)
+        public static FilePath Generated(PathString path, FilePath? originPath = null)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Generated, path, default, default, default);
+            return new FilePath(FileOrigin.Generated, path, default, default, default, originPath);
         }
 
         public FilePath WithPath(PathString path)

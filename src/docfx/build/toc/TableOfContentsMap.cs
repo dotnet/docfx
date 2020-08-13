@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
+        private readonly MetadataProvider _metadataProvider;
 
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
@@ -34,7 +35,8 @@ namespace Microsoft.Docs.Build
             TableOfContentsParser tocParser,
             TableOfContentsLoader tocLoader,
             DocumentProvider documentProvider,
-            ContentValidator contentValidator)
+            ContentValidator contentValidator,
+            MetadataProvider metadataProvider)
         {
             _errors = errors;
             _input = input;
@@ -45,6 +47,7 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
+            _metadataProvider = metadataProvider;
         }
 
         public IEnumerable<FilePath> GetFiles()
@@ -239,10 +242,15 @@ namespace Microsoft.Docs.Build
                 }
 
                 var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
-                var newNodeFile = FilePath.Generated(newNodeFilePath);
+                var newNodeFile = FilePath.Generated(newNodeFilePath, file);
 
                 _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken });
                 result.Add(newNodeFile);
+
+                if (_metadataProvider.GetMetadata(_errors, file) != null)
+                {
+                    _metadataProvider.GetMetadata(_errors, newNodeFile);
+                }
 
                 var newChild = new TableOfContentsNode(child)
                 {
@@ -254,7 +262,7 @@ namespace Microsoft.Docs.Build
             }
 
             var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
-            var newTocFile = FilePath.Generated(newTocFilePath);
+            var newTocFile = FilePath.Generated(newTocFilePath, file);
             _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
             result.Add(newTocFile);
         }
