@@ -477,6 +477,7 @@ repos:
         Link to [absolute link with bookmark](/docs/d.md#title-1)
         Link to [empty]()
         :::image type="content" source="e.png" alt-text="Link to image":::
+        Link to <https://autolink>
       docs/v1/e.png:
       docs/v2/b.md: |
         Link to @a
@@ -523,6 +524,7 @@ outputs:
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":6},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":8},
         {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":3},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"https://autolink","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 9},
         {"source_url":"/docs/toc.json","source_moniker_group":"9d4e15fd","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/TOC.yml","source_line":2}
       ]
     }

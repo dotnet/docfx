@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+
+using Markdig.Helpers;
+using Markdig.Parsers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-
     public class CodeSnippetParser : BlockParser
     {
         private const string StartString = "[!code";
@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             // Sample: [!code-javascript[Main](../jquery.js?name=testsnippet#tag "title")]
             var slice = processor.Line;
-            bool isNotebookCode = false;
+            var isNotebookCode = false;
             if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
             {
                 slice = processor.Line;
@@ -42,21 +42,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var codeSnippet = new CodeSnippet(this);
             codeSnippet.IsNotebookCode = isNotebookCode;
-            MatchLanguage(processor, ref slice, ref codeSnippet);
+            MatchLanguage(ref slice, ref codeSnippet);
 
-            if (!MatchName(processor, ref slice, ref codeSnippet))
+            if (!MatchName(ref slice, ref codeSnippet))
             {
                 return BlockState.None;
             }
 
-            if (!MatchPath(processor, ref slice, ref codeSnippet))
+            if (!MatchPath(ref slice, ref codeSnippet))
             {
                 return BlockState.None;
             }
 
-            MatchQuery(processor, ref slice, ref codeSnippet);
+            MatchQuery(ref slice, ref codeSnippet);
 
-            MatchTitle(processor, ref slice, ref codeSnippet);
+            MatchTitle(ref slice, ref codeSnippet);
 
             ExtensionsHelper.SkipWhitespace(ref slice);
             if (slice.CurrentChar == ')')
@@ -86,26 +86,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return BlockState.None;
         }
 
-        private bool MatchStart(ref StringSlice slice)
+        private bool MatchLanguage(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            var pc = slice.PeekCharExtra(-1);
-            if (pc == '\\') return false;
-
-            var c = slice.CurrentChar;
-            var index = 0;
-
-            while (c != '\0' && index < StartString.Length && Char.ToLower(c) == StartString[index])
+            if (slice.CurrentChar != '-')
             {
-                c = slice.NextChar();
-                index++;
+                return false;
             }
-
-            return index == StartString.Length;
-        }
-
-        private bool MatchLanguage(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
-        {
-            if (slice.CurrentChar != '-') return false;
 
             var language = StringBuilderCache.Local();
             var c = slice.NextChar();
@@ -121,10 +107,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchPath(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             ExtensionsHelper.SkipWhitespace(ref slice);
-            if (slice.CurrentChar != '(') return false;
+            if (slice.CurrentChar != '(')
+            {
+                return false;
+            }
+
             var c = slice.NextChar();
 
             var bracketNeedToMatch = 0;
@@ -158,9 +148,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchName(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchName(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            if (slice.CurrentChar != '[') return false;
+            if (slice.CurrentChar != '[')
+            {
+                return false;
+            }
 
             var c = slice.NextChar();
             var name = StringBuilderCache.Local();
@@ -191,18 +184,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        private bool MatchQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            var questionMarkMatched = MatchQuestionMarkQuery(processor, ref slice, ref codeSnippet);
+            var questionMarkMatched = MatchQuestionMarkQuery(ref slice, ref codeSnippet);
 
-            var bookMarkMatched = MatchBookMarkQuery(processor, ref slice, ref codeSnippet);
+            var bookMarkMatched = MatchBookMarkQuery(ref slice, ref codeSnippet);
 
             return questionMarkMatched || bookMarkMatched;
         }
 
-        private bool MatchQuestionMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchQuestionMarkQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            if (slice.CurrentChar != '?') return false;
+            if (slice.CurrentChar != '?')
+            {
+                return false;
+            }
 
             var queryChar = slice.CurrentChar;
             var query = StringBuilderCache.Local();
@@ -219,9 +215,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return TryParseQuery(queryString, ref codeSnippet);
         }
 
-        private bool MatchBookMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchBookMarkQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            if (slice.CurrentChar != '#') return false;
+            if (slice.CurrentChar != '#')
+            {
+                return false;
+            }
 
             var queryChar = slice.CurrentChar;
             var query = StringBuilderCache.Local();
@@ -247,9 +246,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchTitle(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private bool MatchTitle(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
-            if (slice.CurrentChar != '"') return false;
+            if (slice.CurrentChar != '"')
+            {
+                return false;
+            }
 
             var title = StringBuilderCache.Local();
             var c = slice.NextChar();
@@ -282,7 +284,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private bool TryParseQuery(string queryString, ref CodeSnippet codeSnippet)
         {
-            if (string.IsNullOrEmpty(queryString)) return false;
+            if (string.IsNullOrEmpty(queryString))
+            {
+                return false;
+            }
 
             var splitQueryItems = queryString.Split(new[] { '&' });
 
@@ -291,12 +296,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             foreach (var queryItem in splitQueryItems)
             {
                 var keyValueSplit = queryItem.Split(new[] { '=' });
-                if (keyValueSplit.Length != 2) return false;
+                if (keyValueSplit.Length != 2)
+                {
+                    return false;
+                }
+
                 var key = keyValueSplit[0];
                 var value = keyValueSplit[1];
 
                 List<CodeRange> temp;
-                switch (key.ToLower())
+                switch (key.ToLowerInvariant())
                 {
                     case "name":
                         codeSnippet.TagName = value;
@@ -342,7 +351,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     default:
                         return false;
                 }
-
             }
 
             if (start != -1 && end != -1)
@@ -352,6 +360,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             return true;
         }
-
     }
 }

@@ -8,16 +8,17 @@ repos:
         {
           "docsets_to_publish": [
           { 
-            "build_source_folder": ".",
+            "build_source_folder": "docs",
             "monikerPath": [
               "mapping/monikerMapping.json"
             ]
           }]
         }
-      docfx.yml: |
+      docs/docfx.yml: |
         files: '**/*.yml'
-      docs-conceptual/toc.yml:
-      mapping/monikerMapping.json: |
+        template: ../_themes
+      docs/docs-conceptual/toc.yml:
+      docs/mapping/monikerMapping.json: |
         {
           "v1.0": {
             "packageRoot": "samples-v1.0",
@@ -27,11 +28,11 @@ repos:
             "serviceMap": "mapping/serviceMapping.json"
           }
         }
-      mapping/serviceMapping.json: |
+      docs/mapping/serviceMapping.json: |
         {
           "Add-History": "Microsoft.PowerShell.Core"
         }
-      samples-v1.0/Microsoft.PowerShell.Core/Microsoft.PowerShell.Core.md: |
+      docs/samples-v1.0/Microsoft.PowerShell.Core/Microsoft.PowerShell.Core.md: |
         ---
         Download Help Link: https://aka.ms/powershell71-help
         Help Version: 7.1.0.0
@@ -55,7 +56,7 @@ repos:
 
         ### [Add-History](Add-History.md)
         Appends entries to the session history.
-      samples-v1.0/Microsoft.PowerShell.Core/Add-History.md: |
+      docs/samples-v1.0/Microsoft.PowerShell.Core/Add-History.md: |
         ---
         external help file: System.Management.Automation.dll-Help.xml
         keywords: powershell,cmdlet
@@ -277,10 +278,10 @@ repos:
         {"properties":{"uid":{"contentType":"uid"}}}
       _themes/ContentTemplate/schemas/PowershellModule.schema.json: '{}'
 outputs:
-  samples-v1.0/toc.json:
-  docs-conceptual/toc.json:
-  samples-v1.0/microsoft.powershell.core/add-history.json:
-  samples-v1.0/microsoft.powershell.core/index.json:
+  docs/samples-v1.0/toc.json:
+  docs/docs-conceptual/toc.json:
+  docs/samples-v1.0/microsoft.powershell.core/add-history.json:
+  docs/samples-v1.0/microsoft.powershell.core/index.json:
   .errors.log: |
     {"message_severity":"info","code":"MAML2Yaml_Info","message":"Generated reference toc with service mapping."}
     {"message_severity":"info","code":"MAML2Yaml_Info","message":"Dumped toc at *toc.yml"}

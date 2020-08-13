@@ -303,7 +303,24 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             bool addToReferencedFiles = true)
         {
-            // process uid first
+            // process href first
+            if (!string.IsNullOrEmpty(topicHref))
+            {
+                var topicHrefType = GetHrefType(topicHref);
+                Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsTocIncludeHref(topicHrefType));
+
+                var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
+                errors.AddIfNotNull(error);
+
+                if (resolvedFile != null && addToReferencedFiles)
+                {
+                    // add to referenced document list
+                    referencedFiles.Add(resolvedFile);
+                }
+                return (new SourceInfo<string?>(link, topicHref), default, resolvedFile);
+            }
+
+            // process uid then if href is empty or null
             if (!string.IsNullOrEmpty(uid.Value))
             {
                 var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(uid!, filePath, rootPath);
@@ -320,24 +337,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // process topicHref then
-            if (string.IsNullOrEmpty(topicHref))
-            {
-                return (topicHref, default, default);
-            }
-
-            var topicHrefType = GetHrefType(topicHref);
-            Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsTocIncludeHref(topicHrefType));
-
-            var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
-            errors.AddIfNotNull(error);
-
-            if (resolvedFile != null && addToReferencedFiles)
-            {
-                // add to referenced document list
-                referencedFiles.Add(resolvedFile);
-            }
-            return (new SourceInfo<string?>(link, topicHref), default, resolvedFile);
+            // if both uid and href are empty or null, return default
+            return (topicHref, default, default);
         }
 
         private Document? ResolveTocHref(

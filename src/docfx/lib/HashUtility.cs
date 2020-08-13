@@ -9,8 +9,6 @@ using System.Text;
 
 namespace Microsoft.Docs.Build
 {
-    [SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "disable")]
-    [SuppressMessage("Security", "CA5351:Do Not Use Broken Cryptographic Algorithms", Justification = "disable")]
     internal static class HashUtility
     {
         public static string GetMd5Hash(string input)

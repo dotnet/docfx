@@ -12,19 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.2.0-preview.4" />
+    <PackageReference Include="Azure.Identity" Version="1.2.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.0.3" />
     <PackageReference Include="docs.validation" Version="1.0.0-beta-00240-d832a2a" />
     <PackageReference Include="DotLiquid" Version="2.0.361" />
     <PackageReference Include="Glob" Version="1.1.7" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.298" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.14.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.6" />
-    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.20" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.7" />
+    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.21" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.738" />
-    <!-- TODO: use reference alias to resolve markdown namespace-class name collision
-    https://github.com/NuGet/Home/issues/4989 -->
-    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.63"/>
+    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.65" Aliases="maml"/>
     <PackageReference Include="Microsoft.Graph" Version="3.9.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.17.1" />
@@ -39,7 +37,7 @@
 
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164" PrivateAssets="All" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.2.31" PrivateAssets="all" />
   </ItemGroup>

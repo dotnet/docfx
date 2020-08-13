@@ -1,21 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using Markdig.Parsers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Net;
-
-    using Markdig.Parsers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-
     public class CodeSnippet : LeafBlock
     {
-        public CodeSnippet(BlockParser parser) : base(parser)
+        public CodeSnippet(BlockParser parser)
+            : base(parser)
         {
         }
 
@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var highlightRangesString = GetHighlightLinesString();
-            if (highlightRangesString != string.Empty)
+            if (!string.IsNullOrEmpty(highlightRangesString))
             {
                 attributes.AddProperty("highlight-lines", highlightRangesString);
             }
@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var highlightRangesString = GetHighlightLinesString();
 
-            if(highlightRangesString != string.Empty)
+            if (!string.IsNullOrEmpty(highlightRangesString))
             {
                 sb.Append($@" highlight-lines=""{highlightRangesString}""");
             }
@@ -119,9 +119,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 return string.Join(",", this.HighlightRanges.Select(highlight =>
                 {
-                    if (highlight.Start == highlight.End) return highlight.Start.ToString();
+                    if (highlight.Start == highlight.End)
+                    {
+                        return highlight.Start.ToString();
+                    }
 
-                    if (highlight.End == int.MaxValue) return highlight.Start + "-";
+                    if (highlight.End == int.MaxValue)
+                    {
+                        return highlight.Start + "-";
+                    }
 
                     return highlight.Start + "-" + highlight.End;
                 }));

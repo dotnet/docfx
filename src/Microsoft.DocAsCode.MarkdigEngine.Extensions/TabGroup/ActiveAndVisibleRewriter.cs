@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-
-    using Markdig.Syntax;
-
     public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
     {
         private readonly MarkdownContext _context;
@@ -51,7 +51,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             return markdownObject;
         }
-
 
         private int ApplyTabVisible(List<string[]> tabSelectionInfo, List<TabItemBlock> items)
         {
@@ -128,7 +127,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             return active;
         }
-
 
         private int FindActiveIndex(List<TabItemBlock> items, string[] info)
         {

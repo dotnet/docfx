@@ -242,8 +242,8 @@ namespace Microsoft.Docs.Build
                     return DependencyType.Hierarchy;
                 case ("LearningPath", "Achievement"):
                 case ("Module", "Achievement"):
-                case ("LearningPath", "LearningPath") when string.Equals(xref.DeclaringPropertyName, "trophy", StringComparison.OrdinalIgnoreCase):
-                case ("Module", "Module") when string.Equals(xref.DeclaringPropertyName, "badge", StringComparison.OrdinalIgnoreCase):
+                case ("LearningPath", "LearningPath") when string.Equals(xref.DeclaringPropertyPath, "trophy", StringComparison.OrdinalIgnoreCase):
+                case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
                     return DependencyType.Achievement;
             }
             return DependencyType.Uid;

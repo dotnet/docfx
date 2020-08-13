@@ -1,21 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
+using Markdig.Extensions.CustomContainers;
+using Markdig.Extensions.EmphasisExtras;
+using Markdig.Parsers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using Markdig;
-    using Markdig.Extensions.AutoIdentifiers;
-    using Markdig.Extensions.CustomContainers;
-    using Markdig.Extensions.EmphasisExtras;
-    using Markdig.Parsers;
-
     public static class MarkdownExtensions
     {
         public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             return pipeline
-                //.UseMathematics()
                 .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
@@ -39,7 +38,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .RemoveUnusedExtensions();
         }
 
-        private static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
+        public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.RemoveAll(extension => extension is CustomContainerExtension);
             return pipeline;
@@ -127,6 +126,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.AddIfNotAlready(new MonikerRangeExtension(context));
             return pipeline;
         }
+
         public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.AddIfNotAlready(new RowExtension(context));

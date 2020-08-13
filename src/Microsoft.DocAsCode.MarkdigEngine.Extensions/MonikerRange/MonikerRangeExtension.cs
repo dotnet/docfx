@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig;
+using Markdig.Extensions.CustomContainers;
+using Markdig.Renderers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig;
-    using Markdig.Extensions.CustomContainers;
-    using Markdig.Renderers;
-
     public class MonikerRangeExtension : IMarkdownExtension
     {
         private readonly MarkdownContext _context;
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else
             {
                 pipeline.BlockParsers.AddIfNotAlready(new MonikerRangeParser(_context));
-            }            
+            }
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

@@ -1,16 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-
     public class MonikerRangeParser : BlockParser
     {
-        private const string StartString = "moniker";
         private const string EndString = "moniker-end";
         private const char Colon = ':';
 
@@ -41,7 +40,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 colonCount++;
             }
 
-            if (colonCount < 3) return BlockState.None;
+            if (colonCount < 3)
+            {
+                return BlockState.None;
+            }
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
@@ -112,7 +114,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
+            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
             {
                 ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
