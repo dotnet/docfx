@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
+        private static readonly object s_lock = new object();
 
         private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
                    new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
@@ -58,6 +59,15 @@ namespace Microsoft.Docs.Build
 
                 return (node, referencedFiles, referencedTocs);
             });
+        }
+
+        public void Update(TableOfContentsNode node, FilePath file)
+        {
+            lock (s_lock)
+            {
+                var (_, referencedFiles, referencedTocs) = _cache[file];
+                _cache[file] = (node, referencedFiles, referencedTocs);
+            }
         }
 
         private TableOfContentsNode LoadTocFile(
@@ -159,7 +169,7 @@ namespace Microsoft.Docs.Build
             // validate
             if (string.IsNullOrEmpty(newNode.Name))
             {
-                errors.Add(Errors.TableOfContents.MissingTocName(newNode.Name.Source ?? node.Source));
+                errors.Add(Errors.JsonSchema.MissingAttribute(newNode.Name.Source ?? node.Source, "name"));
             }
 
             return new SourceInfo<TableOfContentsNode>(newNode, node);

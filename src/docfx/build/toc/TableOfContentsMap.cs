@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
+        private readonly Config _config;
 
         private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
 
@@ -34,7 +35,8 @@ namespace Microsoft.Docs.Build
             TableOfContentsParser tocParser,
             TableOfContentsLoader tocLoader,
             DocumentProvider documentProvider,
-            ContentValidator contentValidator)
+            ContentValidator contentValidator,
+            Config config)
         {
             _errors = errors;
             _input = input;
@@ -45,6 +47,7 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
+            _config = config;
         }
 
         public IEnumerable<FilePath> GetFiles()
@@ -172,6 +175,8 @@ namespace Microsoft.Docs.Build
             {
                 var tocs = new ConcurrentBag<FilePath>();
 
+                JoinToc();
+
                 // Parse and split TOC
                 ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
                 {
@@ -279,6 +284,87 @@ namespace Microsoft.Docs.Build
             static string? FixHref(string? href)
             {
                 return href != null && UrlUtility.GetLinkType(href) == LinkType.RelativePath ? Path.Combine("../../", href) : href;
+            }
+        }
+
+        private void JoinToc()
+        {
+            if (_config.JoinTOC is null)
+            {
+                return;
+            }
+
+            foreach (var item in _config.JoinTOC)
+            {
+                if (item.ReferenceToc is null || item.TopLevelToc is null)
+                {
+                    continue;
+                }
+
+                var referenceTocFile = _documentProvider.GetDocument(FilePath.Content(new PathString(item.ReferenceToc)));
+                var (referenceToc, _, _) = _tocLoader.Load(_errors, referenceTocFile);
+                var (topLevelToc, _, _) = _tocLoader.Load(_errors, _documentProvider.GetDocument(FilePath.Content(new PathString(item.TopLevelToc))));
+
+                if (referenceToc is null || topLevelToc is null)
+                {
+                    continue;
+                }
+
+                var itemsToMatch = new Dictionary<string, SourceInfo<TableOfContentsNode>>();
+                var duplicatedName = new HashSet<string>();
+                foreach (var child in referenceToc.Items)
+                {
+                    var key = child.Value.Name;
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        _errors.Add(Errors.JsonSchema.MissingAttribute(key, "name"));
+                    }
+                    else if (!duplicatedName.Add(key!))
+                    {
+                        _errors.Add(Errors.TableOfContents.DuplicateJoinTocName(key!));
+                        itemsToMatch.Remove(key!);
+                    }
+                    else
+                    {
+                        itemsToMatch.Add(key!, child);
+                    }
+                }
+
+                TraverseAndMerge(topLevelToc, itemsToMatch);
+                _tocLoader.Update(topLevelToc, referenceTocFile.FilePath);
+            }
+        }
+
+        private void TraverseAndMerge(TableOfContentsNode node, Dictionary<string, SourceInfo<TableOfContentsNode>> itemsToMatch)
+        {
+            if (node.ExtensionData.TryGetValue("children", out var token) && token is JArray array)
+            {
+                node.ExtensionData.Remove("children");
+                foreach (JValue v in array)
+                {
+                    if (v.Value is string pattern)
+                    {
+                        var keysMathed = new HashSet<string>();
+                        foreach (var (key, value) in itemsToMatch)
+                        {
+                            if (key.StartsWith(pattern[0..^1]))
+                            {
+                                node.Items.Add(value);
+                                keysMathed.Add(key);
+                            }
+                        }
+
+                        foreach (var key in keysMathed)
+                        {
+                            itemsToMatch.Remove(key);
+                        }
+                    }
+                }
+            }
+
+            foreach (var child in node.Items)
+            {
+                TraverseAndMerge(child, itemsToMatch);
             }
         }
     }

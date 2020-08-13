@@ -368,13 +368,6 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists.", source);
 
             /// <summary>
-            /// In markdown-format toc, defined an empty node(# ) with no content.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error MissingTocName(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "missing-toc-name", $"TOC node is missing name (if it is toc.yml) or title (toc.md).", source);
-
-            /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
             /// Examples:
             ///   - The toc syntax '[bad1]()\n#[bad2](test.md)' is invalid,
@@ -391,6 +384,9 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTocLevel(SourceInfo? source, int from, int to)
                 => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}.", source);
+
+            public static Error DuplicateJoinTocName(SourceInfo<string> name)
+                => new Error(ErrorLevel.Warning, "duplicate-join-toc-name", $"Join TOC name '{name}' is duplcated", name);
         }
 
         public static class Xref

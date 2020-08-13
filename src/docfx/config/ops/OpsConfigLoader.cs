@@ -82,8 +82,9 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            result["fileMetadata"] =
-                GenerateJoinTocMetadata(docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>(), buildSourceFolder);
+            var joinTOCPluginConfig = docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>();
+            (result["fileMetadata"], result["joinTOC"]) =
+                GenerateJoinTocMetadataAndConfig(joinTOCPluginConfig, new PathString(buildSourceFolder));
             var sourceMaps = new JArray();
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
@@ -157,28 +158,48 @@ namespace Microsoft.Docs.Build
             && docsetConfig.CustomizedTasks.TryGetValue("docset_postbuild", out var plugins)
             && plugins.Any(plugin => plugin.EndsWith("TripleCrownValidation.ps1", StringComparison.OrdinalIgnoreCase));
 
-        private static JObject GenerateJoinTocMetadata(OpsJoinTocConfig[] configs, string buildSourceFolder)
+        private static (JObject joinTocMetadata, JArray joinTocConfig) GenerateJoinTocMetadataAndConfig(OpsJoinTocConfig[] configs, PathString buildSourceFolder)
         {
             var conceptualToc = new JObject();
             var refToc = new JObject();
+            var joinTocConfig = new JArray();
 
             foreach (var config in configs)
             {
                 if (!string.IsNullOrEmpty(config.ConceptualTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
                 {
-                    refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
+                    refToc[buildSourceFolder.GetRelativePath(new PathString(config.ConceptualTOC))] = config.ReferenceTOCUrl;
                 }
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
-                    conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
+                    conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
                 }
+
+                var item = new JObject();
+                if (!string.IsNullOrEmpty(config.OutputFolder))
+                {
+                    item["outputPath"] = new PathString(buildSourceFolder).GetRelativePath(new PathString(config.OutputFolder));
+                }
+                if (config.ContainerPageMetadata != null)
+                {
+                    item["containerPageMetadata"] = config.ContainerPageMetadata;
+                }
+                if (!string.IsNullOrEmpty(config.ReferenceTOC))
+                {
+                    item["referenceToc"] = buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC));
+                }
+                if (!string.IsNullOrEmpty(config.TopLevelTOC))
+                {
+                    item["topLevelToc"] = buildSourceFolder.GetRelativePath(new PathString(config.TopLevelTOC));
+                }
+                joinTocConfig.Add(item);
             }
 
-            return new JObject
+            return (new JObject
             {
                 ["universal_conceptual_toc"] = conceptualToc,
                 ["universal_ref_toc"] = refToc,
-            };
+            }, joinTocConfig);
         }
     }
 }

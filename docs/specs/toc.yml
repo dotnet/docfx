@@ -1592,3 +1592,84 @@ outputs:
         "a.md": [{ "source": "TOC.yml", "type": "metadata" }]
       }
     }
+---
+# Support join Toc merge
+repos:
+  https://github.com/ops/join-toc:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "a",
+          }],
+          "JoinTOCPlugin": [
+            {
+              "ReferenceTOC": "a/api/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"
+            }
+          ],
+        }
+      a/docfx.yml:
+      a/api/TOC.yml: |
+        items:
+        - name: Microsoft.Identity.xxx
+        - name: Microsoft.ApplicationInsights.xxx
+        - name:
+        - name: duplicate
+        - name: duplicate
+        - name: no.match
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          items:
+          - name: Active Directory
+            items:
+            - name: Client
+              children:
+              - 'Microsoft.Identity*'
+              items:
+                  - name: Client
+                    children:
+                    - 'Microsoft.ApplicationInsights*'
+                    - 'Microsoft.Azure.ApplicationInsights*'
+            - name: Other
+              children:
+              - '*'
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":4,"column":8}
+    {"message_severity":"warning","code":"duplicate-join-toc-name","message":"Join TOC name 'duplicate' is duplcated","file":"a/api/TOC.yml","line":6,"column":9}
+  a/api/toc.json: |
+    {
+        "metadata": {"open_to_public_contributors": false},
+        "items": [
+            {
+                "name": "API Reference",
+                "items": [
+                    {
+                        "name": "Active Directory",
+                        "items": [
+                            {
+                                "name": "Client",
+                                "items": [
+                                    {
+                                        "name": "Client",
+                                        "items": [{"name": "Microsoft.ApplicationInsights.xxx"}]
+                                    },
+                                    {
+                                        "name": "Microsoft.Identity.xxx"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "Other",
+                                "items": [{"name": "no.match"}]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "_path": "api/toc.json"
+    }
