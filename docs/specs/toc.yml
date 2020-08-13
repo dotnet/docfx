@@ -1627,6 +1627,8 @@ repos:
       a/api/TOC.yml: |
         items:
         - name: Microsoft.Identity.xxx
+          items:
+            - name: xxx
         - name: Microsoft.ApplicationInsights.xxx
         - name:
         - name: duplicate
@@ -1651,8 +1653,8 @@ repos:
               - '*'
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":4,"column":8}
-    {"message_severity":"warning","code":"duplicate-join-toc-name","message":"Join TOC name 'duplicate' is duplcated","file":"a/api/TOC.yml","line":6,"column":9}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":6,"column":8}
+    {"message_severity":"warning","code":"duplicate-join-toc-name","message":"Join TOC name 'duplicate' is duplicated","file":"a/api/TOC.yml","line":8,"column":9}
   a/api/toc.json: |
     {
         "metadata": {"open_to_public_contributors": false},
@@ -1671,7 +1673,8 @@ outputs:
                                         "items": [{"name": "Microsoft.ApplicationInsights.xxx"}]
                                     },
                                     {
-                                        "name": "Microsoft.Identity.xxx"
+                                        "name": "Microsoft.Identity.xxx",
+                                        "items": [{"name": "xxx"}]
                                     }
                                 ]
                             },

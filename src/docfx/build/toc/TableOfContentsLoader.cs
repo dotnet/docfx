@@ -116,17 +116,17 @@ namespace Microsoft.Docs.Build
                 {
                     if (v.Value is string pattern)
                     {
-                        var keysMathed = new HashSet<string>();
+                        var keysMatched = new HashSet<string>();
                         foreach (var (key, value) in itemsToMatch)
                         {
                             if (key.StartsWith(pattern[0..^1]))
                             {
                                 node.Items.Add(value);
-                                keysMathed.Add(key);
+                                keysMatched.Add(key);
                             }
                         }
 
-                        foreach (var key in keysMathed)
+                        foreach (var key in keysMatched)
                         {
                             itemsToMatch.Remove(key);
                         }
