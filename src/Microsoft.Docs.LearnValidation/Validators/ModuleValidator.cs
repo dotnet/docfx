@@ -1,26 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Common;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Common;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
     public class ModuleValidator : ValidatorBase
     {
         public ModuleValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
-            :base(manifestItems, basePath, logger)
+            : base(manifestItems, basePath, logger)
         {
-        }
-
-        protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
-        {
-            var module = JsonConvert.DeserializeObject<ModuleValidateModel>(validatorHierarchyItem.ServiceData);
-            SetHierarchyData(module, validatorHierarchyItem, manifestItem);
-            return module;
         }
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
@@ -88,6 +81,13 @@ namespace Microsoft.Docs.LearnValidation
             }
 
             return validationResult;
+        }
+
+        protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
+        {
+            var module = JsonConvert.DeserializeObject<ModuleValidateModel>(validatorHierarchyItem.ServiceData);
+            SetHierarchyData(module, validatorHierarchyItem, manifestItem);
+            return module;
         }
     }
 }

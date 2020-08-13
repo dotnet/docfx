@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.Docs.LearnValidation.Models;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +10,9 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Docs.LearnValidation.Models;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
@@ -32,8 +32,7 @@ namespace Microsoft.Docs.LearnValidation
             string environment,
             bool isLocalizationBuild,
             Action<LearnLogItem> writeLog,
-            string fallbackDocsetPath = null
-            )
+            string fallbackDocsetPath = null)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var config = new LearnValidationConfig(
@@ -56,7 +55,6 @@ namespace Microsoft.Docs.LearnValidation
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
             ValidateHierarchy(config, logger).GetAwaiter().GetResult();
-            
         }
 
         private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger)
@@ -119,7 +117,7 @@ namespace Microsoft.Docs.LearnValidation
         {
             var tokenValidator = new TokenValidator(config.DependencyFilePath, hierarchyItems, config.DocsetPath, config.FallbackDocsetPath, logger);
             isValid = isValid && tokenValidator.Validate();
-            InvalidFilesProvider partialPublishProcessor = new InvalidFilesProvider(hierarchyItems, learnValidationHelper, logger);
+            var partialPublishProcessor = new InvalidFilesProvider(hierarchyItems, learnValidationHelper, logger);
             var filesToDelete = partialPublishProcessor.GetFilesToDelete();
             HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.DocsetOutputPath);
             RemoveInvalidPublishItems(config.PublishFilePath, filesToDelete, logger);
@@ -127,7 +125,7 @@ namespace Microsoft.Docs.LearnValidation
             return isValid;
         }
 
-        private async static Task<ValidationResult> TryDrySync(
+        private static async Task<ValidationResult> TryDrySync(
             string branch,
             string locale,
             string docsetName,
@@ -148,12 +146,13 @@ namespace Microsoft.Docs.LearnValidation
             catch (Exception ex)
             {
                 Console.WriteLine($"[{PluginName}] exception occurs during dry sync step: {ex}");
-                // regard current hierarchy as valid if any unhandled exceptions occurs to avoid blocking build. 
+
+                // regard current hierarchy as valid if any unhandled exceptions occurs to avoid blocking build.
                 return new ValidationResult(branch, locale, true, string.Empty);
             }
         }
 
-        private async static Task<ValidationResult> DrySync(
+        private static async Task<ValidationResult> DrySync(
             string branch,
             string locale,
             string docsetName,
@@ -167,27 +166,25 @@ namespace Microsoft.Docs.LearnValidation
                 Locale = locale,
                 Branch = branch,
                 DocsetName = docsetName,
-                RepoUrl = repoUrl
+                RepoUrl = repoUrl,
             });
-            var request = new HttpRequestMessage
+            using var request = new HttpRequestMessage
             {
                 RequestUri = new Uri(drySyncEndpoint),
                 Method = HttpMethod.Post,
-                Content = new StringContent(body, Encoding.UTF8, "application/json")
+                Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
 
-            using (var client = new HttpClient())
-            {
-                Console.WriteLine($"[{PluginName}] start to call dry-sync...");
-                var sw = Stopwatch.StartNew();
-                var response = await client.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-                var data = await response.Content.ReadAsStringAsync();
-                var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
-                Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds / 1000}s");
+            using var client = new HttpClient();
+            Console.WriteLine($"[{PluginName}] start to call dry-sync...");
+            var sw = Stopwatch.StartNew();
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content.ReadAsStringAsync();
+            var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
+            Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds / 1000}s");
 
-                return results.First(r => string.Equals(r.Locale, Constants.DefaultLocale));
-            }
+            return results.First(r => string.Equals(r.Locale, Constants.DefaultLocale));
         }
 
         private static void RemoveInvalidPublishItems(string publishFilePath, HashSet<string> invalidFiles, LearnValidationLogger logger)

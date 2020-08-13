@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
@@ -31,10 +31,9 @@ namespace Microsoft.Docs.LearnValidation
                                 FromFilePath = normalizedFromFilePath,
                                 ToFilePath = normalizedToFilePath,
                                 DependencyType = dependentInfo.DependencyType,
-                                Version = dependentInfo.Version
+                                Version = dependentInfo.Version,
                             });
                     }
-
                 }
             }
 

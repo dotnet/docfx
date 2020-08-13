@@ -24,22 +24,22 @@ namespace Microsoft.Docs.LearnValidation
             var uidMapping = _hierarchyItems.Where(h => !(h is AchievementValidateModel)).GroupBy(h => h.Uid).ToDictionary(key => key.Key, value => value.First());
             var modules = _hierarchyItems.Where(hi => hi is ModuleValidateModel).Select(hi => hi as ModuleValidateModel);
             var learningpaths = _hierarchyItems.Where(hi => hi is PathValidateModel).Select(hi => hi as PathValidateModel);
-            
-            List<string> invalidFiles = new List<string>();
+
+            var invalidFiles = new List<string>();
 
             // Mark modules
             foreach (var module in modules)
             {
                 if (!module.IsValid || module.Units.Any(u => !uidMapping[u].IsValid))
                 {
-                    if(module.IsValid)
+                    if (module.IsValid)
                     {
                         module.IsValid = false;
                         var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
                         _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, file: module.SourceRelativePath, string.Join(",", invalidUnits));
                     }
 
-                    foreach(var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
+                    foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.LearnValidation
                 var unitsNeedCheck = module.Units.Where(u => !uidMapping.ContainsKey(u) || !uidMapping[u].IsValid).ToList();
                 var unitCantFallback = unitsNeedCheck.Where(u => !_learnValidationHelper.IsUnit(u)).ToList();
 
-                if(unitCantFallback.Any())
+                if (unitCantFallback.Any())
                 {
                     module.IsDeleted = true;
                     _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenCantFallback, file: module.SourceRelativePath, string.Join(", ", unitCantFallback));
@@ -80,6 +80,5 @@ namespace Microsoft.Docs.LearnValidation
 
             return invalidFiles.ToHashSet();
         }
-
     }
 }
