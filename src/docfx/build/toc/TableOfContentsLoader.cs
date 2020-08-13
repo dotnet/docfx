@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,13 +22,15 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
+        private readonly ErrorBuilder _errors;
+        private readonly DocumentProvider _documentProvider;
+        private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
 
         private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)> _cache =
                      new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
-        private static readonly object s_lock = new object();
 
         private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
                    new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
@@ -38,7 +41,10 @@ namespace Microsoft.Docs.Build
             TableOfContentsParser parser,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder,
-            ContentValidator contentValidator)
+            ContentValidator contentValidator,
+            Config config,
+            ErrorBuilder errors,
+            DocumentProvider documentProvider)
         {
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
@@ -46,27 +52,91 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
+            _errors = errors;
+            _documentProvider = documentProvider;
+            _joinTOCConfigs = config.JoinTOC is null
+                ? new Dictionary<string, JoinTOCConfig>()
+                : config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
         public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
-            Load(ErrorBuilder errors, Document file)
+            Load(Document file)
         {
             return _cache.GetOrAdd(file.FilePath, _ =>
             {
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
-                var node = LoadTocFile(file, file, referencedFiles, referencedTocs, errors);
+                var node = LoadTocFile(file, file, referencedFiles, referencedTocs, _errors);
 
+                if (_joinTOCConfigs.TryGetValue(file.FilePath.Path, out var joinTOCConfig) && joinTOCConfig != null)
+                {
+                    if (joinTOCConfig.TopLevelToc != null)
+                    {
+                        node = JoinToc(node, joinTOCConfig.TopLevelToc);
+                    }
+                }
                 return (node, referencedFiles, referencedTocs);
             });
         }
 
-        public void Update(TableOfContentsNode node, FilePath file)
+        private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
         {
-            lock (s_lock)
+            var (topLevelToc, _, _) = Load(_documentProvider.GetDocument(FilePath.Content(new PathString(topLevelTocFilePath))));
+
+            var itemsToMatch = new Dictionary<string, SourceInfo<TableOfContentsNode>>();
+            var duplicatedName = new HashSet<string>();
+            foreach (var child in referenceToc.Items)
             {
-                var (_, referencedFiles, referencedTocs) = _cache[file];
-                _cache[file] = (node, referencedFiles, referencedTocs);
+                var key = child.Value.Name;
+                if (string.IsNullOrEmpty(key))
+                {
+                    _errors.Add(Errors.JsonSchema.MissingAttribute(key, "name"));
+                }
+                else if (!duplicatedName.Add(key!))
+                {
+                    _errors.Add(Errors.TableOfContents.DuplicateJoinTocName(key!));
+                    itemsToMatch.Remove(key!);
+                }
+                else
+                {
+                    itemsToMatch.Add(key!, child);
+                }
+            }
+
+            TraverseAndMerge(topLevelToc, itemsToMatch);
+            return topLevelToc;
+        }
+
+        private void TraverseAndMerge(TableOfContentsNode node, Dictionary<string, SourceInfo<TableOfContentsNode>> itemsToMatch)
+        {
+            if (node.ExtensionData.TryGetValue("children", out var token) && token is JArray array)
+            {
+                node.ExtensionData.Remove("children");
+                foreach (JValue v in array)
+                {
+                    if (v.Value is string pattern)
+                    {
+                        var keysMathed = new HashSet<string>();
+                        foreach (var (key, value) in itemsToMatch)
+                        {
+                            if (key.StartsWith(pattern[0..^1]))
+                            {
+                                node.Items.Add(value);
+                                keysMathed.Add(key);
+                            }
+                        }
+
+                        foreach (var key in keysMathed)
+                        {
+                            itemsToMatch.Remove(key);
+                        }
+                    }
+                }
+            }
+
+            foreach (var child in node.Items)
+            {
+                TraverseAndMerge(child, itemsToMatch);
             }
         }
 

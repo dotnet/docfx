@@ -152,7 +152,9 @@ namespace Microsoft.Docs.Build
             && docsetConfig.CustomizedTasks.TryGetValue("docset_postbuild", out var plugins)
             && plugins.Any(plugin => plugin.EndsWith("TripleCrownValidation.ps1", StringComparison.OrdinalIgnoreCase));
 
-        private static (JObject joinTocMetadata, JArray joinTocConfig) GenerateJoinTocMetadataAndConfig(OpsJoinTocConfig[] configs, PathString buildSourceFolder)
+        private static (JObject joinTocMetadata, JArray joinTocConfig) GenerateJoinTocMetadataAndConfig(
+            OpsJoinTocConfig[] configs,
+            PathString buildSourceFolder)
         {
             var conceptualToc = new JObject();
             var refToc = new JObject();
