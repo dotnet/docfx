@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Markdig.Syntax;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -38,7 +39,7 @@ namespace Microsoft.Docs.Build
             _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
         }
 
-        public void ValidateImageLink(Document file, SourceInfo<string> link, string? altText)
+        public void ValidateImageLink(Document file, SourceInfo<string> link, MarkdownObject? origin, string? altText)
         {
             // validate image link and altText here
             if (_links.TryAdd((file.FilePath, link)) && TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
@@ -51,6 +52,7 @@ namespace Microsoft.Docs.Build
                         AltText = altText,
                         IsImage = true,
                         SourceInfo = link.Source,
+                        ParentSourceInfoList = origin?.GetInclusionStack() ?? new List<object?>(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }

@@ -321,12 +321,12 @@ namespace Microsoft.Docs.Build
                 altText = ToPlainText(origin);
             }
 
-            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), altText);
+            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText);
         }
 
-        private string GetImageLink(SourceInfo<string> href, string? altText)
+        private string GetImageLink(SourceInfo<string> href, MarkdownObject? origin, string? altText)
         {
-            _contentValidator.ValidateImageLink((Document)InclusionContext.File, href, altText);
+            _contentValidator.ValidateImageLink((Document)InclusionContext.RootFile, href, origin, altText);
             var link = GetLink(href);
             return link;
         }

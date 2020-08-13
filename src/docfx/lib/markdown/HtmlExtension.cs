@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             this MarkdownPipelineBuilder builder,
             Func<ErrorBuilder> getErrors,
             Func<SourceInfo<string>, string> getLink,
-            Func<SourceInfo<string>, string?, string> getImageLink,
+            Func<SourceInfo<string>, MarkdownObject?, string?, string> getImageLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
             Func<FilePath, bool> isArchived)
         {
