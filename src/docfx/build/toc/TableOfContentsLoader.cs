@@ -114,12 +114,13 @@ namespace Microsoft.Docs.Build
                 node.ExtensionData.Remove("children");
                 foreach (JValue v in array)
                 {
-                    if (v.Value is string pattern)
+                    if (v.Value is string str)
                     {
                         var keysMatched = new HashSet<string>();
+                        var pattern = str[0..^1];
                         foreach (var (key, value) in itemsToMatch)
                         {
-                            if (key.StartsWith(pattern[0..^1]))
+                            if (key.StartsWith(pattern))
                             {
                                 node.Items.Add(value);
                                 keysMatched.Add(key);
