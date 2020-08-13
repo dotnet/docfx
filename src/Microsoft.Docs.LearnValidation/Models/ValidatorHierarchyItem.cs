@@ -13,7 +13,7 @@ namespace Microsoft.Docs.LearnValidation
         [JsonProperty("source_relative_path")]
         public string SourceRelativePath { get; set; }
 
-        public bool IsValid { get; set ; }
+        public bool IsValid { get; set; }
 
         public bool IsDeleted { get; set; }
 
@@ -29,6 +29,5 @@ namespace Microsoft.Docs.LearnValidation
 
         [JsonProperty("page_kind")]
         public string PageKind { get; set; }
-
     }
 }

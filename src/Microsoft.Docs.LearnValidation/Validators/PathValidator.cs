@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Common;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Common;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
@@ -17,13 +17,6 @@ namespace Microsoft.Docs.LearnValidation
             : base(manifestItems, basePath, logger)
         {
             LearnValidationHelper = learnValidationHelper;
-        }
-
-        protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
-        {
-            var path = JsonConvert.DeserializeObject<PathValidateModel>(validatorHierarchyItem.ServiceData);
-            SetHierarchyData(path, validatorHierarchyItem, manifestItem);
-            return path;
         }
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
@@ -62,7 +55,10 @@ namespace Microsoft.Docs.LearnValidation
 
                 var childrenNotModule = path.Modules.Except(childrenCantFind).Where(m =>
                 {
-                    if (!fullItemsDict.ContainsKey(m)) return false;
+                    if (!fullItemsDict.ContainsKey(m))
+                    {
+                        return false;
+                    }
 
                     fullItemsDict[m].Parent = path;
                     return !(fullItemsDict[m] is ModuleValidateModel);
@@ -85,6 +81,13 @@ namespace Microsoft.Docs.LearnValidation
             }
 
             return validationResult;
+        }
+
+        protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
+        {
+            var path = JsonConvert.DeserializeObject<PathValidateModel>(validatorHierarchyItem.ServiceData);
+            SetHierarchyData(path, validatorHierarchyItem, manifestItem);
+            return path;
         }
     }
 }
