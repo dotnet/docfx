@@ -311,7 +311,7 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[]? MAMLMonikerPath { get; private set; }
 
-        public JoinTOCConfig[]? JoinTOC { get; set; }
+        public JoinTOCConfig[]? JoinTOC { get; private set; }
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
