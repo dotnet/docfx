@@ -5,17 +5,27 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class LearnValidationConfig
     {
-        public readonly string RepoUrl;
-        public readonly string RepoBranch;
-        public readonly string DocsetName;
-        public readonly string DocsetPath;
-        public readonly string DocsetOutputPath;
-        public readonly string PublishFilePath;
-        public readonly string DependencyFilePath;
-        public readonly string ManifestFilePath;
-        public readonly string Environment;
-        public readonly string FallbackDocsetPath;
-        public readonly bool IsLocalizationBuild;
+        public string RepoUrl { get; }
+
+        public string RepoBranch { get; }
+
+        public string DocsetName { get; }
+
+        public string DocsetPath { get; }
+
+        public string DocsetOutputPath { get; }
+
+        public string PublishFilePath { get; }
+
+        public string DependencyFilePath { get; }
+
+        public string ManifestFilePath { get; }
+
+        public string Environment { get; }
+
+        public string FallbackDocsetPath { get; }
+
+        public bool IsLocalizationBuild { get; }
 
         public LearnValidationConfig(
             string repoUrl,

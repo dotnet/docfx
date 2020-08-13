@@ -1,22 +1,26 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
     public abstract class ValidatorBase
     {
-        protected LearnValidationLogger Logger { get; }
-        protected List<LegacyManifestItem> ManifestItems { get; }
-        protected string BathPath { get; }
         public List<IValidateModel> Items { get; protected set; } = new List<IValidateModel>();
 
+        protected LearnValidationLogger Logger { get; }
+
+        protected List<LegacyManifestItem> ManifestItems { get; }
+
+        protected string BathPath { get; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2214:Do not call overridable methods in constructors", Justification = "Legacy")]
         public ValidatorBase(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
         {
             ManifestItems = manifestItems;
@@ -27,11 +31,16 @@ namespace Microsoft.Docs.LearnValidation
         }
 
         public abstract bool Validate(Dictionary<string, IValidateModel> fullItemsDict);
+
         protected abstract HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem);
 
         protected virtual void ExtractItems()
         {
-            if (ManifestItems == null) return;
+            if (ManifestItems == null)
+            {
+                return;
+            }
+
             var items = new IValidateModel[ManifestItems.Count];
             Parallel.For(0, ManifestItems.Count, i =>
             {
