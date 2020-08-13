@@ -1,18 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Xunit;
-
     public class MonikerRangeTest
     {
-        static public string LoggerPhase = "MonikerRange";
-
         [Fact]
         public void MonikerRangeTestGeneral()
         {
-            //arrange
+            // arrange
             var source = @"# Article 2
 
 Shared content.
@@ -53,11 +51,10 @@ Inline ::: should not end moniker zone.</p>
             TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "fake.md");
         }
 
-
         [Fact]
         public void MonikerRangeTestInvalid()
         {
-            //arrange
+            // arrange
             var source = @"::: moniker range=""azure-rest-1.0";
 
             // assert
@@ -69,7 +66,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void MonikerRangeTestNotClosed()
         {
-            //arrange
+            // arrange
             var source1 = @"::: moniker range=""start""";
             var source2 = @"::: moniker range=""start""
 ::: moniker-end";

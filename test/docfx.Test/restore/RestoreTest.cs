@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void RestoreAgainstFileShouldNotCrash()
         {
-            Docfx.Run(new [] { "restore", "docfx.Test.dll" });
+            Docfx.Run(new[] { "restore", "docfx.Test.dll" });
         }
     }
 }

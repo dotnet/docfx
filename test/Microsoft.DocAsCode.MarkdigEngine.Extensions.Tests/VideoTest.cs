@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using Xunit;
-
     public class VideoTest
     {
         [Theory]
@@ -17,7 +16,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <iframe src=""https://www.youtube-nocookie.com/embed/wV11_nbT2XE"" allowFullScreen=""true"" frameBorder=""0"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020""></iframe>
 </div></p>
 ")]
-        [InlineData(@":::video source=""https://www.youtube.com/embed/wV11_nbT2XE"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::
+        [InlineData(
+            @":::video source=""https://www.youtube.com/embed/wV11_nbT2XE"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::
 :::video source=""https://channel9.msdn.com/Shows/XamarinShow/Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin/player?nocookie=true"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" max-width=""400"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::
 ", @"<p><div class=""embeddedvideo"">
 <iframe src=""https://www.youtube-nocookie.com/embed/wV11_nbT2XE"" allowFullScreen=""true"" frameBorder=""0"" title=""Video: Build-Your-First-Android-App-with-Visual-Studio-2019-and-Xamarin"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"">
@@ -57,7 +57,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         {
             TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-video", "invalid-video" });
         }
-
-
     }
 }

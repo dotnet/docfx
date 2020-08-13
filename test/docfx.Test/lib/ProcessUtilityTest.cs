@@ -186,18 +186,18 @@ namespace Microsoft.Docs.Build
                         count++;
                         Assert.Equal(1, count);
                         barrier.SignalAndWait(); // 1
-                            barrier.SignalAndWait(); // 2
-                            Assert.Equal(2, count);
+                        barrier.SignalAndWait(); // 2
+                        Assert.Equal(2, count);
                     }
                 }),
                 Task.Run(() =>
                 {
                     barrier.SignalAndWait(); // 1
-                        using (InterProcessReaderWriterLock.CreateReaderLock(name))
+                    using (InterProcessReaderWriterLock.CreateReaderLock(name))
                     {
                         count++;
                         barrier.SignalAndWait(); // 2
-                            Assert.Equal(2, count);
+                        Assert.Equal(2, count);
                     }
                 }));
         }

@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private TextWriter CreateOutput(string outputPath)
+        private static TextWriter CreateOutput(string outputPath)
         {
             var outputFilePath = Path.GetFullPath(outputPath);
 

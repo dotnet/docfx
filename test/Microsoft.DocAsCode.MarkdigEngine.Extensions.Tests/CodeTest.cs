@@ -1,15 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using Xunit;
-
     public class CodeTest
     {
-        static public string LoggerPhase = "Code";
-        static public string contentCSharp = @"using System;
+        private static string contentCSharp = @"using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -218,7 +217,8 @@ namespace TableSnippets
         }
     }
 }";
-        static public string contentCSharp2 = @"using System;
+
+        private static string contentCSharp2 = @"using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -378,7 +378,8 @@ namespace ChangeFeedSample
         }
     }
 }";
-        static public string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
+
+        private static string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -448,7 +449,8 @@ namespace TagHelpersBuiltIn
         }
     }
 }";
-        static public string contentASPNet = @"@{
+
+        private static string contentASPNet = @"@{
     ViewData[""Title""] = ""Anchor Tag Helper"";
 }
 
@@ -652,7 +654,8 @@ namespace TagHelpersBuiltIn
         </tr>
     </tfoot>
 </table>";
-        static public string contentVB = @"'<Snippet1>
+
+        private static string contentVB = @"'<Snippet1>
 Class ADSetupInformation
 
     Shared Sub Main()
@@ -711,7 +714,8 @@ Class AppDomain2
 End Class
 '</snippet3>
 ";
-        static public string contentCPP = @"//<Snippet1>
+
+        private static string contentCPP = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -772,7 +776,8 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
-        static public string contentCPP2 = @"//<Snippet1>
+
+        private static string contentCPP2 = @"//<Snippet1>
 using namespace System;
 using namespace System::Collections::Generic;
 
@@ -947,7 +952,8 @@ Remove(""doc"")
 Key ""doc"" is not found.
  */
 //</ Snippet1  >";
-        static public string contentCrazy = @"//<Snippet1>
+
+        private static string contentCrazy = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -1008,7 +1014,8 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
-        static public string contentSQL = @"-- <everything>
+
+        private static string contentSQL = @"-- <everything>
 --<students>
 SELECT * FROM Students
 WHERE Grade = 12
@@ -1021,7 +1028,8 @@ WHERE Grade = 12
 AND Class = 'Math'
 --</teachers>
 --</everything>";
-        static public string contentPython = @"#<everything>
+
+        private static string contentPython = @"#<everything>
 #<first>
 from flask import Flask
 app = Flask(__name__)
@@ -1034,21 +1042,24 @@ def hello():
 #</second>
 #</everything>
 ";
-        static public string contentBatch = @"REM <snippet>
+
+        private static string contentBatch = @"REM <snippet>
 :Label1
 	:Label2
 :: Comment line 3
 REM </snippet>
 	:: Comment line 4
 IF EXIST C:\AUTOEXEC.BAT REM AUTOEXEC.BAT exists";
-        static public string contentErlang = @"-module(hello_world).
+
+        private static string contentErlang = @"-module(hello_world).
 -compile(export_all).
 
 % <snippet>
 hello() ->
     io:format(""hello world~n"").
 % </snippet>";
-        static public string contentLisp = @";<everything>
+
+        private static string contentLisp = @";<everything>
 USER(64): (member 'b '(perhaps today is a good day to die)) ; test fails
 NIL
 ;<inner>
@@ -1056,7 +1067,8 @@ USER(65): (member 'a '(perhaps today is a good day to die)) ; returns non-NIL
 '(a good day to die)
 ; </inner>
 ;</everything>";
-        static public string contentRuby = @"source 'https://rubygems.org'
+
+        private static string contentRuby = @"source 'https://rubygems.org'
 git_source(:github) { |repo| ""https://github.com/#{repo}.git"" }
 
 ruby '2.6.5'
@@ -1118,7 +1130,8 @@ gem 'httparty', '~> 0.17.1'
 gem 'activerecord-session_store', '~> 1.1'
 # </GemFileSnippet>
 ";
-        static public string contentCSS = @"body {
+
+        private static string contentCSS = @"body {
   padding-top: 70px;
 }
 
@@ -1268,7 +1281,8 @@ int main()
 }
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cpp"" id=""snippet2"":::
+        [InlineData(
+            @":::code source=""source.cpp"" id=""snippet2"":::
 
 hi
 :::code source=""source.cpp"" id=""snippet1"":::
@@ -1333,7 +1347,8 @@ Application base of MyDomain:
  */
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source2.cs"" id=""snippet_UseMvc"":::
+        [InlineData(
+            @":::code source=""source2.cs"" id=""snippet_UseMvc"":::
 ", @"<pre>
 <code class=""lang-csharp"">app.UseMvc(routes =&gt;
 {
@@ -1347,13 +1362,15 @@ Application base of MyDomain:
         template: &quot;{controller=Home}/{action=Index}/{id?}&quot;);
 });
 </code></pre>")]
-        [InlineData(@":::code source=""source2.cs"" id=""snippet_AllowAreas"":::
+        [InlineData(
+            @":::code source=""source2.cs"" id=""snippet_AllowAreas"":::
 ", @"<pre>
 <code class=""lang-csharp"">services.AddMvc()
         .AddRazorPagesOptions(options =&gt; options.AllowAreas = true);
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.vb"" id=""snippet3"":::
+        [InlineData(
+            @":::code source=""source.vb"" id=""snippet3"":::
 ", @"<pre>
 <code class=""lang-vb"">Imports System.Reflection
 
@@ -1367,7 +1384,8 @@ Class AppDomain2
 End Class
 </code></pre>
 ")]
-        [InlineData(@":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
+        [InlineData(
+            @":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
 ", @"<pre>
 <code class=""lang-cshtml"">&lt;tbody&gt;
     &lt;tr&gt;
@@ -1528,14 +1546,16 @@ End Class
 &lt;/tbody&gt;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.sql"" id=""teachers"":::
+        [InlineData(
+            @":::code source=""source.sql"" id=""teachers"":::
 ", @"<pre>
 <code class=""lang-sql"">SELECT * FROM Teachers
 WHERE Grade = 12
 AND Class = &#39;Math&#39;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.sql"" id=""everything"":::
+        [InlineData(
+            @":::code source=""source.sql"" id=""everything"":::
 ", @"<pre>
 <code class=""lang-sql"">SELECT * FROM Students
 WHERE Grade = 12
@@ -1546,7 +1566,8 @@ WHERE Grade = 12
 AND Class = &#39;Math&#39;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.py"" id=""everything"":::
+        [InlineData(
+            @":::code source=""source.py"" id=""everything"":::
 ", @"<pre>
 <code class=""lang-python"">from flask import Flask
 app = Flask(__name__)
@@ -1556,19 +1577,22 @@ def hello():
     return &quot;Hello World!&quot;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.bat"" id=""snippet"":::
+        [InlineData(
+            @":::code source=""source.bat"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-batchfile"">:Label1
     :Label2
 :: Comment line 3
 </code></pre>")]
-        [InlineData(@":::code source=""source.erl"" id=""snippet"":::
+        [InlineData(
+            @":::code source=""source.erl"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-erlang"">hello() -&gt;
     io:format(&quot;hello world~n&quot;).
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.lsp"" id=""everything"":::
+        [InlineData(
+            @":::code source=""source.lsp"" id=""everything"":::
 ", @"<pre>
 <code class=""lang-lisp"">USER(64): (member &#39;b &#39;(perhaps today is a good day to die)) ; test fails
 NIL
@@ -1576,7 +1600,8 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
 &#39;(a good day to die)
 </code></pre>
 ")]
-        [InlineData(@"An example of a delegate would be:
+        [InlineData(
+            @"An example of a delegate would be:
 
 :::code language=""csharp"" source=""source3.cs"" id=""Delegate"":::", @"<p>An example of a delegate would be:</p>
 <pre>
@@ -1776,6 +1801,7 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         {
             var filename = string.Empty;
             var content = string.Empty;
+
             // arrange
             if (source.Contains("source.cs"))
             {
@@ -1853,9 +1879,8 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
             // assert
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
-                { filename, content }
+                { filename, content },
             });
-            
         }
 
         [Theory]
@@ -1887,7 +1912,8 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
             {
                 filename = "source.crazy";
                 content = contentCrazy;
-            } else
+            }
+            else
             {
                 filename = "source.missing";
                 content = string.Empty;
@@ -1896,12 +1922,10 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
             // act
 
             // assert
-            TestUtility.VerifyMarkup(source, null, errors:new string[] { "invalid-code" }, files: new Dictionary<string, string>
+            TestUtility.VerifyMarkup(source, null, errors: new string[] { "invalid-code" }, files: new Dictionary<string, string>
             {
-                { filename, content }
+                { filename, content },
             });
-
         }
-
     }
 }

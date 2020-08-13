@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public string? SplitItemsBy { get; set; }
 
-        public bool ShouldSerializeSplitItemsBy() => false;
+        public static bool ShouldSerializeSplitItemsBy() => false;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public MonikerList Monikers { get; set; }

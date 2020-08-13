@@ -15,19 +15,6 @@ using Yunit;
 
 namespace Microsoft.Docs.Build
 {
-    public partial class TestGitCommit
-    {
-        public string Message { get; set; }
-
-        public string Author { get; set; } = "docfx";
-
-        public string Email { get; set; } = "docfx@microsoft.com";
-
-        public DateTimeOffset Time { get; set; } = new DateTimeOffset(2018, 10, 30, 0, 0, 0, TimeSpan.Zero);
-
-        public Dictionary<string, string> Files { get; } = new Dictionary<string, string>();
-    }
-
     internal partial class TestUtility
     {
         public static void MakeDebugAssertThrowException()
@@ -64,30 +51,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void CreateZipFile(KeyValuePair<string, string> file, string filePath)
-        {
-            var token = YamlUtility.ToJToken(file.Value);
-            if (token is JObject obj)
-            {
-                using var memoryStream = new MemoryStream();
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (JProperty child in obj.Children())
-                    {
-                        var entry = archive.CreateEntry(child.Name);
-
-                        using var entryStream = entry.Open();
-                        using var sw = new StreamWriter(entryStream);
-                        sw.Write(child.Value);
-                    }
-                }
-
-                using var fileStream = new FileStream(filePath, FileMode.Create);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                memoryStream.CopyTo(fileStream);
-            }
-        }
-
         public static void CreateGitRepository(
             string path,
             TestGitCommit[] commits,
@@ -118,8 +81,8 @@ namespace Microsoft.Docs.Build
                 foreach (var file in commit.Files)
                 {
                     var content = ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "";
-                    var blob = repo.ObjectDatabase.CreateBlob(
-                        new MemoryStream(Encoding.UTF8.GetBytes(content)));
+                    using var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+                    var blob = repo.ObjectDatabase.CreateBlob(stream);
 
                     tree.Add(file.Key, blob, Mode.NonExecutableFile);
                 }
@@ -178,6 +141,30 @@ namespace Microsoft.Docs.Build
                 }
             }
             return value;
+        }
+
+        private static void CreateZipFile(KeyValuePair<string, string> file, string filePath)
+        {
+            var token = YamlUtility.ToJToken(file.Value);
+            if (token is JObject obj)
+            {
+                using var memoryStream = new MemoryStream();
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (JProperty child in obj.Children())
+                    {
+                        var entry = archive.CreateEntry(child.Name);
+
+                        using var entryStream = entry.Open();
+                        using var sw = new StreamWriter(entryStream);
+                        sw.Write(child.Value);
+                    }
+                }
+
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                memoryStream.CopyTo(fileStream);
+            }
         }
 
         private class Disposable : IDisposable

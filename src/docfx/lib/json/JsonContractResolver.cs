@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void DoNotSerializeEmptyArray(JsonProperty property)
+        private static void DoNotSerializeEmptyArray(JsonProperty property)
         {
             if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && !(property.PropertyType == typeof(string)))
             {

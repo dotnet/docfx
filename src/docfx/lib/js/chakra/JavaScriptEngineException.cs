@@ -1,8 +1,10 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
 namespace ChakraHost.Hosting
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     ///     An exception that occurred in the workings of the JavaScript engine itself.
     /// </summary>
@@ -24,16 +26,6 @@ namespace ChakraHost.Hosting
         /// <param name="message">The error message.</param>
         public JavaScriptEngineException(JavaScriptErrorCode code, string message) :
             base(code, message)
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptEngineException"/> class.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        private JavaScriptEngineException(string message, Exception innerException) :
-            base(message, innerException)
         {
         }
     }

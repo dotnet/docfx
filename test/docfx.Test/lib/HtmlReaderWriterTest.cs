@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
             writer.WriteStartTag("a", attributes: default, isSelfClosing: false);
             writer.WriteStartTag(
                 "a",
-                new []
+                new[]
                 {
                     new HtmlAttribute("b"),
                     new HtmlAttribute("b", "c"),
@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
                 new[]
                 {
                     new HtmlAttribute("href", "#to", HtmlAttributeType.Unquoted),
-                    new HtmlAttribute("name", "to", HtmlAttributeType.DoubleQuoted)
+                    new HtmlAttribute("name", "to", HtmlAttributeType.DoubleQuoted),
                 },
                 isSelfClosing: false);
 

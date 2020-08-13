@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace Microsoft.Docs.Build
     public static class DocfxTest
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
+        private static readonly ConcurrentDictionary<string, object> s_locks = new ConcurrentDictionary<string, object>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
 
@@ -55,7 +57,7 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("OS not supported");
             }
 
-            lock (string.Intern($"{test.FilePath}-{test.Ordinal:D2}"))
+            lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
                 var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
 
@@ -175,7 +177,7 @@ namespace Microsoft.Docs.Build
                 {
                     "build", docsetPath,
                     "--output", randomOutputPath,
-                     "--log", Path.Combine(randomOutputPath, ".errors.log"),
+                    "--log", Path.Combine(randomOutputPath, ".errors.log"),
                     dryRun ? "--dry-run" : null,
                     spec.Legacy ? "--legacy" : null,
                     spec.NoRestore ? "--no-restore" : null,

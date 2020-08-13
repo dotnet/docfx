@@ -68,7 +68,7 @@ namespace Microsoft.Docs.LearnValidation
             item.ServiceData = validatorHierarchyItem.ServiceData;
         }
 
-        protected void MergeToHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, HierarchyItem hierarchyItem)
+        protected static void MergeToHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, HierarchyItem hierarchyItem)
         {
             hierarchyItem.Abstract = validatorHierarchyItem.Abstract;
             hierarchyItem.Branch = validatorHierarchyItem.Branch;
