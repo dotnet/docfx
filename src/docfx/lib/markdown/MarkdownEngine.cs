@@ -324,7 +324,7 @@ namespace Microsoft.Docs.Build
             return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText);
         }
 
-        private string GetImageLink(SourceInfo<string> href, MarkdownObject? origin, string? altText)
+        private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText)
         {
             _contentValidator.ValidateImageLink((Document)InclusionContext.RootFile, href, origin, altText);
             var link = GetLink(href);

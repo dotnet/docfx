@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
         }
 
-        public void ValidateImageLink(Document file, SourceInfo<string> link, MarkdownObject? origin, string? altText)
+        public void ValidateImageLink(Document file, SourceInfo<string> link, MarkdownObject origin, string? altText)
         {
             // validate image link and altText here
             if (_links.TryAdd((file.FilePath, link)) && TryGetValidationDocumentType(file, file.Mime.Value, false, out var documentType))
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                         AltText = altText,
                         IsImage = true,
                         SourceInfo = link.Source,
-                        ParentSourceInfoList = origin?.GetInclusionStack() ?? new List<object?>(),
+                        ParentSourceInfoList = origin.GetInclusionStack(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }
