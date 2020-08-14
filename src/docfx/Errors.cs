@@ -378,9 +378,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error InvalidTocLevel(SourceInfo? source, int from, int to)
                 => new Error(ErrorLevel.Error, "invalid-toc-level", $"The toc level can't be skipped from {from} to {to}.", source);
-
-            public static Error DuplicateJoinTocName(SourceInfo<string> name)
-                => new Error(ErrorLevel.Warning, "duplicate-join-toc-name", $"Join TOC name '{name}' is duplicated", name);
         }
 
         public static class Xref

@@ -39,6 +39,8 @@ namespace Microsoft.Docs.Build
 
         public List<SourceInfo<TableOfContentsNode>> Items { get; set; } = new List<SourceInfo<TableOfContentsNode>>();
 
+        public string[] Children { get; set; } = Array.Empty<string>();
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
 
@@ -62,6 +64,7 @@ namespace Microsoft.Docs.Build
             SplitItemsBy = item.SplitItemsBy;
             Items = item.Items;
             Document = item.Document;
+            Children = item.Children;
         }
     }
 }
