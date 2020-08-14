@@ -161,15 +161,13 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(config.ConceptualTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
                 {
                     refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
-                    var lastIndexOfTocYml = config.ConceptualTOC.LastIndexOf("TOC.");
-                    refToc[$"{Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC.Substring(0, lastIndexOfTocYml))}_splitted/**"] =
+                    refToc[$"{Path.GetDirectoryName(config.ConceptualTOC)}/_splitted/**"] =
                         config.ReferenceTOCUrl;
                 }
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
                     conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
-                    var lastIndexOfTocYml = config.ReferenceTOC.LastIndexOf("TOC.");
-                    conceptualToc[$"{Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC.Substring(0, lastIndexOfTocYml))}_splitted/**"] =
+                    conceptualToc[$"{Path.GetDirectoryName(config.ReferenceTOC)}/_splitted/**"] =
                         config.ConceptualTOCUrl;
                 }
             }
