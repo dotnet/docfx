@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool ValidateType(JsonSchema schema, string name, JToken token, List<Error> errors)
+        private static bool ValidateType(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Type != null)
             {
@@ -247,7 +247,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateBooleanSchema(JsonSchema schema, string name, JToken token, List<Error> errors)
+        private static void ValidateBooleanSchema(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema == JsonSchema.FalseSchema)
             {
@@ -337,7 +337,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateConst(JsonSchema schema, string name, JToken token, List<Error> errors)
+        private static void ValidateConst(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Const != null && !JsonUtility.DeepEqualsComparer.Equals(schema.Const, token))
             {
@@ -345,7 +345,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateEnum(JsonSchema schema, string name, JToken token, List<Error> errors)
+        private static void ValidateEnum(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
             {
@@ -377,7 +377,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateRequired(JsonSchema schema, JObject map, List<Error> errors)
+        private static void ValidateRequired(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var key in schema.Required)
             {
@@ -388,7 +388,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateStrictRequired(JsonSchema schema, JObject map, List<Error> errors)
+        private static void ValidateStrictRequired(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var key in schema.StrictRequired)
             {
@@ -399,7 +399,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool IsStrictHaveValue(JToken value)
+        private static bool IsStrictHaveValue(JToken value)
         {
             return value switch
             {
@@ -412,10 +412,10 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private bool IsStrictContain(JObject map, string key) =>
+        private static bool IsStrictContain(JObject map, string key) =>
             map.TryGetValue(key, out var value) && IsStrictHaveValue(value);
 
-        private void ValidateEither(JsonSchema schema, JObject map, List<Error> errors)
+        private static void ValidateEither(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var keys in schema.Either)
             {
@@ -441,7 +441,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidatePrecludes(JsonSchema schema, JObject map, List<Error> errors)
+        private static void ValidatePrecludes(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var keys in schema.Precludes)
             {
@@ -457,7 +457,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDateFormat(JsonSchema schema, string name, JValue scalar, string dateString, List<Error> errors)
+        private static void ValidateDateFormat(JsonSchema schema, string name, JValue scalar, string dateString, List<Error> errors)
         {
             if (!string.IsNullOrEmpty(schema.DateFormat) && !string.IsNullOrWhiteSpace(dateString))
             {
@@ -490,7 +490,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDateRange(JsonSchema schema, string name, JValue scalar, DateTime date, string dateString, List<Error> errors)
+        private static void ValidateDateRange(JsonSchema schema, string name, JValue scalar, DateTime date, string dateString, List<Error> errors)
         {
             var diff = date - DateTime.UtcNow;
 
@@ -500,7 +500,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDeprecated(JsonSchema schema, string name, JToken token, List<Error> errors)
+        private static void ValidateDeprecated(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (IsStrictHaveValue(token) && schema.ReplacedBy != null)
             {
@@ -622,7 +622,7 @@ namespace Microsoft.Docs.Build
 
         // For string type: name = 'topic', output = ('topic', 0) or name = 'topic[0]', output = ('topic', 0)
         // For array type: name = 'topic[0]', output = ('topic', 0) or name = 'topic[1]', output = ('topic', 1) or ...
-        private (string, int) GetFieldNameAndIndex(string name)
+        private static (string, int) GetFieldNameAndIndex(string name)
         {
             if (name.Contains('[') && name.Contains(']'))
             {

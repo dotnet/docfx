@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Markdig;
+using Markdig.Syntax;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using Markdig;
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-    using Xunit;
-
     public static class TestUtility
     {
         public static void VerifyMarkup(
@@ -22,12 +22,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             bool lineNumber = false,
             string filePath = "test.md",
             Dictionary<string, string> tokens = null,
-            Dictionary<string, string> files = null,
-            Action<MarkdownObject> verifyAST = null)
+            Dictionary<string, string> files = null)
         {
-            errors = errors ?? Array.Empty<string>();
-            tokens = tokens ?? new Dictionary<string, string>();
-            files = files ?? new Dictionary<string, string>();
+            errors ??= Array.Empty<string>();
+            tokens ??= new Dictionary<string, string>();
+            files ??= new Dictionary<string, string>();
 
             var actualErrors = new List<string>();
             var actualDependencies = new HashSet<string>();
@@ -35,9 +34,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var markdownContext = new MarkdownContext(
                 getToken: key => tokens.TryGetValue(key, out var value) ? value : null,
                 logInfo: (a, b, c, d) => { },
-                logSuggestion: Log("suggestion"),
-                logWarning: Log("warning"),
-                logError: Log("error"),
+                logSuggestion: Log(),
+                logWarning: Log(),
+                logError: Log(),
                 readFile: ReadFile);
 
             var pipelineBuilder = new MarkdownPipelineBuilder()
@@ -70,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 }
             }
 
-            MarkdownContext.LogActionDelegate Log(string level)
+            MarkdownContext.LogActionDelegate Log()
             {
                 return (code, message, origin, line) => actualErrors.Add(code);
             }

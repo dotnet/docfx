@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
             return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).First();
         }
 
-        private bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
+        private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
         {
             var isOverlapping = false;
             overlappingMonikers = new HashSet<string>();

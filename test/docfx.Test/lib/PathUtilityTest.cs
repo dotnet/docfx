@@ -123,9 +123,14 @@ namespace Microsoft.Docs.Build
         public static void CreateDirectoryFromFilePath(string filePath, bool isDirectoryCreated)
         {
             if (Directory.Exists(filePath))
+            {
                 Directory.Delete(filePath);
+            }
+
             if (File.Exists(filePath))
+            {
                 File.Delete(filePath);
+            }
 
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
             Assert.Equal(Directory.Exists(Path.GetDirectoryName(filePath)), isDirectoryCreated);

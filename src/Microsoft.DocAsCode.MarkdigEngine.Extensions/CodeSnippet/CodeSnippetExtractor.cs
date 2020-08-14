@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return result;
         }
 
-        private bool MatchTag(string line, string template, out string tagName, bool containTagname = true)
+        private static bool MatchTag(string line, string template, out string tagName, bool containTagname = true)
         {
             tagName = string.Empty;
             if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template))

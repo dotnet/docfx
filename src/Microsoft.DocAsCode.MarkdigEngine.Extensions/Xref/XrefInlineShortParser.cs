@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Linq;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Renderers.Html;
@@ -40,7 +39,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-        private bool MatchXrefShortcut(InlineProcessor processor, ref StringSlice slice)
+        private static bool MatchXrefShortcut(InlineProcessor processor, ref StringSlice slice)
         {
             if (!slice.CurrentChar.IsAlpha())
             {
@@ -88,7 +87,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchXrefShortcutWithQuote(InlineProcessor processor, ref StringSlice slice)
+        private static bool MatchXrefShortcutWithQuote(InlineProcessor processor, ref StringSlice slice)
         {
             var saved = slice;
 

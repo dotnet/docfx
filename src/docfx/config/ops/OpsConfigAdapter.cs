@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private string GetXrefMapApiEndpoint(string xrefEndpoint)
+        private static string GetXrefMapApiEndpoint(string xrefEndpoint)
         {
             var environment = DocsEnvironment;
             if (!string.IsNullOrEmpty(xrefEndpoint) &&
