@@ -86,11 +86,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (filePath.OriginPath != null)
+            if (filePath.OriginalPath != null)
             {
                 foreach (var (glob, key, value) in _rules)
                 {
-                    if (glob(filePath.OriginPath.Path))
+                    if (glob(filePath.OriginalPath.Path))
                     {
                         fileMetadata.SetProperty(key, value);
                     }

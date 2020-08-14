@@ -33,7 +33,10 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public FileOrigin Origin { get; }
 
-        public FilePath? OriginPath { get; }
+        /// <summary>
+        /// Get the original path for splited files.
+        /// </summary>
+        public FilePath? OriginalPath { get; }
 
         /// <summary>
         /// Indicate if the file is from git commit history.
@@ -54,7 +57,7 @@ namespace Microsoft.Docs.Build
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
         }
 
-        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers, FilePath? originPath = null)
+        private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers, FilePath? originalPath = null)
         {
             Path = path;
             Origin = origin;
@@ -62,7 +65,7 @@ namespace Microsoft.Docs.Build
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
             Monikers = monikers;
-            OriginPath = originPath;
+            OriginalPath = originalPath;
 
             _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, Monikers);
         }
