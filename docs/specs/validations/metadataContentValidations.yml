@@ -1979,7 +1979,7 @@ inputs:
           {
             "name": "Images",
             "type": "ImageAltTextDuplicated",
-            "message": "Alt text '{0}' is duplicated. Within an article, alt text must be unique.",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2044,7 +2044,7 @@ inputs:
           {
             "name": "Images",
             "type": "ImageAltTextDuplicated",
-            "message": "Alt text '{0}' is duplicated. Within an article, alt text must be unique.",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2082,9 +2082,9 @@ outputs:
   pig4.jpg:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique. Duplicated altText is in included files: 'a.md(4,1) -> b.md(2,1)'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique. Duplicated altText is in included files: 'a.md(4,1) -> b.md(3,11)'.","file":"b.md","line":3,"end_line":3,"column":11,"end_column":19}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique. Duplicated altText is in included files: 'a.md(4,1) -> b.md(4,1)'.","file":"b.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(2,1)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(3,11)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":3,"end_line":3,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(4,1)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":4,"end_line":4,"column":1,"end_column":1}
 ---
 # Content Validation - image altText missing
 inputs:
@@ -2150,7 +2150,7 @@ inputs:
         "rules": [
           {
             "type": "ImageAltTextBadLength",
-            "message": "AltText '{0}' is out of range at {1} characters. AltText must be between {2} and {3} characters.",
+            "message": "AltText {0} is out of range at {1} characters. AltText must be between {2} and {3} characters.",
             "code": "image-altText-with-badlength",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2205,7 +2205,7 @@ inputs:
         "rules": [
           {
             "type": "ImageAltTextEqualsFilename",
-            "message": "AltText '{0}' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
+            "message": "AltText {0} is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
             "code": "altText-equal-filename",
             "severity": "SUGGESTION",
             "exclusions": [
