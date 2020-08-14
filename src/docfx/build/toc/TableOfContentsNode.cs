@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,6 +39,10 @@ namespace Microsoft.Docs.Build
 
         public List<SourceInfo<TableOfContentsNode>> Items { get; set; } = new List<SourceInfo<TableOfContentsNode>>();
 
+        public string[] Children { get; set; } = Array.Empty<string>();
+
+        public static bool ShouldSerializeChildren() => false;
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
 
@@ -61,6 +66,7 @@ namespace Microsoft.Docs.Build
             SplitItemsBy = item.SplitItemsBy;
             Items = item.Items;
             Document = item.Document;
+            Children = item.Children;
         }
     }
 }

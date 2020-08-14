@@ -49,11 +49,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsFileStartingWithDot(string path)
-        {
-            return path.StartsWith('.') || path.Contains("/.") || path.Contains("\\.");
-        }
-
         private static Glob CreateGlob(string pattern)
         {
             try
@@ -66,6 +61,11 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.Config.GlobPatternInvalid(pattern, ex).ToException(ex);
             }
+        }
+
+        private static bool IsFileStartingWithDot(string path)
+        {
+            return path.StartsWith('.') || path.Contains("/.") || path.Contains("\\.");
         }
 
         private static string PreProcessPattern(string pattern)

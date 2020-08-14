@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                 ParallelUtility.ForEach(_errors, tocs, path =>
                 {
                     var file = _documentProvider.GetDocument(path);
-                    var (_, referencedDocuments, referencedTocs) = _tocLoader.Load(_errors, file);
+                    var (_, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
                 });
