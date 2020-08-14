@@ -41,6 +41,8 @@ namespace Microsoft.Docs.Build
 
         public string[] Children { get; set; } = Array.Empty<string>();
 
+        public static bool ShouldSerializeChildren() => false;
+
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
 
