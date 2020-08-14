@@ -1639,75 +1639,12 @@ repos:
           - name: 1-1
 outputs:
   b/toc.json: |
-    {
-      "metadata": {
-        "universal_ref_toc": "/dotnet-test/api/toc.json"
-      },
-      "items": [
-        {
-          "name": "1"
-        }
-      ]
-    }
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
   b/_splitted/1/toc.json: |
-    {
-      "metadata": {
-        "universal_ref_toc": "/dotnet-test/api/toc.json"
-      },
-      "items": [
-        {
-          "name": "1",
-          "items": [
-            {
-              "name": "1-1"
-            }
-          ]
-        }
-      ]
-    }
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
   a/toc.json: |
-    {
-      "metadata": {
-        "universal_conceptual_toc": "dotnet-test/learn/toc.json"
-      },
-      "items": [
-        {
-          "name": "a"
-        },
-        {
-          "name": "b"
-        }
-      ]
-    }
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
   a/_splitted/a/toc.json: |
-    {
-      "metadata": {
-        "universal_conceptual_toc": "dotnet-test/learn/toc.json"
-      },
-      "items": [
-        {
-          "name": "a",
-          "items": [
-            {
-              "name": "a-a"
-            }
-          ]
-        }
-      ]
-    }
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
   a/_splitted/b/toc.json: |
-    {
-      "metadata": {
-        "universal_conceptual_toc": "dotnet-test/learn/toc.json"
-      },
-      "items": [
-        {
-          "name": "b",
-          "items": [
-            {
-              "name": "b-b"
-            }
-          ]
-        }
-      ]
-    }
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
