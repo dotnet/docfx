@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static Glob CreateGlob(string pattern)
+        private static Glob CreateGlob(string pattern)
         {
             try
             {

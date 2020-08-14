@@ -53,9 +53,7 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _errors = errors;
             _documentProvider = documentProvider;
-            _joinTOCConfigs = config.JoinTOC is null
-                ? new Dictionary<string, JoinTOCConfig>()
-                : config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
+            _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
         public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
@@ -91,7 +89,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in itemsToMatch)
                 {
-                    if (item.Value.Name != null && !matched.Contains(item) && GlobUtility.CreateGlob(pattern).IsMatch(item.Value.Name))
+                    if (item.Value.Name != null && !matched.Contains(item) && GlobUtility.CreateGlobMatcher(pattern)(item.Value.Name!))
                     {
                         matched.Add(item);
                         node.Items.Add(item);
