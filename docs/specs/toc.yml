@@ -1610,10 +1610,7 @@ outputs:
 repos:
   https://ms.com/ops-file-metadata#master:
   - files:
-      docfx.yml: |
-        fileMetadata:
-          key:
-            b/_splitted/**/TOC.yml: value
+      docfx.yml:
       .openpublishing.publish.config.json: |
         {
           "JoinTOCPlugin": [
@@ -1655,8 +1652,7 @@ outputs:
   b/_splitted/1/toc.json: |
     {
       "metadata": {
-        "universal_ref_toc": "/dotnet-test/api/toc.json",
-        "key": "value"
+        "universal_ref_toc": "/dotnet-test/api/toc.json"
       },
       "items": [
         {

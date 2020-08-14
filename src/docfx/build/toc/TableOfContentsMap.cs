@@ -246,11 +246,7 @@ namespace Microsoft.Docs.Build
 
                 _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken });
                 result.Add(newNodeFile);
-
-                if (_metadataProvider.GetMetadata(_errors, file) != null)
-                {
-                    _metadataProvider.GetMetadata(_errors, newNodeFile);
-                }
+                _metadataProvider.GetMetadata(_errors, newNodeFile);
 
                 var newChild = new TableOfContentsNode(child)
                 {
