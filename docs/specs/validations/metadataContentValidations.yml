@@ -1112,7 +1112,7 @@ inputs:
         "rules": [
           {
             "type": "H1NotFirst",
-            "message": "Markdown content is not allowed before H1.",
+            "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
             "exclusions": [
@@ -1207,11 +1207,11 @@ outputs:
   j.json:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":5,"end_line":5,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"i.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"c.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"d.md","line":4,"end_line":4,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"f.md","line":3,"end_line":3,"column":1,"end_column":1}
 ---
 # Content validation - comments shouldn't trigger H1 not first
 inputs:
@@ -1226,7 +1226,7 @@ inputs:
         "rules": [
           {
             "type": "H1NotFirst",
-            "message": "Markdown content is not allowed before H1.",
+            "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
             "exclusions": [
@@ -1270,8 +1270,8 @@ outputs:
   d.json:
   e.json:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'AppSourceCop'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'.","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
 ---
 #Content validation - h1-missing in docs zone
 inputs:
@@ -2308,7 +2308,7 @@ inputs:
           },
           {
             "type": "H1NotFirst",
-            "message": "Markdown content is not allowed before H1.",
+            "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "SUGGESTION",
             "exclusions": [ "includes", "landingpage", "hubpage" ],
@@ -2364,7 +2364,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too long: 20 characters. Length should be <= 10.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":34,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"title-bad-length","message":"String 'title' is too long: 14 characters. Length should be <= 10.","file":"a.md","line":2,"end_line":2,"column":8,"end_column":22}
     {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'heading1'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
 ---
