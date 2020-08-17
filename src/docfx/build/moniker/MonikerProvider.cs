@@ -100,10 +100,18 @@ namespace Microsoft.Docs.Build
             }
 
             var metadata = _metadataProvider.GetMetadata(errors, file);
-
             var configMonikerRange = GetConfigMonikerRange(file);
             var configMonikers = _rangeParser.Parse(errors, configMonikerRange);
+            return GetFileLevelMonikers(errors, configMonikerRange, configMonikers, metadata, file);
+        }
 
+        private MonikerList GetFileLevelMonikers(
+            ErrorBuilder errors,
+            SourceInfo<string?> configMonikerRange,
+            MonikerList configMonikers,
+            UserMetadata metadata,
+            FilePath file)
+        {
             if (metadata.MonikerRange != null)
             {
                 // For conceptual docset,
@@ -112,21 +120,12 @@ namespace Microsoft.Docs.Build
                 if (file.Format == FileFormat.Markdown && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
-                    return configMonikers;
+                    return default;
                 }
             }
-            return GetFileMonikers(errors, configMonikerRange, configMonikers, metadata, file);
-        }
 
-        private MonikerList GetFileMonikers(
-            ErrorBuilder errors,
-            SourceInfo<string?> configMonikerRange,
-            MonikerList configMonikers,
-            UserMetadata metadata,
-            FilePath file)
-        {
-            MonikerList? fileMonikers = default;
             SourceInfo? source = default;
+            MonikerList fileMonikers;
 
             // if replace_monikers is set, the other moniker related metadata will be ignored
             if (metadata.ReplaceMonikers != null)
@@ -134,13 +133,7 @@ namespace Microsoft.Docs.Build
                 source = metadata.ReplaceMonikers.FirstOrDefault();
                 fileMonikers = _rangeParser.Validate(errors, metadata.ReplaceMonikers);
             }
-
-            MonikerList excludeMonikers = default;
-            if (metadata.ExcludeMonikers != null)
-            {
-                excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
-            }
-            if (metadata.MonikerRange != null)
+            else if (metadata.MonikerRange != null)
             {
                 // monikerRange takes precedence over monikers since it is more likely from user configuration
                 if (metadata.Monikers != null)
@@ -148,45 +141,44 @@ namespace Microsoft.Docs.Build
                     errors.Add(Errors.Versioning.DuplicateMonikerConfig(metadata.Monikers.FirstOrDefault()));
                 }
                 source = metadata.MonikerRange;
-                fileMonikers = _rangeParser.Parse(errors, metadata.MonikerRange).Except(excludeMonikers);
+                fileMonikers = _rangeParser.Parse(errors, metadata.MonikerRange);
             }
             else if (metadata.Monikers != null)
             {
                 source = metadata.Monikers.FirstOrDefault();
-                fileMonikers = _rangeParser.Validate(errors, metadata.Monikers).Except(excludeMonikers);
+                fileMonikers = _rangeParser.Validate(errors, metadata.Monikers);
             }
-
-            if (fileMonikers is null)
+            else
             {
-                return configMonikers.Except(excludeMonikers);
+                fileMonikers = configMonikers;
             }
-            return GetMonikerIntersection(errors, configMonikerRange, configMonikers, fileMonikers.Value, source, file.Format != FileFormat.Markdown);
-        }
 
-        private static MonikerList GetMonikerIntersection(
-            ErrorBuilder errors,
-            SourceInfo<string?> configMonikerRange,
-            MonikerList configMonikers,
-            MonikerList fileMonikers,
-            SourceInfo? source,
-            bool skipMonikerValidation)
-        {
-            // for reference docset, if config monikers is not defined
+            MonikerList excludeMonikers = default;
+            if (metadata.ExcludeMonikers != null)
+            {
+                excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
+            }
+            fileMonikers = fileMonikers.Except(excludeMonikers);
+
+            // for non-markdown documents, if config monikers is not defined
             // just use file monikers
-            if (skipMonikerValidation && configMonikerRange.Value is null)
+            if (configMonikerRange.Value is null && file.Format != FileFormat.Markdown)
             {
                 return fileMonikers;
             }
 
             // With config monikers defined,
             // warn if no intersection of config monikers and file monikers
-            var intersection = configMonikers.Intersect(fileMonikers);
-            if (!intersection.HasMonikers)
+            if (configMonikers.HasMonikers || fileMonikers.HasMonikers)
             {
-                errors.Add(Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, fileMonikers, source));
+                var intersection = configMonikers.Intersect(fileMonikers);
+                if (!intersection.HasMonikers)
+                {
+                    errors.Add(Errors.Versioning.MonikeRangeOutOfScope(configMonikerRange, configMonikers, fileMonikers, source));
+                }
+                fileMonikers = intersection;
             }
-
-            return intersection;
+            return fileMonikers;
         }
 
         private SourceInfo<string?> GetConfigMonikerRangeCore(FilePath file)
