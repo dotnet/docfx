@@ -21,10 +21,10 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, counter);
 
             // First call is a blocking call
-            Assert.Equal(1, (cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
+            Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
 
             // Subsequent calls does not trigger valueFactory
-            Assert.Equal(1, (cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
+            Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
 
             async Task<(string, TestCacheObject)> CreateValue(int id)
             {
@@ -44,16 +44,16 @@ namespace Microsoft.Docs.Build
             var cache = new JsonDiskCache<string, int, TestCacheObject>(filename, TimeSpan.FromHours(1));
 
             // Read existing items from cache does not trigger valueFactory
-            Assert.Equal(1234, (cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
+            Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
             Assert.Equal(0, counter);
 
             // When cache expires, don't block caller, trigger asynchronous update
-            (cache.GetOrAdd(9999, CreateValue)).value.UpdatedAt = DateTime.MinValue;
-            Assert.Equal(1234, (cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
+            cache.GetOrAdd(9999, CreateValue).value.UpdatedAt = DateTime.MinValue;
+            Assert.Equal(1234, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
 
             // Save waits for asynchronous update to complete
             cache.Save();
-            Assert.Equal(1, (cache.GetOrAdd(9999, CreateValue)).value.Snapshot);
+            Assert.Equal(1, cache.GetOrAdd(9999, CreateValue).value.Snapshot);
 
             async Task<(string, TestCacheObject)> CreateValue(int id)
             {
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        class TestCacheObject : ICacheObject<int>
+        private class TestCacheObject : ICacheObject<int>
         {
             public int Id { get; set; }
 

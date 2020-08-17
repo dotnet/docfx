@@ -1,16 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Xunit;
-
     public class XrefTest
     {
         [Fact]
         public void XrefTestGeneral()
         {
-            //arrange
+            // arrange
             var content = @"<xref:Microsoft.Build.Tasks>
 \<xref:Microsoft.Build.Tasks>
 \\<xref:Microsoft.Build.Tasks>
@@ -30,6 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 <xref:""Microsoft.Build.Tasks?alt=ImmutableArray"">
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/>
 ";
+
             // assert
             var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
 &lt;xref:Microsoft.Build.Tasks&gt;

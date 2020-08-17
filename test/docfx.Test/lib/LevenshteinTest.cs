@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
     public static class LevenshteinTest
     {
         [Theory]
+
         // zero if both of the string is null or empty
         [InlineData(null, null, 0)]
         [InlineData("", null, 0)]

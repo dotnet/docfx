@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
+using Xunit;
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using Xunit;
-
     public class CodeSnippetTest
     {
         [Fact]
@@ -24,15 +24,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 errors: new[] { "codesnippet-not-found" },
                 tokens: new Dictionary<string, string>
                 {
-                    { "codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。"},
-                    { "warning", "<h5>警告</h5>" }
+                    { "codeIncludeNotFound", "你要查找的示例似乎已移动！ 不要担心，我们正在努力解决此问题。" },
+                    { "warning", "<h5>警告</h5>" },
                 });
         }
 
         [Fact]
         public void CodeSnippetGeneral()
         {
-            //arrange
+            // arrange
             var content = @"    line for start & end
     // <tag1>
     line1
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
-                { "Program.cs", content }
+                { "Program.cs", content },
             });
         }
 
@@ -117,7 +117,7 @@ print(azureml.core.VERSION)</code></pre>";
         [Fact]
         public void NotebookCodeSnippetMultipleTagFound()
         {
-            //arrange
+            // arrange
             var content = @"{
  ""cells"": [
   {
@@ -153,7 +153,7 @@ print(azureml.core.VERSION)</code></pre>";
             TestUtility.VerifyMarkup(
                 source,
                 expected,
-                errors: new[] { "multiple-tags-with-same-name"},
+                errors: new[] { "multiple-tags-with-same-name" },
                 files: new Dictionary<string, string>
                 {
                     { "Program.ipynb", content },
@@ -292,11 +292,9 @@ public class MyClass
             });
         }
 
-
         [Theory]
         [Trait("Owner", "humao")]
         [Trait("Related", "DfmMarkdown")]
-        #region Inline Data
         [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
@@ -539,7 +537,6 @@ public static void Foo()
     #endregion
 }
 </code></pre>")]
-        #endregion
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
             // arrange
@@ -644,7 +641,7 @@ public static void Foo()
         [Fact]
         public void CodeSnippetShouldVerifyTagname()
         {
-            //arrange
+            // arrange
             var content = @"    line for start & end
     // <tag1>
     line1
@@ -664,7 +661,6 @@ public static void Foo()
                 { "Program.cs", content },
             });
         }
-
 
         [Fact(Skip = "won't support")]
         [Trait("Related", "DfmMarkdown")]

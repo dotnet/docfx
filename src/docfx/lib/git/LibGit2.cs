@@ -51,10 +51,10 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int git_oid_fmt(sbyte* str, git_oid* oid);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_repository_init(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path, int is_bare);
+        public static unsafe extern int git_repository_init(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)] string path, int is_bare);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_repository_open(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string path);
+        public static unsafe extern int git_repository_open(out IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)] string path);
 
         [DllImport(LibName)]
         public static unsafe extern int git_repository_head(out IntPtr reference, IntPtr repo);
@@ -63,10 +63,10 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void git_repository_free(IntPtr repo);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_remote_create(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, [MarshalAs(UnmanagedType.LPUTF8Str)]string url);
+        public static unsafe extern int git_remote_create(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)] string name, [MarshalAs(UnmanagedType.LPUTF8Str)] string url);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name);
+        public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)] string name);
 
         [DllImport(LibName)]
         public static unsafe extern int git_remote_lookup(out IntPtr remote, IntPtr repo, IntPtr name);
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void git_remote_free(IntPtr remote);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_branch_lookup(out IntPtr reference, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string name, int type);
+        public static unsafe extern int git_branch_lookup(out IntPtr reference, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)] string name, int type);
 
         [DllImport(LibName)]
         public static unsafe extern int git_branch_name(out IntPtr name, IntPtr reference);
@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern void git_reference_free(IntPtr reference);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_revparse_single(out IntPtr @out, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)]string spec);
+        public static unsafe extern int git_revparse_single(out IntPtr @out, IntPtr repo, [MarshalAs(UnmanagedType.LPUTF8Str)] string spec);
 
         [DllImport(LibName)]
         public static unsafe extern int git_object_lookup(out IntPtr obj, IntPtr repo, git_oid* id, int type);
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern IntPtr git_tree_entry_byindex(IntPtr tree, IntPtr i);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_tree_entry_bypath(out IntPtr tree, IntPtr root, [MarshalAs(UnmanagedType.LPUTF8Str)]string treeentry_path);
+        public static unsafe extern int git_tree_entry_bypath(out IntPtr tree, IntPtr root, [MarshalAs(UnmanagedType.LPUTF8Str)] string treeentry_path);
 
         [DllImport(LibName)]
         public static unsafe extern void git_tree_entry_free(IntPtr treeEntry);
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         public static unsafe extern int git_revwalk_push_head(IntPtr walk);
 
         [DllImport(LibName)]
-        public static unsafe extern int git_revwalk_push_glob(IntPtr walk, [MarshalAs(UnmanagedType.LPUTF8Str)]string glob);
+        public static unsafe extern int git_revwalk_push_glob(IntPtr walk, [MarshalAs(UnmanagedType.LPUTF8Str)] string glob);
 
         [DllImport(LibName)]
         public static unsafe extern int git_revwalk_next(out git_oid oid, IntPtr walk);

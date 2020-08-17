@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;

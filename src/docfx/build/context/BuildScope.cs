@@ -44,7 +44,8 @@ namespace Microsoft.Docs.Build
             _globs = CreateGlobs(config);
             _input = input;
             _resourceGlobs = CreateResourceGlob(config);
-            _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => path.Value).ToHashSet(PathUtility.PathComparer);
+            _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => PathUtility.Normalize(path.Value))
+                .ToHashSet(PathUtility.PathComparer);
 
             (_allFiles, _files) = GlobFiles();
         }

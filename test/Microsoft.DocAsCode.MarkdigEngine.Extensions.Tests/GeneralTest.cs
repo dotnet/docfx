@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using Xunit;
-
     public class GeneralTest
     {
         [Fact]
@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
-                { "token1573.md", "**token content**"}
+                { "token1573.md", "**token content**" },
             });
         }
 
@@ -83,7 +83,6 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
-        #region Inline Data
         [InlineData("", "")]
         [InlineData("<address@example.com>", "<p><a href=\"mailto:address@example.com\">address@example.com</a></p>\n")]
         [InlineData(" https://github.com/dotnet/docfx/releases ", "<p><a href=\"https://github.com/dotnet/docfx/releases\">https://github.com/dotnet/docfx/releases</a></p>\n")]
@@ -91,16 +90,20 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
         [InlineData("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
         [InlineData("<div>Some text here</div>", "<div>Some text here</div>\n")]
-        [InlineData(@"# Hello @CrossLink1 @'CrossLink2'dummy 
+        [InlineData(
+            @"# Hello @CrossLink1 @'CrossLink2'dummy 
 @World",
-    "<h1 id=\"hello--dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
-        [InlineData("a\n```\nc\n```",
-    "<p>a</p>\n<pre><code>c\n</code></pre>\n")]
-        [InlineData(@" *hello* abc @api__1",
-    "<p><em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref></p>\n")]
+            "<h1 id=\"hello--dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'CrossLink2'\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
+        [InlineData(
+            "a\n```\nc\n```",
+            "<p>a</p>\n<pre><code>c\n</code></pre>\n")]
+        [InlineData(
+            @" *hello* abc @api__1",
+            "<p><em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref></p>\n")]
         [InlineData("@1abc", "<p>@1abc</p>\n")]
-        [InlineData(@"@api1 @api__1 @api!1 @api@a <abc@api.com> <a.b.c@api.com> @'a p ';@""a!pi"",@api...@api",
-    "<p><xref href=\"api1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api1\"></xref> <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref> <xref href=\"api!1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api!1\"></xref> <xref href=\"api@a\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api@a\"></xref> <a href=\"mailto:abc@api.com\">abc@api.com</a> <a href=\"mailto:a.b.c@api.com\">a.b.c@api.com</a> <xref href=\"a p \" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'a p '\"></xref>;<xref href=\"a!pi\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&quot;a!pi&quot;\"></xref>,<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref>...<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref></p>\n")]
+        [InlineData(
+            @"@api1 @api__1 @api!1 @api@a <abc@api.com> <a.b.c@api.com> @'a p ';@""a!pi"",@api...@api",
+            "<p><xref href=\"api1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api1\"></xref> <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref> <xref href=\"api!1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api!1\"></xref> <xref href=\"api@a\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api@a\"></xref> <a href=\"mailto:abc@api.com\">abc@api.com</a> <a href=\"mailto:a.b.c@api.com\">a.b.c@api.com</a> <xref href=\"a p \" data-throw-if-not-resolved=\"False\" data-raw-source=\"@'a p '\"></xref>;<xref href=\"a!pi\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&quot;a!pi&quot;\"></xref>,<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref>...<xref href=\"api\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api\"></xref></p>\n")]
         [InlineData("[name](xref:uid \"title\")", "<p><a href=\"xref:uid\" title=\"title\">name</a></p>\n")]
         [InlineData("<xref:uid>text", "<p><xref href=\"uid\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:uid&gt;\"></xref>text</p>\n")]
         [InlineData("<xref:'uid with space'>text", "<p><xref href=\"uid with space\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:'uid with space'&gt;\"></xref>text</p>\n")]
@@ -115,7 +118,6 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
     @"# <a name=""x""></a>Y",
     @"<h1 id=""x"">Y</h1>
 ")]
-        #endregion
         public void TestDfmInGeneral(string source, string expected)
         {
             TestUtility.VerifyMarkup(source, expected);
@@ -147,7 +149,6 @@ tag started with alphabet should not be encode: <abc> <a-hello> &lt;a?world&gt; 
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmTagValidate()
         {
-
             var source = @"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
 <script>alert(1);</script>
 ";
@@ -184,7 +185,6 @@ hello world";
 ";
             TestUtility.VerifyMarkup(source, expected);
         }
-
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
@@ -539,9 +539,9 @@ baz</li>
 
             TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
-                {"includes/blockIncludeFile.md", blockIncludeFile },
-                {"includes/testtoken.md", testtoken },
-                {"code/code.cs", code }
+                { "includes/blockIncludeFile.md", blockIncludeFile },
+                { "includes/testtoken.md", testtoken },
+                { "code/code.cs", code },
             });
         }
     }

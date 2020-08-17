@@ -1,8 +1,10 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
 namespace ChakraHost.Hosting
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     ///     An API usage exception occurred.
     /// </summary>
@@ -24,16 +26,6 @@ namespace ChakraHost.Hosting
         /// <param name="message">The error message.</param>
         public JavaScriptUsageException(JavaScriptErrorCode code, string message) :
             base(code, message)
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptUsageException"/> class.
-        /// </summary>
-        /// <param name="info">The serialization info.</param>
-        /// <param name="context">The streaming context.</param>
-        private JavaScriptUsageException(string message, Exception innerException) :
-            base(message, innerException)
         {
         }
     }

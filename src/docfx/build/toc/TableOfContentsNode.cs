@@ -32,12 +32,16 @@ namespace Microsoft.Docs.Build
 
         public string? SplitItemsBy { get; set; }
 
-        public bool ShouldSerializeSplitItemsBy() => false;
+        public static bool ShouldSerializeSplitItemsBy() => false;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public MonikerList Monikers { get; set; }
 
         public List<SourceInfo<TableOfContentsNode>> Items { get; set; } = new List<SourceInfo<TableOfContentsNode>>();
+
+        public string[] Children { get; set; } = Array.Empty<string>();
+
+        public static bool ShouldSerializeChildren() => false;
 
         [JsonExtensionData]
         public JObject ExtensionData { get; set; } = new JObject();
@@ -62,6 +66,7 @@ namespace Microsoft.Docs.Build
             SplitItemsBy = item.SplitItemsBy;
             Items = item.Items;
             Document = item.Document;
+            Children = item.Children;
         }
     }
 }

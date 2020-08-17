@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
             return count;
         }
 
-        private bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
+        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
         {
             uid = default;
 
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
+        private static string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
             => !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : file.SiteUrl;
 
         private JToken LoadXrefProperty(
