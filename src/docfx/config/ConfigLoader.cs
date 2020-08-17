@@ -55,8 +55,8 @@ namespace Microsoft.Docs.Build
             var repository = Repository.Create(docsetPath);
             Telemetry.SetRepository(repository?.Remote, repository?.Branch);
 
-            var configPath = PathUtility.FindYamlOrJson(docsetPath, "docfx");
-            if (configPath is null)
+            var docfxConfig = LoadConfig(errors, docsetPath);
+            if (docfxConfig is null)
             {
                 throw Errors.Config.ConfigNotFound(docsetPath).ToException();
             }
@@ -67,11 +67,9 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
-            var docfxConfig = LoadConfig(errors, Path.GetFileName(configPath), File.ReadAllText(configPath));
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, docsetPath, repository);
-            var globalConfig = AppData.TryGetGlobalConfigPath(out var globalConfigPath)
-                ? LoadConfig(errors, globalConfigPath, File.ReadAllText(globalConfigPath))
-                : null;
+
+            var globalConfig = LoadConfig(errors, AppData.Root);
 
             // Preload
             var preloadConfigObject = new JObject();
@@ -98,26 +96,23 @@ namespace Microsoft.Docs.Build
             return (config, buildOptions, packageResolver, fileResolver);
         }
 
-        private static JObject LoadConfig(ErrorBuilder errors, string fileName, string content)
+        private static JObject? LoadConfig(ErrorBuilder errors, string directory)
         {
-            var source = new FilePath(fileName);
-            var config = fileName.EndsWith(".yml", PathUtility.PathComparison)
-                ? YamlUtility.Parse(errors, content, source)
-                : JsonUtility.Parse(errors, content, source);
-
-            if (config is JObject obj)
+            var config = PathUtility.LoadYamlOrJson<JObject>(errors, directory, "docfx");
+            if (config is null)
             {
-                // For v2 backward compatibility, treat `build` section as config if it exist
-                if (obj.TryGetValue("build", out var build) && build is JObject buildObj)
-                {
-                    // `template` property has different semantic, so remove it
-                    buildObj.Remove("template");
-                    return buildObj;
-                }
-                return obj;
+                return null;
             }
 
-            throw Errors.JsonSchema.UnexpectedType(new SourceInfo(source, 1, 1), JTokenType.Object, config.Type).ToException();
+            // For v2 backward compatibility, treat `build` section as config if it exist
+            if (config.TryGetValue("build", out var build) && build is JObject buildObj)
+            {
+                // `template` property has different semantic, so remove it
+                buildObj.Remove("template");
+                return buildObj;
+            }
+
+            return config;
         }
 
         private static JObject DownloadExtendConfig(
@@ -146,8 +141,11 @@ namespace Microsoft.Docs.Build
                     extendWithQuery = new SourceInfo<string>(UrlUtility.MergeUrl(extend, extendQuery), extend);
                 }
 
-                var content = fileResolver.ReadString(extendWithQuery);
-                var extendConfigObject = LoadConfig(errors, extend, content);
+                var extendContent = fileResolver.ReadString(extendWithQuery);
+                var extendConfigObject = extend.Value.EndsWith(".yml", PathUtility.PathComparison)
+                    ? YamlUtility.Deserialize<JObject>(errors, extendContent, new FilePath(extend))
+                    : JsonUtility.Deserialize<JObject>(errors, extendContent, new FilePath(extend));
+
                 JsonUtility.Merge(result, extendConfigObject);
             }
 
@@ -171,16 +169,9 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            var configPath = PathUtility.FindYamlOrJson(workingDirectory, "docsets");
-            if (configPath != null)
+            var config = PathUtility.LoadYamlOrJson<DocsetsConfig>(errors, workingDirectory, "docsets");
+            if (config != null)
             {
-                var content = File.ReadAllText(configPath);
-                var source = new FilePath(Path.GetFileName(configPath));
-
-                var config = configPath.EndsWith(".yml", StringComparison.OrdinalIgnoreCase)
-                    ? YamlUtility.Deserialize<DocsetsConfig>(errors, content, source)
-                    : JsonUtility.Deserialize<DocsetsConfig>(errors, content, source);
-
                 return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
             }
 

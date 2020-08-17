@@ -16,10 +16,10 @@ namespace Microsoft.Docs.Build
             return path => !IsFileStartingWithDot(path) && glob.IsMatch(path);
         }
 
-        public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
+        public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[]? excludePatterns = null)
         {
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
-            var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
+            var excludeGlobs = Array.ConvertAll(excludePatterns ?? Array.Empty<string>(), CreateGlob);
 
             return IsMatch;
 
