@@ -1,7 +1,10 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
 namespace ChakraHost.Hosting
 {
-    using System;
-
     /// <summary>
     ///     A Chakra runtime.
     /// </summary>
@@ -86,7 +89,7 @@ namespace ChakraHost.Hosting
                 return isDisabled;
             }
 
-            set 
+            set
             {
                 Native.ThrowIfError(value
                                         ? Native.JsDisableRuntimeExecution(this)

@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal(input, value.C);
         }
 
-
         [Theory]
         [InlineData(
             @">
@@ -245,14 +244,14 @@ valueRequired: a
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
             Assert.True(value.D);
-            Assert.Equal((long)1, value.ValueDict["keyA"]);
+            Assert.Equal(1L, value.ValueDict["keyA"]);
             Assert.Equal("Good2!", value.ValueDict["keyB"]);
             Assert.True((bool)value.ValueDict["keyC"]);
             Assert.Equal("ItemA", value.ValueList[0]);
             Assert.Equal("True", value.ValueList[1]);
             Assert.Equal("3", value.ValueList[2]);
             Assert.Equal("ItemB", value.ValueList[3]);
-            Assert.Equal((long)2, value.ValueBasic.B);
+            Assert.Equal(2L, value.ValueBasic.B);
             Assert.Equal("Good3!", value.ValueBasic.C);
             Assert.False(value.ValueBasic.D);
         }
@@ -260,7 +259,7 @@ valueRequired: a
         [Fact]
         public void TestStringEmpty()
         {
-            var yaml = String.Empty;
+            var yaml = string.Empty;
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
         }
@@ -283,7 +282,8 @@ Key1: 1
         [Theory]
         [InlineData("1", 1, 1)]
         [InlineData("name: name", 1, 7)]
-        [InlineData(@"
+        [InlineData(
+            @"
 items:
  - name: 1", 3, 2)]
         public void TestParsedJTokenHasLineInfo(string yaml, int expectedLine, int expectedColumn)
@@ -293,7 +293,7 @@ items:
             Assert.Empty(errors);
 
             // Get the first JValue of the first JProperty if any
-            var source = JsonUtility.GetSourceInfo((value.Children().Any() ? value.Children().First().Children().First() : value));
+            var source = JsonUtility.GetSourceInfo(value.Children().Any() ? value.Children().First().Children().First() : value);
             Assert.Equal(expectedLine, source.Line);
             Assert.Equal(expectedColumn, source.Column);
         }
@@ -311,12 +311,12 @@ items:
         private static (ErrorList errors, T model) DeserializeWithValidation<T>(string json) where T : class, new()
         {
             var errors = new ErrorList();
-            var token= YamlUtility.Parse(errors, json, null);
+            var token = YamlUtility.Parse(errors, json, null);
             var result = JsonUtility.ToObject<T>(errors, token);
             return (errors, result);
         }
 
-        public class BasicClass
+        private class BasicClass
         {
             public int B { get; set; }
 
@@ -325,7 +325,7 @@ items:
             public bool D { get; set; }
         }
 
-        public sealed class ClassWithMoreMembers : BasicClass
+        private sealed class ClassWithMoreMembers : BasicClass
         {
             public Dictionary<string, object> ValueDict { get; set; }
 

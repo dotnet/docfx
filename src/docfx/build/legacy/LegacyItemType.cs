@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal enum LegacyItemType
     {
-        [EnumMember(Value ="Toc")]
+        [EnumMember(Value = "Toc")]
         Toc,
 
         [EnumMember(Value = "Content")]

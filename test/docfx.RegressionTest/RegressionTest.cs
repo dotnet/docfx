@@ -398,9 +398,10 @@ namespace Microsoft.Docs.Build
             http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
             http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
 
+            using var content = new StringContent(JsonConvert.SerializeObject(new { body }), Encoding.UTF8, "application/json");
             var response = await http.PostAsync(
-                $"https://api.github.com/repos/dotnet/docfx/issues/{prNumber}/comments",
-                new StringContent(JsonConvert.SerializeObject(new { body }), Encoding.UTF8, "application/json"));
+                new Uri($"https://api.github.com/repos/dotnet/docfx/issues/{prNumber}/comments"),
+                content);
 
             response.EnsureSuccessStatusCode();
         }

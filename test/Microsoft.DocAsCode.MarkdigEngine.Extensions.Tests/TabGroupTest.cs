@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Xunit;
-
-
     public class TabGroupTest
     {
         [Fact]
@@ -39,8 +38,7 @@ content-b
 <p sourceFile=""Topic.md"" sourceStartLineNumber=""5"">content-b</p>
 </section>
 </div>
-"
-            );
+");
         }
 
         [Fact]
@@ -93,20 +91,20 @@ content-b or c
 <p sourceFile=""Topic.md"" sourceStartLineNumber=""9"">content-b or c</p>
 </section>
 </div>
-"
-            );
+");
         }
 
         [Fact]
         public void TestTableInTabGroup()
         {
             var groupId = "CeZOj-G++Q";
-            TestMarkupInGeneral(@"# [title](#tab/id)
+            TestMarkupInGeneral(
+                @"# [title](#tab/id)
 
 a | b
 - | -
 c | d",
-$@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
+                $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
 <a href=""#tabpanel_{groupId}_id"" role=""tab"" aria-controls=""tabpanel_{groupId}_id"" data-tab=""id"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">title</a>

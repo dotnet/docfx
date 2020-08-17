@@ -30,7 +30,8 @@ namespace Microsoft.Docs.Build
             var repo = Repository.Create(Path.GetFullPath(file), branch: null);
             Assert.NotNull(repo);
 
-            using var gitCommitProvider = new FileCommitProvider(new ErrorWriter(), repo, "git-commit-test-cache");
+            using var errors = new ErrorWriter();
+            using var gitCommitProvider = new FileCommitProvider(errors, repo, "git-commit-test-cache");
             var pathToRepo = PathUtility.NormalizeFile(file);
 
             // current branch

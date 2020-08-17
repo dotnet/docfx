@@ -132,7 +132,7 @@ namespace Microsoft.Docs.LearnValidation
             return validateResult;
         }
 
-        private HashSet<string> GetTaskValidationTypeSet()
+        private static HashSet<string> GetTaskValidationTypeSet()
         {
             var taskValidationTypeFile = Path.Combine(AppContext.BaseDirectory, "data/AzureResourceTypes.txt");
             var taskValidationTypeSet = new HashSet<string>();

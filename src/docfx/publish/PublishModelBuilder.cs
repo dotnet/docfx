@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             return (model, fileManifests);
         }
 
-        private JObject? RemoveComplexValue(JObject? metadata)
+        private static JObject? RemoveComplexValue(JObject? metadata)
         {
             if (metadata is null)
             {

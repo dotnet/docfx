@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
@@ -16,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public bool SelfClosing => true;
 
-        public bool EndingTripleColons => false;
+        public static bool EndingTripleColons => false;
 
         private readonly MarkdownContext _context;
 
@@ -134,7 +133,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private string InferLanguageFromFile(string source, Action<string> logError)
+        private static string InferLanguageFromFile(string source, Action<string> logError)
         {
             var fileExtension = Path.GetExtension(source);
             if (fileExtension == null)

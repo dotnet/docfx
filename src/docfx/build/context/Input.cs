@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
             _generatedContents.TryAdd(file, content);
         }
 
-        private IEnumerable<PathString> GetFiles(string directory)
+        private static IEnumerable<PathString> GetFiles(string directory)
         {
             return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
             {

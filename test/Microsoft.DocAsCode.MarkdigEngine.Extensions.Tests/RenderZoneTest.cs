@@ -1,18 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using Xunit;
-
     public class RenderZoneTest
     {
-        static public string LoggerPhase = "RenderZone";
-
         [Fact]
         public void KitchenSink()
         {
-            //arrange
+            // arrange
             var content = @"# Article 2
 
 Shared content.
@@ -77,7 +75,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void AttributeMissingClosingQuote()
         {
-            //arrange
+            // arrange
             var source = @"::: zone target=""chromeless";
 
             // assert
@@ -89,7 +87,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void MissingEndTag()
         {
-            //arrange
+            // arrange
             var source1 = @"::: zone target=""chromeless""";
             var source2 = @"::: zone target=""chromeless""
 ::: zone-end";
@@ -106,7 +104,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void NotNested()
         {
-            //arrange
+            // arrange
             var content = @"::: zone target=""chromeless""
 ::: zone target=""pdf""
 ::: zone-end
@@ -140,7 +138,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PdfPivotInvalid()
         {
-            //arrange
+            // arrange
             var source = @"::: zone target = ""pdf""  pivot = ""foo""  ";
 
             // assert
@@ -152,7 +150,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PivotInvalid()
         {
-            //arrange
+            // arrange
             var source = @"::: zone pivot = ""**""
 ::: zone-end";
 
@@ -165,7 +163,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PivotInvalid2()
         {
-            //arrange
+            // arrange
             var source = @"::: zone pivot = ""a b""
 ::: zone-end";
 
@@ -178,7 +176,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void PivotCommaDelimited()
         {
-            //arrange
+            // arrange
             var source = @"::: zone pivot = ""a,b""
 ::: zone-end";
 
@@ -188,11 +186,10 @@ Inline ::: should not end moniker zone.</p>
             TestUtility.VerifyMarkup(source, expected);
         }
 
-
         [Fact]
         public void UnexpectedAttribute()
         {
-            //arrange
+            // arrange
             var source = @"::: zone target=""pdf"" something";
 
             // assert
@@ -204,7 +201,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void DuplicateAttribute()
         {
-            //arrange
+            // arrange
             var source = @"::: zone target=""pdf"" target=""docs""";
 
             // assert
@@ -216,7 +213,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void InvalidAttribute()
         {
-            //arrange
+            // arrange
             var source = @"::: zone *=""pdf""";
 
             // assert
@@ -228,7 +225,7 @@ Inline ::: should not end moniker zone.</p>
         [Fact]
         public void TextAfterEndTag()
         {
-            //arrange
+            // arrange
             var source = @":::zone
 :::zone-end asdjklf";
 
