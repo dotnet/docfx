@@ -1,3 +1,18 @@
+# Copy assets in template definition to output directory
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+    template: _themes
+  _themes/template.yml: |
+    assets:
+    - styles/**
+    - scripts/**
+  _themes/styles/main.css: css
+  _themes/scripts/main.js: js
+outputs:
+  styles/main.css: css
+  scripts/main.js: js
 ---
 # Liquid template file missing should not crash
 inputs: 

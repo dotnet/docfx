@@ -42,15 +42,6 @@ namespace Microsoft.Docs.Build
         }
 
         /// <summary>
-        /// Get the global configuration path, default is under <see cref="Root"/>
-        /// </summary>
-        public static bool TryGetGlobalConfigPath([NotNullWhen(true)] out string? path)
-        {
-            path = PathUtility.FindYamlOrJson(Root, "docfx");
-            return path != null;
-        }
-
-        /// <summary>
         /// Get the application cache root dir, default is under user profile dir.
         /// User can set the DOCFX_APPDATA_PATH environment to change the root
         /// </summary>

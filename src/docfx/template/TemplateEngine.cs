@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,6 +16,8 @@ namespace Microsoft.Docs.Build
         private readonly string _templateDir;
         private readonly string _schemaDir;
         private readonly string _contentTemplateDir;
+        private readonly Output _output;
+        private readonly TemplateDefinition _templateDefinition;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<IJavaScriptEngine> _js;
@@ -23,8 +26,16 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
 
-        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
+        public TemplateEngine(
+            ErrorBuilder errors,
+            Config config,
+            BuildOptions buildOptions,
+            Output output,
+            PackageResolver packageResolver,
+            Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
+            _output = output;
+
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
@@ -33,6 +44,8 @@ namespace Microsoft.Docs.Build
 
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
             _schemaDir = Path.Combine(_contentTemplateDir, "schemas");
+
+            _templateDefinition = PathUtility.LoadYamlOrJson<TemplateDefinition>(errors, _templateDir, "template") ?? new TemplateDefinition();
 
             _global = LoadGlobalTokens();
             _liquid = new LiquidTemplate(_templateDir);
@@ -123,6 +136,24 @@ namespace Microsoft.Docs.Build
                 }
             }
             return result;
+        }
+
+        public void CopyAssetsToOutput()
+        {
+            if (_templateDefinition.Assets.Length <= 0)
+            {
+                return;
+            }
+
+            var glob = GlobUtility.CreateGlobMatcher(_templateDefinition.Assets);
+
+            Parallel.ForEach(PathUtility.GetFiles(_templateDir), file =>
+            {
+                if (glob(file))
+                {
+                    _output.Copy(file, new FilePath(Path.Combine(_templateDir, file)));
+                }
+            });
         }
 
         public string? GetToken(string key)
