@@ -11,4 +11,8 @@
     <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>

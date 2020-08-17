@@ -18,7 +18,7 @@ namespace Microsoft.Docs.LearnValidation
         public string Uid => UId;
 
         public IValidateModel Parent { get; set; }
-        
+
         public string MSDate { get; set; }
 
         public string ServiceData { get; set; }

@@ -5,6 +5,6 @@ namespace Microsoft.Docs.LearnValidation
 {
     public static class Constants
     {
-        public readonly static string DefaultLocale = "en-us";
+        public static readonly string DefaultLocale = "en-us";
     }
 }

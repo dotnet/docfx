@@ -1,20 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-
     public class CodeExtension : ITripleColonExtensionInfo
     {
         public string Name => "code";
+
         public bool SelfClosing => true;
-        public bool EndingTripleColons => false;
+
+        public static bool EndingTripleColons => false;
 
         private readonly MarkdownContext _context;
 
@@ -26,9 +27,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
         {
             var block = (TripleColonBlock)markdownObject;
-            block.Attributes.TryGetValue("id", out var currentId); //it's okay if this is null
-            block.Attributes.TryGetValue("range", out var currentRange); //it's okay if this is null
-            block.Attributes.TryGetValue("source", out var currentSource); //source has already been checked above
+            block.Attributes.TryGetValue("id", out var currentId); // it's okay if this is null
+            block.Attributes.TryGetValue("range", out var currentRange); // it's okay if this is null
+            block.Attributes.TryGetValue("source", out var currentSource); // source has already been checked above
             var (code, codePath) = _context.ReadFile(currentSource, block);
             if (string.IsNullOrEmpty(code))
             {
@@ -36,7 +37,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            //var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
+            // var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
             var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
             var snippet = new CodeSnippet(null);
             snippet.CodePath = currentSource;
@@ -47,7 +48,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var updatedCode = htmlCodeSnippetRenderer.GetContent(code, snippet);
             updatedCode = ExtensionsHelper.Escape(updatedCode).TrimEnd();
 
-            if (updatedCode == string.Empty)
+            if (string.IsNullOrEmpty(updatedCode))
             {
                 logWarning($"It looks like your code snippet was not rendered. Try range instead.");
                 return false;
@@ -62,7 +63,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
-
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
             var source = string.Empty;
@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            if(string.IsNullOrEmpty(language))
+            if (string.IsNullOrEmpty(language))
             {
                 language = InferLanguageFromFile(source, logError);
             }
@@ -120,29 +120,32 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 htmlAttributes.AddProperty("data-interactive", language);
                 htmlAttributes.AddProperty("data-interactive-mode", interactive);
             }
-            if (!string.IsNullOrEmpty(highlight)) htmlAttributes.AddProperty("highlight-lines", highlight);
+            if (!string.IsNullOrEmpty(highlight))
+            {
+                htmlAttributes.AddProperty("highlight-lines", highlight);
+            }
 
             return true;
-        }
-        
-        private string InferLanguageFromFile(string source, Action<string> logError)
-        {
-            var fileExtension = Path.GetExtension(source);
-            if(fileExtension == null)
-            {
-                logError("Language is not set, and your source has no file type. Cannot infer language.");
-            }
-            var language = HtmlCodeSnippetRenderer.GetLanguageByFileExtension(fileExtension);
-            if(string.IsNullOrEmpty(language))
-            {
-                logError("Language is not set, and we could not infer language from the file type.");
-            }
-            return language;
         }
 
         public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
         {
             return true;
+        }
+
+        private static string InferLanguageFromFile(string source, Action<string> logError)
+        {
+            var fileExtension = Path.GetExtension(source);
+            if (fileExtension == null)
+            {
+                logError("Language is not set, and your source has no file type. Cannot infer language.");
+            }
+            var language = HtmlCodeSnippetRenderer.GetLanguageByFileExtension(fileExtension);
+            if (string.IsNullOrEmpty(language))
+            {
+                logError("Language is not set, and we could not infer language from the file type.");
+            }
+            return language;
         }
     }
 }

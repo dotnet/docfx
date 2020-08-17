@@ -1,8 +1,10 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+
 namespace ChakraHost.Hosting
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     ///     An exception returned from the Chakra engine.
     /// </summary>
@@ -43,7 +45,7 @@ namespace ChakraHost.Hosting
         {
             if (message != null)
             {
-                code = (JavaScriptErrorCode) base.HResult;
+                code = (JavaScriptErrorCode)base.HResult;
             }
         }
 

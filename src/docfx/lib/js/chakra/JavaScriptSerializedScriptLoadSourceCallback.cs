@@ -1,7 +1,8 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 namespace ChakraHost.Hosting
 {
-    using System;
-
     /// <summary>
     ///     Called by the runtime to load the source code of the serialized script.
     ///     The caller must keep the script buffer valid until the JsSerializedScriptUnloadCallback.

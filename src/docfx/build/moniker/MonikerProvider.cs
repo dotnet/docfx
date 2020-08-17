@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private MonikerList GetMonikerIntersection(
+        private static MonikerList GetMonikerIntersection(
             ErrorBuilder errors,
             SourceInfo<string?> configMonikerRange,
             MonikerList configMonikers,
@@ -217,7 +217,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private Dictionary<string, int> GetMonikerOrder(MonikerDefinitionModel monikerDefinition)
+        private static Dictionary<string, int> GetMonikerOrder(MonikerDefinitionModel monikerDefinition)
         {
             var result = new Dictionary<string, int>();
             var sorted = monikerDefinition.Monikers.OrderBy(moniker => moniker.Order).ToArray();

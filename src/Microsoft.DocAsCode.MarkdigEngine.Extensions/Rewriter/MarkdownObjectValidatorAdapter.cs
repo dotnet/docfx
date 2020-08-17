@@ -1,15 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
+using Markdig.Syntax;
+using Microsoft.DocAsCode.MarkdigEngine.Validators;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.MarkdigEngine.Validators;
-
     internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
     {
         private Action<IMarkdownObject> _preProcess;
@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public ImmutableArray<IMarkdownObjectValidator> Validators { get; }
 
         public MarkdownObjectValidatorAdapter(
-            IEnumerable<IMarkdownObjectValidator> validators, 
-            Action<IMarkdownObject> preProcess, 
+            IEnumerable<IMarkdownObjectValidator> validators,
+            Action<IMarkdownObject> preProcess,
             Action<IMarkdownObject> postProcess)
         {
             Validators = validators.ToImmutableArray();

@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
                             || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
         }
 
-        private (string? org, string? name) ParseRepoInfo(string url)
+        private static (string? org, string? name) ParseRepoInfo(string url)
         {
             if (UrlUtility.TryParseGitHubUrl(url, out var org, out var name))
             {
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private PathString GetGitRepositoryPath(string url, string branch)
+        private static PathString GetGitRepositoryPath(string url, string branch)
         {
             return new PathString(Path.Combine(AppData.GitRoot, $"{PathUtility.UrlToShortName(url)}-{branch}"));
         }

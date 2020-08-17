@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-
-    public class NestedColumnRender : HtmlObjectRenderer<NestedColumnBlock>
+    public class NestedColumnRenderer : HtmlObjectRenderer<NestedColumnBlock>
     {
         protected override void Write(HtmlRenderer renderer, NestedColumnBlock obj)
         {

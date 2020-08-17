@@ -1,8 +1,11 @@
-﻿namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
-{
-    using Markdig.Helpers;
-    using Markdig.Parsers;
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Helpers;
+using Markdig.Parsers;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+{
     public class NolocParser : InlineParser
     {
         // syntax => :::no-loc text="{content}":::
@@ -23,7 +26,7 @@
 
             var text = ExtensionsHelper.TryGetStringBeforeChars(new char[] { '\"', '\n' }, ref slice);
 
-            if(text == null || text.IndexOf('\n') != -1)
+            if (text == null || text.IndexOf('\n') != -1)
             {
                 return false;
             }
@@ -35,7 +38,7 @@
 
             processor.Inline = new NolocInline
             {
-                Text = text
+                Text = text,
             };
 
             return true;

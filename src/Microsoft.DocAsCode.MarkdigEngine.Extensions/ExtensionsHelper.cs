@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+using Markdig.Helpers;
+using Markdig.Parsers;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-
     public static class ExtensionsHelper
     {
         public static readonly Regex HtmlEscapeWithEncode = new Regex(@"&", RegexOptions.Compiled);
@@ -46,9 +46,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 var n = match.Groups[1].Value;
 
-                n = n.ToLower();
-                if (n == "amp") return "&";
-                if (n == "colon") return ":";
+                n = n.ToLowerInvariant();
+                if (n == "amp")
+                {
+                    return "&";
+                }
+
+                if (n == "colon")
+                {
+                    return ":";
+                }
+
                 if (n[0] == '#')
                 {
                     return n[1] == 'x'
@@ -107,7 +115,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return index == startString.Length;
         }
 
-		public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
+        public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
         {
             if (MatchTitle(ref slice, ref title) && MatchPath(ref slice, ref path))
             {
@@ -140,7 +148,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static string TryGetStringBeforeChars(IEnumerable<char> chars, ref StringSlice slice, bool breakOnWhitespace = false)
         {
-            StringSlice savedSlice = slice;
+            var savedSlice = slice;
             var c = slice.CurrentChar;
             var hasEscape = false;
             var builder = StringBuilderCache.Local();
@@ -173,31 +181,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
         }
 
-
-        #region private methods
-        private static string GetAbsolutePathWithTildeCore(string basePath, string tildePath)
-        {
-            var index = 1;
-            var ch = tildePath[index];
-            while (ch == '/' || ch == '\\')
-            {
-                index++;
-                ch = tildePath[index];
-            }
-
-            if (index == tildePath.Length)
-            {
-                return basePath;
-            }
-
-            var pathWithoutTilde = tildePath.Substring(index);
-
-            return NormalizePath(Path.Combine(basePath, pathWithoutTilde));
-        }
-
         private static bool CharEqual(char ch1, char ch2, bool isCaseSensitive)
         {
-            return isCaseSensitive ? ch1 == ch2 : Char.ToLower(ch1) == Char.ToLower(ch2);
+            return isCaseSensitive ? ch1 == ch2 : char.ToLowerInvariant(ch1) == char.ToLowerInvariant(ch2);
         }
 
         private static bool MatchTitle(ref StringSlice slice, ref string title)
@@ -241,11 +227,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        public static bool IsEscaped(StringSlice slice)
-        {
-            return slice.PeekCharExtra(-1) == '\\';
-        }
-
         private static bool MatchPath(ref StringSlice slice, ref string path)
         {
             if (slice.CurrentChar != '(')
@@ -264,7 +245,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else
             {
                 includedFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
-            };
+            }
 
             if (includedFilePath == null)
             {
@@ -305,6 +286,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
             }
         }
-        #endregion
     }
 }

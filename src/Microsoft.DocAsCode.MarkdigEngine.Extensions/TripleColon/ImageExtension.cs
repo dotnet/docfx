@@ -1,19 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System;
+using System.Collections.Generic;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-    using System;
-    using System.Collections.Generic;
-
     public class ImageExtension : ITripleColonExtensionInfo
     {
         private readonly MarkdownContext _context;
 
         public string Name => "image";
+
         public bool SelfClosing => true;
 
         public ImageExtension(MarkdownContext context)
@@ -74,7 +75,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             // add loc scope missing/invalid validation here
-
             if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
             {
                 return false;
@@ -91,20 +91,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 currentType = "content";
             }
-            tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); //it's okay if this is null
-            tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); //it's okay if this is null
-            tripleColonObj.Attributes.TryGetValue("link", out var currentLink); //it's okay if this is null
-            tripleColonObj.Attributes.TryGetValue("alt-text", out var alt); //it's okay if this is null
-            tripleColonObj.Attributes.TryGetValue("source", out var src); //it's okay if this is null
-
+            tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("link", out var currentLink); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("alt-text", out var alt); // it's okay if this is null
+            tripleColonObj.Attributes.TryGetValue("source", out var src); // it's okay if this is null
 
             var htmlAttributes = new HtmlAttributes();
 
             // alt is allowed to be empty for icon type image
             if (string.IsNullOrEmpty(alt) && currentType == "icon")
+            {
                 htmlAttributes.AddProperty("src", _context.GetLink(src, obj));
+            }
             else
+            {
                 htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt));
+            }
 
             if (currentType == "icon")
             {
@@ -115,8 +118,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 htmlAttributes.AddProperty("alt", alt);
             }
             var htmlId = GetHtmlId(obj);
-            if (currentType == "complex") htmlAttributes.AddProperty("aria-describedby", htmlId);
-
+            if (currentType == "complex")
+            {
+                htmlAttributes.AddProperty("aria-describedby", htmlId);
+            }
 
             if (!bool.TryParse(currentBorderStr, out var currentBorder))
             {
@@ -140,11 +145,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     renderer.WriteLine("<span class=\"mx-imgBorder\">");
                 }
-
             }
             else
             {
-                if (tripleColonObj is Block) renderer.WriteLine("<p>");
+                if (tripleColonObj is Block)
+                {
+                    renderer.WriteLine("<p>");
+                }
             }
             if (!string.IsNullOrEmpty(currentLink))
             {
@@ -171,7 +178,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
                     renderer.WriteChildren(inline);
                 }
-
             }
             else
             {
@@ -195,7 +201,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                if (currentBorder) renderer.WriteLine("</span>");
+                if (currentBorder)
+                {
+                    renderer.WriteLine("</span>");
+                }
+
                 renderer.WriteChildren(tripleColonObj as ContainerInline);
             }
             return true;

@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig.Helpers;
+using Markdig.Parsers;
+using Markdig.Syntax;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
-    using Markdig.Syntax;
-
     public class NestedColumnParser : BlockParser
     {
         private const string StartString = "column";
@@ -44,7 +44,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 colonCount++;
             }
 
-            if (colonCount < 3) return BlockState.None;
+            if (colonCount < 3)
+            {
+                return BlockState.None;
+            }
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
@@ -69,10 +72,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     return BlockState.None;
                 }
-
-            } else
+            }
+            else
             {
-                columnWidth.Append("1"); // default span is one
+                columnWidth.Append('1'); // default span is one
             }
 
             while (c.IsSpace())
@@ -80,7 +83,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 c = slice.NextChar();
             }
 
-            if (!ExtensionsHelper.MatchStart(ref slice, ":::", false)) //change
+            // change
+            if (!ExtensionsHelper.MatchStart(ref slice, ":::", false))
             {
                 return BlockState.None;
             }
@@ -105,11 +109,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var slice = processor.Line;
-            var NestedColumn = (NestedColumnBlock)block;
+            var nestedColumn = (NestedColumnBlock)block;
 
             ExtensionsHelper.SkipSpaces(ref slice);
 
-            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', NestedColumn.ColonCount)))
+            if (!ExtensionsHelper.MatchStart(ref slice, new string(':', nestedColumn.ColonCount)))
             {
                 return BlockState.Continue;
             }
