@@ -162,8 +162,12 @@ namespace Microsoft.Docs.Build
 
             // for non-markdown documents, if config monikers is not defined
             // just use file monikers
-            if (!(configMonikerRange.Value is null && file.Format != FileFormat.Markdown)
-                && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
+            if (configMonikerRange.Value is null && file.Format != FileFormat.Markdown)
+            {
+                return fileMonikers;
+            }
+
+            if (configMonikers.HasMonikers || fileMonikers.HasMonikers)
             {
                 // With config monikers defined,
                 // warn if no intersection of config monikers and file monikers
