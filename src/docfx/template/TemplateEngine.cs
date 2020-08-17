@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly string _templateDir;
         private readonly string _schemaDir;
         private readonly string _contentTemplateDir;
+        private readonly Config _config;
         private readonly Output _output;
         private readonly TemplateDefinition _templateDefinition;
         private readonly JObject _global;
@@ -34,6 +35,7 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
+            _config = config;
             _output = output;
 
             _templateDir = config.Template.Type switch
@@ -140,7 +142,7 @@ namespace Microsoft.Docs.Build
 
         public void CopyAssetsToOutput()
         {
-            if (_templateDefinition.Assets.Length <= 0)
+            if (_config.OutputType != OutputType.Html || _templateDefinition.Assets.Length <= 0)
             {
                 return;
             }

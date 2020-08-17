@@ -14,6 +14,18 @@ outputs:
   styles/main.css: css
   scripts/main.js: js
 ---
+# Copy assets in template definition to output directory only when output is HTML
+inputs:
+  docfx.yml: |
+    template: _themes
+  _themes/template.yml: |
+    assets:
+    - styles/**
+    - scripts/**
+  _themes/styles/main.css: css
+  _themes/scripts/main.js: js
+outputs:
+---
 # Liquid template file missing should not crash
 inputs: 
   docfx.yml: |
