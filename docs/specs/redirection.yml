@@ -682,7 +682,7 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","line":0,"column":0}
 ---
-# Should not warn when combine redirection with monikers and exclude_monikers
+# exclude_monikers should take effect on config monikers as well
 repos:
   https://github.com/redirection/source-monikers:
   - files:
@@ -690,14 +690,14 @@ repos:
         monikerRange:
           'docs/v1/**': '>= netcore-1.0'
         monikerDefinition: monikerDefinition.json
-      a.md: |
-        ---
-        exclude_monikers: netcore-2.0
-        monikerRange: '< netcore-2.1'
-        ---
+        fileMetadata:
+          exclude_monikers:
+            '**/*.md': 
+            - netcore-2.0
+      docs/v1/a.md:
       .openpublishing.redirection.json: |
         { 
-          "redirections": [{"source_path": "a.md", "monikers": "netcore-2.0", "redirect_URL": "/b"}]
+          "redirections": [{"source_path": "docs/v1/a.md", "monikers": "netcore-2.0", "redirect_URL": "/b"}]
         }
       monikerDefinition.json: |
         {
@@ -709,3 +709,4 @@ repos:
           ]
         }
 outputs:
+  bdc0b3f1/docs/v1/a.json:
