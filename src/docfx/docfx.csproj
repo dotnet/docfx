@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.2.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.0" />
-    <PackageReference Include="docs.validation" Version="1.0.0-beta-00240-d832a2a" />
+    <PackageReference Include="docs.validation" Version="1.0.0-beta-00241-a83077f" />
     <PackageReference Include="DotLiquid" Version="2.0.361" />
     <PackageReference Include="Glob" Version="1.1.7" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.298" />
