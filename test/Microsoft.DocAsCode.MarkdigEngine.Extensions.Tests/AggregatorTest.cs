@@ -1,15 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Markdig;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using MarkdigEngine.Extensions;
-
-    using Markdig;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
-    using Xunit;
-
     public class AggregatorTest
     {
         [Theory]
@@ -127,7 +126,7 @@ P4</p>
             }
         }
 
-        private void TestAggregator(string content, string expected, IBlockAggregator blockAggregator)
+        private static void TestAggregator(string content, string expected, IBlockAggregator blockAggregator)
         {
             var visitor = new MarkdownDocumentAggregatorVisitor(blockAggregator);
             var pipelineBuilder = new MarkdownPipelineBuilder();

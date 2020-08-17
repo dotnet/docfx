@@ -1654,7 +1654,6 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":6,"column":8}
-    {"message_severity":"warning","code":"duplicate-join-toc-name","message":"Join TOC name 'duplicate' is duplicated","file":"a/api/TOC.yml","line":8,"column":9}
   a/api/toc.json: |
     {
         "metadata": {"open_to_public_contributors": false},
@@ -1680,7 +1679,7 @@ outputs:
                             },
                             {
                                 "name": "Other",
-                                "items": [{"name": "no.match"}]
+                                "items": [{"name": "duplicate"}, {"name": "duplicate"}, {"name": "no.match"}]
                             }
                         ]
                     }
@@ -1689,3 +1688,46 @@ outputs:
         ],
         "_path": "api/toc.json"
     }
+---
+# TOC split metadata supporting
+repos:
+  https://ms.com/ops-file-metadata#master:
+  - files:
+      docfx.yml:
+      .openpublishing.publish.config.json: |
+        {
+          "JoinTOCPlugin": [
+            {
+              "ConceptualTOC": "b/TOC.yml",
+              "ReferenceTOCUrl": "/dotnet-test/api/toc.json",
+              "ConceptualTOCUrl": "dotnet-test/learn/toc.json",
+              "ReferenceTOC": "a/TOC.yml"
+            }
+          ]
+        }
+      a/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: a
+          items:
+          - name: a-a
+        - name: b
+          items:
+          - name: b-b
+      b/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: 1
+          items:
+          - name: 1-1
+outputs:
+  b/toc.json: |
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
+  b/_splitted/1/toc.json: |
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
+  a/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+  a/_splitted/a/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+  a/_splitted/b/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}

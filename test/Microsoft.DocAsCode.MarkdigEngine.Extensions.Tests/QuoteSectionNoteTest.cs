@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+using Xunit;
+
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using Xunit;
-
     public class QuoteSectionNoteTest
     {
         [Fact]
@@ -69,8 +69,8 @@ this is also warning</p>
 ";
             var tokens = new Dictionary<string, string>
             {
-                {"note", "<h5>注意</h5>"},
-                {"warning", "<h5>警告</h5>" }
+                { "note", "<h5>注意</h5>" },
+                { "warning", "<h5>警告</h5>" },
             };
 
             TestUtility.VerifyMarkup(source, expected, tokens: tokens);
@@ -220,8 +220,8 @@ this is also warning</p>
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
-        #region Inline Data
-        [InlineData(@"the following is note type
+        [InlineData(
+            @"the following is note type
   > [!NOTE]
   > note text 1-1
   > note text 1-2  
@@ -241,7 +241,8 @@ This is also note with br</p>
 </div>
 <p>Skip the note</p>
 ")]
-        [InlineData(@"the following is not note type
+        [InlineData(
+            @"the following is not note type
   > no-note text 1-1
   > [!NOTE]
   > no-note text 1-2  
@@ -256,7 +257,8 @@ This is also note with br</p>
 no-note text 2-1</p>
 </div>
 ")]
-        [InlineData(@"the following is not note type
+        [InlineData(
+            @"the following is not note type
   > no-note text 1-1
   >
   > [!NOTE]
@@ -272,7 +274,8 @@ no-note text 2-1</p>
 no-note text 2-2</p>
 </div>
 ")]
-        [InlineData(@"the following is code
+        [InlineData(
+            @"the following is code
 
     > code text 1-1
     > [!NOTE]
@@ -285,7 +288,6 @@ no-note text 2-2</p>
 &gt; code text 2-1
 </code></pre>
 ")]
-        #endregion
         public void TestSectionNoteInBlockQuote(string source, string expected)
         {
             TestUtility.VerifyMarkup(source, expected);

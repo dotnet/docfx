@@ -36,8 +36,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var adapter = new OpsConfigAdapter(null, request => request.Headers.Add("X-OP-BuildUserToken", token));
-            var response = await adapter.InterceptHttpRequest(new HttpRequestMessage { RequestUri = new Uri(url) });
+            using var adapter = new OpsConfigAdapter(null, request => request.Headers.Add("X-OP-BuildUserToken", token));
+            using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
+            var response = await adapter.InterceptHttpRequest(request);
             var actualConfig = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
             new JsonDiffBuilder().UseAdditionalProperties().Build().Verify(

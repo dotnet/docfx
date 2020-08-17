@@ -311,7 +311,7 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[]? MAMLMonikerPath { get; private set; }
 
-        public JoinTOCConfig[]? JoinTOC { get; private set; }
+        public JoinTOCConfig[] JoinTOC { get; private set; } = Array.Empty<JoinTOCConfig>();
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
@@ -334,14 +334,11 @@ namespace Microsoft.Docs.Build
                 yield return metadataSchema;
             }
 
-            if (JoinTOC != null)
+            foreach (var item in JoinTOC)
             {
-                foreach (var item in JoinTOC)
+                if (item.TopLevelToc != null)
                 {
-                    if (item.TopLevelToc != null)
-                    {
-                        yield return new SourceInfo<string>(item.TopLevelToc);
-                    }
+                    yield return new SourceInfo<string>(item.TopLevelToc);
                 }
             }
         }

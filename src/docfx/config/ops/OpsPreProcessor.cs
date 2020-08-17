@@ -48,11 +48,6 @@ namespace Microsoft.Docs.Build
                     for (var index = 0; index < _config.Monodoc.Length; index++)
                     {
                         var monodocConfig = _config.Monodoc[index];
-                        if (Directory.Exists(monodocConfig.OutputYamlFolder))
-                        {
-                            Directory.Delete(monodocConfig.OutputYamlFolder, recursive: true);
-                        }
-
                         Directory.CreateDirectory(monodocConfig.OutputYamlFolder);
 
                         var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null

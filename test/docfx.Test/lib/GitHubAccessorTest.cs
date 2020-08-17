@@ -6,11 +6,11 @@ using Xunit;
 
 namespace Microsoft.Docs.Build
 {
-    public class GitHubAccessorTest
+    public static class GitHubAccessorTest
     {
-        private readonly static string s_token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
-        private readonly static Config s_config = JsonUtility.DeserializeData<Config>($@"{{'githubToken': '{s_token}'}}".Replace('\'', '\"'), null);
-        private readonly static GitHubAccessor s_github = new GitHubAccessor(s_config);
+        private static readonly string s_token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
+        private static readonly Config s_config = JsonUtility.DeserializeData<Config>($@"{{'githubToken': '{s_token}'}}".Replace('\'', '\"'), null);
+        private static readonly GitHubAccessor s_github = new GitHubAccessor(s_config);
 
         [Theory]
         [InlineData("OsmondJiang", 19990166, "Osmond Jiang", "OsmondJiang")]
