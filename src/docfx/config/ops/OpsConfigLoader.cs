@@ -165,6 +165,9 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(config.ConceptualTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
                 {
                     refToc[buildSourceFolder.GetRelativePath(new PathString(config.ConceptualTOC))] = config.ReferenceTOCUrl;
+                    refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
+                    refToc[$"{Path.GetDirectoryName(config.ConceptualTOC)}/_splitted/**"] =
+                        config.ReferenceTOCUrl;
                 }
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
@@ -187,9 +190,6 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(config.TopLevelTOC))
                 {
                     item["topLevelToc"] = buildSourceFolder.GetRelativePath(new PathString(config.TopLevelTOC));
-                    refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
-                    refToc[$"{Path.GetDirectoryName(config.ConceptualTOC)}/_splitted/**"] =
-                        config.ReferenceTOCUrl;
                 }
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
