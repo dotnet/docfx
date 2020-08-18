@@ -45,14 +45,17 @@ namespace Microsoft.Docs.Build
         /// Writes the input text to an output file.
         /// Throws if multiple threads trying to write to the same destination concurrently.
         /// </summary>
-        public void WriteText(string destRelativePath, string text)
+        public void WriteText(string destRelativePath, string? text)
         {
             EnsureNoDryRun();
 
-            _queue.Post(() =>
+            if (text != null)
             {
-                File.WriteAllText(GetDestinationPath(destRelativePath), text);
-            });
+                _queue.Post(() =>
+                {
+                    File.WriteAllText(GetDestinationPath(destRelativePath), text);
+                });
+            }
         }
 
         /// <summary>

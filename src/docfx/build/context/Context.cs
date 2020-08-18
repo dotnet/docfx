@@ -72,6 +72,8 @@ namespace Microsoft.Docs.Build
 
         public JsonSchemaTransformer JsonSchemaTransformer { get; }
 
+        public SearchIndexBuilder SearchIndexBuilder { get; }
+
         public Context(
             ErrorBuilder errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
         {
@@ -171,6 +173,8 @@ namespace Microsoft.Docs.Build
                 config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
             MetadataValidator = new MetadataValidator(
                 Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
+
+            SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, MetadataProvider);
         }
 
         public void Dispose()

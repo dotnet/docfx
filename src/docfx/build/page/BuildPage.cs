@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -176,6 +177,7 @@ namespace Microsoft.Docs.Build
 
             systemMetadata.SearchProduct = context.Config.Product;
             systemMetadata.SearchDocsetName = context.Config.Name;
+            systemMetadata.SearchEngine = context.Config.SearchEngine;
 
             if (context.Config.OutputPdf)
             {
@@ -211,7 +213,9 @@ namespace Microsoft.Docs.Build
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
             var html = context.MarkdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, conceptual);
 
+            context.SearchIndexBuilder.SetTitle(file, conceptual.Title);
             context.ContentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
+
             ProcessConceptualHtml(conceptual, context, file, html);
 
             return context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
@@ -248,7 +252,9 @@ namespace Microsoft.Docs.Build
                 // transform metadata via json schema
                 var userMetadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
                 JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
+
                 context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file.FilePath);
+                context.SearchIndexBuilder.SetTitle(file, userMetadata.Title);
             }
 
             var schema = context.TemplateEngine.GetSchema(file.Mime);
@@ -325,13 +331,22 @@ namespace Microsoft.Docs.Build
         private static string ProcessHtml(Context context, Document file, string html)
         {
             var bookmarks = new HashSet<string>();
+            var searchText = new StringBuilder();
+
             var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
             {
                 HtmlUtility.GetBookmarks(ref token, bookmarks);
                 HtmlUtility.AddLinkType(ref token, context.BuildOptions.Locale);
+
+                if (token.Type == HtmlTokenType.Text)
+                {
+                    searchText.Append(token.RawText);
+                }
             });
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.SearchIndexBuilder.SetBody(file, searchText.ToString());
+
             return LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);
         }
 
@@ -339,6 +354,8 @@ namespace Microsoft.Docs.Build
         {
             var wordCount = 0L;
             var bookmarks = new HashSet<string>();
+            var searchText = new StringBuilder();
+
             var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
             {
                 HtmlUtility.GetBookmarks(ref token, bookmarks);
@@ -347,6 +364,11 @@ namespace Microsoft.Docs.Build
                 if (!context.Config.DryRun)
                 {
                     HtmlUtility.CountWord(ref token, ref wordCount);
+                }
+
+                if (token.Type == HtmlTokenType.Text)
+                {
+                    searchText.Append(token.RawText);
                 }
             });
 
@@ -361,6 +383,7 @@ namespace Microsoft.Docs.Build
             }
 
             context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.SearchIndexBuilder.SetBody(file, searchText.ToString());
 
             conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);
             conceptual.WordCount = wordCount;

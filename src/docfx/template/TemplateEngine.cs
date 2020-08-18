@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -21,7 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly TemplateDefinition _templateDefinition;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
-        private readonly ThreadLocal<IJavaScriptEngine> _js;
+        private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
@@ -51,13 +50,7 @@ namespace Microsoft.Docs.Build
 
             _global = LoadGlobalTokens();
             _liquid = new LiquidTemplate(_templateDir);
-
-            // TODO: remove JINT after Microsoft.CharkraCore NuGet package
-            // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
-            _js = new ThreadLocal<IJavaScriptEngine>(() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
-                : new JintJsEngine(_contentTemplateDir, _global));
-
+            _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_contentTemplateDir, _global));
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
@@ -97,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         public string RunLiquid(Document file, TemplateModel model)
         {
-            var layout = model.RawMetadata?.Value<string>("layout") ?? "";
+            var layout = model.RawMetadata?.Value<string>("layout") ?? file.Mime.Value ?? throw new InvalidOperationException();
             var themeRelativePath = _templateDir;
 
             var liquidModel = new JObject
