@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -24,27 +25,53 @@ namespace Microsoft.Docs.Build
 
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
+        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
         private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
         /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static string? FindYamlOrJson(string directory, string fileNameWithoutExtension)
+        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string directory, string fileNameWithoutExtension) where T : class, new()
         {
-            var pathWithoutExtension = Path.Combine(directory, fileNameWithoutExtension);
-            var fullPath = NormalizeFile(pathWithoutExtension + ".yml");
+            var fileName = fileNameWithoutExtension + ".yml";
+            var fullPath = Path.Combine(directory, fileName);
             if (File.Exists(fullPath))
             {
-                return fullPath;
+                return YamlUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
             }
 
-            fullPath = NormalizeFile(pathWithoutExtension + ".json");
+            fileName = fileNameWithoutExtension + ".json";
+            fullPath = Path.Combine(directory, fileName);
             if (File.Exists(fullPath))
             {
-                return fullPath;
+                return JsonUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Enumerates files inside a directory, returns path relative to <paramref name="directory"/>.
+        /// </summary>
+        public static IEnumerable<PathString> GetFiles(string directory)
+        {
+            return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
+            {
+                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
+                ShouldRecursePredicate =
+                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
+            };
+
+            static PathString ToPathString(ref FileSystemEntry entry)
+            {
+                Debug.Assert(!entry.IsDirectory);
+
+                var path = entry.RootDirectory.Length == entry.Directory.Length
+                    ? entry.FileName.ToString()
+                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
+
+                return PathString.DangerousCreate(path);
+            }
         }
 
         /// <summary>

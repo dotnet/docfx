@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
         public bool ExcludeMatches(string file)
         {
-            var match = LazyInitializer.EnsureInitialized(ref _globMatcherCache, () => GlobUtility.CreateGlobMatcher(Exclude, Array.Empty<string>()));
+            var match = LazyInitializer.EnsureInitialized(ref _globMatcherCache, () => GlobUtility.CreateGlobMatcher(Exclude));
 
             return match(file);
         }

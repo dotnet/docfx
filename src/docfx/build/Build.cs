@@ -111,6 +111,7 @@ namespace Microsoft.Docs.Build
             MemoryCache.Clear();
 
             Parallel.Invoke(
+                () => context.TemplateEngine.CopyAssetsToOutput(),
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
