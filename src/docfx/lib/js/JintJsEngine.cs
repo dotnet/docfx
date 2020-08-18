@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JintJsEngine : IJavaScriptEngine
+    internal class JintJsEngine : JavaScriptEngine
     {
         private readonly Engine _engine = new Engine();
         private readonly string _scriptDir;
@@ -26,13 +26,16 @@ namespace Microsoft.Docs.Build
             _global = ToJsValue(global ?? new JObject());
         }
 
-        public JToken Run(string scriptPath, string methodName, JToken arg)
+        public override JToken Run(string scriptPath, string methodName, JToken arg)
         {
             var exports = GetScriptExports(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
             var method = exports.AsObject().Get(methodName);
 
             var jsArg = ToJsValue(arg);
-            jsArg.AsObject()?.Set("__global", _global);
+            if (jsArg.IsObject())
+            {
+                jsArg.AsObject().Set("__global", _global);
+            }
 
             try
             {
@@ -63,13 +66,16 @@ namespace Microsoft.Docs.Build
             JsValue RunCore(string path)
             {
                 var fullPath = Path.GetFullPath(path);
-                if (modules.TryGetValue(fullPath, out var module))
+                if (modules.TryGetValue(fullPath, out var result))
                 {
-                    return module;
+                    return result;
                 }
 
                 var engine = new Engine(opt => opt.LimitRecursion(5000));
-                var exports = modules[fullPath] = MakeObject();
+                var exports = MakeObject();
+                var module = MakeObject();
+                module.Set("exports", exports);
+
                 var sourceCode = File.ReadAllText(fullPath);
                 var parserOptions = new ParserOptions(fullPath);
 
@@ -83,8 +89,8 @@ namespace Microsoft.Docs.Build
                 var require = new ClrFunctionInstance(engine, "require", Require);
 
                 var func = engine.Execute(script, parserOptions).GetCompletionValue();
-                func.Invoke(MakeObject(), exports, dirname, require, MakeObject());
-                return exports;
+                func.Invoke(module, exports, dirname, require, MakeObject());
+                return modules[fullPath] = module.Get("exports");
 
                 JsValue Require(JsValue self, JsValue[] arguments)
                 {

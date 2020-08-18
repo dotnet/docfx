@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Javascript engine based on https://github.com/microsoft/ChakraCore
     /// </summary>
-    internal class ChakraCoreJsEngine : IJavaScriptEngine
+    internal class ChakraCoreJsEngine : JavaScriptEngine
     {
         private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
         private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public JToken Run(string scriptPath, string methodName, JToken arg)
+        public override JToken Run(string scriptPath, string methodName, JToken arg)
         {
             return RunInContext(() =>
             {
@@ -116,13 +116,16 @@ namespace Microsoft.Docs.Build
         private static JavaScriptValue Run(string scriptPath)
         {
             var modules = t_modules.Value!;
-            if (modules.TryGetValue(scriptPath, out var module))
+            if (modules.TryGetValue(scriptPath, out var result))
             {
-                return module;
+                return result;
             }
 
             var sourceCode = File.ReadAllText(scriptPath);
-            var exports = modules[scriptPath] = JavaScriptValue.CreateObject();
+            var exports = JavaScriptValue.CreateObject();
+            var module = JavaScriptValue.CreateObject();
+            var exportsProperty = JavaScriptPropertyId.FromString("exports");
+            module.SetProperty(exportsProperty, exports, useStrictRules: true);
 
             // add `process` to input to get the correct file path while running script inside docs-ui
             var script = $@"(function (module, exports, __dirname, require, process) {{{sourceCode}
@@ -137,13 +140,13 @@ namespace Microsoft.Docs.Build
 
                 JavaScriptContext.RunScript(script, sourceContext, scriptPath).CallFunction(
                     JavaScriptValue.Undefined, // this pointer
-                    JavaScriptValue.CreateObject(),
+                    module,
                     exports,
                     JavaScriptValue.FromString(dirname),
                     JavaScriptValue.CreateFunction(s_requireFunction),
                     JavaScriptValue.CreateObject());
 
-                return exports;
+                return modules[scriptPath] = module.GetProperty(exportsProperty);
             }
             finally
             {
