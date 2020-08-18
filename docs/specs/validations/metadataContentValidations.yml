@@ -2540,7 +2540,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"code-block-unclosed","message":"Unclosed code block. Code blocks must begin and end with triple backticks (```).","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
 ---
-# Content validation - codeblock language missing
+# Content validation - codeblock language missing, set codeblock minimum line number in rule
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -2550,7 +2550,61 @@ inputs:
         "rules": [
           {
             "type": "CodeLanguageMissing",
-            "message": "Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.",
+            "message": "Dev language missing. For code-blocks of {0} lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.",
+            "code": "dev-language-missing",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "minCodeBlockLineNum": 5
+          }
+        ]
+      }
+    }
+  a.md: |
+    ```
+      this is a fenced codeblock without language, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+    ```
+      this is a fenced codeblock without language, net line number 4
+      line 2
+      line 3
+
+      line 4
+    ```
+    ```csharp beta-1.0
+      this is a fenced codeblock, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+         this is an intented codeblock
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. For code-blocks of 5 lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - codeblock language missing, not set codeblock minimum line number in rule, so the default value is 20
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "rules": [
+          {
+            "type": "CodeLanguageMissing",
+            "message": "Dev language missing. For code-blocks of {0} lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.",
             "code": "dev-language-missing",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2567,22 +2621,53 @@ inputs:
     }
   a.md: |
     ```
-      this is a fenced codeblock without language
+      this is a fenced codeblock without language, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+    ```
+      this is a fenced codeblock without language, net line number 4
+      line 2
+      line 3
+
+      line 4
     ```
     ```csharp beta-1.0
-      this is a fenced codeblock
+      this is a fenced codeblock, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+    ```
+      this is a fenced codeblock, net line number 5
+      line
+      line
+      line
+      line 5
+      line
+      line
+      line
+      line
+      line 10
+      line
+      line
+      line
+      line
+      line 15
+      line
+      line
+      line
+      line
+      line 20
     ```
          this is an intented codeblock
-    ```
-      code body
-    ```csharp
-      code body2
-    ```
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. For code-blocks of 20 lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.","file":"a.md","line":22,"end_line":22,"column":1,"end_column":1}
 ---
 # Content validation - codeblock language invalid
 inputs:

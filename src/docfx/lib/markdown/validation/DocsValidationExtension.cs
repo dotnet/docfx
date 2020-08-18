@@ -133,6 +133,7 @@ namespace Microsoft.Docs.Build
                     codeBlockItem.Info = fencedCodeBlock.Info;
                     codeBlockItem.Arguments = fencedCodeBlock.Arguments;
                     codeBlockItem.IsOpen = fencedCodeBlock.IsOpen;
+                    codeBlockItem.LineNum = GetFencedCodeBlockNetLineNumber(fencedCodeBlock);
                     break;
 
                 case YamlFrontMatterBlock _:
@@ -151,6 +152,21 @@ namespace Microsoft.Docs.Build
             {
                 codeBlockItemList.Add((node.IsInclude(), codeBlockItem));
             }
+        }
+
+        private static int GetFencedCodeBlockNetLineNumber(FencedCodeBlock fencedCodeBlock)
+        {
+            int netLineNum = 0;
+
+            for (int i = 0; i < fencedCodeBlock.Lines.Count; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(fencedCodeBlock.Lines.Lines[i].ToString()))
+                {
+                    netLineNum++;
+                }
+            }
+
+            return netLineNum;
         }
 
         private static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
