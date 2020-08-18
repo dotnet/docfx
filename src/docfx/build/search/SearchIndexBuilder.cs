@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
         private bool IsLunrSearchEnabled(FilePath file)
         {
-            if (_config.SearchIndexType != SearchIndexType.Lunr)
+            if (_config.SearchEngine != SearchEngineType.Lunr)
             {
                 return false;
             }

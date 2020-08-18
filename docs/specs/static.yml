@@ -341,14 +341,14 @@ outputs:
       ]
     }
 ---
-# Prebuild lunr search index as .lunr.json when searchIndexType is lunr
+# Prebuild lunr search index as .lunr.json when searchEngine is lunr
 inputs:
   docfx.yml: |
     outputType: html
     outputUrlType: pretty
-    searchIndexType: lunr
+    searchEngine: lunr
   _themes/Conceptual.html.liquid: |
-    {{page.search_index_type}}
+    {{page.search_engine}}
     {{content}}
   a.md: |
     # Markdown Title

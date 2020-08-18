@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum SearchIndexType
+    internal enum SearchEngineType
     {
         None,
         Lunr,

@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
         public string? SearchSiteName => SiteName;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public SearchIndexType SearchIndexType { get; set; }
+        public SearchEngineType SearchEngine { get; set; }
 
         [JsonProperty("_path")]
         public string? Path { get; set; }

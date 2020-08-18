@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
 
             systemMetadata.SearchProduct = context.Config.Product;
             systemMetadata.SearchDocsetName = context.Config.Name;
-            systemMetadata.SearchIndexType = context.Config.SearchIndexType;
+            systemMetadata.SearchEngine = context.Config.SearchEngine;
 
             if (context.Config.OutputPdf)
             {

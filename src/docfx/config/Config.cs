@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the search index type like [lunr](https://lunrjs.com/)
         /// </summary>
-        public SearchIndexType SearchIndexType { get; private set; }
+        public SearchEngineType SearchEngine { get; private set; }
 
         /// <summary>
         /// When enabled, updated_at for each document will be the last build time
