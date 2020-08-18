@@ -4,9 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,7 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentDictionary<string, LunrSearchItem> _searchIndex = new ConcurrentDictionary<string, LunrSearchItem>();
+        private readonly ConcurrentDictionary<FilePath, SearchIndexItem> _searchIndex = new ConcurrentDictionary<FilePath, SearchIndexItem>();
 
         public SearchIndexBuilder(Config config, ErrorBuilder errors, MetadataProvider metadataProvider)
         {
@@ -26,22 +24,22 @@ namespace Microsoft.Docs.Build
 
         public void SetTitle(Document file, string? title)
         {
-            if (string.IsNullOrEmpty(title) || !IsLunrSearchEnabled(file.FilePath))
+            if (string.IsNullOrEmpty(title) || _config.SearchEngine != SearchEngineType.Lunr || NoIndex(file.FilePath))
             {
                 return;
             }
 
-            _searchIndex.GetOrAdd(file.SiteUrl, _ => new LunrSearchItem { Id = file.SiteUrl }).Title = title;
+            _searchIndex.GetOrAdd(file.FilePath, _ => new SearchIndexItem(file.SiteUrl)).Title = title;
         }
 
         public void SetBody(Document file, string? body)
         {
-            if (string.IsNullOrEmpty(body) || !IsLunrSearchEnabled(file.FilePath))
+            if (string.IsNullOrEmpty(body) || _config.SearchEngine != SearchEngineType.Lunr || NoIndex(file.FilePath))
             {
                 return;
             }
 
-            _searchIndex.GetOrAdd(file.SiteUrl, _ => new LunrSearchItem { Id = file.SiteUrl }).Body = body;
+            _searchIndex.GetOrAdd(file.FilePath, _ => new SearchIndexItem(file.SiteUrl)).Body = body;
         }
 
         public string? Build()
@@ -58,30 +56,15 @@ namespace Microsoft.Docs.Build
             return js.Run(scriptPath, "transform", documents).ToString();
         }
 
-        private bool IsLunrSearchEnabled(FilePath file)
+        private bool NoIndex(FilePath file)
         {
-            if (_config.SearchEngine != SearchEngineType.Lunr)
-            {
-                return false;
-            }
-
             var metadata = _metadataProvider.GetMetadata(_errors, file);
             if (metadata.Robots != null && metadata.Robots.Contains("noindex", StringComparison.OrdinalIgnoreCase))
             {
-                return false;
+                return true;
             }
 
-            return true;
-        }
-
-        [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
-        private class LunrSearchItem
-        {
-            public string? Id { get; set; }
-
-            public string? Title { get; set; }
-
-            public string? Body { get; set; }
+            return false;
         }
     }
 }
