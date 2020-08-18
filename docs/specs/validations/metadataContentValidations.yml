@@ -2662,7 +2662,7 @@ inputs:
             "excludedDocfxVersions": [
               "v2"
             ],
-            "minCodeBlockLineNum": 5
+            "minCodeBlockLineCount": 5
           }
         ]
       }
