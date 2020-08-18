@@ -1273,6 +1273,107 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'AppSourceCop'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'.","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
 ---
+# Content validation - inclusion case, h1 node is in the included file
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before {0}.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # h1
+  b.md: |
+    ## h2
+    [!include[](a.md)]
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'(b.md(2,1) -> a.md).","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - too many parameters in error message
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1Empty",
+            "message": "H1 is required. Add content to your top-level heading. {0} {1}",
+            "code": "h1-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # <!-- comments -->
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-empty","message":"H1 is required. Add content to your top-level heading. {0} {1} | ERROR: message format is invalid, e.g., too many parameters {n}.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - too less parameters in error message
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1InZone",
+            "message": "H1 is not allowed in zone '{0}' sections. Each article should have one and only one H1.",
+            "code": "h1-in-zone",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target = "pdf"
+    # Copy data to Azure Data Box
+    ::: zone-end
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 is not allowed in zone 'pdf' sections. Each article should have one and only one H1.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
 #Content validation - h1-missing in docs zone
 inputs:
   docfx.yml: |
