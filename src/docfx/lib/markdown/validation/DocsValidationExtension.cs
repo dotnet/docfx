@@ -160,9 +160,10 @@ namespace Microsoft.Docs.Build
 
             for (int i = 0; i < fencedCodeBlock.Lines.Count; i++)
             {
-                fencedCodeBlock.Lines.Lines[i].Slice.Trim();
+                var temSlice = fencedCodeBlock.Lines.Lines[i].Slice;
+                temSlice.Trim();
 
-                if (!fencedCodeBlock.Lines.Lines[i].Slice.IsEmpty)
+                if (!temSlice.IsEmpty)
                 {
                     netLineCount++;
                 }
