@@ -2679,7 +2679,7 @@ inputs:
       this is a fenced codeblock without language, net line number 4
       line 2
       line 3
-
+         
       line 4
     ```
     ```csharp beta-1.0
