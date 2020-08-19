@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                     input.SetProperty(JavaScriptPropertyId.FromString("__global"), _global, useStrictRules: true);
                 }
 
-                var output = method.CallFunction(JavaScriptValue.Undefined, input);
+                var output = method.CallFunction(stackalloc JavaScriptValue[] { JavaScriptValue.Undefined, input });
 
                 return ToJToken(output);
             });
@@ -138,13 +138,16 @@ namespace Microsoft.Docs.Build
             {
                 var sourceContext = JavaScriptSourceContext.FromIntPtr((IntPtr)Interlocked.Increment(ref s_currentSourceContext));
 
-                JavaScriptContext.RunScript(script, sourceContext, scriptPath).CallFunction(
-                    JavaScriptValue.Undefined, // this pointer
-                    module,
-                    exports,
-                    JavaScriptValue.FromString(dirname),
-                    JavaScriptValue.CreateFunction(s_requireFunction),
-                    JavaScriptValue.CreateObject());
+                JavaScriptContext.RunScript(script, sourceContext, scriptPath)
+                    .CallFunction(stackalloc JavaScriptValue[]
+                    {
+                        JavaScriptValue.Undefined, // this pointer
+                        module,
+                        exports,
+                        JavaScriptValue.FromString(dirname),
+                        JavaScriptValue.CreateFunction(s_requireFunction),
+                        JavaScriptValue.CreateObject(),
+                    });
 
                 return modules[scriptPath] = module.GetProperty(exportsProperty);
             }

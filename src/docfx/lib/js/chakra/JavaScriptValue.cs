@@ -841,7 +841,7 @@ namespace ChakraHost.Hosting
         /// </remarks>
         /// <param name="arguments">The arguments to the call.</param>
         /// <returns>The <c>Value</c> returned from the function invocation, if any.</returns>
-        public JavaScriptValue CallFunction(params JavaScriptValue[] arguments)
+        public unsafe JavaScriptValue CallFunction(ReadOnlySpan<JavaScriptValue> arguments)
         {
             JavaScriptValue returnReference;
 
@@ -850,7 +850,10 @@ namespace ChakraHost.Hosting
                 throw new ArgumentOutOfRangeException("arguments");
             }
 
-            Native.ThrowIfError(Native.JsCallFunction(this, arguments, (ushort)arguments.Length, out returnReference));
+            fixed (JavaScriptValue* p = arguments)
+            {
+                Native.ThrowIfError(Native.JsCallFunction(this, (IntPtr)p, (ushort)arguments.Length, out returnReference));
+            }
             return returnReference;
         }
 
