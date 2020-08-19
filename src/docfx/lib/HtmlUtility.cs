@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
             ref HtmlToken token,
             MarkdownObject? block,
             Func<SourceInfo<string>, string> transformLink,
-            Func<SourceInfo<string>, string?, string>? transformImageLink = null)
+            Func<SourceInfo<string>, MarkdownObject?, string?, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
@@ -187,6 +187,7 @@ namespace Microsoft.Docs.Build
                             ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
                             : transformImageLink(
                                 new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
+                                block,
                                 token.GetAttributeValueByName("alt")));
 
                     attribute = attribute.WithValue(link);

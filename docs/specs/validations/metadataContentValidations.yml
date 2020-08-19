@@ -1112,7 +1112,7 @@ inputs:
         "rules": [
           {
             "type": "H1NotFirst",
-            "message": "Markdown content is not allowed before H1.",
+            "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
             "exclusions": [
@@ -1207,11 +1207,11 @@ outputs:
   j.json:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"c.md","line":5,"end_line":5,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"i.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"c.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"d.md","line":4,"end_line":4,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"f.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"f.md","line":3,"end_line":3,"column":1,"end_column":1}
 ---
 # Content validation - comments shouldn't trigger H1 not first
 inputs:
@@ -1226,7 +1226,7 @@ inputs:
         "rules": [
           {
             "type": "H1NotFirst",
-            "message": "Markdown content is not allowed before H1.",
+            "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
             "exclusions": [
@@ -1270,8 +1270,109 @@ outputs:
   d.json:
   e.json:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'AppSourceCop'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'.","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
+---
+# Content validation - inclusion case, h1 node is in the included file
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before {0}.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # h1
+  b.md: |
+    ## h2
+    [!include[](a.md)]
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'(b.md(2,1) -> a.md).","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - too many parameters in error message
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1Empty",
+            "message": "H1 is required. Add content to your top-level heading. {0} {1}",
+            "code": "h1-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # <!-- comments -->
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-empty","message":"H1 is required. Add content to your top-level heading. {0} {1} | ERROR: message format is invalid, e.g., too many parameters {n}.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - too less parameters in error message
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1InZone",
+            "message": "H1 is not allowed in zone '{0}' sections. Each article should have one and only one H1.",
+            "code": "h1-in-zone",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target = "pdf"
+    # Copy data to Azure Data Box
+    ::: zone-end
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 is not allowed in zone 'pdf' sections. Each article should have one and only one H1.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
 #Content validation - h1-missing in docs zone
 inputs:
@@ -1968,7 +2069,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/c.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v1/a.md(2,8), docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":15}
 ---
-# Content Validation - dup image alt text
+# Content Validation - image altText duplicated
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -1979,7 +2080,7 @@ inputs:
           {
             "name": "Images",
             "type": "ImageAltTextDuplicated",
-            "message": "Alt text '{0}' is duplicated. Within an article, alt text must be unique.",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2031,7 +2132,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":18,"end_line":18,"column":11,"end_column":19}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":19,"end_line":19,"column":11,"end_column":19}
 ---
-# Content Validation - alt text duplicated in includes
+# Content Validation - image altText duplicated in includes
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -2044,7 +2145,7 @@ inputs:
           {
             "name": "Images",
             "type": "ImageAltTextDuplicated",
-            "message": "Alt text '{0}' is duplicated. Within an article, alt text must be unique.",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2062,6 +2163,8 @@ inputs:
     }
   pig1.jpg:
   pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
   a.md: |
     hello
     ![alt text](pig1.jpg)
@@ -2070,24 +2173,21 @@ inputs:
   b.md: |
     hello
     ![alt text](pig2.jpg)
-  c.md: |
-    hello
-    [!include[](b.md)]
-  d.md: |
-    hello
-    [!include[](b.md)]
+    <img src="pig3.jpg" alt="alt text"></img>
+    :::image type="content" source="pig4.jpg" alt-text="alt text":::
 outputs:
   a.json:
-  c.json:
-  d.json:
   pig1.jpg:
   pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
-    
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(2,1)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(3,11)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":3,"end_line":3,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(4,1)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":4,"end_line":4,"column":1,"end_column":1}
 ---
-# Content Validation - image alt text missing
+# Content Validation - image altText missing
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -2141,7 +2241,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"missing-image-altText","message":"Missing alternate text for image with link 'pig3.jpg'. AltText is required for accessibility.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"missing-image-altText","message":"Missing alternate text for image with link 'pig4.jpg'. AltText is required for accessibility.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
 ---
-# Content Validation - image alt text bad length
+# Content Validation - image altText bad length
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -2151,7 +2251,7 @@ inputs:
         "rules": [
           {
             "type": "ImageAltTextBadLength",
-            "message": "AltText '{0}' is out of range at {1} characters. AltText must be between {2} and {3} characters.",
+            "message": "AltText {0} is out of range at {1} characters. AltText must be between {2} and {3} characters.",
             "code": "image-altText-with-badlength",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2196,7 +2296,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
 ---
-# Content Validation - image alt text equals file name
+# Content Validation - image altText equals file name
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -2206,7 +2306,7 @@ inputs:
         "rules": [
           {
             "type": "ImageAltTextEqualsFilename",
-            "message": "AltText '{0}' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
+            "message": "AltText {0} is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
             "code": "altText-equal-filename",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2309,7 +2409,7 @@ inputs:
           },
           {
             "type": "H1NotFirst",
-            "message": "Markdown content is not allowed before H1.",
+            "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "SUGGESTION",
             "exclusions": [ "includes", "landingpage", "hubpage" ],
@@ -2365,7 +2465,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too long: 20 characters. Length should be <= 10.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":34,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"title-bad-length","message":"String 'title' is too long: 14 characters. Length should be <= 10.","file":"a.md","line":2,"end_line":2,"column":8,"end_column":22}
     {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'heading1'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
 ---
@@ -2541,7 +2641,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"code-block-unclosed","message":"Unclosed code block. Code blocks must begin and end with triple backticks (```).","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
 ---
-# Content validation - codeblock language missing
+# Content validation - codeblock language missing, set codeblock minimum line number in rule
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -2551,7 +2651,61 @@ inputs:
         "rules": [
           {
             "type": "CodeLanguageMissing",
-            "message": "Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.",
+            "message": "Dev language missing. For code-blocks of {0} lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.",
+            "code": "dev-language-missing",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "minCodeBlockLineCount": 5
+          }
+        ]
+      }
+    }
+  a.md: |
+    ```
+      this is a fenced codeblock without language, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+    ```
+      this is a fenced codeblock without language, net line number 4
+      line 2
+      line 3
+
+      line 4
+    ```
+    ```csharp beta-1.0
+      this is a fenced codeblock, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+         this is an intented codeblock
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. For code-blocks of 5 lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - codeblock language missing, not set codeblock minimum line number in rule, so the default value is 20
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "codeBlocks": {
+        "rules": [
+          {
+            "type": "CodeLanguageMissing",
+            "message": "Dev language missing. For code-blocks of {0} lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.",
             "code": "dev-language-missing",
             "severity": "SUGGESTION",
             "exclusions": [
@@ -2568,22 +2722,53 @@ inputs:
     }
   a.md: |
     ```
-      this is a fenced codeblock without language
+      this is a fenced codeblock without language, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+    ```
+      this is a fenced codeblock without language, net line number 4
+      line 2
+      line 3
+
+      line 4
     ```
     ```csharp beta-1.0
-      this is a fenced codeblock
+      this is a fenced codeblock, net line number 5
+      line 2
+      line 3
+      line 4
+      line 5
+    ```
+    ```
+      this is a fenced codeblock, net line number 5
+      line
+      line
+      line
+      line 5
+      line
+      line
+      line
+      line
+      line 10
+      line
+      line
+      line
+      line
+      line 15
+      line
+      line
+      line
+      line
+      line 20
     ```
          this is an intented codeblock
-    ```
-      code body
-    ```csharp
-      code body2
-    ```
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. You must specify a valid language slug from the devlang taxonomy. Values are case-sensitive.","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-missing","message":"Dev language missing. For code-blocks of 20 lines or more, we recommend that you use a cross-repo :::code::: reference with the language attribute. If this isn't feasible, you must add a valid language slug from the devlang taxonomy to your triple backtick code block.","file":"a.md","line":22,"end_line":22,"column":1,"end_column":1}
 ---
 # Content validation - codeblock language invalid
 inputs:

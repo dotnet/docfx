@@ -1,3 +1,30 @@
+# Copy assets in template definition to output directory
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+    template: _themes
+  _themes/template.yml: |
+    assets:
+    - styles/**
+    - scripts/**
+  _themes/styles/main.css: css
+  _themes/scripts/main.js: js
+outputs:
+  styles/main.css: css
+  scripts/main.js: js
+---
+# Copy assets in template definition to output directory only when output is HTML
+inputs:
+  docfx.yml: |
+    template: _themes
+  _themes/template.yml: |
+    assets:
+    - styles/**
+    - scripts/**
+  _themes/styles/main.css: css
+  _themes/scripts/main.js: js
+outputs:
 ---
 # Liquid template file missing should not crash
 inputs: 
@@ -16,13 +43,6 @@ inputs:
     outputType: html
     outputUrlType: pretty
   docs/a b.. ..md:
-  _themes/ContentTemplate/Conceptual.mta.json.js: |
-    exports.transform = function (model) {
-      model.layout = "Conceptual";
-      return {
-        content: JSON.stringify(model)
-      };
-    }
   _themes/Conceptual.html.liquid:
 outputs:
   docs/a b/index.html:
@@ -54,7 +74,6 @@ inputs:
     outputUrlType: pretty
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
-      model.layout = "Conceptual";
       model.additional = "additional";
       return {
         content: JSON.stringify(model)
@@ -98,13 +117,6 @@ inputs:
   docfx.yml: |
     outputType: html
     outputUrlType: ugly
-  _themes/ContentTemplate/Conceptual.mta.json.js: |
-    exports.transform = function (model) {
-      model.layout = "Conceptual";
-      return {
-        content: JSON.stringify(model)
-      };
-    }
   _themes/Conceptual.html.liquid: |
   a.md:
   index.md:
@@ -127,13 +139,6 @@ inputs:
   redirections.yml: |
     renames:
       a.md: /b.html
-  _themes/ContentTemplate/Conceptual.mta.json.js: |
-    exports.transform = function (model) {
-      model.layout = "Conceptual";
-      return {
-        content: JSON.stringify(model)
-      };
-    }
   _themes/Conceptual.html.liquid:
   b.md:
 outputs:
@@ -158,13 +163,6 @@ inputs:
     routes:
       docs/v1/: .
     monikerDefinition: '{APP_BASE_PATH}/data/monikers.json'
-  _themes/ContentTemplate/Conceptual.mta.json.js: |
-    exports.transform = function (model) {
-      model.layout = "Conceptual";
-      return {
-        content: JSON.stringify(model)
-      };
-    }
   _themes/Conceptual.html.liquid: |
     <!DOCTYPE html>
       <div>
@@ -301,13 +299,6 @@ repos:
         docfx.yml: |
           outputType: html
           outputUrlType: ugly
-        _themes/ContentTemplate/Conceptual.mta.json.js: |
-          exports.transform = function (model) {
-            model.layout = "Conceptual";
-            return {
-              content: JSON.stringify(model)
-            };
-          }
         _themes/Conceptual.html.liquid: |
           {{content}}
         docs/a.md: |
@@ -336,13 +327,6 @@ repos:
         docfx.yml: |
           outputType: html
           outputUrlType: ugly
-        _themes/ContentTemplate/Conceptual.mta.json.js: |
-          exports.transform = function (model) {
-            model.layout = "Conceptual";
-            return {
-              content: JSON.stringify(model)
-            };
-          }
         _themes/Conceptual.html.liquid: |
           {{content}}
         docs/a.md: |
@@ -356,3 +340,23 @@ outputs:
         { "url": "/docs/a.html" }
       ]
     }
+---
+# Prebuild lunr search index as .lunr.json when searchEngine is lunr
+inputs:
+  docfx.yml: |
+    outputType: html
+    outputUrlType: pretty
+    searchEngine: lunr
+  _themes/Conceptual.html.liquid: |
+    {{page.search_engine}}
+    {{content}}
+  a.md: |
+    # Markdown Title
+
+    Type `javascript` *here*
+outputs:
+  a/index.html: |
+    lunr <p>Type <code>javascript</code><em>here</em>
+  .lunr.json: |
+    { "version": "2.3.8", "fields": ["title", "body"] }
+---

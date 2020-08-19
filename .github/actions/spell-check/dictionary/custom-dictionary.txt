@@ -542,3 +542,4 @@ maml
 overridable
 uninstantiated
 namespaces
+lunr

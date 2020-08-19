@@ -3,11 +3,9 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.Enumeration;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -18,8 +16,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class Input
     {
-        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
-
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
@@ -187,20 +183,20 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Main:
-                    return GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file)).ToArray();
+                    return PathUtility.GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file)).ToArray();
 
                 case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
                     var files = _alternativeFallbackFolder != null
-                        ? GetFiles(_alternativeFallbackFolder).Select(f => FilePath.Fallback(f))
+                        ? PathUtility.GetFiles(_alternativeFallbackFolder).Select(f => FilePath.Fallback(f))
                         : Array.Empty<FilePath>();
-                    return files.Concat(GetFiles(_buildOptions.FallbackDocsetPath).Select(f => FilePath.Fallback(f))).ToArray();
+                    return files.Concat(PathUtility.GetFiles(_buildOptions.FallbackDocsetPath).Select(f => FilePath.Fallback(f))).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var package = _config.Dependencies[dependencyName.Value];
                     var packagePath = _packageResolver.ResolvePackage(package, package.PackageFetchOptions);
 
                     return (
-                        from file in GetFiles(packagePath)
+                        from file in PathUtility.GetFiles(packagePath)
                         let path = dependencyName.Value.Concat(file)
                         select FilePath.Dependency(path, dependencyName.Value)).ToArray();
 
@@ -214,27 +210,6 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.Origin == FileOrigin.Generated);
 
             _generatedContents.TryAdd(file, content);
-        }
-
-        private static IEnumerable<PathString> GetFiles(string directory)
-        {
-            return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
-            {
-                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
-                ShouldRecursePredicate =
-                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
-            };
-
-            static PathString ToPathString(ref FileSystemEntry entry)
-            {
-                Debug.Assert(!entry.IsDirectory);
-
-                var path = entry.RootDirectory.Length == entry.Directory.Length
-                    ? entry.FileName.ToString()
-                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
-
-                return PathString.DangerousCreate(path);
-            }
         }
 
         private byte[]? ReadBytesFromGit(PathString fullPath)

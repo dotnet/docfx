@@ -10,9 +10,9 @@ namespace Microsoft.Docs.Build
 {
     public class JavascriptEngineTest
     {
-        private readonly IJavaScriptEngine[] _engines = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? new IJavaScriptEngine[] { new JintJsEngine("data/javascript"), new ChakraCoreJsEngine("data/javascript") }
-            : new IJavaScriptEngine[] { new JintJsEngine("data/javascript") };
+        private readonly JavaScriptEngine[] _engines = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? new JavaScriptEngine[] { new JintJsEngine("data/javascript"), new ChakraCoreJsEngine("data/javascript") }
+            : new JavaScriptEngine[] { new JintJsEngine("data/javascript") };
 
         [Theory]
         [InlineData("{'scalar':'hello','tags':[1,2.123],'page':{'value':3}}", "{'scalar':'hello','tags':[1,2.123],'page':{'value':3}}")]
@@ -37,6 +37,16 @@ namespace Microsoft.Docs.Build
             foreach (var engine in _engines)
             {
                 Assert.Throws<JavaScriptEngineException>(() => engine.Run("index.js", "main", inputJson));
+            }
+        }
+
+        [Fact]
+        public void SupportModuleExports()
+        {
+            foreach (var engine in _engines)
+            {
+                Assert.Equal("foo", engine.Run("module.js", "foo", JValue.CreateUndefined()));
+                Assert.Equal("bar", engine.Run("module.js", "bar", JValue.CreateUndefined()));
             }
         }
     }
