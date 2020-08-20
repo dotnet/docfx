@@ -1,4 +1,8 @@
 {
+  "docsetUnique": [
+    "title",
+    "description"
+  ],
   "properties": {
     "author": {
       "type": [
@@ -92,10 +96,6 @@
     "title",
     "ms.topic",
     "ms.date"
-  ],
-  "docsetUnique": [
-    "title",
-    "description"
   ],
   "dependencies": {
     "ms.technology": [
@@ -5084,167 +5084,295 @@
     "author": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "author-missing",
-        "additionalMessage": "Add a valid GitHub ID."
+        "additionalMessage": "Add a valid GitHub ID.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.author": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-author-missing",
-        "additionalMessage": "Add a valid Microsoft alias."
+        "additionalMessage": "Add a valid Microsoft alias.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "ms-alias-invalid": {
         "severity": "suggestion",
-        "code": "ms-author-invalid"
+        "code": "ms-author-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.prod": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-either-attribute": {
         "severity": "suggestion",
         "code": "ms-prod-or-service-missing",
-        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services."
+        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "precluded-attributes": {
         "severity": "suggestion",
         "code": "ms-prod-and-service",
-        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services."
+        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-prod-technology-invalid"
+        "code": "ms-prod-technology-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
-        "code": "ms-prod-technology-invalid"
+        "code": "ms-prod-technology-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.service": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-service-subservice-invalid"
+        "code": "ms-service-subservice-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
-        "code": "ms-service-subservice-invalid"
+        "code": "ms-service-subservice-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.technology": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-prod-technology-invalid"
+        "code": "ms-prod-technology-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.subservice": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-service-subservice-invalid"
+        "code": "ms-service-subservice-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "title": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "title-missing",
-        "additionalMessage": "Add a title string to show in search engine results."
+        "additionalMessage": "Add a title string to show in search engine results.",
+        "contentTypes": [
+          "conceptual"
+        ]
       },
       "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-title-within-docset",
-        "additionalMessage": "Title must be unique within a docset."
+        "additionalMessage": "Title must be unique within a docset.",
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ]
       }
     },
     "ms.topic": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-topic-missing",
-        "additionalMessage": "Add a valid value to indicate the article type."
+        "additionalMessage": "Add a valid value to indicate the article type.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
-        "code": "ms-topic-invalid"
+        "code": "ms-topic-invalid",
+        "contentTypes": [
+          "conceptual"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
-        "code": "ms-topic-invalid"
+        "code": "ms-topic-invalid",
+        "contentTypes": [
+          "conceptual"
+        ]
       }
     },
     "ms.date": {
       "unexpected-type": {
         "severity": "suggestion",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-date-missing",
-        "additionalMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY."
+        "additionalMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "date-format-invalid": {
         "severity": "suggestion",
         "code": "ms-date-invalid",
         "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
-        "pullRequestOnly": true
+        "pullRequestOnly": true,
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "date-out-of-range": {
         "severity": "suggestion",
         "code": "ms-date-invalid",
         "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
-        "pullRequestOnly": true
+        "pullRequestOnly": true,
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.component": {
       "attribute-deprecated": {
         "severity": "suggestion",
-        "code": "deprecated-attribute"
+        "code": "deprecated-attribute",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "description": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "pullRequestOnly": true
+        "pullRequestOnly": true,
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-description-within-docset",
         "additionalMessage": "Description must be unique within a docset.",
-        "pullRequestOnly": false
+        "pullRequestOnly": false,
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ]
       },
       "string-length-invalid": {
         "severity": "suggestion",
         "code": "description-bad-length",
-        "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
+        "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces.",
+        "contentTypes": [
+          "conceptual"
+        ]
       }
     }
   }

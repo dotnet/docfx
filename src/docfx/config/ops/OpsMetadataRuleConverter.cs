@@ -151,6 +151,7 @@ namespace Microsoft.Docs.Build
                                 additionalMessage = ruleInfo.AdditionalErrorMessage,
                                 canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
                                 pullRequestOnly = ruleInfo.PullRequestOnly,
+                                contentTypes = ruleInfo.ContentTypes,
                             });
                         }
                     }
