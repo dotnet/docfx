@@ -90,7 +90,7 @@ docfx build [-o:<output_path>] [-t:<template folder>]
 ```
 `docfx build` generates documentation for current folder.
 
-If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar. Relative paths are relative to docfx.exe.
+If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar. Path in `toc.yml` or `toc.md` are relative to the TOC file.
 
 > [!Note]
 > Please note that `homepage` is not supported in `toc.md`.
