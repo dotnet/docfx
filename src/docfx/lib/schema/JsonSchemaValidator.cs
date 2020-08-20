@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> _metadataBuilder;
         private static readonly ThreadLocal<bool?> t_isCanonicalVersion = new ThreadLocal<bool?>();
+        private static readonly ThreadLocal<Func<CustomRule, bool>?> t_action = new ThreadLocal<Func<CustomRule, bool>?>();
 
         public JsonSchema Schema => _schema;
 
@@ -32,16 +33,21 @@ namespace Microsoft.Docs.Build
             _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)>();
         }
 
-        public List<Error> Validate(JToken token, bool? isCanonicalVersion = null)
+        public List<Error> Validate(JToken token, bool? isCanonicalVersion = null, Func<CustomRule, bool>? action = null)
         {
             try
             {
                 t_isCanonicalVersion.Value = isCanonicalVersion;
+                if (action != null)
+                {
+                    t_action.Value = action;
+                }
                 return Validate(_schema, token);
             }
             finally
             {
                 t_isCanonicalVersion.Value = null;
+                t_action.Value = null;
             }
         }
 
@@ -651,7 +657,7 @@ namespace Microsoft.Docs.Build
                 schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
                 attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
-                return error.WithCustomRule(customRule, isCanonicalVersion);
+                return error.WithCustomRule(customRule, isCanonicalVersion, t_action?.Value?.Invoke(customRule));
             }
 
             return error;

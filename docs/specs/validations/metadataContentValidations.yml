@@ -522,6 +522,96 @@ outputs:
     {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"a.md","line":2,"column":14}
     {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10.","file":"b.md","line":2,"column":14}
 ---
+# Json schema metadata rule: validate reference content
+inputs:
+  docfx.yml: |
+    metadataSchema: rules.json
+  rules.json: |
+    {
+      "required": ["title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "rules": {
+          "title": {
+              "string-length-invalid": {
+                  "contentTypes": ["conceptual", "include", "dotnet"],
+                  "severity": "suggestion",
+                  "code": "title-bad-length",
+                  "pullRequestOnly": false
+              },
+              "missing-attribute": {
+                  "contentTypes": ["conceptual", "include"],
+                  "severity": "suggestion",
+                  "code": "title-missing",
+                  "additionalMessage": "Add a title string to show in search engine results."
+              },
+          },
+          "description": {
+              "string-length-invalid": {
+                  "contentTypes": ["conceptual", "include"],
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "pullRequestOnly": true
+              }
+          }
+      },
+    }
+  docs/a.yml: |
+    #YamlMime:NetType
+    name: TryCreateSectionNameMatcher
+    metadata:
+      author: dotnet-bot
+      title: a
+      description: a
+  docs/b.yml: |
+    #YamlMime:PowershellCmdlet
+    name: TryCreateSectionNameMatcher
+    metadata:
+      author: dotnet-bot
+      title: a
+      description: a
+  _themes/ContentTemplate/schemas/NetType.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+          "breadcrumb_path": {"contentType": "Href"},
+          "toc_rel": {"contentType": "Href"},
+      }
+    }
+  _themes/ContentTemplate/schemas/PowershellCmdlet.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+          "breadcrumb_path": {"contentType": "Href"},
+          "toc_rel": {"contentType": "Href"},
+      }
+    }
+  _themes/ContentTemplate/NetType.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+  _themes/ContentTemplate/PowershellCmdlet.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+outputs:
+  docs/a.json:
+  docs/b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
+---
 # Content validation - H1 unique
 inputs:
   docfx.yml: |

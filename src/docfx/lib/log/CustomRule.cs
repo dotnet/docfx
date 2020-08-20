@@ -23,6 +23,9 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[] Exclude { get; private set; } = Array.Empty<string>();
 
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[] ContentTypes { get; private set; } = Array.Empty<string>();
+
         private Func<string, bool>? _globMatcherCache;
 
         public CustomRule() { }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -70,12 +71,10 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-                // Only validate conceptual files
-                if (contentType == ContentType.Page && mime == "Conceptual" &&
-                    (!metadata.ContainsKey("layout") ||
-                     string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase)))
+                // Only validate conceptual files and reference files
+                if (contentType == ContentType.Page && (IsConceptual(mime, metadata) || IsReference(mime)))
                 {
-                    errors.AddRange(schemaValidator.Validate(metadata, isCanonicalVersion));
+                    errors.AddRange(schemaValidator.Validate(metadata, isCanonicalVersion, rule => IsEnable(rule, mime)));
                 }
             }
         }
@@ -89,6 +88,47 @@ namespace Microsoft.Docs.Build
             }
 
             return errors;
+        }
+
+        private static bool IsConceptual(string? mime, JObject metadata)
+        {
+            return mime == "Conceptual" &&
+                    (!metadata.ContainsKey("layout") ||
+                     string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static Dictionary<string, string> mapping = new Dictionary<string, string> // TODO get from docs-ui
+            {
+                { "NetType", "dotnet" },
+                { "NetNamespace", "dotnet" },
+                { "NetMember", "dotnet" },
+                { "NetEnum", "dotnet" },
+                { "NetDelegate ", "dotnet" },
+                { "RESTOperation", "rest" },
+                { "RESTOperationGroup ", "rest" },
+                { "RESTService  ", "rest" },
+                { "PowershellCmdlet", "powershell" },
+                { "PowershellModule ", "powershell" },
+            };
+
+        private static bool IsReference(string? mime)
+        {
+            return mime != null && mapping.ContainsKey(mime);
+        }
+
+        private static bool IsEnable(CustomRule customRule, string? mime)
+        {
+            if (mime != null
+                && mapping.TryGetValue(mime, out var pageType)
+                && customRule.ContentTypes.Length > 0
+                && !customRule.ContentTypes.Any(pageType.Contains))
+            {
+                return false;
+            }
+            else
+            {
+                return true; // default
+            }
         }
     }
 }

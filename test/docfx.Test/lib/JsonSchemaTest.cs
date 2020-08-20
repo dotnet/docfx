@@ -486,7 +486,7 @@ namespace Microsoft.Docs.Build
                 var isCanonicalVersion = string.IsNullOrEmpty(isCanonicalVersions[i])
                     ? null
                     : (bool?)(isCanonicalVersions[i] == "t" ? true : false);
-                validationErrors.AddRange(jsonSchemaValidator.Validate(payloads[i], isCanonicalVersion));
+                validationErrors.AddRange(jsonSchemaValidator.Validate(payloads[i], isCanonicalVersion, null));
             }
             validationErrors.AddRange(jsonSchemaValidator.PostValidate());
             Assert.Equal(errors.OrderBy(e => e), validationErrors.OrderBy(e => e.Code).ThenBy(e => e.Level).Select(e => $"{e.Code}:{e.Level}"));
