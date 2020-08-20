@@ -88,6 +88,12 @@
       ],
       "minLength": 2,
       "maxLength": 10
+    },
+    "author.ref": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "strictRequired": [
@@ -5372,6 +5378,15 @@
         "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces.",
         "contentTypes": [
           "conceptual"
+        ]
+      }
+    },
+    "author.ref": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "dotnet"
         ]
       }
     }
