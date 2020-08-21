@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
 
             // validate via json schema
             var schemaValidator = context.TemplateEngine.GetSchemaValidator(file.Mime);
-            var schemaValidationErrors = schemaValidator.Validate(obj);
+            var schemaValidationErrors = schemaValidator.Validate(obj, file.FilePath);
             errors.AddRange(schemaValidationErrors);
 
             var validatedObj = new JObject();

@@ -69,9 +69,10 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConformance(string description, string schemaText, string testText)
         {
-            var schema = JsonUtility.DeserializeData<JsonSchema>(schemaText, new FilePath(""));
+            var filePath = new FilePath("");
+            var schema = JsonUtility.DeserializeData<JsonSchema>(schemaText, filePath);
             var test = JObject.Parse(testText);
-            var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
+            var errors = new JsonSchemaValidator(schema).Validate(test["data"], filePath);
 
             Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
@@ -391,8 +392,9 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
+            var filePath = new FilePath("file");
             var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, filePath);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join(
                 '\n',
@@ -422,12 +424,12 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")));
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
             foreach (var payload in payloads)
             {
-                jsonSchemaValidator.Validate(payload);
+                jsonSchemaValidator.Validate(payload.meta, payload.filepath);
             }
 
             var errors = jsonSchemaValidator.PostValidate();

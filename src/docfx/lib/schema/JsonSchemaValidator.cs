@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)>();
         }
 
-        public List<Error> Validate(JToken token, FilePath? filePath = null)
+        public List<Error> Validate(JToken token, FilePath filePath)
         {
             try
             {
