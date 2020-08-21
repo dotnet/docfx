@@ -232,6 +232,11 @@ namespace Microsoft.Docs.Build
         public PackagePath Template { get; private set; } = new PackagePath();
 
         /// <summary>
+        /// Gets the search index type like [lunr](https://lunrjs.com/)
+        /// </summary>
+        public SearchEngineType SearchEngine { get; private set; }
+
+        /// <summary>
         /// When enabled, updated_at for each document will be the last build time
         /// for the latest commit that touches that document.
         /// </summary>

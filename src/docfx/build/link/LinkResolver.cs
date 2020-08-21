@@ -116,11 +116,6 @@ namespace Microsoft.Docs.Build
 
             if (linkType == LinkType.External)
             {
-                if (!UrlUtility.IsValidIdnName(href))
-                {
-                    return (error, "", null, LinkType.RelativePath, null, false);
-                }
-
                 var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
                 return (error, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
             }
