@@ -12,7 +12,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly HashSet<string> _reservedMetadata;
-        private readonly JsonSchemaValidatorExtension _validatorExtension;
 
         public JsonSchema[] MetadataSchemas { get; }
 
@@ -26,11 +25,9 @@ namespace Microsoft.Docs.Build
                config.MetadataSchema,
                schema => JsonUtility.DeserializeData<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
 
-            _validatorExtension = validatorExtension;
-
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, false, _validatorExtension));
+                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, false, validatorExtension));
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
@@ -39,7 +36,7 @@ namespace Microsoft.Docs.Build
                 .ToHashSet();
         }
 
-        public void ValidateMetadata(ErrorBuilder errors, JObject metadata, FilePath filePath)
+        public void ValidateMetadata(ErrorBuilder errors, JObject metadata, Document file)
         {
             foreach (var (key, value) in metadata)
             {
@@ -55,9 +52,9 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-                if (_validatorExtension.IsInValidateScope(metadata, filePath))
+                if (file.PageType != null)
                 {
-                    errors.AddRange(schemaValidator.Validate(metadata, filePath));
+                    errors.AddRange(schemaValidator.Validate(metadata, file.FilePath));
                 }
             }
         }

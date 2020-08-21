@@ -1,44 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaValidatorExtension
     {
-        private readonly BuildScope _buildScope;
         private readonly DocumentProvider _documentProvider;
         private readonly PublishUrlMap _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
         private readonly ErrorBuilder _errorLog;
 
-        // mime -> page type. TODO get from docs-ui schema
-        private readonly Dictionary<string, string> _mapping = new Dictionary<string, string>
-        {
-            { "NetType", "dotnet" },
-            { "NetNamespace", "dotnet" },
-            { "NetMember", "dotnet" },
-            { "NetEnum", "dotnet" },
-            { "NetDelegate ", "dotnet" },
-            { "RESTOperation", "rest" },
-            { "RESTOperationGroup ", "rest" },
-            { "RESTService  ", "rest" },
-            { "PowershellCmdlet", "powershell" },
-            { "PowershellModule ", "powershell" },
-        };
-
         public JsonSchemaValidatorExtension(
-            BuildScope buildScope,
             DocumentProvider documentProvider,
             PublishUrlMap publishUrlMap,
             MonikerProvider monikerProvider,
             ErrorBuilder errorLog)
         {
-            _buildScope = buildScope;
             _documentProvider = documentProvider;
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
@@ -55,13 +34,14 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            var contentType = _buildScope.GetContentType(filePath);
-            var mime = _buildScope.GetMime(contentType, filePath);
+            var file = _documentProvider.GetDocument(filePath);
+            var mime = file?.Mime;
 
             if (mime != null
-                && _mapping.TryGetValue(mime!, out var pageType)
+                && file != null
+                && file.PageType != null
                 && customRule.ContentTypes.Length > 0
-                && !customRule.ContentTypes.Any(pageType.Contains))
+                && !customRule.ContentTypes.Any(file.PageType.Contains))
             {
                 return false;
             }
@@ -86,27 +66,6 @@ namespace Microsoft.Docs.Build
             }
 
             return null;
-        }
-
-        internal bool IsInValidateScope(JObject metadata, FilePath filePath)
-        {
-            var contentType = _buildScope.GetContentType(filePath);
-            var mime = _buildScope.GetMime(contentType, filePath);
-
-            // Only validate conceptual and reference files
-            return contentType == ContentType.Page && (IsConceptual(mime, metadata) || IsReference(mime));
-        }
-
-        private static bool IsConceptual(string? mime, JObject metadata)
-        {
-            return mime == "Conceptual" &&
-                    (!metadata.ContainsKey("layout") ||
-                     string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsReference(string? mime)
-        {
-            return mime != null && _mapping.ContainsKey(mime);
         }
     }
 }

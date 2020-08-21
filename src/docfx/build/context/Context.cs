@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            DocumentProvider = new DocumentProvider(errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
+            DocumentProvider = new DocumentProvider(errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
 
-            var validatorExtension = new JsonSchemaValidatorExtension(BuildScope, DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
+            var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, validatorExtension);
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, MetadataProvider);
         }
