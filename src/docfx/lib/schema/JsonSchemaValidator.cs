@@ -657,7 +657,7 @@ namespace Microsoft.Docs.Build
                 error = error.WithLevel(ErrorLevel.Error);
             }
 
-            if (_ext?.GetError(error, schema, t_filePath.Value) is var extError && extError != null)
+            if (_ext?.ApplyCustomRule(error, schema, t_filePath.Value) is var extError && extError != null)
             {
                 return extError;
             }

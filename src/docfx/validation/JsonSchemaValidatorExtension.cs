@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        internal Error? GetError(Error error, JsonSchema schema, FilePath? filePath)
+        internal Error? ApplyCustomRule(Error error, JsonSchema schema, FilePath? filePath)
         {
             if (!string.IsNullOrEmpty(error.Name) &&
                 schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
             {
                 if (filePath == null)
                 {
-                    return error.WithCustomRule(customRule, null);
+                    return error.WithCustomRule(customRule);
                 }
                 else
                 {
