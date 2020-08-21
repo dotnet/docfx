@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 let spec = AggregateXrefSpecs(uid, g.ToArray())
                 select (uid, spec);
 
-            var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
+            var result = xrefmap.ToDictionary(item => item.uid, item => item.spec, StringComparer.OrdinalIgnoreCase);
             result.TrimExcess();
 
             return result;

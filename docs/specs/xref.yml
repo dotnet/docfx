@@ -260,6 +260,36 @@ outputs:
   a.json: |
     { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
 ---
+# resolve uid case-insensitively
+inputs:
+  docfx.yml: |
+    xref: xrefmap.json
+  docs/a.md: |
+    ---
+    title: Resolved 
+    uid: a
+    ---
+  docs/b.md: |
+    Link to @A
+    Link to @c
+  xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "C",
+          "href": "https://docs.com/docs/c",
+          "name": "resolved"
+        }
+      ]
+    }
+outputs:
+  docs/a.json:
+  docs/b.json: |
+    {"conceptual":"<p>
+      Link to <a href=\"a\" data-linktype=\"relative-path\">Resolved</a>
+      Link to <a href=\"/en-us/docs/c\" data-linktype=\"absolute-path\">resolved</a>
+      </p>\n"}
+---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
 # Resolve xref with non-existing display property, display name

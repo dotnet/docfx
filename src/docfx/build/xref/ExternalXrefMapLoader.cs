@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Loading external xref map"))
             {
-                var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
+                var result = new Dictionary<string, Lazy<ExternalXrefSpec>>(StringComparer.OrdinalIgnoreCase);
 
                 foreach (var url in config.Xref)
                 {
