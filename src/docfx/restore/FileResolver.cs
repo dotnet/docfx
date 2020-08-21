@@ -57,6 +57,11 @@ namespace Microsoft.Docs.Build
 
         public string ResolveFilePath(SourceInfo<string> file)
         {
+            if (string.IsNullOrEmpty(file))
+            {
+                return file;
+            }
+
             if (!UrlUtility.IsHttp(file))
             {
                 var localFilePath = Path.Combine(_docsetPath, file);
