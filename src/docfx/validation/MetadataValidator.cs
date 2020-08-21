@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -11,12 +10,9 @@ namespace Microsoft.Docs.Build
 {
     internal class MetadataValidator
     {
-        private readonly DocumentProvider _documentProvider;
-        private readonly MonikerProvider _monikerProvider;
-        private readonly PublishUrlMap _publishUrlMap;
-        private readonly BuildScope _buildScope;
         private readonly JsonSchemaValidator[] _schemaValidators;
         private readonly HashSet<string> _reservedMetadata;
+        private readonly JsonSchemaValidatorExtension _validatorExtension;
 
         public JsonSchema[] MetadataSchemas { get; }
 
@@ -24,23 +20,17 @@ namespace Microsoft.Docs.Build
             Config config,
             MicrosoftGraphAccessor microsoftGraphAccessor,
             FileResolver fileResolver,
-            BuildScope buildScope,
-            DocumentProvider documentProvider,
-            MonikerProvider monikerProvider,
-            PublishUrlMap publishUrlMap)
+            JsonSchemaValidatorExtension validatorExtension)
         {
-            _documentProvider = documentProvider;
-            _monikerProvider = monikerProvider;
-            _publishUrlMap = publishUrlMap;
-            _buildScope = buildScope;
-
             MetadataSchemas = Array.ConvertAll(
                config.MetadataSchema,
                schema => JsonUtility.DeserializeData<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
 
+            _validatorExtension = validatorExtension;
+
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor));
+                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, false, _validatorExtension));
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
@@ -63,18 +53,11 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var contentType = _buildScope.GetContentType(filePath);
-            var mime = _buildScope.GetMime(contentType, filePath);
-            var siteUrl = _documentProvider.GetDocsSiteUrl(filePath);
-            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
-            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(errors, filePath).IsCanonicalVersion(canonicalVersion);
-
             foreach (var schemaValidator in _schemaValidators)
             {
-                // Only validate conceptual files and reference files
-                if (contentType == ContentType.Page && (IsConceptual(mime, metadata) || IsReference(mime)))
+                if (_validatorExtension.IsInValidateScope(metadata, filePath))
                 {
-                    errors.AddRange(schemaValidator.Validate(metadata, isCanonicalVersion, rule => IsEnable(rule, mime)));
+                    errors.AddRange(schemaValidator.Validate(metadata, filePath));
                 }
             }
         }
@@ -88,47 +71,6 @@ namespace Microsoft.Docs.Build
             }
 
             return errors;
-        }
-
-        private static bool IsConceptual(string? mime, JObject metadata)
-        {
-            return mime == "Conceptual" &&
-                    (!metadata.ContainsKey("layout") ||
-                     string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static Dictionary<string, string> mapping = new Dictionary<string, string> // TODO get from docs-ui
-            {
-                { "NetType", "dotnet" },
-                { "NetNamespace", "dotnet" },
-                { "NetMember", "dotnet" },
-                { "NetEnum", "dotnet" },
-                { "NetDelegate ", "dotnet" },
-                { "RESTOperation", "rest" },
-                { "RESTOperationGroup ", "rest" },
-                { "RESTService  ", "rest" },
-                { "PowershellCmdlet", "powershell" },
-                { "PowershellModule ", "powershell" },
-            };
-
-        private static bool IsReference(string? mime)
-        {
-            return mime != null && mapping.ContainsKey(mime);
-        }
-
-        private static bool IsEnable(CustomRule customRule, string? mime)
-        {
-            if (mime != null
-                && mapping.TryGetValue(mime, out var pageType)
-                && customRule.ContentTypes.Length > 0
-                && !customRule.ContentTypes.Any(pageType.Contains))
-            {
-                return false;
-            }
-            else
-            {
-                return true; // default
-            }
         }
     }
 }

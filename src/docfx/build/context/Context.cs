@@ -169,8 +169,10 @@ namespace Microsoft.Docs.Build
             PublishUrlMap = new PublishUrlMap(Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
+
+            var validatorExtension = new JsonSchemaValidatorExtension(BuildScope, DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
             MetadataValidator = new MetadataValidator(
-                Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
+                Config, MicrosoftGraphAccessor, FileResolver, validatorExtension);
         }
 
         public void Dispose()

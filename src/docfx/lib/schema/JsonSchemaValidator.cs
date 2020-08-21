@@ -18,51 +18,54 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
-        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> _metadataBuilder;
-        private static readonly ThreadLocal<bool?> t_isCanonicalVersion = new ThreadLocal<bool?>();
-        private static readonly ThreadLocal<Func<CustomRule, bool>?> t_action = new ThreadLocal<Func<CustomRule, bool>?>();
+        private readonly JsonSchemaValidatorExtension? _ext;
+        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)> _metadataBuilder;
+        private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
 
         public JsonSchema Schema => _schema;
 
-        public JsonSchemaValidator(JsonSchema schema, MicrosoftGraphAccessor? microsoftGraphAccessor = null, bool forceError = false)
+        public JsonSchemaValidator(
+            JsonSchema schema,
+            MicrosoftGraphAccessor? microsoftGraphAccessor = null,
+            bool forceError = false,
+            JsonSchemaValidatorExtension? ext = null)
         {
             _schema = schema;
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
-            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)>();
+            _ext = ext;
+            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)>();
         }
 
-        public List<Error> Validate(JToken token, bool? isCanonicalVersion = null, Func<CustomRule, bool>? action = null)
+        public List<Error> Validate(JToken token, FilePath? filePath = null)
         {
             try
             {
-                t_isCanonicalVersion.Value = isCanonicalVersion;
-                if (action != null)
+                if (filePath != null)
                 {
-                    t_action.Value = action;
+                    t_filePath.Value = filePath;
                 }
                 return Validate(_schema, token);
             }
             finally
             {
-                t_isCanonicalVersion.Value = null;
-                t_action.Value = null;
+                t_filePath.Value = null;
             }
         }
 
         public List<Error> PostValidate()
         {
-            var errors = new List<(Error error, bool? isCanonicalVersion)>();
+            var errors = new List<Error>();
             PostValidateDocsetUnique(errors);
-            return errors.Select(e => GetError(_schema, e.error, e.isCanonicalVersion)).ToList();
+            return errors.Select(e => GetError(_schema, e)).ToList();
         }
 
         private List<Error> Validate(JsonSchema schema, JToken token)
         {
             var errors = new List<Error>();
             Validate(schema, "", token, errors);
-            return errors.Select(error => GetError(_schema, error, t_isCanonicalVersion.Value)).ToList();
+            return errors.Select(error => GetError(_schema, error)).ToList();
         }
 
         private void Validate(JsonSchema schema, string name, JToken token, List<Error> errors)
@@ -520,12 +523,12 @@ namespace Microsoft.Docs.Build
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
                 {
-                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value), t_isCanonicalVersion.Value));
+                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value), t_filePath.Value));
                 }
             }
         }
 
-        private void PostValidateDocsetUnique(List<(Error, bool?)> errors)
+        private void PostValidateDocsetUnique(List<Error> errors)
         {
             var validatedMetadata = _metadataBuilder.AsList();
             var validatedMetadataGroups = validatedMetadata
@@ -536,11 +539,12 @@ namespace Microsoft.Docs.Build
 
             foreach (var group in validatedMetadataGroups)
             {
-                IEnumerable<(JsonSchema schema, string key, JToken value, SourceInfo? source, bool? isCanonicalVersion)> items = group;
+                IEnumerable<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)> items = group;
                 var (metadataValue, (metadataKey, _)) = group.Key;
-                if (CanonicalVersionOnly(metadataKey, Errors.JsonSchema.DuplicateAttributeCode))
+                if (_schema.Rules.TryGetValue(metadataKey, out var customRules) &&
+                    customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out var customRule))
                 {
-                    items = items.Where(i => i.isCanonicalVersion ?? true);
+                    items = items.Where(i => _ext == null || i.filePath == null || _ext.IsEnable(i.filePath, customRule));
                 }
 
                 if (items.Count() > 1)
@@ -548,7 +552,7 @@ namespace Microsoft.Docs.Build
                     var metadataSources = (from g in items where g.source != null select g.source).ToArray();
                     foreach (var file in items)
                     {
-                        errors.Add((Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources), file.isCanonicalVersion));
+                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
                     }
                 }
             }
@@ -646,18 +650,16 @@ namespace Microsoft.Docs.Build
             return (name, 0);
         }
 
-        private Error GetError(JsonSchema schema, Error error, bool? isCanonicalVersion)
+        private Error GetError(JsonSchema schema, Error error)
         {
             if (_forceError)
             {
                 error = error.WithLevel(ErrorLevel.Error);
             }
 
-            if (!string.IsNullOrEmpty(error.Name) &&
-                schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
-                attributeCustomRules.TryGetValue(error.Code, out var customRule))
+            if (_ext?.GetError(error, schema, t_filePath.Value) is var extError && extError != null)
             {
-                return error.WithCustomRule(customRule, isCanonicalVersion, t_action?.Value?.Invoke(customRule));
+                return extError;
             }
 
             return error;
@@ -684,13 +686,6 @@ namespace Microsoft.Docs.Build
                 default:
                     return true;
             }
-        }
-
-        private bool CanonicalVersionOnly(string key, string code)
-        {
-            return _schema.Rules.TryGetValue(key, out var customRules) &&
-                customRules.TryGetValue(code, out var customRule) &&
-                customRule.CanonicalVersionOnly;
         }
     }
 }
