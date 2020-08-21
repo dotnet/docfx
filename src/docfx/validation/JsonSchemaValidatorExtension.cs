@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
+        // check by CanonicalVersionOnly & ContentTypes of customRule
         internal bool IsEnable(FilePath filePath, CustomRule customRule)
         {
             var siteUrl = _documentProvider.GetDocsSiteUrl(filePath);

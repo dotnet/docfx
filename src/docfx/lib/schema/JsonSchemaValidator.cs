@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly JsonSchemaValidatorExtension? _ext;
-        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)> _metadataBuilder;
+        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)> _metadataBuilder;
         private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
 
         public JsonSchema Schema => _schema;
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
             _ext = ext;
-            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)>();
+            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)>();
         }
 
         public List<Error> Validate(JToken token, FilePath filePath)
@@ -523,7 +523,18 @@ namespace Microsoft.Docs.Build
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
                 {
-                    _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value), t_filePath.Value));
+                    if (_schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
+                        customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out var customRule) &&
+                        _ext != null &&
+                        t_filePath.Value != null &&
+                        !_ext.IsEnable(t_filePath.Value, customRule))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value)));
+                    }
                 }
             }
         }
@@ -539,13 +550,8 @@ namespace Microsoft.Docs.Build
 
             foreach (var group in validatedMetadataGroups)
             {
-                IEnumerable<(JsonSchema schema, string key, JToken value, SourceInfo? source, FilePath? filePath)> items = group;
+                IEnumerable<(JsonSchema schema, string key, JToken value, SourceInfo? source)> items = group;
                 var (metadataValue, (metadataKey, _)) = group.Key;
-                if (_schema.Rules.TryGetValue(metadataKey, out var customRules) &&
-                    customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out var customRule))
-                {
-                    items = items.Where(i => _ext == null || i.filePath == null || _ext.IsEnable(i.filePath, customRule));
-                }
 
                 if (items.Count() > 1)
                 {
