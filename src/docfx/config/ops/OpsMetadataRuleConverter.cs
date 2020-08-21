@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                     from rule in attributeRules.Rules
                     let ruleInfo = (OpsMetadataRule)rule.ToObject<OpsMetadataRule>()
                     let type = ruleInfo.Type
-                    where ValidContentType(ruleInfo.ContentTypes) && type != null && !ruleInfo.Disabled
+                    where type != null && !ruleInfo.Disabled
                     select new KeyValuePair<string, OpsMetadataRule>(type, ruleInfo));
 
                 var property = new
@@ -130,14 +130,6 @@ namespace Microsoft.Docs.Build
             var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             Log.Write(jsonSchema);
             return jsonSchema;
-        }
-
-        private static bool ValidContentType(string[]? contentTypes)
-        {
-            return contentTypes.Contains("conceptual")
-                || contentTypes.Contains("dotnet") // pagetype TODO
-                || contentTypes.Contains("rest")
-                || contentTypes.Contains("powershell");
         }
 
         private static bool TryGetAttributeCustomRules(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)

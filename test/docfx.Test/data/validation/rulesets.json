@@ -423,21 +423,5 @@
         "disabled": true
       }
     ]
-  },
-  "author.ref": {
-    "name": "author.ref",
-    "description": "Identify the author by GitHub ID. Used for GitHub workflow automation and notifications.",
-    "aliases": null,
-    "rules": [
-      {
-        "type": "Kind",
-        "contentTypes": [
-          "dotnet"
-        ],
-        "multipleValues": false,
-        "severity": "SUGGESTION",
-        "code": "multiple-values"
-      }
-    ]
   }
 }
