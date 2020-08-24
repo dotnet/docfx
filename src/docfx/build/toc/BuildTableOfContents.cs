@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             context.ContentValidator.ValidateTocDeprecated(file);
 
             var metadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
-            context.MetadataValidator.ValidateMetadata(errors, metadata.RawJObject, file.FilePath);
+            context.MetadataValidator.ValidateMetadata(errors, metadata.RawJObject, file);
 
             var tocMetadata = JsonUtility.ToObject<TableOfContentsMetadata>(errors, metadata.RawJObject);
 

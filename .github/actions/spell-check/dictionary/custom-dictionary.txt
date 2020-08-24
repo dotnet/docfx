@@ -59,6 +59,7 @@ charset
 checkin
 chromeless
 clickable
+Cmdlet
 codecov
 codepen
 coderange

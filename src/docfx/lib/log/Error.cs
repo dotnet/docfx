@@ -42,15 +42,16 @@ namespace Microsoft.Docs.Build
             PullRequestOnly = pullRequestOnly;
         }
 
-        public Error WithCustomRule(CustomRule customRule, bool? isCanonicalVersion = null)
+        public Error WithCustomRule(CustomRule customRule, bool? enabled = null)
         {
             var level = customRule.Severity ?? Level;
-            if (isCanonicalVersion != null && customRule.CanonicalVersionOnly)
-            {
-                level = isCanonicalVersion.Value ? level : ErrorLevel.Off;
-            }
 
             if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? string.Empty))
+            {
+                level = ErrorLevel.Off;
+            }
+
+            if (enabled != null && !enabled.Value)
             {
                 level = ErrorLevel.Off;
             }

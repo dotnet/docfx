@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly TemplateEngine _templateEngine;
         private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
 
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
@@ -23,13 +25,29 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
+        // mime -> page type. TODO get from docs-ui schema
+        private static Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
+        {
+            { "NetType", "dotnet" },
+            { "NetNamespace", "dotnet" },
+            { "NetMember", "dotnet" },
+            { "NetEnum", "dotnet" },
+            { "NetDelegate ", "dotnet" },
+            { "RESTOperation", "rest" },
+            { "RESTOperationGroup ", "rest" },
+            { "RESTService  ", "rest" },
+            { "PowershellCmdlet", "powershell" },
+            { "PowershellModule ", "powershell" },
+        };
+
         public DocumentProvider(
             ErrorBuilder errors,
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
             TemplateEngine templateEngine,
-            MonikerProvider monikerProvider)
+            MonikerProvider monikerProvider,
+            MetadataProvider metadataProvider)
         {
             _errors = errors;
             _config = config;
@@ -37,6 +55,7 @@ namespace Microsoft.Docs.Build
             _buildScope = buildScope;
             _templateEngine = templateEngine;
             _monikerProvider = monikerProvider;
+            _metadataProvider = metadataProvider;
 
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
@@ -162,13 +181,42 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _buildScope.GetMime(contentType, path);
-            var isHtml = _templateEngine.IsHtml(contentType, mime);
+            var pageType = GetPageType(contentType, path, mime);
+            var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isHtml);
+            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, pageType, mime, isExperimental, isHtml);
+        }
+
+        private string? GetPageType(ContentType contentType, FilePath path, string? mime)
+        {
+            switch (contentType)
+            {
+                case ContentType.Page:
+                    if (mime != null && s_pageTypeMapping.TryGetValue(mime, out var type))
+                    {
+                        return type;
+                    }
+                    if (mime != "Conceptual")
+                    {
+                        return null;
+                    }
+                    var metadata = _metadataProvider.GetMetadata(_errors, path);
+                    if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
+                    {
+                        return null;
+                    }
+                    return "conceptual";
+                case ContentType.Redirection:
+                    return "redirection";
+                case ContentType.TableOfContents:
+                    return "toc";
+                default:
+                    return null;
+            }
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
