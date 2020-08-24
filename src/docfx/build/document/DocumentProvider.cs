@@ -106,6 +106,12 @@ namespace Microsoft.Docs.Build
             return UrlUtility.Combine(_config.BasePath, outputPath);
         }
 
+        public string GetSiteUrl(FilePath path)
+        {
+            return GetDocument(path).SiteUrl;
+        }
+
+        [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
         public string GetDocsSiteUrl(FilePath path)
         {
             var file = GetDocument(path);
@@ -113,6 +119,7 @@ namespace Microsoft.Docs.Build
             {
                 return file.SiteUrl;
             }
+
             var sitePath = FilePathToSitePath(path, file.ContentType, OutputUrlType.Docs, file.IsHtml);
             return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsHtml);
         }

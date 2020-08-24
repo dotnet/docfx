@@ -29,9 +29,9 @@ namespace Microsoft.Docs.Build
             Lazy<PublishUrlMap> publishUrlMap)
         {
             _validator = new Validator(
-                GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules),
-                GetValidationPhysicalFilePath(fileResolver, config.Allowlists),
-                GetValidationPhysicalFilePath(fileResolver, config.Disallowlists));
+                fileResolver.ResolveFilePath(config.MarkdownValidationRules),
+                fileResolver.ResolveFilePath(config.Allowlists),
+                fileResolver.ResolveFilePath(config.Disallowlists));
             _errors = errors;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
@@ -217,20 +217,6 @@ namespace Microsoft.Docs.Build
         public void PostValidate()
         {
             Write(_validator.PostValidate().GetAwaiter().GetResult());
-        }
-
-        public static string GetValidationPhysicalFilePath(FileResolver fileResolver, SourceInfo<string> configFilePath)
-        {
-            string filePath = configFilePath;
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                using var stream = fileResolver.ReadStream(configFilePath);
-
-                // TODO: validation rules currently only supports physical file.
-                filePath = ((FileStream)stream).Name;
-            }
-
-            return filePath;
         }
 
         private void Write(IEnumerable<ValidationError> validationErrors)

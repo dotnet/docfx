@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         // check by CanonicalVersionOnly & ContentTypes of customRule
         internal bool IsEnable(FilePath filePath, CustomRule customRule)
         {
-            var siteUrl = _documentProvider.GetDocsSiteUrl(filePath);
+            var siteUrl = _documentProvider.GetSiteUrl(filePath);
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
             var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion);
             if (customRule.CanonicalVersionOnly && (!isCanonicalVersion ?? false))
