@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
         private Document GetDocumentCore(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
-            var mime = _buildScope.GetMime(contentType, path);
+            var mime = _buildScope.GetMime(contentType, path, _errors);
             var isHtml = _templateEngine.IsHtml(contentType, mime);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);

@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MetadataValidator
     {
+        private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly PublishUrlMap _publishUrlMap;
@@ -20,6 +21,7 @@ namespace Microsoft.Docs.Build
         public JsonSchema[] MetadataSchemas { get; }
 
         public MetadataValidator(
+            ErrorBuilder errors,
             Config config,
             MicrosoftGraphAccessor microsoftGraphAccessor,
             FileResolver fileResolver,
@@ -28,6 +30,7 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             PublishUrlMap publishUrlMap)
         {
+            _errors = errors;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _publishUrlMap = publishUrlMap;
@@ -63,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
 
             var contentType = _buildScope.GetContentType(filePath);
-            var mime = _buildScope.GetMime(contentType, filePath);
+            var mime = _buildScope.GetMime(contentType, filePath, _errors);
             var siteUrl = _documentProvider.GetDocsSiteUrl(filePath);
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
             var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(errors, filePath).IsCanonicalVersion(canonicalVersion);

@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsLoader
     {
+        private readonly Input _input;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly TableOfContentsParser _parser;
@@ -22,8 +23,9 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
         private readonly ErrorBuilder _errors;
-        private readonly DocumentProvider _documentProvider;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
+        private readonly RepositoryProvider _repositoryProvider;
+        private readonly Output _output;
 
         private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)> _cache =
                      new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)>();
@@ -34,7 +36,10 @@ namespace Microsoft.Docs.Build
         private static AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
                    new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
 
+        private ConcurrentBag<FilePath> _servicePages = new ConcurrentBag<FilePath>();
+
         public TableOfContentsLoader(
+            Input input,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             TableOfContentsParser parser,
@@ -43,8 +48,10 @@ namespace Microsoft.Docs.Build
             ContentValidator contentValidator,
             Config config,
             ErrorBuilder errors,
-            DocumentProvider documentProvider)
+            RepositoryProvider repositoryProvider,
+            Output output)
         {
+            _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _parser = parser;
@@ -52,8 +59,9 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _errors = errors;
-            _documentProvider = documentProvider;
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
+            _repositoryProvider = repositoryProvider;
+            _output = output;
         }
 
         public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
@@ -70,15 +78,33 @@ namespace Microsoft.Docs.Build
                     if (joinTOCConfig.TopLevelToc != null)
                     {
                         node = JoinToc(node, joinTOCConfig.TopLevelToc);
+
+                        // Generate Service Page.
+                        ServicePageGenerator servicePage = new ServicePageGenerator(_input, joinTOCConfig, _repositoryProvider, _output);
+                        if (node.Items != null && node.Items.Count > 0)
+                        {
+                            servicePage.GenerateServicePageFromTopLevelTOC(node.Items[0], _servicePages);
+                        }
+                        else
+                        {
+                            _errors.Add(Errors.JsonSchema.MissingAttribute(node.Name, "top-level-toc items or children"));
+                        }
+
+                        if (node.Items != null)
+                        {
+                            node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
+                        }
                     }
                 }
                 return (node, referencedFiles, referencedTocs);
             });
         }
 
+        public ConcurrentBag<FilePath> GetServicePages() => _servicePages;
+
         private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
         {
-            var (topLevelToc, _, _) = Load(_documentProvider.GetDocument(FilePath.Content(new PathString(topLevelTocFilePath))));
+            var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
             TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
             return topLevelToc;
         }
@@ -193,6 +219,8 @@ namespace Microsoft.Docs.Build
                 Document = document ?? subChildrenFirstItem?.Document,
                 Items = items,
             };
+
+            newNode.LandingPageType = node.Value.LandingPageType;
 
             // resolve monikers
             newNode.Monikers = GetMonikers(newNode);

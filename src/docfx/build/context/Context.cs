@@ -154,6 +154,7 @@ namespace Microsoft.Docs.Build
             JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
+                Input,
                 LinkResolver,
                 XrefResolver,
                 tocParser,
@@ -162,14 +163,15 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 config,
                 errorLog,
-                DocumentProvider);
+                RepositoryProvider,
+                Output);
             TocMap = new TableOfContentsMap(
                 ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
             MetadataValidator = new MetadataValidator(
-                Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
+                ErrorBuilder, Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
         }
 
         public void Dispose()

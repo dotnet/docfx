@@ -1731,3 +1731,199 @@ outputs:
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
   a/_splitted/b/toc.json: |
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+---
+# Service Page Generating
+repos:
+  https://github.com/ops/service-page:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+          }],
+          "JoinTOCPlugin": [
+            {
+              "ReferenceTOC": "api/TOC.yml",
+              "TopLevelTOC": "docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "results",
+              "ContainerPageMetadata": {"langs": ["csharp"]}
+            }
+          ],
+        }
+      docfx.yml:
+      _themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["uid", "name", "children", "pageType"],
+          "properties": {
+            "uid": {
+              "description": "The object's unique identifier",
+              "contentType": "uid",
+              "type": "string"
+            },
+            "name": {"type": "string"},
+            "fullName": {"type": "string"},
+            "children": {
+              "description": "The reference container object's child items",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "href": {
+                    "contentType": "href",
+                    "type": "string"
+                  },
+                  "uid": {
+                    "contentType": "xref",
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "type": "array",
+              "minItems": 1
+            },
+            "langs": {
+              "items": {"type": "string"},
+              "type": "array",
+              "minItems": 1
+            },
+            "pageType": {
+              "description": "reference container type",
+              "enum": ["root", "service"],
+              "type": "string"
+            },
+            "metadata": {
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "tags": ["localizable"]
+                },
+                "title": {
+                  "type": "string",
+                  "tags": ["localizable"]
+                }
+              },
+              "type": "object"
+            }
+          }
+        }
+      _themes/ContentTemplate/schemas/TestData.schema.json: |
+        {
+          "properties": {
+            "uid": { "contentType": "uid" },
+            "fullName": { "type": "string" },
+            "name": { "type": "string" }
+          },
+          "xrefProperties": ["name", "fullName", "description"]
+        }
+      api/doc.md: |
+        ---
+        name: test
+        uid: MS.ServicePage
+        ---
+      api/a.json: |
+        {
+          "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+          "uid": "aa",
+          "name": "test",
+          "fullName": "test.test",
+          "description": "a.description"
+        }
+      api/TOC.yml: |
+        name: TOC
+        items:
+        - name: MS.ServicePage.xxx
+          items:
+            - name: xxx
+        - name: MS.ServicePage.Client.Form
+        - name:
+        - name: no.match
+      docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: App Service
+            landingPageType: Service
+            items:
+            - name: Client
+              href: ../api/doc.md
+              landingPageType: Service
+              children:
+              - 'MS.ServicePage*'
+              items:
+                  - name: Client
+                    uid: aa
+                    landingPageType: Service
+                    children:
+                    - 'MS.ServicePage.Client*'
+                    - 'MS.ServicePage.Server*'
+            - name: Other
+              children:
+              - '*'
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"api/TOC.yml","line":7,"column":8}
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'uid'.","line":0,"column":0}
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'children'.","line":0,"column":0}
+  api/a.json:
+  api/doc.json:
+  results/apireference.json: |
+    {
+      "name": "API Reference",
+      "fullName": "API Reference",
+      "children": [{"name": "App Service"}],
+      "langs": ["csharp"],
+      "pageType": "root"
+    }
+  results/apireference/appservice.json: |
+    {
+      "name": "App Service",
+      "fullName": "App Service",
+      "children": [{"name": "Client","href": "../../api/doc"},{"name": "Other"}],
+      "langs": ["csharp"],
+      "pageType": "service"
+    }
+  results/apireference/appservice/client.json: |
+    {
+      "name": "Client",
+      "fullName": "Client",
+      "href": "../api/doc.md",
+      "children": [{"name": "Client","uid": "aa"},{"name": "MS.ServicePage.xxx"},{"name": "MS.ServicePage.Client.Form"}],
+      "langs": ["csharp"],
+      "pageType": "service"
+    }
+  results/apireference/appservice/client/client.json: |
+    {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}
+  api/toc.json: |
+    {
+      "metadata": {"open_to_public_contributors": false},
+      "items": [
+        {
+          "name": "API Reference",
+          "items": [
+            {
+              "name": "App Service",
+              "items": [
+                {
+                  "name": "Client",
+                  "items": [
+                    {"name": "Client", "uid": "aa"},
+                    {
+                      "name": "MS.ServicePage.xxx",
+                      "items": [{"name": "xxx"}]
+                    },
+                    {"name": "MS.ServicePage.Client.Form"}
+                  ]
+                },
+                {"name": "Other", "items": [{"name": "no.match"}]}
+              ]
+            }
+          ]
+        }
+      ]
+    }

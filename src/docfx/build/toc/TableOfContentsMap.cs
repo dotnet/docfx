@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
 
-        private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
+        private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
         public TableOfContentsMap(
             ErrorBuilder errors,
@@ -44,12 +44,22 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
-            _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
+            _tocs = new Lazy<(
+                Dictionary<Document,
+                Document[]> tocToTocs,
+                Dictionary<Document,
+                Document[]> docToTocs,
+                List<FilePath> servicePages)>(BuildTocMap);
         }
 
         public IEnumerable<FilePath> GetFiles()
         {
             return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath);
+        }
+
+        public IEnumerable<FilePath> GetServicePages()
+        {
+            return _tocs.Value.servicePages;
         }
 
         /// <summary>
@@ -166,7 +176,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private (Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs) BuildTocMap()
+        private (Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs, List<FilePath> servicePages) BuildTocMap()
         {
             using (Progress.Start("Loading TOC"))
             {
@@ -189,6 +199,8 @@ namespace Microsoft.Docs.Build
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
                 });
 
+                var servicePages = _tocLoader.GetServicePages().ToList<FilePath>();
+
                 // Create TOC reference map
                 var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
 
@@ -206,7 +218,7 @@ namespace Microsoft.Docs.Build
                 tocToTocs.TrimExcess();
                 docToTocs.TrimExcess();
 
-                return (tocToTocs, docToTocs);
+                return (tocToTocs, docToTocs, servicePages);
             }
         }
 

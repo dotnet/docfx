@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -116,11 +117,11 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath)
+        public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath, ErrorBuilder errors)
         {
             return _mimeTypeCache.GetOrAdd(filePath, path =>
             {
-                return contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
+                return contentType == ContentType.Page ? ReadMimeFromFile(_input, path, errors) : default;
             });
         }
 
@@ -236,7 +237,7 @@ namespace Microsoft.Docs.Build
                         .ToArray();
         }
 
-        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
+        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath, ErrorBuilder errors)
         {
             switch (filePath.Format)
             {
@@ -251,6 +252,17 @@ namespace Microsoft.Docs.Build
                         return JsonUtility.ReadMime(reader, filePath);
                     }
                 case FileFormat.Yaml:
+                    if (filePath.Origin == FileOrigin.Generated)
+                    {
+                        var servicePageToken = input.ReadYaml(errors, filePath).SelectToken("yamlMime");
+                        if (servicePageToken == null)
+                        {
+                            throw new FileNotFoundException();
+                        }
+                        var yamlMime = servicePageToken.Value<string?>();
+                        ((JObject)input.ReadYaml(errors, filePath)).Remove("yamlMime");
+                        return new SourceInfo<string?>(yamlMime, new SourceInfo(filePath, 1, 1));
+                    }
                     using (var reader = input.ReadText(filePath))
                     {
                         return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
