@@ -586,6 +586,8 @@ inputs:
       author: dotnet-bot
       title: a
       description: a
+  docs/TOC.md:
+    # [Index](index.md)
   _themes/ContentTemplate/schemas/NetType.schema.json: |
     {
       "type": "object",
@@ -609,6 +611,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json:
+  docs/toc.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
 ---

@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _buildScope.GetMime(contentType, path);
-            var pageType = GetPageType(path, mime);
+            var pageType = GetPageType(contentType, path, mime);
             var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
@@ -191,12 +191,30 @@ namespace Microsoft.Docs.Build
             return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, pageType, mime, isExperimental, isHtml);
         }
 
-        private string? GetPageType(FilePath path, string? mime)
+        private string? GetPageType(ContentType contentType, FilePath path, string? mime)
         {
             if (path.Format == FileFormat.Markdown)
             {
-                var metadata = _metadataProvider.GetMetadata(_errors, path);
-                return metadata.Layout ?? "conceptual";
+                switch (contentType)
+                {
+                    case ContentType.Page:
+                        if (mime != "Conceptual")
+                        {
+                            return null;
+                        }
+                        var metadata = _metadataProvider.GetMetadata(_errors, path);
+                        if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
+                        {
+                            return null;
+                        }
+                        return "conceptual";
+                    case ContentType.Redirection:
+                        return "redirection";
+                    case ContentType.TableOfContents:
+                        return "toc";
+                    default:
+                        return null;
+                }
             }
             else
             {
