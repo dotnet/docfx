@@ -54,6 +54,12 @@ namespace Microsoft.Docs.Build
             {
                 if (file.PageType != null)
                 {
+                    if (file.PageType == "conceptual" &&
+                        metadata.ContainsKey("layout") &&
+                        !string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
                     errors.AddRange(schemaValidator.Validate(metadata, file.FilePath));
                 }
             }
