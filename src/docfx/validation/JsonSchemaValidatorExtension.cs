@@ -29,8 +29,8 @@ namespace Microsoft.Docs.Build
         {
             var siteUrl = _documentProvider.GetSiteUrl(filePath);
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
-            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion);
-            if (customRule.CanonicalVersionOnly && (!isCanonicalVersion ?? false))
+            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) ?? true;
+            if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
             {
                 return false;
             }
