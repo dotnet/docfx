@@ -193,32 +193,29 @@ namespace Microsoft.Docs.Build
 
         private string? GetPageType(ContentType contentType, FilePath path, string? mime)
         {
-            if (path.Format == FileFormat.Markdown)
+            switch (contentType)
             {
-                switch (contentType)
-                {
-                    case ContentType.Page:
-                        if (mime != "Conceptual")
-                        {
-                            return null;
-                        }
-                        var metadata = _metadataProvider.GetMetadata(_errors, path);
-                        if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
-                        {
-                            return null;
-                        }
-                        return "conceptual";
-                    case ContentType.Redirection:
-                        return "redirection";
-                    case ContentType.TableOfContents:
-                        return "toc";
-                    default:
+                case ContentType.Page:
+                    if (mime != null && s_pageTypeMapping.TryGetValue(mime, out var type))
+                    {
+                        return type;
+                    }
+                    if (mime != "Conceptual")
+                    {
                         return null;
-                }
-            }
-            else
-            {
-                return mime == null ? null : s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime;
+                    }
+                    var metadata = _metadataProvider.GetMetadata(_errors, path);
+                    if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
+                    {
+                        return null;
+                    }
+                    return "conceptual";
+                case ContentType.Redirection:
+                    return "redirection";
+                case ContentType.TableOfContents:
+                    return "toc";
+                default:
+                    return null;
             }
         }
 
