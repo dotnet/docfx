@@ -144,10 +144,11 @@ namespace Microsoft.Docs.Build
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
-            // For static hosting, reference file in fallback repo should be resolved to docs site URL
             if (file.FilePath.Origin == FileOrigin.Fallback && file.ContentType == ContentType.Page && _config.OutputUrlType != OutputUrlType.Docs)
             {
+#pragma warning disable CS0618 // Docs pdf build uses static url, but images in fallback repo should be resolved to docs site URL
                 var siteUrl = _documentProvider.GetDocsSiteUrl(file.FilePath);
+#pragma warning restore CS0618
                 return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{siteUrl}", query, fragment), fragment, linkType, file, false);
             }
 
