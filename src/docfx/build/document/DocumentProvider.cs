@@ -25,6 +25,21 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
+        // mime -> page type. TODO get from docs-ui schema
+        private static Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
+        {
+            { "NetType", "dotnet" },
+            { "NetNamespace", "dotnet" },
+            { "NetMember", "dotnet" },
+            { "NetEnum", "dotnet" },
+            { "NetDelegate ", "dotnet" },
+            { "RESTOperation", "rest" },
+            { "RESTOperationGroup ", "rest" },
+            { "RESTService  ", "rest" },
+            { "PowershellCmdlet", "powershell" },
+            { "PowershellModule ", "powershell" },
+        };
+
         public DocumentProvider(
             ErrorBuilder errors,
             Config config,
@@ -169,36 +184,17 @@ namespace Microsoft.Docs.Build
             return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, pageType, mime, isExperimental, isHtml);
         }
 
-        // mime -> page type. TODO get from docs-ui schema
-        private readonly Dictionary<string, string> _pageTypeMapping = new Dictionary<string, string>
-        {
-            { "NetType", "dotnet" },
-            { "NetNamespace", "dotnet" },
-            { "NetMember", "dotnet" },
-            { "NetEnum", "dotnet" },
-            { "NetDelegate ", "dotnet" },
-            { "RESTOperation", "rest" },
-            { "RESTOperationGroup ", "rest" },
-            { "RESTService  ", "rest" },
-            { "PowershellCmdlet", "powershell" },
-            { "PowershellModule ", "powershell" },
-        };
-
         private string? GetPageType(FilePath path, string? mime)
         {
-            var metadata = _metadataProvider.GetMetadata(_errors, path).RawJObject;
-            if (mime == "Conceptual" &&
-                    (!metadata.ContainsKey("layout") ||
-                     string.Equals(metadata.GetValue("layout")?.ToString(), "conceptual", StringComparison.OrdinalIgnoreCase)))
+            if (path.Format == FileFormat.Markdown)
             {
-                return "conceptual";
+                var metadata = _metadataProvider.GetMetadata(_errors, path);
+                return metadata.Layout ?? "conceptual";
             }
-            else if (mime != null && _pageTypeMapping.TryGetValue(mime, out var type))
+            else
             {
-                return type;
+                return mime == null ? null : s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime;
             }
-
-            return null;
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
