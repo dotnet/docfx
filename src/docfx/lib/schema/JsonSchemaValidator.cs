@@ -663,9 +663,11 @@ namespace Microsoft.Docs.Build
                 error = error.WithLevel(ErrorLevel.Error);
             }
 
-            if (_ext?.ApplyCustomRule(error, schema, t_filePath.Value) is var extError && extError != null)
+            if (!string.IsNullOrEmpty(error.Name) &&
+                schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
+                attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
-                return extError;
+                return error.WithCustomRule(customRule, t_filePath.Value == null ? null : _ext?.IsEnable(t_filePath.Value, customRule));
             }
 
             return error;

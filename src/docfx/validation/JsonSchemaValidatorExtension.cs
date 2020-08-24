@@ -49,24 +49,5 @@ namespace Microsoft.Docs.Build
 
             return true;
         }
-
-        internal Error? ApplyCustomRule(Error error, JsonSchema schema, FilePath? filePath)
-        {
-            if (!string.IsNullOrEmpty(error.Name) &&
-                schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
-                attributeCustomRules.TryGetValue(error.Code, out var customRule))
-            {
-                if (filePath == null)
-                {
-                    return error.WithCustomRule(customRule);
-                }
-                else
-                {
-                    return error.WithCustomRule(customRule, IsEnable(filePath, customRule));
-                }
-            }
-
-            return null;
-        }
     }
 }
