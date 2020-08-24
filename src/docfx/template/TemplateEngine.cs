@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,16 +15,28 @@ namespace Microsoft.Docs.Build
         private readonly string _templateDir;
         private readonly string _schemaDir;
         private readonly string _contentTemplateDir;
+        private readonly Config _config;
+        private readonly Output _output;
+        private readonly TemplateDefinition _templateDefinition;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
-        private readonly ThreadLocal<IJavaScriptEngine> _js;
+        private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
 
-        public TemplateEngine(Config config, BuildOptions buildOptions, PackageResolver packageResolver, Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
+        public TemplateEngine(
+            ErrorBuilder errors,
+            Config config,
+            BuildOptions buildOptions,
+            Output output,
+            PackageResolver packageResolver,
+            Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
+            _config = config;
+            _output = output;
+
             _templateDir = config.Template.Type switch
             {
                 PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
@@ -34,15 +46,11 @@ namespace Microsoft.Docs.Build
             _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
             _schemaDir = Path.Combine(_contentTemplateDir, "schemas");
 
+            _templateDefinition = PathUtility.LoadYamlOrJson<TemplateDefinition>(errors, _templateDir, "template") ?? new TemplateDefinition();
+
             _global = LoadGlobalTokens();
             _liquid = new LiquidTemplate(_templateDir);
-
-            // TODO: remove JINT after Microsoft.CharkraCore NuGet package
-            // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
-            _js = new ThreadLocal<IJavaScriptEngine>(() => RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? (IJavaScriptEngine)new ChakraCoreJsEngine(_contentTemplateDir, _global)
-                : new JintJsEngine(_contentTemplateDir, _global));
-
+            _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_contentTemplateDir, _global));
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
@@ -82,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         public string RunLiquid(Document file, TemplateModel model)
         {
-            var layout = model.RawMetadata?.Value<string>("layout") ?? "";
+            var layout = model.RawMetadata?.Value<string>("layout") ?? file.Mime.Value ?? throw new InvalidOperationException();
             var themeRelativePath = _templateDir;
 
             var liquidModel = new JObject
@@ -123,6 +131,24 @@ namespace Microsoft.Docs.Build
                 }
             }
             return result;
+        }
+
+        public void CopyAssetsToOutput()
+        {
+            if (_config.OutputType != OutputType.Html || _templateDefinition.Assets.Length <= 0)
+            {
+                return;
+            }
+
+            var glob = GlobUtility.CreateGlobMatcher(_templateDefinition.Assets);
+
+            Parallel.ForEach(PathUtility.GetFiles(_templateDir), file =>
+            {
+                if (glob(file))
+                {
+                    _output.Copy(file, new FilePath(Path.Combine(_templateDir, file)));
+                }
+            });
         }
 
         public string? GetToken(string key)

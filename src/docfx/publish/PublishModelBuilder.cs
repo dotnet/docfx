@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
                     monikers,
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     document.ContentType,
+                    document.PageType,
                     document.Mime,
                     _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);

@@ -317,7 +317,7 @@ namespace ChakraHost.Hosting
         internal static extern JavaScriptErrorCode JsCreateArray(uint length, out JavaScriptValue result);
 
         [DllImport(DllName)]
-        internal static extern JavaScriptErrorCode JsCallFunction(JavaScriptValue function, JavaScriptValue[] arguments, ushort argumentCount, out JavaScriptValue result);
+        internal static extern JavaScriptErrorCode JsCallFunction(JavaScriptValue function, IntPtr arguments, ushort argumentCount, out JavaScriptValue result);
 
         [DllImport(DllName)]
         internal static extern JavaScriptErrorCode JsConstructObject(JavaScriptValue function, JavaScriptValue[] arguments, ushort argumentCount, out JavaScriptValue result);

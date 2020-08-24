@@ -59,6 +59,7 @@ charset
 checkin
 chromeless
 clickable
+Cmdlet
 codecov
 codepen
 coderange
@@ -542,3 +543,4 @@ maml
 overridable
 uninstantiated
 namespaces
+lunr

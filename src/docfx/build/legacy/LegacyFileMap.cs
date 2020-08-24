@@ -55,6 +55,26 @@ namespace Microsoft.Docs.Build
 
         public static void Convert(Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
+            var fileMapping = new Dictionary<string, LegacyFileMapItem>();
+            foreach (var (path, fileMapItem) in items.OrderBy(item => item.path))
+            {
+                if (!string.IsNullOrEmpty(fileMapItem.Version))
+                {
+                    var key = $"{path}:{fileMapItem.Version}";
+                    if (!fileMapping.ContainsKey(key))
+                    {
+                        fileMapping.Add(key, fileMapItem);
+                    }
+                }
+                else if (fileMapItem.Monikers.HasMonikers)
+                {
+                    fileMapping.Add($"{path}:{fileMapItem.Monikers.MonikerGroup}", fileMapItem);
+                }
+                else
+                {
+                    fileMapping.Add(path, fileMapItem);
+                }
+            }
             context.Output.WriteJson(
                 Path.Combine(context.Config.BasePath, "filemap.json"),
                 new
@@ -65,25 +85,7 @@ namespace Microsoft.Docs.Build
                     source_base_path = ".",
                     version_info = new { },
                     from_docfx_v3 = true,
-                    file_mapping = items.OrderBy(item => item.path).ToDictionary(
-                        (item) =>
-                        {
-                            if (!string.IsNullOrEmpty(item.fileMapItem.Version))
-                            {
-                                return $"{item.path}:{item.fileMapItem.Version}";
-                            }
-
-                            // redirection file with monikers
-                            else if (item.fileMapItem.Monikers.HasMonikers)
-                            {
-                                return $"{item.path}:{item.fileMapItem.Monikers.MonikerGroup}";
-                            }
-                            else
-                            {
-                                return item.path;
-                            }
-                        },
-                        item => item.fileMapItem),
+                    file_mapping = fileMapping,
                 });
         }
     }
