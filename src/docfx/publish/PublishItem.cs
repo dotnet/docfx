@@ -38,6 +38,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public ContentType ContentType { get; }
 
+        [JsonIgnore]
         public string? PageType { get; }
 
         [JsonIgnore]
