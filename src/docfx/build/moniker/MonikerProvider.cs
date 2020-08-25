@@ -85,11 +85,7 @@ namespace Microsoft.Docs.Build
             var zoneLevelMonikers = _rangeParser.Parse(errors, rangeString);
             var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers);
 
-            if (!_monikerIgnoreExcludeMonikersCache.TryGetValue(file, out var monikersIgnoreExcludeMonikers))
-            {
-                throw new InvalidOperationException();
-            }
-
+            var monikersIgnoreExcludeMonikers = _monikerIgnoreExcludeMonikersCache[file];
             if (!monikersIgnoreExcludeMonikers.Intersect(zoneLevelMonikers).HasMonikers)
             {
                 errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
