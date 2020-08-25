@@ -2036,3 +2036,34 @@ inputs:
 outputs:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '<= netcore-2.0' is 'netcore-1.0', 'netcore-2.0', while file monikers is 'netcore-3.0'.","file":"docs/v1/q.md","line":2,"column":19}
+---
+# Should not take exclue_monikers into consideration while warn on moniker-zone-empty
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    exclude_monikers: netcore-1.0
+    ---
+    Moniker: netcore-1.0, netcore-1.1, netcore-1.2
+    ::: moniker range="< netcore-1.1"
+    Moniker: netcore-1.0
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  e300a7df/docs/a.json: |
+    {
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p>",
+      "monikers": ["netcore-1.1", "netcore-1.2"]
+    }
