@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -25,8 +25,6 @@ namespace Microsoft.Docs.Build
         public JObject Metadata { get; set; } = new JObject();
 
         public SourceInfo<string?> YamlMime { get; private set; }
-
-        public ServicePageModel() { }
 
         public ServicePageModel(
             SourceInfo<string?> name,
