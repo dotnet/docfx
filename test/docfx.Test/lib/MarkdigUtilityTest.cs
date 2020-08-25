@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     public static class MarkdigUtilityTest
     {
-        private static MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder().UseYamlFrontMatter().Build();
+        private static readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder().UseYamlFrontMatter().Build();
 
         [Theory]
         [InlineData("abc", true)]

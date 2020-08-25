@@ -14,7 +14,7 @@ namespace Microsoft.Docs.LearnValidation
         private readonly Action<LearnLogItem> _writeLog;
         private readonly HashSet<string> _filesWithError;
 
-        private static IReadOnlyDictionary<LearnErrorCode, string> s_errorMessageMapping = new Dictionary<LearnErrorCode, string>
+        private static readonly IReadOnlyDictionary<LearnErrorCode, string> s_errorMessageMapping = new Dictionary<LearnErrorCode, string>
         {
             { LearnErrorCode.TripleCrown_Module_InvalidChildren, "This module can't publish since child units ({0}) are invalid." },
             { LearnErrorCode.TripleCrown_Unit_InvalidParent, "This unit can't publish since parent module {0} is invalid." },

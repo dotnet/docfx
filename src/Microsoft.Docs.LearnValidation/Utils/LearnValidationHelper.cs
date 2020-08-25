@@ -18,9 +18,9 @@ namespace Microsoft.Docs.LearnValidation
 
         private const string _defaultLocale = "en-us";
 
-        private RestClient _client;
-        private string _branch;
-        private bool _needBranchFallback;
+        private readonly RestClient _client;
+        private readonly string _branch;
+        private readonly bool _needBranchFallback;
         private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
 
         public LearnValidationHelper(string endpoint, string branch)

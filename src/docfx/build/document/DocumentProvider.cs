@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         // mime -> page type. TODO get from docs-ui schema
-        private static Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
         {
             { "NetType", "dotnet" },
             { "NetNamespace", "dotnet" },
