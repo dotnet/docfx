@@ -104,7 +104,6 @@ namespace Microsoft.Docs.Build
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken));
             }
 
-            // DFS
             foreach (var item in node.Items)
             {
                 GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");

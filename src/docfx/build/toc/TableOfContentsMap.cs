@@ -45,10 +45,8 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _tocs = new Lazy<(
-                Dictionary<Document,
-                Document[]> tocToTocs,
-                Dictionary<Document,
-                Document[]> docToTocs,
+                Dictionary<Document, Document[]> tocToTocs,
+                Dictionary<Document, Document[]> docToTocs,
                 List<FilePath> servicePages)>(BuildTocMap);
         }
 
