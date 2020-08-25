@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 {
     public class TabGroupIdRewriter : IMarkdownObjectRewriter
     {
-        private Dictionary<string, int> _dict = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _dict = new Dictionary<string, int>();
 
         public void PostProcess(IMarkdownObject markdownObject)
         {

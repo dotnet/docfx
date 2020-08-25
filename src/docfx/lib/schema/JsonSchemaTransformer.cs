@@ -22,8 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
 
-        private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
-                 = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
+        private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
+                          = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
         public JsonSchemaTransformer(
             MarkdownEngine markdownEngine,

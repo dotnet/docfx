@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class HtmlInclusionBlockRenderer : HtmlObjectRenderer<InclusionBlock>
     {
         private readonly MarkdownContext _context;
-        private MarkdownPipeline _pipeline;
+        private readonly MarkdownPipeline _pipeline;
 
         public HtmlInclusionBlockRenderer(MarkdownContext context, MarkdownPipeline pipeline)
         {
