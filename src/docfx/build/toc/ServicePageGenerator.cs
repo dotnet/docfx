@@ -4,9 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
