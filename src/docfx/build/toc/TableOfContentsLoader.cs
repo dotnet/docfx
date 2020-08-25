@@ -218,9 +218,8 @@ namespace Microsoft.Docs.Build
                 Name = node.Value.Name.Or(resolvedTopicName),
                 Document = document ?? subChildrenFirstItem?.Document,
                 Items = items,
+                LandingPageType = node.Value.LandingPageType,
             };
-
-            newNode.LandingPageType = node.Value.LandingPageType;
 
             // resolve monikers
             newNode.Monikers = GetMonikers(newNode);
