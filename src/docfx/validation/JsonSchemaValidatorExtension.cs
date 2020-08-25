@@ -24,7 +24,6 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
-        // check by CanonicalVersionOnly & ContentTypes of customRule
         public bool IsEnable(FilePath filePath, CustomRule customRule)
         {
             var siteUrl = _documentProvider.GetSiteUrl(filePath);
@@ -36,17 +35,12 @@ namespace Microsoft.Docs.Build
             }
 
             var file = _documentProvider.GetDocument(filePath);
-            var mime = file.Mime;
-
-            if (mime != null &&
-                file.PageType != null &&
-                customRule.ContentTypes.Length > 0 &&
-                !customRule.ContentTypes.Any(file.PageType.Contains))
+            if (file.PageType is null)
             {
                 return false;
             }
 
-            return true;
+            return customRule.ContentTypes is null || customRule.ContentTypes.Contains(file.PageType);
         }
     }
 }

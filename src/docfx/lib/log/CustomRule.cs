@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         public string[] Exclude { get; private set; } = Array.Empty<string>();
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] ContentTypes { get; private set; } = Array.Empty<string>();
+        public string[]? ContentTypes { get; private set; }
 
         private Func<string, bool>? _globMatcherCache;
 
