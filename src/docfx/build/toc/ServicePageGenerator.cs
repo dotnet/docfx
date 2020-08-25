@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
             var filename = Regex.Replace(node.Name, @"\s+", "");
 
-            if (!string.IsNullOrEmpty(node.LandingPageType))
+            if (!string.IsNullOrEmpty(node.LandingPageType.ToString()))
             {
                 var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputPath) ? Directory.GetCurrentDirectory() : _joinTOCConfig.OutputPath.Replace("..", "");
                 var servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
@@ -94,8 +94,8 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                var landingPageType = node.LandingPageType.Value?.ToLowerInvariant();
-                var pageType = new SourceInfo<string?>(landingPageType);
+                var landingPageType = node.LandingPageType;
+                var pageType = new SourceInfo<LandingPageType?>(landingPageType);
 
                 var yamlMime = new SourceInfo<string?>("ReferenceContainer");
 

@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string?> Uid { get; set; }
 
-        public SourceInfo<string?> LandingPageType { get; set; }
+        public SourceInfo<LandingPageType?> LandingPageType { get; set; }
 
         public static bool ShouldSerializeLandingPageType() => false;
 

@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
 
         public List<string?> Langs { get; private set; } = new List<string?>();
 
-        public SourceInfo<string?> PageType { get; private set; }
+        public SourceInfo<LandingPageType?> PageType { get; private set; }
 
         public JObject Metadata { get; set; } = new JObject();
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             SourceInfo<string?> uid,
             List<SourceInfo<ServicePageModel>> children,
             List<string?> langs,
-            SourceInfo<string?> pageType,
+            SourceInfo<LandingPageType?> pageType,
             SourceInfo<string?> yamlMime)
         {
             Name = name;
