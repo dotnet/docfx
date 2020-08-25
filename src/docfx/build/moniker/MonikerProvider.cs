@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _monikerRangeCache = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
         private readonly ConcurrentDictionary<FilePath, MonikerList> _monikerCache = new ConcurrentDictionary<FilePath, MonikerList>();
+        private readonly ConcurrentDictionary<FilePath, MonikerList> _excludeMonikerCache = new ConcurrentDictionary<FilePath, MonikerList>();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
@@ -84,10 +85,16 @@ namespace Microsoft.Docs.Build
             var zoneLevelMonikers = _rangeParser.Parse(errors, rangeString);
             var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers);
 
-            if (!monikers.HasMonikers)
+            if (_excludeMonikerCache.TryGetValue(file, out var excludeMonikers))
+            {
+                if (!fileLevelMonikers.Concat(excludeMonikers).Intersect(zoneLevelMonikers).HasMonikers)
+                {
+                    errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
+                }
+            }
+            else if (!monikers.HasMonikers)
             {
                 errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
-                return monikers;
             }
             return monikers;
         }
@@ -156,7 +163,7 @@ namespace Microsoft.Docs.Build
             MonikerList excludeMonikers = default;
             if (metadata.ExcludeMonikers != null)
             {
-                excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
+                excludeMonikers = _excludeMonikerCache.GetOrAdd(file, _rangeParser.Validate(errors, metadata.ExcludeMonikers));
             }
             fileMonikers = fileMonikers.Except(excludeMonikers);
 
