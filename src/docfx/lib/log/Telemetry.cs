@@ -64,11 +64,10 @@ namespace Microsoft.Docs.Build
             typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
 
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
+        private static readonly string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
 
         private static string s_repo = "<null>";
         private static string s_branch = "<null>";
-
-        private static string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
 
         static Telemetry()
         {
@@ -157,7 +156,7 @@ namespace Microsoft.Docs.Build
         private class PerfScope : IDisposable
         {
             private readonly string _name;
-            private Stopwatch _stopwatch;
+            private readonly Stopwatch _stopwatch;
 
             public PerfScope(string name)
             {

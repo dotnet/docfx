@@ -1,8 +1,11 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Runtime.InteropServices;
+
 namespace ChakraHost.Hosting
 {
-    using System;
-    using System.Runtime.InteropServices;
-
     /// <summary>
     ///     A JavaScript value.
     /// </summary>
@@ -838,7 +841,7 @@ namespace ChakraHost.Hosting
         /// </remarks>
         /// <param name="arguments">The arguments to the call.</param>
         /// <returns>The <c>Value</c> returned from the function invocation, if any.</returns>
-        public JavaScriptValue CallFunction(params JavaScriptValue[] arguments)
+        public unsafe JavaScriptValue CallFunction(ReadOnlySpan<JavaScriptValue> arguments)
         {
             JavaScriptValue returnReference;
 
@@ -847,7 +850,10 @@ namespace ChakraHost.Hosting
                 throw new ArgumentOutOfRangeException("arguments");
             }
 
-            Native.ThrowIfError(Native.JsCallFunction(this, arguments, (ushort)arguments.Length, out returnReference));
+            fixed (JavaScriptValue* p = arguments)
+            {
+                Native.ThrowIfError(Native.JsCallFunction(this, (IntPtr)p, (ushort)arguments.Length, out returnReference));
+            }
             return returnReference;
         }
 

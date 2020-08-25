@@ -62,14 +62,14 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
 
             _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
-            var markdownValidationRules = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.MarkdownValidationRules);
-            var allowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Allowlists);
-            var disallowlists = ContentValidator.GetValidationPhysicalFilePath(fileResolver, config.Disallowlists);
 
-            if (!string.IsNullOrEmpty(markdownValidationRules))
+            if (!string.IsNullOrEmpty(config.MarkdownValidationRules))
             {
                 _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
-                    new ContentValidationContext(markdownValidationRules, allowlists, disallowlists),
+                    new ContentValidationContext(
+                        fileResolver.ResolveFilePath(config.MarkdownValidationRules),
+                        fileResolver.ResolveFilePath(config.Allowlists),
+                        fileResolver.ResolveFilePath(config.Disallowlists)),
                     new ContentValidationLogger(_markdownContext));
             }
 
@@ -321,12 +321,12 @@ namespace Microsoft.Docs.Build
                 altText = ToPlainText(origin);
             }
 
-            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), altText);
+            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText);
         }
 
-        private string GetImageLink(SourceInfo<string> href, string? altText)
+        private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText)
         {
-            _contentValidator.ValidateImageLink((Document)InclusionContext.File, href, altText);
+            _contentValidator.ValidateImageLink((Document)InclusionContext.RootFile, href, origin, altText);
             var link = GetLink(href);
             return link;
         }

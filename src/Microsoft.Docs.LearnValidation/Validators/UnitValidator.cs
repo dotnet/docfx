@@ -14,7 +14,7 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class UnitValidator : ValidatorBase
     {
-        private HashSet<string> _taskValidationTypeSet;
+        private readonly HashSet<string> _taskValidationTypeSet;
 
         public UnitValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
               : base(manifestItems, basePath, logger)
@@ -132,7 +132,7 @@ namespace Microsoft.Docs.LearnValidation
             return validateResult;
         }
 
-        private HashSet<string> GetTaskValidationTypeSet()
+        private static HashSet<string> GetTaskValidationTypeSet()
         {
             var taskValidationTypeFile = Path.Combine(AppContext.BaseDirectory, "data/AzureResourceTypes.txt");
             var taskValidationTypeSet = new HashSet<string>();

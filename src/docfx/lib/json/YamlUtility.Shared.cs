@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
         {
             JToken? result = null;
 
-            onKeyDuplicate = onKeyDuplicate ?? (_ => { });
-            onConvert = onConvert ?? ((token, _) => token);
+            onKeyDuplicate ??= _ => { };
+            onConvert ??= (token, _) => token;
 
             var parser = new Parser(input);
             parser.Consume<StreamStart>();

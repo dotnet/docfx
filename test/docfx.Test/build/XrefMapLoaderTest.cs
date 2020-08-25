@@ -11,7 +11,8 @@ namespace Microsoft.Docs.Build
     public class XrefMapLoaderTest
     {
         [Theory]
-        [InlineData(@"
+        [InlineData(
+            @"
 {
       'references':[
         {
@@ -27,9 +28,11 @@ namespace Microsoft.Docs.Build
       ]
     }
 ", "a", "b")]
-        [InlineData(@"{'references':[{'uid': 'a','href': 'https://docs.com/docs/a','name': 'Title from yaml header a'},{'uid': 'b','href': 'https://docs.com/docs/b','name': 'Title from yaml header b'}]}",
+        [InlineData(
+            @"{'references':[{'uid': 'a','href': 'https://docs.com/docs/a','name': 'Title from yaml header a'},{'uid': 'b','href': 'https://docs.com/docs/b','name': 'Title from yaml header b'}]}",
             "a", "b")]
-        [InlineData(@"{'references':[ { 'uid': 'a',
+        [InlineData(
+            @"{'references':[ { 'uid': 'a',
 'href': 'https://docs.com/docs/a',
 'name': 'Title from yaml header a' },
 {
@@ -51,7 +54,7 @@ namespace Microsoft.Docs.Build
             Assert.Equal(uids, resultUids);
         }
 
-        private string WriteJsonToTempFile(string json)
+        private static string WriteJsonToTempFile(string json)
         {
             var directory = Path.Combine(AppContext.BaseDirectory, "xref-map-loader");
             if (!Directory.Exists(directory))

@@ -16,12 +16,12 @@ namespace Microsoft.Docs.Build
             var errors = context.ErrorBuilder;
 
             // load toc tree
-            var (node, _, _) = context.TableOfContentsLoader.Load(errors, file);
+            var (node, _, _) = context.TableOfContentsLoader.Load(file);
 
             context.ContentValidator.ValidateTocDeprecated(file);
 
             var metadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
-            context.MetadataValidator.ValidateMetadata(errors, metadata.RawJObject, file.FilePath);
+            context.MetadataValidator.ValidateMetadata(errors, metadata.RawJObject, file);
 
             var tocMetadata = JsonUtility.ToObject<TableOfContentsMetadata>(errors, metadata.RawJObject);
 

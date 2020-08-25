@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return markdownObject;
         }
 
-        private string GetGitUrl()
+        private static string GetGitUrl()
         {
             // TODO: Disable to get git URL of code snippet
             return null;

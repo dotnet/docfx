@@ -111,10 +111,12 @@ namespace Microsoft.Docs.Build
             MemoryCache.Clear();
 
             Parallel.Invoke(
+                () => context.TemplateEngine.CopyAssetsToOutput(),
                 () => context.Output.WriteJson(".xrefmap.json", xrefMapModel),
                 () => context.Output.WriteJson(".publish.json", publishModel),
                 () => context.Output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => context.Output.WriteJson(".links.json", context.FileLinkMapBuilder.Build(context.PublishUrlMap.GetAllFiles())),
+                () => context.Output.WriteText(".lunr.json", context.SearchIndexBuilder.Build()),
                 () => Legacy.ConvertToLegacyModel(context.BuildOptions.DocsetPath, context, fileManifests, dependencyMap));
 
             using (Progress.Start("Waiting for pending outputs"))

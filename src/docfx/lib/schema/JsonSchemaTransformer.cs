@@ -22,8 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
 
-        private static ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
-                 = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
+        private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
+                          = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
         public JsonSchemaTransformer(
             MarkdownEngine markdownEngine,
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
             return count;
         }
 
-        private bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
+        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
         {
             uid = default;
 
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
+        private static string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
             => !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : file.SiteUrl;
 
         private JToken LoadXrefProperty(

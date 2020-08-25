@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using GlobExpressions;
 
@@ -17,10 +16,10 @@ namespace Microsoft.Docs.Build
             return path => !IsFileStartingWithDot(path) && glob.IsMatch(path);
         }
 
-        public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[] excludePatterns)
+        public static Func<string, bool> CreateGlobMatcher(string[] includePatterns, string[]? excludePatterns = null)
         {
             var includeGlobs = Array.ConvertAll(includePatterns, CreateGlob);
-            var excludeGlobs = Array.ConvertAll(excludePatterns, CreateGlob);
+            var excludeGlobs = Array.ConvertAll(excludePatterns ?? Array.Empty<string>(), CreateGlob);
 
             return IsMatch;
 
@@ -50,11 +49,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsFileStartingWithDot(string path)
-        {
-            return path.StartsWith('.') || path.Contains("/.") || path.Contains("\\.");
-        }
-
         private static Glob CreateGlob(string pattern)
         {
             try
@@ -67,6 +61,11 @@ namespace Microsoft.Docs.Build
             {
                 throw Errors.Config.GlobPatternInvalid(pattern, ex).ToException(ex);
             }
+        }
+
+        private static bool IsFileStartingWithDot(string path)
+        {
+            return path.StartsWith('.') || path.Contains("/.") || path.Contains("\\.");
         }
 
         private static string PreProcessPattern(string pattern)

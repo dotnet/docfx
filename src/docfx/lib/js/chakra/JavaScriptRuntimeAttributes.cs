@@ -1,8 +1,11 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+
 namespace ChakraHost.Hosting
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-
     /// <summary>
     ///     Attributes of a runtime.
     /// </summary>

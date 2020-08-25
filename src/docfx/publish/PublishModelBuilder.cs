@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
 
-        private ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
-            new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
+        private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
+                     new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
 
         public PublishModelBuilder(
             Config config,
@@ -62,6 +62,7 @@ namespace Microsoft.Docs.Build
                     monikers,
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     document.ContentType,
+                    document.PageType,
                     document.Mime,
                     _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);
@@ -102,7 +103,7 @@ namespace Microsoft.Docs.Build
             return (model, fileManifests);
         }
 
-        private JObject? RemoveComplexValue(JObject? metadata)
+        private static JObject? RemoveComplexValue(JObject? metadata)
         {
             if (metadata is null)
             {

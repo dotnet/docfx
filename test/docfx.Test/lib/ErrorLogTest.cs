@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
             ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Add(testError));
 
-            Assert.Equal(config.MaxFileErrors * testFiles + testEmptyFileErrors, errors.ErrorCount);
+            Assert.Equal((config.MaxFileErrors * testFiles) + testEmptyFileErrors, errors.ErrorCount);
         }
     }
 }

@@ -23,6 +23,9 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[] Exclude { get; private set; } = Array.Empty<string>();
 
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[] ContentTypes { get; private set; } = Array.Empty<string>();
+
         private Func<string, bool>? _globMatcherCache;
 
         public CustomRule() { }
@@ -40,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         public bool ExcludeMatches(string file)
         {
-            var match = LazyInitializer.EnsureInitialized(ref _globMatcherCache, () => GlobUtility.CreateGlobMatcher(Exclude, Array.Empty<string>()));
+            var match = LazyInitializer.EnsureInitialized(ref _globMatcherCache, () => GlobUtility.CreateGlobMatcher(Exclude));
 
             return match(file);
         }

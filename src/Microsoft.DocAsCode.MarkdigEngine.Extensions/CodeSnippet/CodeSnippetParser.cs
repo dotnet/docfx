@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 
 using Markdig.Helpers;
@@ -86,7 +85,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return BlockState.None;
         }
 
-        private bool MatchLanguage(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchLanguage(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '-')
             {
@@ -107,7 +106,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchPath(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchPath(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             ExtensionsHelper.SkipWhitespace(ref slice);
             if (slice.CurrentChar != '(')
@@ -148,7 +147,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchName(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchName(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '[')
             {
@@ -184,7 +183,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        private bool MatchQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             var questionMarkMatched = MatchQuestionMarkQuery(ref slice, ref codeSnippet);
 
@@ -193,7 +192,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return questionMarkMatched || bookMarkMatched;
         }
 
-        private bool MatchQuestionMarkQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchQuestionMarkQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '?')
             {
@@ -215,7 +214,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return TryParseQuery(queryString, ref codeSnippet);
         }
 
-        private bool MatchBookMarkQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchBookMarkQuery(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '#')
             {
@@ -246,7 +245,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return true;
         }
 
-        private bool MatchTitle(ref StringSlice slice, ref CodeSnippet codeSnippet)
+        private static bool MatchTitle(ref StringSlice slice, ref CodeSnippet codeSnippet)
         {
             if (slice.CurrentChar != '"')
             {
@@ -282,7 +281,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return false;
         }
 
-        private bool TryParseQuery(string queryString, ref CodeSnippet codeSnippet)
+        private static bool TryParseQuery(string queryString, ref CodeSnippet codeSnippet)
         {
             if (string.IsNullOrEmpty(queryString))
             {

@@ -681,3 +681,32 @@ outputs:
   .publish.json:
   .errors.log: |
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","line":0,"column":0}
+---
+# exclude_monikers should take effect on config monikers as well
+repos:
+  https://github.com/redirection/source-monikers:
+  - files:
+      docfx.yml: |
+        monikerRange:
+          'docs/v1/**': '>= netcore-1.0'
+        monikerDefinition: monikerDefinition.json
+        fileMetadata:
+          exclude_monikers:
+            '**/*.md': 
+            - netcore-2.0
+      docs/v1/a.md:
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [{"source_path": "docs/v1/a.md", "monikers": "netcore-2.0", "redirect_URL": "/b"}]
+        }
+      monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+          ]
+        }
+outputs:
+  bdc0b3f1/docs/v1/a.json:

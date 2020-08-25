@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         [InlineData("NULL")]
         public void TestObjectWithStringProperty(string input)
         {
-            var sw = new StringWriter();
+            using var sw = new StringWriter();
             JsonUtility.Serialize(sw, new BasicClass { C = input });
             var json = sw.ToString();
             var (errors, value) = DeserializeWithValidation<BasicClass>(json);
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestClassWithMoreMembersBySerializeThenDeserialize()
         {
-            var sw = new StringWriter();
+            using var sw = new StringWriter();
             JsonUtility.Serialize(
                 sw,
                 new ClassWithMoreMembers
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
                     {
                         { "b", "valueA" },
                         { "c", 10 },
-                        { "a", true }
+                        { "a", true },
                     },
                     ValueList = new List<string> { "b", "a", },
                     ValueBasic = new BasicClass
@@ -177,24 +177,9 @@ namespace Microsoft.Docs.Build
             Assert.False(value.ValueBasic.D);
             Assert.True((bool)value.ValueDict["a"]);
             Assert.Equal("valueA", value.ValueDict["b"]);
-            Assert.Equal((long)10, value.ValueDict["c"]);
+            Assert.Equal(10L, value.ValueDict["c"]);
             Assert.Equal("b", value.ValueList[0]);
             Assert.Equal("a", value.ValueList[1]);
-        }
-
-        [Theory]
-        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
-        [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
-        internal void TestNullValue(string json, string message, string errorCode, ErrorLevel errorLevel)
-        {
-            var errors = new ErrorList();
-            var result = JsonUtility.Parse(errors, json.Replace('\'', '"'), null);
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(errorLevel, error.Level);
-                Assert.Equal(errorCode, error.Code);
-                Assert.Equal(message, error.Message);
-            });
         }
 
         [Fact]
@@ -207,7 +192,8 @@ namespace Microsoft.Docs.Build
         [Theory]
         [InlineData("1", 1, 1)]
         [InlineData(@"{""key"":""value""}", 1, 14)]
-        [InlineData(@"{
+        [InlineData(
+            @"{
 ""list"":[{item: 1}]}", 2, 8)]
         public void TestParsedJTokenHasLineInfo(string json, int expectedLine, int expectedColumn)
         {
@@ -220,40 +206,25 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData(@"{
-'numberList':
-  [1, 'a']}", ErrorLevel.Error, "violate-schema", 3, 9)]
-        [InlineData(@"{'b' : 'b'}", ErrorLevel.Error, "violate-schema", 1, 10)]
-        [InlineData(@"{'valueEnum':'Four'}", ErrorLevel.Error, "violate-schema", 1, 19)]
-        internal void TestMismatchingPrimitiveFieldType(string json, ErrorLevel expectedErrorLevel, string expectedErrorCode,
-            int expectedErrorLine, int expectedErrorColumn)
-        {
-            var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json.Replace('\'', '\"'));
-            Assert.Collection(errors, error =>
-            {
-                Assert.Equal(expectedErrorLevel, error.Level);
-                Assert.Equal(expectedErrorCode, error.Code);
-                Assert.Equal(expectedErrorLine, error.Source.Line);
-                Assert.Equal(expectedErrorColumn, error.Source.Column);
-            });
-        }
-
-        [Theory]
-        [InlineData(@"{
+        [InlineData(
+            @"{
 ""b"": 1,
 ""c"": ""c"",
 ""e"": ""e""}", typeof(NotSealedClass))]
-        [InlineData(@"{
+        [InlineData(
+            @"{
 ""data"":{
 ""b"": 1,
 ""c"": ""c"",
 ""e"": ""e""}}", typeof(SealedClassNestedWithNotSealedType))]
-        [InlineData(@"{
+        [InlineData(
+            @"{
 ""items"":[{
 ""b"": 1,
 ""c"": ""c"",
 ""e"": ""e""}]}", typeof(SealedClassNestedWithNotSealedType))]
-        [InlineData(@"[{
+        [InlineData(
+            @"[{
 ""b"": 1,
 ""c"": ""c"",
 ""e"": ""e""}]", typeof(List<NotSealedClass>))]
@@ -273,22 +244,23 @@ namespace Microsoft.Docs.Build
 ""b"" : ""b"",
 ""valueEnum"":""Four""}";
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json);
-            Assert.Collection(errors,
-            error =>
+            Assert.Collection(
+                errors,
+                error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(2, error.Source.Line);
                 Assert.Equal(21, error.Source.Column);
             },
-            error =>
+                error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
                 Assert.Equal(3, error.Source.Line);
                 Assert.Equal(9, error.Source.Column);
             },
-            error =>
+                error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal("violate-schema", error.Code);
@@ -312,15 +284,16 @@ namespace Microsoft.Docs.Build
 ]
 }";
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json);
-            Assert.Collection(errors,
-            error =>
+            Assert.Collection(
+                errors,
+                error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(4, error.Source.Line);
                 Assert.Equal(27, error.Source.Column);
                 Assert.Equal("Error converting value \"notArray\" to type 'System.Collections.Generic.List`1[Microsoft.Docs.Build.JsonUtilityTest+BasicClass]'.", error.Message);
             },
-            error =>
+                error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
                 Assert.Equal(5, error.Source.Line);
@@ -428,8 +401,8 @@ namespace Microsoft.Docs.Build
             {
                 B = 1,
                 Property = new SourceInfo<string>(null, new SourceInfo(new FilePath(""), 0, 0)),
-                Array = new SourceInfo<string[]>(new string[] { }, new SourceInfo(new FilePath(""), 0, 0)),
-                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(new FilePath(""), 0, 0))
+                Array = new SourceInfo<string[]>(Array.Empty<string>(), new SourceInfo(new FilePath(""), 0, 0)),
+                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(new FilePath(""), 0, 0)),
             };
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);
@@ -480,6 +453,41 @@ namespace Microsoft.Docs.Build
             Assert.Equal(5, keySource.Column);
         }
 
+        [Theory]
+        [InlineData(
+            @"{
+'numberList':
+  [1, 'a']}", ErrorLevel.Error, "violate-schema", 3, 9)]
+        [InlineData(@"{'b' : 'b'}", ErrorLevel.Error, "violate-schema", 1, 10)]
+        [InlineData(@"{'valueEnum':'Four'}", ErrorLevel.Error, "violate-schema", 1, 19)]
+        internal void TestMismatchingPrimitiveFieldType(
+            string json, ErrorLevel expectedErrorLevel, string expectedErrorCode, int expectedErrorLine, int expectedErrorColumn)
+        {
+            var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json.Replace('\'', '\"'));
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(expectedErrorLevel, error.Level);
+                Assert.Equal(expectedErrorCode, error.Code);
+                Assert.Equal(expectedErrorLine, error.Source.Line);
+                Assert.Equal(expectedErrorColumn, error.Source.Column);
+            });
+        }
+
+        [Theory]
+        [InlineData("{'name':'title','items':[,{'name':'1'}]}", "'items' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
+        [InlineData("[1,,1,1]", "'[1]' contains null value, the null value has been removed.", "null-array-value", ErrorLevel.Warning)]
+        internal void TestNullValue(string json, string message, string errorCode, ErrorLevel errorLevel)
+        {
+            var errors = new ErrorList();
+            var result = JsonUtility.Parse(errors, json.Replace('\'', '"'), null);
+            Assert.Collection(errors, error =>
+            {
+                Assert.Equal(errorLevel, error.Level);
+                Assert.Equal(errorCode, error.Code);
+                Assert.Equal(message, error.Message);
+            });
+        }
+
         /// <summary>
         /// Deserialize from yaml string, return error list at the same time
         /// </summary>
@@ -494,19 +502,29 @@ namespace Microsoft.Docs.Build
         internal class ClassWithSourceInfo
         {
             public SourceInfo<string> A { get; set; }
+
             public SourceInfo<string> B { get; set; } = new SourceInfo<string>("b");
+
             public ClassWithSourceInfo Next { get; set; }
+
             public string C { get; set; }
         }
 
         internal class EmptyEnumerable
         {
             public string A { get; set; } = "";
+
             public List<string> B { get; set; } = new List<string>();
+
             public IReadOnlyDictionary<string, object> C { get; set; } = new Dictionary<string, object>();
-            public int[] D { get; set; } = new int[0];
+
+            public int[] D { get; set; } = Array.Empty<int>();
+
             public IReadOnlyList<string> E { get; set; } = new List<string>();
+
             public IReadOnlyCollection<object> F { get; set; } = new List<object>();
+
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "Test")]
             public Dictionary<string, Dictionary<string, object>> G = new Dictionary<string, Dictionary<string, object>>();
         }
 
@@ -556,7 +574,6 @@ namespace Microsoft.Docs.Build
 
             // make it nullable, so that json serializer would not make a default value
             public BasicEnum? ValueEnum { get; set; }
-
         }
 
         internal class NotSealedClass : BasicClass

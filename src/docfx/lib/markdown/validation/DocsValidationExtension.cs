@@ -132,6 +132,7 @@ namespace Microsoft.Docs.Build
                     codeBlockItem.Info = fencedCodeBlock.Info;
                     codeBlockItem.Arguments = fencedCodeBlock.Arguments;
                     codeBlockItem.IsOpen = fencedCodeBlock.IsOpen;
+                    codeBlockItem.LineCount = GetFencedCodeBlockNetLineCount(fencedCodeBlock);
                     break;
 
                 case YamlFrontMatterBlock _:
@@ -150,6 +151,24 @@ namespace Microsoft.Docs.Build
             {
                 codeBlockItemList.Add((node.IsInclude(), codeBlockItem));
             }
+        }
+
+        private static int GetFencedCodeBlockNetLineCount(FencedCodeBlock fencedCodeBlock)
+        {
+            int netLineCount = 0;
+
+            for (int i = 0; i < fencedCodeBlock.Lines.Count; i++)
+            {
+                var temSlice = fencedCodeBlock.Lines.Lines[i].Slice;
+                temSlice.Trim();
+
+                if (!temSlice.IsEmpty)
+                {
+                    netLineCount++;
+                }
+            }
+
+            return netLineCount;
         }
 
         private static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)

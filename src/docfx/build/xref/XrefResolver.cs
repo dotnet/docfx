@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
             return model;
         }
 
-        private string RemoveSharingHost(string url, string hostName)
+        private static string RemoveSharingHost(string url, string hostName)
         {
             // TODO: this workaround can be removed when all xref related repos migrated to v3
             if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)

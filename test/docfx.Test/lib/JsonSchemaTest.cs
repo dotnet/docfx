@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -23,7 +22,7 @@ namespace Microsoft.Docs.Build
             "if-then-else",
             "not",
             "oneOf",
-            "refRemote"
+            "refRemote",
         };
 
         private static readonly string[] s_notSupportedTests =
@@ -54,7 +53,7 @@ namespace Microsoft.Docs.Build
                     var schemaText = schema["schema"].ToString(Formatting.None);
                     foreach (var test in schema["tests"])
                     {
-                        var description = $"{(schema["description"])}/{(test["description"])}";
+                        var description = $"{schema["description"]}/{test["description"]}";
                         if (s_notSupportedTests.Any(text => description.Contains(text)))
                         {
                             continue;
@@ -70,9 +69,10 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConformance(string description, string schemaText, string testText)
         {
-            var schema = JsonUtility.DeserializeData<JsonSchema>(schemaText, new FilePath(""));
+            var filePath = new FilePath("");
+            var schema = JsonUtility.DeserializeData<JsonSchema>(schemaText, filePath);
             var test = JObject.Parse(testText);
-            var errors = new JsonSchemaValidator(schema).Validate(test["data"]);
+            var errors = new JsonSchemaValidator(schema).Validate(test["data"], filePath);
 
             Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
@@ -87,40 +87,58 @@ namespace Microsoft.Docs.Build
         [InlineData("{'type': 'integer'}", "123", "")]
         [InlineData("{'type': 'number'}", "123.456", "")]
         [InlineData("{'type': 'number'}", "123", "")]
-        [InlineData("{'type': 'boolean'}", "'string'",
+        [InlineData(
+            "{'type': 'boolean'}",
+            "'string'",
             "{'message_severity':'warning','code':'unexpected-type','message':'Expected type 'Boolean' but got 'String'.','file':'file','line':1,'end_line':1,'column':8,'end_column':8}")]
-        [InlineData("{'type': 'object'}", "1",
+        [InlineData(
+            "{'type': 'object'}",
+            "1",
             "{'message_severity':'warning','code':'unexpected-type','message':'Expected type 'Object' but got 'Integer'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
-        [InlineData("{'type': 'string'}", "1",
+        [InlineData(
+            "{'type': 'string'}",
+            "1",
             "{'message_severity':'warning','code':'unexpected-type','message':'Expected type 'String' but got 'Integer'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // union type validation
         [InlineData("{'type': ['string', 'null']}", "'a'", "")]
         [InlineData("{'properties': {'a': {'type': ['string', 'null']}}}", "{'a': null}", "")]
-        [InlineData("{'type': ['string', 'null']}", "1",
+        [InlineData(
+            "{'type': ['string', 'null']}",
+            "1",
             "{'message_severity':'warning','code':'unexpected-type','message':'Expected type 'String, Null' but got 'Integer'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // const validation
         [InlineData("{'const': 1}", "1", "")]
-        [InlineData("{'const': 'string'}", "'unknown'",
+        [InlineData(
+            "{'const': 'string'}",
+            "'unknown'",
             "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': 'unknown'.','file':'file','line':1,'end_line':1,'column':9,'end_column':9}")]
         [InlineData("{'const': {'a': 1}}", "{}",
             "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': '{}'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // enum validation
         [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'a'", "")]
-        [InlineData("{'type': 'string', 'enum': []}", "'unknown'",
+        [InlineData(
+            "{'type': 'string', 'enum': []}",
+            "'unknown'",
             "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': 'unknown'.','file':'file','line':1,'end_line':1,'column':9,'end_column':9}")]
-        [InlineData("{'type': 'string', 'enum': ['a', 'b']}", "'unknown'",
+        [InlineData(
+            "{'type': 'string', 'enum': ['a', 'b']}",
+            "'unknown'",
             "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': 'unknown'.','file':'file','line':1,'end_line':1,'column':9,'end_column':9}")]
 
         [InlineData("{'type': 'number', 'enum': [1, 2]}", "1", "")]
-        [InlineData("{'type': 'number', 'enum': [1, 2]}", "3",
+        [InlineData(
+            "{'type': 'number', 'enum': [1, 2]}",
+            "3",
             "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': '3'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // pattern validation
         [InlineData("{'pattern': '^a.*'}", "'a'", "")]
-        [InlineData("{'pattern': '^a.*'}", "'b'",
+        [InlineData(
+            "{'pattern': '^a.*'}",
+            "'b'",
             "{'message_severity':'warning','code':'format-invalid','message':'String 'b' is not a valid '^a.*'.','file':'file','line':1,'end_line':1,'column':3,'end_column':3}")]
 
         // string length validation
@@ -374,8 +392,9 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
+            var filePath = new FilePath("file");
             var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload);
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, filePath);
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join(
                 '\n',
@@ -389,7 +408,6 @@ namespace Microsoft.Docs.Build
 
             Assert.Equal(expected, actual);
         }
-
 
         [Theory]
 
@@ -406,66 +424,16 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")));
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
             foreach (var payload in payloads)
             {
-                jsonSchemaValidator.Validate(payload);
+                jsonSchemaValidator.Validate(payload.meta, payload.filepath);
             }
 
             var errors = jsonSchemaValidator.PostValidate();
             Assert.Equal(errorCount, errors.Count);
-        }
-
-        [Theory]
-        [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
-            new[] { "{'key1': 'a'}" }, new[] { "" }, new[] { "missing-attribute:Warning" })]
-        [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
-            new[] { "{'key1': 'a'}" }, new[] { "t" }, new[] { "missing-attribute:Warning" })]
-        [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
-            new[] { "{'key1': 'a'}" }, new[] { "f" }, new[] { "missing-attribute:Off" })]
-        [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
-            new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "f" }, new[] { "missing-attribute:Warning", "missing-attribute:Off" })]
-        [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'canonicalVersionOnly': true}}}}",
-            new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "f" }, new[] { "missing-attribute:Warning", "missing-attribute:Off" })]
-        [InlineData("{'required': ['author']}",
-            new[] { "{'key1': 'a'}" }, new[] { "" }, new[] { "missing-attribute:Warning" })]
-        [InlineData("{'required': ['author']}",
-            new[] { "{'key1': 'a'}" }, new[] { "t" }, new[] { "missing-attribute:Warning" })]
-        [InlineData("{'required': ['author']}",
-            new[] { "{'key1': 'a'}" }, new[] { "f" }, new[] { "missing-attribute:Warning" })]
-
-        [InlineData("{'docsetUnique': ['key1'], 'rules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1'], 'rules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1'], 'rules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1'], 'rules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "f" }, new string[] { })]
-        [InlineData("{'docsetUnique': ['key1'], 'rules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "f", "f" }, new string[] { })]
-        [InlineData("{'docsetUnique': ['key1'], 'rules': {'key1': {'duplicate-attribute': {'canonicalVersionOnly': true}}}}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "f" }, new string[] { })]
-
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "t" }, new[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "t", "f" }, new string[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "f", "f" }, new string[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        [InlineData("{'docsetUnique': ['key1']}", new[] { "{'key1': 'a'}", "{'key1': 'a'}" }, new[] { "", "f" }, new string[] { "duplicate-attribute:Suggestion", "duplicate-attribute:Suggestion" })]
-        public void TestJsonSchemaCanonicalVersionValidation(string schema, string[] jsons, string[] isCanonicalVersions, string[] errors)
-        {
-            Assert.Equal(jsons.Length, isCanonicalVersions.Length);
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}"))).ToArray();
-            var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
-
-            var validationErrors = new List<Error>();
-            for (var i = 0; i < payloads.Length; i++)
-            {
-                var isCanonicalVersion = isCanonicalVersions[i] == ""
-                    ? null
-                    : (bool?)(isCanonicalVersions[i] == "t" ? true : false);
-                validationErrors.AddRange(jsonSchemaValidator.Validate(payloads[i], isCanonicalVersion));
-            }
-            validationErrors.AddRange(jsonSchemaValidator.PostValidate());
-            Assert.Equal(errors.OrderBy(e => e), validationErrors.OrderBy(e => e.Code).ThenBy(e => e.Level).Select(e => $"{e.Code}:{e.Level}"));
         }
     }
 }

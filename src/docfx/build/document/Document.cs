@@ -15,6 +15,11 @@ namespace Microsoft.Docs.Build
         public ContentType ContentType { get; }
 
         /// <summary>
+        /// Gets the page type of this document.
+        /// </summary>
+        public string? PageType { get; }
+
+        /// <summary>
         /// Gets the MIME type specified in YAML header or JSON $schema.
         /// </summary>
         public SourceInfo<string?> Mime { get; }
@@ -80,6 +85,7 @@ namespace Microsoft.Docs.Build
             string siteUrl,
             string canonicalUrl,
             ContentType contentType,
+            string? pageType,
             SourceInfo<string?> mime,
             bool isExperimental,
             bool isHtml = true)
@@ -91,6 +97,7 @@ namespace Microsoft.Docs.Build
             SiteUrl = siteUrl;
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
+            PageType = pageType;
             Mime = mime;
             IsExperimental = isExperimental;
             IsHtml = isHtml;

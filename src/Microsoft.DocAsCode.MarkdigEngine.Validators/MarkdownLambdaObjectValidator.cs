@@ -8,9 +8,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Validators
 {
     internal class MarkdownLambdaObjectValidator<TObject> : IMarkdownObjectValidator where TObject : class, IMarkdownObject
     {
-        private Action<IMarkdownObject> _preAction;
-        private Action<TObject> _validator;
-        private Action<IMarkdownObject> _postAction;
+        private readonly Action<IMarkdownObject> _preAction;
+        private readonly Action<TObject> _validator;
+        private readonly Action<IMarkdownObject> _postAction;
 
         public MarkdownLambdaObjectValidator(
             Action<TObject> validator,

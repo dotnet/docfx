@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
     {
         private readonly MarkdownContext _context;
-        private List<string[]> tabSelectionInfo = new List<string[]>();
+        private readonly List<string[]> tabSelectionInfo = new List<string[]>();
 
         public ActiveAndVisibleRewriter(MarkdownContext context)
         {
@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return markdownObject;
         }
 
-        private int ApplyTabVisible(List<string[]> tabSelectionInfo, List<TabItemBlock> items)
+        private static int ApplyTabVisible(List<string[]> tabSelectionInfo, List<TabItemBlock> items)
         {
             var firstVisibleTab = -1;
 
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return firstVisibleTab;
         }
 
-        private IEnumerable<Tuple<string, int>> GetTabIdAndCountList(List<TabItemBlock> items) =>
+        private static IEnumerable<Tuple<string, int>> GetTabIdAndCountList(List<TabItemBlock> items) =>
             from tab in items
             where tab.Visible
             from id in tab.Id.Split('+')
@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return active;
         }
 
-        private int FindActiveIndex(List<TabItemBlock> items, string[] info)
+        private static int FindActiveIndex(List<TabItemBlock> items, string[] info)
         {
             for (var i = 0; i < items.Count; i++)
             {
