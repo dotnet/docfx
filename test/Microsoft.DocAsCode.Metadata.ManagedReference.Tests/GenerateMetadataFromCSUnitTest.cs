@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
+    using Microsoft.VisualStudio.Utilities.Internal;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -2924,6 +2925,166 @@ namespace Test1
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
             Assert.Equal("public IEnumerable<(string prefix, string uri)> Bar()", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        public void TestNullableReferenceTypes()
+        {
+            const string code = @"
+#nullable enable
+using System.Collections.Generic;
+
+namespace Test
+{
+    public delegate string? NullableRef_Del(string? p, ref string? byRef, string?[] arr1, string[]? arr2, string?[]? arr3, List<string?> arr);
+    public delegate int? NullableValue_Del(int? p, ref int? byRef, int?[] arr1, int[]? arr2, int?[]? arr3, List<int?> arr);
+
+    public delegate string NonNullableRef_Del(string p, ref string byRef, string[] arr1, string[] arr2, string[] arr3, List<string> arr);
+    public delegate int NonNullableValue_Del(int p, ref int byRef, int[] arr1, int[] arr2, int[] arr3, List<int> arr);
+
+    public delegate TRef? Generic_NullableRef_Del<TRef>(TRef? p, ref TRef? byRef, TRef?[] arr1, TRef[]? arr2, TRef?[]? arr3, List<TRef?> arr)
+        where TRef: class;
+    public delegate TValue? Generic_NullableValue_Del<TValue>(TValue? p, ref TValue? byRef, TValue?[] arr1, TValue[]? arr2, TValue?[]? arr3, List<TValue?> arr)
+        where TValue: struct;
+
+    public delegate TRef Generic_NonNullableRef_Del<TRef>(TRef p, ref TRef byRef, TRef[] arr1, TRef[] arr2, TRef[] arr3, List<TRef> arr)
+        where TRef: class;
+    public delegate TValue Generic_NonNullableValue_Del<TValue>(TValue p, ref TValue byRef, TValue[] arr1, TValue[] arr2, TValue[] arr3, List<TValue> arr)
+        where TValue: struct;
+
+    public class NullableReferenceTypes<TOuterRef, TOuterValue>
+        where TOuterRef: class
+        where TOuterValue: struct
+    {
+        // non-generic
+        public string? NullableRef_Field;
+        public int? NullableValue_Field;
+
+        public string NonNullableRef_Field;
+        public int NonNullableValue_Field;
+
+        public string? NullableRef_Prop { get; }
+        public int? NullableValue_Prop { get; }
+
+        public string NonNullableRef_Prop { get; }
+        public int NonNullableValue_Prop { get; }
+
+        public string? NullableRef_Mtd(string? p, ref string? byRef, string?[] arr1, string[]? arr2, string?[]? arr3, List<string?> arr) => null;
+        public int? NullableValue_Mtd(int? p, ref int? byRef, int?[] arr1, int[]? arr2, int?[]? arr3, List<int?> arr) => null;
+
+        public string NonNullableRef_Mtd(string p, ref string byRef, string[] arr1, string[] arr2, string[] arr3, List<string> arr) => "";
+        public int NonNullableValue_Mtd(int p, ref int byRef, int[] arr1, int[] arr2, int[] arr3, List<int> arr) => 0;
+
+        // generic
+        public TOuterRef? Generic_NullableRef_Field;
+        public TOuterValue? Generic_NullableValue_Field;
+
+        public TOuterRef Generic_NonNullableRef_Field;
+        public TOuterValue Generic_NonNullableValue_Field;
+
+        public TOuterRef? Generic_NullableRef_Prop { get; }
+        public TOuterValue? Generic_NullableValue_Prop { get; }
+
+        public TOuterRef Generic_NonNullableRef_Prop { get; }
+        public TOuterValue Generic_NonNullableValue_Prop { get; }
+
+        public TOuterRef? Generic_NullableRef_Mtd<TInnerRef>(
+            TOuterRef? p, ref TOuterRef? byRef, TOuterRef?[] arr1, TOuterRef[]? arr2, TOuterRef?[]? arr3, List<TOuterRef?> arr,
+            TInnerRef? ip, ref TInnerRef? ibyRef, TInnerRef?[] iarr1, TInnerRef[]? iarr2, TInnerRef?[]? iarr3, List<TInnerRef?> iarr
+        ) 
+            where TInnerRef: class
+        => null;
+        public TOuterValue? Generic_NullableValue_Mtd<TInnerValue>(
+            TOuterValue? p, ref TOuterValue? byRef, TOuterValue?[] arr1, TOuterValue[]? arr2, TOuterValue?[]? arr3, List<TOuterValue?> arr,
+            TInnerValue? ip, ref TInnerValue? ibyRef, TInnerValue?[] iarr1, TInnerValue[]? iarr2, TInnerValue?[]? iarr3, List<TInnerValue?> iarr
+        ) 
+            where TInnerValue: struct
+        => null;
+
+        public TOuterRef Generic_NonNullableRef_Mtd<TInnerRef>(
+            TOuterRef p, ref TOuterRef byRef, TOuterRef[] arr1, TOuterRef[] arr2, TOuterRef[] arr3, List<TOuterRef> arr,
+            TInnerRef ip, ref TInnerRef ibyRef, TInnerRef[] iarr1, TInnerRef[] iarr2, TInnerRef[] iarr3, List<TInnerRef> iarr
+        ) 
+            where TInnerRef: class
+        => default!;
+        public TOuterValue Generic_NonNullableValue_Mtd<TInnerValue>(
+            TOuterValue p, ref TOuterValue byRef, TOuterValue[] arr1, TOuterValue[] arr2, TOuterValue[] arr3, List<TOuterValue> arr,
+            TInnerValue ip, ref TInnerValue ibyRef, TInnerValue[] iarr1, TInnerValue[] iarr2, TInnerValue[] iarr3, List<TInnerValue> iarr
+        ) 
+            where TInnerValue: struct
+        => default;
+    }
+}
+";
+            System.Diagnostics.Debugger.Launch();
+
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var ns = Assert.Single(output.Items, x => x.CommentId == "N:Test");
+            var c = Assert.Single(ns.Items, x => x.CommentId == "T:Test.NullableReferenceTypes`2");
+
+            // == class
+
+            // -- non-generic
+
+            // fields
+            CheckCSharpMemberSyntax(c, "public string? NullableRef_Field", "F:Test.NullableReferenceTypes`2.NullableRef_Field");
+            CheckCSharpMemberSyntax(c, "public int? NullableValue_Field", "F:Test.NullableReferenceTypes`2.NullableValue_Field");
+            CheckCSharpMemberSyntax(c, "public string NonNullableRef_Field", "F:Test.NullableReferenceTypes`2.NonNullableRef_Field");
+            CheckCSharpMemberSyntax(c, "public int NonNullableValue_Field", "F:Test.NullableReferenceTypes`2.NonNullableValue_Field");
+
+            // properties
+            CheckCSharpMemberSyntax(c, "public string? NullableRef_Prop { get; }", "P:Test.NullableReferenceTypes`2.NullableRef_Prop");
+            CheckCSharpMemberSyntax(c, "public int? NullableValue_Prop { get; }", "P:Test.NullableReferenceTypes`2.NullableValue_Prop");
+            CheckCSharpMemberSyntax(c, "public string NonNullableRef_Prop { get; }", "P:Test.NullableReferenceTypes`2.NonNullableRef_Prop");
+            CheckCSharpMemberSyntax(c, "public int NonNullableValue_Prop { get; }", "P:Test.NullableReferenceTypes`2.NonNullableValue_Prop");
+
+            // methods
+            CheckCSharpMemberSyntax(c, "public string? NullableRef_Mtd(string? p, ref string? byRef, string? [] arr1, string[]? arr2, string? []? arr3, List<string?> arr)", "M:Test.NullableReferenceTypes`2.NullableRef_Mtd(System.String,System.String@,System.String[],System.String[],System.String[],System.Collections.Generic.List{System.String})");
+            CheckCSharpMemberSyntax(c, "public int? NullableValue_Mtd(int? p, ref int? byRef, int? [] arr1, int[]? arr2, int? []? arr3, List<int?> arr)", "M:Test.NullableReferenceTypes`2.NullableValue_Mtd(System.Nullable{System.Int32},System.Nullable{System.Int32}@,System.Nullable{System.Int32}[],System.Int32[],System.Nullable{System.Int32}[],System.Collections.Generic.List{System.Nullable{System.Int32}})");
+            CheckCSharpMemberSyntax(c, "public string NonNullableRef_Mtd(string p, ref string byRef, string[] arr1, string[] arr2, string[] arr3, List<string> arr)", "M:Test.NullableReferenceTypes`2.NonNullableRef_Mtd(System.String,System.String@,System.String[],System.String[],System.String[],System.Collections.Generic.List{System.String})");
+            CheckCSharpMemberSyntax(c, "public int NonNullableValue_Mtd(int p, ref int byRef, int[] arr1, int[] arr2, int[] arr3, List<int> arr)", "M:Test.NullableReferenceTypes`2.NonNullableValue_Mtd(System.Int32,System.Int32@,System.Int32[],System.Int32[],System.Int32[],System.Collections.Generic.List{System.Int32})");
+
+            // -- generic
+
+            // fields
+            CheckCSharpMemberSyntax(c, "public TOuterRef? Generic_NullableRef_Field", "F:Test.NullableReferenceTypes`2.Generic_NullableRef_Field");
+            CheckCSharpMemberSyntax(c, "public TOuterValue? Generic_NullableValue_Field", "F:Test.NullableReferenceTypes`2.Generic_NullableValue_Field");
+            CheckCSharpMemberSyntax(c, "public TOuterRef Generic_NonNullableRef_Field", "F:Test.NullableReferenceTypes`2.Generic_NonNullableRef_Field");
+            CheckCSharpMemberSyntax(c, "public TOuterValue Generic_NonNullableValue_Field", "F:Test.NullableReferenceTypes`2.Generic_NonNullableValue_Field");
+
+            // properties
+            CheckCSharpMemberSyntax(c, "public TOuterRef? Generic_NullableRef_Prop { get; }", "P:Test.NullableReferenceTypes`2.Generic_NullableRef_Prop");
+            CheckCSharpMemberSyntax(c, "public TOuterValue? Generic_NullableValue_Prop { get; }", "P:Test.NullableReferenceTypes`2.Generic_NullableValue_Prop");
+            CheckCSharpMemberSyntax(c, "public TOuterRef Generic_NonNullableRef_Prop { get; }", "P:Test.NullableReferenceTypes`2.Generic_NonNullableRef_Prop");
+            CheckCSharpMemberSyntax(c, "public TOuterValue Generic_NonNullableValue_Prop { get; }", "P:Test.NullableReferenceTypes`2.Generic_NonNullableValue_Prop");
+
+            // methods
+            CheckCSharpMemberSyntax(c, "public TOuterRef? Generic_NullableRef_Mtd<TInnerRef>(TOuterRef? p, ref TOuterRef? byRef, TOuterRef? [] arr1, TOuterRef[]? arr2, TOuterRef? []? arr3, List<TOuterRef?> arr, TInnerRef? ip, ref TInnerRef? ibyRef, TInnerRef? [] iarr1, TInnerRef[]? iarr2, TInnerRef? []? iarr3, List<TInnerRef?> iarr)\r\n    where TInnerRef : class", "M:Test.NullableReferenceTypes`2.Generic_NullableRef_Mtd``1(`0,`0@,`0[],`0[],`0[],System.Collections.Generic.List{`0},``0,``0@,``0[],``0[],``0[],System.Collections.Generic.List{``0})");
+            CheckCSharpMemberSyntax(c, "public TOuterValue? Generic_NullableValue_Mtd<TInnerValue>(TOuterValue? p, ref TOuterValue? byRef, TOuterValue? [] arr1, TOuterValue[]? arr2, TOuterValue? []? arr3, List<TOuterValue?> arr, TInnerValue? ip, ref TInnerValue? ibyRef, TInnerValue? [] iarr1, TInnerValue[]? iarr2, TInnerValue? []? iarr3, List<TInnerValue?> iarr)\r\n    where TInnerValue : struct", "M:Test.NullableReferenceTypes`2.Generic_NullableValue_Mtd``1(System.Nullable{`1},System.Nullable{`1}@,System.Nullable{`1}[],`1[],System.Nullable{`1}[],System.Collections.Generic.List{System.Nullable{`1}},System.Nullable{``0},System.Nullable{``0}@,System.Nullable{``0}[],``0[],System.Nullable{``0}[],System.Collections.Generic.List{System.Nullable{``0}})");
+            CheckCSharpMemberSyntax(c, "public TOuterRef Generic_NonNullableRef_Mtd<TInnerRef>(TOuterRef p, ref TOuterRef byRef, TOuterRef[] arr1, TOuterRef[] arr2, TOuterRef[] arr3, List<TOuterRef> arr, TInnerRef ip, ref TInnerRef ibyRef, TInnerRef[] iarr1, TInnerRef[] iarr2, TInnerRef[] iarr3, List<TInnerRef> iarr)\r\n    where TInnerRef : class", "M:Test.NullableReferenceTypes`2.Generic_NonNullableRef_Mtd``1(`0,`0@,`0[],`0[],`0[],System.Collections.Generic.List{`0},``0,``0@,``0[],``0[],``0[],System.Collections.Generic.List{``0})");
+            CheckCSharpMemberSyntax(c, "public TOuterValue Generic_NonNullableValue_Mtd<TInnerValue>(TOuterValue p, ref TOuterValue byRef, TOuterValue[] arr1, TOuterValue[] arr2, TOuterValue[] arr3, List<TOuterValue> arr, TInnerValue ip, ref TInnerValue ibyRef, TInnerValue[] iarr1, TInnerValue[] iarr2, TInnerValue[] iarr3, List<TInnerValue> iarr)\r\n    where TInnerValue : struct", "M:Test.NullableReferenceTypes`2.Generic_NonNullableValue_Mtd``1(`1,`1@,`1[],`1[],`1[],System.Collections.Generic.List{`1},``0,``0@,``0[],``0[],``0[],System.Collections.Generic.List{``0})");
+
+            // == delegates
+
+            // -- non-generic
+
+            CheckCSharpMemberSyntax(ns, "public delegate string? NullableRef_Del(string? p, ref string? byRef, string? [] arr1, string[]? arr2, string? []? arr3, List<string?> arr);", "T:Test.NullableRef_Del");
+            CheckCSharpMemberSyntax(ns, "public delegate int? NullableValue_Del(int? p, ref int? byRef, int? [] arr1, int[]? arr2, int? []? arr3, List<int?> arr);", "T:Test.NullableValue_Del");
+            CheckCSharpMemberSyntax(ns, "public delegate string NonNullableRef_Del(string p, ref string byRef, string[] arr1, string[] arr2, string[] arr3, List<string> arr);", "T:Test.NonNullableRef_Del");
+            CheckCSharpMemberSyntax(ns, "public delegate int NonNullableValue_Del(int p, ref int byRef, int[] arr1, int[] arr2, int[] arr3, List<int> arr);", "T:Test.NonNullableValue_Del");
+
+            // -- generic
+
+            CheckCSharpMemberSyntax(ns, "public delegate TRef? Generic_NullableRef_Del<TRef>(TRef? p, ref TRef? byRef, TRef? [] arr1, TRef[]? arr2, TRef? []? arr3, List<TRef?> arr)\r\n    where TRef : class;", "T:Test.Generic_NullableRef_Del`1");
+            CheckCSharpMemberSyntax(ns, "public delegate TValue? Generic_NullableValue_Del<TValue>(TValue? p, ref TValue? byRef, TValue? [] arr1, TValue[]? arr2, TValue? []? arr3, List<TValue?> arr)\r\n    where TValue : struct;", "T:Test.Generic_NullableValue_Del`1");
+            CheckCSharpMemberSyntax(ns, "public delegate TRef Generic_NonNullableRef_Del<TRef>(TRef p, ref TRef byRef, TRef[] arr1, TRef[] arr2, TRef[] arr3, List<TRef> arr)\r\n    where TRef : class;", "T:Test.Generic_NonNullableRef_Del`1");
+            CheckCSharpMemberSyntax(ns, "public delegate TValue Generic_NonNullableValue_Del<TValue>(TValue p, ref TValue byRef, TValue[] arr1, TValue[] arr2, TValue[] arr3, List<TValue> arr)\r\n    where TValue : struct;", "T:Test.Generic_NonNullableValue_Del`1");
+
+            static void CheckCSharpMemberSyntax(MetadataItem clazz, string expected, string fullyQualified)
+            {
+                var member = Assert.Single(clazz.Items, x => x.CommentId == fullyQualified);
+                Assert.Equal(expected, member.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
         }
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)

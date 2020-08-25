@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
@@ -82,9 +83,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         WithParameter = 8,
         WithType = 16,
         WithMethodGenericParameter = 32,
+        WithNullableAnnotations = 64,
         WithGenericParameter = WithTypeGenericParameter | WithMethodGenericParameter,
         Qualified = WithNamespace | WithType,
-        All = UseAlias | WithNamespace | WithTypeGenericParameter | WithParameter | WithType | WithMethodGenericParameter,
+        All = UseAlias | WithNamespace | WithTypeGenericParameter | WithParameter | WithType | WithMethodGenericParameter | WithNullableAnnotations,
     }
 
     public class CSharpNameVisitorCreator : NameVisitorCreator
@@ -149,6 +151,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         }
                         var tupleElement = symbol.TupleElements[i];
                         tupleElement.Type.Accept(this);
+                        WriteNullableAnnotation(tupleElement.NullableAnnotation);
+
                         if (!tupleElement.IsImplicitlyDeclared)
                         {
                             Append(" ");
@@ -173,12 +177,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        WriteGeneric(symbol.TypeArguments);
+                        WriteGeneric(symbol.TypeArguments, symbol.TypeArgumentNullableAnnotations);
                     }
                 }
                 else
                 {
-                    WriteGeneric(symbol.TypeParameters);
+                    WriteGeneric(symbol.TypeParameters, ImmutableArray<NullableAnnotation>.Empty);
                 }
             }
         }
@@ -202,6 +206,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public override void VisitArrayType(IArrayTypeSymbol symbol)
         {
             symbol.ElementType.Accept(this);
+            WriteNullableAnnotation(symbol.ElementNullableAnnotation);
+
             if (symbol.Rank == 1)
             {
                 Append("[]");
@@ -289,6 +295,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Append("<");
                 var typeParams = symbol.TypeArguments.Length > 0 ? symbol.TypeArguments.CastArray<ISymbol>() : symbol.TypeParameters.CastArray<ISymbol>();
+                var typeParamsNullable = symbol.TypeArguments.Length > 0 ? symbol.TypeArgumentNullableAnnotations : ImmutableArray<NullableAnnotation>.Empty;
                 for (int i = 0; i < typeParams.Length; i++)
                 {
                     if (i > 0)
@@ -296,6 +303,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         Append(", ");
                     }
                     typeParams[i].Accept(this);
+                    WriteNullableAnnotation(typeParamsNullable.ElementAtOrDefault(i));
                 }
                 Append(">");
             }
@@ -411,6 +419,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Append("out ");
             }
             symbol.Type.Accept(this);
+            WriteNullableAnnotation(symbol.NullableAnnotation);
         }
 
         public override void VisitDynamicType(IDynamicTypeSymbol symbol)
@@ -485,7 +494,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if (symbol.IsGenericType && !symbol.IsDefinition && symbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
                     {
                         symbol.TypeArguments[0].Accept(this);
-                        Append("?");
+
+                        // we only need to explicitly append ? if we're _not_ including nullable annotations
+                        if ((Options & NameOptions.WithNullableAnnotations) == 0)
+                        {
+                            Append("?");
+                        }
                         return true;
                     }
                     return false;
@@ -502,7 +516,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Append(">");
         }
 
-        private void WriteGeneric(IReadOnlyList<ITypeSymbol> types)
+        private void WriteGeneric(IReadOnlyList<ITypeSymbol> types, IReadOnlyList<NullableAnnotation> nullableAnnotations)
         {
             Append("<");
             for (int i = 0; i < types.Count; i++)
@@ -512,8 +526,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Append(", ");
                 }
                 types[i].Accept(this);
+                WriteNullableAnnotation(nullableAnnotations.ElementAtOrDefault(i));
             }
             Append(">");
+        }
+
+        private void WriteNullableAnnotation(NullableAnnotation nullableAnnotation)
+        {
+            if ((Options & NameOptions.WithNullableAnnotations) == 0)
+            {
+                return;
+            }
+
+            if (nullableAnnotation == NullableAnnotation.Annotated)
+            {
+                Append("?");
+            }
         }
     }
 
