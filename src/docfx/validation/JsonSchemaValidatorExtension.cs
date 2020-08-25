@@ -26,21 +26,16 @@ namespace Microsoft.Docs.Build
 
         public bool IsEnable(FilePath filePath, CustomRule customRule)
         {
-            var siteUrl = _documentProvider.GetSiteUrl(filePath);
-            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
+            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
             var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion);
             if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
             {
                 return false;
             }
 
-            var file = _documentProvider.GetDocument(filePath);
-            if (file.PageType is null)
-            {
-                return false;
-            }
+            var pageType = _documentProvider.GetPageType(filePath);
 
-            return customRule.ContentTypes is null || customRule.ContentTypes.Contains(file.PageType);
+            return customRule.ContentTypes is null || customRule.ContentTypes.Contains(pageType);
         }
     }
 }

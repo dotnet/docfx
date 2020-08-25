@@ -41,7 +41,10 @@ namespace Microsoft.Docs.Build
             _monikerOrder = GetMonikerOrder(monikerDefinition);
         }
 
-        public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers) => _rangeParser.Validate(errors, monikers);
+        public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers)
+        {
+            return _rangeParser.Validate(errors, monikers);
+        }
 
         public int GetMonikerOrder(string moniker)
         {

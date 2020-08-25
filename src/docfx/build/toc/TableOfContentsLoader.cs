@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
 
                 if (file == rootPath)
                 {
-                    _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
+                    _contentValidator.ValidateTocEntryDuplicated(file.FilePath, referencedFiles);
                 }
                 return node;
             }
@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             var topicHref = GetTopicHref(node);
             var topicUid = node.Value.Uid;
 
-            _contentValidator.ValidateTocBreadcrumbLinkExternal(filePath, node);
+            _contentValidator.ValidateTocBreadcrumbLinkExternal(filePath.FilePath, node);
 
             var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                 filePath, rootPath, referencedFiles, referencedTocs, tocHref);

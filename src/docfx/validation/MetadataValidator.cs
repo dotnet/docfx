@@ -52,10 +52,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-                if (file.PageType != null)
-                {
-                    errors.AddRange(schemaValidator.Validate(metadata, file.FilePath));
-                }
+                errors.AddRange(schemaValidator.Validate(metadata, file.FilePath));
             }
         }
 
