@@ -195,9 +195,10 @@ namespace Microsoft.Docs.Build
         {
             return contentType switch
             {
-                ContentType.Page when mime != null => s_pageTypeMapping.TryGetValue(mime, out var type)
-                    ? type
-                    : (_metadataProvider.GetMetadata(_errors, path).Layout ?? mime).ToLowerInvariant(),
+                ContentType.Page when mime != null && path.Format == FileFormat.Markdown
+                    => (_metadataProvider.GetMetadata(_errors, path).Layout ?? mime).ToLowerInvariant(),
+                ContentType.Page when mime != null
+                    => s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime.ToLowerInvariant(),
                 ContentType.Redirection => "redirection",
                 ContentType.TableOfContents => "toc",
                 _ => null,
