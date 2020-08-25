@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _monikerRangeCache = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
         private readonly ConcurrentDictionary<FilePath, MonikerList> _monikerCache = new ConcurrentDictionary<FilePath, MonikerList>();
-        private readonly ConcurrentDictionary<FilePath, MonikerList> _monikerWithoutExcludeMonikersCache = new ConcurrentDictionary<FilePath, MonikerList>();
+        private readonly ConcurrentDictionary<FilePath, MonikerList> _monikerIgnoreExcludeMonikersCache = new ConcurrentDictionary<FilePath, MonikerList>();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
@@ -85,12 +85,12 @@ namespace Microsoft.Docs.Build
             var zoneLevelMonikers = _rangeParser.Parse(errors, rangeString);
             var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers);
 
-            if (!_monikerWithoutExcludeMonikersCache.TryGetValue(file, out var monikersWithoutExcludeMonikers))
+            if (!_monikerIgnoreExcludeMonikersCache.TryGetValue(file, out var monikersIgnoreExcludeMonikers))
             {
                 throw new InvalidOperationException();
             }
 
-            if (!monikersWithoutExcludeMonikers.Intersect(zoneLevelMonikers).HasMonikers)
+            if (!monikersIgnoreExcludeMonikers.Intersect(zoneLevelMonikers).HasMonikers)
             {
                 errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
             }
@@ -158,8 +158,8 @@ namespace Microsoft.Docs.Build
                 fileMonikers = configMonikers;
             }
 
-            // construct cache for monikers ignoring exlcude_moniker
-            _monikerWithoutExcludeMonikersCache.TryAdd(file, fileMonikers);
+            // construct cache for monikers ignoring exclude_moniker
+            _monikerIgnoreExcludeMonikersCache.TryAdd(file, fileMonikers);
 
             if (metadata.ExcludeMonikers != null)
             {
