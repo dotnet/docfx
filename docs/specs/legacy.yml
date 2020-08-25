@@ -417,7 +417,7 @@ inputs:
   docfx.yml:
   a.md:
   b.yml: '#YamlMime:TestPage'
-  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{\"renderType\": \"content\"}"
   _themes/ContentTemplate/TestPage.html.primary.tmpl:
 outputs:
   a.mta.json:
@@ -436,6 +436,7 @@ inputs:
     markdown: '[](a.md)'
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "markdown": { "contentType": "markdown" }
       }

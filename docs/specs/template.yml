@@ -189,6 +189,7 @@ inputs:
     
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "type": "object",
       "properties": {
         "namespace": {
@@ -304,6 +305,7 @@ inputs:
   docfx.yml:
   _themes/ContentTemplate/schemas/XrefDeclaration.schema.json: |
     {
+      "renderType": "component",
       "type": "object",
       "properties": {
         "uid": {"contentType": "uid"},
@@ -314,6 +316,7 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "type": "object",
       "properties": {
         "uid": {"contentType": "xref"},
@@ -359,6 +362,7 @@ inputs:
   docfx.yml:
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid": {"contentType": "uid"},
         "uids": {
@@ -410,6 +414,7 @@ inputs:
   docfx.yml:
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid": {"contentType": "uid"},
         "xrefs": {
@@ -464,6 +469,7 @@ inputs:
     - uid: Edm.Int32
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "xref": { "contentType": "xref" }
       }

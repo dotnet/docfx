@@ -261,9 +261,9 @@ inputs:
     #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
   _themes/ContentTemplate/TestPage.html.tmpl:
-  _themes/ContentTemplate/schemas/TestPage.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{\"renderType\": \"content\"}"
 outputs:
   docs/a.json: |
     { "conceptual": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
@@ -299,6 +299,7 @@ inputs:
     a: b:
   docs/b.json: |
     {
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"yaml-syntax-error","file":"docs/a.yml","line":2,"column":5}
@@ -344,7 +345,7 @@ outputs:
 # Throw error when content is not an object
 inputs:
   docfx.yml:
-  _themes/ContentTemplate/schemas/test.schema.json: '{}'
+  _themes/ContentTemplate/schemas/test.schema.json: "{\"renderType\": \"component\"}"
   a.yml: |
     #YamlMime:test
     - array
@@ -378,6 +379,7 @@ inputs:
       [](a.yml#heading-3)
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "description": {"contentType": "Markdown"}
       }
@@ -411,6 +413,7 @@ inputs:
     #YamlMime: TestData
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "metadata": {
           "properties": {
@@ -437,6 +440,7 @@ inputs:
     key: value
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "type": "object",
       "required": ["authors"],
       "properties": {
@@ -469,8 +473,8 @@ inputs:
   redirections.yml: |
     redirections:
       original_b.md: /b
-  _themes/ContentTemplate/schemas/TestData.schema.json: '{}'
-  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{\"renderType\": \"content\"}"
   _themes/ContentTemplate/TestPage.html.tmpl:
 outputs:
   a.json:

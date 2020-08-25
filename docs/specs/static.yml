@@ -53,7 +53,8 @@ inputs:
     outputType: html
   TOC.md:
 outputs: 
-  toc.json:
+  .errors.log: |
+    {"message_severity": "error","code": "mustache-not-found","line": 0,"column": 0}
 ---
 # Treat TOC as HTML when toc.html.tmpl is present
 inputs: 
@@ -236,7 +237,7 @@ inputs:
   docfx.yml: |
     outputType: html
     outputUrlType: pretty
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"content\"}"
   a.yml: |
     #YamlMime:TestData
     prop: value

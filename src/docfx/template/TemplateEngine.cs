@@ -54,13 +54,13 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
-        public bool IsHtml(ContentType contentType, string? mime)
+        public bool IsHtml(ContentType contentType, SourceInfo<string?> mime)
         {
             return contentType switch
             {
                 ContentType.Redirection => true,
-                ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || _mustacheTemplate.HasTemplate($"{mime}.html"),
-                ContentType.TableOfContents => _mustacheTemplate.HasTemplate($"toc.html"),
+                ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || IsContentScheme(mime),
+                ContentType.TableOfContents => true,
                 _ => false,
             };
         }
@@ -74,6 +74,16 @@ namespace Microsoft.Docs.Build
             return "Hub".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
                    "Landing".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
                    "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool IsContentScheme(SourceInfo<string?> mime)
+        {
+            if (mime == null)
+            {
+                return false;
+            }
+            var schema = GetSchema(mime);
+            return schema.RenderType == RenderType.Content;
         }
 
         public JsonSchema GetSchema(SourceInfo<string?> schemaName)

@@ -59,13 +59,13 @@ repos:
      achievement.yml: |
        ### YamlMime:Achievement
          uid: achievement
-     _themes/ContentTemplate/schemas/LearningPath.schema.json: '{}'
+     _themes/ContentTemplate/schemas/LearningPath.schema.json: "{\"renderType\": \"content\"}"
      _themes/ContentTemplate/LearningPath.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/Module.schema.json: '{}'
+     _themes/ContentTemplate/schemas/Module.schema.json: "{\"renderType\": \"content\"}"
      _themes/ContentTemplate/Module.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/ModuleUnit.schema.json: '{}'
+     _themes/ContentTemplate/schemas/ModuleUnit.schema.json: "{\"renderType\": \"content\"}"
      _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/Achievement.schema.json:
+     _themes/ContentTemplate/schemas/Achievement.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   achievement.json:
   path.mta.json:
@@ -126,6 +126,7 @@ inputs:
     - uid: badge2
   _themes/ContentTemplate/schemas/LearningPath.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid" : {"contentType": "uid"},
         "modules": {"items": {"contentType": "xref"}},
@@ -135,6 +136,7 @@ inputs:
   _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid" : {"contentType": "uid"},
         "units": {"items": {"contentType": "xref" }},
@@ -144,6 +146,7 @@ inputs:
   _themes/ContentTemplate/Module.html.primary.tmpl:
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid" : {"contentType": "uid"}
       }
@@ -151,6 +154,7 @@ inputs:
   _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "achievements": { 
           "items": { 
@@ -273,6 +277,7 @@ inputs:
     uid: unit2
   _themes/ContentTemplate/schemas/LearningPath.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid" : {"contentType": "uid"},
         "modules": {"items": {"contentType": "xref"}},
@@ -285,6 +290,7 @@ inputs:
   _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid" : {"contentType": "uid"},
         "units": {"items": {"contentType": "xref" }},
@@ -297,6 +303,7 @@ inputs:
   _themes/ContentTemplate/Module.html.primary.tmpl:
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
     {
+      "renderType": "content",
       "properties": {
         "uid" : {"contentType": "uid"}
       }
@@ -304,6 +311,7 @@ inputs:
   _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "achievements": { 
           "items": { 
