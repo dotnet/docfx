@@ -128,6 +128,10 @@ namespace Microsoft.Docs.Build
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
+
+            Telemetry.TrackBuildFileTypeCount(file);
+            context.ContentValidator.ValidateManifest(file.FilePath, file.SiteUrl);
+
             switch (file.ContentType)
             {
                 case ContentType.TableOfContents:

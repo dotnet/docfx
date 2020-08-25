@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
-        private readonly ContentValidator _contentValidator;
         private readonly PublishUrlMap _publishUrlMapBuilder;
         private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
@@ -27,7 +26,6 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
-            ContentValidator contentValidator,
             PublishUrlMap publishUrlMapBuilder,
             DocumentProvider documentProvider,
             SourceMap sourceMap)
@@ -36,7 +34,6 @@ namespace Microsoft.Docs.Build
             _errors = errors;
             _monikerProvider = monikerProvider;
             _locale = buildOptions.Locale;
-            _contentValidator = contentValidator;
             _publishUrlMapBuilder = publishUrlMapBuilder;
             _documentProvider = documentProvider;
             _sourceMap = sourceMap;
@@ -61,21 +58,9 @@ namespace Microsoft.Docs.Build
                     _locale,
                     monikers,
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
-                    document.ContentType,
-                    document.PageType,
-                    document.Mime,
                     _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);
                 publishItems.Add(sourcePath, publishItem);
-            }
-
-            foreach (var (filePath, publishItem) in publishItems)
-            {
-                if (!publishItem.HasError)
-                {
-                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
-                    _contentValidator.ValidateManifest(filePath, publishItem);
-                }
             }
 
             var items = (
