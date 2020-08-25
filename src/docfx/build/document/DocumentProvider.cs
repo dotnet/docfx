@@ -193,30 +193,16 @@ namespace Microsoft.Docs.Build
 
         private string? GetPageType(ContentType contentType, FilePath path, string? mime)
         {
-            switch (contentType)
+            return contentType switch
             {
-                case ContentType.Page:
-                    if (mime != null && s_pageTypeMapping.TryGetValue(mime, out var type))
-                    {
-                        return type;
-                    }
-                    if (mime != "Conceptual")
-                    {
-                        return null;
-                    }
-                    var metadata = _metadataProvider.GetMetadata(_errors, path);
-                    if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
-                    {
-                        return null;
-                    }
-                    return "conceptual";
-                case ContentType.Redirection:
-                    return "redirection";
-                case ContentType.TableOfContents:
-                    return "toc";
-                default:
-                    return null;
-            }
+                ContentType.Page when mime != null && path.Format == FileFormat.Markdown
+                    => (_metadataProvider.GetMetadata(_errors, path).Layout ?? mime).ToLowerInvariant(),
+                ContentType.Page when mime != null
+                    => s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime.ToLowerInvariant(),
+                ContentType.Redirection => "redirection",
+                ContentType.TableOfContents => "toc",
+                _ => null,
+            };
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
