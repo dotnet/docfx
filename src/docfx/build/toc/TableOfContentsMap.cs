@@ -54,12 +54,8 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> GetFiles()
         {
-            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath);
-        }
+            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath).Union(_tocs.Value.servicePages);
 
-        public IEnumerable<FilePath> GetServicePages()
-        {
-            return _tocs.Value.servicePages;
         }
 
         /// <summary>
