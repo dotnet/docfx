@@ -8,9 +8,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class RandomUtility
     {
-        private static int s_randomSeed = Environment.TickCount;
-        private static ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
+        private static readonly ThreadLocal<Random> t_random = new ThreadLocal<Random>(() => new Random(Interlocked.Increment(ref s_randomSeed)));
 
         public static Random Random => t_random.Value!;
+
+        private static int s_randomSeed = Environment.TickCount;
     }
 }

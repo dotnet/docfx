@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     public class CodeTest
     {
-        private static string contentCSharp = @"using System;
+        private const string ContentCSharp = @"using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -218,7 +218,7 @@ namespace TableSnippets
     }
 }";
 
-        private static string contentCSharp2 = @"using System;
+        private const string ContentCSharp2 = @"using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -379,7 +379,7 @@ namespace ChangeFeedSample
     }
 }";
 
-        private static string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
+        private const string ContentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -450,7 +450,7 @@ namespace TagHelpersBuiltIn
     }
 }";
 
-        private static string contentASPNet = @"@{
+        private const string ContentASPNet = @"@{
     ViewData[""Title""] = ""Anchor Tag Helper"";
 }
 
@@ -655,7 +655,7 @@ namespace TagHelpersBuiltIn
     </tfoot>
 </table>";
 
-        private static string contentVB = @"'<Snippet1>
+        private const string ContentVB = @"'<Snippet1>
 Class ADSetupInformation
 
     Shared Sub Main()
@@ -715,7 +715,7 @@ End Class
 '</snippet3>
 ";
 
-        private static string contentCPP = @"//<Snippet1>
+        private const string ContentCPP = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -777,7 +777,7 @@ int main()
 }
 // </snippet2>";
 
-        private static string contentCPP2 = @"//<Snippet1>
+        private const string ContentCPP2 = @"//<Snippet1>
 using namespace System;
 using namespace System::Collections::Generic;
 
@@ -953,7 +953,7 @@ Key ""doc"" is not found.
  */
 //</ Snippet1  >";
 
-        private static string contentCrazy = @"//<Snippet1>
+        private const string ContentCrazy = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -1015,7 +1015,7 @@ int main()
 }
 // </snippet2>";
 
-        private static string contentSQL = @"-- <everything>
+        private const string ContentSQL = @"-- <everything>
 --<students>
 SELECT * FROM Students
 WHERE Grade = 12
@@ -1029,7 +1029,7 @@ AND Class = 'Math'
 --</teachers>
 --</everything>";
 
-        private static string contentPython = @"#<everything>
+        private const string ContentPython = @"#<everything>
 #<first>
 from flask import Flask
 app = Flask(__name__)
@@ -1043,7 +1043,7 @@ def hello():
 #</everything>
 ";
 
-        private static string contentBatch = @"REM <snippet>
+        private const string ContentBatch = @"REM <snippet>
 :Label1
 	:Label2
 :: Comment line 3
@@ -1051,7 +1051,7 @@ REM </snippet>
 	:: Comment line 4
 IF EXIST C:\AUTOEXEC.BAT REM AUTOEXEC.BAT exists";
 
-        private static string contentErlang = @"-module(hello_world).
+        private const string ContentErlang = @"-module(hello_world).
 -compile(export_all).
 
 % <snippet>
@@ -1059,7 +1059,7 @@ hello() ->
     io:format(""hello world~n"").
 % </snippet>";
 
-        private static string contentLisp = @";<everything>
+        private const string ContentLisp = @";<everything>
 USER(64): (member 'b '(perhaps today is a good day to die)) ; test fails
 NIL
 ;<inner>
@@ -1068,7 +1068,7 @@ USER(65): (member 'a '(perhaps today is a good day to die)) ; returns non-NIL
 ; </inner>
 ;</everything>";
 
-        private static string contentRuby = @"source 'https://rubygems.org'
+        private const string ContentRuby = @"source 'https://rubygems.org'
 git_source(:github) { |repo| ""https://github.com/#{repo}.git"" }
 
 ruby '2.6.5'
@@ -1131,7 +1131,7 @@ gem 'activerecord-session_store', '~> 1.1'
 # </GemFileSnippet>
 ";
 
-        private static string contentCSS = @"body {
+        private const string ContentCSS = @"body {
   padding-top: 70px;
 }
 
@@ -1806,72 +1806,72 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
             if (source.Contains("source.cs"))
             {
                 filename = "source.cs";
-                content = contentCSharp;
+                content = ContentCSharp;
             }
             else if (source.Contains("source2.cs"))
             {
                 filename = "source2.cs";
-                content = contentCSharpRegion;
+                content = ContentCSharpRegion;
             }
             else if (source.Contains("source3.cs"))
             {
                 filename = "source3.cs";
-                content = contentCSharp2;
+                content = ContentCSharp2;
             }
             else if (source.Contains("asp.cshtml"))
             {
                 filename = "asp.cshtml";
-                content = contentASPNet;
+                content = ContentASPNet;
             }
             else if (source.Contains("source.vb"))
             {
                 filename = "source.vb";
-                content = contentVB;
+                content = ContentVB;
             }
             else if (source.Contains("source.cpp"))
             {
                 filename = "source.cpp";
-                content = contentCPP;
+                content = ContentCPP;
             }
             else if (source.Contains("source2.cpp"))
             {
                 filename = "source2.cpp";
-                content = contentCPP2;
+                content = ContentCPP2;
             }
             else if (source.Contains("source.sql"))
             {
                 filename = "source.sql";
-                content = contentSQL;
+                content = ContentSQL;
             }
             else if (source.Contains("source.py"))
             {
                 filename = "source.py";
-                content = contentPython;
+                content = ContentPython;
             }
             else if (source.Contains("source.bat"))
             {
                 filename = "source.bat";
-                content = contentBatch;
+                content = ContentBatch;
             }
             else if (source.Contains("source.erl"))
             {
                 filename = "source.erl";
-                content = contentErlang;
+                content = ContentErlang;
             }
             else if (source.Contains("source.lsp"))
             {
                 filename = "source.lsp";
-                content = contentLisp;
+                content = ContentLisp;
             }
             else if (source.Contains("GemFile"))
             {
                 filename = "GemFile";
-                content = contentRuby;
+                content = ContentRuby;
             }
             else if (source.Contains("styles.css"))
             {
                 filename = "styles.css";
-                content = contentCSS;
+                content = ContentCSS;
             }
 
             // act
@@ -1896,22 +1896,22 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
             if (source.Contains("source.cs"))
             {
                 filename = "source.cs";
-                content = contentCSharp;
+                content = ContentCSharp;
             }
             else if (source.Contains("source.vb"))
             {
                 filename = "source.vb";
-                content = contentVB;
+                content = ContentVB;
             }
             else if (source.Contains("source.cpp"))
             {
                 filename = "source.cpp";
-                content = contentCPP;
+                content = ContentCPP;
             }
             else if (source.Contains("source.crazy"))
             {
                 filename = "source.crazy";
-                content = contentCrazy;
+                content = ContentCrazy;
             }
             else
             {
