@@ -72,16 +72,6 @@ namespace Microsoft.Docs.Build
             return new MonikerList(_monikers.Except(other._monikers));
         }
 
-        public MonikerList Concat(MonikerList other)
-        {
-            if (other._monikers is null || other._monikers.Length == 0)
-            {
-                return this;
-            }
-
-            return new MonikerList(_monikers.Concat(other._monikers));
-        }
-
         public static MonikerList Union(IEnumerable<MonikerList> monikerLists)
         {
             var monikers = new HashSet<string>();
