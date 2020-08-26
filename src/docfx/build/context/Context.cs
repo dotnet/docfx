@@ -158,6 +158,7 @@ namespace Microsoft.Docs.Build
             JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
+                BuildOptions.DocsetPath,
                 Input,
                 LinkResolver,
                 XrefResolver,
@@ -167,7 +168,6 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 config,
                 errorLog,
-                RepositoryProvider,
                 Output);
             TocMap = new TableOfContentsMap(
                 ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);

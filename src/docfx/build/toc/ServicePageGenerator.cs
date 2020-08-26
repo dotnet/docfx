@@ -14,20 +14,20 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ServicePageGenerator
     {
+        private readonly PathString _docsetPath;
         private readonly Input _input;
         private readonly JoinTOCConfig _joinTOCConfig;
-        private readonly RepositoryProvider _repositoryProvider;
         private readonly Output _output;
 
         public ServicePageGenerator(
+            PathString docsetPath,
             Input input,
             JoinTOCConfig joinTOCConfig,
-            RepositoryProvider repositoryProvider,
             Output output)
         {
+            _docsetPath = docsetPath;
             _input = input;
             _joinTOCConfig = joinTOCConfig;
-            _repositoryProvider = repositoryProvider;
             _output = output;
         }
 
@@ -45,7 +45,8 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(node.LandingPageType.ToString()))
             {
-                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? Directory.GetCurrentDirectory() : _joinTOCConfig.OutputFolder.Replace("..", "");
+                var defaultOutputFolder = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
+                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? defaultOutputFolder : _joinTOCConfig.OutputFolder;
                 var servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
 
                 var name = node.Name;
@@ -56,30 +57,30 @@ namespace Microsoft.Docs.Build
                 var children = new List<ServicePageItem>();
                 foreach (var item in node.Items)
                 {
-                    ServicePageItem newItem;
-                    var newItemName = item.Value.Name;
-                    var newItemHref = item.Value.Href;
-                    var newItemUid = item.Value.Uid;
+                    ServicePageItem child;
+                    var childName = item.Value.Name;
+                    var childHref = item.Value.Href;
+                    var childUid = item.Value.Uid;
 
-                    if (!string.IsNullOrEmpty(newItemHref.Value))
+                    if (!string.IsNullOrEmpty(childHref.Value))
                     {
-                        if (_repositoryProvider.Repository != null && item.Source != null)
+                        if (item.Source != null)
                         {
-                            var itemFilePath = Path.GetDirectoryName(Path.Combine(_repositoryProvider.Repository.Path, item.Source.File.Path));
-                            var itemHrefPath = Path.Combine(itemFilePath == null ? "" : itemFilePath, newItemHref.Value);
-                            var outDir = Path.Combine(_output.OutputPath, servicePagePath.Path);
-                            var newhref = Path.GetRelativePath(outDir == null ? "" : outDir, itemHrefPath);
-                            newItemHref = new SourceInfo<string?>(newhref);
+                            var topLevelTOCYmlDir = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, item.Source.File.Path)));
+                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref.Value));
+                            var servicePageFullPath = Path.GetFullPath(Path.Combine(_output.OutputPath, servicePagePath.Path));
+                            var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                            childHref = new SourceInfo<string?>(hrefRelativePath);
                         }
 
-                        newItem = new ServicePageItem(newItemName, newItemHref, new SourceInfo<string?>(null));
+                        child = new ServicePageItem(childName, childHref, new SourceInfo<string?>(null));
                     }
                     else
                     {
-                        newItem = new ServicePageItem(newItemName, new SourceInfo<string?>(null), newItemUid);
+                        child = new ServicePageItem(childName, new SourceInfo<string?>(null), childUid);
                     }
 
-                    children.Add(newItem);
+                    children.Add(child);
                 }
 
                 var langs = new List<string?>();

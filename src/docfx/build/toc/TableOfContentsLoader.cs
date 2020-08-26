@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsLoader
     {
+        private readonly PathString _docsetPath;
         private readonly Input _input;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
@@ -24,7 +25,6 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
         private readonly ErrorBuilder _errors;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
-        private readonly RepositoryProvider _repositoryProvider;
         private readonly Output _output;
 
         private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)> _cache =
@@ -39,6 +39,7 @@ namespace Microsoft.Docs.Build
         private ConcurrentBag<FilePath> _servicePages = new ConcurrentBag<FilePath>();
 
         public TableOfContentsLoader(
+            PathString docsetPath,
             Input input,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
@@ -48,9 +49,9 @@ namespace Microsoft.Docs.Build
             ContentValidator contentValidator,
             Config config,
             ErrorBuilder errors,
-            RepositoryProvider repositoryProvider,
             Output output)
         {
+            _docsetPath = docsetPath;
             _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
@@ -60,7 +61,6 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _errors = errors;
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
-            _repositoryProvider = repositoryProvider;
             _output = output;
         }
 
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                         node = JoinToc(node, joinTOCConfig.TopLevelToc);
 
                         // Generate Service Page.
-                        ServicePageGenerator servicePage = new ServicePageGenerator(_input, joinTOCConfig, _repositoryProvider, _output);
+                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _output);
                         if (node.Items != null && node.Items.Count > 0)
                         {
                             servicePage.GenerateServicePageFromTopLevelTOC(node.Items[0], _servicePages);

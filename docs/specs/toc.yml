@@ -1740,19 +1740,19 @@ repos:
         {
           "docsets_to_publish": [
           { 
-            "build_source_folder": ".",
+            "build_source_folder": "a",
           }],
           "JoinTOCPlugin": [
             {
-              "ReferenceTOC": "api/TOC.yml",
-              "TopLevelTOC": "docs-ref-toc/top_level_toc.yml",
+              "ReferenceTOC": "a/api/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
               "OutputFolder": "results",
               "ContainerPageMetadata": {"langs": ["csharp"]}
             }
           ],
         }
-      docfx.yml:
-      _themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
         {
           "type": "object",
           "required": ["uid", "name", "children", "pageType"],
@@ -1811,7 +1811,7 @@ repos:
             }
           }
         }
-      _themes/ContentTemplate/schemas/TestData.schema.json: |
+      a/_themes/ContentTemplate/schemas/TestData.schema.json: |
         {
           "properties": {
             "uid": { "contentType": "uid" },
@@ -1820,12 +1820,12 @@ repos:
           },
           "xrefProperties": ["name", "fullName", "description"]
         }
-      api/doc.md: |
+      a/api/doc.md: |
         ---
         name: test
         uid: MS.ServicePage
         ---
-      api/a.json: |
+      a/api/a.json: |
         {
           "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
           "uid": "aa",
@@ -1833,7 +1833,7 @@ repos:
           "fullName": "test.test",
           "description": "a.description"
         }
-      api/TOC.yml: |
+      a/api/TOC.yml: |
         name: TOC
         items:
         - name: MS.ServicePage.xxx
@@ -1842,7 +1842,7 @@ repos:
         - name: MS.ServicePage.Client.Form
         - name:
         - name: no.match
-      docs-ref-toc/top_level_toc.yml: |
+      a/docs-ref-toc/top_level_toc.yml: |
         items:
         - name: API Reference
           landingPageType: Root
@@ -1867,11 +1867,11 @@ repos:
               - '*'
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"api/TOC.yml","line":7,"column":8}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":7,"column":8}
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'uid'.","line":0,"column":0}
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'children'.","line":0,"column":0}
-  api/a.json:
-  api/doc.json:
+  a/api/a.json:
+  a/api/doc.json:
   results/apireference.json: |
     {
       "name": "API Reference",
@@ -1884,7 +1884,7 @@ outputs:
     {
       "name": "App Service",
       "fullName": "App Service",
-      "children": [{"name": "Client","href": "../../api/doc"},{"name": "Other"}],
+      "children": [{"name": "Client","href": "../../../api/doc"},{"name": "Other"}],
       "langs": ["csharp"],
       "pageType": "service"
     }
@@ -1899,7 +1899,7 @@ outputs:
     }
   results/apireference/appservice/client/client.json: |
     {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}
-  api/toc.json: |
+  a/api/toc.json: |
     {
       "metadata": {"open_to_public_contributors": false},
       "items": [
