@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public List<ServicePageItem> Children { get; private set; } = new List<ServicePageItem>();
 
-        public List<string?> Langs { get; private set; } = new List<string?>();
+        public List<string?>? Langs { get; private set; } = new List<string?>();
 
         public LandingPageType? PageType { get; private set; }
 
@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             SourceInfo<string?> href,
             SourceInfo<string?> uid,
             List<ServicePageItem> children,
-            List<string?> langs,
+            List<string?>? langs,
             LandingPageType? pageType)
         {
             Name = name;

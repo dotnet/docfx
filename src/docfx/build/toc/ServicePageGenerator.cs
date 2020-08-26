@@ -85,9 +85,8 @@ namespace Microsoft.Docs.Build
                 var langs = new List<string?>();
                 if (_joinTOCConfig.ContainerPageMetadata != null)
                 {
-                    JToken? langs_;
-                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out langs_);
-                    langs = langs_?.ToObject<List<string?>>();
+                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out JToken? lang);
+                    langs = lang?.ToObject<List<string?>>();
                 }
 
                 var pageType = node.LandingPageType.Value;
