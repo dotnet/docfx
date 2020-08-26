@@ -35,11 +35,10 @@ namespace Microsoft.Docs.Build
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
         }
 
-        public static string GetCommitBuildTimePath(string remote, string? branch)
+        public static string GetCommitBuildTimePath(string remote, string branch)
         {
-            var branchHash = string.IsNullOrEmpty(branch) ? string.Empty : HashUtility.GetMd5Guid(branch).ToString();
             return Path.Combine(
-                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{branchHash}.json");
+                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
         }
 
         /// <summary>
