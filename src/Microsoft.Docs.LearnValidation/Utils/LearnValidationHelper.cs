@@ -21,7 +21,7 @@ namespace Microsoft.Docs.LearnValidation
         private readonly RestClient _client;
         private readonly string _branch;
         private readonly bool _needBranchFallback;
-        private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
+        private static readonly string[] _nofallbackBranches = new[] { "main", "master", "live" };
 
         public LearnValidationHelper(string endpoint, string branch)
         {
@@ -57,13 +57,23 @@ namespace Microsoft.Docs.LearnValidation
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
 
+            // Fallback priority: current branch -> main -> master
             if (response.StatusCode != HttpStatusCode.OK && _needBranchFallback)
             {
-                request.AddOrUpdateParameter("branch", "master");
+                request.AddOrUpdateParameter("branch", "main");
                 response = _client.Execute(request);
 
                 Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
                 Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    request.AddOrUpdateParameter("branch", "master");
+                    response = _client.Execute(request);
+
+                    Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
+                    Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
+                }
             }
 
             return response.StatusCode == HttpStatusCode.OK;
