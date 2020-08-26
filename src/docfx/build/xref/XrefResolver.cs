@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                 {
                     // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
                     // output xref map with URL appending "?branch=master" for master branch
-                    var query = repositoryBranch == "master" ? "?branch=master" : "";
+                    var query = repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
                     var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
 
                     var xrefSpec = xref.ToExternalXrefSpec(href);
@@ -158,13 +158,13 @@ namespace Microsoft.Docs.Build
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
-                if (repositoryBranch == "master")
-                {
-                    properties.Tags.Add("internal");
-                }
-                else if (repositoryBranch == "live")
+                if (repositoryBranch == "live")
                 {
                     properties.Tags.Add("public");
+                }
+                else
+                {
+                    properties.Tags.Add("internal");
                 }
                 model.Properties = properties;
             }

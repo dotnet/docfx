@@ -1224,9 +1224,9 @@ outputs:
         ]
     }
 ---
-# define UID in master branch
+# define UID in non-live branch
 repos:
-  https://docs.com/test#master:
+  https://docs.com/test#test:
     - files:
         docfx.yml:
         docs/a.md: |
@@ -1237,7 +1237,7 @@ repos:
 outputs:
   docs/a.json:
   .xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=master"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=test"}],"properties": {"tags": ["/","internal"]}}
 ---
 # define UID in live branch
 repos:
@@ -1254,7 +1254,7 @@ repos:
 outputs:
   base_path/docs/a.json:
   .xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}],"properties": {"tags": ["/base_path","public"]}}
 ---
 # resolve UID with unknown query
 repos:
