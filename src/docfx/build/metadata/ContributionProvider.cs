@@ -183,7 +183,7 @@ namespace Microsoft.Docs.Build
             return _input.GetFullPath(originalPath is null ? file : new FilePath(originalPath));
         }
 
-        private string? GetContentGitUrl(string repo, string branch, string pathToRepo)
+        private string? GetContentGitUrl(string repo, string? branch, string pathToRepo)
         {
             if (!string.IsNullOrEmpty(_config.EditRepositoryUrl))
             {
