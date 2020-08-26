@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public string Url { get; private set; } = "";
 
-        public string Branch { get; private set; } = "master";
+        public string Branch { get; private set; } = "main";
 
         public PackagePath()
         {
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         {
             Type = PackageType.Git;
             Url = remote;
-            Branch = branch ?? "master";
+            Branch = AssignBranchWithDefaultBranchFallback(branch);
         }
 
         public override string? ToString() => Type switch
@@ -89,8 +89,22 @@ namespace Microsoft.Docs.Build
 
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
+            var branch = hasRefSpec ? fragment.Substring(1) : null;
 
-            return (path, hasRefSpec ? fragment.Substring(1) : "master");
+            return (path, AssignBranchWithDefaultBranchFallback(branch));
+        }
+
+        private static string AssignBranchWithDefaultBranchFallback(string? branch)
+        {
+            if (string.IsNullOrEmpty(branch))
+            {
+                return "main";
+            }
+            if (branch.Equals("master", StringComparison.OrdinalIgnoreCase))
+            {
+                return "main";
+            }
+            return branch;
         }
 
         [OnDeserialized]
@@ -109,6 +123,8 @@ namespace Microsoft.Docs.Build
             {
                 Type = PackageType.Folder;
             }
+
+            Branch = AssignBranchWithDefaultBranchFallback(Branch);
         }
     }
 }

@@ -204,7 +204,7 @@ repos:
         docs/a.md:
   https://docs.com/crrcontent/b:
     - files:
-        folder/b.md:
+        folder/b.md: 
         folder/image.png: xxx
   https://docs.com/crrcontent/c:
     - files:

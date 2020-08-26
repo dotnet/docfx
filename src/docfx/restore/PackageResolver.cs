@@ -149,6 +149,37 @@ namespace Microsoft.Docs.Build
             }
             catch (InvalidOperationException)
             {
+                if (committish == "main")
+                {
+                    try
+                    {
+                        Log.Write($"Main branch doesn't exist on repository {url}, fallback to master branch");
+                        committish = "master";
+                        GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        committish = "main";
+                        TryFetchAll();
+                    }
+                }
+                else
+                {
+                    TryFetchAll();
+                }
+            }
+
+            try
+            {
+                GitUtility.Checkout(cwd, committish, "--force");
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
+            }
+
+            void TryFetchAll()
+            {
                 try
                 {
                     // Fallback to fetch all branches if the input committish is not supported by fetch
@@ -163,15 +194,6 @@ namespace Microsoft.Docs.Build
 
                     throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
-            }
-
-            try
-            {
-                GitUtility.Checkout(cwd, committish, "--force");
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
             }
         }
 

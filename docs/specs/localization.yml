@@ -83,7 +83,7 @@ repos:
 outputs:
   docs/a.json: |
     {
-      "content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master/docs/a.md",
+      "content_git_url":"https://github.com/c/contribution4.zh-cn/blob/main/docs/a.md",
       "original_content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master-sxs/docs/a.md",
       "gitcommit":"https://github.com/c/contribution4.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
     }

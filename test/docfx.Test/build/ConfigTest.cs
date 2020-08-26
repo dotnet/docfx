@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
         [InlineData("https://test.visualstudio.com/_git/abc", "master", null, null)]
         [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master")]
         [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master")]
-        [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master")]
-        [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master")]
+        [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "main")]
+        [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "main")]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch)
         {
             var (sourceRemote, sourceBranch) = LocalizationUtility.GetFallbackRepository(remote, branch);
