@@ -24,30 +24,18 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
-        // check by CanonicalVersionOnly & ContentTypes of customRule
-        internal bool IsEnable(FilePath filePath, CustomRule customRule)
+        public bool IsEnable(FilePath filePath, CustomRule customRule)
         {
-            var siteUrl = _documentProvider.GetSiteUrl(filePath);
-            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(siteUrl);
-            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) ?? true;
+            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
+            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion);
             if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
             {
                 return false;
             }
 
-            var file = _documentProvider.GetDocument(filePath);
-            var mime = file?.Mime;
+            var pageType = _documentProvider.GetPageType(filePath);
 
-            if (mime != null
-                && file != null
-                && file.PageType != null
-                && customRule.ContentTypes.Length > 0
-                && !customRule.ContentTypes.Any(file.PageType.Contains))
-            {
-                return false;
-            }
-
-            return true;
+            return customRule.ContentTypes is null || customRule.ContentTypes.Contains(pageType);
         }
     }
 }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Markdig.Syntax;
@@ -13,38 +14,41 @@ namespace Microsoft.Docs.Build
 {
     internal class ContentValidator
     {
+        // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
+        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection" };
+
         private readonly Validator _validator;
         private readonly ErrorBuilder _errors;
+        private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly MetadataProvider _metadataProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
-        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links;
+        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
 
         public ContentValidator(
             Config config,
             FileResolver fileResolver,
             ErrorBuilder errors,
+            DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            MetadataProvider metadataProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
+            _errors = errors;
+            _documentProvider = documentProvider;
+            _monikerProvider = monikerProvider;
+            _publishUrlMap = publishUrlMap;
+
             _validator = new Validator(
                 fileResolver.ResolveFilePath(config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(config.Allowlists),
                 fileResolver.ResolveFilePath(config.Disallowlists));
-            _errors = errors;
-            _monikerProvider = monikerProvider;
-            _metadataProvider = metadataProvider;
-            _publishUrlMap = publishUrlMap;
-            _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
         }
 
-        public void ValidateImageLink(Document file, SourceInfo<string> link, MarkdownObject origin, string? altText)
+        public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText)
         {
             // validate image link and altText here
-            if (_links.TryAdd((file.FilePath, link)) && TryGetValidationDocumentType(file.PageType, false, out var documentType))
+            if (_links.TryAdd((file, link)) && TryGetValidationDocumentType(file, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType, File = file.FilePath.Path };
+                var validationContext = new ValidationContext { DocumentType = documentType, File = file.Path };
                 Write(_validator.ValidateLink(
                     new Link
                     {
@@ -57,35 +61,35 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateCodeBlock(Document file, CodeBlockItem codeBlockItem, bool isIncluded)
+        public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem, bool isInclude)
         {
-            if (TryGetValidationDocumentType(file.PageType, isIncluded, out var documentType))
+            if (TryGetValidationDocumentType(file, isInclude, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateHeadings(Document file, List<ContentNode> nodes, bool isIncluded)
+        public void ValidateHeadings(FilePath file, List<ContentNode> nodes, bool isInclude)
         {
-            if (TryGetValidationDocumentType(file.PageType, isIncluded, out var documentType))
+            if (TryGetValidationDocumentType(file, isInclude, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file.FilePath) };
+                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file) };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateTitle(Document file, SourceInfo<string?> title, string? titleSuffix)
+        public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
         {
             if (string.IsNullOrWhiteSpace(title.Value))
             {
                 return;
             }
 
-            if (TryGetValidationDocumentType(file.PageType, false, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
-                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file.FilePath);
-                var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file.SiteUrl);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
+                var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file);
                 var isCanonicalVersion = monikers.IsCanonicalVersion(canonicalVersion);
                 var titleItem = new TitleItem
                 {
@@ -114,9 +118,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateSensitiveLanguage(string content, Document document)
+        public void ValidateSensitiveLanguage(FilePath file, string content)
         {
-            if (TryGetValidationDocumentType(document.PageType, false, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
 
@@ -128,21 +132,21 @@ namespace Microsoft.Docs.Build
                     var item = new TextItem()
                     {
                         Content = line,
-                        SourceInfo = new SourceInfo(document.FilePath, lineCount++, 0),
+                        SourceInfo = new SourceInfo(file, lineCount++, 0),
                     };
                     Write(_validator.ValidateText(item, validationContext).GetAwaiter().GetResult());
                 }
             }
         }
 
-        public void ValidateManifest(FilePath filePath, PublishItem publishItem)
+        public void ValidateManifest(FilePath file, string publishUrl)
         {
-            if (TryGetValidationDocumentType(publishItem.PageType, false, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var manifestItem = new ManifestItem()
                 {
-                    PublishUrl = publishItem.Url,
-                    SourceInfo = new SourceInfo(filePath, 0, 0),
+                    PublishUrl = publishUrl,
+                    SourceInfo = new SourceInfo(file, 0, 0),
                 };
 
                 var validationContext = new ValidationContext { DocumentType = documentType };
@@ -150,39 +154,39 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocDeprecated(Document file)
+        public void ValidateTocDeprecated(FilePath file)
         {
-            if (TryGetValidationDocumentType(file.PageType, false, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 var tocItem = new DeprecatedTocItem()
                 {
-                    FilePath = file.FilePath.Path.Value,
-                    SourceInfo = new SourceInfo(file.FilePath, 0, 0),
+                    FilePath = file.Path.Value,
+                    SourceInfo = new SourceInfo(file, 0, 0),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateTocMissing(Document document, bool hasReferencedTocs)
+        public void ValidateTocMissing(FilePath file, bool hasReferencedTocs)
         {
-            if (TryGetValidationDocumentType(document.PageType, false, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 var tocItem = new MissingTocItem()
                 {
-                    FilePath = document.FilePath.Path.Value,
+                    FilePath = file.Path.Value,
                     HasReferencedTocs = hasReferencedTocs,
-                    SourceInfo = new SourceInfo(document.FilePath, 0, 0),
+                    SourceInfo = new SourceInfo(file, 0, 0),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateTocBreadcrumbLinkExternal(Document file, SourceInfo<TableOfContentsNode> node)
+        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TableOfContentsNode> node)
         {
             if (!string.IsNullOrEmpty(node.Value?.Href)
-                && TryGetValidationDocumentType(file.PageType, false, out var documentType))
+                && TryGetValidationDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext { DocumentType = documentType };
                 var tocItem = new ExternalBreadcrumbTocItem()
@@ -195,9 +199,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocEntryDuplicated(Document file, List<Document> referencedFiles)
+        public void ValidateTocEntryDuplicated(FilePath file, List<Document> referencedFiles)
         {
-            if (TryGetValidationDocumentType(file.PageType, false, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var filePaths = referencedFiles
                     .Where(item => item != null)
@@ -208,7 +212,7 @@ namespace Microsoft.Docs.Build
                 var tocItem = new DuplicatedTocItem()
                 {
                     FilePaths = filePaths,
-                    SourceInfo = new SourceInfo(file.FilePath, 0, 0),
+                    SourceInfo = new SourceInfo(file, 0, 0),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
@@ -233,16 +237,21 @@ namespace Microsoft.Docs.Build
                 };
         }
 
-        // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
-        private static bool TryGetValidationDocumentType(string? pageType, bool isIncluded, out string documentType)
+        private bool TryGetValidationDocumentType(FilePath file, [NotNullWhen(true)] out string? documentType)
         {
-            documentType = pageType ?? string.Empty;
-            if (isIncluded && documentType == "conceptual")
+            return TryGetValidationDocumentType(file, false, out documentType);
+        }
+
+        private bool TryGetValidationDocumentType(FilePath file, bool isInclude, [NotNullWhen(true)] out string? documentType)
+        {
+            documentType = _documentProvider.GetPageType(file);
+            if (isInclude && documentType == "conceptual")
             {
                 documentType = "includes";
+                return true;
             }
-            string[] supportType = { "conceptual", "includes", "toc", "redirection" };
-            return supportType.Contains(documentType);
+
+            return documentType != null && s_supportedPageTypes.Contains(documentType);
         }
     }
 }

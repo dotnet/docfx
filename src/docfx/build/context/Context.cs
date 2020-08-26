@@ -108,7 +108,8 @@ namespace Microsoft.Docs.Build
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             ContentValidator = new ContentValidator(
-                config, FileResolver, errorLog, MonikerProvider, MetadataProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
@@ -170,9 +171,11 @@ namespace Microsoft.Docs.Build
                 Output);
             TocMap = new TableOfContentsMap(
                 ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
-            PublishUrlMap = new PublishUrlMap(Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
+            PublishUrlMap = new PublishUrlMap(
+                Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
+
             PublishModelBuilder = new PublishModelBuilder(
-                config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
+                config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, DocumentProvider, SourceMap);
 
             var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, validatorExtension);
