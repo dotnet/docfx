@@ -13,11 +13,12 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
+        private readonly MonikerProvider _monikerProvider;
 
         public XrefResolver(
             Config config,
@@ -36,7 +37,7 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
             _repository = repository;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
+            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
                 () => new InternalXrefMapBuilder(
                             errorLog,
                             templateEngine,
@@ -51,6 +52,7 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
+            _monikerProvider = monikerProvider;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
@@ -137,21 +139,17 @@ namespace Microsoft.Docs.Build
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
+            // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+            // output xref map with URL appending "?branch=master" for master branch
             var references =
                 isLocalizedBuild
                 ? Array.Empty<ExternalXrefSpec>()
-                : _internalXrefMap.Value.Values
-                .Select(xref =>
-                {
-                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                    // output xref map with URL appending "?branch=master" for master branch
-                    var query = repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
-                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
-
-                    var xrefSpec = xref.ToExternalXrefSpec(href);
-                    return xrefSpec;
-                })
-                .OrderBy(xref => xref.Uid).ToArray();
+                : (from xrefs in _internalXrefMap.Value.Values
+                   let xref = xrefs[0]
+                   orderby xref.Uid.Value
+                   select xref.ToExternalXrefSpec(
+                       UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", repositoryBranch == "master" ? "?branch=master" : "")))
+                  .ToArray();
 
             var model = new XrefMapModel { References = references };
             if (basePath != null && references.Length > 0)
@@ -217,8 +215,23 @@ namespace Microsoft.Docs.Build
 
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(string uid, Document referencingFile, Document inclusionRoot)
         {
-            if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
+            if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
             {
+                var spec = default(InternalXrefSpec);
+                if (specs.Length == 1)
+                {
+                    spec = specs[0];
+                }
+
+                var referencingMonikers = _monikerProvider.GetFileLevelMonikers(ErrorWriter.Null, referencingFile.FilePath);
+                if (!referencingMonikers.HasMonikers)
+                {
+                    spec = specs[0];
+                }
+                else
+                {
+                    spec = specs.FirstOrDefault(s => s.Monikers.Intersect(referencingMonikers).HasMonikers) ?? specs[0];
+                }
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, dependencyType, referencingFile.ContentType);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);

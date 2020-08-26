@@ -1498,6 +1498,59 @@ outputs:
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
 ---
+# referencing multiple version, using uid with intersection
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': 'netcore-1.0'
+      'docs/v2/**': 'netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" }
+      ]
+    }
+  docs/v1/a.yml: |
+    ### YamlMime:TestData
+    uid: a
+    name: name
+  docs/v1/toc.yml: |
+    items:
+      - name: node
+        uid: a
+  docs/v2/a.yml: |
+    ### YamlMime:TestData
+    uid: a
+    name: name
+  docs/v2/toc.yml: |
+    items:
+      - name: node
+        uid: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name"],
+      "properties": { 
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        },
+        "uid": { "contentType": "uid" }
+      }
+    }
+outputs:
+  136a42ac/docs/a.json:
+  136a42ac/docs/toc.json: |
+    {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-1.0"]}]}
+  4667fedf/docs/a.json:
+  4667fedf/docs/toc.json: |
+    {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
+---
 # When href doesn't exist, should display the alt but not the text.
 inputs:
   docfx.yml: |
