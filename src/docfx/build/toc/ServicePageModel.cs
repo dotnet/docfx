@@ -20,11 +20,9 @@ namespace Microsoft.Docs.Build
 
         public List<string?> Langs { get; private set; } = new List<string?>();
 
-        public SourceInfo<LandingPageType?> PageType { get; private set; }
+        public LandingPageType? PageType { get; private set; }
 
         public JObject Metadata { get; set; } = new JObject();
-
-        public SourceInfo<string?> YamlMime { get; private set; }
 
         public ServicePageModel(
             SourceInfo<string?> name,
@@ -33,8 +31,7 @@ namespace Microsoft.Docs.Build
             SourceInfo<string?> uid,
             List<ServicePageItem> children,
             List<string?> langs,
-            SourceInfo<LandingPageType?> pageType,
-            SourceInfo<string?> yamlMime)
+            LandingPageType? pageType)
         {
             Name = name;
             FullName = fullName;
@@ -43,7 +40,6 @@ namespace Microsoft.Docs.Build
             Children = children;
             Langs = langs;
             PageType = pageType;
-            YamlMime = yamlMime;
         }
     }
 }

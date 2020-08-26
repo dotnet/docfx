@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         private Document GetDocumentCore(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
-            var mime = _buildScope.GetMime(contentType, path, _errors);
+            var mime = _buildScope.GetMime(contentType, path);
             var pageType = GetPageType(contentType, path, mime);
             var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);

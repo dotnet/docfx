@@ -92,16 +92,11 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                var landingPageType = node.LandingPageType;
-                var pageType = new SourceInfo<LandingPageType?>(landingPageType);
 
-                var yamlMime = new SourceInfo<string?>("ReferenceContainer");
-
+                var pageType = node.LandingPageType.Value;
                 results.Add(servicePagePath);
-
-                var servicePageToken = new ServicePageModel(name, fullName, href, uid, children, langs, pageType, yamlMime);
-
-                _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken));
+                var servicePageToken = new ServicePageModel(name, fullName, href, uid, children, langs, pageType);
+                _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
             }
 
             foreach (var item in node.Items)

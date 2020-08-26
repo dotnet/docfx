@@ -117,11 +117,11 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath, ErrorBuilder errors)
+        public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath)
         {
             return _mimeTypeCache.GetOrAdd(filePath, path =>
             {
-                return contentType == ContentType.Page ? ReadMimeFromFile(_input, path, errors) : default;
+                return contentType == ContentType.Page ? ReadMimeFromFile(_input, path) : default;
             });
         }
 
@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
                         .ToArray();
         }
 
-        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath, ErrorBuilder errors)
+        private static SourceInfo<string?> ReadMimeFromFile(Input input, FilePath filePath)
         {
             switch (filePath.Format)
             {
@@ -254,13 +254,7 @@ namespace Microsoft.Docs.Build
                 case FileFormat.Yaml:
                     if (filePath.Origin == FileOrigin.Generated)
                     {
-                        var servicePageToken = input.ReadYaml(errors, filePath).SelectToken("yamlMime");
-                        if (servicePageToken == null)
-                        {
-                            throw new FileNotFoundException();
-                        }
-                        var yamlMime = servicePageToken.Value<string?>();
-                        ((JObject)input.ReadYaml(errors, filePath)).Remove("yamlMime");
+                        var yamlMime = input.GetYamlMime(filePath);
                         return new SourceInfo<string?>(yamlMime, new SourceInfo(filePath, 1, 1));
                     }
                     using (var reader = input.ReadText(filePath))

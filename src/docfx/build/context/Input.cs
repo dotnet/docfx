@@ -23,7 +23,9 @@ namespace Microsoft.Docs.Build
         private readonly MemoryCache<FilePath, JToken> _jsonTokenCache = new MemoryCache<FilePath, JToken>();
         private readonly MemoryCache<FilePath, JToken> _yamlTokenCache = new MemoryCache<FilePath, JToken>();
         private readonly MemoryCache<PathString, byte[]?> _gitBlobCache = new MemoryCache<PathString, byte[]?>();
-        private readonly ConcurrentDictionary<FilePath, JToken> _generatedContents = new ConcurrentDictionary<FilePath, JToken>();
+        private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
+            new ConcurrentDictionary<FilePath, (string?, JToken)>();
+
         private readonly PathString? _alternativeFallbackFolder;
 
         public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
@@ -122,7 +124,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents[file];
+                return _generatedContents[file].generatedContent;
             }
 
             return _jsonTokenCache.GetOrAdd(file, path =>
@@ -139,7 +141,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents[file];
+                return _generatedContents[file].generatedContent;
             }
 
             return _yamlTokenCache.GetOrAdd(file, path =>
@@ -205,11 +207,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void AddGeneratedContent(FilePath file, JToken content)
+        public void AddGeneratedContent(FilePath file, JToken content, string? yamlMime)
         {
             Debug.Assert(file.Origin == FileOrigin.Generated);
 
-            _generatedContents.TryAdd(file, content);
+            _generatedContents.TryAdd(file, (yamlMime, content));
+        }
+
+        public string? GetYamlMime(FilePath file)
+        {
+            return _generatedContents[file].yamlMime;
         }
 
         private byte[]? ReadBytesFromGit(PathString fullPath)
