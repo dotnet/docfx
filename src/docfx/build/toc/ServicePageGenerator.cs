@@ -52,10 +52,10 @@ namespace Microsoft.Docs.Build
                 var uid = node.Uid;
                 var href = node.Href;
 
-                var children = new List<SourceInfo<ServicePageModel>>();
+                var children = new List<ServicePageItem>();
                 foreach (var item in node.Items)
                 {
-                    ServicePageModel newItem;
+                    ServicePageItem newItem;
                     var newItemName = item.Value.Name;
                     var newItemHref = item.Value.Href;
                     var newItemUid = item.Value.Uid;
@@ -71,14 +71,14 @@ namespace Microsoft.Docs.Build
                             newItemHref = new SourceInfo<string?>(newhref);
                         }
 
-                        newItem = new ServicePageModel(newItemName, newItemHref, new SourceInfo<string?>(null));
+                        newItem = new ServicePageItem(newItemName, newItemHref, new SourceInfo<string?>(null));
                     }
                     else
                     {
-                        newItem = new ServicePageModel(newItemName, new SourceInfo<string?>(null), newItemUid);
+                        newItem = new ServicePageItem(newItemName, new SourceInfo<string?>(null), newItemUid);
                     }
 
-                    children.Add(new SourceInfo<ServicePageModel>(newItem));
+                    children.Add(newItem);
                 }
 
                 var langs = new List<string?>();

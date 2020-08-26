@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string?> Uid { get; private set; }
 
-        public List<SourceInfo<ServicePageModel>> Children { get; private set; } = new List<SourceInfo<ServicePageModel>>();
+        public List<ServicePageItem> Children { get; private set; } = new List<ServicePageItem>();
 
         public List<string?> Langs { get; private set; } = new List<string?>();
 
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             SourceInfo<string?> fullName,
             SourceInfo<string?> href,
             SourceInfo<string?> uid,
-            List<SourceInfo<ServicePageModel>> children,
+            List<ServicePageItem> children,
             List<string?> langs,
             SourceInfo<LandingPageType?> pageType,
             SourceInfo<string?> yamlMime)
@@ -44,16 +44,6 @@ namespace Microsoft.Docs.Build
             Langs = langs;
             PageType = pageType;
             YamlMime = yamlMime;
-        }
-
-        public ServicePageModel(
-            SourceInfo<string?> name,
-            SourceInfo<string?> href,
-            SourceInfo<string?> uid)
-        {
-            Name = name;
-            Href = href;
-            Uid = uid;
         }
     }
 }
