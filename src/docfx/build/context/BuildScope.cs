@@ -254,7 +254,7 @@ namespace Microsoft.Docs.Build
                 case FileFormat.Yaml:
                     if (filePath.Origin == FileOrigin.Generated)
                     {
-                        var yamlMime = input.GetYamlMime(filePath);
+                        var yamlMime = input.GetYamlMimeFromGenerated(filePath);
                         return new SourceInfo<string?>(yamlMime, new SourceInfo(filePath, 1, 1));
                     }
                     using (var reader = input.ReadText(filePath))

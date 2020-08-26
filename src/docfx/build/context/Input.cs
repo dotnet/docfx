@@ -214,8 +214,10 @@ namespace Microsoft.Docs.Build
             _generatedContents.TryAdd(file, (yamlMime, content));
         }
 
-        public string? GetYamlMime(FilePath file)
+        public string? GetYamlMimeFromGenerated(FilePath file)
         {
+            Debug.Assert(file.Origin == FileOrigin.Generated);
+
             return _generatedContents[file].yamlMime;
         }
 
