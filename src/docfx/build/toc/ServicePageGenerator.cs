@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(node.LandingPageType.ToString()))
             {
-                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputPath) ? Directory.GetCurrentDirectory() : _joinTOCConfig.OutputPath.Replace("..", "");
+                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? Directory.GetCurrentDirectory() : _joinTOCConfig.OutputFolder.Replace("..", "");
                 var servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
 
                 var name = node.Name;
@@ -84,13 +85,9 @@ namespace Microsoft.Docs.Build
                 var langs = new List<string?>();
                 if (_joinTOCConfig.ContainerPageMetadata != null)
                 {
-                    foreach (var lang in _joinTOCConfig.ContainerPageMetadata)
-                    {
-                        if (lang.Key.Equals("langs") && lang.Value != null)
-                        {
-                            langs = lang.Value.ToObject<List<string?>>();
-                        }
-                    }
+                    JToken? langs_;
+                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out langs_);
+                    langs = langs_?.ToObject<List<string?>>();
                 }
 
                 var pageType = node.LandingPageType.Value;
