@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
         {
             if (fileCommits.Length > 0)
             {
-                if (_config.UpdateTimeAsCommitBuildTime && repository != null)
+                if (_config.UpdateTimeAsCommitBuildTime && repository != null && repository.Branch != null)
                 {
                     return _commitBuildTimeProviders
                         .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
 
                 var gitUrlTemplate = GetGitUrlTemplate(repo.Remote, pathToRepo);
                 var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch, pathToRepo) : originalContentGitUrl;
+                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
 
                 return (
                     contentGitUrl,
@@ -183,7 +183,7 @@ namespace Microsoft.Docs.Build
             return _input.GetFullPath(originalPath is null ? file : new FilePath(originalPath));
         }
 
-        private string? GetContentGitUrl(string repo, string branch, string pathToRepo)
+        private string? GetContentGitUrl(string repo, string? committish, string pathToRepo)
         {
             if (!string.IsNullOrEmpty(_config.EditRepositoryUrl))
             {
@@ -192,17 +192,17 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(_config.EditRepositoryBranch))
             {
-                branch = _config.EditRepositoryBranch;
+                committish = _config.EditRepositoryBranch;
             }
 
-            if (LocalizationUtility.TryGetContributionBranch(branch, out var contributionBranch))
+            if (LocalizationUtility.TryGetContributionBranch(committish, out var contributionBranch))
             {
-                branch = contributionBranch;
+                committish = contributionBranch;
             }
 
             var gitUrlTemplate = GetGitUrlTemplate(repo, pathToRepo);
 
-            return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", branch);
+            return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", committish);
         }
 
         private static string? GetGitUrlTemplate(string remote, string pathToRepo)

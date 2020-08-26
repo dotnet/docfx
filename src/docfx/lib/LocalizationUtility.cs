@@ -72,9 +72,9 @@ namespace Microsoft.Docs.Build
             return repository is null ? null : TryRemoveLocale(repository.Remote, out _, out var remoteLocale) ? remoteLocale : null;
         }
 
-        public static bool TryGetContributionBranch(string branch, [NotNullWhen(true)] out string? contributionBranch)
+        public static bool TryGetContributionBranch(string? branch, [NotNullWhen(true)] out string? contributionBranch)
         {
-            if (branch.EndsWith("-sxs"))
+            if (branch != null && branch.EndsWith("-sxs"))
             {
                 contributionBranch = branch[0..^4];
                 return true;
