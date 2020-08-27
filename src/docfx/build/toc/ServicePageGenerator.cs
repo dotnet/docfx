@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        child = new ServicePageItem(childName, null, childUid);
+                        child = new ServicePageItem(childName, childHref, childUid);
                     }
 
                     children.Add(child);

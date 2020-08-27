@@ -217,13 +217,6 @@ namespace Microsoft.Docs.Build
             _generatedContents.TryAdd(file, (yamlMime, content));
         }
 
-        public string? GetYamlMimeFromGenerated(FilePath file)
-        {
-            Debug.Assert(file.Origin == FileOrigin.Generated);
-
-            return _generatedContents[file].yamlMime;
-        }
-
         public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath)
         {
             return _mimeTypeCache.GetOrAdd(filePath, path =>
@@ -261,6 +254,13 @@ namespace Microsoft.Docs.Build
                 default:
                     throw new NotSupportedException();
             }
+        }
+
+        private string? GetYamlMimeFromGenerated(FilePath file)
+        {
+            Debug.Assert(file.Origin == FileOrigin.Generated);
+
+            return _generatedContents[file].yamlMime;
         }
 
         private byte[]? ReadBytesFromGit(PathString fullPath)
