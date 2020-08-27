@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public string Url { get; private set; } = "";
 
-        public string Branch { get; private set; } = "master";
+        public string Branch { get; private set; } = "main";
 
         public Dictionary<string, string> BranchMapping { get; private set; } = new Dictionary<string, string>();
 
