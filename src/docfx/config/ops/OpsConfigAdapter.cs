@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
         private const string DisallowlistsApi = "https://ops/disallowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
+        private const string HierarchyDrySyncApi = "https://ops/hierarchyDrySync/";
+        private const string LearnValidationApi = "https://ops/learnvalidation/";
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
@@ -37,22 +39,24 @@ namespace Microsoft.Docs.Build
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new HttpClient();
-        private readonly (string, Func<Uri, Task<string>>)[] _apis;
+        private readonly (string, Func<HttpRequestMessage, Task<string>>)[] _apis;
 
         public OpsConfigAdapter(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
         {
             _errors = errors;
             _credentialProvider = credentialProvider;
-            _apis = new (string, Func<Uri, Task<string>>)[]
+            _apis = new (string, Func<HttpRequestMessage, Task<string>>)[]
             {
                 (BuildConfigApi, GetBuildConfig),
-                (MonikerDefinitionApi, GetMonikerDefinition),
+                (MonikerDefinitionApi, _ => GetMonikerDefinition()),
                 (MetadataSchemaApi, GetMetadataSchema),
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
                 (AllowlistsApi, GetAllowlists),
                 (DisallowlistsApi, GetDisallowlists),
                 (RegressionAllContentRulesApi, _ => GetRegressionAllContentRules()),
                 (RegressionAllMetadataSchemaApi, _ => GetRegressionAllMetadataSchema()),
+                (HierarchyDrySyncApi, HierarchyDrySync),
+                (LearnValidationApi, GetRegressionAllMetadataSchema),
             };
         }
 
@@ -62,7 +66,7 @@ namespace Microsoft.Docs.Build
             {
                 if (request.RequestUri.OriginalString.StartsWith(baseUrl))
                 {
-                    return new HttpResponseMessage { Content = new StringContent(await rule(request.RequestUri)) };
+                    return new HttpResponseMessage { Content = new StringContent(await rule(request)) };
                 }
             }
             return null;
@@ -73,8 +77,9 @@ namespace Microsoft.Docs.Build
             _http.Dispose();
         }
 
-        private async Task<string> GetBuildConfig(Uri url)
+        private async Task<string> GetBuildConfig(HttpRequestMessage request)
         {
+            var url = request.RequestUri;
             var queries = HttpUtility.ParseQueryString(url.Query);
             var name = queries["name"];
             var repository = queries["repository_url"];
@@ -139,14 +144,7 @@ namespace Microsoft.Docs.Build
             {
                 environment = DocsEnvironment.Prod;
             }
-            return environment switch
-            {
-                DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
-                DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
-                DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
-                DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-                _ => throw new NotSupportedException(),
-            };
+            return BuildServiceEndpoint(environment);
         }
 
         private async Task<string[]> GetXrefMaps(string xrefMapApiEndpoint, string tag, string xrefMapQueryParams)
@@ -157,35 +155,47 @@ namespace Microsoft.Docs.Build
                 ?? Array.Empty<string>();
         }
 
-        private Task<string> GetMonikerDefinition(Uri url)
+        private Task<string> GetMonikerDefinition()
         {
             return Fetch($"{BuildServiceEndpoint()}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
-        private async Task<string> GetMarkdownValidationRules(Uri url)
+        private async Task<string> HierarchyDrySync(HttpRequestMessage request)
         {
-            var headers = GetValidationServiceHeaders(url);
+            request.RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync");
+            return await Execute(request);
+        }
+
+        private async Task<string> GetRegressionAllMetadataSchema(HttpRequestMessage request)
+        {
+            request.RequestUri = new Uri($"{BuildServiceEndpoint()}/route/docs/api/hierarchy");
+            return await Execute(request, "{}");
+        }
+
+        private async Task<string> GetMarkdownValidationRules(HttpRequestMessage request)
+        {
+            var headers = GetValidationServiceHeaders(request.RequestUri);
 
             return await FetchValidationRules($"{ValidationServiceEndpoint()}/rulesets/contentrules", headers);
         }
 
-        private async Task<string> GetAllowlists(Uri url)
+        private async Task<string> GetAllowlists(HttpRequestMessage request)
         {
-            var headers = GetValidationServiceHeaders(url);
+            var headers = GetValidationServiceHeaders(request.RequestUri);
 
             return await FetchValidationRules($"{ValidationServiceEndpoint()}/validation/allowlists", headers);
         }
 
-        private async Task<string> GetDisallowlists(Uri url)
+        private async Task<string> GetDisallowlists(HttpRequestMessage request)
         {
-            var headers = GetValidationServiceHeaders(url);
+            var headers = GetValidationServiceHeaders(request.RequestUri);
 
             return await FetchValidationRules($"{ValidationServiceEndpoint()}/validation/disallowlists", headers);
         }
 
-        private async Task<string> GetMetadataSchema(Uri url)
+        private async Task<string> GetMetadataSchema(HttpRequestMessage request)
         {
-            var headers = GetValidationServiceHeaders(url);
+            var headers = GetValidationServiceHeaders(request.RequestUri);
             var metadataRules = FetchValidationRules($"{ValidationServiceEndpoint()}/rulesets/metadatarules", headers);
             var allowlists = FetchValidationRules($"{ValidationServiceEndpoint()}/validation/allowlists", headers);
 
@@ -265,20 +275,24 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
         {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            if (headers != null)
+            {
+                foreach (var (key, value) in headers)
+                {
+                    request.Headers.TryAddWithoutValidation(key, value);
+                }
+            }
+            return await Execute(request, value404);
+        }
+
+        private async Task<string> Execute(HttpRequestMessage request, string? value404 = null)
+        {
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Exexuting request '{request.Method} {request.RequestUri}'"))
             {
                 _credentialProvider?.Invoke(request);
 
-                if (headers != null)
-                {
-                    foreach (var (key, value) in headers)
-                    {
-                        request.Headers.TryAddWithoutValidation(key, value);
-                    }
-                }
-
-                await FillOpsToken(url, request);
+                await FillOpsToken(request.RequestUri.AbsoluteUri, request);
 
                 var response = await _http.SendAsync(request);
 

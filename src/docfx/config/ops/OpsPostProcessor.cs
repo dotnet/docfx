@@ -1,7 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Docs.LearnValidation;
 
 namespace Microsoft.Docs.Build
@@ -13,12 +16,14 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
+        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage?>> _interceptHttpRequest;
 
-        public OpsPostProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions)
+        public OpsPostProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions, Func<HttpRequestMessage, Task<HttpResponseMessage?>> interceptHttpRequest)
         {
             _config = config;
             _errors = errors;
             _buildOptions = buildOptions;
+            _interceptHttpRequest = interceptHttpRequest;
         }
 
         public void Run()
@@ -49,7 +54,8 @@ namespace Microsoft.Docs.Build
                         environment: OpsConfigAdapter.DocsEnvironment.ToString(),
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
-                        fallbackDocsetPath: _buildOptions.FallbackDocsetPath);
+                        fallbackDocsetPath: _buildOptions.FallbackDocsetPath,
+                        interceptHttpRequest: _interceptHttpRequest);
                 }
             }
         }

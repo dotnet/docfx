@@ -3,8 +3,8 @@
 
 using System;
 using System.Linq;
-using System.Net;
-using RestSharp;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.LearnValidation
 {
@@ -17,15 +17,16 @@ namespace Microsoft.Docs.LearnValidation
         }
 
         private const string _defaultLocale = "en-us";
+        private const string _learnValidationAPIEndpoint = "https://ops/learnvalidation/";
 
-        private readonly RestClient _client;
+        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _interceptHttpRequest;
         private readonly string _branch;
         private readonly bool _needBranchFallback;
         private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
 
-        public LearnValidationHelper(string endpoint, string branch)
+        public LearnValidationHelper(string branch, Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
-            _client = string.IsNullOrEmpty(endpoint) ? null : new RestClient(endpoint);
+            _interceptHttpRequest = interceptHttpRequest;
             _branch = branch;
             _needBranchFallback = !_nofallbackBranches.Contains(_branch);
         }
@@ -42,38 +43,40 @@ namespace Microsoft.Docs.LearnValidation
 
         private bool CheckItemExist(CheckItemType type, string uid)
         {
-            if (_client == null)
+            if (_interceptHttpRequest == null)
             {
                 return false;
             }
 
-            var requestString = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var request = new RestRequest(requestString);
+            var requestEndpoint = _learnValidationAPIEndpoint + (type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}");
 
-            AppendHeaderAndParameter(request);
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestEndpoint);
+            request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = _client.Execute(request);
+            var (requestUrl, data) = CheckWithBranch(request, requestEndpoint, _branch);
 
-            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
-            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
+            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, requestUrl);
+            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, data);
 
-            if (response.StatusCode != HttpStatusCode.OK && _needBranchFallback)
+            if (data == "{}" && _needBranchFallback)
             {
-                request.AddOrUpdateParameter("branch", "master");
-                response = _client.Execute(request);
+                (requestUrl, data) = CheckWithBranch(request, requestEndpoint, "master");
 
-                Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
-                Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
+                Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, requestUrl);
+                Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, data);
             }
 
-            return response.StatusCode == HttpStatusCode.OK;
+            return data != "{}";
         }
 
-        private void AppendHeaderAndParameter(RestRequest request)
+        private (string requestUrl, string data) CheckWithBranch(HttpRequestMessage request, string endpoint, string branch)
         {
-            request.AddParameter("branch", _branch);
-            request.AddParameter("locale", _defaultLocale);
-            request.AddHeader("Referer", " https://tcexplorer.azurewebsites.net");
+            request.RequestUri = new Uri(GetRequestUrl(branch));
+            var response = _interceptHttpRequest(request).Result;
+            var data = response.Content.ReadAsStringAsync().Result;
+            return (request.RequestUri.AbsoluteUri, data);
+
+            string GetRequestUrl(string branch) => $"{endpoint}?branch={branch}&?locale={_defaultLocale}";
         }
     }
 }

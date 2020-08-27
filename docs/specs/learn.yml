@@ -385,8 +385,6 @@ outputs:
 legacy: true
 noDryRun: true
 locale: zh-CN
-environments: 
-- DOCS_LEARN_VALIDATION_ENDPOINT
 repos:
   https://github.com/learn/learn-pr:
   - files:

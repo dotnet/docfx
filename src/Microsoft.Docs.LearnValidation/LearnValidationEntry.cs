@@ -19,6 +19,7 @@ namespace Microsoft.Docs.LearnValidation
     public static class LearnValidationEntry
     {
         private const string PluginName = "LearnValidationPlugin";
+        private const string DrySyncEndpoint = "https://ops/hierarchyDrySync";
 
         public static void Run(
             string repoUrl,
@@ -32,6 +33,7 @@ namespace Microsoft.Docs.LearnValidation
             string environment,
             bool isLocalizationBuild,
             Action<LearnLogItem> writeLog,
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest,
             string fallbackDocsetPath = null)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -54,15 +56,15 @@ namespace Microsoft.Docs.LearnValidation
                 Formatting.Indented);
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
-            ValidateHierarchy(config, logger).GetAwaiter().GetResult();
+            ValidateHierarchy(config, logger, interceptHttpRequest).GetAwaiter().GetResult();
         }
 
-        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger)
+        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
             var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
-            var learnValidationHelper = new LearnValidationHelper(GetLearnValidationEndpoint(), config.RepoBranch);
+            var learnValidationHelper = new LearnValidationHelper(config.RepoBranch, interceptHttpRequest);
             var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath, logger);
             var (isValid, hierarchyItems) = validator.Validate();
 
@@ -70,7 +72,7 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!config.IsLocalizationBuild)
             {
-                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config, logger);
+                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config, logger, interceptHttpRequest);
             }
             else
             {
@@ -82,7 +84,8 @@ namespace Microsoft.Docs.LearnValidation
             bool isValid,
             List<IValidateModel> hierarchyItems,
             LearnValidationConfig config,
-            LearnValidationLogger logger)
+            LearnValidationLogger logger,
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
             if (!isValid)
             {
@@ -98,7 +101,7 @@ namespace Microsoft.Docs.LearnValidation
                 config.DocsetName,
                 repoUrl,
                 hierarchy,
-                GetDrySyncEndpoint());
+                interceptHttpRequest);
 
             if (!result.IsValid)
             {
@@ -131,17 +134,11 @@ namespace Microsoft.Docs.LearnValidation
             string docsetName,
             string repoUrl,
             RawHierarchy hierarchy,
-            string drySyncEndpoint)
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
-            if (string.IsNullOrEmpty(drySyncEndpoint))
-            {
-                Console.WriteLine($"Skipping dry-sync for unset endpoint");
-                return new ValidationResult(branch, locale, true, "Hierarchy dry-sync endpoint not defined");
-            }
-
             try
             {
-                return await DrySync(branch, locale, docsetName, repoUrl, hierarchy, drySyncEndpoint);
+                return await DrySync(branch, locale, docsetName, repoUrl, hierarchy, interceptHttpRequest);
             }
             catch (Exception ex)
             {
@@ -158,7 +155,7 @@ namespace Microsoft.Docs.LearnValidation
             string docsetName,
             string repoUrl,
             RawHierarchy hierarchy,
-            string drySyncEndpoint)
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
             var body = JsonConvert.SerializeObject(new DrySyncMessage
             {
@@ -170,17 +167,15 @@ namespace Microsoft.Docs.LearnValidation
             });
             using var request = new HttpRequestMessage
             {
-                RequestUri = new Uri(drySyncEndpoint),
+                RequestUri = new Uri(DrySyncEndpoint),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
 
-            using var client = new HttpClient();
             Console.WriteLine($"[{PluginName}] start to call dry-sync...");
             var sw = Stopwatch.StartNew();
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var data = await response.Content.ReadAsStringAsync();
+            var response = await interceptHttpRequest(request);
+            var data = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
             var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
             Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds / 1000}s");
 
@@ -201,9 +196,5 @@ namespace Microsoft.Docs.LearnValidation
             }
             File.WriteAllText(publishFilePath, JsonConvert.SerializeObject(publishModel));
         }
-
-        private static string GetDrySyncEndpoint() => Environment.GetEnvironmentVariable("DOCS_LEARN_DRY_SYNC_ENDPOINT");
-
-        private static string GetLearnValidationEndpoint() => Environment.GetEnvironmentVariable("DOCS_LEARN_VALIDATION_ENDPOINT");
     }
 }

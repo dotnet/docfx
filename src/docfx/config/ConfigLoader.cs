@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (Config, BuildOptions, PackageResolver, FileResolver) Load(
+        public static (Config, BuildOptions, PackageResolver, FileResolver, OpsConfigAdapter) Load(
             ErrorBuilder errors, DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             // load and trace entry repository
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             var config = JsonUtility.ToObject<Config>(errors, configObject);
 
             Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
-            return (config, buildOptions, packageResolver, fileResolver);
+            return (config, buildOptions, packageResolver, fileResolver, configAdapter);
         }
 
         private static JObject? LoadConfig(ErrorBuilder errors, string directory)
