@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal class JoinTOCConfig
     {
-        public string? OutputFolder { get; private set; }
+        public PathString OutputFolder { get; private set; }
 
         public JObject? ContainerPageMetadata { get; private set; }
 

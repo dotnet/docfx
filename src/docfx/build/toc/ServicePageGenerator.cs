@@ -17,23 +17,20 @@ namespace Microsoft.Docs.Build
         private readonly PathString _docsetPath;
         private readonly Input _input;
         private readonly JoinTOCConfig _joinTOCConfig;
-        private readonly Output _output;
 
         public ServicePageGenerator(
             PathString docsetPath,
             Input input,
-            JoinTOCConfig joinTOCConfig,
-            Output output)
+            JoinTOCConfig joinTOCConfig)
         {
             _docsetPath = docsetPath;
             _input = input;
             _joinTOCConfig = joinTOCConfig;
-            _output = output;
         }
 
         public void GenerateServicePageFromTopLevelTOC(
             TableOfContentsNode node,
-            ConcurrentBag<FilePath> results,
+            List<FilePath> results,
             string directoryName = "")
         {
             if (node == null || string.IsNullOrEmpty(node.Name))
@@ -45,8 +42,8 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(node.LandingPageType.ToString()))
             {
-                var defaultOutputFolder = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? defaultOutputFolder : _joinTOCConfig.OutputFolder;
+                var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
+                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
                 var servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
 
                 var name = node.Name;
@@ -58,26 +55,26 @@ namespace Microsoft.Docs.Build
                 foreach (var item in node.Items)
                 {
                     ServicePageItem child;
-                    var childName = item.Value.Name;
-                    var childHref = item.Value.Href;
-                    var childUid = item.Value.Uid;
+                    var childName = item.Value.Name.Value;
+                    var childHref = item.Value.Href.Value;
+                    var childUid = item.Value.Uid.Value;
 
-                    if (!string.IsNullOrEmpty(childHref.Value))
+                    if (!string.IsNullOrEmpty(childHref))
                     {
-                        if (item.Source != null)
+                        if (topLevelTOCRelativeDir != null)
                         {
-                            var topLevelTOCYmlDir = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, item.Source.File.Path)));
-                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref.Value));
-                            var servicePageFullPath = Path.GetFullPath(Path.Combine(_output.OutputPath, servicePagePath.Path));
+                            var topLevelTOCYmlDir = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
+                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
+                            var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
                             var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = new SourceInfo<string?>(hrefRelativePath);
+                            childHref = hrefRelativePath;
                         }
 
-                        child = new ServicePageItem(childName, childHref, new SourceInfo<string?>(null));
+                        child = new ServicePageItem(childName, childHref, null);
                     }
                     else
                     {
-                        child = new ServicePageItem(childName, new SourceInfo<string?>(null), childUid);
+                        child = new ServicePageItem(childName, null, childUid);
                     }
 
                     children.Add(child);

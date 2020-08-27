@@ -5,13 +5,13 @@ namespace Microsoft.Docs.Build
 {
     internal class ServicePageItem
     {
-        public SourceInfo<string?> Name { get; private set; }
+        public string? Name { get; }
 
-        public SourceInfo<string?> Href { get; private set; }
+        public string? Href { get; }
 
-        public SourceInfo<string?> Uid { get; private set; }
+        public string? Uid { get; }
 
-        public ServicePageItem(SourceInfo<string?> name, SourceInfo<string?> href, SourceInfo<string?> uid)
+        public ServicePageItem(string? name, string? href, string? uid)
         {
             Name = name;
             Href = href;

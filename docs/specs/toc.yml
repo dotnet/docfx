@@ -1746,7 +1746,7 @@ repos:
             {
               "ReferenceTOC": "a/api/TOC.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
-              "OutputFolder": "results",
+              "OutputFolder": "a/results",
               "ContainerPageMetadata": {"langs": ["csharp"]}
             }
           ],
@@ -1872,7 +1872,7 @@ outputs:
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'children'.","line":0,"column":0}
   a/api/a.json:
   a/api/doc.json:
-  results/apireference.json: |
+  a/results/apireference.json: |
     {
       "name": "API Reference",
       "fullName": "API Reference",
@@ -1880,15 +1880,15 @@ outputs:
       "langs": ["csharp"],
       "pageType": "root"
     }
-  results/apireference/appservice.json: |
+  a/results/apireference/appservice.json: |
     {
       "name": "App Service",
       "fullName": "App Service",
-      "children": [{"name": "Client","href": "../../../api/doc"},{"name": "Other"}],
+      "children": [{"name": "Client","href": "../../api/doc"},{"name": "Other"}],
       "langs": ["csharp"],
       "pageType": "service"
     }
-  results/apireference/appservice/client.json: |
+  a/results/apireference/appservice/client.json: |
     {
       "name": "Client",
       "fullName": "Client",
@@ -1897,7 +1897,7 @@ outputs:
       "langs": ["csharp"],
       "pageType": "service"
     }
-  results/apireference/appservice/client/client.json: |
+  a/results/apireference/appservice/client/client.json: |
     {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}
   a/api/toc.json: |
     {

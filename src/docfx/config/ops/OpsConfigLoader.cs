@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                 var item = new JObject();
                 if (!string.IsNullOrEmpty(config.OutputFolder))
                 {
-                    item["outputFolder"] = new PathString(buildSourceFolder).GetRelativePath(new PathString(config.OutputFolder));
+                    item["outputFolder"] = buildSourceFolder.GetRelativePath(new PathString(config.OutputFolder));
                 }
                 if (config.ContainerPageMetadata != null)
                 {

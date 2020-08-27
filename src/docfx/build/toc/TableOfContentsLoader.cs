@@ -25,18 +25,15 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
         private readonly ErrorBuilder _errors;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
-        private readonly Output _output;
 
-        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)> _cache =
-                     new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)>();
+        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>, List<FilePath>)> _cache =
+                     new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>, List<FilePath>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
         private static readonly AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
                             new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
-
-        private ConcurrentBag<FilePath> _servicePages = new ConcurrentBag<FilePath>();
 
         public TableOfContentsLoader(
             PathString docsetPath,
@@ -48,8 +45,7 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             ContentValidator contentValidator,
             Config config,
-            ErrorBuilder errors,
-            Output output)
+            ErrorBuilder errors)
         {
             _docsetPath = docsetPath;
             _input = input;
@@ -61,14 +57,14 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _errors = errors;
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
-            _output = output;
         }
 
-        public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
+        public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs, List<FilePath> servicePages)
             Load(Document file)
         {
             return _cache.GetOrAdd(file.FilePath, _ =>
             {
+                var servicePages = new List<FilePath>();
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
                 var node = LoadTocFile(file, file, referencedFiles, referencedTocs);
@@ -80,10 +76,10 @@ namespace Microsoft.Docs.Build
                         node = JoinToc(node, joinTOCConfig.TopLevelToc);
 
                         // Generate Service Page.
-                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _output);
+                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
                         if (node.Items != null && node.Items.Count > 0)
                         {
-                            servicePage.GenerateServicePageFromTopLevelTOC(node.Items[0], _servicePages);
+                            servicePage.GenerateServicePageFromTopLevelTOC(node.Items[0], servicePages);
                         }
                         else
                         {
@@ -96,11 +92,9 @@ namespace Microsoft.Docs.Build
                         }
                     }
                 }
-                return (node, referencedFiles, referencedTocs);
+                return (node, referencedFiles, referencedTocs, servicePages);
             });
         }
-
-        public ConcurrentBag<FilePath> GetServicePages() => _servicePages;
 
         private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
         {
