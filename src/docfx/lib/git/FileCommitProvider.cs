@@ -272,19 +272,16 @@ namespace Microsoft.Docs.Build
             git_revwalk_new(out var walk, _repo);
             git_revwalk_sorting(walk, (1 << 0) | (1 << 1) /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
 
-            if (git_revparse_single(out var headCommit, _repo, committish) != 0)
+            IntPtr headCommit = IntPtr.Zero;
+            if (GitUtility.GetFallbackBranch(committish).All(branch => git_revparse_single(out headCommit, _repo, branch) != 0))
             {
-                if (!GitUtility.IsDefaultBranch(committish)
-                    || git_revparse_single(out headCommit, _repo, GitUtility.GetDefaultBranchFallbackBranch(committish)) != 0)
-                {
-                    git_object_free(walk);
-                    throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();
-                }
+                git_object_free(walk);
+                throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();
             }
 
-            var lastCommitId = *git_object_id(headCommit);
+            var lastCommitId = *git_object_id(headCommit!);
             git_revwalk_push(walk, &lastCommitId);
-            git_object_free(headCommit);
+            git_object_free(headCommit!);
 
             while (true)
             {

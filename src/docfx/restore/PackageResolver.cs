@@ -143,42 +143,26 @@ namespace Microsoft.Docs.Build
             DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
             DeleteIfExist(Path.Combine(cwd, ".git/shallow.lock"));
 
-            try
+            var succeeded = false;
+            foreach (var branch in GitUtility.GetFallbackBranch(committish))
             {
-                GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
-            }
-            catch (InvalidOperationException)
-            {
-                if (GitUtility.IsDefaultBranch(committish))
+                try
                 {
-                    try
+                    if (branch != committish)
                     {
-                        var defaultBranchFallbackBranch = GitUtility.GetDefaultBranchFallbackBranch(committish);
-                        Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {defaultBranchFallbackBranch} branch");
-                        GitUtility.Fetch(_config, cwd, url, $"+{defaultBranchFallbackBranch}:{defaultBranchFallbackBranch}", $"{fetchOption} {depthOneOption}");
-                        committish = defaultBranchFallbackBranch;
+                        Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {branch} branch");
                     }
-                    catch (InvalidOperationException)
-                    {
-                        TryFetchAll();
-                    }
+                    GitUtility.Fetch(_config, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
+                    succeeded = true;
+                    committish = branch;
+                    break;
                 }
-                else
+                catch (InvalidOperationException)
                 {
-                    TryFetchAll();
                 }
             }
 
-            try
-            {
-                GitUtility.Checkout(cwd, committish, "--force");
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
-            }
-
-            void TryFetchAll()
+            if (!succeeded)
             {
                 try
                 {
@@ -194,6 +178,15 @@ namespace Microsoft.Docs.Build
 
                     throw Errors.System.GitCloneFailed(url, committish).ToException(ex);
                 }
+            }
+
+            try
+            {
+                GitUtility.Checkout(cwd, committish, "--force");
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
             }
         }
 

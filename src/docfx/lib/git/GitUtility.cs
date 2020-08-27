@@ -47,18 +47,14 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool IsDefaultBranch(string branch)
+        public static string [] GetFallbackBranch(string branch)
         {
-            return branch == "master" || branch == "main";
-        }
-
-        public static string GetDefaultBranchFallbackBranch(string branch)
-        {
-            if (!IsDefaultBranch(branch))
+            return branch switch
             {
-                return branch;
-            }
-            return branch == "master" ? "main" : "master";
+                "master" => new string[] { "main", "master" },
+                "main" => new string[] { "main", "master" },
+                _ => new string[] { branch },
+            };
         }
 
         public static unsafe (string? url, string? branch, string? commit) GetRepoInfo(string repoPath)
