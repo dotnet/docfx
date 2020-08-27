@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -23,8 +22,6 @@ namespace Microsoft.Docs.Build
         private const int MaxEventPropertyLength = 8192;
         private const int MaxChildrenLength = 5;
         private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
-        private static readonly ConcurrentDictionary<FilePath, (string, string, string)> s_fileTypeCache =
-            new ConcurrentDictionary<FilePath, (string, string, string)>();
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
@@ -95,10 +92,13 @@ namespace Microsoft.Docs.Build
                 docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
             }
 
-            var properties = new Dictionary<string, string>();
-            properties["DocsetName"] = docsetName;
-            properties["Config"] = docfxConfigTelemetryValue;
-            properties["ContentHash"] = hashCode;
+            var properties = new Dictionary<string, string>
+            {
+                ["DocsetName"] = docsetName,
+                ["Config"] = docfxConfigTelemetryValue,
+                ["ContentHash"] = hashCode,
+            };
+
             TrackEvent("docfx.json", properties);
         }
 
@@ -125,15 +125,15 @@ namespace Microsoft.Docs.Build
             s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackBuildFileTypeCount(FilePath filePath, PublishItem publishItem)
+        public static void TrackBuildFileTypeCount(Document file)
         {
-            var (fileExtension, documentType, mimeType) = GetFileType(filePath, publishItem.ContentType, publishItem.Mime);
+            var (fileExtension, documentType, mimeType) = GetFileType(file);
             s_buildFileTypeCountMetric.TrackValue(1, fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
         public static void TrackMarkdownElement(Document file, Dictionary<string, int> elementCount)
         {
-            var (fileExtension, documentType, mimeType) = GetFileType(file.FilePath, file.ContentType, file.Mime.Value);
+            var (fileExtension, documentType, mimeType) = GetFileType(file);
             foreach (var (elementType, value) in elementCount)
             {
                 s_markdownElementCountMetric.TrackValue(
@@ -185,14 +185,11 @@ namespace Microsoft.Docs.Build
             s_telemetryClient.TrackEvent(eventTelemetry);
         }
 
-        private static (string fileExtension, string documentType, string mimeType) GetFileType(FilePath filePath, ContentType contentType, string? mime)
+        private static (string fileExtension, string documentType, string mimeType) GetFileType(Document file)
         {
-            return s_fileTypeCache.GetOrAdd(filePath, filePath =>
-            {
-                var fileExtension = CoalesceEmpty(Path.GetExtension(filePath.Path)?.ToLowerInvariant());
-                var mimeType = CoalesceEmpty(mime);
-                return (fileExtension, contentType.ToString(), mimeType);
-            });
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
+            var mimeType = CoalesceEmpty(file.Mime);
+            return (fileExtension, file.ContentType.ToString(), mimeType);
         }
 
         private static string CoalesceEmpty(string? str)

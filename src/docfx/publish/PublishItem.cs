@@ -35,15 +35,6 @@ namespace Microsoft.Docs.Build
         [JsonExtensionData]
         public JObject? ExtensionData { get; }
 
-        [JsonIgnore]
-        public ContentType ContentType { get; }
-
-        [JsonIgnore]
-        public string? PageType { get; }
-
-        [JsonIgnore]
-        public string? Mime { get; }
-
         public PublishItem(
             string url,
             string? path,
@@ -51,9 +42,6 @@ namespace Microsoft.Docs.Build
             string locale,
             MonikerList monikers,
             string? configMonikerRange,
-            ContentType contentType,
-            string? pageType,
-            string? mime,
             bool hasError,
             JObject? extensionData)
         {
@@ -63,9 +51,6 @@ namespace Microsoft.Docs.Build
             Locale = locale;
             Monikers = monikers;
             ConfigMonikerRange = configMonikerRange;
-            ContentType = contentType;
-            PageType = pageType;
-            Mime = mime;
             HasError = hasError;
             ExtensionData = extensionData;
         }

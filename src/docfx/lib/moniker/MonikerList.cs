@@ -32,11 +32,11 @@ namespace Microsoft.Docs.Build
             _monikers = monikers.Select(m => m.ToLowerInvariant()).Distinct().OrderBy(m => m, StringComparer.Ordinal).ToArray();
         }
 
-        public bool? IsCanonicalVersion(string? canonicalVersion)
+        public bool IsCanonicalVersion(string? canonicalVersion)
         {
-            if (_monikers is null || canonicalVersion is null)
+            if (_monikers is null || string.IsNullOrEmpty(canonicalVersion))
             {
-                return null;
+                return true;
             }
 
             return _monikers.Contains(canonicalVersion);

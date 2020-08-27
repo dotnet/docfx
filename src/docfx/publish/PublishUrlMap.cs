@@ -43,8 +43,9 @@ namespace Microsoft.Docs.Build
             _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
 
-        public string? GetCanonicalVersion(string url)
+        public string? GetCanonicalVersion(FilePath file)
         {
+            var url = _documentProvider.GetSiteUrl(file);
             return _canonicalVersionMap.GetOrAdd(url, GetCanonicalVersionCore);
         }
 

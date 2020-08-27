@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText)
         {
-            _contentValidator.ValidateImageLink((Document)InclusionContext.RootFile, href, origin, altText);
+            _contentValidator.ValidateImageLink(((Document)InclusionContext.RootFile).FilePath, href, origin, altText);
             var link = GetLink(href);
             return link;
         }
@@ -375,7 +375,7 @@ namespace Microsoft.Docs.Build
 
         private string? GetCanonicalVersion()
         {
-            return _publishUrlMap.Value.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
+            return _publishUrlMap.Value.GetCanonicalVersion(((Document)InclusionContext.RootFile).FilePath);
         }
 
         private class Status

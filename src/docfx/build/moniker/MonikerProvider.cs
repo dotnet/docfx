@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _monikerRangeCache = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
         private readonly ConcurrentDictionary<FilePath, MonikerList> _monikerCache = new ConcurrentDictionary<FilePath, MonikerList>();
+        private readonly ConcurrentDictionary<FilePath, MonikerList> _monikerIgnoreExcludeMonikersCache = new ConcurrentDictionary<FilePath, MonikerList>();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
@@ -40,7 +41,10 @@ namespace Microsoft.Docs.Build
             _monikerOrder = GetMonikerOrder(monikerDefinition);
         }
 
-        public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers) => _rangeParser.Validate(errors, monikers);
+        public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers)
+        {
+            return _rangeParser.Validate(errors, monikers);
+        }
 
         public int GetMonikerOrder(string moniker)
         {
@@ -84,10 +88,10 @@ namespace Microsoft.Docs.Build
             var zoneLevelMonikers = _rangeParser.Parse(errors, rangeString);
             var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers);
 
-            if (!monikers.HasMonikers)
+            var monikersIgnoreExcludeMonikers = _monikerIgnoreExcludeMonikersCache[file];
+            if (!monikersIgnoreExcludeMonikers.Intersect(zoneLevelMonikers).HasMonikers)
             {
                 errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
-                return monikers;
             }
             return monikers;
         }
@@ -153,12 +157,14 @@ namespace Microsoft.Docs.Build
                 fileMonikers = configMonikers;
             }
 
-            MonikerList excludeMonikers = default;
+            // construct cache for monikers ignoring exclude_moniker
+            _monikerIgnoreExcludeMonikersCache.TryAdd(file, fileMonikers);
+
             if (metadata.ExcludeMonikers != null)
             {
-                excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
+                var excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
+                fileMonikers = fileMonikers.Except(excludeMonikers);
             }
-            fileMonikers = fileMonikers.Except(excludeMonikers);
 
             // for non-markdown documents, if config monikers is not defined
             // just use file monikers

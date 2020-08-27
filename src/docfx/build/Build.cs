@@ -59,14 +59,15 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                new OpsPreProcessor(config, errors, buildOptions).Run();
+                var repositoryProvider = new RepositoryProvider(errors, buildOptions, config);
+                new OpsPreProcessor(config, errors, buildOptions, repositoryProvider).Run();
 
                 var sourceMap = new SourceMap(errors, new PathString(buildOptions.DocsetPath), config, fileResolver);
                 var validationRules = GetContentValidationRules(config, fileResolver);
 
                 errors = new ErrorLog(errors, config, sourceMap, validationRules);
 
-                using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap);
+                using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap, repositoryProvider);
                 Run(context);
 
                 new OpsPostProcessor(config, errors, buildOptions).Run();
@@ -128,6 +129,10 @@ namespace Microsoft.Docs.Build
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
+
+            Telemetry.TrackBuildFileTypeCount(file);
+            context.ContentValidator.ValidateManifest(file.FilePath, file.SiteUrl);
+
             switch (file.ContentType)
             {
                 case ContentType.TableOfContents:
