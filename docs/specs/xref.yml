@@ -1221,14 +1221,13 @@ outputs:
         ]
     }
 ---
-# define UID in non-live branch
+# Append branch query string to xrefmap for non-live branch when url type is docs
 repos:
   https://docs.com/test#test:
     - files:
         docfx.yml:
         docs/a.md: |
           ---
-          title: Title from yaml header a
           uid: a
           ---
 outputs:
@@ -1236,7 +1235,7 @@ outputs:
   .xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=test"}],"properties": {"tags": ["/","internal"]}}
 ---
-# define UID in live branch
+# No branch query string in xrefmap for live branch when url type is docs
 repos:
   https://docs.com/test#live:
     - files:
@@ -1245,13 +1244,27 @@ repos:
           basePath: /base_path
         docs/a.md: |
           ---
-          title: Title from yaml header a
           uid: a
           ---
 outputs:
   base_path/docs/a.json:
   .xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}],"properties": {"tags": ["/base_path","public"]}}
+---
+# No branch query string in xrefmap for non-live branch when url type is not docs
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputUrlType: ugly
+        docs/a.md: |
+          ---
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a.html"}],"properties": undefined }
 ---
 # resolve UID with unknown query
 repos:

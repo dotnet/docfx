@@ -138,26 +138,31 @@ namespace Microsoft.Docs.Build
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
-            var references =
-                isLocalizedBuild
-                ? Array.Empty<ExternalXrefSpec>()
-                : _internalXrefMap.Value.Values
-                .Select(xrefs =>
-                {
-                    var xref = xrefs.First();
+            var references = Array.Empty<ExternalXrefSpec>();
 
-                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                    // output xref map with URL appending "?branch=master" for master branch
-                    var query = repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
-                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+            if (!isLocalizedBuild)
+            {
+                references = _internalXrefMap.Value.Values
+                    .Select(xrefs =>
+                    {
+                        var xref = xrefs.First();
 
-                    var xrefSpec = xref.ToExternalXrefSpec(href);
-                    return xrefSpec;
-                })
-                .OrderBy(xref => xref.Uid).ToArray();
+                        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+                        // output xref map with URL appending "?branch=master" for master branch
+                        var query = _config.OutputUrlType == OutputUrlType.Docs && repositoryBranch != "live"
+                            ? $"?branch={repositoryBranch}" : "";
+
+                        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+
+                        return xref.ToExternalXrefSpec(href);
+                    })
+                    .OrderBy(xref => xref.Uid)
+                    .ToArray();
+            }
 
             var model = new XrefMapModel { References = references };
-            if (basePath != null && references.Length > 0)
+
+            if (_config.OutputUrlType == OutputUrlType.Docs && references.Length > 0)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
