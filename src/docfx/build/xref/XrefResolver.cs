@@ -222,7 +222,7 @@ namespace Microsoft.Docs.Build
                 {
                     spec = specs[0];
                 }
-                else 
+                else
                 {
                     var referencingMonikers = _monikerProvider.GetFileLevelMonikers(ErrorWriter.Null, referencingFile.FilePath);
                     if (!referencingMonikers.HasMonikers)
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
                         spec = specs.FirstOrDefault(s => s.Monikers.Intersect(referencingMonikers).HasMonikers) ?? specs[0];
                     }
                 }
-                
+
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, dependencyType, referencingFile.ContentType);
                 var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
