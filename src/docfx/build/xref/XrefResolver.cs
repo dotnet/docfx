@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                    let xref = xrefs[0]
                    orderby xref.Uid.Value
                    select xref.ToExternalXrefSpec(
-                       UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", repositoryBranch == "master" ? "?branch=master" : "")))
+                       UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "")))
                   .ToArray();
 
             var model = new XrefMapModel { References = references };
