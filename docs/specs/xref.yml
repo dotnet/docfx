@@ -1519,7 +1519,7 @@ inputs:
     ### YamlMime:TestData
     uid: a
     name: name
-  docs/v1/toc.yml: |
+  docs/v1/TOC.yml: |
     items:
       - name: node
         uid: a
@@ -1527,7 +1527,7 @@ inputs:
     ### YamlMime:TestData
     uid: a
     name: name
-  docs/v2/toc.yml: |
+  docs/v2/TOC.yml: |
     items:
       - name: node
         uid: a
