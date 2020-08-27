@@ -20,14 +20,11 @@ namespace Microsoft.Docs.LearnValidation
 
         private readonly RestClient _client;
         private readonly string _branch;
-        private readonly bool _needBranchFallback;
-        private static readonly string[] _nofallbackBranches = new[] { "main", "master", "live" };
 
         public LearnValidationHelper(string endpoint, string branch)
         {
             _client = string.IsNullOrEmpty(endpoint) ? null : new RestClient(endpoint);
             _branch = branch;
-            _needBranchFallback = !_nofallbackBranches.Contains(_branch);
         }
 
         public bool IsModule(string uid)
@@ -52,31 +49,28 @@ namespace Microsoft.Docs.LearnValidation
 
             AppendHeaderAndParameter(request);
 
-            var response = _client.Execute(request);
-
-            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
-            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
-
-            // Fallback priority: current branch -> main -> master
-            if (response.StatusCode != HttpStatusCode.OK && _needBranchFallback)
+            var fallbackBranchs = _branch switch
             {
-                request.AddOrUpdateParameter("branch", "main");
+                "live" => new string[] { "live" },
+                "master" => new string[] { "main", "master" },
+                "main" => new string[] { "main", "master" },
+                _ => new string[] { _branch, "main", "master" },
+            };
+
+            IRestResponse response;
+            foreach (var branch in fallbackBranchs)
+            {
+                request.AddOrUpdateParameter("branch", branch);
                 response = _client.Execute(request);
 
                 Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
                 Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
-
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    request.AddOrUpdateParameter("branch", "master");
-                    response = _client.Execute(request);
-
-                    Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
-                    Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
+                    return true;
                 }
             }
-
-            return response.StatusCode == HttpStatusCode.OK;
+            return false;
         }
 
         private void AppendHeaderAndParameter(RestRequest request)
