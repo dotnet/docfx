@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static string [] GetFallbackBranch(string branch)
+        public static string[] GetFallbackBranch(string branch)
         {
             return branch switch
             {
