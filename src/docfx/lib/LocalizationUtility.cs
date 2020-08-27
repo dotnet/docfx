@@ -109,7 +109,12 @@ namespace Microsoft.Docs.Build
                             try
                             {
                                 var defaultBranchFallbackBranch = GitUtility.GetDefaultBranchFallbackBranch(contributionBranch);
-                                GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{defaultBranchFallbackBranch}:{defaultBranchFallbackBranch}", "--update-head-ok");
+                                GitUtility.Fetch(
+                                    config,
+                                    repository.Path,
+                                    repository.Remote,
+                                    $"+{defaultBranchFallbackBranch}:{defaultBranchFallbackBranch}",
+                                    "--update-head-ok");
                             }
                             catch (InvalidOperationException e)
                             {
