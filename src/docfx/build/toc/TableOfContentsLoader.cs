@@ -77,19 +77,13 @@ namespace Microsoft.Docs.Build
 
                         // Generate Service Page.
                         ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
-                        if (node.Items != null && node.Items.Count > 0)
+
+                        foreach (var item in node.Items)
                         {
-                            servicePage.GenerateServicePageFromTopLevelTOC(node.Items[0], servicePages);
-                        }
-                        else
-                        {
-                            _errors.Add(Errors.JsonSchema.MissingAttribute(node.Name, "top-level-toc items or children"));
+                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
                         }
 
-                        if (node.Items != null)
-                        {
-                            node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
-                        }
+                        node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
                     }
                 }
                 return (node, referencedFiles, referencedTocs, servicePages);

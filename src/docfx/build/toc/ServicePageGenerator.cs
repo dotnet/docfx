@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             List<FilePath> results,
             string directoryName = "")
         {
-            if (node == null || string.IsNullOrEmpty(node.Name))
+            if (string.IsNullOrEmpty(node.Name))
             {
                 return;
             }
