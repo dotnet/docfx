@@ -361,7 +361,8 @@ namespace Microsoft.Docs.Build
             // process uid then if href is empty or null
             if (!string.IsNullOrEmpty(uid.Value))
             {
-                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(uid!, filePath, rootPath);
+                var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(
+                    uid!, filePath, rootPath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath.FilePath));
                 _errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null && addToReferencedFiles)

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -21,14 +20,11 @@ namespace Microsoft.Docs.LearnValidation
 
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _interceptHttpRequest;
         private readonly string _branch;
-        private readonly bool _needBranchFallback;
-        private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
 
         public LearnValidationHelper(string branch, Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
             _interceptHttpRequest = interceptHttpRequest;
             _branch = branch;
-            _needBranchFallback = !_nofallbackBranches.Contains(_branch);
         }
 
         public bool IsModule(string uid)
@@ -53,20 +49,27 @@ namespace Microsoft.Docs.LearnValidation
             using var request = new HttpRequestMessage(HttpMethod.Get, requestEndpoint);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var (requestUrl, data) = CheckWithBranch(request, requestEndpoint, _branch);
-
-            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, requestUrl);
-            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, data);
-
-            if (data == "{}" && _needBranchFallback)
+            var fallbackBranchs = _branch switch
             {
-                (requestUrl, data) = CheckWithBranch(request, requestEndpoint, "master");
+                "live" => new string[] { "live" },
+                "master" => new string[] { "main", "master" },
+                "main" => new string[] { "main", "master" },
+                _ => new string[] { _branch, "main", "master" },
+            };
+
+            string requestUrl, data;
+            foreach (var branch in fallbackBranchs)
+            {
+                (requestUrl, data) = CheckWithBranch(request, requestEndpoint, _branch);
 
                 Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, requestUrl);
                 Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, data);
+                if (data != "{}")
+                {
+                    return true;
+                }
             }
-
-            return data != "{}";
+            return false;
         }
 
         private (string requestUrl, string data) CheckWithBranch(HttpRequestMessage request, string endpoint, string branch)

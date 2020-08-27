@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         {
             _repo = repo;
             _config = config;
-            _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch);
+            _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch!);
             _buildTime = config.BuildTime ?? DateTime.UtcNow;
 
             var exists = File.Exists(_commitBuildTimePath);
