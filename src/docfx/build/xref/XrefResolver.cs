@@ -139,17 +139,23 @@ namespace Microsoft.Docs.Build
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
-            // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-            // output xref map with URL appending "?branch=master" for master branch
             var references =
                 isLocalizedBuild
                 ? Array.Empty<ExternalXrefSpec>()
-                : (from xrefs in _internalXrefMap.Value.Values
-                   let xref = xrefs[0]
-                   orderby xref.Uid.Value
-                   select xref.ToExternalXrefSpec(
-                       UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "")))
-                  .ToArray();
+                : _internalXrefMap.Value.Values
+                .Select(xrefs =>
+                {
+                    var xref = xrefs.First();
+
+                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var query = repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
+                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+
+                    var xrefSpec = xref.ToExternalXrefSpec(href);
+                    return xrefSpec;
+                })
+                .OrderBy(xref => xref.Uid).ToArray();
 
             var model = new XrefMapModel { References = references };
             if (basePath != null && references.Length > 0)
@@ -224,7 +230,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    var referencingMonikers = _monikerProvider.GetFileLevelMonikers(ErrorWriter.Null, referencingFile.FilePath);
+                    var referencingMonikers = _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, referencingFile.FilePath);
                     if (!referencingMonikers.HasMonikers)
                     {
                         spec = specs[0];
