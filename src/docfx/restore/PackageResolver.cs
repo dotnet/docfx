@@ -149,17 +149,17 @@ namespace Microsoft.Docs.Build
             }
             catch (InvalidOperationException)
             {
-                if (committish == "main")
+                if (GitUtility.IsDefaultBranch(committish))
                 {
                     try
                     {
-                        Log.Write($"Main branch doesn't exist on repository {url}, fallback to master branch");
-                        committish = "master";
-                        GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
+                        var defaultBranchFallbackBranch = GitUtility.GetDefaultBranchFallbackBranch(committish);
+                        Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {defaultBranchFallbackBranch} branch");
+                        GitUtility.Fetch(_config, cwd, url, $"+{defaultBranchFallbackBranch}:{defaultBranchFallbackBranch}", $"{fetchOption} {depthOneOption}");
+                        committish = defaultBranchFallbackBranch;
                     }
                     catch (InvalidOperationException)
                     {
-                        committish = "main";
                         TryFetchAll();
                     }
                 }

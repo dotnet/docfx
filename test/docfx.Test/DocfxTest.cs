@@ -130,13 +130,8 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
-                    var (path, _, fragment) = UrlUtility.SplitUrl(url);
-
-                    path = path.TrimEnd('/', '\\');
-                    var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
-                    var branch = hasRefSpec ? fragment.Substring(1) : "main";
-
-                    TestUtility.CreateGitRepository(repos[path], commits, path, branch, variables);
+                    var packageUrl = new PackagePath(url);
+                    TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
                 TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);

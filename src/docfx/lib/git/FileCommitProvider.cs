@@ -274,7 +274,8 @@ namespace Microsoft.Docs.Build
 
             if (git_revparse_single(out var headCommit, _repo, committish) != 0)
             {
-                if (committish != "main" || git_revparse_single(out headCommit, _repo, "master") != 0)
+                if (!GitUtility.IsDefaultBranch(committish)
+                    || git_revparse_single(out headCommit, _repo, GitUtility.GetDefaultBranchFallbackBranch(committish)) != 0)
                 {
                     git_object_free(walk);
                     throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();

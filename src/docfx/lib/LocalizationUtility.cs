@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
-                foreach (var branch in new[] { fallbackBranch, "master" })
+                foreach (var branch in new[] { fallbackBranch, "main" })
                 {
                     if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                     {
@@ -77,10 +77,6 @@ namespace Microsoft.Docs.Build
             if (branch != null && branch.EndsWith("-sxs"))
             {
                 contributionBranch = branch[0..^4];
-                if (contributionBranch == "master")
-                {
-                    contributionBranch = "main";
-                }
                 return true;
             }
 
@@ -108,11 +104,12 @@ namespace Microsoft.Docs.Build
                     }
                     catch (InvalidOperationException ex)
                     {
-                        if (contributionBranch == "main")
+                        if (GitUtility.IsDefaultBranch(contributionBranch))
                         {
                             try
                             {
-                                GitUtility.Fetch(config, repository.Path, repository.Remote, $"+master:master", "--update-head-ok");
+                                var defaultBranchFallbackBranch = GitUtility.GetDefaultBranchFallbackBranch(contributionBranch);
+                                GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{defaultBranchFallbackBranch}:{defaultBranchFallbackBranch}", "--update-head-ok");
                             }
                             catch (InvalidOperationException e)
                             {
