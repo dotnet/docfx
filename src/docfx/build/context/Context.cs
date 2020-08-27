@@ -75,7 +75,13 @@ namespace Microsoft.Docs.Build
         public SearchIndexBuilder SearchIndexBuilder { get; }
 
         public Context(
-            ErrorBuilder errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
+            ErrorBuilder errorLog,
+            Config config,
+            BuildOptions buildOptions,
+            PackageResolver packageResolver,
+            FileResolver fileResolver,
+            SourceMap sourceMap,
+            RepositoryProvider repositoryProvider)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
 
@@ -85,8 +91,8 @@ namespace Microsoft.Docs.Build
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
             SourceMap = sourceMap;
+            RepositoryProvider = repositoryProvider;
 
-            RepositoryProvider = new RepositoryProvider(errorLog, buildOptions, config);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);

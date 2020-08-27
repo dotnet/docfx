@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
-        public IReadOnlyDictionary<string, InternalXrefSpec> Build()
+        public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
@@ -124,12 +124,12 @@ namespace Microsoft.Docs.Build
             return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
-        private InternalXrefSpec AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
+        private InternalXrefSpec[] AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
         {
             // no conflicts
             if (specsWithSameUid.Length == 1)
             {
-                return specsWithSameUid.First();
+                return specsWithSameUid;
             }
 
             // multiple uid conflicts without moniker range definition
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).First();
+            return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).ToArray();
         }
 
         private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
