@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Loading TOC"))
             {
                 var tocs = new ConcurrentBag<FilePath>();
-                var servicePages = new List<FilePath>();
+                var allServicePages = new ConcurrentBag<FilePath>();
 
                 // Parse and split TOC
                 ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
                     SplitToc(file, _tocParser.Parse(file, _errors), tocs);
                 });
 
-                var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs, List<FilePath> servicePages)>();
+                var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
 
                 // Load TOC
                 ParallelUtility.ForEach(_errors, tocs, path =>
@@ -194,7 +194,12 @@ namespace Microsoft.Docs.Build
                     var file = _documentProvider.GetDocument(path);
                     var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
 
-                    tocReferences.TryAdd(file, (referencedDocuments, referencedTocs, servicePages));
+                    tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+
+                    foreach (var servicepage in servicePages)
+                    {
+                        allServicePages.Add(servicepage);
+                    }
                 });
 
                 // Create TOC reference map
@@ -211,19 +216,10 @@ namespace Microsoft.Docs.Build
                     where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental
                     group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
-                var servicePagesFromTOC =
-                    from item in tocReferences
-                    where item.Value.servicePages.Count > 0
-                    select item.Value.servicePages;
-                foreach (var servicepage in servicePagesFromTOC)
-                {
-                    servicePages.AddRange(servicepage);
-                }
-
                 tocToTocs.TrimExcess();
                 docToTocs.TrimExcess();
 
-                return (tocToTocs, docToTocs, servicePages);
+                return (tocToTocs, docToTocs, allServicePages.ToList());
             }
         }
 

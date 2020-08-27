@@ -26,6 +26,9 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
             new ConcurrentDictionary<FilePath, (string?, JToken)>();
 
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache
+                   = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
+
         private readonly PathString? _alternativeFallbackFolder;
 
         public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
@@ -219,6 +222,45 @@ namespace Microsoft.Docs.Build
             Debug.Assert(file.Origin == FileOrigin.Generated);
 
             return _generatedContents[file].yamlMime;
+        }
+
+        public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath)
+        {
+            return _mimeTypeCache.GetOrAdd(filePath, path =>
+            {
+                return contentType == ContentType.Page ? ReadMimeFromFile(path) : default;
+            });
+        }
+
+        private SourceInfo<string?> ReadMimeFromFile(FilePath filePath)
+        {
+            switch (filePath.Format)
+            {
+                // TODO: we could have not depend on this exists check, but currently
+                //       LinkResolver works with Document and return a Document for token files,
+                //       thus we are forced to get the mime type of a token file here even if it's not useful.
+                //
+                //       After token resolve does not create Document, this Exists check can be removed.
+                case FileFormat.Json:
+                    using (var reader = ReadText(filePath))
+                    {
+                        return JsonUtility.ReadMime(reader, filePath);
+                    }
+                case FileFormat.Yaml:
+                    if (filePath.Origin == FileOrigin.Generated)
+                    {
+                        var yamlMime = GetYamlMimeFromGenerated(filePath);
+                        return new SourceInfo<string?>(yamlMime, new SourceInfo(filePath, 1, 1));
+                    }
+                    using (var reader = ReadText(filePath))
+                    {
+                        return new SourceInfo<string?>(YamlUtility.ReadMime(reader), new SourceInfo(filePath, 1, 1));
+                    }
+                case FileFormat.Markdown:
+                    return new SourceInfo<string?>("Conceptual", new SourceInfo(filePath, 1, 1));
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
         private byte[]? ReadBytesFromGit(PathString fullPath)
