@@ -1251,7 +1251,7 @@ outputs:
   .xrefmap.json: |
     {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}],"properties": {"tags": ["/base_path","public"]}}
 ---
-# No branch query string in xrefmap for when url type is not docs
+# No branch query string in xrefmap for non-live branch when url type is not docs
 repos:
   https://docs.com/test#test:
     - files:
