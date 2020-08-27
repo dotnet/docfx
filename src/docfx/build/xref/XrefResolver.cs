@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
-        private readonly MonikerProvider _monikerProvider;
 
         public XrefResolver(
             Config config,
@@ -52,7 +51,6 @@ namespace Microsoft.Docs.Build
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
-            _monikerProvider = monikerProvider;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
@@ -107,7 +105,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
-            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot, MonikerList? monikers = null)
         {
             if (string.IsNullOrEmpty(uid))
             {
@@ -115,7 +113,7 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
+            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (error != null || xrefSpec == null || href == null)
             {
                 return (error, null, "", null);
@@ -124,9 +122,10 @@ namespace Microsoft.Docs.Build
             return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
         }
 
-        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
+            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot, MonikerList? monikers = null)
         {
-            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec == null)
             {
                 return (error, null, null);
@@ -193,9 +192,10 @@ namespace Microsoft.Docs.Build
             return url;
         }
 
-        private (Error?, IXrefSpec?, string? href) Resolve(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        private (Error?, IXrefSpec?, string? href) Resolve(
+            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot, MonikerList? monikers = null)
         {
-            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
             {
                 (xrefSpec, href) = ResolveExternalXrefSpec(uid);
@@ -219,25 +219,22 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (IXrefSpec?, string? href) ResolveInternalXrefSpec(string uid, Document referencingFile, Document inclusionRoot)
+        private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
+            string uid, Document referencingFile, Document inclusionRoot, MonikerList? monikers = null)
         {
             if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
             {
                 var spec = default(InternalXrefSpec);
-                if (specs.Length == 1)
+                if (!monikers.HasValue || !monikers.Value.HasMonikers)
                 {
                     spec = specs[0];
                 }
                 else
                 {
-                    var referencingMonikers = _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, referencingFile.FilePath);
-                    if (!referencingMonikers.HasMonikers)
+                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value));
+                    if (spec == null)
                     {
-                        spec = specs[0];
-                    }
-                    else
-                    {
-                        spec = specs.FirstOrDefault(s => s.Monikers.Intersect(referencingMonikers).HasMonikers) ?? specs[0];
+                        return default;
                     }
                 }
 
