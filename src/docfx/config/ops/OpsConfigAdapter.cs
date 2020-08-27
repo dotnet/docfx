@@ -288,7 +288,7 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Execute(HttpRequestMessage request, string? value404 = null)
         {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Exexuting request '{request.Method} {request.RequestUri}'"))
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
             {
                 _credentialProvider?.Invoke(request);
 

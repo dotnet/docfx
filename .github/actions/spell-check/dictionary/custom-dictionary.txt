@@ -262,6 +262,7 @@ microsoft
 microsoftonline
 mingwli
 missingapi
+mslearnhierarchy
 monikertrees
 monodoc
 monodocer
