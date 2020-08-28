@@ -303,7 +303,8 @@ namespace Microsoft.Docs.Build
                     if (!_mustacheXrefSpec.ContainsKey((file.FilePath, content)))
                     {
                         // the content here must be an UID, not href
-                        var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
+                        var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
+                            content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file.FilePath));
                         errors.AddIfNotNull(xrefError);
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
