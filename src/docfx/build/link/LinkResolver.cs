@@ -214,7 +214,6 @@ namespace Microsoft.Docs.Build
 
         private FilePath? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
-            FilePath path;
             FilePath? actualPath;
             PathString pathToDocset;
 
@@ -243,8 +242,7 @@ namespace Microsoft.Docs.Build
                 {
                     return null;
                 }
-                path = FilePath.Dependency(pathToDocset, referencingFile.DependencyName);
-                if (_buildScope.TryGetActualFilePath(path, out actualPath))
+                if (_buildScope.TryGetActualFilePath(FilePath.Dependency(pathToDocset, referencingFile.DependencyName), out actualPath))
                 {
                     return actualPath;
                 }
@@ -252,10 +250,9 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from redirection files
-            path = FilePath.Redirection(pathToDocset, default);
-            if (_redirectionProvider.Contains(path))
+            if (_redirectionProvider.TryGetValue(pathToDocset, out actualPath))
             {
-                return path;
+                return actualPath;
             }
 
             // resolve from dependent docsets
@@ -263,8 +260,7 @@ namespace Microsoft.Docs.Build
             {
                 if (pathToDocset.StartsWithPath(dependencyName, out _))
                 {
-                    path = FilePath.Dependency(pathToDocset, dependencyName);
-                    if (_buildScope.TryGetActualFilePath(path, out actualPath))
+                    if (_buildScope.TryGetActualFilePath(FilePath.Dependency(pathToDocset, dependencyName), out actualPath))
                     {
                         return actualPath;
                     }
@@ -272,8 +268,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from entry docset
-            path = FilePath.Content(pathToDocset);
-            if (_buildScope.TryGetActualFilePath(path, out actualPath))
+            if (_buildScope.TryGetActualFilePath(FilePath.Content(pathToDocset), out actualPath))
             {
                 return actualPath;
             }
@@ -281,8 +276,7 @@ namespace Microsoft.Docs.Build
             // resolve from fallback docset
             if (_buildOptions.IsLocalizedBuild)
             {
-                path = FilePath.Fallback(pathToDocset);
-                if (_buildScope.TryGetActualFilePath(path, out actualPath))
+                if (_buildScope.TryGetActualFilePath(FilePath.Fallback(pathToDocset), out actualPath))
                 {
                     return actualPath;
                 }
@@ -290,8 +284,7 @@ namespace Microsoft.Docs.Build
                 // resolve from fallback docset git commit history
                 if (lookupFallbackCommits)
                 {
-                    path = FilePath.Fallback(pathToDocset, isGitCommit: true);
-                    if (_buildScope.TryGetActualFilePath(path, out actualPath))
+                    if (_buildScope.TryGetActualFilePath(FilePath.Fallback(pathToDocset, isGitCommit: true), out actualPath))
                     {
                         return actualPath;
                     }
@@ -299,8 +292,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve generated content docset
-            path = FilePath.Generated(pathToDocset);
-            if (_buildScope.TryGetActualFilePath(path, out actualPath))
+            if (_buildScope.TryGetActualFilePath(FilePath.Generated(pathToDocset), out actualPath))
             {
                 return actualPath;
             }
