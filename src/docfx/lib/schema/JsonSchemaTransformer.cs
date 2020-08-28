@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using HtmlReaderWriter;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
