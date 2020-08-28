@@ -1511,7 +1511,8 @@ outputs:
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
 ---
-# referencing multiple version, using uid with intersection
+# referencing multiple version, using uid with intersection for toc & SDP
+legacy: true
 inputs:
   docfx.yml: |
     monikerRange:
@@ -1531,15 +1532,19 @@ inputs:
   docs/v1/a.yml: |
     ### YamlMime:TestData
     uid: a
-    name: name
+    name: name 1.0
   docs/v1/TOC.yml: |
     items:
       - name: node
         uid: a
+  docs/v1/b.yml: |
+    ### YamlMime:TestPage
+      xref: a
+  docs/v2/a.yml: |
   docs/v2/a.yml: |
     ### YamlMime:TestData
     uid: a
-    name: name
+    name: name 2.0
   docs/v2/TOC.yml: |
     items:
       - name: node
@@ -1556,13 +1561,27 @@ inputs:
         "uid": { "contentType": "uid" }
       }
     }
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": { 
+        "xref": { "contentType": "xref" }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <xref uid="xref"/>
+
 outputs:
   136a42ac/docs/a.json:
+  136a42ac/docs/b.raw.page.json: |
+    {"content": "<a href=\"a.json\" data-linktype=\"relative-path\"> name 1.0 </a>"}
+  136a42ac/docs/b.mta.json:
   136a42ac/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-1.0"]}]}
   4667fedf/docs/a.json:
   4667fedf/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:
