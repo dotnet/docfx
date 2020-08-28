@@ -24,6 +24,10 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string?> Uid { get; set; }
 
+        public SourceInfo<LandingPageType?> LandingPageType { get; set; }
+
+        public static bool ShouldSerializeLandingPageType() => false;
+
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Expanded { get; set; }
 

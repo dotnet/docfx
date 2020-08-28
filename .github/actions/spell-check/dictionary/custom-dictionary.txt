@@ -545,3 +545,4 @@ overridable
 uninstantiated
 namespaces
 lunr
+langs

@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
-                foreach (var branch in new[] { fallbackBranch, "master" })
+                foreach (var branch in new[] { fallbackBranch, "main" })
                 {
                     if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
                     {
@@ -98,13 +98,24 @@ namespace Microsoft.Docs.Build
                         return;
                     }
 
-                    try
+                    var succeeded = false;
+                    InvalidOperationException? exception = null;
+                    foreach (var branch in GitUtility.GetFallbackBranch(contributionBranch))
                     {
-                        GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{contributionBranch}:{contributionBranch}", "--update-head-ok");
+                        try
+                        {
+                            GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{branch}:{branch}", "--update-head-ok");
+                            succeeded = true;
+                            break;
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            exception = ex;
+                        }
                     }
-                    catch (InvalidOperationException ex)
+                    if (!succeeded)
                     {
-                        throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(ex);
+                        throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(exception!);
                     }
 
                     s_fetchedLocalizationRepositories.TryAdd(repository);

@@ -1,6 +1,7 @@
 ---
 # Draft run learn post validation
 noDryRun: true
+legacy: true
 repos:
   https://github.com/learn/learn-pr:
   - files:
@@ -24,6 +25,26 @@ outputs:
       "invalid_items":[],
       "items":[]
     }
+---
+# Only run learn validation in legacy build
+noDryRun: true
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+     .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "learn-pr",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+     learn-pr/docfx.json: '{}'
+outputs:
 ---
 # Can generate hierarchy
 legacy: true

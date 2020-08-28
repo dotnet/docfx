@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
 
         public string Url { get; private set; } = "";
 
-        public string Branch { get; private set; } = "master";
+        public string Branch { get; private set; } = "main";
 
         public PackagePath()
         {
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         {
             Type = PackageType.Git;
             Url = remote;
-            Branch = branch ?? "master";
+            Branch = branch ?? "main";
         }
 
         public override string? ToString() => Type switch
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
 
-            return (path, hasRefSpec ? fragment.Substring(1) : "master");
+            return (path, hasRefSpec ? fragment.Substring(1) : "main");
         }
 
         [OnDeserialized]

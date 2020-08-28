@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 {
     internal class TableOfContentsLoader
     {
+        private readonly PathString _docsetPath;
+        private readonly Input _input;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly TableOfContentsParser _parser;
@@ -22,11 +24,10 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
         private readonly ErrorBuilder _errors;
-        private readonly DocumentProvider _documentProvider;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
 
-        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)> _cache =
-                     new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>)>();
+        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>, List<FilePath>)> _cache =
+                     new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>, List<FilePath>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
@@ -35,6 +36,8 @@ namespace Microsoft.Docs.Build
                             new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
 
         public TableOfContentsLoader(
+            PathString docsetPath,
+            Input input,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             TableOfContentsParser parser,
@@ -42,9 +45,10 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             ContentValidator contentValidator,
             Config config,
-            ErrorBuilder errors,
-            DocumentProvider documentProvider)
+            ErrorBuilder errors)
         {
+            _docsetPath = docsetPath;
+            _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
             _parser = parser;
@@ -52,15 +56,15 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _errors = errors;
-            _documentProvider = documentProvider;
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
-        public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs)
+        public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs, List<FilePath> servicePages)
             Load(Document file)
         {
             return _cache.GetOrAdd(file.FilePath, _ =>
             {
+                var servicePages = new List<FilePath>();
                 var referencedFiles = new List<Document>();
                 var referencedTocs = new List<Document>();
                 var node = LoadTocFile(file, file, referencedFiles, referencedTocs);
@@ -70,15 +74,25 @@ namespace Microsoft.Docs.Build
                     if (joinTOCConfig.TopLevelToc != null)
                     {
                         node = JoinToc(node, joinTOCConfig.TopLevelToc);
+
+                        // Generate Service Page.
+                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
+
+                        foreach (var item in node.Items)
+                        {
+                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                        }
+
+                        node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
                     }
                 }
-                return (node, referencedFiles, referencedTocs);
+                return (node, referencedFiles, referencedTocs, servicePages);
             });
         }
 
         private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
         {
-            var (topLevelToc, _, _) = Load(_documentProvider.GetDocument(FilePath.Content(new PathString(topLevelTocFilePath))));
+            var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
             TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
             return topLevelToc;
         }
@@ -192,6 +206,7 @@ namespace Microsoft.Docs.Build
                 Name = node.Value.Name.Or(resolvedTopicName),
                 Document = document ?? subChildrenFirstItem?.Document,
                 Items = items,
+                LandingPageType = node.Value.LandingPageType,
             };
 
             // resolve monikers

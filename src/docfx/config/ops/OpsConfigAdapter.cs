@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
     {
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
+        private const string OpsMetadataApi = "https://ops/opsmetadatas/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
         private const string AllowlistsApi = "https://ops/allowlists/";
@@ -23,16 +24,17 @@ namespace Microsoft.Docs.Build
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
-        private readonly (string, Func<HttpRequestMessage, Task<string>>)[] _apis;
+        private readonly (string, Func<Uri, Task<string>>)[] _apis;
         private readonly OpsInterceptor _opsInterceptor;
 
         public OpsConfigAdapter(OpsInterceptor opsInterceptor)
         {
             _opsInterceptor = opsInterceptor;
-            _apis = new (string, Func<HttpRequestMessage, Task<string>>)[]
+            _apis = new (string, Func<Uri, Task<string>>)[]
             {
                 (BuildConfigApi, GetBuildConfig),
                 (MonikerDefinitionApi, _ => GetMonikerDefinition()),
+                (OpsMetadataApi, GetOpsMetadata),
                 (MetadataSchemaApi, GetMetadataSchema),
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
                 (AllowlistsApi, GetAllowlists),
@@ -48,15 +50,14 @@ namespace Microsoft.Docs.Build
             {
                 if (request.RequestUri.OriginalString.StartsWith(baseUrl))
                 {
-                    return new HttpResponseMessage { Content = new StringContent(await rule(request)) };
+                    return new HttpResponseMessage { Content = new StringContent(await rule(request.RequestUri)) };
                 }
             }
             return null;
         }
 
-        private async Task<string> GetBuildConfig(HttpRequestMessage request)
+        private async Task<string> GetBuildConfig(Uri url)
         {
-            var url = request.RequestUri;
             var queries = HttpUtility.ParseQueryString(url.Query);
             var name = queries["name"];
             var repository = queries["repository_url"];
@@ -104,7 +105,7 @@ namespace Microsoft.Docs.Build
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
-                    Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                    OpsMetadataApi,
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
@@ -136,30 +137,35 @@ namespace Microsoft.Docs.Build
             return _opsInterceptor.Fetch($"/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
-        private async Task<string> GetMarkdownValidationRules(HttpRequestMessage request)
+        private Task<string> GetOpsMetadata(Uri url)
         {
-            var headers = GetValidationServiceHeaders(request.RequestUri);
+            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"));
+        }
+
+        private async Task<string> GetMarkdownValidationRules(Uri url)
+        {
+            var headers = GetValidationServiceHeaders(url);
 
             return await _opsInterceptor.FetchValidationRules($"/route/validationmgt/rulesets/contentrules", headers);
         }
 
-        private async Task<string> GetAllowlists(HttpRequestMessage request)
+        private async Task<string> GetAllowlists(Uri url)
         {
-            var headers = GetValidationServiceHeaders(request.RequestUri);
+            var headers = GetValidationServiceHeaders(url);
 
             return await _opsInterceptor.FetchValidationRules($"/route/validationmgt/validation/allowlists", headers);
         }
 
-        private async Task<string> GetDisallowlists(HttpRequestMessage request)
+        private async Task<string> GetDisallowlists(Uri url)
         {
-            var headers = GetValidationServiceHeaders(request.RequestUri);
+            var headers = GetValidationServiceHeaders(url);
 
             return await _opsInterceptor.FetchValidationRules($"/route/validationmgt/validation/disallowlists", headers);
         }
 
-        private async Task<string> GetMetadataSchema(HttpRequestMessage request)
+        private async Task<string> GetMetadataSchema(Uri url)
         {
-            var headers = GetValidationServiceHeaders(request.RequestUri);
+            var headers = GetValidationServiceHeaders(url);
             var metadataRules = _opsInterceptor.FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", headers);
             var allowlists = _opsInterceptor.FetchValidationRules($"/route/validationmgt/validation/allowlists", headers);
 
