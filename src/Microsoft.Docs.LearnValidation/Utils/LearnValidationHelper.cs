@@ -3,7 +3,6 @@
 
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.LearnValidation
 {
@@ -16,14 +15,13 @@ namespace Microsoft.Docs.LearnValidation
         }
 
         private const string _defaultLocale = "en-us";
-        private const string _learnValidationAPIEndpoint = "/route/docs/api/hierarchy/";
 
-        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _interceptHttpRequest;
+        private readonly ILearnServiceAccessor _learnServiceAccessor;
         private readonly string _branch;
 
-        public LearnValidationHelper(string branch, Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
+        public LearnValidationHelper(string branch, ILearnServiceAccessor learnServiceAccessor)
         {
-            _interceptHttpRequest = interceptHttpRequest;
+            _learnServiceAccessor = learnServiceAccessor;
             _branch = branch;
         }
 
@@ -39,12 +37,10 @@ namespace Microsoft.Docs.LearnValidation
 
         private bool CheckItemExist(CheckItemType type, string uid)
         {
-            if (_interceptHttpRequest == null)
+            if (_learnServiceAccessor == null)
             {
                 return false;
             }
-
-            var requestEndpoint = _learnValidationAPIEndpoint + (type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}");
 
             var fallbackBranchs = _branch switch
             {
@@ -57,7 +53,7 @@ namespace Microsoft.Docs.LearnValidation
             HttpResponseMessage response;
             foreach (var branch in fallbackBranchs)
             {
-                response = CheckItemExistWithBranch(requestEndpoint, branch);
+                response = _learnServiceAccessor.CheckLearnPathItemExist(branch, _defaultLocale, uid, type == CheckItemType.Module).Result;
 
                 Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.RequestMessage.RequestUri.AbsoluteUri);
                 Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
@@ -67,15 +63,6 @@ namespace Microsoft.Docs.LearnValidation
                 }
             }
             return false;
-        }
-
-        private HttpResponseMessage CheckItemExistWithBranch(string endpoint, string branch)
-        {
-            var requestUrl = $"{endpoint}?branch={branch}&?locale={_defaultLocale}";
-            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-            request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
-
-            return _interceptHttpRequest(request).Result;
         }
     }
 }

@@ -6,15 +6,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Docs.LearnValidation;
+using Newtonsoft.Json;
 using Polly;
 using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal class OpsInterceptor : IDisposable
+    internal class OpsAccessor : IDisposable, ILearnServiceAccessor
     {
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
@@ -26,17 +29,99 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new HttpClient();
 
-        public OpsInterceptor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
+        public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
         {
             _errors = errors;
             _credentialProvider = credentialProvider;
         }
 
-        public async Task<string> Fetch(
-            string url,
-            IReadOnlyDictionary<string, string>? headers = null,
-            string? value404 = null,
-            DocsEnvironment? environment = null)
+        public async Task<string> GetDocsetInfo(string repositoryUrl)
+        {
+            var fetchUrl = $"{BuildServiceEndpoint()}/v2/Queries/Docsets?git_repo_url={repositoryUrl}&docset_query_status=Created";
+            return await Fetch(fetchUrl, value404: "[]");
+        }
+
+        public Task<string> GetMonikerDefinition()
+        {
+            return Fetch($"{BuildServiceEndpoint()}/v2/monikertrees/allfamiliesproductsmonikers");
+        }
+
+        public async Task<string[]> GetXrefMaps(string tag, string xrefMapQueryParams, DocsEnvironment? xrefMapBuildServiceEndpoint)
+        {
+            var response = await Fetch($"{BuildServiceEndpoint(xrefMapBuildServiceEndpoint)}/v1/xrefmap{tag}{xrefMapQueryParams}", value404: "{}");
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links
+                ?? Array.Empty<string>();
+        }
+
+        public async Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple)
+        {
+            return await FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
+        }
+
+        public async Task<string> GetAllowlists((string repositoryUrl, string branch) tuple)
+        {
+            return await FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
+        }
+
+        public async Task<string> GetDisallowlists((string repositoryUrl, string branch) tuple)
+        {
+            return await FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/disallowlists", tuple.repositoryUrl, tuple.branch);
+        }
+
+        public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
+        {
+            var metadataRules = FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
+            var allowlists = FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
+
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+        }
+
+        public async Task<string> GetRegressionAllContentRules()
+        {
+            return await FetchValidationRules(
+                $"{BuildServiceEndpoint()}/route/validationmgt/rulesets/contentrules?name=_regression_all_", environment: DocsEnvironment.PPE);
+        }
+
+        public async Task<string> GetRegressionAllMetadataSchema()
+        {
+            var metadataRules = FetchValidationRules(
+                $"{BuildServiceEndpoint()}/route/validationmgt/rulesets/metadatarules?name=_regression_all_", environment: DocsEnvironment.PPE);
+            var allowlists = FetchValidationRules("/route/validationmgt/validation/allowlists", environment: DocsEnvironment.PPE);
+
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+        }
+
+        public async Task<string> HierarchyDrySync(string body)
+        {
+            using var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
+                Method = HttpMethod.Post,
+                Content = new StringContent(body, Encoding.UTF8, "application/json"),
+            };
+
+            var response = await SendRequest(request);
+            return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+        }
+
+        public async Task<HttpResponseMessage> CheckLearnPathItemExist(string branch, string locale, string uid, bool isModule)
+        {
+            var path = isModule ? $"modules/{uid}" : $"units/{uid}";
+            var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&?locale={locale}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
+
+            return await SendRequest(request);
+        }
+
+        public void Dispose()
+        {
+            _http.Dispose();
+        }
+
+        private static string PrependEndpoint(string url, DocsEnvironment? environment) => $"{BuildServiceEndpoint(environment)}/{url.TrimStart('/')}";
+
+        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
@@ -46,7 +131,7 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
-            var response = await SendRequest(request, environment);
+            var response = await SendRequest(request);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -55,12 +140,8 @@ namespace Microsoft.Docs.Build
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
-        public async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, DocsEnvironment? environment = null)
+        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
         {
-            if (!request.RequestUri.IsAbsoluteUri)
-            {
-                request.RequestUri = new Uri(PrependEndpoint(request.RequestUri.OriginalString, environment));
-            }
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
             {
                 _credentialProvider?.Invoke(request);
@@ -71,7 +152,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public async Task<string> FetchValidationRules(string url, IReadOnlyDictionary<string, string>? headers = null, DocsEnvironment? environment = null)
+        private async Task<string> FetchValidationRules(string url, string repositoryUrl = "", string branch = "", DocsEnvironment? environment = null)
         {
             try
             {
@@ -87,13 +168,10 @@ namespace Microsoft.Docs.Build
                        {
                            using var request = new HttpRequestMessage(HttpMethod.Get, url);
                            _credentialProvider?.Invoke(request);
-                           if (headers != null)
-                           {
-                               foreach (var (key, value) in headers)
-                               {
-                                   request.Headers.TryAddWithoutValidation(key, value);
-                               }
-                           }
+
+                           request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
+                           request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
+
                            await FillOpsToken(url, request, environment);
                            var response = await _http.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
@@ -115,13 +193,6 @@ namespace Microsoft.Docs.Build
                 return "{}";
             }
         }
-
-        public void Dispose()
-        {
-            _http.Dispose();
-        }
-
-        private static string PrependEndpoint(string url, DocsEnvironment? environment) => $"{BuildServiceEndpoint(environment)}/{url.TrimStart('/')}";
 
         private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
         {

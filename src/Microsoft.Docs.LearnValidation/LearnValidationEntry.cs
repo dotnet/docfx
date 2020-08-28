@@ -7,8 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Docs.LearnValidation.Models;
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
@@ -19,7 +17,6 @@ namespace Microsoft.Docs.LearnValidation
     public static class LearnValidationEntry
     {
         private const string PluginName = "LearnValidationPlugin";
-        private const string DrySyncEndpoint = "https://ops/hierarchyDrySync";
 
         public static void Run(
             string repoUrl,
@@ -33,7 +30,7 @@ namespace Microsoft.Docs.LearnValidation
             string environment,
             bool isLocalizationBuild,
             Action<LearnLogItem> writeLog,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest,
+            ILearnServiceAccessor learnServiceAccessor,
             string fallbackDocsetPath = null)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -56,15 +53,15 @@ namespace Microsoft.Docs.LearnValidation
                 Formatting.Indented);
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
-            ValidateHierarchy(config, logger, interceptHttpRequest).GetAwaiter().GetResult();
+            ValidateHierarchy(config, logger, learnServiceAccessor).GetAwaiter().GetResult();
         }
 
-        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
+        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor)
         {
             var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
-            var learnValidationHelper = new LearnValidationHelper(config.RepoBranch, interceptHttpRequest);
+            var learnValidationHelper = new LearnValidationHelper(config.RepoBranch, learnServiceAccessor);
             var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath, logger);
             var (isValid, hierarchyItems) = validator.Validate();
 
@@ -72,7 +69,7 @@ namespace Microsoft.Docs.LearnValidation
 
             if (!config.IsLocalizationBuild)
             {
-                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config, logger, interceptHttpRequest);
+                return await ValidateHierarchyInDefaultLocale(isValid, hierarchyItems, config, logger, learnServiceAccessor);
             }
             else
             {
@@ -85,7 +82,7 @@ namespace Microsoft.Docs.LearnValidation
             List<IValidateModel> hierarchyItems,
             LearnValidationConfig config,
             LearnValidationLogger logger,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
+            ILearnServiceAccessor learnServiceAccessor)
         {
             if (!isValid)
             {
@@ -101,7 +98,7 @@ namespace Microsoft.Docs.LearnValidation
                 config.DocsetName,
                 repoUrl,
                 hierarchy,
-                interceptHttpRequest);
+                learnServiceAccessor);
 
             if (!result.IsValid)
             {
@@ -134,11 +131,11 @@ namespace Microsoft.Docs.LearnValidation
             string docsetName,
             string repoUrl,
             RawHierarchy hierarchy,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
+            ILearnServiceAccessor learnServiceAccessor)
         {
             try
             {
-                return await DrySync(branch, locale, docsetName, repoUrl, hierarchy, interceptHttpRequest);
+                return await DrySync(branch, locale, docsetName, repoUrl, hierarchy, learnServiceAccessor);
             }
             catch (Exception ex)
             {
@@ -155,7 +152,7 @@ namespace Microsoft.Docs.LearnValidation
             string docsetName,
             string repoUrl,
             RawHierarchy hierarchy,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
+            ILearnServiceAccessor learnServiceAccessor)
         {
             var body = JsonConvert.SerializeObject(new DrySyncMessage
             {
@@ -165,17 +162,11 @@ namespace Microsoft.Docs.LearnValidation
                 DocsetName = docsetName,
                 RepoUrl = repoUrl,
             });
-            using var request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(DrySyncEndpoint),
-                Method = HttpMethod.Post,
-                Content = new StringContent(body, Encoding.UTF8, "application/json"),
-            };
 
             Console.WriteLine($"[{PluginName}] start to call dry-sync...");
             var sw = Stopwatch.StartNew();
-            var response = await interceptHttpRequest(request);
-            var data = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+
+            var data = await learnServiceAccessor.HierarchyDrySync(body);
             var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
             Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds / 1000}s");
 

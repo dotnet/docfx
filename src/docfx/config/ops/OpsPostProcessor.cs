@@ -1,10 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Microsoft.Docs.LearnValidation;
 
 namespace Microsoft.Docs.Build
@@ -16,18 +13,18 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
-        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _interceptHttpRequest;
+        private readonly ILearnServiceAccessor _learnServiceAccessor;
 
         public OpsPostProcessor(
             Config config,
             ErrorBuilder errors,
             BuildOptions buildOptions,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
+            ILearnServiceAccessor learnServiceAccessor)
         {
             _config = config;
             _errors = errors;
             _buildOptions = buildOptions;
-            _interceptHttpRequest = interceptHttpRequest;
+            _learnServiceAccessor = learnServiceAccessor;
         }
 
         public void Run()
@@ -55,11 +52,11 @@ namespace Microsoft.Docs.Build
                         publishFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, ".publish.json")),
                         dependencyFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, "full-dependent-list.txt")),
                         manifestFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, _config.BasePath, ".manifest.json")),
-                        environment: OpsInterceptor.DocsEnvironment.ToString(),
+                        environment: OpsAccessor.DocsEnvironment.ToString(),
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
                         fallbackDocsetPath: _buildOptions.FallbackDocsetPath,
-                        interceptHttpRequest: _interceptHttpRequest);
+                        learnServiceAccessor: _learnServiceAccessor);
                 }
             }
         }
