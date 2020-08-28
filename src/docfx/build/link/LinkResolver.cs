@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             _metadataProvider = metadataProvider;
         }
 
-        public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile, bool? transitive = null)
+        public (Error? error, FilePath? file) ResolveContent(SourceInfo<string> href, FilePath referencingFile, bool? transitive = null)
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, true);
             if (file is null)
@@ -54,24 +54,24 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var origin = file.FilePath.Origin;
+            var origin = file.Origin;
             if (origin == FileOrigin.Redirection || origin == FileOrigin.External)
             {
                 return default;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.Include, transitive ?? true);
+            _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.Include, transitive ?? true);
             return (error, file);
         }
 
-        public (Error? error, string link, Document? file) ResolveLink(SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
+        public (Error? error, string link, FilePath? file) ResolveLink(SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
                     new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
-                    referencingFile.FilePath,
-                    inclusionRoot.FilePath);
+                    referencingFile,
+                    inclusionRoot);
 
                 return (xrefError, resolvedHref ?? href, declaringFile);
             }
@@ -83,28 +83,28 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file?.FilePath, DependencyType.File);
-                    _bookmarkValidator.AddBookmarkReference(referencingFile.FilePath, inclusionRoot.FilePath, fragment, true, href);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.File);
+                    _bookmarkValidator.AddBookmarkReference(referencingFile, inclusionRoot, fragment, true, href);
                 }
                 else if (file != null)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.File);
-                    _bookmarkValidator.AddBookmarkReference(referencingFile.FilePath, file.FilePath, fragment, false, href);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile, file, DependencyType.File);
+                    _bookmarkValidator.AddBookmarkReference(referencingFile, file, fragment, false, href);
                 }
             }
 
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, link, href.Source);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
             if (file != null)
             {
-                link = UrlUtility.GetRelativeUrl(inclusionRoot.SiteUrl, link);
+                link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }
 
             return (error, link, file);
         }
 
-        private (Error? error, string href, string? fragment, LinkType linkType, Document? file, bool isCrossReference) TryResolveAbsoluteLink(
-            SourceInfo<string> href, Document hrefRelativeTo)
+        private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
+            SourceInfo<string> href, FilePath hrefRelativeTo)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
             var (error, file, query, fragment, linkType) = TryResolveFile(hrefRelativeTo, decodedHref);
@@ -126,17 +126,19 @@ namespace Microsoft.Docs.Build
                 return (error, href, fragment, linkType, null, false);
             }
 
+            var siteUrl = _documentProvider.GetSiteUrl(file);
+
             // Self reference, don't build the file, leave href as is
             if (file == hrefRelativeTo)
             {
-                var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(file.SiteUrl);
+                var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(siteUrl);
 
                 return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
             }
 
-            if (file.FilePath.Origin == FileOrigin.Redirection)
+            if (file.Origin == FileOrigin.Redirection)
             {
-                return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), null, linkType, file, false);
+                return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
             }
 
             if (error is null && _buildScope.OutOfScope(file))
@@ -144,19 +146,20 @@ namespace Microsoft.Docs.Build
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
-            if (file.FilePath.Origin == FileOrigin.Fallback && file.ContentType == ContentType.Page && _config.OutputUrlType != OutputUrlType.Docs)
+            if (file.Origin == FileOrigin.Fallback && _config.OutputUrlType != OutputUrlType.Docs &&
+                _documentProvider.GetDocument(file).ContentType == ContentType.Page)
             {
-#pragma warning disable CS0618 // Docs pdf build uses static url, but images in fallback repo should be resolved to docs site URL
-                var siteUrl = _documentProvider.GetDocsSiteUrl(file.FilePath);
+#pragma warning disable CS0618 // Docs pdf build uses static url, but links in fallback repo should be resolved to docs site URL
+                var docsSiteUrl = _documentProvider.GetDocsSiteUrl(file);
 #pragma warning restore CS0618
-                return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{siteUrl}", query, fragment), fragment, linkType, file, false);
+                return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{docsSiteUrl}", query, fragment), fragment, linkType, file, false);
             }
 
-            return (error, UrlUtility.MergeUrl(file.SiteUrl, query, fragment), fragment, linkType, file, false);
+            return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), fragment, linkType, file, false);
         }
 
-        private (Error? error, Document? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
-            Document referencingFile, SourceInfo<string> href, bool lookupGitCommits = false)
+        private (Error? error, FilePath? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
+            FilePath referencingFile, SourceInfo<string> href, bool lookupGitCommits = false)
         {
             href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -179,17 +182,17 @@ namespace Microsoft.Docs.Build
 
                     // resolve file
                     lookupGitCommits |= _buildScope.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile.FilePath, path, lookupGitCommits);
+                    var file = TryResolveRelativePath(referencingFile, path, lookupGitCommits);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (_templateEngine != null && TemplateEngine.IsLandingData(referencingFile.Mime))
+                    if (_templateEngine != null && TemplateEngine.IsLandingData(_documentProvider.GetDocument(referencingFile).Mime))
                     {
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile.FilePath, $"{path}.md", lookupGitCommits);
+                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits);
                         }
 
                         // Do not report error for landing page
@@ -209,7 +212,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Document? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
+        private FilePath? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
         {
             FilePath path;
             FilePath? actualPath;
@@ -243,7 +246,7 @@ namespace Microsoft.Docs.Build
                 path = FilePath.Dependency(pathToDocset, referencingFile.DependencyName);
                 if (_buildScope.TryGetActualFilePath(path, out actualPath))
                 {
-                    return _documentProvider.GetDocument(actualPath);
+                    return actualPath;
                 }
                 return null;
             }
@@ -252,7 +255,7 @@ namespace Microsoft.Docs.Build
             path = FilePath.Redirection(pathToDocset, default);
             if (_redirectionProvider.Contains(path))
             {
-                return _documentProvider.GetDocument(path);
+                return path;
             }
 
             // resolve from dependent docsets
@@ -263,7 +266,7 @@ namespace Microsoft.Docs.Build
                     path = FilePath.Dependency(pathToDocset, dependencyName);
                     if (_buildScope.TryGetActualFilePath(path, out actualPath))
                     {
-                        return _documentProvider.GetDocument(actualPath);
+                        return actualPath;
                     }
                 }
             }
@@ -272,7 +275,7 @@ namespace Microsoft.Docs.Build
             path = FilePath.Content(pathToDocset);
             if (_buildScope.TryGetActualFilePath(path, out actualPath))
             {
-                return _documentProvider.GetDocument(actualPath);
+                return actualPath;
             }
 
             // resolve from fallback docset
@@ -281,7 +284,7 @@ namespace Microsoft.Docs.Build
                 path = FilePath.Fallback(pathToDocset);
                 if (_buildScope.TryGetActualFilePath(path, out actualPath))
                 {
-                    return _documentProvider.GetDocument(actualPath);
+                    return actualPath;
                 }
 
                 // resolve from fallback docset git commit history
@@ -290,7 +293,7 @@ namespace Microsoft.Docs.Build
                     path = FilePath.Fallback(pathToDocset, isGitCommit: true);
                     if (_buildScope.TryGetActualFilePath(path, out actualPath))
                     {
-                        return _documentProvider.GetDocument(actualPath);
+                        return actualPath;
                     }
                 }
             }
@@ -299,7 +302,7 @@ namespace Microsoft.Docs.Build
             path = FilePath.Generated(pathToDocset);
             if (_buildScope.TryGetActualFilePath(path, out actualPath))
             {
-                return _documentProvider.GetDocument(actualPath);
+                return actualPath;
             }
 
             return default;

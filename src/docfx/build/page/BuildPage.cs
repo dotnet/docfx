@@ -131,8 +131,8 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = context.LinkResolver.ResolveLink(
                     userMetadata.BreadcrumbPath,
-                    userMetadata.BreadcrumbPath.Source is null ? file : context.DocumentProvider.GetDocument(userMetadata.BreadcrumbPath.Source.File),
-                    file);
+                    userMetadata.BreadcrumbPath.Source is null ? file.FilePath : userMetadata.BreadcrumbPath.Source.File,
+                    file.FilePath);
                 errors.AddIfNotNull(breadcrumbError);
                 systemMetadata.BreadcrumbPath = breadcrumbPath;
             }
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : context.TocMap.FindTocRelativePath(file);
+            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : context.TocMap.FindTocRelativePath(file.FilePath);
 
             if (context.Config.DryRun)
             {

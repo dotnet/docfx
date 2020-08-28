@@ -133,22 +133,17 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public bool OutOfScope(Document filePath)
+        public bool OutOfScope(FilePath file)
         {
-            // Link to dependent repo
-            if (filePath.FilePath.Origin == FileOrigin.Dependency &&
-                !_config.Dependencies[filePath.FilePath.DependencyName].IncludeInBuild)
+            return file.Origin switch
             {
-                return true;
-            }
+                // Link to dependent repo
+                FileOrigin.Dependency when !_config.Dependencies[file.DependencyName].IncludeInBuild => true,
 
-            // Pages outside build scope, don't build the file, leave href as is
-            if ((filePath.ContentType == ContentType.Page || filePath.ContentType == ContentType.TableOfContents) && !_files.ContainsKey(filePath.FilePath))
-            {
-                return true;
-            }
-
-            return false;
+                // Pages outside build scope, don't build the file, leave href as is
+                FileOrigin.Main => !_files.ContainsKey(file),
+                _ => false,
+            };
         }
 
         private (HashSet<FilePath>, IReadOnlyDictionary<FilePath, ContentType>) GlobFiles()

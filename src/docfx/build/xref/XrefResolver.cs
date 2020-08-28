@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
-        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByHref(
+        public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
             SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -103,10 +103,10 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile?.FilePath);
         }
 
-        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
+        public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
             SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
             if (string.IsNullOrEmpty(uid))
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 return (error, null, "", null);
             }
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
-            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
+            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile?.FilePath);
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(

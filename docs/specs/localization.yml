@@ -416,7 +416,6 @@ repos:
     - files:
         docsets.yml:
         a/docfx.yml:
-      author: a
     - files:
         a/docfx.yml:
         a/docs/tokena.md: |
@@ -424,7 +423,6 @@ repos:
           [!code-csharp[Main](program.cs)]
         a/docs/tokenb.md: b
         a/docs/program.cs:
-      author: b
   https://github.com/deletedtoken/a.zh-cn:
     - files:
         docsets.yml:
@@ -443,12 +441,10 @@ repos:
   https://github.com/deletedres/a:
     - files:
         docfx.yml:
-      author: a
     - files:
         docfx.yml:
         docs/resource.png:
         docs/b.md:
-      author: b
   https://github.com/deletedres/a.zh-cn:
     - files:
         docfx.yml:
@@ -473,13 +469,11 @@ repos:
   https://github.com/deletedtoc/a:
     - files:
         docfx.yml:
-      author: a
     - files:
         docfx.yml:
         docs/a/TOC.yml: |
           - href: a.md
             name: reference markdown a
-      author: b
   https://github.com/deletedtoc/a.zh-cn:
     - files:
         docfx.yml:
@@ -650,7 +644,6 @@ repos:
   https://github.com/neverexist/a:
     - files:
         docfx.yml:
-      author: a
   https://github.com/neverexist/a.zh-cn:
     - files:
         docfx.yml:

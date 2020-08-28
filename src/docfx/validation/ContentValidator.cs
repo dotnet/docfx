@@ -199,13 +199,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocEntryDuplicated(FilePath file, List<Document> referencedFiles)
+        public void ValidateTocEntryDuplicated(FilePath file, List<FilePath> referencedFiles)
         {
             if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var filePaths = referencedFiles
-                    .Where(item => item != null)
-                    .Select(item => item.FilePath.Path.Value)
+                    .Select(item => item.Path.Value)
                     .ToList();
 
                 var validationContext = new ValidationContext { DocumentType = documentType };
