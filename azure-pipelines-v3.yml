@@ -213,6 +213,8 @@ jobs:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 40 --dry-run --regression-markdown-rule --regression-metadata-schema
       learn-m365-pr:
         params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30
+      PowerShell-Docs:
+        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 60
 
   steps:
   # Install .NET Core sdk
