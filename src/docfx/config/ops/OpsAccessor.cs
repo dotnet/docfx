@@ -79,14 +79,15 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetRegressionAllContentRules()
         {
             return await FetchValidationRules(
-                $"{BuildServiceEndpoint()}/route/validationmgt/rulesets/contentrules?name=_regression_all_", environment: DocsEnvironment.PPE);
+                $"{BuildServiceEndpoint(DocsEnvironment.PPE)}/route/validationmgt/rulesets/contentrules?name=_regression_all_", environment: DocsEnvironment.PPE);
         }
 
         public async Task<string> GetRegressionAllMetadataSchema()
         {
             var metadataRules = FetchValidationRules(
-                $"{BuildServiceEndpoint()}/route/validationmgt/rulesets/metadatarules?name=_regression_all_", environment: DocsEnvironment.PPE);
-            var allowlists = FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/allowlists", environment: DocsEnvironment.PPE);
+                $"{BuildServiceEndpoint(DocsEnvironment.PPE)}/route/validationmgt/rulesets/metadatarules?name=_regression_all_", environment: DocsEnvironment.PPE);
+            var allowlists = FetchValidationRules(
+                $"{BuildServiceEndpoint(DocsEnvironment.PPE)}/route/validationmgt/validation/allowlists", environment: DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
