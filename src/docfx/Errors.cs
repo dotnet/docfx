@@ -239,7 +239,7 @@ namespace Microsoft.Docs.Build
             /// Link which is resolved to a file out of build scope.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
+            public static Error LinkOutOfScope(SourceInfo<string> source, FilePath file)
                 => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope.", source);
 
             /// <summary>

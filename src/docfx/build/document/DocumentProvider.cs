@@ -203,12 +203,11 @@ namespace Microsoft.Docs.Build
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
             var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
-            var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isHtml);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isHtml);
+            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
