@@ -102,7 +102,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            DocumentProvider = new DocumentProvider(errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
+            DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
@@ -164,6 +164,8 @@ namespace Microsoft.Docs.Build
             JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
+                BuildOptions.DocsetPath,
+                Input,
                 LinkResolver,
                 XrefResolver,
                 tocParser,
@@ -171,8 +173,7 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 ContentValidator,
                 config,
-                errorLog,
-                DocumentProvider);
+                errorLog);
             TocMap = new TableOfContentsMap(
                 ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(

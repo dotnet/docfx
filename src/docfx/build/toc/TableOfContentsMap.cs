@@ -24,7 +24,10 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
 
-        private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
+        private readonly Lazy<(
+            Dictionary<Document, Document[]> tocToTocs,
+            Dictionary<Document, Document[]> docToTocs,
+            List<FilePath> servicePages)> _tocs;
 
         public TableOfContentsMap(
             ErrorBuilder errors,
@@ -44,12 +47,15 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
-            _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
+            _tocs = new Lazy<(
+                Dictionary<Document, Document[]> tocToTocs,
+                Dictionary<Document, Document[]> docToTocs,
+                List<FilePath> servicePages)>(BuildTocMap);
         }
 
         public IEnumerable<FilePath> GetFiles()
         {
-            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath);
+            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath).Concat(_tocs.Value.servicePages);
         }
 
         /// <summary>
@@ -166,11 +172,13 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private (Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs) BuildTocMap()
+        private (Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs, List<FilePath> servicePages)
+            BuildTocMap()
         {
             using (Progress.Start("Loading TOC"))
             {
                 var tocs = new ConcurrentBag<FilePath>();
+                var allServicePages = new ConcurrentBag<FilePath>();
 
                 // Parse and split TOC
                 ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
@@ -184,9 +192,14 @@ namespace Microsoft.Docs.Build
                 ParallelUtility.ForEach(_errors, tocs, path =>
                 {
                     var file = _documentProvider.GetDocument(path);
-                    var (_, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
+                    var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+
+                    foreach (var servicepage in servicePages)
+                    {
+                        allServicePages.Add(servicepage);
+                    }
                 });
 
                 // Create TOC reference map
@@ -206,7 +219,7 @@ namespace Microsoft.Docs.Build
                 tocToTocs.TrimExcess();
                 docToTocs.TrimExcess();
 
-                return (tocToTocs, docToTocs);
+                return (tocToTocs, docToTocs, allServicePages.ToList());
             }
         }
 
@@ -241,7 +254,7 @@ namespace Microsoft.Docs.Build
                 var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
                 var newNodeFile = FilePath.Generated(newNodeFilePath);
 
-                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken });
+                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
                 result.Add(newNodeFile);
 
                 var newChild = new TableOfContentsNode(child)
@@ -255,7 +268,7 @@ namespace Microsoft.Docs.Build
 
             var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
             var newTocFile = FilePath.Generated(newTocFilePath);
-            _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
+            _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
             result.Add(newTocFile);
         }
 
