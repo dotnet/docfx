@@ -104,14 +104,18 @@ namespace Microsoft.Docs.Build
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
-        public async Task<HttpResponseMessage> CheckLearnPathItemExist(string branch, string locale, string uid, bool isModule)
+        public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
-            var path = isModule ? $"modules/{uid}" : $"units/{uid}";
+            var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
             var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&?locale={locale}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            return await SendRequest(request);
+            var response = await SendRequest(request);
+
+            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.RequestMessage.RequestUri.AbsoluteUri);
+            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
+            return response.IsSuccessStatusCode;
         }
 
         public void Dispose()

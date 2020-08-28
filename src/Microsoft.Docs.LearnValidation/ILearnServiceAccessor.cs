@@ -10,6 +10,6 @@ namespace Microsoft.Docs.LearnValidation
     {
         Task<string> HierarchyDrySync(string body);
 
-        Task<HttpResponseMessage> CheckLearnPathItemExist(string branch, string locale, string uid, bool isModule);
+        Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type);
     }
 }
