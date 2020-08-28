@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             _metadataProvider = metadataProvider;
         }
 
-        public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile)
+        public (Error? error, Document? file) ResolveContent(SourceInfo<string> href, Document referencingFile, bool? transitive = null)
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, true);
             if (file is null)
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.Include, referencingFile.ContentType);
+            _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.Include, transitive ?? true);
             return (error, file);
         }
 
@@ -70,8 +70,8 @@ namespace Microsoft.Docs.Build
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
                     new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
-                    referencingFile,
-                    inclusionRoot);
+                    referencingFile.FilePath,
+                    inclusionRoot.FilePath);
 
                 return (xrefError, resolvedHref ?? href, declaringFile);
             }
@@ -83,17 +83,17 @@ namespace Microsoft.Docs.Build
             {
                 if (linkType == LinkType.SelfBookmark || inclusionRoot == file)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file?.FilePath, DependencyType.File, referencingFile.ContentType);
-                    _bookmarkValidator.AddBookmarkReference(referencingFile, inclusionRoot, fragment, true, href);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file?.FilePath, DependencyType.File);
+                    _bookmarkValidator.AddBookmarkReference(referencingFile.FilePath, inclusionRoot.FilePath, fragment, true, href);
                 }
                 else if (file != null)
                 {
-                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.File, referencingFile.ContentType);
-                    _bookmarkValidator.AddBookmarkReference(referencingFile, file, fragment, false, href);
+                    _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, file.FilePath, DependencyType.File);
+                    _bookmarkValidator.AddBookmarkReference(referencingFile.FilePath, file.FilePath, fragment, false, href);
                 }
             }
 
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, link, href.Source);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, link, href.Source);
 
             if (file != null)
             {

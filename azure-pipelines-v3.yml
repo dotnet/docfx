@@ -214,7 +214,7 @@ jobs:
       learn-m365-pr:
         params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30
       PowerShell-Docs:
-        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 60 --branch staging
+        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
 
   steps:
   # Install .NET Core sdk
