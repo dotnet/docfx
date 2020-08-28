@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public string Remote { get; }
 
-        public string Branch { get; }
+        public string? Branch { get; }
 
         public string Commit { get; }
 
@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         {
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
             Remote = Regex.Replace(remote, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
-            Branch = branch ?? "master";
+            Branch = branch;
             Commit = commit;
             Path = path;
         }

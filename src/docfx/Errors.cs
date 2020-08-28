@@ -105,6 +105,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error FallbackError(string defaultLocale)
                 => new Error(ErrorLevel.Error, "fallback-error", $"Error(s) from '{defaultLocale}' repository caused this build failure, please check '{defaultLocale}' build report.");
+
+            /// <summary>
+            /// Validation rule is not overridable in docfx config.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RuleOverrideInvalid(string code)
+                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.");
         }
 
         public static class Json
@@ -657,7 +664,7 @@ namespace Microsoft.Docs.Build
             /// Defined reference with by #bookmark fragment within articles, which doesn't exist.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error BookmarkNotFound(SourceInfo? source, Document reference, string bookmark, IEnumerable<string> candidateBookmarks)
+            public static Error BookmarkNotFound(SourceInfo? source, FilePath reference, string bookmark, IEnumerable<string> candidateBookmarks)
                 => new Error(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(StringUtility.FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : ".")}", source);
 
             /// <summary>

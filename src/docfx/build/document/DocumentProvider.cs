@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DocumentProvider
     {
+        private readonly Input _input;
         private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly BuildScope _buildScope;
@@ -41,6 +42,7 @@ namespace Microsoft.Docs.Build
         };
 
         public DocumentProvider(
+            Input input,
             ErrorBuilder errors,
             Config config,
             BuildOptions buildOptions,
@@ -49,6 +51,7 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider)
         {
+            _input = input;
             _errors = errors;
             _config = config;
             _buildOptions = buildOptions;
@@ -124,6 +127,24 @@ namespace Microsoft.Docs.Build
             return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsHtml);
         }
 
+        public string? GetPageType(FilePath file)
+        {
+            var document = GetDocument(file);
+            var mime = document.Mime.Value;
+
+            return document.ContentType switch
+            {
+                ContentType.Page when mime is null => null,
+                ContentType.Page when file.Format == FileFormat.Markdown
+                    => (_metadataProvider.GetMetadata(_errors, file).Layout ?? mime).ToLowerInvariant(),
+                ContentType.Page
+                    => s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime.ToLowerInvariant(),
+                ContentType.Redirection => "redirection",
+                ContentType.TableOfContents => "toc",
+                _ => null,
+            };
+        }
+
         public (string documentId, string versionIndependentId) GetDocumentId(FilePath path)
         {
             var file = GetDocument(path);
@@ -180,43 +201,14 @@ namespace Microsoft.Docs.Build
         private Document GetDocumentCore(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
-            var mime = _buildScope.GetMime(contentType, path);
-            var pageType = GetPageType(contentType, path, mime);
+            var mime = _input.GetMime(contentType, path);
             var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
             var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
             var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, pageType, mime, isExperimental, isHtml);
-        }
-
-        private string? GetPageType(ContentType contentType, FilePath path, string? mime)
-        {
-            switch (contentType)
-            {
-                case ContentType.Page:
-                    if (mime != null && s_pageTypeMapping.TryGetValue(mime, out var type))
-                    {
-                        return type;
-                    }
-                    if (mime != "Conceptual")
-                    {
-                        return null;
-                    }
-                    var metadata = _metadataProvider.GetMetadata(_errors, path);
-                    if (metadata.Layout == "HubPage" || metadata.Layout == "LandingPage")
-                    {
-                        return null;
-                    }
-                    return "conceptual";
-                case ContentType.Redirection:
-                    return "redirection";
-                case ContentType.TableOfContents:
-                    return "toc";
-                default:
-                    return null;
-            }
+            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isHtml);
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)

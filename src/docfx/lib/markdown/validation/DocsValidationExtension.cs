@@ -58,14 +58,14 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                contentValidator.ValidateHeadings(currentFile, documentNodes, false);
+                contentValidator.ValidateHeadings(currentFile.FilePath, documentNodes, false);
                 foreach (var (inclusion, inclusionNodes) in inclusionDocumentNodes)
                 {
-                    contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
+                    contentValidator.ValidateHeadings(inclusion.FilePath, inclusionNodes, true);
                 }
                 foreach (var (isInclude, codeBlockItem) in codeBlockNodes)
                 {
-                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, isInclude);
+                    contentValidator.ValidateCodeBlock(currentFile.FilePath, codeBlockItem, isInclude);
                 }
             });
         }
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             MarkdownEngine markdownEngine,
             List<ContentNode> documentNodes,
             Dictionary<Document, List<ContentNode>> inclusionDocumentNodes,
-            bool? isCanonicalVersion)
+            bool isCanonicalVersion)
         {
             ContentNode? documentNode = null;
 
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
         private static void BuildCodeBlockNodes(
             MarkdownObject node,
             List<(bool IsInclude, CodeBlockItem codeBlockItem)> codeBlockItemList,
-            bool? isCanonicalVersion)
+            bool isCanonicalVersion)
         {
             CodeBlockItem? codeBlockItem = null;
 
@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             return netLineCount;
         }
 
-        private static bool? IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
+        private static bool IsCanonicalVersion(string? canonicalVersion, MonikerList fileLevelMonikerList, MonikerList zoneLevelMonikerList)
         {
             if (zoneLevelMonikerList.HasMonikers)
             {
@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
             return fileLevelMonikerList.IsCanonicalVersion(canonicalVersion);
         }
 
-        private static T CreateValidationNode<T>(bool? isCanonicalVersion, MarkdownObject markdownNode)
+        private static T CreateValidationNode<T>(bool isCanonicalVersion, MarkdownObject markdownNode)
             where T : ValidationNode, new()
         {
             return new T()

@@ -41,24 +41,24 @@ outputs:
     {
       "canonical_url": "https://docs.com/en-us/a b",
       "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a b.md",
-      "content_git_url": "https://github.com/escape/markdown/blob/master/a b.md",
-      "original_content_git_url": "https://github.com/escape/markdown/blob/master/a b.md",
+      "content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
+      "original_content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a b.md"
     }
   a&b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&b",
       "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a&b.md",
-      "content_git_url": "https://github.com/escape/markdown/blob/master/a&b.md",
-      "original_content_git_url": "https://github.com/escape/markdown/blob/master/a&b.md",
+      "content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
+      "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&b.md"
     }
   a&amp;b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&amp;b",
       "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a&amp;b.md",
-      "content_git_url": "https://github.com/escape/markdown/blob/master/a&amp;b.md",
-      "original_content_git_url": "https://github.com/escape/markdown/blob/master/a&amp;b.md",
+      "content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
+      "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
     }
   a++.png:

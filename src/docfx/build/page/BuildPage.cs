@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using HtmlReaderWriter;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -204,7 +205,7 @@ namespace Microsoft.Docs.Build
             var content = context.Input.ReadString(file.FilePath);
             errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file.FilePath));
 
-            context.ContentValidator.ValidateSensitiveLanguage(content, file);
+            context.ContentValidator.ValidateSensitiveLanguage(file.FilePath, content);
 
             var userMetadata = context.MetadataProvider.GetMetadata(errors, file.FilePath);
 
@@ -214,7 +215,7 @@ namespace Microsoft.Docs.Build
             var html = context.MarkdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, conceptual);
 
             context.SearchIndexBuilder.SetTitle(file, conceptual.Title);
-            context.ContentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
+            context.ContentValidator.ValidateTitle(file.FilePath, conceptual.Title, userMetadata.TitleSuffix);
 
             ProcessConceptualHtml(conceptual, context, file, html);
 
@@ -344,7 +345,7 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.BookmarkValidator.AddBookmarks(file.FilePath, bookmarks);
             context.SearchIndexBuilder.SetBody(file, searchText.ToString());
 
             return LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);
@@ -382,7 +383,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.BookmarkValidator.AddBookmarks(file.FilePath, bookmarks);
             context.SearchIndexBuilder.SetBody(file, searchText.ToString());
 
             conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);

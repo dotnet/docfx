@@ -38,11 +38,11 @@ namespace Microsoft.Docs.Build
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            return ToDocfxConfig(repository.Branch ?? "master", opsConfig, buildSourceFolder);
+            return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder);
         }
 
         private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
-            string branch, OpsConfig opsConfig, PathString buildSourceFolder)
+            string? branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -107,12 +107,12 @@ namespace Microsoft.Docs.Build
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
 
-        private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string branch, string buildSourceFolder)
+        private static (JObject obj, string path, string name)[] GetDependencies(OpsConfig config, string? branch, string buildSourceFolder)
         {
             return
                 (from dep in config.DependentRepositories
                  let path = new PathString(buildSourceFolder).GetRelativePath(dep.PathToRoot)
-                 let depBranch = dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
+                 let depBranch = branch != null && dep.BranchMapping.TryGetValue(branch, out var mappedBranch) ? mappedBranch : dep.Branch
                  let obj = new JObject
                  {
                      ["url"] = dep.Url,
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                 var item = new JObject();
                 if (!string.IsNullOrEmpty(config.OutputFolder))
                 {
-                    item["outputPath"] = new PathString(buildSourceFolder).GetRelativePath(new PathString(config.OutputFolder));
+                    item["outputFolder"] = buildSourceFolder.GetRelativePath(new PathString(config.OutputFolder));
                 }
                 if (config.ContainerPageMetadata != null)
                 {

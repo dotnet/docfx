@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText)
         {
-            _contentValidator.ValidateImageLink((Document)InclusionContext.RootFile, href, origin, altText);
+            _contentValidator.ValidateImageLink(((Document)InclusionContext.RootFile).FilePath, href, origin, altText);
             var link = GetLink(href);
             return link;
         }
@@ -346,9 +346,9 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value).FilePath, ((Document)InclusionContext.RootFile).FilePath)
                 : uid.HasValue
-                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value).FilePath, ((Document)InclusionContext.RootFile).FilePath)
                     : default;
 
             if (!suppressXrefNotFound)
@@ -375,7 +375,7 @@ namespace Microsoft.Docs.Build
 
         private string? GetCanonicalVersion()
         {
-            return _publishUrlMap.Value.GetCanonicalVersion(((Document)InclusionContext.RootFile).SiteUrl);
+            return _publishUrlMap.Value.GetCanonicalVersion(((Document)InclusionContext.RootFile).FilePath);
         }
 
         private class Status

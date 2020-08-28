@@ -106,7 +106,6 @@ namespace Microsoft.Docs.Build
 
                     // Restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place restore log.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // Build command
@@ -139,7 +138,7 @@ namespace Microsoft.Docs.Build
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
             syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
-            syntax.DefineParameter("directory", ref workingDirectory, "A directory or subdirectories that contains docfx.yml/docfx.json.");
+            syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains docfx.yml/docfx.json.");
         }
 
         private static void PrintFatalErrorMessage(Exception exception)

@@ -20,12 +20,14 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
+        private readonly RepositoryProvider _repositoryProvider;
 
-        public OpsPreProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions)
+        public OpsPreProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions, RepositoryProvider repositoryProvider)
         {
             _config = config;
             _errors = errors;
             _buildOptions = buildOptions;
+            _repositoryProvider = repositoryProvider;
         }
 
         public void Run()
@@ -56,14 +58,18 @@ namespace Microsoft.Docs.Build
                         var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
                             ? null
                             : Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
+                        var xmlDirectory = Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder));
+                        var (repository, _) = _repositoryProvider.GetRepository(new PathString(xmlDirectory));
                         ECMA2YamlConverter.Run(
-                            xmlDirectory: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder)),
+                            xmlDirectory,
                             outputDirectory: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder)),
                             fallbackXmlDirectory: fallbackXmlPath,
                             fallbackOutputDirectory: fallbackOutputDirectory,
                             logWriter: LogError,
                             logContentBaseDirectory: _buildOptions.DocsetPath,
                             sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-ecma-{index}.json"),
+                            publicGitRepoUrl: _config.EditRepositoryUrl ?? repository?.Remote,
+                            publicGitBranch: _config.EditRepositoryBranch ?? repository?.Branch,
                             config: monodocConfig);
                     }
                 }

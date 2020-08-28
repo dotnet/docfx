@@ -174,10 +174,7 @@ outputs:
           "href": "https://test.docs.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
-      ],
-      "properties": {
-          "tags": ["/base_path", "public"]
-      }
+      ]
     }
   .dependencymap.json: |
     {
@@ -347,7 +344,7 @@ outputs:
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/a.yml","line":2,"column":6}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
   .xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}], "properties": {"tags":["/base_path","internal"]}}
+    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}]}
 ---
 # Resolve xref in SDP
 repos:
@@ -1224,22 +1221,21 @@ outputs:
         ]
     }
 ---
-# define UID in master branch
+# Append branch query string to xrefmap for non-live branch when url type is docs
 repos:
-  https://docs.com/test#master:
+  https://docs.com/test#test:
     - files:
         docfx.yml:
         docs/a.md: |
           ---
-          title: Title from yaml header a
           uid: a
           ---
 outputs:
   docs/a.json:
   .xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=master"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=test"}],"properties": {"tags": ["/","internal"]}}
 ---
-# define UID in live branch
+# No branch query string in xrefmap for live branch when url type is docs
 repos:
   https://docs.com/test#live:
     - files:
@@ -1248,13 +1244,27 @@ repos:
           basePath: /base_path
         docs/a.md: |
           ---
-          title: Title from yaml header a
           uid: a
           ---
 outputs:
   base_path/docs/a.json:
   .xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}],"properties": {"tags": ["/base_path","public"]}}
+---
+# No branch query string in xrefmap for non-live branch when url type is not docs
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputUrlType: ugly
+        docs/a.md: |
+          ---
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a.html"}],"properties": undefined }
 ---
 # resolve UID with unknown query
 repos:
@@ -1500,6 +1510,78 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
+---
+# referencing multiple version, using uid with intersection for toc & SDP
+legacy: true
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': 'netcore-1.0'
+      'docs/v2/**': 'netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" }
+      ]
+    }
+  docs/v1/a.yml: |
+    ### YamlMime:TestData
+    uid: a
+    name: name 1.0
+  docs/v1/TOC.yml: |
+    items:
+      - name: node
+        uid: a
+  docs/v1/b.yml: |
+    ### YamlMime:TestPage
+      xref: a
+  docs/v2/a.yml: |
+  docs/v2/a.yml: |
+    ### YamlMime:TestData
+    uid: a
+    name: name 2.0
+  docs/v2/TOC.yml: |
+    items:
+      - name: node
+        uid: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name"],
+      "properties": { 
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        },
+        "uid": { "contentType": "uid" }
+      }
+    }
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": { 
+        "xref": { "contentType": "xref" }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <xref uid="xref"/>
+
+outputs:
+  136a42ac/docs/a.json:
+  136a42ac/docs/b.raw.page.json: |
+    {"content": "<a href=\"a.json\" data-linktype=\"relative-path\"> name 1.0 </a>"}
+  136a42ac/docs/b.mta.json:
+  136a42ac/docs/toc.json: |
+    {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-1.0"]}]}
+  4667fedf/docs/a.json:
+  4667fedf/docs/toc.json: |
+    {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:

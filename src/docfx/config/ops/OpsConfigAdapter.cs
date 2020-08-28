@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
@@ -22,6 +21,7 @@ namespace Microsoft.Docs.Build
     {
         public const string BuildConfigApi = "https://ops/buildconfig/";
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
+        private const string OpsMetadataApi = "https://ops/opsmetadatas/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
         private const string AllowlistsApi = "https://ops/allowlists/";
@@ -30,6 +30,11 @@ namespace Microsoft.Docs.Build
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
+
+        private static readonly SecretClient s_secretClient = new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential());
+        private static readonly Lazy<Task<string>> s_opsTokenProd = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenProd"));
+        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenSandbox"));
+
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new HttpClient();
@@ -43,6 +48,7 @@ namespace Microsoft.Docs.Build
             {
                 (BuildConfigApi, GetBuildConfig),
                 (MonikerDefinitionApi, GetMonikerDefinition),
+                (OpsMetadataApi, GetOpsMetadata),
                 (MetadataSchemaApi, GetMetadataSchema),
                 (MarkdownValidationRulesApi, GetMarkdownValidationRules),
                 (AllowlistsApi, GetAllowlists),
@@ -118,7 +124,7 @@ namespace Microsoft.Docs.Build
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
-                    Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                    OpsMetadataApi,
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
@@ -156,6 +162,11 @@ namespace Microsoft.Docs.Build
         private Task<string> GetMonikerDefinition(Uri url)
         {
             return Fetch($"{BuildServiceEndpoint()}/v2/monikertrees/allfamiliesproductsmonikers");
+        }
+
+        private Task<string> GetOpsMetadata(Uri url)
+        {
+            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"));
         }
 
         private async Task<string> GetMarkdownValidationRules(Uri url)
@@ -287,7 +298,8 @@ namespace Microsoft.Docs.Build
         }
 
         private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
-            => (environment ?? DocsEnvironment) switch
+        {
+            return (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
                 DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
@@ -295,19 +307,23 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
                 _ => throw new NotSupportedException(),
             };
+        }
 
-        private static string ValidationServiceEndpoint(DocsEnvironment? environment = null) =>
-            $"{BuildServiceEndpoint(environment)}/route/validationmgt";
+        private static string ValidationServiceEndpoint(DocsEnvironment? environment = null)
+        {
+            return $"{BuildServiceEndpoint(environment)}/route/validationmgt";
+        }
 
-        private static Lazy<Task<Response<KeyVaultSecret>>> OpBuildUserToken(DocsEnvironment? environment = null)
-            => new Lazy<Task<Response<KeyVaultSecret>>>(
-            () => new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential()).GetSecretAsync(
-            (environment ?? DocsEnvironment) switch
+        private static async Task<string> GetSecret(string secret)
+        {
+            var response = await s_secretClient.GetSecretAsync(secret);
+            if (response.Value is null)
             {
-                DocsEnvironment.Prod => "OpsBuildTokenProd",
-                DocsEnvironment.PPE => "OpsBuildTokenSandbox",
-                _ => throw new NotSupportedException(),
-            }));
+                throw new HttpRequestException(response.GetRawResponse().ToString());
+            }
+
+            return response.Value.Value;
+        }
 
         private static string GetHostName(string siteName)
         {
@@ -369,7 +385,14 @@ namespace Microsoft.Docs.Build
                 // For development usage
                 try
                 {
-                    request.Headers.Add("X-OP-BuildUserToken", (await OpBuildUserToken(environment).Value).Value.Value);
+                    var token = (environment ?? DocsEnvironment) switch
+                    {
+                        DocsEnvironment.Prod => s_opsTokenProd,
+                        DocsEnvironment.PPE => s_opsTokenSandbox,
+                        _ => throw new InvalidOperationException(),
+                    };
+
+                    request.Headers.Add("X-OP-BuildUserToken", await token.Value);
                 }
                 catch (Exception ex)
                 {
