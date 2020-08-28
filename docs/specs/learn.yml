@@ -406,6 +406,8 @@ outputs:
 legacy: true
 noDryRun: true
 locale: zh-CN
+environments:
+  - DOCS_OPS_TOKEN
 repos:
   https://github.com/learn/learn-pr:
   - files:
