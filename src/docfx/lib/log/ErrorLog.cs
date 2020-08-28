@@ -100,7 +100,6 @@ namespace Microsoft.Docs.Build
                     customRules.Remove(validationRule.Code);
                 }
             }
-            
             foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly))
             {
                 if (customRules.TryGetValue(validationRule.Code, out var customRule))
