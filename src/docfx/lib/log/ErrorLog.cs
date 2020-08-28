@@ -92,6 +92,15 @@ namespace Microsoft.Docs.Build
                 return customRules;
             }
 
+            foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => !rule.DocfxOverride))
+            {
+                if (customRules.ContainsKey(validationRule.Code))
+                {
+                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code));
+                    customRules.Remove(validationRule.Code);
+                }
+            }
+            
             foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly))
             {
                 if (customRules.TryGetValue(validationRule.Code, out var customRule))
