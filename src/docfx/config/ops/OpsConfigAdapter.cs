@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                 (RegressionAllContentRulesApi, _ => GetRegressionAllContentRules()),
                 (RegressionAllMetadataSchemaApi, _ => GetRegressionAllMetadataSchema()),
                 (HierarchyDrySyncApi, HierarchyDrySync),
-                (LearnValidationApi, GetRegressionAllMetadataSchema),
+                (LearnValidationApi, GetLearnValidationResult),
             };
         }
 
@@ -166,9 +166,9 @@ namespace Microsoft.Docs.Build
             return await Execute(request);
         }
 
-        private async Task<string> GetRegressionAllMetadataSchema(HttpRequestMessage request)
+        private async Task<string> GetLearnValidationResult(HttpRequestMessage request)
         {
-            request.RequestUri = new Uri($"{BuildServiceEndpoint()}/route/docs/api/hierarchy");
+            request.RequestUri = new Uri($"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{request.RequestUri.AbsoluteUri.Substring(LearnValidationApi.Length)}");
             return await Execute(request, "{}");
         }
 

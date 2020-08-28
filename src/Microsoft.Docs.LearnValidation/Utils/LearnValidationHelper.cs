@@ -46,9 +46,6 @@ namespace Microsoft.Docs.LearnValidation
 
             var requestEndpoint = _learnValidationAPIEndpoint + (type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}");
 
-            using var request = new HttpRequestMessage(HttpMethod.Get, requestEndpoint);
-            request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
-
             var fallbackBranchs = _branch switch
             {
                 "live" => new string[] { "live" },
@@ -60,7 +57,7 @@ namespace Microsoft.Docs.LearnValidation
             string requestUrl, data;
             foreach (var branch in fallbackBranchs)
             {
-                (requestUrl, data) = CheckWithBranch(request, requestEndpoint, _branch);
+                (requestUrl, data) = CheckWithBranch(requestEndpoint, branch);
 
                 Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, requestUrl);
                 Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, data);
@@ -72,9 +69,11 @@ namespace Microsoft.Docs.LearnValidation
             return false;
         }
 
-        private (string requestUrl, string data) CheckWithBranch(HttpRequestMessage request, string endpoint, string branch)
+        private (string requestUrl, string data) CheckWithBranch(string endpoint, string branch)
         {
-            request.RequestUri = new Uri(GetRequestUrl(branch));
+            using var request = new HttpRequestMessage(HttpMethod.Get, GetRequestUrl(branch));
+            request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
+
             var response = _interceptHttpRequest(request).Result;
             var data = response.Content.ReadAsStringAsync().Result;
             return (request.RequestUri.AbsoluteUri, data);
