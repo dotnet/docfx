@@ -160,7 +160,6 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                url = PrependEndpoint(url, environment);
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
