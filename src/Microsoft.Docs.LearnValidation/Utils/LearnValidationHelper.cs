@@ -16,7 +16,7 @@ namespace Microsoft.Docs.LearnValidation
         }
 
         private const string _defaultLocale = "en-us";
-        private const string _learnValidationAPIEndpoint = "https://ops/learnvalidation/";
+        private const string _learnValidationAPIEndpoint = "/route/docs/api/hierarchy/";
 
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _interceptHttpRequest;
         private readonly string _branch;
@@ -54,14 +54,14 @@ namespace Microsoft.Docs.LearnValidation
                 _ => new string[] { _branch, "main", "master" },
             };
 
-            string requestUrl, data;
+            HttpResponseMessage response;
             foreach (var branch in fallbackBranchs)
             {
-                (requestUrl, data) = CheckWithBranch(requestEndpoint, branch);
+                response = CheckItemExistWithBranch(requestEndpoint, branch);
 
-                Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, requestUrl);
-                Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, data);
-                if (data != "{}")
+                Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.RequestMessage.RequestUri.AbsoluteUri);
+                Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
                 {
                     return true;
                 }
@@ -69,16 +69,13 @@ namespace Microsoft.Docs.LearnValidation
             return false;
         }
 
-        private (string requestUrl, string data) CheckWithBranch(string endpoint, string branch)
+        private HttpResponseMessage CheckItemExistWithBranch(string endpoint, string branch)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, GetRequestUrl(branch));
+            var requestUrl = $"{endpoint}?branch={branch}&?locale={_defaultLocale}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = _interceptHttpRequest(request).Result;
-            var data = response.Content.ReadAsStringAsync().Result;
-            return (request.RequestUri.AbsoluteUri, data);
-
-            string GetRequestUrl(string branch) => $"{endpoint}?branch={branch}&?locale={_defaultLocale}";
+            return _interceptHttpRequest(request).Result;
         }
     }
 }

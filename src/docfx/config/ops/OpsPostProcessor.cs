@@ -16,9 +16,13 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
-        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage?>> _interceptHttpRequest;
+        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _interceptHttpRequest;
 
-        public OpsPostProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions, Func<HttpRequestMessage, Task<HttpResponseMessage?>> interceptHttpRequest)
+        public OpsPostProcessor(
+            Config config,
+            ErrorBuilder errors,
+            BuildOptions buildOptions,
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> interceptHttpRequest)
         {
             _config = config;
             _errors = errors;
@@ -51,7 +55,7 @@ namespace Microsoft.Docs.Build
                         publishFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, ".publish.json")),
                         dependencyFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, "full-dependent-list.txt")),
                         manifestFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, _config.BasePath, ".manifest.json")),
-                        environment: OpsConfigAdapter.DocsEnvironment.ToString(),
+                        environment: OpsInterceptor.DocsEnvironment.ToString(),
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
                         fallbackDocsetPath: _buildOptions.FallbackDocsetPath,
