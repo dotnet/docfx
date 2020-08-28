@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             _sourceMap = sourceMap;
         }
 
-        public void AddDependencyItem(FilePath from, FilePath? to, DependencyType type, ContentType fromContentType)
+        public void AddDependencyItem(FilePath from, FilePath? to, DependencyType type, bool transitive = false)
         {
             if (to is null || from == to || from.Origin == FileOrigin.Fallback)
             {
@@ -35,10 +35,10 @@ namespace Microsoft.Docs.Build
             }
 
             _dependencyItems.TryAdd(new DependencyItem(
-                                        fromOriginalPath is null ? from : new FilePath(fromOriginalPath),
-                                        toOriginalPath is null ? to : new FilePath(toOriginalPath),
-                                        type,
-                                        fromContentType));
+                fromOriginalPath is null ? from : new FilePath(fromOriginalPath),
+                toOriginalPath is null ? to : new FilePath(toOriginalPath),
+                type,
+                transitive));
         }
 
         public DependencyMap Build()
@@ -63,19 +63,19 @@ namespace Microsoft.Docs.Build
                     var visited = new HashSet<FilePath> { from };
                     while (stack.TryPop(out var current))
                     {
-                        dependencies.Add(new DependencyItem(from, current.To, current.Type, current.FromContentType));
+                        dependencies.Add(new DependencyItem(from, current.To, current.Type, current.Transitive));
 
                         // if the dependency destination is already in the result set, we can reuse it
-                        if (current.To != from && CanTransit(current) && result.TryGetValue(current.To, out var nextDependencies))
+                        if (current.To != from && current.Transitive && result.TryGetValue(current.To, out var nextDependencies))
                         {
                             foreach (var dependency in nextDependencies)
                             {
-                                dependencies.Add(new DependencyItem(from, dependency.To, dependency.Type, dependency.FromContentType));
+                                dependencies.Add(new DependencyItem(from, dependency.To, dependency.Type, dependency.Transitive));
                             }
                             continue;
                         }
 
-                        if (graph.TryGetValue(current.To, out var toDependencies) && !visited.Contains(current.To) && CanTransit(current))
+                        if (graph.TryGetValue(current.To, out var toDependencies) && !visited.Contains(current.To) && current.Transitive)
                         {
                             foreach (var dependencyItem in toDependencies)
                             {
@@ -88,12 +88,6 @@ namespace Microsoft.Docs.Build
                 result[from] = dependencies;
             }
             return result;
-        }
-
-        private static bool CanTransit(DependencyItem dependencyItem)
-        {
-            // NOTE: to keep v2 parity, TOC include does not transit.
-            return dependencyItem.Type == DependencyType.Include && dependencyItem.FromContentType != ContentType.TableOfContents;
         }
     }
 }

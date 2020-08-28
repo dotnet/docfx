@@ -10,19 +10,24 @@ namespace Microsoft.Docs.Build
     internal class FileLinkMapBuilder
     {
         private readonly ErrorBuilder _errors;
+        private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
 
-        public FileLinkMapBuilder(ErrorBuilder errors, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
+        public FileLinkMapBuilder(
+            ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
         {
             _errors = errors;
+            _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _contributionProvider = contributionProvider;
         }
 
-        public void AddFileLink(FilePath inclusionRoot, FilePath referencingFile, string sourceUrl, string targetUrl, SourceInfo? source)
+        public void AddFileLink(FilePath inclusionRoot, FilePath referencingFile, string targetUrl, SourceInfo? source)
         {
+            var sourceUrl = _documentProvider.GetSiteUrl(inclusionRoot);
+
             if (string.IsNullOrEmpty(targetUrl) || sourceUrl == targetUrl)
             {
                 return;

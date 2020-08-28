@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
-            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, ContributionProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, DocumentProvider, MonikerProvider, ContributionProvider);
             XrefResolver = new XrefResolver(
                 config,
                 FileResolver,
