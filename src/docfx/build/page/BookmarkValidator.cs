@@ -10,18 +10,18 @@ namespace Microsoft.Docs.Build
     {
         private readonly ErrorBuilder _errors;
 
-        private readonly DictionaryBuilder<Document, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<Document, HashSet<string>>();
-        private readonly ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>
-            _references = new ListBuilder<(Document file, Document dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>();
+        private readonly DictionaryBuilder<FilePath, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<FilePath, HashSet<string>>();
+        private readonly ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)> _references
+                   = new ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>();
 
         public BookmarkValidator(ErrorBuilder errors)
         {
             _errors = errors;
         }
 
-        public void AddBookmarkReference(Document file, Document reference, string? fragment, bool isSelfBookmark, SourceInfo? source)
+        public void AddBookmarkReference(FilePath file, FilePath reference, string? fragment, bool isSelfBookmark, SourceInfo? source)
         {
-            if (reference.ContentType == ContentType.Page && !string.IsNullOrEmpty(fragment))
+            if (!string.IsNullOrEmpty(fragment))
             {
                 var bookmark = fragment.Substring(1).Trim();
                 if (!string.IsNullOrEmpty(bookmark))
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void AddBookmarks(Document file, HashSet<string> bookmarks)
+        public void AddBookmarks(FilePath file, HashSet<string> bookmarks)
         {
             _bookmarksByFile.TryAdd(file, bookmarks);
         }

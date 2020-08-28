@@ -11,16 +11,16 @@ namespace Microsoft.Docs.Build
         public FilePath From { get; }
 
         [JsonIgnore]
-        public ContentType FromContentType { get; }
+        public bool Transitive { get; }
 
         public FilePath To { get; }
 
         public DependencyType Type { get; }
 
-        public DependencyItem(FilePath from, FilePath to, DependencyType type, ContentType fromContentType)
+        public DependencyItem(FilePath from, FilePath to, DependencyType type, bool transitive)
         {
             From = from;
-            FromContentType = fromContentType;
+            Transitive = transitive;
             To = to;
             Type = type;
         }

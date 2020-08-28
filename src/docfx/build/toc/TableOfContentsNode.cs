@@ -71,6 +71,7 @@ namespace Microsoft.Docs.Build
             Items = item.Items;
             Document = item.Document;
             Children = item.Children;
+            LandingPageType = item.LandingPageType;
         }
     }
 }
