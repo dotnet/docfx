@@ -2498,8 +2498,7 @@ inputs:
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
             "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
             "severity": "SUGGESTION",
-            "code": "h1-missing",
-            "docfxOverride": true
+            "code": "h1-missing"
           },
           {
             "type": "H1NotFirst",
@@ -2510,8 +2509,7 @@ inputs:
             "excludedDocfxVersions": [
               "v2"
             ] ,
-            "pullRequestOnly": false,
-            "docfxOverride": true
+            "pullRequestOnly": false
           },
           {
             "type": "HeadingEmpty",
@@ -2522,8 +2520,7 @@ inputs:
             "excludedDocfxVersions": [
               "v2"
             ],
-            "pullRequestOnly": true,
-            "docfxOverride": true
+            "pullRequestOnly": true
           },
           {
             "type": "NoContent",
@@ -2539,8 +2536,7 @@ inputs:
             "excludedDocfxVersions": [
               "v2"
             ],
-            "pullRequestOnly": true,
-            "docfxOverride": true
+            "pullRequestOnly": true
           }
         ]
       }

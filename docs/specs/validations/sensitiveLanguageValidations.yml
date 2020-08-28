@@ -18,8 +18,7 @@ inputs:
             "code": "sensitive-language",
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"],
-            "docfxOverride": true
+            "exclusions": ["includes"]
           }
         ]
       }
@@ -43,38 +42,4 @@ outputs:
   file4.json:
   a/b/c/file.json:
   n/m/o/file.json:
----
-# Disallow docfx override content validation rule result
-inputs:
-  docfx.yml: |
-    markdownValidationRules: rules.json
-    rules:
-      sensitive-language:
-        exclude:
-          - a/b/**/*.md
-  rules.json: |
-    {
-      "text": {
-        "rules": [
-          {
-            "type": "SensitiveLanguage",
-            "message": "Term '{0}' is sensitive and should not be used in content or code.",
-            "code": "sensitive-language",
-            "severity": "SUGGESTION",
-            "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"],
-            "docfxOverride": false
-          }
-        ]
-      }
-    }
-  file1.md: There is master in the content, this will error
-  a/b/c/file.md: skipped bad language check for master due to exclusion
-outputs:
-  .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","line":0,"end_line":0,"column":0,"end_column":0}
-  file1.json:
-  a/b/c/file.json:
 ---
