@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
         {
             var metadataRules = FetchValidationRules(
                 $"{BuildServiceEndpoint()}/route/validationmgt/rulesets/metadatarules?name=_regression_all_", environment: DocsEnvironment.PPE);
-            var allowlists = FetchValidationRules("/route/validationmgt/validation/allowlists", environment: DocsEnvironment.PPE);
+            var allowlists = FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/allowlists", environment: DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
