@@ -196,9 +196,9 @@ namespace Microsoft.Docs.Build
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
 
-                    foreach (var servicepage in servicePages)
+                    foreach (var servicePage in servicePages)
                     {
-                        allServicePages.Add(servicepage);
+                        allServicePages.Add(servicePage);
                     }
                 });
 
