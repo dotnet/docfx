@@ -424,7 +424,11 @@ repos:
             }
           }]
         }
-     docfx.json: '{}'
+     docfx.yml: |
+       http:
+         https://op-build-prod.azurewebsites.net:
+           headers:
+             X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
      path.yml: |
        ### YamlMime:LearningPath
        serviceData: "{\"uid\": \"learning-path\",\"achievement\":{\"uid\":\"achievement1\",\"type\":\"trophy\"},\"modules\":[\"module-valid\", \"module-invalid\"]}"
