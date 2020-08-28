@@ -305,7 +305,7 @@ namespace Microsoft.Docs.Build
                     {
                         // the content here must be an UID, not href
                         var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                            content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file.FilePath));
+                            content, file.FilePath, file.FilePath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file.FilePath));
                         errors.AddIfNotNull(xrefError);
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));

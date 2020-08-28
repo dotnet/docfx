@@ -206,7 +206,6 @@ namespace Microsoft.Docs.Build
                 Name = node.Value.Name.Or(resolvedTopicName),
                 Document = document ?? subChildrenFirstItem?.Document,
                 Items = items,
-                LandingPageType = node.Value.LandingPageType,
             };
 
             // resolve monikers
@@ -337,8 +336,7 @@ namespace Microsoft.Docs.Build
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                    _dependencyMapBuilder.AddDependencyItem(
-                        filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File, filePath.ContentType);
+                    _dependencyMapBuilder.AddDependencyItem(filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File);
                     return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 
@@ -377,7 +375,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(uid.Value))
             {
                 var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(
-                    uid!, filePath, rootPath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath.FilePath));
+                    uid!, filePath.FilePath, rootPath.FilePath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath.FilePath));
                 _errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null && addToReferencedFiles)
@@ -405,7 +403,7 @@ namespace Microsoft.Docs.Build
                     foreach (var name in s_tocFileNames)
                     {
                         var probingHref = new SourceInfo<string>(Path.Combine(href, name), href);
-                        var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath);
+                        var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath, transitive: false);
                         if (subToc != null)
                         {
                             if (!subToc.FilePath.IsGitCommit)
@@ -425,7 +423,9 @@ namespace Microsoft.Docs.Build
                     return result;
 
                 case TocHrefType.TocFile:
-                    var (error, referencedToc) = _linkResolver.ResolveContent(href, filePath);
+
+                    // NOTE: to keep v2 parity, TOC include does not transit.
+                    var (error, referencedToc) = _linkResolver.ResolveContent(href, filePath, transitive: false);
                     _errors.AddIfNotNull(error);
                     referencedTocs.AddIfNotNull(referencedToc);
                     return referencedToc;

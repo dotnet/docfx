@@ -345,7 +345,7 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.BookmarkValidator.AddBookmarks(file.FilePath, bookmarks);
             context.SearchIndexBuilder.SetBody(file, searchText.ToString());
 
             return LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);
@@ -383,7 +383,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            context.BookmarkValidator.AddBookmarks(file, bookmarks);
+            context.BookmarkValidator.AddBookmarks(file.FilePath, bookmarks);
             context.SearchIndexBuilder.SetBody(file, searchText.ToString());
 
             conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(context.BuildOptions.Culture, result);

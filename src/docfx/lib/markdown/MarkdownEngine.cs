@@ -346,9 +346,9 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value).FilePath, ((Document)InclusionContext.RootFile).FilePath)
                 : uid.HasValue
-                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value).FilePath, ((Document)InclusionContext.RootFile).FilePath)
                     : default;
 
             if (!suppressXrefNotFound)
