@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
             var filename = Regex.Replace(node.Name, @"\s+", "");
 
-            if (!string.IsNullOrEmpty(node.LandingPageType.ToString()))
+            if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
                 var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in node.Items)
             {
-                if (!string.IsNullOrEmpty(node.LandingPageType.ToString()) && node.LandingPageType == LandingPageType.Root)
+                if (node.LandingPageType == LandingPageType.Root)
                 {
                     GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}");
                 }
