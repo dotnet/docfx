@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
         public bool Legacy;
         public bool Verbose;
         public bool DryRun;
+        public bool NoDrySync;
         public bool Stdin;
         public bool NoCache;
         public bool NoRestore;
@@ -26,7 +27,7 @@ namespace Microsoft.Docs.Build
             var config = new JObject
             {
                 ["legacy"] = Legacy,
-                ["dryRun"] = DryRun,
+                ["noDrySync"] = NoDrySync,
             };
 
             if (Output != null)
