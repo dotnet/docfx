@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile?.FilePath);
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 return (error, null, "", null);
             }
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
-            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile?.FilePath);
+            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var dependencyType = GetDependencyType(referencingFile, spec);
-                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile.FilePath, dependencyType);
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
                 var href = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
@@ -264,7 +264,9 @@ namespace Microsoft.Docs.Build
                 return DependencyType.Uid;
             }
 
-            switch ((mime, xref.DeclaringFile.Mime.Value))
+            var declaringFileMime = _documentProvider.GetDocument(xref.DeclaringFile).Mime.Value;
+
+            switch ((mime, declaringFileMime))
             {
                 case ("LearningPath", "Module"):
                 case ("Module", "ModuleUnit"):

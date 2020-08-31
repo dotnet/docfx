@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTelemetryExtension
     {
-        public static MarkdownPipelineBuilder UseTelemetry(this MarkdownPipelineBuilder builder)
+        public static MarkdownPipelineBuilder UseTelemetry(this MarkdownPipelineBuilder builder, DocumentProvider documentProvider)
         {
             return builder.Use(document =>
             {
@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                Telemetry.TrackMarkdownElement((Document)InclusionContext.File, elementCount);
+                Telemetry.TrackMarkdownElement(documentProvider.GetDocument((FilePath)InclusionContext.File), elementCount);
             });
         }
 

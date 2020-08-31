@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
             return builder.Use(document =>
             {
-                var filePath = ((Document)InclusionContext.File).FilePath;
+                var filePath = (FilePath)InclusionContext.File;
                 if (filePath.Format == FileFormat.Markdown)
                 {
                     var layout = getLayout(filePath);
