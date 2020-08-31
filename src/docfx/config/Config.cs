@@ -305,6 +305,11 @@ namespace Microsoft.Docs.Build
         public bool RunLearnValidation { get; private set; }
 
         /// <summary>
+        /// Determines if disable dry sync
+        /// </summary>
+        public bool NoDrySync { get; private set; }
+
+        /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]

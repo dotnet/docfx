@@ -27,6 +27,8 @@ namespace Microsoft.Docs.LearnValidation
 
         public bool IsLocalizationBuild { get; }
 
+        public bool NoDrySync { get; }
+
         public LearnValidationConfig(
             string repoUrl,
             string repoBranch,
@@ -38,7 +40,8 @@ namespace Microsoft.Docs.LearnValidation
             string manifestFilePath,
             string environment,
             string fallbackDocsetPath,
-            bool isLocalizationBuild)
+            bool isLocalizationBuild,
+            bool noDrySync)
         {
             RepoUrl = repoUrl;
             RepoBranch = repoBranch;
@@ -51,6 +54,7 @@ namespace Microsoft.Docs.LearnValidation
             Environment = environment;
             FallbackDocsetPath = fallbackDocsetPath;
             IsLocalizationBuild = isLocalizationBuild;
+            NoDrySync = noDrySync;
         }
     }
 }
