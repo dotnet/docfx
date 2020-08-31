@@ -239,7 +239,7 @@ namespace Microsoft.Docs.Build
             /// Link which is resolved to a file out of build scope.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error LinkOutOfScope(SourceInfo<string> source, Document file)
+            public static Error LinkOutOfScope(SourceInfo<string> source, FilePath file)
                 => new Error(ErrorLevel.Warning, "link-out-of-scope", $"File '{file}' referenced by link '{source}' will not be built because it is not included in build scope.", source);
 
             /// <summary>
@@ -432,7 +432,7 @@ namespace Microsoft.Docs.Build
             /// and can't decide which article to use when referencing that uid with this overlapped version
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerOverlapping(string uid, List<Document> files, IEnumerable<string> overlappingMonikers)
+            public static Error MonikerOverlapping(string uid, List<FilePath> files, IEnumerable<string> overlappingMonikers)
                 => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}.");
 
             /// <summary>

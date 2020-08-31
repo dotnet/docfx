@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         public JObject ExtensionData { get; set; } = new JObject();
 
         [JsonIgnore]
-        public Document? Document { get; set; }
+        public FilePath? Document { get; set; }
 
         public TableOfContentsNode() { }
 

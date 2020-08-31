@@ -65,19 +65,13 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath path)
+        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
         {
-            var file = _documentProvider.GetDocument(path);
-            if (file.ContentType != ContentType.Page)
-            {
-                return;
-            }
-
-            switch (file.FilePath.Format)
+            switch (file.Format)
             {
                 case FileFormat.Markdown:
                     {
-                        var fileMetadata = _metadataProvider.GetMetadata(errors, file.FilePath);
+                        var fileMetadata = _metadataProvider.GetMetadata(errors, file);
                         var spec = LoadMarkdown(errors, fileMetadata, file);
                         if (spec != null)
                         {
@@ -87,14 +81,14 @@ namespace Microsoft.Docs.Build
                     }
                 case FileFormat.Yaml:
                     {
-                        var token = _input.ReadYaml(errors, file.FilePath);
+                        var token = _input.ReadYaml(errors, file);
                         var specs = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
                         break;
                     }
                 case FileFormat.Json:
                     {
-                        var token = _input.ReadJson(errors, file.FilePath);
+                        var token = _input.ReadJson(errors, file);
                         var specs = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
                         break;
@@ -102,24 +96,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private InternalXrefSpec? LoadMarkdown(ErrorBuilder errors, UserMetadata metadata, Document file)
+        private InternalXrefSpec? LoadMarkdown(ErrorBuilder errors, UserMetadata metadata, FilePath file)
         {
             if (string.IsNullOrEmpty(metadata.Uid))
             {
                 return default;
             }
 
-            var monikers = _monikerProvider.GetFileLevelMonikers(errors, file.FilePath);
-            var xref = new InternalXrefSpec(metadata.Uid, file.SiteUrl, file, monikers);
+            var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
+            var xref = new InternalXrefSpec(metadata.Uid, _documentProvider.GetSiteUrl(file), file, monikers);
 
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
             return xref;
         }
 
-        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, Document file)
+        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
         {
-            var schema = _templateEngine.GetSchema(file.Mime);
+            var schema = _templateEngine.GetSchema(_documentProvider.GetDocument(file).Mime);
 
             return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }

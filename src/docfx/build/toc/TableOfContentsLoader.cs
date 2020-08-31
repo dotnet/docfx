@@ -26,14 +26,14 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
 
-        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>, List<FilePath>)> _cache =
-                     new MemoryCache<FilePath, (TableOfContentsNode, List<Document>, List<Document>, List<FilePath>)>();
+        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)> _cache =
+                     new MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        private static readonly AsyncLocal<ImmutableStack<Document>> t_recursionDetector =
-                            new AsyncLocal<ImmutableStack<Document>> { Value = ImmutableStack<Document>.Empty };
+        private static readonly AsyncLocal<ImmutableStack<FilePath>> t_recursionDetector =
+                            new AsyncLocal<ImmutableStack<FilePath>> { Value = ImmutableStack<FilePath>.Empty };
 
         public TableOfContentsLoader(
             PathString docsetPath,
@@ -59,17 +59,17 @@ namespace Microsoft.Docs.Build
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
-        public (TableOfContentsNode node, List<Document> referencedFiles, List<Document> referencedTocs, List<FilePath> servicePages)
-            Load(Document file)
+        public (TableOfContentsNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
+            Load(FilePath file)
         {
-            return _cache.GetOrAdd(file.FilePath, _ =>
+            return _cache.GetOrAdd(file, _ =>
             {
                 var servicePages = new List<FilePath>();
-                var referencedFiles = new List<Document>();
-                var referencedTocs = new List<Document>();
+                var referencedFiles = new List<FilePath>();
+                var referencedTocs = new List<FilePath>();
                 var node = LoadTocFile(file, file, referencedFiles, referencedTocs);
 
-                if (_joinTOCConfigs.TryGetValue(file.FilePath.Path, out var joinTOCConfig) && joinTOCConfig != null)
+                if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
                 {
                     if (joinTOCConfig.TopLevelToc != null)
                     {
@@ -118,15 +118,15 @@ namespace Microsoft.Docs.Build
         }
 
         private TableOfContentsNode LoadTocFile(
-            Document file, Document rootPath, List<Document> referencedFiles, List<Document> referencedTocs)
+            FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs)
         {
             // add to parent path
-            t_recursionDetector.Value ??= ImmutableStack<Document>.Empty;
+            t_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
 
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
             {
-                throw Errors.Link.CircularReference(new SourceInfo(file.FilePath, 1, 1), file, recursionDetector).ToException();
+                throw Errors.Link.CircularReference(new SourceInfo(file, 1, 1), file, recursionDetector).ToException();
             }
 
             try
@@ -134,12 +134,12 @@ namespace Microsoft.Docs.Build
                 recursionDetector = recursionDetector.Push(file);
                 t_recursionDetector.Value = recursionDetector;
 
-                var node = _parser.Parse(file.FilePath, _errors);
+                var node = _parser.Parse(file, _errors);
                 node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
 
                 if (file == rootPath)
                 {
-                    _contentValidator.ValidateTocEntryDuplicated(file.FilePath, referencedFiles);
+                    _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
                 }
                 return node;
             }
@@ -151,17 +151,17 @@ namespace Microsoft.Docs.Build
 
         private List<SourceInfo<TableOfContentsNode>> LoadTocNodes(
             List<SourceInfo<TableOfContentsNode>> nodes,
-            Document filePath,
-            Document rootPath,
-            List<Document> referencedFiles,
-            List<Document> referencedTocs)
+            FilePath filePath,
+            FilePath rootPath,
+            List<FilePath> referencedFiles,
+            List<FilePath> referencedTocs)
         {
             var newNodes = new SourceInfo<TableOfContentsNode>[nodes.Count];
 
             Parallel.For(0, nodes.Count, i =>
             {
-                var newReferencedFiles = new List<Document>();
-                var newReferencedTocs = new List<Document>();
+                var newReferencedFiles = new List<FilePath>();
+                var newReferencedTocs = new List<FilePath>();
                 newNodes[i] = LoadTocNode(nodes[i], filePath, rootPath, newReferencedFiles, newReferencedTocs);
                 lock (newNodes)
                 {
@@ -175,17 +175,17 @@ namespace Microsoft.Docs.Build
 
         private SourceInfo<TableOfContentsNode> LoadTocNode(
             SourceInfo<TableOfContentsNode> node,
-            Document filePath,
-            Document rootPath,
-            List<Document> referencedFiles,
-            List<Document> referencedTocs)
+            FilePath filePath,
+            FilePath rootPath,
+            List<FilePath> referencedFiles,
+            List<FilePath> referencedTocs)
         {
             // process
             var tocHref = GetTocHref(node);
             var topicHref = GetTopicHref(node);
             var topicUid = node.Value.Uid;
 
-            _contentValidator.ValidateTocBreadcrumbLinkExternal(filePath.FilePath, node);
+            _contentValidator.ValidateTocBreadcrumbLinkExternal(filePath, node);
 
             var (resolvedTocHref, subChildren, subChildrenFirstItem, tocHrefType) = ProcessTocHref(
                 filePath, rootPath, referencedFiles, referencedTocs, tocHref);
@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (currentItem.Document != null)
                 {
-                    yield return _monikerProvider.GetFileLevelMonikers(_errors, currentItem.Document.FilePath);
+                    yield return _monikerProvider.GetFileLevelMonikers(_errors, currentItem.Document);
                 }
             }
 
@@ -304,10 +304,10 @@ namespace Microsoft.Docs.Build
 
         private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem, TocHrefType tocHrefType)
             ProcessTocHref(
-                Document filePath,
-                Document rootPath,
-                List<Document> referencedFiles,
-                List<Document> referencedTocs,
+                FilePath filePath,
+                FilePath rootPath,
+                List<FilePath> referencedFiles,
+                List<FilePath> referencedTocs,
                 SourceInfo<string?> tocHref)
         {
             if (string.IsNullOrEmpty(tocHref))
@@ -330,13 +330,13 @@ namespace Microsoft.Docs.Build
                 var nestedToc = LoadTocFile(
                     referenceTocFilePath,
                     rootPath,
-                    tocHrefType == TocHrefType.RelativeFolder ? new List<Document>() : referencedFiles,
+                    tocHrefType == TocHrefType.RelativeFolder ? new List<FilePath>() : referencedFiles,
                     referencedTocs);
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
                     var nestedTocFirstItem = GetFirstItem(nestedToc.Items);
-                    _dependencyMapBuilder.AddDependencyItem(filePath.FilePath, nestedTocFirstItem?.Document?.FilePath, DependencyType.File);
+                    _dependencyMapBuilder.AddDependencyItem(filePath, nestedTocFirstItem?.Document, DependencyType.File);
                     return (default, default, nestedTocFirstItem, tocHrefType);
                 }
 
@@ -346,10 +346,10 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (SourceInfo<string?> resolvedTopicHref, SourceInfo<string?> resolvedTopicName, Document? file) ProcessTopicItem(
-            Document filePath,
-            Document rootPath,
-            List<Document> referencedFiles,
+        private (SourceInfo<string?> resolvedTopicHref, SourceInfo<string?> resolvedTopicName, FilePath? file) ProcessTopicItem(
+            FilePath filePath,
+            FilePath rootPath,
+            List<FilePath> referencedFiles,
             SourceInfo<string?> uid,
             SourceInfo<string?> topicHref,
             bool addToReferencedFiles = true)
@@ -375,7 +375,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(uid.Value))
             {
                 var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(
-                    uid!, filePath.FilePath, rootPath.FilePath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath.FilePath));
+                    uid!, filePath, rootPath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath));
                 _errors.AddIfNotNull(uidError);
 
                 if (declaringFile != null && addToReferencedFiles)
@@ -393,20 +393,20 @@ namespace Microsoft.Docs.Build
             return (topicHref, default, default);
         }
 
-        private Document? ResolveTocHref(
-            Document filePath, List<Document> referencedTocs, TocHrefType tocHrefType, SourceInfo<string> href)
+        private FilePath? ResolveTocHref(
+            FilePath filePath, List<FilePath> referencedTocs, TocHrefType tocHrefType, SourceInfo<string> href)
         {
             switch (tocHrefType)
             {
                 case TocHrefType.RelativeFolder:
-                    var result = default(Document);
+                    var result = default(FilePath);
                     foreach (var name in s_tocFileNames)
                     {
                         var probingHref = new SourceInfo<string>(Path.Combine(href, name), href);
                         var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath, transitive: false);
                         if (subToc != null)
                         {
-                            if (!subToc.FilePath.IsGitCommit)
+                            if (!subToc.IsGitCommit)
                             {
                                 return subToc;
                             }
