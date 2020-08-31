@@ -143,11 +143,26 @@ namespace Microsoft.Docs.Build
             DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
             DeleteIfExist(Path.Combine(cwd, ".git/shallow.lock"));
 
-            try
+            var succeeded = false;
+            foreach (var branch in GitUtility.GetFallbackBranch(committish))
             {
-                GitUtility.Fetch(_config, cwd, url, $"+{committish}:{committish}", $"{fetchOption} {depthOneOption}");
+                try
+                {
+                    if (branch != committish)
+                    {
+                        Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {branch} branch");
+                    }
+                    GitUtility.Fetch(_config, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
+                    succeeded = true;
+                    committish = branch;
+                    break;
+                }
+                catch (InvalidOperationException)
+                {
+                }
             }
-            catch (InvalidOperationException)
+
+            if (!succeeded)
             {
                 try
                 {

@@ -514,18 +514,18 @@ outputs:
   .links.json: |
     {
       "links":[
-        {"source_url":"/docs/a/toc.json","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/a/TOC.yml","source_line":2},
-        {"source_url":"/docs/a/toc.json","target_url":"b.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/a/TOC.yml","source_line":4},
-        {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v2/b.md","source_line":1},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":1},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":2},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":4},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":5},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":6},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":8},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line":3},
-        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"https://autolink","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/b.md","source_line": 9},
-        {"source_url":"/docs/toc.json","source_moniker_group":"9d4e15fd","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/master/docs/v1/TOC.yml","source_line":2}
+        {"source_url":"/docs/a/toc.json","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/a/TOC.yml","source_line":2},
+        {"source_url":"/docs/a/toc.json","target_url":"b.md","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/a/TOC.yml","source_line":4},
+        {"source_url":"/docs/b","source_moniker_group":"23d205a5","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v2/b.md","source_line":1},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":1},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":2},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":4},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d#title-1","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":5},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/d.md#title-1","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":6},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":8},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"c.md","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":3},
+        {"source_url":"/docs/b","source_moniker_group":"9d4e15fd","target_url":"https://autolink","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line": 9},
+        {"source_url":"/docs/toc.json","source_moniker_group":"9d4e15fd","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/TOC.yml","source_line":2}
       ]
     }
   .errors.log: |
@@ -552,8 +552,8 @@ outputs:
   .links.json: |
     {
       "links": [
-        { "source_url": "/a", "target_url": "/a-link", "source_git_url":"https://github.com/inclusion-links/markdown/blob/master/token.md", "source_line": 1 },
-        { "source_url": "/a", "target_url": "/b", "source_git_url":"https://github.com/inclusion-links/markdown/blob/master/token.md", "source_line": 2},
+        { "source_url": "/a", "target_url": "/a-link", "source_git_url":"https://github.com/inclusion-links/markdown/blob/main/token.md", "source_line": 1 },
+        { "source_url": "/a", "target_url": "/b", "source_git_url":"https://github.com/inclusion-links/markdown/blob/main/token.md", "source_line": 2},
       ]
     }
   a.json:
@@ -596,43 +596,43 @@ outputs:
     {
       "links": [
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docfx.yml",
             "source_line": 3,
             "source_url": "/docs/a",
             "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docfx.yml",
             "source_line": 3,
             "source_url": "/docs/b",
             "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/breadcrumbs/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/breadcrumbs/TOC.yml",
             "source_line": 3,
             "source_url": "/docs/breadcrumbs/toc.json",
             "target_url": "/"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docfx.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docfx.yml",
             "source_line": 3,
             "source_url": "/docs/c",
             "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/a/TOC.yml",
             "source_line": 4,
             "source_url": "/docs/toc.json",
             "target_url": "/docs/a"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/a/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/a/TOC.yml",
             "source_line": 2,
             "source_url": "/docs/toc.json",
             "target_url": "/docs/b"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/master/docs/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/TOC.yml",
             "source_line": 4,
             "source_url": "/docs/toc.json",
             "target_url": "/docs/c"
@@ -663,13 +663,13 @@ outputs:
           {
               "source_url": "/docs/a",
               "target_url": "https://a.com/b",
-              "source_git_url": "https://github.com/raw-external/markdown/blob/master/docs/a.md",
+              "source_git_url": "https://github.com/raw-external/markdown/blob/main/docs/a.md",
               "source_line": 1,
           },
           {
               "source_url": "/docs/a",
               "target_url": "https://b.com/a",
-              "source_git_url": "https://github.com/raw-external/markdown/blob/master/docs/a.md",
+              "source_git_url": "https://github.com/raw-external/markdown/blob/main/docs/a.md",
               "source_line": 2,
           }
       ]
@@ -700,7 +700,7 @@ outputs:
   b.json: |
     {
       "conceptual": "<p><a href='c'></a></p>",
-      "content_git_url": "https://github.com/relocate/source-file/blob/master/a/b.original.xml"
+      "content_git_url": "https://github.com/relocate/source-file/blob/main/a/b.original.xml"
     }
   c.json:
   .errors.log: |

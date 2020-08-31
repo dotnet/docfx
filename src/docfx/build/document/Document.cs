@@ -62,11 +62,6 @@ namespace Microsoft.Docs.Build
         public string CanonicalUrl { get; }
 
         /// <summary>
-        /// Gets a value indicating whether it's an experimental content
-        /// </summary>
-        public bool IsExperimental { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the current document is output as HTML.
         /// </summary>
         public bool IsHtml { get; }
@@ -81,7 +76,6 @@ namespace Microsoft.Docs.Build
             string canonicalUrl,
             ContentType contentType,
             SourceInfo<string?> mime,
-            bool isExperimental,
             bool isHtml = true)
         {
             Debug.Assert(!Path.IsPathRooted(filePath.Path));
@@ -92,7 +86,6 @@ namespace Microsoft.Docs.Build
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
-            IsExperimental = isExperimental;
             IsHtml = isHtml;
 
             Debug.Assert(SiteUrl.StartsWith('/'));

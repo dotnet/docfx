@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using HtmlReaderWriter;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -271,7 +272,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file.FilePath, file.FilePath);
                     errors.AddIfNotNull(error);
                     return link;
 
@@ -292,7 +293,7 @@ namespace Microsoft.Docs.Build
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {
-                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file.FilePath, file.FilePath);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
                         });
@@ -303,7 +304,8 @@ namespace Microsoft.Docs.Build
                     if (!_mustacheXrefSpec.ContainsKey((file.FilePath, content)))
                     {
                         // the content here must be an UID, not href
-                        var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(content, file, file);
+                        var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
+                            content, file.FilePath, file.FilePath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file.FilePath));
                         errors.AddIfNotNull(xrefError);
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));

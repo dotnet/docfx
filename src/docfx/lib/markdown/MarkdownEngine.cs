@@ -298,17 +298,17 @@ namespace Microsoft.Docs.Build
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath());
+            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath().FilePath);
             status.Errors.AddIfNotNull(error);
 
-            return file is null ? default : (_input.ReadString(file.FilePath).Replace("\r", ""), file);
+            return file is null ? default : (_input.ReadString(file).Replace("\r", ""), _documentProvider.GetDocument(file));
         }
 
         private string GetLink(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) =
-                _linkResolver.ResolveLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (Document)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(
+                new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath().FilePath, ((Document)InclusionContext.RootFile).FilePath);
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -334,7 +334,7 @@ namespace Microsoft.Docs.Build
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetDocument(href), (Document)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetDocument(href).FilePath, ((Document)InclusionContext.RootFile).FilePath);
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -346,9 +346,9 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value), (Document)InclusionContext.RootFile)
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetDocument(href.Value).FilePath, ((Document)InclusionContext.RootFile).FilePath)
                 : uid.HasValue
-                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value), (Document)InclusionContext.RootFile)
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetDocument(uid.Value).FilePath, ((Document)InclusionContext.RootFile).FilePath)
                     : default;
 
             if (!suppressXrefNotFound)

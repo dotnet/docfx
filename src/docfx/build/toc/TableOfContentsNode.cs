@@ -24,6 +24,10 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string?> Uid { get; set; }
 
+        public SourceInfo<LandingPageType?> LandingPageType { get; set; }
+
+        public static bool ShouldSerializeLandingPageType() => false;
+
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool Expanded { get; set; }
 
@@ -47,7 +51,7 @@ namespace Microsoft.Docs.Build
         public JObject ExtensionData { get; set; } = new JObject();
 
         [JsonIgnore]
-        public Document? Document { get; set; }
+        public FilePath? Document { get; set; }
 
         public TableOfContentsNode() { }
 
@@ -67,6 +71,7 @@ namespace Microsoft.Docs.Build
             Items = item.Items;
             Document = item.Document;
             Children = item.Children;
+            LandingPageType = item.LandingPageType;
         }
     }
 }

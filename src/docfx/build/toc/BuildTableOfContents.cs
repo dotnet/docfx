@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             var errors = context.ErrorBuilder;
 
             // load toc tree
-            var (node, _, _) = context.TableOfContentsLoader.Load(file);
+            var (node, _, _, _) = context.TableOfContentsLoader.Load(file.FilePath);
 
             context.ContentValidator.ValidateTocDeprecated(file.FilePath);
 

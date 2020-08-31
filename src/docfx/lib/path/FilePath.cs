@@ -38,6 +38,9 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public bool IsGitCommit { get; }
 
+        /// <summary>
+        /// Monikers for redirection files.
+        /// </summary>
         public MonikerList Monikers { get; }
 
         /// <summary>
@@ -98,6 +101,14 @@ namespace Microsoft.Docs.Build
         public FilePath WithPath(PathString path)
         {
             return path == Path ? this : new FilePath(Origin, path, DependencyName, IsGitCommit, Monikers);
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether it's an experimental content
+        /// </summary>
+        public bool IsExperimental()
+        {
+            return System.IO.Path.GetFileNameWithoutExtension(Path).EndsWith(".experimental", PathUtility.PathComparison);
         }
 
         public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);

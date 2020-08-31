@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -50,7 +51,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool Contains(FilePath file) => _redirectPaths.Contains(file.Path);
+        public bool TryGetValue(PathString file, [NotNullWhen(true)] out FilePath? actualPath)
+        {
+            if (_redirectPaths.TryGetValue(file, out var value))
+            {
+                actualPath = FilePath.Redirection(value, default);
+                return true;
+            }
+
+            actualPath = default;
+            return false;
+        }
 
         public string GetRedirectUrl(ErrorBuilder errors, FilePath file)
         {

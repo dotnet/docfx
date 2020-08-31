@@ -47,6 +47,16 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
+        public static string[] GetFallbackBranch(string branch)
+        {
+            return branch switch
+            {
+                "master" => new string[] { "main", "master" },
+                "main" => new string[] { "main", "master" },
+                _ => new string[] { branch },
+            };
+        }
+
         public static unsafe (string? url, string? branch, string? commit) GetRepoInfo(string repoPath)
         {
             string? remoteName = null;

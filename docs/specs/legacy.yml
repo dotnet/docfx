@@ -66,14 +66,14 @@ outputs:
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
         <meta name=\"author\" content=\"charlie\" />
-        <meta name=\"content_git_url\" content=\"https://github.com/legacy/test/blob/master/c.md\" />
+        <meta name=\"content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
         <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/882f998f63d445aeaae7362eea74195ce5e3c333/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
-        <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/master/c.md\" />
+        <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
         <meta name=\"original_content_git_url_template\" content=\"{repo}/blob/{branch}/c.md\" />
         <meta name=\"rawTitle\" content=\"\" />
         <meta name=\"search.ms_docsetname\" content=\"\" />
@@ -162,8 +162,8 @@ outputs:
         "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
         "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
         "updated_at": "2018-10-30 12:00 AM",
-        "content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
-        "original_content_git_url": "https://github.com/a/rawmetadata/blob/master/c.md",
+        "content_git_url": "https://github.com/a/rawmetadata/blob/main/c.md",
+        "original_content_git_url": "https://github.com/a/rawmetadata/blob/main/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
         "gitcommit": "https://github.com/a/rawmetadata/blob/059da4c838d11026288349e031208d1e1c9aeeb5/c.md",
         "site_name": "Docs",
