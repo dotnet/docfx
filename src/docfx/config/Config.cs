@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomRule> Rules { get; } = new Dictionary<string, CustomRule>();
+        public Dictionary<string, SourceInfo<CustomRule>> Rules { get; } = new Dictionary<string, SourceInfo<CustomRule>>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
