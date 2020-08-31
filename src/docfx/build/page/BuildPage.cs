@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
             context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
 
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
-            var html = context.MarkdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, conceptual);
+            var html = context.MarkdownEngine.ToHtml(errors, content, file.FilePath, MarkdownPipelineType.Markdown, conceptual);
 
             context.SearchIndexBuilder.SetTitle(file, conceptual.Title);
             context.ContentValidator.ValidateTitle(file.FilePath, conceptual.Title, userMetadata.TitleSuffix);
@@ -259,7 +259,7 @@ namespace Microsoft.Docs.Build
             }
 
             var schema = context.TemplateEngine.GetSchema(file.Mime);
-            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
+            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file.FilePath, validatedObj);
 
             if (context.Config.Legacy && TemplateEngine.IsLandingData(file.Mime))
             {

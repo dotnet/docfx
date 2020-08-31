@@ -1836,18 +1836,18 @@ outputs:
   a/api/a.json:
   a/api/doc.json:
   a/api/toc.json:
-  a/results/apireference.json: |
+  a/results/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service"}], "langs": ["csharp"], "pageType": "root"}
-  a/results/apireference/appservice.json: |
+  a/results/appservice.json: |
     {
-      "name": "App Service", "fullName": "App Service", "children": [{"name": "Client","href": "../../api/doc"},{"name": "Other"}],
+      "name": "App Service", "fullName": "App Service", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
       "langs": ["csharp"], "pageType": "service"
     }
-  a/results/apireference/appservice/client.json: |
+  a/results/appservice/client.json: |
     {
       "name": "Client", "fullName": "Client", "href": "../api/doc.md",
       "children": [{"name": "Client","uid": "aa"},{"name": "MS.ServicePage.xxx"},{"name": "MS.ServicePage.Client.Form"}],
       "langs": ["csharp"], "pageType": "service"
     }
-  a/results/apireference/appservice/client/client.json: |
+  a/results/appservice/client/client.json: |
     {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}

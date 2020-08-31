@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
-            JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
+            JsonSchemaTransformer = new JsonSchemaTransformer(DocumentProvider, MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
                 BuildOptions.DocsetPath,

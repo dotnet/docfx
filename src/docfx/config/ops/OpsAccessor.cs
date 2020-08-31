@@ -126,8 +126,6 @@ namespace Microsoft.Docs.Build
             _http.Dispose();
         }
 
-        private static string PrependEndpoint(string url, DocsEnvironment? environment) => $"{BuildServiceEndpoint(environment)}/{url.TrimStart('/')}";
-
         private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, url);

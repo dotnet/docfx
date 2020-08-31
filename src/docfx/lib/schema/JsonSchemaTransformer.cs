@@ -14,25 +14,28 @@ namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaTransformer
     {
+        private readonly DocumentProvider _documentProvider;
         private readonly MarkdownEngine _markdownEngine;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
 
-        private readonly ConcurrentDictionary<Document, int> _uidCountCache = new ConcurrentDictionary<Document, int>(ReferenceEqualsComparer.Default);
+        private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
         public JsonSchemaTransformer(
+            DocumentProvider documentProvider,
             MarkdownEngine markdownEngine,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             ErrorBuilder errors,
             MonikerProvider monikerProvider)
         {
+            _documentProvider = documentProvider;
             _markdownEngine = markdownEngine;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
@@ -48,14 +51,14 @@ namespace Microsoft.Docs.Build
             return result ?? new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
         }
 
-        public JToken TransformContent(ErrorBuilder errors, JsonSchema schema, Document file, JToken token)
+        public JToken TransformContent(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
         {
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
             return TransformContentCore(errors, definitions, file, schema, token, uidCount);
         }
 
-        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, JsonSchema schema, Document file, JToken token)
+        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
         {
             var xrefSpecs = new List<InternalXrefSpec>();
             var definitions = new JsonSchemaDefinition(schema);
@@ -66,7 +69,7 @@ namespace Microsoft.Docs.Build
 
         private void LoadXrefSpecsCore(
             ErrorBuilder errors,
-            Document file,
+            FilePath file,
             JsonSchema schema,
             JsonSchemaDefinition definitions,
             JToken node,
@@ -102,14 +105,14 @@ namespace Microsoft.Docs.Build
         private InternalXrefSpec LoadXrefSpec(
             ErrorBuilder errors,
             JsonSchemaDefinition definitions,
-            Document file,
+            FilePath file,
             JsonSchema schema,
             SourceInfo<string> uid,
             JObject obj,
             int uidCount)
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
-            var monikers = _monikerProvider.GetFileLevelMonikers(errors, file.FilePath);
+            var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
 
             foreach (var xrefProperty in schema.XrefProperties)
@@ -183,12 +186,15 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private static string GetXrefHref(Document file, string uid, int uidCount, bool isRootLevel)
-            => !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(file.SiteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : file.SiteUrl;
+        private string GetXrefHref(FilePath file, string uid, int uidCount, bool isRootLevel)
+        {
+            var siteUrl = _documentProvider.GetSiteUrl(file);
+            return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : siteUrl;
+        }
 
         private JToken LoadXrefProperty(
             JsonSchemaDefinition definitions,
-            Document file,
+            FilePath file,
             SourceInfo<string> uid,
             JToken value,
             JsonSchema schema,
@@ -212,7 +218,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken TransformContentCore(ErrorBuilder errors, JsonSchemaDefinition definitions, Document file, JsonSchema schema, JToken token, int uidCount)
+        private JToken TransformContentCore(ErrorBuilder errors, JsonSchemaDefinition definitions, FilePath file, JsonSchema schema, JToken token, int uidCount)
         {
             schema = definitions.GetDefinition(schema);
             switch (token)
@@ -259,7 +265,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken TransformScalar(ErrorBuilder errors, JsonSchema schema, Document file, JValue value)
+        private JToken TransformScalar(ErrorBuilder errors, JsonSchema schema, FilePath file, JValue value)
         {
             if (value.Type == JTokenType.Null || schema.ContentType is null)
             {
@@ -272,7 +278,7 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file.FilePath, file.FilePath);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
                     return link;
 
@@ -293,7 +299,7 @@ namespace Microsoft.Docs.Build
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {
-                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file.FilePath, file.FilePath);
+                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
                         });
@@ -301,11 +307,11 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Uid:
                 case JsonSchemaContentType.Xref:
-                    if (!_mustacheXrefSpec.ContainsKey((file.FilePath, content)))
+                    if (!_mustacheXrefSpec.ContainsKey((file, content)))
                     {
                         // the content here must be an UID, not href
                         var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                            content, file.FilePath, file.FilePath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file.FilePath));
+                            content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
                         errors.AddIfNotNull(xrefError);
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
@@ -318,7 +324,7 @@ namespace Microsoft.Docs.Build
                             xrefSpecObj["href"] ??= null;
                         }
 
-                        _mustacheXrefSpec.TryAdd((file.FilePath, content), xrefSpecObj);
+                        _mustacheXrefSpec.TryAdd((file, content), xrefSpecObj);
                     }
                     return value;
             }
