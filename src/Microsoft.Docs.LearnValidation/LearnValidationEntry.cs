@@ -29,6 +29,7 @@ namespace Microsoft.Docs.LearnValidation
             string manifestFilePath,
             string environment,
             bool isLocalizationBuild,
+            bool noDrySync,
             Action<LearnLogItem> writeLog,
             ILearnServiceAccessor learnServiceAccessor,
             string fallbackDocsetPath = null)
@@ -45,7 +46,8 @@ namespace Microsoft.Docs.LearnValidation
                 manifestFilePath: manifestFilePath,
                 environment: environment,
                 fallbackDocsetPath: fallbackDocsetPath,
-                isLocalizationBuild: isLocalizationBuild);
+                isLocalizationBuild: isLocalizationBuild,
+                noDrySync: noDrySync);
             var logger = new LearnValidationLogger(writeLog);
 
             var configStr = JsonConvert.SerializeObject(
@@ -91,6 +93,12 @@ namespace Microsoft.Docs.LearnValidation
 
             var hierarchy = HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.DocsetOutputPath);
             var repoUrl = Utility.TransformGitUrl(config.RepoUrl);
+
+            if (config.NoDrySync)
+            {
+                Console.WriteLine($"Skipping dry-sync");
+                return true;
+            }
 
             var result = await TryDrySync(
                 config.RepoBranch,

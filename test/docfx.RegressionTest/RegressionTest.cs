@@ -125,6 +125,11 @@ namespace Microsoft.Docs.Build
                     };
                 }
 
+                if (opts.NoDrySync)
+                {
+                    docfxConfig["noDrySync"] = true;
+                }
+
                 return JsonConvert.SerializeObject(docfxConfig);
             }
 
