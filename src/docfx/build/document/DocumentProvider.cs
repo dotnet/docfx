@@ -66,11 +66,6 @@ namespace Microsoft.Docs.Build
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
-        public Document GetDocument(FilePath path)
-        {
-            return _documents.GetOrAdd(path, GetDocumentCore);
-        }
-
         public SourceInfo<string?> GetMime(FilePath path)
         {
             return GetDocument(path).Mime;
@@ -175,9 +170,9 @@ namespace Microsoft.Docs.Build
             var file = GetDocument(path);
 
             var depotName = _depotName;
-            var sourcePath = file.FilePath.Path.Value;
+            var sourcePath = path.Path.Value;
 
-            if (TryGetDocumentIdConfig(file.FilePath.Path, out var config, out var remainingPath))
+            if (TryGetDocumentIdConfig(path.Path, out var config, out var remainingPath))
             {
                 if (!string.IsNullOrEmpty(config.DepotName))
                 {
@@ -187,7 +182,7 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        ? config.FolderRelativePathInDocset.Value.Concat(path.Path.GetFileName())
                         : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
@@ -206,6 +201,11 @@ namespace Microsoft.Docs.Build
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
+        }
+
+        private Document GetDocument(FilePath path)
+        {
+            return _documents.GetOrAdd(path, GetDocumentCore);
         }
 
         private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)
@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
+            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)

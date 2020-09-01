@@ -49,7 +49,6 @@ namespace Microsoft.Docs.Build
             var publishItems = new Dictionary<FilePath, PublishItem>();
             foreach (var (url, sourcePath, monikers) in _publishUrlMapBuilder.GetPublishOutput())
             {
-                var document = _documentProvider.GetDocument(sourcePath);
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
                 var publishItem = new PublishItem(
                     url,
