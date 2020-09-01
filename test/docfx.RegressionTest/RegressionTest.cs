@@ -125,11 +125,6 @@ namespace Microsoft.Docs.Build
                     };
                 }
 
-                if (opts.NoDrySync)
-                {
-                    docfxConfig["noDrySync"] = true;
-                }
-
                 return JsonConvert.SerializeObject(docfxConfig);
             }
 
@@ -206,6 +201,7 @@ namespace Microsoft.Docs.Build
         {
             var legacyOption = !opts.OutputHtml ? "--legacy" : "";
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
 
             Exec(
@@ -217,7 +213,7 @@ namespace Microsoft.Docs.Build
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {legacyOption} {dryRunOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {legacyOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
