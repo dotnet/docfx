@@ -1752,7 +1752,7 @@ repos:
       a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
         {
           "type": "object",
-          "required": ["uid", "name", "children", "pageType"],
+          "required": ["uid", "name", "pageType"],
           "properties": {
             "uid": {"contentType": "uid", "type": "string"},
             "name": {"type": "string"},
@@ -1832,7 +1832,6 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":7,"column":8}
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'uid'.","line":0,"column":0}
-    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'children'.","line":0,"column":0}
   a/api/a.json:
   a/api/doc.json:
   a/api/toc.json:
