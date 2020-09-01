@@ -72,8 +72,20 @@ namespace Microsoft.Docs.Build
                     {
                         if (topLevelTOCRelativeDir != null)
                         {
+                            string? hrefFileFullPath;
+
                             var topLevelTOCYmlDir = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
-                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
+
+                            if (childHref.StartsWith("~/") || childHref.StartsWith("~\\"))
+                            {
+                                childHref = childHref.Substring(2).TrimStart('/', '\\');
+                                hrefFileFullPath = Path.GetFullPath(Path.Combine(_docsetPath, childHref));
+                            }
+                            else
+                            {
+                                hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
+                            }
+
                             var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
                             var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
                             childHref = hrefRelativePath;

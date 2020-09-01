@@ -1811,6 +1811,7 @@ repos:
           landingPageType: Root
           items:
           - name: App Service
+            href: ~/api/doc.md
             landingPageType: Service
             items:
             - name: Client
@@ -1836,10 +1837,10 @@ outputs:
   a/api/doc.json:
   a/api/toc.json:
   a/results/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service"}], "langs": ["csharp"], "pageType": "root"}
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service", "href": "../api/doc"}], "langs": ["csharp"], "pageType": "root"}
   a/results/appservice.json: |
     {
-      "name": "App Service", "fullName": "App Service", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
+      "name": "App Service", "fullName": "App Service", "href": "~/api/doc.md", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
       "langs": ["csharp"], "pageType": "service"
     }
   a/results/appservice/client.json: |
