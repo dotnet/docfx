@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
             var config = new JObject
             {
                 ["legacy"] = Legacy,
+                ["dryRun"] = DryRun,
                 ["noDrySync"] = NoDrySync,
             };
 
