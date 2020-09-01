@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
                 $"name={WebUtility.UrlEncode(config.Name)}" +
                 $"&locale={WebUtility.UrlEncode(locale)}" +
                 $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
-                $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
+                $"&branch={WebUtility.UrlEncode(repository?.Branch ?? "main")}" +
                 $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
                 $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 

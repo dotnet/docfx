@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public bool NoDryRun { get; set; }
 
+        public bool NoDrySync { get; set; } = true;
+
         public bool NoRestore { get; set; }
 
         public bool Legacy { get; set; }
