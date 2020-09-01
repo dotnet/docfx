@@ -151,10 +151,10 @@ namespace Microsoft.Docs.Build
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
         {
-            var file = _documentProvider.GetDocument(path);
-            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
+            var siteUrl = _documentProvider.GetSiteUrl(path);
             var outputPath = _documentProvider.GetOutputPath(path);
-            outputMapping.Add(new PublishUrlMapItem(file.SiteUrl, outputPath, monikers, path));
+            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
+            outputMapping.Add(new PublishUrlMapItem(siteUrl, outputPath, monikers, path));
         }
     }
 }

@@ -129,9 +129,10 @@ namespace Microsoft.Docs.Build
         private static void BuildFile(Context context, FilePath path)
         {
             var file = context.DocumentProvider.GetDocument(path);
+            var contentType = context.DocumentProvider.GetContentType(path);
 
-            Telemetry.TrackBuildFileTypeCount(file);
-            context.ContentValidator.ValidateManifest(file.FilePath, file.SiteUrl);
+            Telemetry.TrackBuildFileTypeCount(file.FilePath, contentType, context.DocumentProvider.GetMime(path));
+            context.ContentValidator.ValidateManifest(file.FilePath);
 
             switch (file.ContentType)
             {

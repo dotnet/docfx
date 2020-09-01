@@ -26,11 +26,12 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
+                        var contentType = context.DocumentProvider.GetContentType(document.FilePath);
 
-                        switch (document.ContentType)
+                        switch (contentType)
                         {
                             case ContentType.Unknown:
-                            case ContentType.Page when !document.IsHtml:
+                            case ContentType.Page when !context.DocumentProvider.IsHtml(document.FilePath):
                                 return;
                         }
 
@@ -40,7 +41,7 @@ namespace Microsoft.Docs.Build
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
                             legacySiteUrlRelativeToBasePath,
-                            document.ContentType,
+                            contentType,
                             fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);
 

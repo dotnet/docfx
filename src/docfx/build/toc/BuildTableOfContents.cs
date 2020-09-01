@@ -11,8 +11,6 @@ namespace Microsoft.Docs.Build
     {
         public static void Build(Context context, Document file)
         {
-            Debug.Assert(file.ContentType == ContentType.TableOfContents);
-
             var errors = context.ErrorBuilder;
 
             // load toc tree
@@ -25,7 +23,9 @@ namespace Microsoft.Docs.Build
 
             var tocMetadata = JsonUtility.ToObject<TableOfContentsMetadata>(errors, metadata.RawJObject);
 
-            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, file.SitePath);
+            var path = context.DocumentProvider.GetSitePath(file.FilePath);
+
+            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, path);
 
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
 
@@ -35,14 +35,14 @@ namespace Microsoft.Docs.Build
                 var monikers = context.MonikerProvider.GetFileLevelMonikers(errors, file.FilePath);
                 model.Metadata.PdfAbsolutePath = "/" +
                     UrlUtility.Combine(
-                        context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(file.SitePath, ".pdf"));
+                        context.Config.BasePath, "opbuildpdf", monikers.MonikerGroup ?? "", LegacyUtility.ChangeExtension(path, ".pdf"));
             }
 
             if (!context.ErrorBuilder.FileHasError(file.FilePath) && !context.Config.DryRun)
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {
-                    if (file.IsHtml)
+                    if (context.DocumentProvider.IsHtml(file.FilePath))
                     {
                         var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
                         var html = context.TemplateEngine.RunMustache($"toc.html", viewModel, file.FilePath);

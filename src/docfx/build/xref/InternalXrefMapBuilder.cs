@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
         {
-            var schema = _templateEngine.GetSchema(_documentProvider.GetDocument(file).Mime);
+            var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
 
             return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
