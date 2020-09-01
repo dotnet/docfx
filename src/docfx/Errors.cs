@@ -672,8 +672,8 @@ namespace Microsoft.Docs.Build
             /// Example:
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
-            public static Error Custom404Page(Document file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file.FilePath);
+            public static Error Custom404Page(FilePath file)
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file);
 
             /// <summary>
             /// Html Tag value must be in allowed list
