@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; }
 
-        public Document DeclaringFile { get; }
+        public FilePath DeclaringFile { get; }
 
         public MonikerList Monikers { get; }
 
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         internal string? DeclaringPropertyPath { get; }
 
-        public InternalXrefSpec(SourceInfo<string> uid, string href, Document declaringFile, MonikerList monikerList, string? declaringPropertyPath = null)
+        public InternalXrefSpec(SourceInfo<string> uid, string href, FilePath declaringFile, MonikerList monikerList, string? declaringPropertyPath = null)
         {
             Uid = uid;
             Href = href;

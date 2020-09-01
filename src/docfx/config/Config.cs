@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomRule> Rules { get; } = new Dictionary<string, CustomRule>();
+        public Dictionary<string, SourceInfo<CustomRule>> Rules { get; } = new Dictionary<string, SourceInfo<CustomRule>>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -303,6 +303,11 @@ namespace Microsoft.Docs.Build
         /// Determines if run learn-validation as post process
         /// </summary>
         public bool RunLearnValidation { get; private set; }
+
+        /// <summary>
+        /// Determines if disable dry sync
+        /// </summary>
+        public bool NoDrySync { get; private set; }
 
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc

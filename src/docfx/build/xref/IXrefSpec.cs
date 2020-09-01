@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 
         string Href { get; }
 
-        Document? DeclaringFile { get; }
+        FilePath? DeclaringFile { get; }
 
         MonikerList Monikers { get; }
 

@@ -10,8 +10,6 @@ namespace Microsoft.Docs.Build
     {
         internal static void Build(Context context, Document file)
         {
-            Debug.Assert(file.ContentType == ContentType.Redirection);
-
             var errors = context.ErrorBuilder;
             var redirectUrl = context.RedirectionProvider.GetRedirectUrl(errors, file.FilePath);
             var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
@@ -21,7 +19,7 @@ namespace Microsoft.Docs.Build
                 ["redirect_url"] = redirectUrl,
                 ["document_id"] = documentId,
                 ["document_version_independent_id"] = documentVersionIndependentId,
-                ["canonical_url"] = file.CanonicalUrl,
+                ["canonical_url"] = context.DocumentProvider.GetCanonicalUrl(file.FilePath),
             };
 
             context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, outputPath: null);

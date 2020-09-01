@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         private TableOfContentsNode ParseMarkdown(string content, FilePath file, ErrorBuilder errors)
         {
             var headingBlocks = new List<HeadingBlock>();
-            var ast = _markdownEngine.Parse(errors, content, _documentProvider.GetDocument(file), MarkdownPipelineType.TocMarkdown);
+            var ast = _markdownEngine.Parse(errors, content, file, MarkdownPipelineType.TocMarkdown);
 
             foreach (var block in ast)
             {

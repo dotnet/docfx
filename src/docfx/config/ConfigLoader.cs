@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (Config, BuildOptions, PackageResolver, FileResolver) Load(
+        public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
             ErrorBuilder errors, DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             // load and trace entry repository
@@ -78,7 +78,8 @@ namespace Microsoft.Docs.Build
 
             // Download dependencies
             var credentialProvider = preloadConfig.GetCredentialProvider();
-            var configAdapter = new OpsConfigAdapter(errors, credentialProvider);
+            var opsAccessor = new OpsAccessor(errors, credentialProvider);
+            var configAdapter = new OpsConfigAdapter(opsAccessor);
             var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
             disposables.Add(packageResolver);
 
@@ -93,7 +94,7 @@ namespace Microsoft.Docs.Build
             var config = JsonUtility.ToObject<Config>(errors, configObject);
 
             Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
-            return (config, buildOptions, packageResolver, fileResolver);
+            return (config, buildOptions, packageResolver, fileResolver, opsAccessor);
         }
 
         private static JObject? LoadConfig(ErrorBuilder errors, string directory)
@@ -129,7 +130,7 @@ namespace Microsoft.Docs.Build
                 $"name={WebUtility.UrlEncode(config.Name)}" +
                 $"&locale={WebUtility.UrlEncode(locale)}" +
                 $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
-                $"&branch={WebUtility.UrlEncode(repository?.Branch)}" +
+                $"&branch={WebUtility.UrlEncode(repository?.Branch ?? "main")}" +
                 $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
                 $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 

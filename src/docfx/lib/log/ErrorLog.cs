@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly SourceMap? _sourceMap;
-        private readonly Dictionary<string, CustomRule> _customRules = new Dictionary<string, CustomRule>();
+        private readonly Dictionary<string, SourceInfo<CustomRule>> _customRules = new Dictionary<string, SourceInfo<CustomRule>>();
 
         private readonly ErrorSink _errorSink = new ErrorSink();
         private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
@@ -22,7 +22,11 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
-        public ErrorLog(ErrorBuilder errors, Config config, SourceMap? sourceMap = null, Dictionary<string, ValidationRules>? contentValidationRules = null)
+        public ErrorLog(
+            ErrorBuilder errors,
+            Config config,
+            SourceMap? sourceMap = null,
+            Dictionary<string, ValidationRules>? contentValidationRules = null)
         {
             _errors = errors;
             _config = config;
@@ -83,9 +87,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Dictionary<string, CustomRule> MergeCustomRules(Config? config, Dictionary<string, ValidationRules>? validationRules)
+        private Dictionary<string, SourceInfo<CustomRule>> MergeCustomRules(Config? config, Dictionary<string, ValidationRules>? validationRules)
         {
-            var customRules = config != null ? new Dictionary<string, CustomRule>(_config.Rules) : new Dictionary<string, CustomRule>();
+            var customRules = config != null ? new Dictionary<string, SourceInfo<CustomRule>>(_config.Rules) : new Dictionary<string, SourceInfo<CustomRule>>();
 
             if (validationRules == null)
             {
@@ -96,7 +100,7 @@ namespace Microsoft.Docs.Build
             {
                 if (customRules.ContainsKey(validationRule.Code))
                 {
-                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code));
+                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code, customRules[validationRule.Code].Source));
                     customRules.Remove(validationRule.Code);
                 }
             }
@@ -104,16 +108,17 @@ namespace Microsoft.Docs.Build
             {
                 if (customRules.TryGetValue(validationRule.Code, out var customRule))
                 {
-                    customRules[validationRule.Code] = new CustomRule(
-                            customRule.Severity,
-                            customRule.Code,
-                            customRule.AdditionalMessage,
-                            customRule.CanonicalVersionOnly,
-                            validationRule.PullRequestOnly);
+                    customRules[validationRule.Code] = new SourceInfo<CustomRule>(
+                        new CustomRule(
+                            customRule.Value.Severity,
+                            customRule.Value.Code,
+                            customRule.Value.AdditionalMessage,
+                            customRule.Value.CanonicalVersionOnly,
+                            validationRule.PullRequestOnly), customRule.Source);
                 }
                 else
                 {
-                    customRules.Add(validationRule.Code, new CustomRule(null, null, null, false, validationRule.PullRequestOnly));
+                    customRules.Add(validationRule.Code, new SourceInfo<CustomRule>(new CustomRule(null, null, null, false, validationRule.PullRequestOnly)));
                 }
             }
             return customRules;
