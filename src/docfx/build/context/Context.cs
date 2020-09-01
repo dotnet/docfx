@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
 
             var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, validatorExtension);
-            SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, MetadataProvider);
+            SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 
         public void Dispose()

@@ -64,21 +64,23 @@ namespace Microsoft.Docs.Build
             var document = fileManifest.Key;
             var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
             var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
+            var contentType = context.DocumentProvider.GetContentType(document.FilePath);
+            var isHtml = context.DocumentProvider.IsHtml(document.FilePath);
 
             var output = new LegacyManifestOutput
             {
-                MetadataOutput = (document.ContentType == ContentType.Page && !document.IsHtml) || document.ContentType == ContentType.Resource
+                MetadataOutput = (contentType == ContentType.Page && !isHtml) || contentType == ContentType.Resource
                 ? null
                 : new LegacyManifestOutputItem
                 {
                     IsRawPage = false,
-                    RelativePath = document.ContentType == ContentType.Resource
+                    RelativePath = contentType == ContentType.Resource
                     ? legacyOutputPathRelativeToBasePath + ".mta.json"
                     : LegacyUtility.ChangeExtension(legacyOutputPathRelativeToBasePath, ".mta.json"),
                 },
             };
 
-            if (document.ContentType == ContentType.Resource)
+            if (contentType == ContentType.Resource)
             {
                 var resourceOutput = new LegacyManifestOutputItem
                 {
@@ -92,7 +94,7 @@ namespace Microsoft.Docs.Build
                 output.ResourceOutput = resourceOutput;
             }
 
-            if (document.ContentType == ContentType.TableOfContents)
+            if (contentType == ContentType.TableOfContents)
             {
                 output.TocOutput = new LegacyManifestOutputItem
                 {
@@ -101,9 +103,9 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            if (document.ContentType == ContentType.Page || document.ContentType == ContentType.Redirection)
+            if (contentType == ContentType.Page || contentType == ContentType.Redirection)
             {
-                if (document.IsHtml)
+                if (isHtml)
                 {
                     output.PageOutput = new LegacyManifestOutputItem
                     {
@@ -135,11 +137,11 @@ namespace Microsoft.Docs.Build
                 AssetId = legacySiteUrlRelativeToBasePath,
                 Original = fileManifest.Value.SourcePath,
                 SourceRelativePath = context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path,
-                OriginalType = GetOriginalType(document.ContentType, document.Mime),
-                Type = GetType(context, document.ContentType, document),
+                OriginalType = GetOriginalType(contentType, context.DocumentProvider.GetMime(document.FilePath)),
+                Type = GetType(context, contentType, isHtml),
                 Output = output,
-                SkipNormalization = !(document.ContentType == ContentType.Resource),
-                SkipSchemaCheck = !(document.ContentType == ContentType.Resource),
+                SkipNormalization = !(contentType == ContentType.Resource),
+                SkipSchemaCheck = !(contentType == ContentType.Resource),
                 Group = fileManifest.Value.MonikerGroup,
                 Version = context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
                 IsMonikerRange = true,
@@ -161,9 +163,9 @@ namespace Microsoft.Docs.Build
             _ => string.Empty,
         };
 
-        private static string GetType(Context context, ContentType type, Document doc)
+        private static string GetType(Context context, ContentType type, bool isHtml)
         {
-            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !doc.IsHtml)
+            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !isHtml)
             {
                 return "Toc";
             }

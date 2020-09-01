@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             {
                 var errors = getErrors();
                 var file = (FilePath)InclusionContext.File;
-                var scanTags = TemplateEngine.IsConceptual(documentProvider.GetDocument(file).Mime) &&
+                var scanTags = TemplateEngine.IsConceptual(documentProvider.GetMime(file)) &&
                     !metadataProvider.GetMetadata(errors, file).IsArchived;
 
                 document.Visit(node =>

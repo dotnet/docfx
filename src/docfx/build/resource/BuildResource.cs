@@ -10,8 +10,6 @@ namespace Microsoft.Docs.Build
     {
         internal static void Build(Context context, Document file)
         {
-            Debug.Assert(file.ContentType == ContentType.Resource);
-
             var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
 
             // Output path is source file path relative to output folder when copy resource is disabled

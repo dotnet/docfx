@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             var showDialogHook = typeof(Debug).GetField("s_ShowDialog", BindingFlags.Static | BindingFlags.NonPublic);
             showDialogHook?.SetValue(null, new Action<string, string, string, string>(Throw));
 
-            void Throw(string stackTrace, string message, string detailMessage, string info)
+            static void Throw(string stackTrace, string message, string detailMessage, string info)
             {
                 throw new Exception($"Debug.Assert failed: {message} {detailMessage}\n{stackTrace}");
             }
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-            Dictionary<string, DateTime> GetFileLastWriteTimes(string dir)
+            static Dictionary<string, DateTime> GetFileLastWriteTimes(string dir)
             {
                 return new DirectoryInfo(dir)
                     .GetFiles("*", SearchOption.AllDirectories)

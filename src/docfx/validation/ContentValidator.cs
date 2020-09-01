@@ -139,13 +139,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateManifest(FilePath file, string publishUrl)
+        public void ValidateManifest(FilePath file)
         {
             if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var manifestItem = new ManifestItem()
                 {
-                    PublishUrl = publishUrl,
+                    PublishUrl = _documentProvider.GetSiteUrl(file),
                     SourceInfo = new SourceInfo(file, 0, 0),
                 };
 

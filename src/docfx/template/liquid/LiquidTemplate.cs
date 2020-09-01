@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             _localizedStrings = LoadLocalizedStrings(templateDir);
         }
 
-        public string Render(string templateName, SourceInfo<string?> mimeType, JObject model)
+        public string Render(string templateName, SourceInfo<string?> mime, JObject model)
         {
             var template = _templates.GetOrAdd(
                 templateName,
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
             if (template is null)
             {
-                throw Errors.Template.LiquidNotFound(mimeType).ToException(isError: false);
+                throw Errors.Template.LiquidNotFound(mime).ToException(isError: false);
             }
 
             var registers = new Hash

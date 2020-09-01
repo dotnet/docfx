@@ -71,6 +71,16 @@ namespace Microsoft.Docs.Build
             return _documents.GetOrAdd(path, GetDocumentCore);
         }
 
+        public SourceInfo<string?> GetMime(FilePath path)
+        {
+            return GetDocument(path).Mime;
+        }
+
+        public ContentType GetContentType(FilePath path)
+        {
+            return GetDocument(path).ContentType;
+        }
+
         public string GetOutputPath(FilePath path)
         {
             var file = GetDocument(path);
@@ -112,6 +122,21 @@ namespace Microsoft.Docs.Build
         public string GetSiteUrl(FilePath path)
         {
             return GetDocument(path).SiteUrl;
+        }
+
+        public string GetSitePath(FilePath path)
+        {
+            return GetDocument(path).SitePath;
+        }
+
+        public string GetCanonicalUrl(FilePath path)
+        {
+            return GetDocument(path).CanonicalUrl;
+        }
+
+        public bool IsHtml(FilePath path)
+        {
+            return GetDocument(path).IsHtml;
         }
 
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
@@ -288,7 +313,7 @@ namespace Microsoft.Docs.Build
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
 
-            string ReplaceLast(string source, string find, string replace)
+            static string ReplaceLast(string source, string find, string replace)
             {
                 var i = source.LastIndexOf(find);
                 return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;

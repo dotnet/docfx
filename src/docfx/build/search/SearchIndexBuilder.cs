@@ -12,34 +12,36 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
+        private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly ConcurrentDictionary<FilePath, SearchIndexItem> _searchIndex = new ConcurrentDictionary<FilePath, SearchIndexItem>();
 
-        public SearchIndexBuilder(Config config, ErrorBuilder errors, MetadataProvider metadataProvider)
+        public SearchIndexBuilder(Config config, ErrorBuilder errors, DocumentProvider documentProvider, MetadataProvider metadataProvider)
         {
             _config = config;
             _errors = errors;
+            _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
         }
 
-        public void SetTitle(Document file, string? title)
+        public void SetTitle(FilePath file, string? title)
         {
-            if (string.IsNullOrEmpty(title) || _config.SearchEngine != SearchEngineType.Lunr || NoIndex(file.FilePath))
+            if (string.IsNullOrEmpty(title) || _config.SearchEngine != SearchEngineType.Lunr || NoIndex(file))
             {
                 return;
             }
 
-            _searchIndex.GetOrAdd(file.FilePath, _ => new SearchIndexItem(file.SiteUrl)).Title = title;
+            _searchIndex.GetOrAdd(file, _ => new SearchIndexItem(_documentProvider.GetSiteUrl(file))).Title = title;
         }
 
-        public void SetBody(Document file, string? body)
+        public void SetBody(FilePath file, string? body)
         {
-            if (string.IsNullOrEmpty(body) || _config.SearchEngine != SearchEngineType.Lunr || NoIndex(file.FilePath))
+            if (string.IsNullOrEmpty(body) || _config.SearchEngine != SearchEngineType.Lunr || NoIndex(file))
             {
                 return;
             }
 
-            _searchIndex.GetOrAdd(file.FilePath, _ => new SearchIndexItem(file.SiteUrl)).Body = body;
+            _searchIndex.GetOrAdd(file, _ => new SearchIndexItem(_documentProvider.GetSiteUrl(file))).Body = body;
         }
 
         public string? Build()

@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
 
         private DependencyType GetDependencyType(FilePath referencingFile, InternalXrefSpec xref)
         {
-            var mime = _documentProvider.GetDocument(referencingFile).Mime.Value;
+            var mime = _documentProvider.GetMime(referencingFile).Value;
 
             if (!string.Equals(mime, "LearningPath", StringComparison.Ordinal) &&
                 !string.Equals(mime, "Module", StringComparison.Ordinal))
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
                 return DependencyType.Uid;
             }
 
-            var declaringFileMime = _documentProvider.GetDocument(xref.DeclaringFile).Mime.Value;
+            var declaringFileMime = _documentProvider.GetMime(xref.DeclaringFile).Value;
 
             switch ((mime, declaringFileMime))
             {
@@ -277,6 +277,7 @@ namespace Microsoft.Docs.Build
                 case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
                     return DependencyType.Achievement;
             }
+
             return DependencyType.Uid;
         }
     }
