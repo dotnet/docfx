@@ -66,9 +66,14 @@ namespace Microsoft.Docs.Build
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
-        public Document GetDocument(FilePath path)
+        public SourceInfo<string?> GetMime(FilePath path)
         {
-            return _documents.GetOrAdd(path, GetDocumentCore);
+            return GetDocument(path).Mime;
+        }
+
+        public ContentType GetContentType(FilePath path)
+        {
+            return GetDocument(path).ContentType;
         }
 
         public string GetOutputPath(FilePath path)
@@ -114,6 +119,21 @@ namespace Microsoft.Docs.Build
             return GetDocument(path).SiteUrl;
         }
 
+        public string GetSitePath(FilePath path)
+        {
+            return GetDocument(path).SitePath;
+        }
+
+        public string GetCanonicalUrl(FilePath path)
+        {
+            return GetDocument(path).CanonicalUrl;
+        }
+
+        public bool IsHtml(FilePath path)
+        {
+            return GetDocument(path).IsHtml;
+        }
+
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
         public string GetDocsSiteUrl(FilePath path)
         {
@@ -150,9 +170,9 @@ namespace Microsoft.Docs.Build
             var file = GetDocument(path);
 
             var depotName = _depotName;
-            var sourcePath = file.FilePath.Path.Value;
+            var sourcePath = path.Path.Value;
 
-            if (TryGetDocumentIdConfig(file.FilePath.Path, out var config, out var remainingPath))
+            if (TryGetDocumentIdConfig(path.Path, out var config, out var remainingPath))
             {
                 if (!string.IsNullOrEmpty(config.DepotName))
                 {
@@ -162,7 +182,7 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        ? config.FolderRelativePathInDocset.Value.Concat(path.Path.GetFileName())
                         : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
@@ -181,6 +201,11 @@ namespace Microsoft.Docs.Build
             return (
                 HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
+        }
+
+        private Document GetDocument(FilePath path)
+        {
+            return _documents.GetOrAdd(path, GetDocumentCore);
         }
 
         private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)
@@ -207,7 +232,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
+            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
@@ -288,7 +313,7 @@ namespace Microsoft.Docs.Build
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
 
-            string ReplaceLast(string source, string find, string replace)
+            static string ReplaceLast(string source, string find, string replace)
             {
                 var i = source.LastIndexOf(find);
                 return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;

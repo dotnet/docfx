@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
         public string Href { get; private set; } = "";
 
-        Document? IXrefSpec.DeclaringFile => null;
+        FilePath? IXrefSpec.DeclaringFile => null;
 
         [JsonIgnore]
         public MonikerList Monikers { get; private set; }

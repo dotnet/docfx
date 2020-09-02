@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile?.FilePath);
+            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                 return (error, null, "", null);
             }
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
-            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile?.FilePath);
+            return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var dependencyType = GetDependencyType(referencingFile, spec);
-                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile.FilePath, dependencyType);
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
                 var href = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
 
         private DependencyType GetDependencyType(FilePath referencingFile, InternalXrefSpec xref)
         {
-            var mime = _documentProvider.GetDocument(referencingFile).Mime.Value;
+            var mime = _documentProvider.GetMime(referencingFile).Value;
 
             if (!string.Equals(mime, "LearningPath", StringComparison.Ordinal) &&
                 !string.Equals(mime, "Module", StringComparison.Ordinal))
@@ -264,7 +264,9 @@ namespace Microsoft.Docs.Build
                 return DependencyType.Uid;
             }
 
-            switch ((mime, xref.DeclaringFile.Mime.Value))
+            var declaringFileMime = _documentProvider.GetMime(xref.DeclaringFile).Value;
+
+            switch ((mime, declaringFileMime))
             {
                 case ("LearningPath", "Module"):
                 case ("Module", "ModuleUnit"):
@@ -275,6 +277,7 @@ namespace Microsoft.Docs.Build
                 case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
                     return DependencyType.Achievement;
             }
+
             return DependencyType.Uid;
         }
     }

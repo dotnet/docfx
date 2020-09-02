@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                 .ToHashSet();
         }
 
-        public void ValidateMetadata(ErrorBuilder errors, JObject metadata, Document file)
+        public void ValidateMetadata(ErrorBuilder errors, JObject metadata, FilePath file)
         {
             foreach (var (key, value) in metadata)
             {
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var schemaValidator in _schemaValidators)
             {
-                errors.AddRange(schemaValidator.Validate(metadata, file.FilePath));
+                errors.AddRange(schemaValidator.Validate(metadata, file));
             }
         }
 
