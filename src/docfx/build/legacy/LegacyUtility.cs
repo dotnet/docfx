@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         public static string ToLegacyOutputPathRelativeToBasePath(this FilePath doc, Context context, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
-            if (outputPath is null || (context.DocumentProvider.GetContentType(doc) == ContentType.Resource && !context.Config.CopyResources))
+            if (outputPath is null || (context.DocumentProvider.GetContentType(doc) == ContentType.Resource && !context.Config.SelfContained))
             {
                 outputPath = context.DocumentProvider.GetOutputPath(doc);
             }
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
-            if (context.Config.OutputUrlType == OutputUrlType.Docs &&
+            if (context.Config.UrlType == UrlType.Docs &&
                 Path.GetFileNameWithoutExtension(doc.Path).Equals("index", PathUtility.PathComparison) &&
                 context.DocumentProvider.GetContentType(doc) != ContentType.Resource)
             {

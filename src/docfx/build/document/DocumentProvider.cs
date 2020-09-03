@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
                     break;
             }
 
-            if (_config.OutputUrlType == OutputUrlType.Docs)
+            if (_config.UrlType == UrlType.Docs)
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
                 outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
@@ -138,13 +138,13 @@ namespace Microsoft.Docs.Build
         public string GetDocsSiteUrl(FilePath path)
         {
             var file = GetDocument(path);
-            if (_config.OutputUrlType == OutputUrlType.Docs)
+            if (_config.UrlType == UrlType.Docs)
             {
                 return file.SiteUrl;
             }
 
-            var sitePath = FilePathToSitePath(path, file.ContentType, OutputUrlType.Docs, file.IsHtml);
-            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsHtml);
+            var sitePath = FilePathToSitePath(path, file.ContentType, UrlType.Docs, file.IsHtml);
+            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, UrlType.Docs, file.IsHtml);
         }
 
         public string? GetPageType(FilePath file)
@@ -228,14 +228,14 @@ namespace Microsoft.Docs.Build
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
             var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
-            var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
+            var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, isHtml);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, isHtml);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);
 
             return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
         }
 
-        private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
+        private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, bool isHtml)
         {
             var sitePath = ApplyRoutes(filePath.Path).Value;
             if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
@@ -246,19 +246,19 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    sitePath = outputUrlType switch
+                    sitePath = urlType switch
                     {
-                        OutputUrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
-                        OutputUrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
+                        UrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
+                        UrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
                             ? Path.Combine(Path.GetDirectoryName(sitePath) ?? "", "index.html")
                             : Path.Combine(Path.GetDirectoryName(sitePath) ?? "", Path.GetFileNameWithoutExtension(sitePath).TrimEnd(' ', '.'), "index.html"),
-                        OutputUrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
+                        UrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
                         _ => throw new NotSupportedException(),
                     };
                 }
             }
 
-            if (outputUrlType != OutputUrlType.Docs)
+            if (urlType != UrlType.Docs)
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, filePath);
                 sitePath = Path.Combine(monikers.MonikerGroup ?? "", sitePath);
@@ -270,19 +270,19 @@ namespace Microsoft.Docs.Build
             return sitePath.Replace('\\', '/');
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, UrlType urlType, bool isHtml)
         {
-            var url = PathToRelativeUrl(path, contentType, outputUrlType, isHtml);
+            var url = PathToRelativeUrl(path, contentType, urlType, isHtml);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
+        private static string PathToRelativeUrl(string path, ContentType contentType, UrlType urlType, bool isHtml)
         {
             var url = path.Replace('\\', '/');
 
             if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isHtml))
             {
-                if (outputUrlType != OutputUrlType.Ugly)
+                if (urlType != UrlType.Ugly)
                 {
                     if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                     {
@@ -290,7 +290,7 @@ namespace Microsoft.Docs.Build
                         return i >= 0 ? url.Substring(0, i + 1) : "./";
                     }
                 }
-                if (outputUrlType == OutputUrlType.Docs && contentType != ContentType.TableOfContents)
+                if (urlType == UrlType.Docs && contentType != ContentType.TableOfContents)
                 {
                     var i = url.LastIndexOf('.');
                     return i >= 0 ? url.Substring(0, i) : url;
@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.OutputUrlType, isHtml);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, isHtml);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";

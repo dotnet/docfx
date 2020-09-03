@@ -1851,3 +1851,47 @@ outputs:
     }
   a/results/appservice/client/client.json: |
     {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}
+---
+# TOC split metadata supporting (with build_source_folder)
+repos:
+  https://ms.com/split:
+  - files:
+      test/docfx.yml:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "test"}],
+          "JoinTOCPlugin": [
+            {
+              "ConceptualTOC": "test/b/TOC.yml",
+              "ReferenceTOCUrl": "/dotnet-test/api/toc.json",
+              "ConceptualTOCUrl": "dotnet-test/learn/toc.json",
+              "ReferenceTOC": "test/a/TOC.yml"
+            }
+          ]
+        }
+      test/a/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: a
+          items:
+          - name: a-a
+        - name: b
+          items:
+          - name: b-b
+      test/b/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: 1
+          items:
+          - name: 1-1
+outputs:
+  test/b/toc.json: |
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
+  test/b/_splitted/1/toc.json: |
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
+  test/a/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+  test/a/_splitted/a/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+  test/a/_splitted/b/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}

@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 if (opts.OutputHtml)
                 {
                     docfxConfig["outputType"] = "html";
-                    docfxConfig["outputUrlType"] = "ugly";
+                    docfxConfig["urlType"] = "ugly";
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
 

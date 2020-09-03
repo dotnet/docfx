@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
         public void CopyAssetsToOutput()
         {
-            if (_config.OutputType != OutputType.Html || _templateDefinition.Assets.Length <= 0)
+            if (!_config.SelfContained || _templateDefinition.Assets.Length <= 0)
             {
                 return;
             }

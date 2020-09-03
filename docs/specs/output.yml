@@ -34,11 +34,11 @@ outputs:
       "base_path": "/"
     }
 ---
-# Publish manifest path is source relative path when copyResources is set to false
+# Publish manifest path is source relative path when selfContained is set to false
 inputs:
   docfx.yml: |
     files: '**'
-    copyResources: false
+    selfContained: false
   a.png:
 outputs:
   .publish.json: |

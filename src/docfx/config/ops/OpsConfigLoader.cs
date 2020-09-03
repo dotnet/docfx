@@ -166,11 +166,17 @@ namespace Microsoft.Docs.Build
                 {
                     refToc[buildSourceFolder.GetRelativePath(new PathString(config.ConceptualTOC))] = config.ReferenceTOCUrl;
                     refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
-                    refToc[$"{Path.GetDirectoryName(config.ConceptualTOC)}/_splitted/**"] =
-                        config.ReferenceTOCUrl;
+                    var conceptualTOCDir = Path.GetDirectoryName(config.ConceptualTOC);
+                    var conceptualTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(conceptualTOCDir) ? "." : conceptualTOCDir);
+                    refToc[Path.Combine(conceptualTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
                 }
+
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
+                    conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
+                    var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
+                    var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
+                    conceptualToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ConceptualTOCUrl;
                     conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
                 }
 
@@ -191,12 +197,7 @@ namespace Microsoft.Docs.Build
                 {
                     item["topLevelToc"] = buildSourceFolder.GetRelativePath(new PathString(config.TopLevelTOC));
                 }
-                if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
-                {
-                    conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
-                    conceptualToc[$"{Path.GetDirectoryName(config.ReferenceTOC)}/_splitted/**"] =
-                        config.ConceptualTOCUrl;
-                }
+
                 joinTocConfig.Add(item);
             }
 

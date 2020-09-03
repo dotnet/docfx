@@ -39,8 +39,8 @@ namespace Microsoft.Docs.Build
             if (Legacy)
             {
                 config["outputType"] = "Json";
-                config["outputUrlType"] = "Docs";
-                config["copyResources"] = false;
+                config["urlType"] = "Docs";
+                config["selfContained"] = false;
             }
 
             if (Template != null)

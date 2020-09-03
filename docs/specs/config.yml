@@ -398,7 +398,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: '**'
-    copyResources: false
+    selfContained: false
     routes:
       docs/: .
   a.png:
