@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
         private readonly BuildScope _buildScope;
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
-        private readonly Lazy<DocumentProvider> _documentProvider;
 
         private readonly (Func<string, bool> glob, SourceInfo<string?>)[] _rules;
 
@@ -24,12 +23,15 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
-        public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver, Lazy<DocumentProvider> documentProvider)
+        public MonikerProvider(
+            Config config,
+            BuildScope buildScope,
+            MetadataProvider metadataProvider,
+            FileResolver fileResolver)
         {
             _config = config;
             _buildScope = buildScope;
             _metadataProvider = metadataProvider;
-            _documentProvider = documentProvider;
 
             var monikerDefinition = new MonikerDefinitionModel();
             if (!string.IsNullOrEmpty(_config.MonikerDefinition))
@@ -81,7 +83,7 @@ namespace Microsoft.Docs.Build
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (file.Format == FileFormat.Markdown && configMonikerRange.Value is null)
+            if (IsUserInput(file) && configMonikerRange.Value is null)
             {
                 errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString));
                 return default;
@@ -165,21 +167,17 @@ namespace Microsoft.Docs.Build
             if (metadata.ExcludeMonikers != null)
             {
                 var excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
-
-                if (_documentProvider.Value.GetContentType(file) != ContentType.Redirection)
-                {
-                    fileMonikers = fileMonikers.Except(excludeMonikers);
-                }
+                fileMonikers = fileMonikers.Except(excludeMonikers);
             }
 
             // for non-markdown documents, if config monikers is not defined
             // just use file monikers
-            if (configMonikerRange.Value is null && file.Format != FileFormat.Markdown)
+            if (configMonikerRange.Value is null && !IsUserInput(file))
             {
                 return fileMonikers;
             }
 
-            if (configMonikers.HasMonikers || fileMonikers.HasMonikers)
+            if (IsUserInput(file) && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
             {
                 // With config monikers defined,
                 // warn if no intersection of config monikers and file monikers
@@ -229,6 +227,12 @@ namespace Microsoft.Docs.Build
                 result[sorted[i].MonikerName] = i;
             }
             return result;
+        }
+
+        private bool IsUserInput(FilePath path)
+        {
+            var contentType = _buildScope.GetContentType(path);
+            return contentType == ContentType.TableOfContents || (path.Format == FileFormat.Markdown && contentType == ContentType.Page);
         }
     }
 }

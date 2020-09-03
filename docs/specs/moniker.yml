@@ -2068,7 +2068,7 @@ outputs:
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
 ---
-# exclude_monikers should not take effect on redirection files
+# Only validate monikers for user input markdown
 inputs:
   docfx.yml: |
     monikerRange:
