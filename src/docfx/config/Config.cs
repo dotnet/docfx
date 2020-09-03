@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets Output Url type
         /// </summary>
-        public OutputUrlType OutputUrlType { get; private set; } = OutputUrlType.Pretty;
+        public UrlType UrlType { get; private set; } = UrlType.Pretty;
 
         /// <summary>
         /// Gets whether to lowercase all URLs and output file path.

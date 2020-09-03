@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
-            if (context.Config.OutputUrlType == OutputUrlType.Docs &&
+            if (context.Config.UrlType == UrlType.Docs &&
                 Path.GetFileNameWithoutExtension(doc.Path).Equals("index", PathUtility.PathComparison) &&
                 context.DocumentProvider.GetContentType(doc) != ContentType.Resource)
             {
