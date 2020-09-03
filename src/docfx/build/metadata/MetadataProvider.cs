@@ -14,8 +14,8 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly JObject _globalMetadata;
-        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
-        private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool> glob, string key, JToken value)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool>, string, JToken)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool>, string, JToken)>();
 
         private readonly ConcurrentDictionary<FilePath, UserMetadata> _metadataCache = new ConcurrentDictionary<FilePath, UserMetadata>();
 
