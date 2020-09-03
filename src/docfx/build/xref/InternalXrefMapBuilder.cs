@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
             return specsWithSameUid
                    .OrderByDescending(spec => spec.Monikers.HasMonikers
                         ? spec.Monikers.Select(moniker => _monikerProvider.GetMonikerOrder(moniker)).Max()
-                        : 0)
+                        : int.MaxValue)
                    .ThenBy(spec => spec.DeclaringFile)
                    .ToArray();
         }
