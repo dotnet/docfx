@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 // For conceptual docset,
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (file.Format == FileFormat.Markdown && configMonikerRange.Value is null)
+                if (IsUserInput(file) && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
                     return default;

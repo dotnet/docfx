@@ -2071,16 +2071,16 @@ outputs:
 # Respect all monikers file metadata for redirections and resources
 inputs:
   docfx.yml: |
+    monikerRange:
+      'v2/**': v2
     fileMetadata:
       monikers:
         'v1/**': v1
-      monikerRange:
-        'v2/**': v2
     monikerDefinition: monikerDefinition.json
   v1/a.png:
   redirections.yml: |
     redirections:
-      v2/b.yml: /url
+      v2/b.md: /url
   monikerDefinition.json: |
     {
       "monikers": [{ "moniker_name": "v1" }, { "moniker_name": "v2" }]
@@ -2098,14 +2098,12 @@ outputs:
 # Only validate monikers for user input markdown
 inputs:
   docfx.yml: |
-    monikerRange:
-      'docs/**': 'netcore-1.0'
     monikerDefinition: monikerDefinition.json
     fileMetadata:
       exclude_monikers:
         '**/*.md': [netcore-1.0]
       monikerRange:
-        'docs/v1/**/*': 'netcore-2.0'
+        'docs/**': 'netcore-1.0'
   redirections.yml: |
     redirections:
       docs/a.md: /b
