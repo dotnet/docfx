@@ -106,16 +106,7 @@ namespace Microsoft.Docs.Build
             var metadata = _metadataProvider.GetMetadata(errors, file);
             var configMonikerRange = GetConfigMonikerRange(file);
             var configMonikers = _rangeParser.Parse(errors, configMonikerRange);
-            return GetFileLevelMonikers(errors, configMonikerRange, configMonikers, metadata, file);
-        }
 
-        private MonikerList GetFileLevelMonikers(
-            ErrorBuilder errors,
-            SourceInfo<string?> configMonikerRange,
-            MonikerList configMonikers,
-            UserMetadata metadata,
-            FilePath file)
-        {
             if (metadata.MonikerRange != null)
             {
                 // For conceptual docset,
