@@ -238,11 +238,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value));
-                    if (spec == null)
-                    {
-                        return default;
-                    }
+                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
                 }
 
                 var dependencyType = GetDependencyType(referencingFile, spec);

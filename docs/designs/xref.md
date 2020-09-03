@@ -357,7 +357,7 @@ resolving uid `a` should take the one with the highest version and also respect 
       folder-3:
           - b.md(<a href="url">A1</a>)
   ```
-- multiple versioning with different product names, take the one with highest product name alphabetically
+- multiple versioning with different product names, take the one with highest moniker version defined in moniker definition file
   ```
   inputs:
       folder-1(a-1.0, a-2.0):
