@@ -166,21 +166,17 @@ namespace Microsoft.Docs.Build
                 {
                     refToc[buildSourceFolder.GetRelativePath(new PathString(config.ConceptualTOC))] = config.ReferenceTOCUrl;
                     refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
-                    var conceptualTOCDirName = Path.GetDirectoryName(config.ConceptualTOC);
-                    refToc[$"{Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(conceptualTOCDirName) ? "." : conceptualTOCDirName)}/_splitted/**"] =
-                        config.ReferenceTOCUrl;
+                    var conceptualTOCDir = Path.GetDirectoryName(config.ConceptualTOC);
+                    var conceptualTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(conceptualTOCDir) ? "." : conceptualTOCDir);
+                    refToc[Path.Combine(conceptualTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
                 }
 
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
                     conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
-                    var refTOCDirName = Path.GetDirectoryName(config.ReferenceTOC);
-                    conceptualToc[$"{Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDirName) ? "." : refTOCDirName)}/_splitted/**"] =
-                        config.ConceptualTOCUrl;
-                }
-
-                if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
-                {
+                    var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
+                    var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
+                    conceptualToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ConceptualTOCUrl;
                     conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
                 }
 
