@@ -1,9 +1,12 @@
-# Copy assets in template definition to output directory
+# Copy assets in template definition to output directory for self contained build
 inputs:
-  docfx.yml: |
-    outputType: html
-    urlType: pretty
-    template: _themes
+  docsets.yml:
+  a/docfx.yml: |
+    selfContained: true
+    template: ../_themes
+  b/docfx.yml: |
+    selfContained: false
+    template: ../_themes
   _themes/template.yml: |
     assets:
     - styles/**
@@ -11,20 +14,8 @@ inputs:
   _themes/styles/main.css: css
   _themes/scripts/main.js: js
 outputs:
-  styles/main.css: css
-  scripts/main.js: js
----
-# Copy assets in template definition to output directory only when output is HTML
-inputs:
-  docfx.yml: |
-    template: _themes
-  _themes/template.yml: |
-    assets:
-    - styles/**
-    - scripts/**
-  _themes/styles/main.css: css
-  _themes/scripts/main.js: js
-outputs:
+  a/styles/main.css: css
+  a/scripts/main.js: js
 ---
 # Liquid template file missing should not crash
 inputs: 

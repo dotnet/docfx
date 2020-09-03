@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             {
                 config["outputType"] = "Json";
                 config["urlType"] = "Docs";
-                config["copyResources"] = false;
+                config["selfContained"] = false;
             }
 
             if (Template != null)
