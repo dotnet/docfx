@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
-            MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
+            MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver, new Lazy<DocumentProvider>(() => DocumentProvider));
             DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,

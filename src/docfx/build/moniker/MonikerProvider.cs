@@ -14,6 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildScope _buildScope;
         private readonly MonikerRangeParser _rangeParser;
         private readonly MetadataProvider _metadataProvider;
+        private readonly Lazy<DocumentProvider> _documentProvider;
 
         private readonly (Func<string, bool> glob, SourceInfo<string?>)[] _rules;
 
@@ -23,11 +24,12 @@ namespace Microsoft.Docs.Build
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
-        public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver)
+        public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver, Lazy<DocumentProvider> documentProvider)
         {
             _config = config;
             _buildScope = buildScope;
             _metadataProvider = metadataProvider;
+            _documentProvider = documentProvider;
 
             var monikerDefinition = new MonikerDefinitionModel();
             if (!string.IsNullOrEmpty(_config.MonikerDefinition))
@@ -163,7 +165,11 @@ namespace Microsoft.Docs.Build
             if (metadata.ExcludeMonikers != null)
             {
                 var excludeMonikers = _rangeParser.Validate(errors, metadata.ExcludeMonikers);
-                fileMonikers = fileMonikers.Except(excludeMonikers);
+
+                if (_documentProvider.Value.GetContentType(file) != ContentType.Redirection)
+                {
+                    fileMonikers = fileMonikers.Except(excludeMonikers);
+                }
             }
 
             // for non-markdown documents, if config monikers is not defined

@@ -2067,3 +2067,28 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
+---
+# exclude_monikers should not take effect on redirection files
+repos:
+  https://github.com/redirection/redirection_exclude_monikers:
+  - files:
+      docfx.yml: |
+        monikerDefinition: monikerDefinition.json
+        fileMetadata:
+          monikers:
+            '**/*.md': [netcore-1.0]
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "redirect_URL": "/b"}
+          ]
+        }
+      monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+            { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+          ]
+        }
+outputs:
