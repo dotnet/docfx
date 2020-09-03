@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (IsUserInput(file) && configMonikerRange.Value is null)
+            if (ValidateMoniker(file) && configMonikerRange.Value is null)
             {
                 errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString));
                 return default;
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
                 // For conceptual docset,
                 // Moniker range not defined in docfx.yml/docfx.json,
                 // user should not define it in file metadata
-                if (IsUserInput(file) && configMonikerRange.Value is null)
+                if (ValidateMoniker(file) && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
                     return default;
@@ -163,12 +163,12 @@ namespace Microsoft.Docs.Build
 
             // for non-markdown documents, if config monikers is not defined
             // just use file monikers
-            if (configMonikerRange.Value is null && !IsUserInput(file))
+            if (configMonikerRange.Value is null && !ValidateMoniker(file))
             {
                 return fileMonikers;
             }
 
-            if (IsUserInput(file) && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
+            if (ValidateMoniker(file) && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
             {
                 // With config monikers defined,
                 // warn if no intersection of config monikers and file monikers
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private bool IsUserInput(FilePath path)
+        private bool ValidateMoniker(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
             return contentType == ContentType.TableOfContents || (path.Format == FileFormat.Markdown && contentType == ContentType.Page);
