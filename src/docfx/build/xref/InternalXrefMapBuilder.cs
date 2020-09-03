@@ -162,6 +162,7 @@ namespace Microsoft.Docs.Build
                    .OrderByDescending(spec => spec.Monikers.HasMonikers
                         ? spec.Monikers.Select(moniker => _monikerProvider.GetMonikerOrder(moniker)).Max()
                         : 0)
+                   .ThenBy(spec => spec.DeclaringFile)
                    .ToArray();
         }
 
