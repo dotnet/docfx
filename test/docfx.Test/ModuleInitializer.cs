@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_HOST_NAME", "docs.com");
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT_TYPE", "Json");
             Environment.SetEnvironmentVariable("DOCFX_URL_TYPE", "Docs");
-            Environment.SetEnvironmentVariable("DOCFX_COPY_RESOURCES", "true");
 
             TestQuirks.Verbose = true;
             TestUtility.MakeDebugAssertThrowException();

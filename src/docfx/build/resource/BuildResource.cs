@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
             // Output path is source file path relative to output folder when copy resource is disabled
             var copy = true;
 
-            if (!context.Config.CopyResources &&
+            if (!context.Config.SelfContained &&
                 context.Input.TryGetPhysicalPath(file, out var physicalPath))
             {
                 outputPath = PathUtility.NormalizeFile(Path.GetRelativePath(context.Output.OutputPath, physicalPath));
