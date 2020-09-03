@@ -341,34 +341,35 @@ There are some other UID reference formats supported in docfx V2, which are not 
 - [Advanced options](https://dotnet.github.io/docfx/tutorial/links_and_cross_references.html#advanced-more-options-for-cross-reference)
 
 ## Resolve uid with versioning
-### Internal uid with multiple versioning
+### Internal uid with versioning
+- single versioning, resolving uid `a` regardless of file `b`'s version
 - multiple versioning with the same product name, 
 resolving uid `a` should take the one with the highest version and also respect the version of file `b`
-```
-inputs:
-    folder-1(1.0, 2.0):
-        - a.md(uid: a, title: A1)
-    folder-2(3.0,4.0):
-        - a.md(uid: a, title: A2)
-    folder-3(2.0):
-        - b.md(@a)
-outputs:
-    folder-3:
-        - b.md(<a href="url">A1</a>)
-```
+  ```
+  inputs:
+      folder-1(1.0, 2.0):
+          - a.md(uid: a, title: A1)
+      folder-2(3.0,4.0):
+          - a.md(uid: a, title: A2)
+      folder-3(2.0):
+          - b.md(@a)
+  outputs:
+      folder-3:
+          - b.md(<a href="url">A1</a>)
+  ```
 - multiple versioning with different product names, take the one with highest product name alphabetically
-```
-inputs:
-    folder-1(a-1.0, a-2.0):
-        - a.md(uid:a, title: A1)
-    folder-2(b-1.0, b-2.0):
-        - a.md(uid:a, title: A2)
-    folder-3(c-1.0, c-2.0):
-        - b.md(@a)
-outputs:
-    folder-3(c-1.0, c-2.0):
-        - b.md(<a href="url">A2</a>)
-```
+  ```
+  inputs:
+      folder-1(a-1.0, a-2.0):
+          - a.md(uid:a, title: A1)
+      folder-2(b-1.0, b-2.0):
+          - a.md(uid:a, title: A2)
+      folder-3(c-1.0, c-2.0):
+          - b.md(@a)
+  outputs:
+      folder-3(c-1.0, c-2.0):
+          - b.md(<a href="url">A2</a>)
+  ```
 
 ### External uid with multiple versioning
 The resolving logic for external uid is the same as internal uid, but how to consume `xrefmap` is different.

@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
             if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
             {
                 var spec = default(InternalXrefSpec);
-                if (!monikers.HasValue || !monikers.Value.HasMonikers)
+                if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)
                 {
                     spec = specs[0];
                 }
