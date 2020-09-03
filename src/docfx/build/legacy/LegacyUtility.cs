@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         public static string ToLegacyOutputPathRelativeToBasePath(this FilePath doc, Context context, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
-            if (outputPath is null || (context.DocumentProvider.GetContentType(doc) == ContentType.Resource && !context.Config.CopyResources))
+            if (outputPath is null || (context.DocumentProvider.GetContentType(doc) == ContentType.Resource && !context.Config.SelfContained))
             {
                 outputPath = context.DocumentProvider.GetOutputPath(doc);
             }

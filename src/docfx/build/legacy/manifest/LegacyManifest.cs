@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                     RelativePath = legacyOutputPathRelativeToBasePath,
                     IsRawPage = false,
                 };
-                if (!context.Config.CopyResources)
+                if (!context.Config.SelfContained)
                 {
                     resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docsetPath, document.Path));
                 }

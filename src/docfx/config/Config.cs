@@ -83,9 +83,10 @@ namespace Microsoft.Docs.Build
         public bool LowerCaseUrl { get; private set; } = true;
 
         /// <summary>
-        /// Gets whether resources are copied to output.
+        /// Gets whether dependencies such as images and template styles
+        /// are copied to output so the output folder can be deployed as a self-contained website.
         /// </summary>
-        public bool CopyResources { get; private set; } = true;
+        public bool SelfContained { get; private set; } = true;
 
         /// <summary>
         /// Gets the maximum errors of each file to output.

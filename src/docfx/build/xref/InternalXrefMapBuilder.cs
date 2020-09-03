@@ -158,7 +158,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return specsWithSameUid.OrderBy(spec => spec.DeclaringFile).ToArray();
+            return specsWithSameUid
+                   .OrderByDescending(spec => spec.Monikers.HasMonikers
+                        ? spec.Monikers.Select(moniker => _monikerProvider.GetMonikerOrder(moniker)).Max()
+                        : int.MaxValue)
+                   .ThenBy(spec => spec.DeclaringFile)
+                   .ToArray();
         }
 
         private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)

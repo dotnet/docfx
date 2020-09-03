@@ -682,7 +682,7 @@ inputs:
   docsets.yml: |
     docsets: new-hope/new-hope/*
   new-hope/new-hope/docfx.yml: |
-    copyResources: false
+    selfContained: false
   new-hope/new-hope/specs/unify-version/unify-version.md: |
     ![ready-for-review](../../../new-hope/specs/gauntlet/media/ready-for-review.png)
   new-hope/new-hope/specs/international-content/docs-vscode-validation.md: |
