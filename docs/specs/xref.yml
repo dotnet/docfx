@@ -1256,7 +1256,7 @@ repos:
   https://docs.com/test#test:
     - files:
         docfx.yml: |
-          outputUrlType: ugly
+          urlType: ugly
         docs/a.md: |
           ---
           uid: a
