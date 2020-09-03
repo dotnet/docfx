@@ -2067,3 +2067,30 @@ outputs:
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
+---
+# Respect all monikers file metadata for redirections and resources
+inputs:
+  docfx.yml: |
+    fileMetadata:
+      monikers:
+        'v1/**': v1
+      monikerRange:
+        'v2/**': v2
+    monikerDefinition: monikerDefinition.json
+  v1/a.png:
+  redirections.yml: |
+    redirections:
+      v2/b.yml: /url
+  monikerDefinition.json: |
+    {
+      "monikers": [{ "moniker_name": "v1" }, { "moniker_name": "v2" }]
+    }
+outputs:
+  6654c734/v1/a.png:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/v2/b", "moniker_group": "1b267619" },
+        { "url": "/v1/a.png", "moniker_group": "6654c734" }
+      ]
+    }
