@@ -1,4 +1,4 @@
-# Build with --legacy
+# Build output as page json
 repos:
   https://github.com/legacy/test:
   - author: Charlie
