@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
         {
             PackageType.Folder => Path,
             PackageType.Git => $"{Url}#{Branch}",
-            _ => $"{Url}, (type: {Type.ToString()})",
+            _ => $"{Url}, (type: {Type})",
         };
 
         public override int GetHashCode()

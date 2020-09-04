@@ -6,13 +6,18 @@ namespace Microsoft.Docs.Build
     internal enum OutputType
     {
         /// <summary>
-        /// Output json file
+        /// HTML file after applying liquid template, including both content and the chrome.
+        /// </summary>
+        Html,
+
+        /// <summary>
+        /// The default JSON file before applying any templates.
         /// </summary>
         Json,
 
         /// <summary>
-        /// Output Html file with liquid applied
+        /// Liquid JSON input format, same content as stored in docs document hosting service.
         /// </summary>
-        Html,
+        PageJson,
     }
 }

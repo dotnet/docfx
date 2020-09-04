@@ -129,11 +129,6 @@ namespace Microsoft.Docs.Build
         public string XrefHostName { get; private set; } = "";
 
         /// <summary>
-        /// Gets whether we are running in legacy mode
-        /// </summary>
-        public bool Legacy { get; private set; }
-
-        /// <summary>
         /// Gets whether we are running in dry run mode
         /// </summary>
         public bool DryRun { get; private set; }

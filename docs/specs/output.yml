@@ -746,7 +746,6 @@ outputs:
     {"dependencies":undefined}
 ---
 # verify legacy output with source map
-legacy: true
 repos:
   https://github.com/relocate/source-file:
     - files:
@@ -770,10 +769,8 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"schema-not-found","message":"Unknown schema ''.","file":"a/original.xml"}
-  b.mta.json:
-  b.raw.page.json:
-  c.mta.json:
-  c.raw.page.json:
+  b.json:
+  c.json:
   op_aggregated_file_map_info.json: |
     {
       "aggregated_file_map_items": 
@@ -818,7 +815,6 @@ outputs:
     }
 ---
 # Expose all toc reference to aggregated file map
-legacy: true
 inputs:
   docfx.yml:
   docs/a.md:
@@ -827,8 +823,7 @@ inputs:
   docs/a/TOC.md: |
     # [file reference](../a.md)
 outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json:
+  docs/a.json:
   docs/toc.json:
   docs/a/toc.json:
   op_aggregated_file_map_info.json: |

@@ -11,8 +11,8 @@ namespace Microsoft.Docs.Build
     {
         public string? Output;
         public string? Log;
-        public bool Legacy;
         public bool Verbose;
+        public OutputType? OutputType;
         public bool DryRun;
         public bool NoDrySync;
         public bool Stdin;
@@ -26,7 +26,6 @@ namespace Microsoft.Docs.Build
         {
             var config = new JObject
             {
-                ["legacy"] = Legacy,
                 ["dryRun"] = DryRun,
                 ["noDrySync"] = NoDrySync,
             };
@@ -36,11 +35,9 @@ namespace Microsoft.Docs.Build
                 config["outputPath"] = Output;
             }
 
-            if (Legacy)
+            if (OutputType != null)
             {
-                config["outputType"] = "Json";
-                config["urlType"] = "Docs";
-                config["selfContained"] = false;
+                config["outputType"] = OutputType.Value.ToString();
             }
 
             if (Template != null)

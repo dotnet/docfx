@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
                 }
 
-                if (context.Config.Legacy && isHtml)
+                if (context.Config.OutputType == OutputType.PageJson && isHtml)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadataPath, metadata);
@@ -91,13 +91,14 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (context.Config.OutputType == OutputType.Json && !context.Config.Legacy)
+            if (context.Config.OutputType == OutputType.Json)
             {
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, file, mime, JsonUtility.SortProperties(outputModel));
-            if (context.Config.OutputType == OutputType.Json)
+
+            if (context.Config.OutputType == OutputType.PageJson)
             {
                 return (templateModel, JsonUtility.SortProperties(templateMetadata));
             }
@@ -265,7 +266,7 @@ namespace Microsoft.Docs.Build
             var schema = context.TemplateEngine.GetSchema(mime);
             var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
 
-            if (context.Config.Legacy && TemplateEngine.IsLandingData(mime))
+            if (context.Config.OutputType == OutputType.PageJson && TemplateEngine.IsLandingData(mime))
             {
                 var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
                 var razorHtml = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();

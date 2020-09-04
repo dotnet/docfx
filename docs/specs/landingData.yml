@@ -1,8 +1,8 @@
 ---
 # Tags and comments in the sections item with cardsM className should be remove
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   docs/index.yml: |
     ### YamlMime:YamlDocument
     documentType: LandingData
@@ -23,9 +23,9 @@ outputs:
     { "content": "<ul class=\"cardsM cols cols1\"><li><a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\"><img class=\"cardImage\" role=\"presentation\" src=\"./a.png\" data-linktype=\"relative-path\"><div class=\"cardText\"><h3></h3><p>Test html</p></div></a></li></ul>" }
 ---
 # Support grid type
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   docs/index.yml: |
     ### YamlMime:YamlDocument
     documentType: landingData
