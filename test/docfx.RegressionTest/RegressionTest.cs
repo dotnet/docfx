@@ -113,6 +113,7 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     docfxConfig["outputType"] = "pageJson";
+                    docfxConfig["selfContained"] = false;
                 }
 
                 if (opts.RegressionMarkdownRule)
