@@ -110,6 +110,10 @@ namespace Microsoft.Docs.Build
                     docfxConfig["urlType"] = "ugly";
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
+                else
+                {
+                    docfxConfig["outputType"] = "pageJson";
+                }
 
                 if (opts.RegressionMarkdownRule)
                 {
