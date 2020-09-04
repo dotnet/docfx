@@ -47,8 +47,7 @@ outputs:
   b.json: |
     ['p1', 'p2']
 ---
-# Run data-transform if provided in legacy mode, by default return {"content": "serialized json"}
-legacy: true
+# Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
   docfx.yml:
   a.yml: |
@@ -172,10 +171,10 @@ outputs:
   a.json:
 ---
 # Support <xref> tag in mustache template
-legacy: true
 inputs:
   docfx.yml: |
     xref: xrefmap.yml
+    outputType: pageJson
   xrefmap.yml: |
     references:
       - uid: uid1
@@ -299,9 +298,9 @@ outputs:
 ---
 # Leave xref-properties empty if not explicitly defined by author,
 # to avoid unintentional inheritance from parent context
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   _themes/ContentTemplate/schemas/XrefDeclaration.schema.json: |
     {
       "type": "object",
@@ -353,10 +352,10 @@ outputs:
         </p>"
     }
 ---
-# Uid self reference 
-legacy: true
+# Uid self reference
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
       "properties": {
@@ -405,9 +404,9 @@ outputs:
     }
 ---
 # Known variables in <xref> tag does not fallback to parent scope.
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
       "properties": {
@@ -455,9 +454,9 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolved2'.","file":"a.yml","line":7,"end_line":7,"column":10,"end_column":21}
 ---
 # Known variables in <xref> tag for external xref spec does not fallback to parent scope.
-legacy: true
 inputs:
   docfx.yml: |
+    outputType: pageJson
     xref: xref.yml
   xref.yml: |
     references:

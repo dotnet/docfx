@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
 
         public bool NoRestore { get; set; }
 
-        public bool Legacy { get; set; }
-
         public bool Temp { get; set; }
 
         public string Locale { get; set; }
