@@ -88,6 +88,19 @@ items:
     usage:
       command: "-t statictoc"
       config: '"template":["default","templates/unity"]'
+  - name: DiscordFX
+    description: DocFX template to create documentation similar to Discord
+    author: Mickael Bonfill (jbltx)
+    version: 0.3
+    type: External
+    thumbnail: ~/templates-and-plugins/images/discordfx.screenshot.png
+    homepage: https://github.com/jbltx/DiscordFX
+    repository:
+      type: git
+      url: "https://github.com/jbltx/DiscordFX"
+    usage:
+      command: "-t default,templates/discordfx"
+      config: '"template":["default","templates/discordfx"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!
