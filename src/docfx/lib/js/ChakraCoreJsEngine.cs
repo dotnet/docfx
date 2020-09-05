@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
         {
             _scriptDir = scriptDir;
             _requireFunction = new JavaScriptNativeFunction(Require);
-            GCHandle.Alloc(_requireFunction, GCHandleType.Pinned);
 
             if (global != null)
             {
