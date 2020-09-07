@@ -35,6 +35,6 @@
     "request": "^2.69.0",
     "sha1": "^1.1.1",
     "string-format": "^2.0.0",
-    "typescript": "^2.2.2"
+    "typescript": "^4.0.2"
   }
 }
