@@ -127,10 +127,9 @@ namespace Microsoft.Docs.Build
             }
 
             // loc override fallback uid
-            if (specsWithSameUid.Length == 2 &&
-                 (specsWithSameUid[0].DeclaringFile.Origin ^ specsWithSameUid[1].DeclaringFile.Origin ^ FileOrigin.Main ^ FileOrigin.Fallback) == 0)
+            if (specsWithSameUid.Any(spec => spec.DeclaringFile.Origin == FileOrigin.Main))
             {
-                return new[] { specsWithSameUid[0].DeclaringFile.Origin == FileOrigin.Main ? specsWithSameUid[0] : specsWithSameUid[1] };
+                specsWithSameUid = specsWithSameUid.Where(spec => spec.DeclaringFile.Origin != FileOrigin.Fallback).ToArray();
             }
 
             // multiple uid conflicts without moniker range definition
