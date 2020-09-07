@@ -16,8 +16,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Converting to legacy"))
             {
-                var documents = fileManifests.Where(f => !f.Value.HasError).ToDictionary(
-                    k => context.DocumentProvider.GetDocument(k.Key), v => v.Value);
+                var documents = fileManifests.Where(f => !f.Value.HasError).ToDictionary(kv => kv.Key, kv => kv.Value);
 
                 LegacyManifest.Convert(docsetPath, context, documents);
                 var legacyDependencyMap = LegacyDependencyMap.Convert(docsetPath, context, dependencyMap);

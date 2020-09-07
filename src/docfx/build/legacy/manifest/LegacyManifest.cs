@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static void Convert(string docsetPath, Context context, Dictionary<Document, PublishItem> fileManifests)
+        public static void Convert(string docsetPath, Context context, Dictionary<FilePath, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
                 };
 
                 var dictionaryBuilder = new DictionaryBuilder<string, MonikerList>();
-                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, Document doc, MonikerList monikers)>();
+                var listBuilder = new ListBuilder<(LegacyManifestItem manifestItem, FilePath doc, MonikerList monikers)>();
                 Parallel.ForEach(fileManifests, fileManifest =>
                 {
                     ConvertDocumentToLegacyManifestItem(docsetPath, context, fileManifest, dictionaryBuilder, listBuilder);
@@ -57,15 +57,15 @@ namespace Microsoft.Docs.Build
         private static void ConvertDocumentToLegacyManifestItem(
             string docsetPath,
             Context context,
-            KeyValuePair<Document, PublishItem> fileManifest,
+            KeyValuePair<FilePath, PublishItem> fileManifest,
             DictionaryBuilder<string, MonikerList> dictionaryBuilder,
-            ListBuilder<(LegacyManifestItem manifestItem, Document doc, MonikerList monikers)> listBuilder)
+            ListBuilder<(LegacyManifestItem manifestItem, FilePath doc, MonikerList monikers)> listBuilder)
         {
             var document = fileManifest.Key;
             var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
             var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
-            var contentType = context.DocumentProvider.GetContentType(document.FilePath);
-            var isHtml = context.DocumentProvider.IsHtml(document.FilePath);
+            var contentType = context.DocumentProvider.GetContentType(document);
+            var isHtml = context.DocumentProvider.IsHtml(document);
 
             var output = new LegacyManifestOutput
             {
@@ -87,9 +87,9 @@ namespace Microsoft.Docs.Build
                     RelativePath = legacyOutputPathRelativeToBasePath,
                     IsRawPage = false,
                 };
-                if (!context.Config.CopyResources)
+                if (!context.Config.SelfContained)
                 {
-                    resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docsetPath, document.FilePath.Path));
+                    resourceOutput.LinkToPath = Path.GetFullPath(Path.Combine(docsetPath, document.Path));
                 }
                 output.ResourceOutput = resourceOutput;
             }
@@ -136,14 +136,14 @@ namespace Microsoft.Docs.Build
             {
                 AssetId = legacySiteUrlRelativeToBasePath,
                 Original = fileManifest.Value.SourcePath,
-                SourceRelativePath = context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path,
-                OriginalType = GetOriginalType(contentType, context.DocumentProvider.GetMime(document.FilePath)),
-                Type = GetType(context, contentType, isHtml),
+                SourceRelativePath = context.SourceMap.GetOriginalFilePath(document) ?? document.Path,
+                OriginalType = GetOriginalType(contentType, context.DocumentProvider.GetMime(document)),
+                Type = GetType(contentType, isHtml),
                 Output = output,
                 SkipNormalization = !(contentType == ContentType.Resource),
                 SkipSchemaCheck = !(contentType == ContentType.Resource),
                 Group = fileManifest.Value.MonikerGroup,
-                Version = context.MonikerProvider.GetConfigMonikerRange(document.FilePath),
+                Version = context.MonikerProvider.GetConfigMonikerRange(document),
                 IsMonikerRange = true,
             };
 
@@ -163,9 +163,9 @@ namespace Microsoft.Docs.Build
             _ => string.Empty,
         };
 
-        private static string GetType(Context context, ContentType type, bool isHtml)
+        private static string GetType(ContentType type, bool isHtml)
         {
-            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !isHtml)
+            if (type == ContentType.Page && !isHtml)
             {
                 return "Toc";
             }

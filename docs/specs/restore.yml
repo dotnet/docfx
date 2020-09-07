@@ -299,7 +299,6 @@ outputs:
     {"files": [{"url": "/crrb/folder/b", "monikers":["netcore-1.1"]}, {"url": "/docs/b", "monikers":["netcore-1.0","netcore-1.1"]}]}
 ---
 # crr files have same name but in different crr
-legacy: true
 repos:
   https://docs.com/crrsame/a:
     - files:
@@ -331,18 +330,12 @@ repos:
           [link to b](b.md)
         b.md:
 outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json:
-  docs/b.mta.json:
-  docs/b.raw.page.json:
-  crrb/a.mta.json:
-  crrb/a.raw.page.json:
-  crrb/b.mta.json:
-  crrb/b.raw.page.json:
-  crrc/a.mta.json:
-  crrc/a.raw.page.json:
-  crrc/b.mta.json:
-  crrc/b.raw.page.json:
+  docs/a.json:
+  docs/b.json:
+  crrb/a.json:
+  crrb/b.json:
+  crrc/a.json:
+  crrc/b.json:
   filemap.json: |
     {
       "file_mapping": {

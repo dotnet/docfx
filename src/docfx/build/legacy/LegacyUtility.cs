@@ -8,12 +8,12 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static string ToLegacyOutputPathRelativeToBasePath(this Document doc, Context context, PublishItem manifestItem)
+        public static string ToLegacyOutputPathRelativeToBasePath(this FilePath doc, Context context, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
-            if (outputPath is null || (context.DocumentProvider.GetContentType(doc.FilePath) == ContentType.Resource && !context.Config.CopyResources))
+            if (outputPath is null || (context.DocumentProvider.GetContentType(doc) == ContentType.Resource && !context.Config.SelfContained))
             {
-                outputPath = context.DocumentProvider.GetOutputPath(doc.FilePath);
+                outputPath = context.DocumentProvider.GetOutputPath(doc);
             }
             var legacyOutputFilePathRelativeToBasePath = Path.GetRelativePath(
                 string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath, outputPath);
@@ -21,9 +21,9 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
 
-        public static string ToLegacySiteUrlRelativeToBasePath(this Document doc, Context context)
+        public static string ToLegacySiteUrlRelativeToBasePath(this FilePath doc, Context context)
         {
-            var legacySiteUrlRelativeToBasePath = context.DocumentProvider.GetSiteUrl(doc.FilePath);
+            var legacySiteUrlRelativeToBasePath = context.DocumentProvider.GetSiteUrl(doc);
             if (legacySiteUrlRelativeToBasePath.StartsWith(context.Config.BasePath.ValueWithLeadingSlash, PathUtility.PathComparison))
             {
                 legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
@@ -32,9 +32,9 @@ namespace Microsoft.Docs.Build
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);
             }
 
-            if (context.Config.OutputUrlType == OutputUrlType.Docs &&
-                Path.GetFileNameWithoutExtension(doc.FilePath.Path).Equals("index", PathUtility.PathComparison) &&
-                context.DocumentProvider.GetContentType(doc.FilePath) != ContentType.Resource)
+            if (context.Config.UrlType == UrlType.Docs &&
+                Path.GetFileNameWithoutExtension(doc.Path).Equals("index", PathUtility.PathComparison) &&
+                context.DocumentProvider.GetContentType(doc) != ContentType.Resource)
             {
                 legacySiteUrlRelativeToBasePath = $"{legacySiteUrlRelativeToBasePath}/index";
             }

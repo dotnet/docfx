@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
 
             Assert.Equal(
                 exe.Replace("\r", ""),
-                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time:s}{c.Time:zzz}|{c.AuthorName}|{c.AuthorEmail}")));
 
             // another branch
             exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
 
             Assert.Equal(
                 exe.Replace("\r", ""),
-                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time.ToString("s")}{c.Time.ToString("zzz")}|{c.AuthorName}|{c.AuthorEmail}")));
+                string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time:s}{c.Time:zzz}|{c.AuthorName}|{c.AuthorEmail}")));
 
             gitCommitProvider.Save();
         }

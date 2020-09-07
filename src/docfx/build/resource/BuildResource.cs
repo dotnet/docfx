@@ -8,15 +8,15 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static void Build(Context context, Document file)
+        internal static void Build(Context context, FilePath file)
         {
-            var outputPath = context.DocumentProvider.GetOutputPath(file.FilePath);
+            var outputPath = context.DocumentProvider.GetOutputPath(file);
 
             // Output path is source file path relative to output folder when copy resource is disabled
             var copy = true;
 
-            if (!context.Config.CopyResources &&
-                context.Input.TryGetPhysicalPath(file.FilePath, out var physicalPath))
+            if (!context.Config.SelfContained &&
+                context.Input.TryGetPhysicalPath(file, out var physicalPath))
             {
                 outputPath = PathUtility.NormalizeFile(Path.GetRelativePath(context.Output.OutputPath, physicalPath));
                 copy = false;
@@ -24,10 +24,10 @@ namespace Microsoft.Docs.Build
 
             if (copy && !context.Config.DryRun)
             {
-                context.Output.Copy(outputPath, file.FilePath);
+                context.Output.Copy(outputPath, file);
             }
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, metadata: null, outputPath);
+            context.PublishModelBuilder.SetPublishItem(file, metadata: null, outputPath);
         }
     }
 }

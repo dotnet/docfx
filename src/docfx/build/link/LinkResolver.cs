@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
-            if (file.Origin == FileOrigin.Fallback && _config.OutputUrlType != OutputUrlType.Docs &&
+            if (file.Origin == FileOrigin.Fallback && _config.UrlType != UrlType.Docs &&
                 _documentProvider.GetContentType(file) == ContentType.Page)
             {
 #pragma warning disable CS0618 // Docs pdf build uses static url, but links in fallback repo should be resolved to docs site URL

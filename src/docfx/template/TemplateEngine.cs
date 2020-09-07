@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             _templateDefinition = PathUtility.LoadYamlOrJson<TemplateDefinition>(errors, _templateDir, "template") ?? new TemplateDefinition();
 
             _global = LoadGlobalTokens();
-            _liquid = new LiquidTemplate(_templateDir);
+            _liquid = new LiquidTemplate(_templateDir, _global);
             _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_contentTemplateDir, _global));
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
         public void CopyAssetsToOutput()
         {
-            if (_config.OutputType != OutputType.Html || _templateDefinition.Assets.Length <= 0)
+            if (!_config.SelfContained || _templateDefinition.Assets.Length <= 0)
             {
                 return;
             }

@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
                         // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
                         // output xref map with URL appending "?branch=master" for master branch
-                        var query = _config.OutputUrlType == OutputUrlType.Docs && repositoryBranch != "live"
+                        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
                             ? $"?branch={repositoryBranch}" : "";
 
                         var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
 
             var model = new XrefMapModel { References = references };
 
-            if (_config.OutputUrlType == OutputUrlType.Docs && references.Length > 0)
+            if (_config.UrlType == UrlType.Docs && references.Length > 0)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
@@ -232,17 +232,13 @@ namespace Microsoft.Docs.Build
             if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
             {
                 var spec = default(InternalXrefSpec);
-                if (!monikers.HasValue || !monikers.Value.HasMonikers)
+                if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)
                 {
                     spec = specs[0];
                 }
                 else
                 {
-                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value));
-                    if (spec == null)
-                    {
-                        return default;
-                    }
+                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
                 }
 
                 var dependencyType = GetDependencyType(referencingFile, spec);
