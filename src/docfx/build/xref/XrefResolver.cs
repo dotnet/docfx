@@ -150,6 +150,7 @@ namespace Microsoft.Docs.Build
                     .Select(xrefs =>
                     {
                         var xref = xrefs.First();
+
                         // validate xref properties
                         // uid conflicts with different values of the same xref property
                         // log an warning and take the first one order by the declaring file
