@@ -126,6 +126,8 @@ namespace Microsoft.Docs.Build
                     });
 
                 var moduleExports = module.GetProperty(exportsProperty);
+
+                // Avoid exports been GCed by javascript garbage collector.
                 moduleExports.AddRef();
                 return _modules[scriptPath] = moduleExports;
             }
