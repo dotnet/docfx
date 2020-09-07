@@ -126,6 +126,12 @@ namespace Microsoft.Docs.Build
                 return specsWithSameUid;
             }
 
+            // loc override fallback uid
+            if (specsWithSameUid.Any(spec => spec.DeclaringFile.Origin == FileOrigin.Main))
+            {
+                specsWithSameUid = specsWithSameUid.Where(spec => spec.DeclaringFile.Origin != FileOrigin.Fallback).ToArray();
+            }
+
             // multiple uid conflicts without moniker range definition
             // log an warning and take the first one order by the declaring file
             var duplicatedSpecs = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
