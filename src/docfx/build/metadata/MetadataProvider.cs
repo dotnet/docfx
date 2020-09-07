@@ -12,10 +12,10 @@ namespace Microsoft.Docs.Build
     internal class MetadataProvider
     {
         private readonly Input _input;
-        private readonly bool _hasMonikerRangeFileMetadata;
         private readonly BuildScope _buildScope;
         private readonly JObject _globalMetadata;
-        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool> glob, string key, JToken value)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool>, string, JToken)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool>, string, JToken)>();
 
         private readonly ConcurrentDictionary<FilePath, UserMetadata> _metadataCache = new ConcurrentDictionary<FilePath, UserMetadata>();
 
@@ -42,54 +42,57 @@ namespace Microsoft.Docs.Build
                 where !string.IsNullOrEmpty(htmlMetaName)
                 select new KeyValuePair<string, string>(property.Key, htmlMetaName));
 
-            _hasMonikerRangeFileMetadata = config.FileMetadata.ContainsKey("monikerRange");
-
             foreach (var (key, item) in config.FileMetadata)
             {
                 foreach (var (glob, value) in item.Value)
                 {
                     JsonUtility.SetKeySourceInfo(value, item.Source?.KeySourceInfo);
-                    _rules.Add((GlobUtility.CreateGlobMatcher(glob), key, value));
+                    var matcher = GlobUtility.CreateGlobMatcher(glob);
+                    _rules.Add((matcher, key, value));
+
+                    if (key.Contains("moniker", StringComparison.OrdinalIgnoreCase))
+                    {
+                        _monikerRules.Add((matcher, key, value));
+                    }
                 }
             }
         }
 
-        public UserMetadata GetMetadata(ErrorBuilder errors, FilePath path)
+        public UserMetadata GetMetadata(ErrorBuilder errors, FilePath file)
         {
-            var contentType = _buildScope.GetContentType(path);
-
-            switch (contentType)
-            {
-                case ContentType.Unknown:
-                case ContentType.Redirection when !_hasMonikerRangeFileMetadata:
-                case ContentType.Resource when !_hasMonikerRangeFileMetadata:
-                    return new UserMetadata();
-
-                default:
-                    return _metadataCache.GetOrAdd(path, _ => GetMetadataCore(errors, path, contentType));
-            }
+            return _metadataCache.GetOrAdd(file, _ => GetMetadataCore(errors, file));
         }
 
-        private UserMetadata GetMetadataCore(ErrorBuilder errors, FilePath filePath, ContentType contentType)
+        private UserMetadata GetMetadataCore(ErrorBuilder errors, FilePath file)
         {
             var result = new JObject();
+            JsonUtility.SetSourceInfo(result, new SourceInfo(file, 1, 1));
 
-            JsonUtility.SetSourceInfo(result, new SourceInfo(filePath, 1, 1));
-            JsonUtility.Merge(result, _globalMetadata);
+            // We only care about moniker related metadata for redirections and resources
+            var contentType = _buildScope.GetContentType(file);
+            var hasYamlHeader = contentType == ContentType.Page || contentType == ContentType.TableOfContents;
+            if (hasYamlHeader)
+            {
+                JsonUtility.Merge(result, _globalMetadata);
+            }
 
             var fileMetadata = new JObject();
-            foreach (var (glob, key, value) in _rules)
+            var rules = hasYamlHeader ? _rules : _monikerRules;
+            if (rules.Count > 0)
             {
-                if (glob(filePath.Path))
+                foreach (var (glob, key, value) in rules)
                 {
-                    fileMetadata.SetProperty(key, value);
+                    if (glob(file.Path))
+                    {
+                        fileMetadata.SetProperty(key, value);
+                    }
                 }
+                JsonUtility.Merge(result, fileMetadata);
             }
-            JsonUtility.Merge(result, fileMetadata);
 
-            if (contentType == ContentType.Page || contentType == ContentType.TableOfContents)
+            if (hasYamlHeader)
             {
-                var yamlHeader = LoadYamlHeader(errors, filePath);
+                var yamlHeader = LoadYamlHeader(errors, file);
                 if (yamlHeader.Count > 0)
                 {
                     JsonUtility.Merge(result, yamlHeader);

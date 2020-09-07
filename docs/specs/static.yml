@@ -1,9 +1,12 @@
-# Copy assets in template definition to output directory
+# Copy assets in template definition to output directory for self contained build
 inputs:
-  docfx.yml: |
-    outputType: html
-    outputUrlType: pretty
-    template: _themes
+  docsets.yml:
+  a/docfx.yml: |
+    selfContained: true
+    template: ../_themes
+  b/docfx.yml: |
+    selfContained: false
+    template: ../_themes
   _themes/template.yml: |
     assets:
     - styles/**
@@ -11,26 +14,14 @@ inputs:
   _themes/styles/main.css: css
   _themes/scripts/main.js: js
 outputs:
-  styles/main.css: css
-  scripts/main.js: js
----
-# Copy assets in template definition to output directory only when output is HTML
-inputs:
-  docfx.yml: |
-    template: _themes
-  _themes/template.yml: |
-    assets:
-    - styles/**
-    - scripts/**
-  _themes/styles/main.css: css
-  _themes/scripts/main.js: js
-outputs:
+  a/styles/main.css: css
+  a/scripts/main.js: js
 ---
 # Liquid template file missing should not crash
 inputs: 
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
   docs/a.md: Hello `docfx`!
 outputs: 
   docs/a/index.json:
@@ -41,7 +32,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
   docs/a b.. ..md:
   _themes/Conceptual.html.liquid:
 outputs:
@@ -71,7 +62,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
   _themes/ContentTemplate/Conceptual.mta.json.js: |
     exports.transform = function (model) {
       model.additional = "additional";
@@ -112,11 +103,11 @@ outputs:
       ]
     }
 ---
-# Apply template and produce html page when output type is html and outputUrlType is Ugly
+# Apply template and produce html page when output type is html and urlType is Ugly
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: ugly
+    urlType: ugly
   _themes/Conceptual.html.liquid: |
   a.md:
   index.md:
@@ -135,7 +126,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: Ugly
+    urlType: Ugly
   redirections.yml: |
     renames:
       a.md: /b.html
@@ -157,7 +148,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: ugly
+    urlType: ugly
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
     routes:
@@ -235,7 +226,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
   _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
   a.yml: |
     #YamlMime:TestData
@@ -272,7 +263,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
   a.yml: |
     #YamlMime:TestData
     prop: value
@@ -298,7 +289,7 @@ repos:
     - files:
         docfx.yml: |
           outputType: html
-          outputUrlType: ugly
+          urlType: ugly
         _themes/Conceptual.html.liquid: |
           {{content}}
         docs/a.md: |
@@ -326,7 +317,7 @@ repos:
     - files:
         docfx.yml: |
           outputType: html
-          outputUrlType: ugly
+          urlType: ugly
         _themes/Conceptual.html.liquid: |
           {{content}}
         docs/a.md: |
@@ -345,7 +336,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
     searchEngine: lunr
   _themes/Conceptual.html.liquid: |
     {{page.search_engine}}

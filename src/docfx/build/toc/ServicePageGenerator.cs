@@ -39,11 +39,21 @@ namespace Microsoft.Docs.Build
 
             var filename = Regex.Replace(node.Name, @"\s+", "");
 
-            if (!string.IsNullOrEmpty(node.LandingPageType.ToString()))
+            if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
                 var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
-                var servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
+
+                var pageType = node.LandingPageType.Value;
+                FilePath servicePagePath;
+                if (pageType == LandingPageType.Root)
+                {
+                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"));
+                }
+                else
+                {
+                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
+                }
 
                 var name = node.Name;
                 var fullName = node.Name;
@@ -62,8 +72,20 @@ namespace Microsoft.Docs.Build
                     {
                         if (topLevelTOCRelativeDir != null)
                         {
+                            string? hrefFileFullPath;
+
                             var topLevelTOCYmlDir = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
-                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
+
+                            if (childHref.StartsWith("~/") || childHref.StartsWith("~\\"))
+                            {
+                                childHref = childHref.Substring(2).TrimStart('/', '\\');
+                                hrefFileFullPath = Path.GetFullPath(Path.Combine(_docsetPath, childHref));
+                            }
+                            else
+                            {
+                                hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
+                            }
+
                             var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
                             var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
                             childHref = hrefRelativePath;
@@ -86,7 +108,6 @@ namespace Microsoft.Docs.Build
                     langs = lang?.ToObject<List<string?>>();
                 }
 
-                var pageType = node.LandingPageType.Value;
                 results.Add(servicePagePath);
                 var servicePageToken = new ServicePageModel(name, fullName, href, uid, children, langs, pageType);
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
@@ -94,7 +115,14 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in node.Items)
             {
-                GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");
+                if (node.LandingPageType == LandingPageType.Root)
+                {
+                    GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}");
+                }
+                else
+                {
+                    GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");
+                }
             }
         }
     }

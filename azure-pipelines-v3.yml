@@ -208,11 +208,11 @@ jobs:
       DevSandbox:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
       test:
-        params: https://github.com/MicrosoftDocs/test --timeout 15
+        params: https://github.com/MicrosoftDocs/test --timeout 15 --no-dry-sync
       dryrun.azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 40 --dry-run --regression-markdown-rule --regression-metadata-schema
       learn-m365-pr:
-        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30
+        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30 --no-dry-sync
       PowerShell-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
 

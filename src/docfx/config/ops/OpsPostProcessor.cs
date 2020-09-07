@@ -13,12 +13,18 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
+        private readonly ILearnServiceAccessor _learnServiceAccessor;
 
-        public OpsPostProcessor(Config config, ErrorBuilder errors, BuildOptions buildOptions)
+        public OpsPostProcessor(
+            Config config,
+            ErrorBuilder errors,
+            BuildOptions buildOptions,
+            ILearnServiceAccessor learnServiceAccessor)
         {
             _config = config;
             _errors = errors;
             _buildOptions = buildOptions;
+            _learnServiceAccessor = learnServiceAccessor;
         }
 
         public void Run()
@@ -28,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         private void PostProcessLearnValidation()
         {
-            if (!_config.RunLearnValidation || !_config.Legacy || _config.DryRun)
+            if (!_config.RunLearnValidation || _config.OutputType != OutputType.PageJson || _config.DryRun)
             {
                 return;
             }
@@ -46,10 +52,12 @@ namespace Microsoft.Docs.Build
                         publishFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, ".publish.json")),
                         dependencyFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, "full-dependent-list.txt")),
                         manifestFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, _config.BasePath, ".manifest.json")),
-                        environment: OpsConfigAdapter.DocsEnvironment.ToString(),
+                        environment: OpsAccessor.DocsEnvironment.ToString(),
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
-                        fallbackDocsetPath: _buildOptions.FallbackDocsetPath);
+                        fallbackDocsetPath: _buildOptions.FallbackDocsetPath,
+                        noDrySync: _config.NoDrySync,
+                        learnServiceAccessor: _learnServiceAccessor);
                 }
             }
         }

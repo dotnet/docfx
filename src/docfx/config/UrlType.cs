@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum OutputUrlType
+    internal enum UrlType
     {
         /// <summary>
         /// a.md -> /xxx/a

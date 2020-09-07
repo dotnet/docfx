@@ -15,17 +15,19 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseHtml(
             this MarkdownPipelineBuilder builder,
+            DocumentProvider documentProvider,
+            MetadataProvider metadataProvider,
             Func<ErrorBuilder> getErrors,
             Func<SourceInfo<string>, string> getLink,
             Func<SourceInfo<string>, MarkdownObject, string?, string> getImageLink,
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
-            Func<FilePath, bool> isArchived)
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {
                 var errors = getErrors();
-                var file = (Document)InclusionContext.File;
-                var scanTags = TemplateEngine.IsConceptual(file.Mime) && !isArchived(file.FilePath);
+                var file = (FilePath)InclusionContext.File;
+                var scanTags = TemplateEngine.IsConceptual(documentProvider.GetMime(file)) &&
+                    !metadataProvider.GetMetadata(errors, file).IsArchived;
 
                 document.Visit(node =>
                 {

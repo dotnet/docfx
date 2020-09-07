@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
-                var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
+                var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
                     errors, disposables, docsetPath, outputPath, options, fetchOptions);
                 if (errors.HasError)
                 {
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                 using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap, repositoryProvider);
                 Run(context);
 
-                new OpsPostProcessor(config, errors, buildOptions).Run();
+                new OpsPostProcessor(config, errors, buildOptions, opsAccessor).Run();
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -126,14 +126,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void BuildFile(Context context, FilePath path)
+        private static void BuildFile(Context context, FilePath file)
         {
-            var file = context.DocumentProvider.GetDocument(path);
+            var contentType = context.DocumentProvider.GetContentType(file);
 
-            Telemetry.TrackBuildFileTypeCount(file);
-            context.ContentValidator.ValidateManifest(file.FilePath, file.SiteUrl);
+            Telemetry.TrackBuildFileTypeCount(file, contentType, context.DocumentProvider.GetMime(file));
+            context.ContentValidator.ValidateManifest(file);
 
-            switch (file.ContentType)
+            switch (contentType)
             {
                 case ContentType.TableOfContents:
                     BuildTableOfContents.Build(context, file);

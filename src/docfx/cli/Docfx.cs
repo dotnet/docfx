@@ -111,7 +111,15 @@ namespace Microsoft.Docs.Build
                     // Build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
+
+                    syntax.DefineOption(
+                        "output-type",
+                        ref options.OutputType,
+                        value => Enum.TryParse<OutputType>(value, ignoreCase: true, out var result) ? result : default,
+                        "Output directory in which to place built artifacts.");
+
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
+                    syntax.DefineOption("no-dry-sync", ref options.NoDrySync, "Do not run dry sync for learn validation.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
                     syntax.DefineOption("no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
@@ -136,7 +144,6 @@ namespace Microsoft.Docs.Build
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
             syntax.DefineOption("log", ref options.Log, "Enable logging to the specified file path.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
-            syntax.DefineOption("legacy", ref options.Legacy, "Enable legacy output for backward compatibility.");
             syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
             syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains docfx.yml/docfx.json.");
         }

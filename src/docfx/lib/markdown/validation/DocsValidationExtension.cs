@@ -25,14 +25,14 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
-                var currentFile = (Document)InclusionContext.File;
-                if (currentFile.FilePath.Format != FileFormat.Markdown)
+                var currentFile = (FilePath)InclusionContext.File;
+                if (currentFile.Format != FileFormat.Markdown)
                 {
                     return;
                 }
 
                 var documentNodes = new List<ContentNode>();
-                var inclusionDocumentNodes = new Dictionary<Document, List<ContentNode>>();
+                var inclusionDocumentNodes = new Dictionary<FilePath, List<ContentNode>>();
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockItem codeBlockItem)>();
 
                 var canonicalVersion = getCanonicalVersion();
@@ -58,14 +58,14 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                contentValidator.ValidateHeadings(currentFile.FilePath, documentNodes, false);
+                contentValidator.ValidateHeadings(currentFile, documentNodes, false);
                 foreach (var (inclusion, inclusionNodes) in inclusionDocumentNodes)
                 {
-                    contentValidator.ValidateHeadings(inclusion.FilePath, inclusionNodes, true);
+                    contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
                 }
                 foreach (var (isInclude, codeBlockItem) in codeBlockNodes)
                 {
-                    contentValidator.ValidateCodeBlock(currentFile.FilePath, codeBlockItem, isInclude);
+                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, isInclude);
                 }
             });
         }
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             MarkdownObject node,
             MarkdownEngine markdownEngine,
             List<ContentNode> documentNodes,
-            Dictionary<Document, List<ContentNode>> inclusionDocumentNodes,
+            Dictionary<FilePath, List<ContentNode>> inclusionDocumentNodes,
             bool isCanonicalVersion)
         {
             ContentNode? documentNode = null;

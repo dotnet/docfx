@@ -1,11 +1,10 @@
 ---
 # Draft run learn post validation
 noDryRun: true
-legacy: true
 repos:
   https://github.com/learn/learn-pr:
   - files:
-     .openpublishing.publish.config.json: |
+      .openpublishing.publish.config.json: |
         {
           "docsets_to_publish": [
           { 
@@ -17,7 +16,8 @@ repos:
             }
           }]
         }
-     learn-pr/docfx.json: '{}'
+      learn-pr/docfx.yml: |
+        outputType: pageJson
 outputs:
   learn-pr/hierarchy.json: |
     {
@@ -47,12 +47,11 @@ repos:
 outputs:
 ---
 # Can generate hierarchy
-legacy: true
 noDryRun: true
 repos:
   https://github.com/learn/learn-pr:
   - files:
-     .openpublishing.publish.config.json: |
+      .openpublishing.publish.config.json: |
         {
           "docsets_to_publish": [
           { 
@@ -64,29 +63,30 @@ repos:
             }
           }]
         }
-     docfx.json: '{}'
-     # NOTICE: these input data are created based on real output data, for not to write too much template logic in test case
-     path.yml: |
-       ### YamlMime:LearningPath
-       serviceData: "{\"uid\": \"learning-path\",\"achievement\":{\"uid\":\"achievement1\",\"type\":\"trophy\"},\"modules\":[\"module\"]}"
-     module.yml: |
-       ### YamlMime:Module
-       serviceData: "{\"uid\": \"module\",\"achievement\":{\"uid\":\"achievement2\",\"type\":\"badge\"},\"units\":[\"unit\"]}"
-     unit.yml: |
-       ### YamlMime:ModuleUnit
-       metadata:
-         uid: unit
-       serviceData: "{\"uid\": \"unit\",\"durationInMinutes\":3}"
-     achievement.yml: |
-       ### YamlMime:Achievement
-         uid: achievement
-     _themes/ContentTemplate/schemas/LearningPath.schema.json: '{}'
-     _themes/ContentTemplate/LearningPath.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/Module.schema.json: '{}'
-     _themes/ContentTemplate/Module.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/ModuleUnit.schema.json: '{}'
-     _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/Achievement.schema.json:
+      docfx.yml: |
+        outputType: pageJson
+      # NOTICE: these input data are created based on real output data, for not to write too much template logic in test case
+      path.yml: |
+        ### YamlMime:LearningPath
+        serviceData: "{\"uid\": \"learning-path\",\"achievement\":{\"uid\":\"achievement1\",\"type\":\"trophy\"},\"modules\":[\"module\"]}"
+      module.yml: |
+        ### YamlMime:Module
+        serviceData: "{\"uid\": \"module\",\"achievement\":{\"uid\":\"achievement2\",\"type\":\"badge\"},\"units\":[\"unit\"]}"
+      unit.yml: |
+        ### YamlMime:ModuleUnit
+        metadata:
+          uid: unit
+        serviceData: "{\"uid\": \"unit\",\"durationInMinutes\":3}"
+      achievement.yml: |
+        ### YamlMime:Achievement
+        uid: achievement
+      _themes/ContentTemplate/schemas/LearningPath.schema.json: '{}'
+      _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+      _themes/ContentTemplate/schemas/Module.schema.json: '{}'
+      _themes/ContentTemplate/Module.html.primary.tmpl:
+      _themes/ContentTemplate/schemas/ModuleUnit.schema.json: '{}'
+      _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+      _themes/ContentTemplate/schemas/Achievement.schema.json:
 outputs:
   achievement.json:
   path.mta.json:
@@ -403,11 +403,10 @@ outputs:
     }
 ---
 # Loc-build remote invalid items from .publish.json
-legacy: true
 noDryRun: true
 locale: zh-CN
-environments: 
-- DOCS_LEARN_VALIDATION_ENDPOINT
+environments:
+  - DOCS_OPS_TOKEN
 repos:
   https://github.com/learn/learn-pr:
   - files:
@@ -426,7 +425,12 @@ repos:
             }
           }]
         }
-     docfx.json: '{}'
+     docfx.yml: |
+       outputType: pageJson
+       http:
+         https://op-build-prod.azurewebsites.net:
+           headers:
+             X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
      path.yml: |
        ### YamlMime:LearningPath
        serviceData: "{\"uid\": \"learning-path\",\"achievement\":{\"uid\":\"achievement1\",\"type\":\"trophy\"},\"modules\":[\"module-valid\", \"module-invalid\"]}"

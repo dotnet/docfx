@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public static void Convert(
             Context context,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
-            Dictionary<Document, PublishItem> fileManifests)
+            Dictionary<FilePath, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy File Map"))
             {
@@ -26,11 +26,12 @@ namespace Microsoft.Docs.Build
                     fileManifest =>
                     {
                         var document = fileManifest.Key;
+                        var contentType = context.DocumentProvider.GetContentType(document);
 
-                        switch (document.ContentType)
+                        switch (contentType)
                         {
                             case ContentType.Unknown:
-                            case ContentType.Page when !document.IsHtml:
+                            case ContentType.Page when !context.DocumentProvider.IsHtml(document):
                                 return;
                         }
 
@@ -40,12 +41,12 @@ namespace Microsoft.Docs.Build
                         var fileItem = LegacyFileMapItem.Instance(
                             legacyOutputFilePathRelativeToBasePath,
                             legacySiteUrlRelativeToBasePath,
-                            document.ContentType,
+                            contentType,
                             fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);
 
-                        listBuilder.Add((context.SourceMap.GetOriginalFilePath(document.FilePath) ?? document.FilePath.Path, fileItem));
-                        filemapBuilder.Add((document.FilePath.Path, fileItem));
+                        listBuilder.Add((context.SourceMap.GetOriginalFilePath(document) ?? document.Path, fileItem));
+                        filemapBuilder.Add((document.Path, fileItem));
                     });
 
                 Convert(context, filemapBuilder.AsList());

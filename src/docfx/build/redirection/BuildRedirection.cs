@@ -8,23 +8,21 @@ namespace Microsoft.Docs.Build
 {
     internal static class BuildRedirection
     {
-        internal static void Build(Context context, Document file)
+        internal static void Build(Context context, FilePath file)
         {
-            Debug.Assert(file.ContentType == ContentType.Redirection);
-
             var errors = context.ErrorBuilder;
-            var redirectUrl = context.RedirectionProvider.GetRedirectUrl(errors, file.FilePath);
-            var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file.FilePath));
+            var redirectUrl = context.RedirectionProvider.GetRedirectUrl(errors, file);
+            var (documentId, documentVersionIndependentId) = context.DocumentProvider.GetDocumentId(context.RedirectionProvider.GetOriginalFile(file));
 
             var publishMetadata = new JObject
             {
                 ["redirect_url"] = redirectUrl,
                 ["document_id"] = documentId,
                 ["document_version_independent_id"] = documentVersionIndependentId,
-                ["canonical_url"] = file.CanonicalUrl,
+                ["canonical_url"] = context.DocumentProvider.GetCanonicalUrl(file),
             };
 
-            context.PublishModelBuilder.SetPublishItem(file.FilePath, publishMetadata, outputPath: null);
+            context.PublishModelBuilder.SetPublishItem(file, publishMetadata, outputPath: null);
         }
     }
 }
