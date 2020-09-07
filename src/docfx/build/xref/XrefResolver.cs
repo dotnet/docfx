@@ -143,11 +143,10 @@ namespace Microsoft.Docs.Build
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
             var references = Array.Empty<ExternalXrefSpec>();
-            ValidateXrefProperties();
 
             if (!isLocalizedBuild)
             {
-                references = _internalXrefMap.Value.Values
+                references = EnsureInternalXrefMap().Values
                     .Select(xrefs =>
                     {
                         var xref = xrefs.First();
@@ -185,7 +184,7 @@ namespace Microsoft.Docs.Build
             return model;
         }
 
-        private void ValidateXrefProperties()
+        private void ValidateInternalXrefProperties()
         {
             foreach (var xrefs in _internalXrefMap.Value.Values)
             {
@@ -250,10 +249,20 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
+        private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
+        {
+            if (!_internalXrefMap.IsValueCreated)
+            {
+                _ = _internalXrefMap.Value;
+                ValidateInternalXrefProperties();
+            }
+            return _internalXrefMap.Value;
+        }
+
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
             string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
+            if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
             {
                 var spec = default(InternalXrefSpec);
                 if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)
