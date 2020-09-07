@@ -257,6 +257,33 @@ outputs:
   a.json: |
     { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
 ---
+# uid in loc has higher priority than in fallback(path can be different)
+# and report no error
+locale: zh-cn
+repos:
+  https://docs.com/xref-fallback#master:
+    - files:
+        docfx.yml:
+        dir/b.md: |
+          ---
+          title: uid in fallback
+          uid: b
+          ---
+  https://docs.com/xref-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        b.md: |
+          ---
+          title: uid in loc
+          uid: b
+          ---
+        a.md: |
+          @b
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid in loc</a></p>\n"}
+  b.json:
+---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
 # Resolve xref with non-existing display property, display name
