@@ -13,6 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
+        private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
@@ -36,6 +37,7 @@ namespace Microsoft.Docs.Build
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
+            _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
@@ -148,6 +150,18 @@ namespace Microsoft.Docs.Build
                     .Select(xrefs =>
                     {
                         var xref = xrefs.First();
+                        // validate xref properties
+                        // uid conflicts with different values of the same xref property
+                        // log an warning and take the first one order by the declaring file
+                        var xrefProperties = xrefs.SelectMany(x => x.XrefProperties.Keys).Distinct();
+                        foreach (var xrefProperty in xrefProperties)
+                        {
+                            var conflictingNames = xrefs.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
+                            if (conflictingNames.Count() > 1)
+                            {
+                                _errorLog.Add(Errors.Xref.XrefPropertyConflict(xref.Uid, xrefProperty, conflictingNames));
+                            }
+                        }
 
                         // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
                         // output xref map with URL appending "?branch=master" for master branch
