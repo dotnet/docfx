@@ -143,6 +143,7 @@ namespace Microsoft.Docs.Build
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
             var references = Array.Empty<ExternalXrefSpec>();
+            ValidateXrefProperties();
 
             if (!isLocalizedBuild)
             {
@@ -150,19 +151,6 @@ namespace Microsoft.Docs.Build
                     .Select(xrefs =>
                     {
                         var xref = xrefs.First();
-
-                        // validate xref properties
-                        // uid conflicts with different values of the same xref property
-                        // log an warning and take the first one order by the declaring file
-                        var xrefProperties = xrefs.SelectMany(x => x.XrefProperties.Keys).Distinct();
-                        foreach (var xrefProperty in xrefProperties)
-                        {
-                            var conflictingNames = xrefs.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
-                            if (conflictingNames.Count() > 1)
-                            {
-                                _errorLog.Add(Errors.Xref.XrefPropertyConflict(xref.Uid, xrefProperty, conflictingNames));
-                            }
-                        }
 
                         // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
                         // output xref map with URL appending "?branch=master" for master branch
@@ -195,6 +183,27 @@ namespace Microsoft.Docs.Build
             }
 
             return model;
+        }
+
+        private void ValidateXrefProperties()
+        {
+            foreach (var xrefs in _internalXrefMap.Value.Values)
+            {
+                var uid = xrefs.First().Uid;
+
+                // validate xref properties
+                // uid conflicts with different values of the same xref property
+                // log an warning and take the first one order by the declaring file
+                var xrefProperties = xrefs.SelectMany(x => x.XrefProperties.Keys).Distinct();
+                foreach (var xrefProperty in xrefProperties)
+                {
+                    var conflictingNames = xrefs.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
+                    if (conflictingNames.Count() > 1)
+                    {
+                        _errorLog.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
+                    }
+                }
+            }
         }
 
         private static string RemoveSharingHost(string url, string hostName)
