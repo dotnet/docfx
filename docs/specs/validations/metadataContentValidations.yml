@@ -3050,7 +3050,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'csharp beta-1.0' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'c#' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
 ---
-# Content validation - toc entry duplicated - log limit
+# Content validation - toc entry duplicated - log unlimit
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -3113,4 +3113,4 @@ outputs:
   f.json:
   toc.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md, b.md, c.md, d.md, e.md,.... Each article can only be referenced once in a TOC.","file":"TOC.yml","line":0,"end_line":0,"column":0,"end_column":0,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md, b.md, c.md, d.md, e.md, f.md. Each article can only be referenced once in a TOC.","file":"TOC.yml","line":0,"end_line":0,"column":0,"end_column":0,"log_item_type":"user"}
