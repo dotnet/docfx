@@ -27,11 +27,13 @@ namespace Microsoft.Docs.Build
             Template.RegisterTag<LocalizeTag>("loc");
         }
 
-        public LiquidTemplate(string templateDir)
+        public LiquidTemplate(string templateDir, JObject? global = null)
         {
             _templateDir = templateDir;
+            _localizedStrings = global is null
+                ? new Dictionary<string, string>()
+                : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
             _fileSystem = new IncludeFileSystem(templateDir);
-            _localizedStrings = LoadLocalizedStrings(templateDir);
         }
 
         public string Render(string templateName, SourceInfo<string?> mime, JObject model)
@@ -82,19 +84,6 @@ namespace Microsoft.Docs.Build
         public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
         {
             return Path.Combine((string)context["theme_rel"], resourcePath);
-        }
-
-        private static IReadOnlyDictionary<string, string> LoadLocalizedStrings(string templateDir)
-        {
-            var file = Path.Combine(templateDir, "yml/Conceptual.html.yml");
-            if (!File.Exists(file))
-            {
-                return new Dictionary<string, string>();
-            }
-
-            var data = YamlUtility.DeserializeData<JArray>(File.ReadAllText(file), new FilePath(file));
-
-            return data.ToDictionary(item => item.Value<string>("uid"), item => item.Value<string>("name"));
         }
 
         private static Template LoadTemplate(string fullPath)

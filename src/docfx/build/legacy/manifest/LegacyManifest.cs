@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
                 Original = fileManifest.Value.SourcePath,
                 SourceRelativePath = context.SourceMap.GetOriginalFilePath(document) ?? document.Path,
                 OriginalType = GetOriginalType(contentType, context.DocumentProvider.GetMime(document)),
-                Type = GetType(context, contentType, isHtml),
+                Type = GetType(contentType, isHtml),
                 Output = output,
                 SkipNormalization = !(contentType == ContentType.Resource),
                 SkipSchemaCheck = !(contentType == ContentType.Resource),
@@ -163,9 +163,9 @@ namespace Microsoft.Docs.Build
             _ => string.Empty,
         };
 
-        private static string GetType(Context context, ContentType type, bool isHtml)
+        private static string GetType(ContentType type, bool isHtml)
         {
-            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !isHtml)
+            if (type == ContentType.Page && !isHtml)
             {
                 return "Toc";
             }

@@ -178,7 +178,6 @@ namespace Microsoft.Docs.Build
                     "--output", randomOutputPath,
                     "--log", Path.Combine(randomOutputPath, ".errors.log"),
                     dryRun ? "--dry-run" : null,
-                    spec.Legacy ? "--legacy" : null,
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
                 };

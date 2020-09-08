@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -13,12 +14,14 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
+        private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
+        private int internalXrefPropertiesValidated;
 
         public XrefResolver(
             Config config,
@@ -36,6 +39,7 @@ namespace Microsoft.Docs.Build
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
+            _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
@@ -144,7 +148,7 @@ namespace Microsoft.Docs.Build
 
             if (!isLocalizedBuild)
             {
-                references = _internalXrefMap.Value.Values
+                references = EnsureInternalXrefMap().Values
                     .Select(xrefs =>
                     {
                         var xref = xrefs.First();
@@ -180,6 +184,27 @@ namespace Microsoft.Docs.Build
             }
 
             return model;
+        }
+
+        private void ValidateInternalXrefProperties()
+        {
+            foreach (var xrefs in _internalXrefMap.Value.Values)
+            {
+                var uid = xrefs.First().Uid;
+
+                // validate xref properties
+                // uid conflicts with different values of the same xref property
+                // log an warning and take the first one order by the declaring file
+                var xrefProperties = xrefs.SelectMany(x => x.XrefProperties.Keys).Distinct();
+                foreach (var xrefProperty in xrefProperties)
+                {
+                    var conflictingNames = xrefs.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
+                    if (conflictingNames.Count() > 1)
+                    {
+                        _errorLog.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
+                    }
+                }
+            }
         }
 
         private static string RemoveSharingHost(string url, string hostName)
@@ -226,10 +251,25 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
+        private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
+        {
+            if (!_internalXrefMap.IsValueCreated)
+            {
+                _ = _internalXrefMap.Value;
+            }
+
+            if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
+            {
+                ValidateInternalXrefProperties();
+            }
+
+            return _internalXrefMap.Value;
+        }
+
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
             string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
+            if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
             {
                 var spec = default(InternalXrefSpec);
                 if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)

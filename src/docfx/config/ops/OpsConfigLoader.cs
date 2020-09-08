@@ -47,6 +47,7 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
 
+            result["urlType"] = "docs";
             result["dependencies"] = new JObject(
                 from dep in dependencies
                 where !dep.name.Equals("_themes", StringComparison.OrdinalIgnoreCase) &&
