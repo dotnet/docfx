@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -20,6 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
+        private int internalXrefPropertiesValidated;
 
         public XrefResolver(
             Config config,
@@ -254,8 +256,13 @@ namespace Microsoft.Docs.Build
             if (!_internalXrefMap.IsValueCreated)
             {
                 _ = _internalXrefMap.Value;
+            }
+
+            if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
+            {
                 ValidateInternalXrefProperties();
             }
+
             return _internalXrefMap.Value;
         }
 
