@@ -1511,6 +1511,14 @@ inputs:
     uid: a
     name: name 1
     description: test 1
+  docs/v1/b.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-1.0
+    uid: b
+    name: name b
+    description: test b
   docs/v2/a.yml: |
     ### YamlMime:TestData
     metadata:
@@ -1518,7 +1526,7 @@ inputs:
       - netcore-2.0
     uid: a
     name: name 2
-    description: test 2
+    description: test 2 <xref:b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "xrefProperties": ["name", "description"],
@@ -1528,15 +1536,17 @@ inputs:
             "monikers": { "type": "array" }
           }
         },
-        "uid": { "contentType": "uid" } 
+        "uid": { "contentType": "uid" },
+        "description": { "contentType": "Markdown" }
       }
     }
 outputs:
   136a42ac/docs/a.json:
+  136a42ac/docs/b.json:
   4667fedf/docs/a.json:
   .errors.log: |
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
 ---
 # referencing multiple version, using uid with intersection for toc & SDP
 inputs:
