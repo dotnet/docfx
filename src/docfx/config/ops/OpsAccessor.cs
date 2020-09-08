@@ -202,10 +202,10 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
-                DocsEnvironment.PPE => "https://op-build-sandbox2.azurewebsites.net",
-                DocsEnvironment.Internal => "https://op-build-internal.azurewebsites.net",
-                DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
+                DocsEnvironment.Prod => "https://docspublic.azurefd.net/api/build",
+                DocsEnvironment.PPE => "https://docspubdev.azurefd.net/api/build",
+                DocsEnvironment.Internal => "https://docspubdev.azurefd.net/api/build",
+                DocsEnvironment.Perf => "https://docspubdev.azurefd.net/api/build",
                 _ => throw new NotSupportedException(),
             };
         }
