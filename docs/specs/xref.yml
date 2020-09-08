@@ -257,6 +257,33 @@ outputs:
   a.json: |
     { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
 ---
+# uid in loc has higher priority than in fallback(path can be different)
+# and report no error
+locale: zh-cn
+repos:
+  https://docs.com/xref-fallback#master:
+    - files:
+        docfx.yml:
+        dir/b.md: |
+          ---
+          title: uid in fallback
+          uid: b
+          ---
+  https://docs.com/xref-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        b.md: |
+          ---
+          title: uid in loc
+          uid: b
+          ---
+        a.md: |
+          @b
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid in loc</a></p>\n"}
+  b.json:
+---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
 # Resolve xref with non-existing display property, display name
@@ -1484,6 +1511,14 @@ inputs:
     uid: a
     name: name 1
     description: test 1
+  docs/v1/b.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-1.0
+    uid: b
+    name: name b
+    description: test b
   docs/v2/a.yml: |
     ### YamlMime:TestData
     metadata:
@@ -1491,7 +1526,7 @@ inputs:
       - netcore-2.0
     uid: a
     name: name 2
-    description: test 2
+    description: test 2 <xref:b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "xrefProperties": ["name", "description"],
@@ -1501,15 +1536,17 @@ inputs:
             "monikers": { "type": "array" }
           }
         },
-        "uid": { "contentType": "uid" } 
+        "uid": { "contentType": "uid" },
+        "description": { "contentType": "Markdown" }
       }
     }
 outputs:
   136a42ac/docs/a.json:
+  136a42ac/docs/b.json:
   4667fedf/docs/a.json:
   .errors.log: |
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
 ---
 # referencing multiple version, using uid with intersection for toc & SDP
 inputs:

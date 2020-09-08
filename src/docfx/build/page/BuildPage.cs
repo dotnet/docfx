@@ -33,17 +33,13 @@ namespace Microsoft.Docs.Build
 
             if (!context.ErrorBuilder.FileHasError(file) && !context.Config.DryRun)
             {
-                if (context.Config.OutputType == OutputType.Json)
-                {
-                    context.Output.WriteJson(outputPath, output);
-                }
-                else if (output is string str)
+                if (output is string str)
                 {
                     context.Output.WriteText(outputPath, str);
                 }
                 else
                 {
-                    context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
+                    context.Output.WriteJson(outputPath, output);
                 }
 
                 if (context.Config.OutputType == OutputType.PageJson && isHtml)
@@ -69,7 +65,7 @@ namespace Microsoft.Docs.Build
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The current bookmark validation for SDP validates against HTML produced from mustache,
             // so we need to run the full template for SDP even in --dry-run mode.
-            if (context.Config.DryRun && TemplateEngine.IsConceptual(mime) && context.Config.OutputType != OutputType.Html)
+            if (context.Config.DryRun && TemplateEngine.IsConceptual(mime))
             {
                 return (new JObject(), new JObject());
             }
@@ -266,7 +262,7 @@ namespace Microsoft.Docs.Build
             var schema = context.TemplateEngine.GetSchema(mime);
             var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
 
-            if (context.Config.OutputType == OutputType.PageJson && TemplateEngine.IsLandingData(mime))
+            if (TemplateEngine.IsLandingData(mime))
             {
                 var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
                 var razorHtml = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();

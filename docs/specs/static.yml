@@ -18,13 +18,14 @@ outputs:
   a/scripts/main.js: js
 ---
 # Liquid template file missing should not crash
+noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
     urlType: pretty
   docs/a.md: Hello `docfx`!
 outputs: 
-  docs/a/index.json:
+  docs/a/index.html:
   .errors.log: |
     {"message_severity":"warning","code":"liquid-not-found","file":"docs/a.md","line":1,"column":1}
 ---
