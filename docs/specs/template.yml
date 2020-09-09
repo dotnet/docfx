@@ -33,14 +33,14 @@ inputs:
         content: JSON.stringify({result: model.prop + " has run js data transform"})
       }
     }
-  _themes/ContentTemplate/schemas/TestObject.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestObject.schema.json: "{\"renderType\": \"component\"}"
   _themes/ContentTemplate/TestArray.json.js: |
     exports.transform = function (model) {
       return {
         content: JSON.stringify(model.props)
       }
     }
-  _themes/ContentTemplate/schemas/TestArray.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestArray.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {"result": "value has run js data transform"}

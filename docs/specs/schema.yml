@@ -413,7 +413,6 @@ inputs:
     #YamlMime: TestData
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "renderType": "component",
       "properties": {
         "metadata": {
           "properties": {
