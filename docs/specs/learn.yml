@@ -86,7 +86,7 @@ repos:
       _themes/ContentTemplate/Module.html.primary.tmpl:
       _themes/ContentTemplate/schemas/ModuleUnit.schema.json: '{}'
       _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
-      _themes/ContentTemplate/schemas/Achievement.schema.json: '{}'
+      _themes/ContentTemplate/schemas/Achievement.schema.json:
 outputs:
   achievement.json:
   path.mta.json:

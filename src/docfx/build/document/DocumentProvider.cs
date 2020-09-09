@@ -282,7 +282,9 @@ namespace Microsoft.Docs.Build
         {
             var url = path.Replace('\\', '/');
 
-            if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && renderType == RenderType.Content))
+            if (contentType == ContentType.Redirection
+                || contentType == ContentType.TableOfContents
+                || (contentType == ContentType.Page && renderType == RenderType.Content))
             {
                 if (urlType != UrlType.Ugly)
                 {

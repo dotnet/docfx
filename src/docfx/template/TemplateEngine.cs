@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             return contentType switch
             {
                 ContentType.Redirection => RenderType.Content,
-                ContentType.Page => (IsConceptual(mime) || IsLandingData(mime) || IsContentScheme(mime)) ? RenderType.Content : RenderType.Component,
+                ContentType.Page => GetPageRenderType(mime),
                 ContentType.TableOfContents => GetTocRenderType(),
                 _ => RenderType.Component,
             };
@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
             _js.Dispose();
         }
 
-        private bool IsContentScheme(SourceInfo<string?> mime)
+        private bool IsContentSchema(SourceInfo<string?> mime)
         {
             if (mime == null)
             {
@@ -171,12 +171,17 @@ namespace Microsoft.Docs.Build
             return schema.RenderType == RenderType.Content;
         }
 
+        private RenderType GetPageRenderType(SourceInfo<string?> mime)
+        {
+            return (IsConceptual(mime) || IsLandingData(mime) || IsContentSchema(mime)) ? RenderType.Content : RenderType.Component;
+        }
+
         private RenderType GetTocRenderType()
         {
             bool isContentRenderType;
             try
             {
-                isContentRenderType = IsContentScheme(new SourceInfo<string?>("toc")) ;
+                isContentRenderType = IsContentSchema(new SourceInfo<string?>("toc"));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

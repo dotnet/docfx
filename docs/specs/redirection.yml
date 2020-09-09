@@ -384,9 +384,9 @@ inputs:
     ### YamlMime:Hub
   articles/active-directory-b2c/test.yml : |
     ### YamlMime:landing
-  _themes/ContentTemplate/schemas/Hub.schema.json: "{\"renderType\": \"content\"}"
+  _themes/ContentTemplate/schemas/Hub.schema.json:
   _themes/ContentTemplate/Hub.html.primary.tmpl:
-  _themes/ContentTemplate/schemas/Landing.schema.json: "{\"renderType\": \"content\"}"
+  _themes/ContentTemplate/schemas/Landing.schema.json:
   _themes/ContentTemplate/Landing.html.primary.tmpl:
 outputs:
   azure/active-directory-b2c/index.json: |
