@@ -461,11 +461,11 @@ repos:
      achievement.yml: |
        ### YamlMime:Achievement
          uid: achievement
-     _themes/ContentTemplate/schemas/LearningPath.schema.json: '{}'
+     _themes/ContentTemplate/schemas/LearningPath.schema.json: "{\"renderType\": \"content\"}"
      _themes/ContentTemplate/LearningPath.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/Module.schema.json: '{}'
+     _themes/ContentTemplate/schemas/Module.schema.json: "{\"renderType\": \"content\"}"
      _themes/ContentTemplate/Module.html.primary.tmpl:
-     _themes/ContentTemplate/schemas/ModuleUnit.schema.json: '{}'
+     _themes/ContentTemplate/schemas/ModuleUnit.schema.json: "{\"renderType\": \"content\"}"
      _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
      _themes/ContentTemplate/schemas/Achievement.schema.json:
 outputs:
