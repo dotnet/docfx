@@ -59,7 +59,7 @@ inputs:
         content: JSON.stringify({result: model.prop + " has run js data transform"})
       }
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {"result": "value has run js data transform"}
@@ -77,7 +77,7 @@ inputs:
         content: "raw string"
       }
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {
@@ -91,7 +91,7 @@ inputs:
   a.yml: |
     #YamlMime:TestData
     prop: value
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {"prop": "value"}
@@ -140,6 +140,7 @@ inputs:
       <style>h1 {color:red;}</style>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "markdown": {"contentType": "markdown"}
       }

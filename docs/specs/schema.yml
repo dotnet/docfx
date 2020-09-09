@@ -300,7 +300,7 @@ inputs:
     a: b:
   docs/b.json: |
     {
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"yaml-syntax-error","file":"docs/a.yml","line":2,"column":5}
@@ -328,7 +328,7 @@ inputs:
     prop: value
     metadata:
       userMta: user
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {
@@ -413,6 +413,7 @@ inputs:
     #YamlMime: TestData
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "metadata": {
           "properties": {
