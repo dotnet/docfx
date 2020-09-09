@@ -180,7 +180,8 @@ namespace Microsoft.Docs.Build
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 // TODO: Remove after schema of toc is support in template
-                return _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                return _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                    || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
             }
         }
 
