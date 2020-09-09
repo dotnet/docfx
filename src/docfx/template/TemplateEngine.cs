@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
             return contentType switch
             {
                 ContentType.Redirection => RenderType.Content,
-                ContentType.Page => GetPageRenderType(mime),
+                ContentType.Page => GetRenderType(mime),
                 ContentType.TableOfContents => GetTocRenderType(),
                 _ => RenderType.Component,
             };
@@ -161,35 +161,29 @@ namespace Microsoft.Docs.Build
             _js.Dispose();
         }
 
-        private bool IsContentSchema(SourceInfo<string?> mime)
+        private RenderType GetRenderType(SourceInfo<string?> mime)
         {
-            if (mime == null)
+            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
             {
-                return false;
+                return RenderType.Content;
             }
             var schema = GetSchema(mime);
-            return schema.RenderType == RenderType.Content;
-        }
-
-        private RenderType GetPageRenderType(SourceInfo<string?> mime)
-        {
-            return (IsConceptual(mime) || IsLandingData(mime) || IsContentSchema(mime)) ? RenderType.Content : RenderType.Component;
+            return schema.RenderType;
         }
 
         private RenderType GetTocRenderType()
         {
-            bool isContentRenderType;
             try
             {
-                isContentRenderType = IsContentSchema(new SourceInfo<string?>("toc"));
+                return GetRenderType(new SourceInfo<string?>("toc"));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 // TODO: Remove after schema of toc is support in template
-                isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                var isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
                     || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                return isContentRenderType ? RenderType.Content : RenderType.Component;
             }
-            return isContentRenderType ? RenderType.Content : RenderType.Component;
         }
 
         private JObject LoadGlobalTokens()
