@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
-            var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
+            var isHtml = _templateEngine.IsHtml(contentType, mime);
             var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, isHtml);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, isHtml);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);

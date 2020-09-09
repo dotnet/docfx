@@ -41,12 +41,9 @@ namespace Microsoft.Docs.Build
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {
-                    if (context.DocumentProvider.IsHtml(file))
-                    {
-                        var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
-                        var html = context.TemplateEngine.RunMustache($"toc.html", viewModel, file);
-                        context.Output.WriteText(outputPath, html);
-                    }
+                    var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                    var html = context.TemplateEngine.RunMustache($"toc.html", viewModel, file);
+                    context.Output.WriteText(outputPath, html);
 
                     // Just for current PDF build. toc.json is used for generate PDF outline
                     var output = context.TemplateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
