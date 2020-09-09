@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             ParallelUtility.ForEach(
                 errors,
                 GetPackages(config).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags));
+                item => packageResolver.ResolvePackage(item.package, item.flags));
 
             LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
         }

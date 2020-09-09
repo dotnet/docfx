@@ -11,8 +11,8 @@ namespace Microsoft.Docs.Build
     public class JavascriptEngineTest
     {
         private readonly JavaScriptEngine[] _engines = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? new JavaScriptEngine[] { new JintJsEngine("data/javascript"), new ChakraCoreJsEngine("data/javascript") }
-            : new JavaScriptEngine[] { new JintJsEngine("data/javascript") };
+            ? new JavaScriptEngine[] { new JintJsEngine(new LocalPackage("data/javascript")), new ChakraCoreJsEngine(new LocalPackage("data/javascript")) }
+            : new JavaScriptEngine[] { new JintJsEngine(new LocalPackage("data/javascript")) };
 
         [Theory]
         [InlineData("{'scalar':'hello','tags':[1,2.123],'page':{'value':3}}", "{'scalar':'hello','tags':[1,2.123],'page':{'value':3}}")]

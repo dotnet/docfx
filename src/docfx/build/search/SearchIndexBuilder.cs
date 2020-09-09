@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
 
             var documents = JToken.FromObject(_searchIndex.Values);
-            var js = JavaScriptEngine.Create();
+            var js = JavaScriptEngine.Create(new LocalPackage());
             var scriptPath = Path.Combine(AppContext.BaseDirectory, "data/scripts/lunr.interop.js");
 
             return js.Run(scriptPath, "transform", documents).ToString();
