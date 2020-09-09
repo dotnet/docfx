@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
             {
                 ContentType.Redirection => true,
                 ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || IsContentScheme(mime),
-                ContentType.TableOfContents => true,
+                ContentType.TableOfContents => IsHtmlToc(),
                 _ => false,
             };
         }
@@ -74,16 +74,6 @@ namespace Microsoft.Docs.Build
             return "Hub".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
                    "Landing".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
                    "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public bool IsContentScheme(SourceInfo<string?> mime)
-        {
-            if (mime == null)
-            {
-                return false;
-            }
-            var schema = GetSchema(mime);
-            return schema.RenderType == RenderType.Content;
         }
 
         public JsonSchema GetSchema(SourceInfo<string?> mime)
@@ -169,6 +159,29 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _js.Dispose();
+        }
+
+        private bool IsContentScheme(SourceInfo<string?> mime)
+        {
+            if (mime == null)
+            {
+                return false;
+            }
+            var schema = GetSchema(mime);
+            return schema.RenderType == RenderType.Content;
+        }
+
+        private bool IsHtmlToc()
+        {
+            try
+            {
+                return IsContentScheme(new SourceInfo<string?>("toc"));
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                // TODO: Remove after schema of toc is support in template
+                return _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         private JObject LoadGlobalTokens()
