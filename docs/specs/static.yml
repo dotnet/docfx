@@ -40,6 +40,7 @@ outputs:
   docs/a b/index.html:
 ---
 # Treat TOC as JSON when toc.html.tmpl is missing
+noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html

@@ -142,6 +142,7 @@ inputs:
     Link to <xref:a%26b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      
       "properties": {
         "uid": { "contentType": "uid" },
         "xref": { "contentType": "xref" },

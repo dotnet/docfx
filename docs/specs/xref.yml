@@ -1600,6 +1600,7 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": { 
         "xref": { "contentType": "xref" }
       }
@@ -1650,6 +1651,7 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": { 
         "xref": { "contentType": "xref" }
       }
@@ -1700,6 +1702,7 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
+      "renderType": "content",
       "properties": { 
         "xref": { "contentType": "xref" }
       }

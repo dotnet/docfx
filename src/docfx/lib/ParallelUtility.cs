@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class ParallelUtility
     {
-        private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
+        private static readonly int s_maxParallelism = 1;
 
         private static readonly ParallelOptions s_parallelOptions = new ParallelOptions
         {

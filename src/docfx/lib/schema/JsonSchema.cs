@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Type of the render type.
         /// </summary>
-        public RenderType RenderType { get; set; } = RenderType.Content;
+        public RenderType RenderType { get; set; } = RenderType.Component;
 
         /// <summary>
         /// The JSON schema that applies to each property if the current value is object.
