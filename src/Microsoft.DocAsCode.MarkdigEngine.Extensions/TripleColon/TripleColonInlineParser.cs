@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var inline = new TripleColonInline()
             {
-                Closed = false,
+                IsClosed = true,
                 Line = line,
                 Column = column,
             };
