@@ -398,7 +398,7 @@ outputs:
 inputs:
   docfx.yml: |
     files: '**'
-    copyResources: false
+    selfContained: false
     routes:
       docs/: .
   a.png:
@@ -423,6 +423,56 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"directory-not-found","message":"Invalid directory: 'https://docs.com/crr-url-using-path/2'."}
+---
+# Dependency repositories should be correctly restored no matter the default branch is main or master - reference with main
+repos:
+  https://docs.com/content/a:
+  - files:
+      docfx.yml: |
+        dependencies:
+          crr-migrated: 
+            url: https://docs.com/crr-content/migrated
+            branch: main
+          crr-non-migrated:
+            url: https://docs.com/crr-content/non-migrated
+            branch: main
+      docs/a.md: |
+        [!include[dep](~/crr-migrated/dep.md)]
+        [!include[dep](~/crr-non-migrated/dep.md)]
+  https://docs.com/crr-content/migrated#main:
+  - files:
+      dep.md: DEP
+  https://docs.com/crr-content/non-migrated#master:
+  - files:
+      dep.md: DEP
+outputs:
+  docs/a.json: |
+    {"conceptual":"<p>DEP</p><p>DEP</p>"}
+---
+# Dependency repositories should be correctly restored no matter the default branch is main or master - reference with master
+repos:
+  https://docs.com/content/a:
+  - files:
+      docfx.yml: |
+        dependencies:
+          crr-migrated: 
+            url: https://docs.com/crr-content/migrated
+            branch: master
+          crr-non-migrated:
+            url: https://docs.com/crr-content/non-migrated
+            branch: master
+      docs/a.md: |
+        [!include[dep](~/crr-migrated/dep.md)]
+        [!include[dep](~/crr-non-migrated/dep.md)]
+  https://docs.com/crr-content/migrated#main:
+  - files:
+      dep.md: DEP
+  https://docs.com/crr-content/non-migrated#master:
+  - files:
+      dep.md: DEP
+outputs:
+  docs/a.json: |
+    {"conceptual":"<p>DEP</p><p>DEP</p>"}
 ---
 # Respect docsets.json config to search for multiple docsets
 inputs:

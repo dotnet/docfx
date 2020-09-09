@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             var percent = ((int)(100 * Math.Min(1.0, done / Math.Max(1.0, total)))).ToString();
             var duration = TimeSpan.FromSeconds(elapsedMs / 1000);
 
-            Console.Write($"{scope.Name}: {percent.PadLeft(3)}% ({done}/{total}), {duration} {eol}");
+            Console.Write($"{scope.Name}: {percent,3}% ({done}/{total}), {duration} {eol}");
         }
 
         public static string FormatTimeSpan(TimeSpan value)

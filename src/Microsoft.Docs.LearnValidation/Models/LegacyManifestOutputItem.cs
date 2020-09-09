@@ -14,7 +14,7 @@ namespace Microsoft.Docs.LearnValidation
 
         /// <summary>
         /// Gets or sets output absolute path, used when output not within build output directory
-        /// e.g. resource's output when <see cref="OutputConfig.CopyResources"/> = false
+        /// e.g. resource's output when <see cref="OutputConfig.SelfContained"/> = false
         /// </summary>
         [JsonProperty("link_to_path")]
         public string LinkToPath { get; set; }

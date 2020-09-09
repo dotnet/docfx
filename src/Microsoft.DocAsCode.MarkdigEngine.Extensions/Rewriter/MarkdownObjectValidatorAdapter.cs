@@ -12,8 +12,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
     {
-        private Action<IMarkdownObject> _preProcess;
-        private Action<IMarkdownObject> _postProcess;
+        private readonly Action<IMarkdownObject> _preProcess;
+        private readonly Action<IMarkdownObject> _postProcess;
 
         public ImmutableArray<IMarkdownObjectValidator> Validators { get; }
 

@@ -354,9 +354,9 @@ outputs:
     {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'.","file":"a.yml","line":1,"column":1}
 ---
 # Validate bookmark against content HTML after applying template for SDP 
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestPage
     heading: heading-1
@@ -434,7 +434,7 @@ outputs:
 inputs:
   docfx.yml: |
     outputType: html
-    outputUrlType: pretty
+    urlType: pretty
   a.yml: |
     #YamlMime:TestPage
     key: value

@@ -107,8 +107,13 @@ namespace Microsoft.Docs.Build
                 if (opts.OutputHtml)
                 {
                     docfxConfig["outputType"] = "html";
-                    docfxConfig["outputUrlType"] = "ugly";
+                    docfxConfig["urlType"] = "ugly";
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
+                }
+                else
+                {
+                    docfxConfig["outputType"] = "pageJson";
+                    docfxConfig["selfContained"] = false;
                 }
 
                 if (opts.RegressionMarkdownRule)
@@ -199,20 +204,20 @@ namespace Microsoft.Docs.Build
 
         private static TimeSpan Build(string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
-            var legacyOption = !opts.OutputHtml ? "--legacy" : "";
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {logOption} {legacyOption} --verbose --stdin",
+                arguments: $"restore {logOption} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {legacyOption} {dryRunOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }

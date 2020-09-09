@@ -14,10 +14,11 @@ namespace Microsoft.Docs.Build
 {
     internal static class MarkdownTelemetryExtension
     {
-        public static MarkdownPipelineBuilder UseTelemetry(this MarkdownPipelineBuilder builder)
+        public static MarkdownPipelineBuilder UseTelemetry(this MarkdownPipelineBuilder builder, DocumentProvider documentProvider)
         {
             return builder.Use(document =>
             {
+                var file = (FilePath)InclusionContext.File;
                 var elementCount = new Dictionary<string, int>();
 
                 document.Visit(node =>
@@ -27,7 +28,7 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                Telemetry.TrackMarkdownElement((Document)InclusionContext.File, elementCount);
+                Telemetry.TrackMarkdownElement(file, documentProvider.GetContentType(file), documentProvider.GetMime(file), elementCount);
             });
         }
 

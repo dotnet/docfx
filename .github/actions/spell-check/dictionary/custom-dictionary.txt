@@ -59,6 +59,7 @@ charset
 checkin
 chromeless
 clickable
+Cmdlet
 codecov
 codepen
 coderange
@@ -261,6 +262,7 @@ microsoft
 microsoftonline
 mingwli
 missingapi
+mslearnhierarchy
 monikertrees
 monodoc
 monodocer
@@ -543,3 +545,5 @@ overridable
 uninstantiated
 namespaces
 lunr
+langs
+ILearn

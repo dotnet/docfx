@@ -14,20 +14,18 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
-        private readonly ContentValidator _contentValidator;
         private readonly PublishUrlMap _publishUrlMapBuilder;
         private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
 
-        private ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
-            new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
+        private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
+                     new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
 
         public PublishModelBuilder(
             Config config,
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
-            ContentValidator contentValidator,
             PublishUrlMap publishUrlMapBuilder,
             DocumentProvider documentProvider,
             SourceMap sourceMap)
@@ -36,7 +34,6 @@ namespace Microsoft.Docs.Build
             _errors = errors;
             _monikerProvider = monikerProvider;
             _locale = buildOptions.Locale;
-            _contentValidator = contentValidator;
             _publishUrlMapBuilder = publishUrlMapBuilder;
             _documentProvider = documentProvider;
             _sourceMap = sourceMap;
@@ -52,7 +49,6 @@ namespace Microsoft.Docs.Build
             var publishItems = new Dictionary<FilePath, PublishItem>();
             foreach (var (url, sourcePath, monikers) in _publishUrlMapBuilder.GetPublishOutput())
             {
-                var document = _documentProvider.GetDocument(sourcePath);
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
                 var publishItem = new PublishItem(
                     url,
@@ -61,20 +57,9 @@ namespace Microsoft.Docs.Build
                     _locale,
                     monikers,
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
-                    document.ContentType,
-                    document.Mime,
                     _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);
                 publishItems.Add(sourcePath, publishItem);
-            }
-
-            foreach (var (filePath, publishItem) in publishItems)
-            {
-                if (!publishItem.HasError)
-                {
-                    Telemetry.TrackBuildFileTypeCount(filePath, publishItem);
-                    _contentValidator.ValidateManifest(filePath, publishItem);
-                }
             }
 
             var items = (

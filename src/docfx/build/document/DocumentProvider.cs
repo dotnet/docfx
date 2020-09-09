@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -10,12 +11,14 @@ namespace Microsoft.Docs.Build
 {
     internal class DocumentProvider
     {
+        private readonly Input _input;
         private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly BuildScope _buildScope;
         private readonly BuildOptions _buildOptions;
         private readonly TemplateEngine _templateEngine;
         private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
 
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
@@ -23,20 +26,39 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
+        // mime -> page type. TODO get from docs-ui schema
+        private static readonly Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
+        {
+            { "NetType", "dotnet" },
+            { "NetNamespace", "dotnet" },
+            { "NetMember", "dotnet" },
+            { "NetEnum", "dotnet" },
+            { "NetDelegate ", "dotnet" },
+            { "RESTOperation", "rest" },
+            { "RESTOperationGroup ", "rest" },
+            { "RESTService  ", "rest" },
+            { "PowershellCmdlet", "powershell" },
+            { "PowershellModule ", "powershell" },
+        };
+
         public DocumentProvider(
+            Input input,
             ErrorBuilder errors,
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
             TemplateEngine templateEngine,
-            MonikerProvider monikerProvider)
+            MonikerProvider monikerProvider,
+            MetadataProvider metadataProvider)
         {
+            _input = input;
             _errors = errors;
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
             _templateEngine = templateEngine;
             _monikerProvider = monikerProvider;
+            _metadataProvider = metadataProvider;
 
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
@@ -44,9 +66,14 @@ namespace Microsoft.Docs.Build
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
-        public Document GetDocument(FilePath path)
+        public SourceInfo<string?> GetMime(FilePath path)
         {
-            return _documents.GetOrAdd(path, GetDocumentCore);
+            return GetDocument(path).Mime;
+        }
+
+        public ContentType GetContentType(FilePath path)
+        {
+            return GetDocument(path).ContentType;
         }
 
         public string GetOutputPath(FilePath path)
@@ -61,7 +88,8 @@ namespace Microsoft.Docs.Build
                     var fileExtension = _config.OutputType switch
                     {
                         OutputType.Html => file.IsHtml ? ".html" : ".json",
-                        OutputType.Json => _config.Legacy && file.IsHtml ? ".raw.page.json" : ".json",
+                        OutputType.Json => ".json",
+                        OutputType.PageJson => file.IsHtml ? ".raw.page.json" : ".json",
                         _ => throw new NotSupportedException(),
                     };
                     outputPath = Path.ChangeExtension(outputPath, fileExtension);
@@ -72,13 +100,14 @@ namespace Microsoft.Docs.Build
                     {
                         OutputType.Html => file.IsHtml ? ".html" : ".json",
                         OutputType.Json => ".json",
+                        OutputType.PageJson => ".json",
                         _ => throw new NotSupportedException(),
                     };
                     outputPath = Path.ChangeExtension(outputPath, tocExtension);
                     break;
             }
 
-            if (_config.OutputUrlType == OutputUrlType.Docs)
+            if (_config.UrlType == UrlType.Docs)
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
                 outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
@@ -92,17 +121,50 @@ namespace Microsoft.Docs.Build
             return GetDocument(path).SiteUrl;
         }
 
+        public string GetSitePath(FilePath path)
+        {
+            return GetDocument(path).SitePath;
+        }
+
+        public string GetCanonicalUrl(FilePath path)
+        {
+            return GetDocument(path).CanonicalUrl;
+        }
+
+        public bool IsHtml(FilePath path)
+        {
+            return GetDocument(path).IsHtml;
+        }
+
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
         public string GetDocsSiteUrl(FilePath path)
         {
             var file = GetDocument(path);
-            if (_config.OutputUrlType == OutputUrlType.Docs)
+            if (_config.UrlType == UrlType.Docs)
             {
                 return file.SiteUrl;
             }
 
-            var sitePath = FilePathToSitePath(path, file.ContentType, OutputUrlType.Docs, file.IsHtml);
-            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, OutputUrlType.Docs, file.IsHtml);
+            var sitePath = FilePathToSitePath(path, file.ContentType, UrlType.Docs, file.IsHtml);
+            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, UrlType.Docs, file.IsHtml);
+        }
+
+        public string? GetPageType(FilePath file)
+        {
+            var document = GetDocument(file);
+            var mime = document.Mime.Value;
+
+            return document.ContentType switch
+            {
+                ContentType.Page when mime is null => null,
+                ContentType.Page when file.Format == FileFormat.Markdown
+                    => (_metadataProvider.GetMetadata(_errors, file).Layout ?? mime).ToLowerInvariant(),
+                ContentType.Page
+                    => s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime.ToLowerInvariant(),
+                ContentType.Redirection => "redirection",
+                ContentType.TableOfContents => "toc",
+                _ => null,
+            };
         }
 
         public (string documentId, string versionIndependentId) GetDocumentId(FilePath path)
@@ -110,9 +172,9 @@ namespace Microsoft.Docs.Build
             var file = GetDocument(path);
 
             var depotName = _depotName;
-            var sourcePath = file.FilePath.Path.Value;
+            var sourcePath = path.Path.Value;
 
-            if (TryGetDocumentIdConfig(file.FilePath.Path, out var config, out var remainingPath))
+            if (TryGetDocumentIdConfig(path.Path, out var config, out var remainingPath))
             {
                 if (!string.IsNullOrEmpty(config.DepotName))
                 {
@@ -122,7 +184,7 @@ namespace Microsoft.Docs.Build
                 if (config.FolderRelativePathInDocset != null)
                 {
                     sourcePath = remainingPath.IsDefault
-                        ? config.FolderRelativePathInDocset.Value.Concat(file.FilePath.Path.GetFileName())
+                        ? config.FolderRelativePathInDocset.Value.Concat(path.Path.GetFileName())
                         : config.FolderRelativePathInDocset.Value.Concat(remainingPath);
                 }
             }
@@ -143,6 +205,11 @@ namespace Microsoft.Docs.Build
                 HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
         }
 
+        private Document GetDocument(FilePath path)
+        {
+            return _documents.GetOrAdd(path, GetDocumentCore);
+        }
+
         private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)
         {
             foreach (var (basePath, config) in _documentIdRules)
@@ -161,17 +228,16 @@ namespace Microsoft.Docs.Build
         private Document GetDocumentCore(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
-            var mime = _buildScope.GetMime(contentType, path);
-            var isHtml = _templateEngine.IsHtml(contentType, mime);
-            var isExperimental = Path.GetFileNameWithoutExtension(path.Path).EndsWith(".experimental", PathUtility.PathComparison);
-            var sitePath = FilePathToSitePath(path, contentType, _config.OutputUrlType, isHtml);
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.OutputUrlType, isHtml);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, isExperimental, contentType, isHtml);
+            var mime = _input.GetMime(contentType, path);
+            var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
+            var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, isHtml);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, isHtml);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);
 
-            return new Document(path, sitePath, siteUrl, canonicalUrl, contentType, mime, isExperimental, isHtml);
+            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
         }
 
-        private string FilePathToSitePath(FilePath filePath, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
+        private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, bool isHtml)
         {
             var sitePath = ApplyRoutes(filePath.Path).Value;
             if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
@@ -182,19 +248,19 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    sitePath = outputUrlType switch
+                    sitePath = urlType switch
                     {
-                        OutputUrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
-                        OutputUrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
+                        UrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
+                        UrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
                             ? Path.Combine(Path.GetDirectoryName(sitePath) ?? "", "index.html")
                             : Path.Combine(Path.GetDirectoryName(sitePath) ?? "", Path.GetFileNameWithoutExtension(sitePath).TrimEnd(' ', '.'), "index.html"),
-                        OutputUrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
+                        UrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
                         _ => throw new NotSupportedException(),
                     };
                 }
             }
 
-            if (outputUrlType != OutputUrlType.Docs)
+            if (urlType != UrlType.Docs)
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, filePath);
                 sitePath = Path.Combine(monikers.MonikerGroup ?? "", sitePath);
@@ -206,19 +272,19 @@ namespace Microsoft.Docs.Build
             return sitePath.Replace('\\', '/');
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, UrlType urlType, bool isHtml)
         {
-            var url = PathToRelativeUrl(path, contentType, outputUrlType, isHtml);
+            var url = PathToRelativeUrl(path, contentType, urlType, isHtml);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, OutputUrlType outputUrlType, bool isHtml)
+        private static string PathToRelativeUrl(string path, ContentType contentType, UrlType urlType, bool isHtml)
         {
             var url = path.Replace('\\', '/');
 
             if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isHtml))
             {
-                if (outputUrlType != OutputUrlType.Ugly)
+                if (urlType != UrlType.Ugly)
                 {
                     if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                     {
@@ -226,7 +292,7 @@ namespace Microsoft.Docs.Build
                         return i >= 0 ? url.Substring(0, i + 1) : "./";
                     }
                 }
-                if (outputUrlType == OutputUrlType.Docs && contentType != ContentType.TableOfContents)
+                if (urlType == UrlType.Docs && contentType != ContentType.TableOfContents)
                 {
                     var i = url.LastIndexOf('.');
                     return i >= 0 ? url.Substring(0, i) : url;
@@ -244,12 +310,12 @@ namespace Microsoft.Docs.Build
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.OutputUrlType, isHtml);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, isHtml);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
 
-            string ReplaceLast(string source, string find, string replace)
+            static string ReplaceLast(string source, string find, string replace)
             {
                 var i = source.LastIndexOf(find);
                 return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;

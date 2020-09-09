@@ -75,7 +75,13 @@ namespace Microsoft.Docs.Build
         public SearchIndexBuilder SearchIndexBuilder { get; }
 
         public Context(
-            ErrorBuilder errorLog, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver, SourceMap sourceMap)
+            ErrorBuilder errorLog,
+            Config config,
+            BuildOptions buildOptions,
+            PackageResolver packageResolver,
+            FileResolver fileResolver,
+            SourceMap sourceMap,
+            RepositoryProvider repositoryProvider)
         {
             DependencyMapBuilder = new DependencyMapBuilder(sourceMap);
 
@@ -85,8 +91,8 @@ namespace Microsoft.Docs.Build
             PackageResolver = packageResolver;
             FileResolver = fileResolver;
             SourceMap = sourceMap;
+            RepositoryProvider = repositoryProvider;
 
-            RepositoryProvider = new RepositoryProvider(errorLog, buildOptions, config);
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
@@ -96,7 +102,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            DocumentProvider = new DocumentProvider(errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider);
+            DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
@@ -108,11 +114,12 @@ namespace Microsoft.Docs.Build
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             ContentValidator = new ContentValidator(
-                config, FileResolver, errorLog, MonikerProvider, MetadataProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
             ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
-            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, MonikerProvider, ContributionProvider);
+            FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, DocumentProvider, MonikerProvider, ContributionProvider);
             XrefResolver = new XrefResolver(
                 config,
                 FileResolver,
@@ -154,9 +161,11 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
-            JsonSchemaTransformer = new JsonSchemaTransformer(MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
+            JsonSchemaTransformer = new JsonSchemaTransformer(DocumentProvider, MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
+                BuildOptions.DocsetPath,
+                Input,
                 LinkResolver,
                 XrefResolver,
                 tocParser,
@@ -164,17 +173,18 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 ContentValidator,
                 config,
-                errorLog,
-                DocumentProvider);
+                errorLog);
             TocMap = new TableOfContentsMap(
                 ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
-            PublishUrlMap = new PublishUrlMap(Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
-            PublishModelBuilder = new PublishModelBuilder(
-                config, errorLog, MonikerProvider, buildOptions, ContentValidator, PublishUrlMap, DocumentProvider, SourceMap);
-            MetadataValidator = new MetadataValidator(
-                Config, MicrosoftGraphAccessor, FileResolver, BuildScope, DocumentProvider, MonikerProvider, PublishUrlMap);
+            PublishUrlMap = new PublishUrlMap(
+                Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
 
-            SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, MetadataProvider);
+            PublishModelBuilder = new PublishModelBuilder(
+                config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, DocumentProvider, SourceMap);
+
+            var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, validatorExtension);
+            SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 
         public void Dispose()

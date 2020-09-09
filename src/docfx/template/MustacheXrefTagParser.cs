@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using HtmlReaderWriter;
 
 namespace Microsoft.Docs.Build
 {

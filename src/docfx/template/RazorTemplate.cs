@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                     .ConfigureServices(ConfigureServices)
                     .Configure(Configure));
 
-            void ConfigureServices(IServiceCollection services)
+            static void ConfigureServices(IServiceCollection services)
             {
                 services.AddMvc().ConfigureApplicationPartManager(parts =>
                         {
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                         });
             }
 
-            void Configure(IApplicationBuilder app)
+            static void Configure(IApplicationBuilder app)
             {
                 app.UseRouting();
                 app.UseEndpoints(endpoints =>

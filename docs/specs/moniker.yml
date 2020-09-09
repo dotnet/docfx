@@ -731,13 +731,13 @@ inputs:
 outputs:
   afb33dd2/docs/a.json:
   docs/c.json: |
-    {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-1.1, netcore-2.0</a></p>"}
+    {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-2.0, netcore-2.1</a></p>"}
   .errors.log: |
     {"message_severity":"error","code":"moniker-overlapping","message":"Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'."}
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'."}
     {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'."}
   .xrefmap.json: | 
-    {"references":[{"uid":"a","name":"netcore-1.1, netcore-2.0"}]}
+    {"references":[{"uid":"a","name":"netcore-2.0, netcore-2.1"}]}
   .publish.json: |
     {
       "files": 
@@ -2037,3 +2037,83 @@ inputs:
 outputs:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '<= netcore-2.0' is 'netcore-1.0', 'netcore-2.0', while file monikers is 'netcore-3.0'.","file":"docs/v1/q.md","line":2,"column":19}
+---
+# Should not take exclue_monikers into consideration while warn on moniker-zone-empty
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ---
+    exclude_monikers: netcore-1.0
+    ---
+    Moniker: netcore-1.0, netcore-1.1, netcore-1.2
+    ::: moniker range="< netcore-1.1"
+    Moniker: netcore-1.0
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+outputs:
+  e300a7df/docs/a.json: |
+    {
+      "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p>",
+      "monikers": ["netcore-1.1", "netcore-1.2"]
+    }
+---
+# Respect all monikers file metadata for redirections and resources
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'v2/**': v2
+    fileMetadata:
+      monikers:
+        'v1/**': v1
+    monikerDefinition: monikerDefinition.json
+  v1/a.png:
+  redirections.yml: |
+    redirections:
+      v2/b.md: /url
+  monikerDefinition.json: |
+    {
+      "monikers": [{ "moniker_name": "v1" }, { "moniker_name": "v2" }]
+    }
+outputs:
+  6654c734/v1/a.png:
+  .publish.json: |
+    {
+      "files": [
+        { "url": "/v2/b", "moniker_group": "1b267619" },
+        { "url": "/v1/a.png", "moniker_group": "6654c734" }
+      ]
+    }
+---
+# Only validate monikers for user input markdown
+inputs:
+  docfx.yml: |
+    monikerDefinition: monikerDefinition.json
+    fileMetadata:
+      exclude_monikers:
+        '**/*.md': [netcore-1.0]
+      monikerRange:
+        'docs/**': 'netcore-1.0'
+  redirections.yml: |
+    redirections:
+      docs/a.md: /b
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+outputs:

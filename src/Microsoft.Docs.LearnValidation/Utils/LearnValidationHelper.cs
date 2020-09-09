@@ -1,33 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Linq;
-using System.Net;
-using RestSharp;
-
 namespace Microsoft.Docs.LearnValidation
 {
     public class LearnValidationHelper
     {
-        private enum CheckItemType
-        {
-            Unit,
-            Module,
-        }
-
         private const string _defaultLocale = "en-us";
 
-        private RestClient _client;
-        private string _branch;
-        private bool _needBranchFallback;
-        private static readonly string[] _nofallbackBranches = new[] { "master", "live" };
+        private readonly ILearnServiceAccessor _learnServiceAccessor;
+        private readonly string _branch;
 
-        public LearnValidationHelper(string endpoint, string branch)
+        public LearnValidationHelper(string branch, ILearnServiceAccessor learnServiceAccessor)
         {
-            _client = string.IsNullOrEmpty(endpoint) ? null : new RestClient(endpoint);
+            _learnServiceAccessor = learnServiceAccessor;
             _branch = branch;
-            _needBranchFallback = !_nofallbackBranches.Contains(_branch);
         }
 
         public bool IsModule(string uid)
@@ -42,38 +28,27 @@ namespace Microsoft.Docs.LearnValidation
 
         private bool CheckItemExist(CheckItemType type, string uid)
         {
-            if (_client == null)
+            if (_learnServiceAccessor == null)
             {
                 return false;
             }
 
-            var requestString = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var request = new RestRequest(requestString);
-
-            AppendHeaderAndParameter(request);
-
-            var response = _client.Execute(request);
-
-            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
-            Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
-
-            if (response.StatusCode != HttpStatusCode.OK && _needBranchFallback)
+            var fallbackBranchs = _branch switch
             {
-                request.AddOrUpdateParameter("branch", "master");
-                response = _client.Execute(request);
+                "live" => new string[] { "live" },
+                "master" => new string[] { "main", "master" },
+                "main" => new string[] { "main", "master" },
+                _ => new string[] { _branch, "main", "master" },
+            };
 
-                Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.ResponseUri);
-                Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.StatusCode);
+            foreach (var branch in fallbackBranchs)
+            {
+                if (_learnServiceAccessor.CheckLearnPathItemExist(branch, _defaultLocale, uid, type).Result)
+                {
+                    return true;
+                }
             }
-
-            return response.StatusCode == HttpStatusCode.OK;
-        }
-
-        private void AppendHeaderAndParameter(RestRequest request)
-        {
-            request.AddParameter("branch", _branch);
-            request.AddParameter("locale", _defaultLocale);
-            request.AddHeader("Referer", " https://tcexplorer.azurewebsites.net");
+            return false;
         }
     }
 }

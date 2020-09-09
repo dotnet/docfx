@@ -146,7 +146,7 @@ jobs:
 
   # Push to azure devops feed
   - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3'))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
     displayName: Publish NuGet Packages
     inputs:
       command: push
@@ -165,7 +165,6 @@ jobs:
       destination: AzureBlob
       storage: opsbuildk8sprod
       containerName: docfx-bin
-
 
 # Run RegressionTest
 - job: RunRegressionTest
@@ -209,11 +208,13 @@ jobs:
       DevSandbox:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
       test:
-        params: https://github.com/MicrosoftDocs/test --timeout 15
+        params: https://github.com/MicrosoftDocs/test --timeout 15 --no-dry-sync
       dryrun.azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 40 --dry-run --regression-markdown-rule --regression-metadata-schema
       learn-m365-pr:
-        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30
+        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30 --no-dry-sync
+      PowerShell-Docs:
+        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
 
   steps:
   # Install .NET Core sdk

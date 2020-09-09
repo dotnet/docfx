@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
-using HtmlAgilityPack;
+using HtmlReaderWriter;
 using Markdig.Syntax;
 using Newtonsoft.Json.Linq;
 
@@ -117,13 +117,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.WrittenSpan.ToString();
-        }
-
-        public static HtmlNode LoadHtml(string html)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            return doc.DocumentNode;
         }
 
         public static void CountWord(ref HtmlToken token, ref long wordCount)

@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 // load configuration from current entry or fallback repository
-                var (config, buildOptions, packageResolver, fileResolver) = ConfigLoader.Load(
+                var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
                     errors, disposables, docsetPath, outputPath, options, fetchOptions);
 
                 if (errors.HasError)

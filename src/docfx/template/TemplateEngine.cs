@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             _templateDefinition = PathUtility.LoadYamlOrJson<TemplateDefinition>(errors, _templateDir, "template") ?? new TemplateDefinition();
 
             _global = LoadGlobalTokens();
-            _liquid = new LiquidTemplate(_templateDir);
+            _liquid = new LiquidTemplate(_templateDir, _global);
             _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_contentTemplateDir, _global));
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
@@ -86,21 +86,21 @@ namespace Microsoft.Docs.Build
             return schema.RenderType == RenderType.Content;
         }
 
-        public JsonSchema GetSchema(SourceInfo<string?> schemaName)
+        public JsonSchema GetSchema(SourceInfo<string?> mime)
         {
-            return GetSchemaValidator(schemaName).Schema;
+            return GetSchemaValidator(mime).Schema;
         }
 
-        public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> schemaName)
+        public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> mime)
         {
-            var name = schemaName.Value ?? throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
+            var name = mime.Value ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
 
-            return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(schemaName).ToException();
+            return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
         }
 
-        public string RunLiquid(Document file, TemplateModel model)
+        public string RunLiquid(SourceInfo<string?> mime, TemplateModel model)
         {
-            var layout = model.RawMetadata?.Value<string>("layout") ?? file.Mime.Value ?? throw new InvalidOperationException();
+            var layout = model.RawMetadata?.Value<string>("layout") ?? mime.Value ?? throw new InvalidOperationException();
             var themeRelativePath = _templateDir;
 
             var liquidModel = new JObject
@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
                 ["theme_rel"] = themeRelativePath,
             };
 
-            return _liquid.Render(layout, file.Mime, liquidModel);
+            return _liquid.Render(layout, mime, liquidModel);
         }
 
         public string RunMustache(string templateName, JToken pageModel, FilePath file)
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
 
         public void CopyAssetsToOutput()
         {
-            if (_config.OutputType != OutputType.Html || _templateDefinition.Assets.Length <= 0)
+            if (!_config.SelfContained || _templateDefinition.Assets.Length <= 0)
             {
                 return;
             }
@@ -177,11 +177,11 @@ namespace Microsoft.Docs.Build
             return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
         }
 
-        private JsonSchemaValidator? GetSchemaCore(string schemaName)
+        private JsonSchemaValidator? GetSchemaCore(string mime)
         {
-            var schemaFilePath = IsLandingData(schemaName)
+            var schemaFilePath = IsLandingData(mime)
                 ? Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")
-                : Path.Combine(_schemaDir, $"{schemaName}.schema.json");
+                : Path.Combine(_schemaDir, $"{mime}.schema.json");
 
             if (!File.Exists(schemaFilePath))
             {

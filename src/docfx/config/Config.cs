@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets Output Url type
         /// </summary>
-        public OutputUrlType OutputUrlType { get; private set; } = OutputUrlType.Pretty;
+        public UrlType UrlType { get; private set; } = UrlType.Pretty;
 
         /// <summary>
         /// Gets whether to lowercase all URLs and output file path.
@@ -83,9 +83,10 @@ namespace Microsoft.Docs.Build
         public bool LowerCaseUrl { get; private set; } = true;
 
         /// <summary>
-        /// Gets whether resources are copied to output.
+        /// Gets whether dependencies such as images and template styles
+        /// are copied to output so the output folder can be deployed as a self-contained website.
         /// </summary>
-        public bool CopyResources { get; private set; } = true;
+        public bool SelfContained { get; private set; } = true;
 
         /// <summary>
         /// Gets the maximum errors of each file to output.
@@ -126,11 +127,6 @@ namespace Microsoft.Docs.Build
         /// Gets host name used for generating .xrefmap.json
         /// </summary>
         public string XrefHostName { get; private set; } = "";
-
-        /// <summary>
-        /// Gets whether we are running in legacy mode
-        /// </summary>
-        public bool Legacy { get; private set; }
 
         /// <summary>
         /// Gets whether we are running in dry run mode
@@ -180,7 +176,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, CustomRule> Rules { get; } = new Dictionary<string, CustomRule>();
+        public Dictionary<string, SourceInfo<CustomRule>> Rules { get; } = new Dictionary<string, SourceInfo<CustomRule>>();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -303,6 +299,11 @@ namespace Microsoft.Docs.Build
         /// Determines if run learn-validation as post process
         /// </summary>
         public bool RunLearnValidation { get; private set; }
+
+        /// <summary>
+        /// Determines if disable dry sync
+        /// </summary>
+        public bool NoDrySync { get; private set; }
 
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc

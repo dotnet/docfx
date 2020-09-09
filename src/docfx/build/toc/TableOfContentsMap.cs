@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
 
-        private readonly Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)> _tocs;
+        private readonly Lazy<(Dictionary<FilePath, FilePath[]> tocToTocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
         public TableOfContentsMap(
             ErrorBuilder errors,
@@ -44,12 +44,12 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
-            _tocs = new Lazy<(Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs)>(BuildTocMap);
+            _tocs = new Lazy<(Dictionary<FilePath, FilePath[]>, Dictionary<FilePath, FilePath[]>, List<FilePath>)>(BuildTocMap);
         }
 
         public IEnumerable<FilePath> GetFiles()
         {
-            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Select(toc => toc.FilePath);
+            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Concat(_tocs.Value.servicePages);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         /// <param name="file">Document</param>
         /// <returns>The toc relative path</returns>
-        public string? FindTocRelativePath(Document file)
+        public string? FindTocRelativePath(FilePath file)
         {
             var nearestToc = FindNearestToc(file);
             if (nearestToc is null)
@@ -65,8 +65,8 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            _dependencyMapBuilder.AddDependencyItem(file.FilePath, nearestToc.FilePath, DependencyType.Metadata, file.ContentType);
-            return PathUtility.NormalizeFile(PathUtility.GetRelativePathToFile(file.SitePath, nearestToc.SitePath));
+            _dependencyMapBuilder.AddDependencyItem(file, nearestToc, DependencyType.Metadata);
+            return UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(file), _documentProvider.GetSiteUrl(nearestToc));
         }
 
         /// <summary>
@@ -76,13 +76,13 @@ namespace Microsoft.Docs.Build
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
         /// when the file is not referenced, return only toc in the same or higher folder level.
         /// </summary>
-        internal Document? FindNearestToc(Document file)
+        internal FilePath? FindNearestToc(FilePath file)
         {
             var result = FindNearestToc(
                 file,
-                _tocs.Value.tocToTocs.Keys.Where(toc => !toc.IsExperimental),
+                _tocs.Value.tocToTocs.Keys,
                 _tocs.Value.docToTocs,
-                file => file.FilePath.Path);
+                file => file.Path);
 
             _contentValidator.ValidateTocMissing(file, result.hasReferencedTocs);
             return result.toc;
@@ -150,15 +150,15 @@ namespace Microsoft.Docs.Build
             return (subDirectoryCount, parentDirectoryCount);
         }
 
-        private bool ShouldBuildFile(Document file)
+        private bool ShouldBuildFile(FilePath file)
         {
-            if (file.FilePath.Origin != FileOrigin.Fallback)
+            if (file.Origin != FileOrigin.Fallback)
             {
                 return true;
             }
 
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            if (_tocs.Value.tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.FilePath.Origin != FileOrigin.Fallback))
+            if (_tocs.Value.tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
             {
                 return true;
             }
@@ -166,11 +166,13 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private (Dictionary<Document, Document[]> tocToTocs, Dictionary<Document, Document[]> docToTocs) BuildTocMap()
+        private (Dictionary<FilePath, FilePath[]> tocToTocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
+            BuildTocMap()
         {
             using (Progress.Start("Loading TOC"))
             {
                 var tocs = new ConcurrentBag<FilePath>();
+                var allServicePages = new ConcurrentBag<FilePath>();
 
                 // Parse and split TOC
                 ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
@@ -178,15 +180,19 @@ namespace Microsoft.Docs.Build
                     SplitToc(file, _tocParser.Parse(file, _errors), tocs);
                 });
 
-                var tocReferences = new ConcurrentDictionary<Document, (List<Document> docs, List<Document> tocs)>();
+                var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
 
                 // Load TOC
-                ParallelUtility.ForEach(_errors, tocs, path =>
+                ParallelUtility.ForEach(_errors, tocs, file =>
                 {
-                    var file = _documentProvider.GetDocument(path);
-                    var (_, referencedDocuments, referencedTocs) = _tocLoader.Load(file);
+                    var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
 
                     tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+
+                    foreach (var servicePage in servicePages)
+                    {
+                        allServicePages.Add(servicePage);
+                    }
                 });
 
                 // Create TOC reference map
@@ -200,13 +206,13 @@ namespace Microsoft.Docs.Build
                 var docToTocs = (
                     from item in tocReferences
                     from doc in item.Value.docs
-                    where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental
+                    where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental()
                     group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
                 tocToTocs.TrimExcess();
                 docToTocs.TrimExcess();
 
-                return (tocToTocs, docToTocs);
+                return (tocToTocs, docToTocs, allServicePages.ToList());
             }
         }
 
@@ -241,7 +247,7 @@ namespace Microsoft.Docs.Build
                 var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
                 var newNodeFile = FilePath.Generated(newNodeFilePath);
 
-                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken });
+                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
                 result.Add(newNodeFile);
 
                 var newChild = new TableOfContentsNode(child)
@@ -255,7 +261,7 @@ namespace Microsoft.Docs.Build
 
             var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
             var newTocFile = FilePath.Generated(newTocFilePath);
-            _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc));
+            _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
             result.Add(newTocFile);
         }
 

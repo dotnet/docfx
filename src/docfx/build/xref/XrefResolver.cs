@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -12,12 +13,15 @@ namespace Microsoft.Docs.Build
     internal class XrefResolver
     {
         private readonly Config _config;
+        private readonly DocumentProvider _documentProvider;
+        private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec>> _internalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
+        private int internalXrefPropertiesValidated;
 
         public XrefResolver(
             Config config,
@@ -35,8 +39,10 @@ namespace Microsoft.Docs.Build
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
+            _errorLog = errorLog;
             _repository = repository;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec>>(
+            _documentProvider = documentProvider;
+            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
                 () => new InternalXrefMapBuilder(
                             errorLog,
                             templateEngine,
@@ -54,8 +60,8 @@ namespace Microsoft.Docs.Build
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         }
 
-        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByHref(
-            SourceInfo<string> href, Document referencingFile, Document inclusionRoot)
+        public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
 
@@ -98,14 +104,14 @@ namespace Microsoft.Docs.Build
 
             query = queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries);
             var fileLink = UrlUtility.MergeUrl(xrefSpec.Href, query, fragment);
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, fileLink, href.Source);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
             return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
         }
 
-        public (Error? error, string? href, string display, Document? declaringFile) ResolveXrefByUid(
-            SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
             if (string.IsNullOrEmpty(uid))
             {
@@ -113,18 +119,19 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot);
+            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (error != null || xrefSpec == null || href == null)
             {
                 return (error, null, "", null);
             }
-            _fileLinkMapBuilder.AddFileLink(inclusionRoot.FilePath, referencingFile.FilePath, inclusionRoot.SiteUrl, xrefSpec.Href, uid.Source);
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
             return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
         }
 
-        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec == null)
             {
                 return (error, null, null);
@@ -137,39 +144,67 @@ namespace Microsoft.Docs.Build
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
-            var references =
-                isLocalizedBuild
-                ? Array.Empty<ExternalXrefSpec>()
-                : _internalXrefMap.Value.Values
-                .Select(xref =>
-                {
-                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                    // output xref map with URL appending "?branch=master" for master branch
-                    var query = repositoryBranch == "master" ? "?branch=master" : "";
-                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+            var references = Array.Empty<ExternalXrefSpec>();
 
-                    var xrefSpec = xref.ToExternalXrefSpec(href);
-                    return xrefSpec;
-                })
-                .OrderBy(xref => xref.Uid).ToArray();
+            if (!isLocalizedBuild)
+            {
+                references = EnsureInternalXrefMap().Values
+                    .Select(xrefs =>
+                    {
+                        var xref = xrefs.First();
+
+                        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+                        // output xref map with URL appending "?branch=master" for master branch
+                        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
+                            ? $"?branch={repositoryBranch}" : "";
+
+                        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+
+                        return xref.ToExternalXrefSpec(href);
+                    })
+                    .OrderBy(xref => xref.Uid)
+                    .ToArray();
+            }
 
             var model = new XrefMapModel { References = references };
-            if (basePath != null && references.Length > 0)
+
+            if (_config.UrlType == UrlType.Docs && references.Length > 0)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
-                if (repositoryBranch == "master")
-                {
-                    properties.Tags.Add("internal");
-                }
-                else if (repositoryBranch == "live")
+                if (repositoryBranch == "live")
                 {
                     properties.Tags.Add("public");
+                }
+                else
+                {
+                    properties.Tags.Add("internal");
                 }
                 model.Properties = properties;
             }
 
             return model;
+        }
+
+        private void ValidateInternalXrefProperties()
+        {
+            foreach (var xrefs in _internalXrefMap.Value.Values)
+            {
+                var uid = xrefs.First().Uid;
+
+                // validate xref properties
+                // uid conflicts with different values of the same xref property
+                // log an warning and take the first one order by the declaring file
+                var xrefProperties = xrefs.SelectMany(x => x.XrefProperties.Keys).Distinct();
+                foreach (var xrefProperty in xrefProperties)
+                {
+                    var conflictingNames = xrefs.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
+                    if (conflictingNames.Count() > 1)
+                    {
+                        _errorLog.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
+                    }
+                }
+            }
         }
 
         private static string RemoveSharingHost(string url, string hostName)
@@ -189,9 +224,10 @@ namespace Microsoft.Docs.Build
             return url;
         }
 
-        private (Error?, IXrefSpec?, string? href) Resolve(SourceInfo<string> uid, Document referencingFile, Document inclusionRoot)
+        private (Error?, IXrefSpec?, string? href) Resolve(
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
             {
                 (xrefSpec, href) = ResolveExternalXrefSpec(uid);
@@ -215,27 +251,58 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (IXrefSpec?, string? href) ResolveInternalXrefSpec(string uid, Document referencingFile, Document inclusionRoot)
+        private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
         {
-            if (_internalXrefMap.Value.TryGetValue(uid, out var spec))
+            if (!_internalXrefMap.IsValueCreated)
             {
+                _ = _internalXrefMap.Value;
+            }
+
+            if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
+            {
+                ValidateInternalXrefProperties();
+            }
+
+            return _internalXrefMap.Value;
+        }
+
+        private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
+            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+        {
+            if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
+            {
+                var spec = default(InternalXrefSpec);
+                if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)
+                {
+                    spec = specs[0];
+                }
+                else
+                {
+                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
+                }
+
                 var dependencyType = GetDependencyType(referencingFile, spec);
-                _dependencyMapBuilder.AddDependencyItem(referencingFile.FilePath, spec.DeclaringFile.FilePath, dependencyType, referencingFile.ContentType);
-                var href = UrlUtility.GetRelativeUrl((inclusionRoot ?? referencingFile).SiteUrl, spec.Href);
+                _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
+
+                var href = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
             }
             return default;
         }
 
-        private static DependencyType GetDependencyType(Document referencingFile, InternalXrefSpec xref)
+        private DependencyType GetDependencyType(FilePath referencingFile, InternalXrefSpec xref)
         {
-            if (!string.Equals(referencingFile.Mime, "LearningPath", StringComparison.Ordinal)
-                && !string.Equals(referencingFile.Mime, "Module", StringComparison.Ordinal))
+            var mime = _documentProvider.GetMime(referencingFile).Value;
+
+            if (!string.Equals(mime, "LearningPath", StringComparison.Ordinal) &&
+                !string.Equals(mime, "Module", StringComparison.Ordinal))
             {
                 return DependencyType.Uid;
             }
 
-            switch ((referencingFile.Mime.Value, xref.DeclaringFile.Mime.Value))
+            var declaringFileMime = _documentProvider.GetMime(xref.DeclaringFile).Value;
+
+            switch ((mime, declaringFileMime))
             {
                 case ("LearningPath", "Module"):
                 case ("Module", "ModuleUnit"):
@@ -246,6 +313,7 @@ namespace Microsoft.Docs.Build
                 case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
                     return DependencyType.Achievement;
             }
+
             return DependencyType.Uid;
         }
     }

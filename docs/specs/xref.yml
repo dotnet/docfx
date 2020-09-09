@@ -174,10 +174,7 @@ outputs:
           "href": "https://test.docs.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
-      ],
-      "properties": {
-          "tags": ["/base_path", "public"]
-      }
+      ]
     }
   .dependencymap.json: |
     {
@@ -259,6 +256,33 @@ repos:
 outputs:
   a.json: |
     { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
+---
+# uid in loc has higher priority than in fallback(path can be different)
+# and report no error
+locale: zh-cn
+repos:
+  https://docs.com/xref-fallback#master:
+    - files:
+        docfx.yml:
+        dir/b.md: |
+          ---
+          title: uid in fallback
+          uid: b
+          ---
+  https://docs.com/xref-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        b.md: |
+          ---
+          title: uid in loc
+          uid: b
+          ---
+        a.md: |
+          @b
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid in loc</a></p>\n"}
+  b.json:
 ---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
@@ -347,7 +371,7 @@ outputs:
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/a.yml","line":2,"column":6}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
   .xrefmap.json: | 
-    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}], "properties": {"tags":["/base_path","internal"]}}
+    {"references":[{"uid":"a","href":"https://docs.com/base_path/docs/a.json?branch=master"}]}
 ---
 # Resolve xref in SDP
 repos:
@@ -1224,22 +1248,21 @@ outputs:
         ]
     }
 ---
-# define UID in master branch
+# Append branch query string to xrefmap for non-live branch when url type is docs
 repos:
-  https://docs.com/test#master:
+  https://docs.com/test#test:
     - files:
         docfx.yml:
         docs/a.md: |
           ---
-          title: Title from yaml header a
           uid: a
           ---
 outputs:
   docs/a.json:
   .xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=master"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a?branch=test"}],"properties": {"tags": ["/","internal"]}}
 ---
-# define UID in live branch
+# No branch query string in xrefmap for live branch when url type is docs
 repos:
   https://docs.com/test#live:
     - files:
@@ -1248,13 +1271,27 @@ repos:
           basePath: /base_path
         docs/a.md: |
           ---
-          title: Title from yaml header a
           uid: a
           ---
 outputs:
   base_path/docs/a.json:
   .xrefmap.json: |
-    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}]}
+    {"references":[{"uid":"a", href: "https://docs.com/base_path/docs/a"}],"properties": {"tags": ["/base_path","public"]}}
+---
+# No branch query string in xrefmap for non-live branch when url type is not docs
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          urlType: ugly
+        docs/a.md: |
+          ---
+          uid: a
+          ---
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    {"references":[{"uid":"a", href: "https://docs.com/docs/a.html"}],"properties": undefined }
 ---
 # resolve UID with unknown query
 repos:
@@ -1474,6 +1511,14 @@ inputs:
     uid: a
     name: name 1
     description: test 1
+  docs/v1/b.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-1.0
+    uid: b
+    name: name b
+    description: test b
   docs/v2/a.yml: |
     ### YamlMime:TestData
     metadata:
@@ -1481,7 +1526,7 @@ inputs:
       - netcore-2.0
     uid: a
     name: name 2
-    description: test 2
+    description: test 2 <xref:b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "xrefProperties": ["name", "description"],
@@ -1491,15 +1536,185 @@ inputs:
             "monikers": { "type": "array" }
           }
         },
-        "uid": { "contentType": "uid" } 
+        "uid": { "contentType": "uid" },
+        "description": { "contentType": "Markdown" }
       }
     }
 outputs:
   136a42ac/docs/a.json:
+  136a42ac/docs/b.json:
   4667fedf/docs/a.json:
   .errors.log: |
     {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
+---
+# referencing multiple version, using uid with intersection for toc & SDP
+inputs:
+  docfx.yml: |
+    outputType: pageJson
+    monikerRange:
+      'docs/v1/**': 'netcore-1.0'
+      'docs/v2/**': 'netcore-2.0'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" }
+      ]
+    }
+  docs/v1/a.yml: |
+    ### YamlMime:TestData
+    uid: a
+    name: name 1.0
+  docs/v1/TOC.yml: |
+    items:
+      - name: node
+        uid: a
+  docs/v1/b.yml: |
+    ### YamlMime:TestPage
+      xref: a
+  docs/v2/a.yml: |
+  docs/v2/a.yml: |
+    ### YamlMime:TestData
+    uid: a
+    name: name 2.0
+  docs/v2/TOC.yml: |
+    items:
+      - name: node
+        uid: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name"],
+      "properties": { 
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        },
+        "uid": { "contentType": "uid" }
+      }
+    }
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": { 
+        "xref": { "contentType": "xref" }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <xref uid="xref"/>
+
+outputs:
+  136a42ac/docs/a.json:
+  136a42ac/docs/b.raw.page.json: |
+    {"content": "<a href=\"a.json\" data-linktype=\"relative-path\"> name 1.0 </a>"}
+  136a42ac/docs/b.mta.json:
+  136a42ac/docs/toc.json: |
+    {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-1.0"]}]}
+  4667fedf/docs/a.json:
+  4667fedf/docs/toc.json: |
+    {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
+---
+# can cross version referencing single-version uid
+inputs:
+  docfx.yml: |
+    outputType: pageJson
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" }
+      ]
+    }
+  v1/a.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: netcore-1.0
+    uid: a
+    name: name 1.0
+  v2/b.yml: |
+    ### YamlMime:TestPage
+    metadata:
+      monikers: netcore-2.0
+    xref: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name"],
+      "properties": { "uid": { "contentType": "uid" }}
+    }
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": { 
+        "xref": { "contentType": "xref" }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <xref uid="xref"/>
+
+outputs:
+  136a42ac/v1/a.json:
+  4667fedf/v2/b.raw.page.json: |
+    {"content": "<a href=\"../v1/a.json\" data-linktype=\"relative-path\"> name 1.0 </a>"}
+  4667fedf/v2/b.mta.json:
+---
+# can cross version reference, using highest version
+inputs:
+  docfx.yml: |
+    outputType: pageJson
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-3.0", "product_name": ".NET Core" }
+      ]
+    }
+  v1/a.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: netcore-1.0
+    uid: a
+    name: name 1.0
+  v2/a.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: netcore-2.0
+    uid: a
+    name: name 2.0
+  v3/b.yml: |
+    ### YamlMime:TestPage
+    metadata:
+      monikers: netcore-3.0
+    xref: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "xrefProperties": ["name"],
+      "properties": { "uid": { "contentType": "uid" }}
+    }
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    {
+      "properties": { 
+        "xref": { "contentType": "xref" }
+      }
+    }
+  _themes/ContentTemplate/TestPage.html.primary.tmpl: |
+    <xref uid="xref"/>
+
+outputs:
+  136a42ac/v1/a.json:
+  4667fedf/v2/a.json:
+  439a76d0/v3/b.raw.page.json: |
+    {"content": "<a href=\"../v2/a.json\" data-linktype=\"relative-path\"> name 2.0 </a>"}
+  439a76d0/v3/b.mta.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:

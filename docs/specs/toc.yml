@@ -1731,3 +1731,167 @@ outputs:
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
   a/_splitted/b/toc.json: |
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+---
+# Service Page Generating
+repos:
+  https://github.com/ops/service-page:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {
+              "ReferenceTOC": "a/api/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/results",
+              "ContainerPageMetadata": {"langs": ["csharp"]}
+            }
+          ],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["uid", "name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"},
+            "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              },
+              "type": "array",
+              "minItems": 1
+            },
+            "langs": { "items": {"type": "string"}, "type": "array", "minItems": 1 },
+            "pageType": { "enum": ["root", "service"], "type": "string" },
+            "metadata": {
+              "properties": { "description": { "type": "string","tags": ["localizable"] }, "title": { "type": "string", "tags": ["localizable"] } },
+              "type": "object"
+            }
+          }
+        }
+      a/_themes/ContentTemplate/schemas/TestData.schema.json: |
+        {
+          "properties": {
+            "uid": { "contentType": "uid" },
+            "fullName": { "type": "string" },
+            "name": { "type": "string" }
+          },
+          "xrefProperties": ["name", "fullName", "description"]
+        }
+      a/api/doc.md: |
+        ---
+        name: test
+        uid: MS.ServicePage
+        ---
+      a/api/a.json: |
+        {
+          "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+          "uid": "aa", "name": "test", "fullName": "test.test", "description": "a.description"
+        }
+      a/api/TOC.yml: |
+        name: TOC
+        items:
+        - name: MS.ServicePage.xxx
+          items:
+            - name: xxx
+        - name: MS.ServicePage.Client.Form
+        - name:
+        - name: no.match
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: App Service
+            href: ~/api/doc.md
+            landingPageType: Service
+            items:
+            - name: Client
+              href: ../api/doc.md
+              landingPageType: Service
+              children:
+              - 'MS.ServicePage*'
+              items:
+                  - name: Client
+                    uid: aa
+                    landingPageType: Service
+                    children:
+                    - 'MS.ServicePage.Client*'
+                    - 'MS.ServicePage.Server*'
+            - name: Other
+              children:
+              - '*'
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"a/api/TOC.yml","line":7,"column":8}
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'uid'.","line":0,"column":0}
+  a/api/a.json:
+  a/api/doc.json:
+  a/api/toc.json:
+  a/results/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service", "href": "../api/doc"}], "langs": ["csharp"], "pageType": "root"}
+  a/results/appservice.json: |
+    {
+      "name": "App Service", "fullName": "App Service", "href": "~/api/doc.md", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
+      "langs": ["csharp"], "pageType": "service"
+    }
+  a/results/appservice/client.json: |
+    {
+      "name": "Client", "fullName": "Client", "href": "../api/doc.md",
+      "children": [{"name": "Client","uid": "aa"},{"name": "MS.ServicePage.xxx"},{"name": "MS.ServicePage.Client.Form"}],
+      "langs": ["csharp"], "pageType": "service"
+    }
+  a/results/appservice/client/client.json: |
+    {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}
+---
+# TOC split metadata supporting (with build_source_folder)
+repos:
+  https://ms.com/split:
+  - files:
+      test/docfx.yml:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "test"}],
+          "JoinTOCPlugin": [
+            {
+              "ConceptualTOC": "test/b/TOC.yml",
+              "ReferenceTOCUrl": "/dotnet-test/api/toc.json",
+              "ConceptualTOCUrl": "dotnet-test/learn/toc.json",
+              "ReferenceTOC": "test/a/TOC.yml"
+            }
+          ]
+        }
+      test/a/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: a
+          items:
+          - name: a-a
+        - name: b
+          items:
+          - name: b-b
+      test/b/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: 1
+          items:
+          - name: 1-1
+outputs:
+  test/b/toc.json: |
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
+  test/b/_splitted/1/toc.json: |
+    {"metadata": {"universal_ref_toc": "/dotnet-test/api/toc.json"}}
+  test/a/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+  test/a/_splitted/a/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+  test/a/_splitted/b/toc.json: |
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}

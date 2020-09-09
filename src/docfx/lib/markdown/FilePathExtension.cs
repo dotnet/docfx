@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using HtmlReaderWriter;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -19,14 +20,14 @@ namespace Microsoft.Docs.Build
             return builder.Use(document => document.SetData(s_filePathKey, InclusionContext.File));
         }
 
-        public static Document GetFilePath(this MarkdownObject obj)
+        public static FilePath GetFilePath(this MarkdownObject obj)
         {
             foreach (var item in obj.GetPathToRootInclusive())
             {
                 var file = item.GetData(s_filePathKey);
                 if (file != null)
                 {
-                    return (Document)file;
+                    return (FilePath)file;
                 }
             }
 
@@ -35,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         public static SourceInfo? GetSourceInfo(this MarkdownObject obj, int? line = null)
         {
-            var path = GetFilePath(obj).FilePath;
+            var path = GetFilePath(obj);
 
             if (line != null)
             {
@@ -53,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public static SourceInfo? GetSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
         {
-            var path = GetFilePath(obj).FilePath;
+            var path = GetFilePath(obj);
 
             var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
             var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
@@ -99,7 +100,7 @@ namespace Microsoft.Docs.Build
                     if (file != null)
                     {
                         result ??= new List<object?>();
-                        result.Insert(0, new SourceInfo(((Document)file).FilePath, source.Value.line, source.Value.column));
+                        result.Insert(0, new SourceInfo((FilePath)file, source.Value.line, source.Value.column));
                         source = null;
                     }
                 }
@@ -108,7 +109,7 @@ namespace Microsoft.Docs.Build
             return result ?? s_emptyInclusionStack;
         }
 
-        public static void SetFilePath(this MarkdownObject obj, Document value)
+        public static void SetFilePath(this MarkdownObject obj, FilePath value)
         {
             obj.SetData(s_filePathKey, value);
         }
