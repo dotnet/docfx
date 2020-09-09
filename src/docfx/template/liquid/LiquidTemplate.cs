@@ -21,6 +21,9 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new ConcurrentDictionary<PathString, Lazy<Template?>>();
 
+        [ThreadStatic]
+        private static Package? t_package;
+
         static LiquidTemplate()
         {
             Template.RegisterTag<StyleTag>("style");
@@ -63,12 +66,20 @@ namespace Microsoft.Docs.Build
                     formatProvider: CultureInfo.InvariantCulture),
             };
 
-            return template.Render(parameters);
+            try
+            {
+                t_package = _package;
+                return template.Render(parameters);
+            }
+            finally
+            {
+                t_package = default;
+            }
         }
 
-        public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
+        public static string? GetThemeRelativePath(string resourcePath)
         {
-            return Path.Combine((string)context["theme_rel"], resourcePath);
+            return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
         }
 
         private Template LoadTemplate(PathString path)
