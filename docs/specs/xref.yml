@@ -306,6 +306,7 @@ inputs:
     Link to <xref:a?displayProperty=notExisting>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "uid": { "contentType": "uid" },
         "fullName": { "type": "string" },
@@ -358,6 +359,7 @@ repos:
         docs/c.md: Link to @a
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "properties": {
               "uid": { "contentType": "uid" }
             }
@@ -393,6 +395,7 @@ repos:
           }
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "properties": {
               "uid": { "contentType": "uid" },
               "xref": { "contentType": "Xref" },
@@ -479,6 +482,7 @@ inputs:
   docs/b.md: Link to @a.b
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "uid": { "contentType": "uid" },
         "description": { "type": "string" },
@@ -810,6 +814,7 @@ inputs:
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
           "uid": { "contentType": "uid" },
           "xref": { "contentType": "Xref" }
@@ -873,6 +878,7 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "summary": { "contentType": "Markdown" },
         "inlineDescription": { "contentType": "InlineMarkdown" },
@@ -1066,6 +1072,7 @@ repos:
           Link to @children.c?displayProperty=child.c
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "definitions": {
               "testChild": {
                 "properties": {
@@ -1187,6 +1194,7 @@ repos:
                 - "3.0"
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "definitions": {
               "testChild": {
                 "properties": {
@@ -1529,6 +1537,7 @@ inputs:
     description: test 2 <xref:b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name", "description"],
       "properties": { 
         "metadata": {
@@ -1588,6 +1597,7 @@ inputs:
         uid: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name"],
       "properties": { 
         "metadata": {
@@ -1600,7 +1610,6 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": { 
         "xref": { "contentType": "xref" }
       }
@@ -1646,12 +1655,12 @@ inputs:
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name"],
       "properties": { "uid": { "contentType": "uid" }}
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": { 
         "xref": { "contentType": "xref" }
       }
@@ -1697,12 +1706,12 @@ inputs:
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name"],
       "properties": { "uid": { "contentType": "uid" }}
     }
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": { 
         "xref": { "contentType": "xref" }
       }

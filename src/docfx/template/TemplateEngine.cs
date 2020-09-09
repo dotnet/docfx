@@ -54,14 +54,14 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
-        public bool IsHtml(ContentType contentType, SourceInfo<string?> mime)
+        public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
         {
             return contentType switch
             {
-                ContentType.Redirection => true,
-                ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || IsContentScheme(mime),
-                ContentType.TableOfContents => IsHtmlToc(),
-                _ => false,
+                ContentType.Redirection => RenderType.Content,
+                ContentType.Page => (IsConceptual(mime) || IsLandingData(mime) || IsContentScheme(mime)) ? RenderType.Content : RenderType.Component,
+                ContentType.TableOfContents => GetTocRenderType(),
+                _ => RenderType.Component,
             };
         }
 
@@ -171,18 +171,20 @@ namespace Microsoft.Docs.Build
             return schema.RenderType == RenderType.Content;
         }
 
-        private bool IsHtmlToc()
+        private RenderType GetTocRenderType()
         {
+            bool isContentRenderType;
             try
             {
-                return IsContentScheme(new SourceInfo<string?>("toc"));
+                isContentRenderType = IsContentScheme(new SourceInfo<string?>("toc")) ;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 // TODO: Remove after schema of toc is support in template
-                return _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
                     || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
             }
+            return isContentRenderType ? RenderType.Content : RenderType.Component;
         }
 
         private JObject LoadGlobalTokens()

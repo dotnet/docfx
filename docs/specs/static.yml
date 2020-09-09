@@ -305,7 +305,7 @@ inputs:
         content: JSON.stringify({result: model.prop + " has run js data transform"})
       }
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {"result": "value has run js data transform"}

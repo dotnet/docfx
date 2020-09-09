@@ -188,7 +188,6 @@ inputs:
     
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "type": "object",
       "properties": {
         "namespace": {
@@ -361,7 +360,6 @@ inputs:
     outputType: pageJson
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": {
         "uid": {"contentType": "uid"},
         "uids": {
@@ -413,7 +411,6 @@ inputs:
     outputType: pageJson
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": {
         "uid": {"contentType": "uid"},
         "xrefs": {
@@ -468,7 +465,6 @@ inputs:
     - uid: Edm.Int32
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": {
         "xref": { "contentType": "xref" }
       }

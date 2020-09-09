@@ -590,7 +590,6 @@ inputs:
     # [Index](index.md)
   _themes/ContentTemplate/schemas/NetType.schema.json: |
     {
-      "renderType": "content",
       "type": "object",
       "properties": {
           "breadcrumb_path": {"contentType": "Href"},
@@ -599,7 +598,6 @@ inputs:
     }
   _themes/ContentTemplate/schemas/PowershellCmdlet.schema.json: |
     {
-      "renderType": "content",
       "type": "object",
       "properties": {
           "breadcrumb_path": {"contentType": "Href"},

@@ -1795,7 +1795,6 @@ inputs:
     ---
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "renderType": "content",
       "properties": {
         "metadata": {
           "properties": {

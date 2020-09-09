@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                         switch (contentType)
                         {
                             case ContentType.Unknown:
-                            case ContentType.Page when !context.DocumentProvider.IsHtml(document):
+                            case ContentType.Page when context.DocumentProvider.GetRenderType(document) == RenderType.Component:
                                 return;
                         }
 

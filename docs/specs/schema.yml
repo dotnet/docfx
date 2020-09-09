@@ -88,6 +88,7 @@ inputs:
     toc_rel: A/TOC.yml
   _themes/ContentTemplate/schemas/ContextObject.schema.json: |
     {
+      "renderType": "component",
       "type": "object",
       "properties": {
           "breadcrumb_path": {"contentType": "Href"},
@@ -379,7 +380,6 @@ inputs:
       [](a.yml#heading-3)
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "properties": {
         "description": {"contentType": "Markdown"}
       }
@@ -413,7 +413,6 @@ inputs:
     #YamlMime: TestData
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
-      "renderType": "content",
       "properties": {
         "metadata": {
           "properties": {
@@ -440,7 +439,6 @@ inputs:
     key: value
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
-      "renderType": "content",
       "type": "object",
       "required": ["authors"],
       "properties": {
