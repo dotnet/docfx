@@ -167,17 +167,23 @@ namespace Microsoft.Docs.Build
             {
                 return RenderType.Content;
             }
-            var schema = GetSchema(mime);
-            return schema.RenderType;
+            try
+            {
+                return GetSchema(mime).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                return RenderType.Content;
+            }
         }
 
         private RenderType GetTocRenderType()
         {
             try
             {
-                return GetRenderType(new SourceInfo<string?>("toc"));
+                return GetSchema(new SourceInfo<string?>("toc")).RenderType;
             }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
             {
                 // TODO: Remove after schema of toc is support in template
                 var isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
