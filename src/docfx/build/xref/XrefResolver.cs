@@ -190,6 +190,11 @@ namespace Microsoft.Docs.Build
         {
             foreach (var xrefs in _internalXrefMap.Value.Values)
             {
+                if (xrefs.Length == 1)
+                {
+                    continue;
+                }
+
                 var uid = xrefs.First().Uid;
 
                 // validate xref properties

@@ -5,7 +5,7 @@ using Markdig.Syntax.Inlines;
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    public class TripleColonInline : ContainerInline, ITripleColon
+    public class TripleColonInline : Inline, ITripleColon
     {
         public IDictionary<string, string> RenderProperties { get; set; }
 
