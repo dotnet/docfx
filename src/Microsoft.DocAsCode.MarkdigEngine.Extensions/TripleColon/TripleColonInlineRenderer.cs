@@ -25,7 +25,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             renderer.Write("<div").WriteAttributes(inline).WriteLine(">");
-            renderer.WriteChildren(inline);
             renderer.WriteLine("</div>");
         }
     }
