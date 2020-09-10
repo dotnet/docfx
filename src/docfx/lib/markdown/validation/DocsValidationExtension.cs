@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HtmlAgilityPack;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -69,6 +71,75 @@ namespace Microsoft.Docs.Build
                     contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, isInclude);
                 }
             });
+        }
+
+        public static bool IsInlineImage(this MarkdownObject node)
+        {
+            switch (node)
+            {
+                case Inline inline:
+                    return inline.IsInlineImage();
+                case HtmlBlock htmlBlock:
+                    return htmlBlock.IsInlineImage();
+                default:
+                    return false;
+            }
+        }
+
+        private static bool IsInlineImage(this Inline node)
+        {
+            switch (node)
+            {
+                case LinkInline linkInline when linkInline.IsImage:
+                case TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension:
+                case HtmlInline htmlInline when htmlInline.Tag.StartsWith("<img", StringComparison.InvariantCultureIgnoreCase):
+                    for (MarkdownObject current = node, parent = node.Parent; current != null;)
+                    {
+                        if (parent is ContainerInline containerInline)
+                        {
+                            foreach (var child in containerInline)
+                            {
+                                if (child != current && child.IsVisible())
+                                {
+                                    return true;
+                                }
+                            }
+                            current = parent;
+                            parent = containerInline.Parent;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return node.GetPathToRootExclusive().Any(o => o is TableCell);
+                default:
+                    return false;
+            }
+        }
+
+        private static bool IsInlineImage(this HtmlBlock node)
+        {
+            var html = new HtmlDocument();
+            html.LoadHtml(node.Lines.ToString());
+            var imgNodes = html.DocumentNode.SelectNodes("//*/img");
+            foreach (var img in imgNodes)
+            {
+                for (HtmlNode current = img, parent = img.ParentNode; parent != html.DocumentNode;)
+                {
+                    foreach (var child in parent.ChildNodes)
+                    {
+                        if (child != current && HtmlUtility.IsVisible(child.OuterHtml))
+                        {
+                            return true;
+                        }
+                    }
+                    current = parent;
+                    parent = parent.ParentNode;
+                }
+                return false;
+            }
+            return false;
         }
 
         private static void BuildHeadingNodes(
