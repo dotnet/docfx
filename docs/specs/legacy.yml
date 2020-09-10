@@ -269,7 +269,7 @@ inputs:
   docfx.yml: |
   docs/a.yml: |
     #YamlMime: ContextObject
-  _themes/ContentTemplate/schemas/ContextObject.schema.json: "{}"
+  _themes/ContentTemplate/schemas/ContextObject.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   docs/a.json:
   .manifest.json: |

@@ -23,9 +23,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var isHtml = context.DocumentProvider.IsHtml(file);
+            var isContentRenderType = context.DocumentProvider.GetRenderType(file) == RenderType.Content;
 
-            var (output, metadata) = isHtml
+            var (output, metadata) = isContentRenderType
                 ? CreatePageOutput(errors, context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
 
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                     context.Output.WriteJson(outputPath, output);
                 }
 
-                if (context.Config.OutputType == OutputType.PageJson && isHtml)
+                if (context.Config.OutputType == OutputType.PageJson && isContentRenderType)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadataPath, metadata);
@@ -249,7 +249,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(validatedObj, obj);
 
             // transform model via json schema
-            if (context.DocumentProvider.IsHtml(file))
+            if (context.DocumentProvider.GetRenderType(file) == RenderType.Content)
             {
                 // transform metadata via json schema
                 var userMetadata = context.MetadataProvider.GetMetadata(errors, file);

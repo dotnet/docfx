@@ -42,6 +42,11 @@ namespace Microsoft.Docs.Build
         public JsonSchemaType[]? Type { get; set; }
 
         /// <summary>
+        /// Type of the render type.
+        /// </summary>
+        public RenderType RenderType { get; set; } = RenderType.Content;
+
+        /// <summary>
         /// The JSON schema that applies to each property if the current value is object.
         /// </summary>
         public Dictionary<string, JsonSchema> Properties { get; } = new Dictionary<string, JsonSchema>();
