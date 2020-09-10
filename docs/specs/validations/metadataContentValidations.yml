@@ -2601,6 +2601,8 @@ inputs:
     <p><img src="a.jpg" alt="not inline"></p>
 
     <p><img src="a.jpg" alt="inline"> This image is inline</p>
+
+    <img src="a.jpg" alt="only html img">
 outputs:
   a.json:
   a.jpg:

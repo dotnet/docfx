@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
         {
             var html = new HtmlDocument();
             html.LoadHtml(node.Lines.ToString());
-            var imgNodes = html.DocumentNode.SelectNodes("//*/img");
+            var imgNodes = html.DocumentNode.SelectNodes("//img");
             foreach (var img in imgNodes)
             {
                 for (HtmlNode current = img, parent = img.ParentNode; parent != html.DocumentNode;)
