@@ -16,7 +16,7 @@ jobs:
 - job: LinuxBuild
   pool:
     vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: false # eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -52,7 +52,7 @@ jobs:
 - job: MacBuild
   pool:
     vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: false #eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
   # Install .NET Core sdk
@@ -108,6 +108,7 @@ jobs:
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
+    condition: false
     inputs:
       command: test
       arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
@@ -168,7 +169,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  dependsOn: WindowsBuild
+  #dependsOn: WindowsBuild
   pool:
     name: DocFX
   strategy:
