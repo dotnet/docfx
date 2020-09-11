@@ -125,9 +125,9 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null, string? propName = null)
         {
-            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers, propName);
             if (xrefSpec == null)
             {
                 return (error, null, null);
@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error?, IXrefSpec?, string? href) Resolve(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null, string? propName = null)
         {
             var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
 
             if (xrefSpec is null)
             {
-                return (Errors.Xref.XrefNotFound(uid), null, null);
+                return (Errors.Xref.XrefNotFound(uid, uid.Value, propName), null, null);
             }
 
             return (null, xrefSpec, href);

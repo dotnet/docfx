@@ -180,7 +180,70 @@ namespace Microsoft.Docs.Build
 
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
 
+            // temporary mapping, will retired after we support config it in UI portal
+            jsonSchema = LearnErrorMapping(mime, jsonSchema);
+
             return new JsonSchemaValidator(jsonSchema, forceError: true);
+        }
+
+        private static JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
+        {
+            string mappingPath = string.Empty;
+
+            switch (mime)
+            {
+                case "LearningPath":
+                    mappingPath = "data/schemas/learningpath-error-mapping.json";
+                    break;
+
+                case "Module":
+                    mappingPath = "data/schemas/module-error-mapping.json";
+                    break;
+
+                case "ModuleUnit":
+                    mappingPath = "data/schemas/moduleunit-error-mapping.json";
+                    break;
+            }
+
+            if (!string.IsNullOrWhiteSpace(mappingPath))
+            {
+                var mapping = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(mappingPath), null);
+
+                LearnErrorMappingCore(jsonSchema, mapping);
+            }
+
+            return jsonSchema;
+        }
+
+        private static void LearnErrorMappingCore(JsonSchema jsonSchema, JsonSchema mapping)
+        {
+            foreach (var (propName, customRule) in mapping.Rules)
+            {
+                jsonSchema.Rules.Add(propName, customRule);
+            }
+
+            if (mapping.Items.schema != null)
+            {
+                switch (jsonSchema.Items)
+                {
+                    case (null, null):
+                        jsonSchema.Items = (mapping.Items.schema, null);
+                        break;
+                    case (JsonSchema itemsSchema, _):
+                        LearnErrorMappingCore(itemsSchema, mapping.Items.schema);
+                        break;
+                }
+            }
+
+            foreach (var (propName, subMapping) in mapping.Properties)
+            {
+                jsonSchema.Properties.TryGetValue(propName, out JsonSchema? subJsonSchema);
+
+                if (subJsonSchema != null)
+                {
+                    LearnErrorMappingCore(subJsonSchema, subMapping);
+                }
+            }
         }
     }
 }
