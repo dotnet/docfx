@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static bool IsInlineImage(this HtmlBlock node, SourceInfo<string> source)
+        public static bool IsInlineImage(this HtmlBlock node, int imageIndex)
         {
             var stack = new Stack<(HtmlToken? token, int visibleInlineCount, bool hasImage)>();
             stack.Push((null, 0, false));
@@ -184,14 +184,11 @@ namespace Microsoft.Docs.Build
                         if (token.IsInlineElement())
                         {
                             top.visibleInlineCount += 1;
-                            if (token.NameIs("img"))
+
+                            // Only look for the image specified by source info
+                            if (token.NameIs("img") && token.Range.Start.Index == imageIndex)
                             {
-                                // Only look for the image specified by source info
-                                var attributes = token.Attributes.ToArray().ToDictionary(a => a.Name.ToString(), StringComparer.InvariantCultureIgnoreCase);
-                                if (attributes.TryGetValue("src", out var src) && SourceInfoMatch(source.Source!, src.ValueRange))
-                                {
-                                    top.hasImage = true;
-                                }
+                                top.hasImage = true;
                             }
                         }
                         else
@@ -245,21 +242,13 @@ namespace Microsoft.Docs.Build
 
             // Should check if all tags are closed properly and throw warning if not
             return false;
-
-            bool SourceInfoMatch(SourceInfo s, HtmlTextRange r)
-            {
-                return s.Line == (node.Line + r.Start.Line + 1) &&
-                    s.EndLine == (node.Line + r.End.Line + 1) &&
-                    s.Column == (r.Start.Column + 1) &&
-                    s.EndColumn == (r.End.Column + 1);
-            }
         }
 
         public static void TransformLink(
             ref HtmlToken token,
             MarkdownObject? block,
             Func<SourceInfo<string>, string> transformLink,
-            Func<SourceInfo<string>, MarkdownObject?, string?, string>? transformImageLink = null)
+            Func<SourceInfo<string>, MarkdownObject?, string?, int, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
@@ -272,7 +261,8 @@ namespace Microsoft.Docs.Build
                             : transformImageLink(
                                 new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
                                 block,
-                                token.GetAttributeValueByName("alt")));
+                                token.GetAttributeValueByName("alt"),
+                                token.Range.Start.Index));
 
                     attribute = attribute.WithValue(link);
                 }

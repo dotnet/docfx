@@ -186,14 +186,14 @@ namespace Microsoft.Docs.Build
             return visible;
         }
 
-        public static bool IsInlineImage(this MarkdownObject node, SourceInfo<string> source)
+        public static bool IsInlineImage(this MarkdownObject node, int imageIndex)
         {
             switch (node)
             {
                 case Inline inline:
                     return inline.IsInlineImage();
                 case HtmlBlock htmlBlock:
-                    return htmlBlock.IsInlineImage(source);
+                    return htmlBlock.IsInlineImage(imageIndex);
                 default:
                     return false;
             }
