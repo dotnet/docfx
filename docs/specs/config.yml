@@ -422,7 +422,7 @@ repos:
       b.md:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"directory-not-found","message":"Invalid directory: 'https://docs.com/crr-url-using-path/2'."}
+    {"message_severity":"error","code":"directory-not-found"}
 ---
 # Dependency repositories should be correctly restored no matter the default branch is main or master - reference with main
 repos:

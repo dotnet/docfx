@@ -13,13 +13,13 @@ namespace Microsoft.Docs.Build
     {
         public abstract JToken Run(string scriptPath, string methodName, JToken arg);
 
-        public static JavaScriptEngine Create(string scriptDir = ".", JObject? global = null)
+        public static JavaScriptEngine Create(Package package, JObject? global = null)
         {
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
             // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
             return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? (JavaScriptEngine)new ChakraCoreJsEngine(scriptDir, global)
-                : new JintJsEngine(scriptDir, global);
+                ? (JavaScriptEngine)new ChakraCoreJsEngine(package, global)
+                : new JintJsEngine(package, global);
         }
     }
 }

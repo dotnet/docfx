@@ -19,16 +19,16 @@ namespace Microsoft.Docs.Build
     {
         private static int s_currentSourceContext;
 
-        private readonly string _scriptDir;
+        private readonly Package _package;
         private readonly JavaScriptContext _context = CreateContext();
         private readonly JavaScriptValue _global;
         private readonly JavaScriptNativeFunction _requireFunction;
         private readonly Stack<string> _dirnames = new Stack<string>();
-        private readonly Dictionary<string, JavaScriptValue> _modules = new Dictionary<string, JavaScriptValue>();
+        private readonly Dictionary<PathString, JavaScriptValue> _modules = new Dictionary<PathString, JavaScriptValue>();
 
-        public ChakraCoreJsEngine(string scriptDir, JObject? global = null)
+        public ChakraCoreJsEngine(Package package, JObject? global = null)
         {
-            _scriptDir = scriptDir;
+            _package = package;
             _requireFunction = new JavaScriptNativeFunction(Require);
 
             if (global != null)
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
         {
             return RunInContext(() =>
             {
-                var exports = Run(scriptPath);
+                var exports = Run(new PathString(scriptPath));
                 var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
                 var input = ToJavaScriptValue(arg);
 
@@ -88,16 +88,14 @@ namespace Microsoft.Docs.Build
             return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
         }
 
-        private JavaScriptValue Run(string scriptPath)
+        private JavaScriptValue Run(PathString scriptPath)
         {
-            scriptPath = Path.GetFullPath(Path.Combine(_scriptDir, scriptPath));
-
             if (_modules.TryGetValue(scriptPath, out var result))
             {
                 return result;
             }
 
-            var sourceCode = File.ReadAllText(scriptPath);
+            var sourceCode = _package.ReadString(scriptPath);
             var exports = JavaScriptValue.CreateObject();
             var module = JavaScriptValue.CreateObject();
             var exportsProperty = JavaScriptPropertyId.FromString("exports");
@@ -152,7 +150,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                return Run(Path.Combine(_dirnames.Peek(), arguments[1].ToString()));
+                return Run(new PathString(Path.Combine(_dirnames.Peek(), arguments[1].ToString())));
             }
             catch (Exception ex)
             {
