@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
 
                 var pageType = node.LandingPageType.Value;
                 FilePath servicePagePath;
