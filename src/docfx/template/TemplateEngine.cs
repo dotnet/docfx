@@ -54,14 +54,14 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
         }
 
-        public bool IsHtml(ContentType contentType, string? mime)
+        public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
         {
             return contentType switch
             {
-                ContentType.Redirection => true,
-                ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || _mustacheTemplate.HasTemplate($"{mime}.html"),
-                ContentType.TableOfContents => _mustacheTemplate.HasTemplate($"toc.html"),
-                _ => false,
+                ContentType.Redirection => RenderType.Content,
+                ContentType.Page => GetRenderType(mime),
+                ContentType.TableOfContents => GetTocRenderType(),
+                _ => RenderType.Component,
             };
         }
 
@@ -159,6 +159,37 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _js.Dispose();
+        }
+
+        private RenderType GetRenderType(SourceInfo<string?> mime)
+        {
+            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
+            {
+                return RenderType.Content;
+            }
+            try
+            {
+                return GetSchema(mime).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                return RenderType.Content;
+            }
+        }
+
+        private RenderType GetTocRenderType()
+        {
+            try
+            {
+                return GetSchema(new SourceInfo<string?>("toc")).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                // TODO: Remove after schema of toc is support in template
+                var isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                    || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                return isContentRenderType ? RenderType.Content : RenderType.Component;
+            }
         }
 
         private JObject LoadGlobalTokens()

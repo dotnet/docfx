@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             "_site/**",             // Default output location
             "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
+            "_themes.pdf/**",       // Default PDF template location
         };
 
         /// <summary>

@@ -126,6 +126,12 @@ namespace Microsoft.Docs.Build
                 return specsWithSameUid;
             }
 
+            // loc override fallback uid
+            if (specsWithSameUid.Any(spec => spec.DeclaringFile.Origin == FileOrigin.Main))
+            {
+                specsWithSameUid = specsWithSameUid.Where(spec => spec.DeclaringFile.Origin != FileOrigin.Fallback).ToArray();
+            }
+
             // multiple uid conflicts without moniker range definition
             // log an warning and take the first one order by the declaring file
             var duplicatedSpecs = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
@@ -144,18 +150,6 @@ namespace Microsoft.Docs.Build
             if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
             {
                 _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
-            }
-
-            // uid conflicts with different values of the same xref property
-            // log an warning and take the first one order by the declaring file
-            var xrefProperties = specsWithSameUid.SelectMany(x => x.XrefProperties.Keys).Distinct();
-            foreach (var xrefProperty in xrefProperties)
-            {
-                var conflictingNames = specsWithSameUid.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
-                if (conflictingNames.Count() > 1)
-                {
-                    _errors.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
-                }
             }
 
             return specsWithSameUid

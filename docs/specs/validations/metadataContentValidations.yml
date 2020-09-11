@@ -658,6 +658,62 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
+# Content validation - H1 unique log limit
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1
+  b.md: |
+    # Title 1
+  c.md: |
+    # Title 1
+  d.md: |
+    # Title 1
+  e.md: |
+    # Title 1
+  f.md: |
+    # Title 1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"c.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"f.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
 # Content validation - Publish Url - max level
 # Validation is only worked in the conceptual page
 inputs:
@@ -2091,6 +2147,71 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'c.md(2,8), d.md'","file":"c.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'c.md(2,8), d.md'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
+# title unique check - log limit
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "message": "Title '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ---
+    title: title 1
+    ---
+  b.md: |
+    ---
+    title: title 1
+    ---
+  c.md: |
+    ---
+    title: title 1
+    ---
+  d.md: |
+    ---
+    title: title 1
+    ---
+  e.md: |
+    ---
+    title: title 1
+    ---
+  f.md: |
+    ---
+    title: title 1
+    ---
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"b.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"a.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"e.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"d.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"c.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"f.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
+---
 # Canonial Version title unique check
 inputs:
   docfx.yml: |
@@ -2931,36 +3052,67 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'csharp beta-1.0' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'c#' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
 ---
-# Content validation - links LinkTextPresent validation
+# Content validation - toc entry duplicated - log unlimit
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
   rules.json: |
     {
-      "links": {
-        "rules": [
-          {
-            "type": "LinkTextPresent",
-            "message": "Missing link text for link '{0}'. Add appropriate text. ",
-            "code": "link-text-missing",
-            "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
-            ]
-          }
-        ]
-      }
+      "toc": {
+      "rules": [
+        {
+          "type": "TocEntryDuplicated",
+          "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a TOC.",
+          "code": "toc-entry-duplicated",
+          "severity": "SUGGESTION",
+          "exclusions": [
+            "landingpage",
+            "hubpage",
+          ]
+        }
+      ]
     }
-  a.md: |
-    [![](inner_link)](outer_link#lightbox)
-    [![](inner_link)](outer_link)
+    }
+  TOC.yml: |
+    splitItemsBy: name
+    items:
+    - name: 1
+      href: a.md
+    - name: 2
+      href: a.md
+    - name: 3
+      href: b.md
+    - name: 4
+      href: b.md
+    - name: 5
+      href: c.md
+    - name: 6
+      href: c.md
+    - name: 7
+      href: d.md
+    - name: 8
+      href: d.md
+    - name: 9
+      href: e.md
+    - name: 10
+      href: e.md
+    - name: 11
+      href: f.md
+    - name: 12
+      href: f.md
+  a.md:
+  b.md:
+  c.md:
+  d.md:
+  e.md:
+  f.md:
 outputs:
   a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  toc.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'csharp beta-1.0' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"dev-language-invalid","message":"Dev language 'c#' is not allowed. Specify a valid language slug from the devlang taxonomy. Language values are case-sensitive.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md, b.md, c.md, d.md, e.md, f.md. Each article can only be referenced once in a TOC.","file":"TOC.yml","line":0,"end_line":0,"column":0,"end_column":0,"log_item_type":"user"}
