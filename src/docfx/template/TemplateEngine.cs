@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 template = new PackagePath(Path.Combine(buildOptions.DocsetPath, "_themes"));
             }
 
-            _package = packageResolver.ResolvePackage2(template, PackageFetchOptions.DepthOne);
+            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
 
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                 ["metadata"] = model.PageMetadata,
             };
 
-            return _liquid.Render(layout, liquidModel);
+            return _liquid.Render(layout, mime, liquidModel);
         }
 
         public string RunMustache(string templateName, JToken pageModel, FilePath file)

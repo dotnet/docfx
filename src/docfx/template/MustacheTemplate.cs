@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<JsonSchemaTransformer>? _jsonSchemaTransformer;
         private readonly ParserPipeline _parserPipeline;
 
-        private readonly ConcurrentDictionary<PathString, BlockToken?> _templates = new ConcurrentDictionary<PathString, BlockToken?>();
+        private readonly ConcurrentDictionary<string, BlockToken?> _templates = new ConcurrentDictionary<string, BlockToken?>();
 
         public MustacheTemplate(
             Package package, string? baseDirectory = null, JObject? global = null, Lazy<JsonSchemaTransformer>? jsonSchemaTransformer = null)
@@ -200,9 +200,9 @@ namespace Microsoft.Docs.Build
 
         private BlockToken? GetTemplate(string name)
         {
-            return _templates.GetOrAdd(_baseDirectory.Concat(new PathString(name)), key =>
+            return _templates.GetOrAdd(name, _ =>
             {
-                var content = _package.TryReadString(key);
+                var content = _package.TryReadString(_baseDirectory.Concat(new PathString(name)));
                 if (content is null)
                 {
                     return null;

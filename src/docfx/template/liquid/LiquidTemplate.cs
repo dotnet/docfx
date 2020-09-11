@@ -40,9 +40,11 @@ namespace Microsoft.Docs.Build
                 : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
         }
 
-        public string Render(string templateName, JObject model)
+        public string Render(string templateName, SourceInfo<string?> mime, JObject model)
         {
-            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"));
+            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"))
+                ?? throw Errors.Template.LiquidNotFound(mime).ToException(isError: false);
+
             var registers = new Hash
             {
                 ["file_system"] = _fileSystem,
@@ -82,10 +84,9 @@ namespace Microsoft.Docs.Build
             return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
         }
 
-        private Template LoadTemplate(PathString path)
+        private Template? LoadTemplate(PathString path)
         {
-            return _templates.GetOrAdd(path, new Lazy<Template?>(() => LoadTemplateCore(path))).Value
-                ?? throw Errors.Template.LiquidNotFound(path).ToException(isError: false);
+            return _templates.GetOrAdd(path, new Lazy<Template?>(() => LoadTemplateCore(path))).Value;
         }
 
         private Template? LoadTemplateCore(PathString path)
@@ -116,11 +117,12 @@ namespace Microsoft.Docs.Build
 
         private class PackageFileSystem : ITemplateFileSystem
         {
-            private readonly Func<PathString, Template> _loadTemplate;
+            private readonly Func<PathString, Template?> _loadTemplate;
 
-            public PackageFileSystem(Func<PathString, Template> loadTemplate) => _loadTemplate = loadTemplate;
+            public PackageFileSystem(Func<PathString, Template?> loadTemplate) => _loadTemplate = loadTemplate;
 
-            public Template GetTemplate(DotLiquid.Context context, string templateName) => _loadTemplate(new PathString($"_includes/{templateName}.liquid"));
+            public Template GetTemplate(DotLiquid.Context context, string templateName) =>
+                _loadTemplate(new PathString($"_includes/{templateName}.liquid")) ?? throw new FileNotFoundException($"_includes/{templateName}.liquid");
 
             public string ReadTemplateFile(DotLiquid.Context context, string templateName) => throw new NotSupportedException();
         }

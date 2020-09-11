@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var opsAccessor = new OpsAccessor(errors, credentialProvider);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
-            var packageResolver = new LocalPackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
+            var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
             disposables.Add(packageResolver);
 
             var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver);

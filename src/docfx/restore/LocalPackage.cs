@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
 
         public override PathString? TryGetPhysicalPath(PathString path)
         {
-            var fullPath = Path.GetFullPath(Path.Combine(_directory, path));
+            var fullPath = Path.Combine(_directory, path);
             if (File.Exists(fullPath))
             {
                 return new PathString(fullPath);
