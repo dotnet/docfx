@@ -193,16 +193,7 @@ namespace Microsoft.Docs.Build
                 case Inline inline:
                     return inline.IsInlineImage();
                 case HtmlBlock htmlBlock:
-                    if (htmlBlock.IsInlineImage(source))
-                    {
-                        Console.WriteLine($"HtmlBlockInlineImage: {source.Source!.File} {source.Source!.Line}:{source.Source!.Column}-" +
-                            $"{source.Source!.EndLine}:{source.Source!.EndColumn}");
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return htmlBlock.IsInlineImage(source);
                 default:
                     return false;
             }
