@@ -5,9 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HtmlReaderWriter;
 using Markdig;
-using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -71,105 +69,6 @@ namespace Microsoft.Docs.Build
                     contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, isInclude);
                 }
             });
-        }
-
-        public static bool IsInlineImage(this MarkdownObject node)
-        {
-            switch (node)
-            {
-                case Inline inline:
-                    return inline.IsInlineImage();
-                case HtmlBlock htmlBlock:
-                    return htmlBlock.IsInlineImage();
-                default:
-                    return false;
-            }
-        }
-
-        private static bool IsInlineImage(this Inline node)
-        {
-            switch (node)
-            {
-                case LinkInline linkInline when linkInline.IsImage:
-                case TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension:
-                case HtmlInline htmlInline when htmlInline.Tag.StartsWith("<img", StringComparison.InvariantCultureIgnoreCase):
-                    for (MarkdownObject current = node, parent = node.Parent; current != null;)
-                    {
-                        if (parent is ContainerInline containerInline)
-                        {
-                            foreach (var child in containerInline)
-                            {
-                                if (child != current && child.IsVisible())
-                                {
-                                    return true;
-                                }
-                            }
-                            current = parent;
-                            parent = containerInline.Parent;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    return node.GetPathToRootExclusive().Any(o => o is TableCell);
-                default:
-                    return false;
-            }
-        }
-
-        private static bool IsInlineImage(this HtmlBlock node)
-        {
-            var stack = new Stack<(HtmlToken? token, int elementCount, bool hasImg)>();
-            stack.Push((null, 0, false));
-            var reader = new HtmlReader(node.Lines.ToString());
-            while (reader.Read(out var token))
-            {
-                var top = stack.Pop();
-                switch (token.Type)
-                {
-                    case HtmlTokenType.StartTag:
-                        top.elementCount += 1;
-                        top.hasImg |= token.NameIs("img");
-                        stack.Push(top);
-                        if (!token.IsSelfClosing && !IsStandardSelfClosingTag(token))
-                        {
-                            stack.Push((token, 0, false));
-                        }
-                        break;
-                    case HtmlTokenType.EndTag:
-                        if (!top.token.HasValue || !top.token.Value.NameIs(token.Name.Span))
-                        {
-                            // Invalid HTML structure, should throw warning
-                            stack.Push(top);
-                        }
-                        else
-                        {
-                            if (top.hasImg && top.elementCount > 1)
-                            {
-                                return true;
-                            }
-                        }
-                        break;
-                    case HtmlTokenType.Text:
-                        top.elementCount += 1;
-                        stack.Push(top);
-                        break;
-                    default:
-                        stack.Push(top);
-                        break;
-                }
-            }
-
-            // Should check if all tags are closed properly and throw warning if not
-            return false;
-
-            bool IsStandardSelfClosingTag(HtmlToken token)
-            {
-                return token.NameIs("area") || token.NameIs("base") || token.NameIs("br") || token.NameIs("col") || token.NameIs("command") ||
-                    token.NameIs("embed") || token.NameIs("hr") || token.NameIs("img") || token.NameIs("input") || token.NameIs("link") ||
-                    token.NameIs("meta") || token.NameIs("param") || token.NameIs("source");
-            }
         }
 
         private static void BuildHeadingNodes(
