@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Output _output;
         private readonly Package _package;
-        private readonly TemplateDefinition _templateDefinition;
+        private readonly Lazy<TemplateDefinition> _templateDefinition;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
@@ -42,7 +42,10 @@ namespace Microsoft.Docs.Build
             }
 
             _package = packageResolver.ResolvePackage2(template, PackageFetchOptions.DepthOne);
-            _templateDefinition = _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition();
+
+            _templateDefinition = new Lazy<TemplateDefinition>(() =>
+                _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
+
             _global = _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token") ?? new JObject();
 
             _liquid = new LiquidTemplate(_package, _global);
@@ -129,12 +132,12 @@ namespace Microsoft.Docs.Build
 
         public void CopyAssetsToOutput()
         {
-            if (!_config.SelfContained || _templateDefinition.Assets.Length <= 0)
+            if (!_config.SelfContained || _templateDefinition.Value.Assets.Length <= 0)
             {
                 return;
             }
 
-            var glob = GlobUtility.CreateGlobMatcher(_templateDefinition.Assets);
+            var glob = GlobUtility.CreateGlobMatcher(_templateDefinition.Value.Assets);
 
             Parallel.ForEach(_package.GetFiles(), file =>
             {
