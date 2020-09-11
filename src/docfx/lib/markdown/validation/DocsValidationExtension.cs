@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HtmlAgilityPack;
+using HtmlReaderWriter;
 using Markdig;
 using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
@@ -120,26 +120,56 @@ namespace Microsoft.Docs.Build
 
         private static bool IsInlineImage(this HtmlBlock node)
         {
-            var html = new HtmlDocument();
-            html.LoadHtml(node.Lines.ToString());
-            var imgNodes = html.DocumentNode.SelectNodes("//img");
-            foreach (var img in imgNodes)
+            var stack = new Stack<(HtmlToken? token, int elementCount, bool hasImg)>();
+            stack.Push((null, 0, false));
+            var reader = new HtmlReader(node.Lines.ToString());
+            while (reader.Read(out var token))
             {
-                for (HtmlNode current = img, parent = img.ParentNode; parent != html.DocumentNode;)
+                var top = stack.Pop();
+                switch (token.Type)
                 {
-                    foreach (var child in parent.ChildNodes)
-                    {
-                        if (child != current && HtmlUtility.IsVisible(child.OuterHtml))
+                    case HtmlTokenType.StartTag:
+                        top.elementCount += 1;
+                        top.hasImg |= token.NameIs("img");
+                        stack.Push(top);
+                        if (!token.IsSelfClosing && !IsStandardSelfClosingTag(token))
                         {
-                            return true;
+                            stack.Push((token, 0, false));
                         }
-                    }
-                    current = parent;
-                    parent = parent.ParentNode;
+                        break;
+                    case HtmlTokenType.EndTag:
+                        if (!top.token.HasValue || !top.token.Value.NameIs(token.Name.Span))
+                        {
+                            // Invalid HTML structure, should throw warning
+                            stack.Push(top);
+                        }
+                        else
+                        {
+                            if (top.hasImg && top.elementCount > 1)
+                            {
+                                return true;
+                            }
+                        }
+                        break;
+                    case HtmlTokenType.Text:
+                        top.elementCount += 1;
+                        stack.Push(top);
+                        break;
+                    default:
+                        stack.Push(top);
+                        break;
                 }
-                return false;
             }
+
+            // Should check if all tags are closed properly and throw warning if not
             return false;
+
+            bool IsStandardSelfClosingTag(HtmlToken token)
+            {
+                return token.NameIs("area") || token.NameIs("base") || token.NameIs("br") || token.NameIs("col") || token.NameIs("command") ||
+                    token.NameIs("embed") || token.NameIs("hr") || token.NameIs("img") || token.NameIs("input") || token.NameIs("link") ||
+                    token.NameIs("meta") || token.NameIs("param") || token.NameIs("source");
+            }
         }
 
         private static void BuildHeadingNodes(
