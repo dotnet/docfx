@@ -27,6 +27,6 @@ namespace Microsoft.Docs.Build
 
         public override Stream ReadStream(PathString path) => new MemoryStream(Encoding.UTF8.GetBytes(_files[path]));
 
-        public override string TryGetPhysicalPath(PathString path) => null;
+        public override PathString? TryGetPhysicalPath(PathString path) => null;
     }
 }

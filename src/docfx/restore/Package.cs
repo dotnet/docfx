@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public abstract bool Exists(PathString path);
 
-        public abstract string? TryGetPhysicalPath(PathString path);
+        public abstract PathString? TryGetPhysicalPath(PathString path);
 
         public virtual string? TryReadString(PathString path)
         {

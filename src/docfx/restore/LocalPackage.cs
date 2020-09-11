@@ -44,10 +44,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public override string? TryGetPhysicalPath(PathString path)
+        public override PathString? TryGetPhysicalPath(PathString path)
         {
             var fullPath = Path.GetFullPath(Path.Combine(_directory, path));
-            return File.Exists(fullPath) ? fullPath : null;
+            if (File.Exists(fullPath))
+            {
+                return new PathString(fullPath);
+            }
+
+            return null;
         }
     }
 }
