@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                         UrlLink = link,
                         AltText = altText,
                         IsImage = true,
-                        IsInlineImage = origin.IsInlineImage(),
+                        IsInlineImage = origin.IsInlineImage(link),
                         SourceInfo = link.Source,
                         ParentSourceInfoList = origin.GetInclusionStack(),
                     }, validationContext).GetAwaiter().GetResult());

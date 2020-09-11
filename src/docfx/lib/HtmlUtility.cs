@@ -164,6 +164,37 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        public static bool IsInlineElement(string tagName)
+        {
+            var inlineTags = new[]
+            {
+                "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
+                "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
+                "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
+                "var", "video", "wbr",
+            };
+            return inlineTags.Contains(tagName.ToLowerInvariant());
+        }
+
+        public static bool IsInlineElement(this HtmlToken token)
+        {
+            return IsInlineElement(token.Name.ToString());
+        }
+
+        public static bool IsSelfClosingElement(string tagName)
+        {
+            var tags = new[]
+            {
+                "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
+            };
+            return tags.Contains(tagName.ToLowerInvariant());
+        }
+
+        public static bool IsSelfClosingElement(this HtmlToken token)
+        {
+            return IsSelfClosingElement(token.Name.ToString());
+        }
+
         public static void TransformLink(
             ref HtmlToken token,
             MarkdownObject? block,

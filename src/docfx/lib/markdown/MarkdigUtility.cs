@@ -185,14 +185,14 @@ namespace Microsoft.Docs.Build
             return visible;
         }
 
-        public static bool IsInlineImage(this MarkdownObject node)
+        public static bool IsInlineImage(this MarkdownObject node, SourceInfo<string> source)
         {
             switch (node)
             {
                 case Inline inline:
                     return inline.IsInlineImage();
                 case HtmlBlock htmlBlock:
-                    return htmlBlock.IsInlineImage();
+                    return htmlBlock.IsInlineImage(source);
                 default:
                     return false;
             }
@@ -230,7 +230,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsInlineImage(this HtmlBlock node)
+        private static bool IsInlineImage(this HtmlBlock node, SourceInfo<string> source)
         {
             var stack = new Stack<(HtmlToken? token, int elementCount, bool hasImg)>();
             stack.Push((null, 0, false));
@@ -241,10 +241,26 @@ namespace Microsoft.Docs.Build
                 switch (token.Type)
                 {
                     case HtmlTokenType.StartTag:
-                        top.elementCount += 1;
-                        top.hasImg |= token.NameIs("img");
+                        if (token.IsInlineElement())
+                        {
+                            top.elementCount += 1;
+                            if (token.NameIs("img"))
+                            {
+                                // Only look for the image specified by source info
+                                var attributes = token.Attributes.ToArray().ToDictionary(a => a.Name.ToString(), StringComparer.InvariantCultureIgnoreCase);
+                                if (attributes.TryGetValue("src", out var src) && SourceInfoMatch(source.Source!, src.ValueRange))
+                                {
+                                    top.hasImg = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            top.elementCount = 0;
+                            top.hasImg = false;
+                        }
                         stack.Push(top);
-                        if (!token.IsSelfClosing && !IsStandardSelfClosingTag(token))
+                        if (!token.IsSelfClosing && !token.IsSelfClosingElement())
                         {
                             stack.Push((token, 0, false));
                         }
@@ -257,14 +273,23 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            if (top.hasImg && top.elementCount > 1)
+                            if (top.hasImg)
                             {
-                                return true;
+                                if (top.elementCount > 1)
+                                {
+                                    return true;
+                                }
+                                if (top.token.Value.IsInlineElement())
+                                {
+                                    var parent = stack.Pop();
+                                    parent.hasImg = true;
+                                    stack.Push(parent);
+                                }
                             }
                         }
                         break;
                     case HtmlTokenType.Text:
-                        top.elementCount += 1;
+                        top.elementCount += token.RawText.Trim().Length > 0 ? 1 : 0;
                         stack.Push(top);
                         break;
                     default:
@@ -276,11 +301,12 @@ namespace Microsoft.Docs.Build
             // Should check if all tags are closed properly and throw warning if not
             return false;
 
-            bool IsStandardSelfClosingTag(HtmlToken token)
+            bool SourceInfoMatch(SourceInfo s, HtmlTextRange r)
             {
-                return token.NameIs("area") || token.NameIs("base") || token.NameIs("br") || token.NameIs("col") || token.NameIs("command") ||
-                    token.NameIs("embed") || token.NameIs("hr") || token.NameIs("img") || token.NameIs("input") || token.NameIs("link") ||
-                    token.NameIs("meta") || token.NameIs("param") || token.NameIs("source");
+                return s.Line == (node.Line + r.Start.Line + 1) &&
+                    s.EndLine == (node.Line + r.End.Line + 1) &&
+                    s.Column == (r.Start.Column + 1) &&
+                    s.EndColumn == (r.End.Column + 1);
             }
         }
 

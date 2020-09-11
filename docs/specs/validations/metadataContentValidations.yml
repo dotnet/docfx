@@ -2603,6 +2603,12 @@ inputs:
     <p><img src="a.jpg" alt="inline"> This image is inline</p>
 
     <img src="a.jpg" alt="only html img">
+
+    <div>
+      <p><img src="a.jpg" alt="not inline"></p>
+      <img src="a.jpg" alt="still not inline"/>
+      <p><span><img src="a.jpg" alt="inline"></span> This image is inline</p>
+    </div>
 outputs:
   a.json:
   a.jpg:
@@ -2614,6 +2620,7 @@ outputs:
     {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":52,"end_column":57}
     {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":91,"end_column":96}
     {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":13,"end_line":13,"column":14,"end_column":19}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":20,"end_line":20,"column":22,"end_column":27}
 ---
 # Hidden PR only validation rule result
 inputs:
