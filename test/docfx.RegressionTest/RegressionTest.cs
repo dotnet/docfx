@@ -358,6 +358,8 @@ namespace Microsoft.Docs.Build
         {
             var azureReposBasicAuth = $"-c http.https://dev.azure.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_azureDevopsToken)}\"";
             var githubBasicAuth = $"-c http.https://github.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_githubToken)}\"";
+            Console.WriteLine("########################################################################################################");
+            Console.WriteLine(s_azureDevopsToken);
             Console.WriteLine(azureReposBasicAuth);
             return $"{azureReposBasicAuth} {githubBasicAuth}";
         }
