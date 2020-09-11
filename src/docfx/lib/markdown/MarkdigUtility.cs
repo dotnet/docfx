@@ -256,6 +256,11 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
+                            if (top.hasImg && top.elementCount > 1)
+                            {
+                                return true;
+                            }
+
                             top.elementCount = 0;
                             top.hasImg = false;
                         }
