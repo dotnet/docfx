@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         private const string TestDiskRoot = "D:/";
 
         private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
-        private static readonly string s_testEnvVar = Path.Join(TestDiskRoot, "TEST_ENV_VAR");
+        private static readonly string? s_testEnvVar = Environment.GetEnvironmentVariable("TEST_ENV_VAR");
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");

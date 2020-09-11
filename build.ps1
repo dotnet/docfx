@@ -37,6 +37,7 @@ function publishBinaryPackages() {
 
 try {
     pushd $PSScriptRoot
+    Write-Host ($env:AZURE_DEVOPS_TOKEN).substring(0, 5)
     if ($env:BUILD_REASON -ne "PullRequest") {
         publish
     }

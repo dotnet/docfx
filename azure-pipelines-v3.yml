@@ -132,6 +132,7 @@ jobs:
   # Build Binaries
   - powershell: ./build.ps1
     displayName: Build Binaries
+    AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
 
   # Build RegressionTest into Artifact 
   - powershell: |
