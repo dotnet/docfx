@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
 
         public bool PullRequestOnly { get; }
 
+        public object[] OverrideParameters { get; }
+
         public Error(
             ErrorLevel level,
             string code,
@@ -31,7 +33,8 @@ namespace Microsoft.Docs.Build
             SourceInfo? source = null,
             string? name = null,
             PathString? originalPath = null,
-            bool pullRequestOnly = false)
+            bool pullRequestOnly = false,
+            params object[] overrideParameters)
         {
             Level = level;
             Code = code;
@@ -40,6 +43,7 @@ namespace Microsoft.Docs.Build
             Name = name;
             OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
+            OverrideParameters = overrideParameters;
         }
 
         public Error WithCustomRule(CustomRule customRule, bool? enabled = null)
@@ -56,10 +60,14 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Off;
             }
 
+            var message = string.IsNullOrEmpty(customRule.OverrideMessage) ?
+                string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}"
+                : string.Format(customRule.OverrideMessage, OverrideParameters);
+
             return new Error(
                 level,
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
-                string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
+                message,
                 Source,
                 Name,
                 OriginalPath,

@@ -400,8 +400,8 @@ namespace Microsoft.Docs.Build
             /// Failed to resolve uid defined by [link](xref:uid) or <xref:uid> syntax.
             /// </summary>
             /// Behavior: ❌ Message: ✔️
-            public static Error XrefNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'.", source);
+            public static Error XrefNotFound(SourceInfo<string> source, string uid, string? propName = null)
+                => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'.", source, propName, null, false, uid);
 
             /// <summary>
             /// The same uid of the same version is defined in multiple places
