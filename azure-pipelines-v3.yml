@@ -169,7 +169,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  #dependsOn: WindowsBuild
+  dependsOn: WindowsBuild
   pool:
     name: DocFX
   strategy:
