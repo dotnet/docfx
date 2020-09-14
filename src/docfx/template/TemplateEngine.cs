@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -230,7 +229,14 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrWhiteSpace(mappingPath))
             {
-                var mapping = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(mappingPath), null);
+                string absoluteMappingPath = Path.Combine(AppContext.BaseDirectory, mappingPath);
+
+                if (!File.Exists(absoluteMappingPath))
+                {
+                    return jsonSchema;
+                }
+
+                var mapping = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(absoluteMappingPath), null);
 
                 LearnErrorMappingCore(jsonSchema, mapping);
             }
