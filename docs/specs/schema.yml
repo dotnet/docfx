@@ -537,7 +537,7 @@ outputs:
     {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: UID. A valid UID is required for each learning path.","file":"patha.yml","line":2}
     {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"patha.yml","line":2}
     {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-child-not-found","message":"Child uid(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
+    {"message_severity":"error","code":"path-child-not-found","message":"Child UID(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
 ---
 # error mapping for Learn Valdiation based on SDP, Module
 inputs:
@@ -590,7 +590,7 @@ outputs:
     {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: UID. A valid UID is required for each module.","file":"modulea.yml","line":2}
     {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"modulea.yml","line":2}
     {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-child-not-found","message":"Child uid(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
+    {"message_severity":"error","code":"module-child-not-found","message":"Child UID(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
 ---
 # error mapping for Learn Valdiation based on SDP, ModuleUnit
 inputs:

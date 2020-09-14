@@ -7,7 +7,7 @@
             "xref-not-found": {
               "severity": "error",
               "code": "path-child-not-found",
-              "overrideMessage": "Child uid(s): '{0}' can't be found."
+              "overrideMessage": "Child UID(s): '{0}' can't be found."
             }
           }
         }

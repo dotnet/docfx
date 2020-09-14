@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -219,22 +220,13 @@ namespace Microsoft.Docs.Build
 
         private static JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
         {
-            string mappingPath = string.Empty;
-
-            switch (mime)
+            string mappingPath = mime switch
             {
-                case "LearningPath":
-                    mappingPath = "data/schemas/learningpath-error-mapping.json";
-                    break;
-
-                case "Module":
-                    mappingPath = "data/schemas/module-error-mapping.json";
-                    break;
-
-                case "ModuleUnit":
-                    mappingPath = "data/schemas/moduleunit-error-mapping.json";
-                    break;
-            }
+                "LearningPath" => "data/schemas/learningpath-error-mapping.json",
+                "Module" => "data/schemas/module-error-mapping.json",
+                "ModuleUnit" => "data/schemas/moduleunit-error-mapping.json",
+                _ => string.Empty,
+            };
 
             if (!string.IsNullOrWhiteSpace(mappingPath))
             {
