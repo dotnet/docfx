@@ -2559,6 +2559,73 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
 ---
+# Content Validation - inline image
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageInline",
+            "message": "Image '{0}' is inline with text.",
+            "code": "image-inline",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.jpg:
+  a.md: |
+    # :::image type="content" source="a.jpg" alt-text="in heading"::: Heading 1
+
+    ## ![in heading 2](a.jpg) Heading 2
+
+    | C1 | C2 |
+    |----|----|
+    | :::image type="content" source="a.jpg" alt-text="in table"::: | In Table |
+
+    [![image in link](a.jpg) in link](a.jpg) <img src="a.jpg" alt="html img"> <span><img src="a.jpg" alt="img in span"></span>
+
+    <p><img src="a.jpg" alt="not inline"></p>
+
+    <p><img src="a.jpg" alt="inline"> This image is inline</p>
+
+    <img src="a.jpg" alt="only html img">
+
+    <div>
+      <p><img src="a.jpg" alt="not inline"></p>
+      <img src="a.jpg" alt="still not inline"/>
+      <p><span><img src="a.jpg" alt="inline"></span> This image is inline</p>
+      <img src="a.jpg" alt="inline"/><img src="a.jpg" alt="inline"/>
+      <p>some text</p>
+    </div>
+outputs:
+  a.json:
+  a.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":1,"end_line":1,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":3,"end_line":3,"column":4,"end_column":4}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":7,"end_line":7,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":2,"end_column":2}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":52,"end_column":57}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":91,"end_column":96}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":13,"end_line":13,"column":14,"end_column":19}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":20,"end_line":20,"column":22,"end_column":27}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":21,"end_line":21,"column":13,"end_column":18}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":21,"end_line":21,"column":44,"end_column":49}
+---
 # Hidden PR only validation rule result
 inputs:
   docfx.yml: |
