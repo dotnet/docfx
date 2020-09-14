@@ -485,3 +485,27 @@ outputs:
         {"asset_id": "original_b", "original_type": "Conceptual"},
       ]
     }
+---
+# Support public template
+inputs:
+  docfx.yml: |
+    template: "https://static.docs.com/ui/latest"
+  docs/a.yml: |
+    #YamlMime:TestData
+    test: b.md
+  docs/b.md:
+remoteFiles:
+  https://static.docs.com/ui/latest/schemas/TestData.schema.json: |
+    {
+      "renderType": "component",
+      "type": "object",
+      "properties": {
+        "test": {"contentType": "Href"},
+      }
+    }
+outputs:
+  docs/a.json: |
+    {
+      "test": "b"
+    }
+  docs/b.json:

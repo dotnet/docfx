@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Polly;
 using Polly.Extensions.Http;
@@ -52,7 +53,30 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(SourceInfo<string> file)
         {
+            if (UrlUtility.IsHttp(file))
+            {
+                var content = TestQuirks.RemoteFileProxy?.Invoke(file);
+                if (content != null)
+                {
+                    byte[] byteArray = Encoding.ASCII.GetBytes(content);
+                    return new MemoryStream(byteArray);
+                }
+            }
             return File.OpenRead(ResolveFilePath(file));
+        }
+
+        public bool TryResolveFilePath(SourceInfo<string> file, out string? result)
+        {
+            try
+            {
+                result = ResolveFilePath(file);
+                return true;
+            }
+            catch (DocfxException ex) when (ex.Error.Code == "file-not-found" || ex.Error.Code == "download-failed")
+            {
+                result = default;
+                return false;
+            }
         }
 
         public string ResolveFilePath(SourceInfo<string> file)
@@ -77,6 +101,11 @@ namespace Microsoft.Docs.Build
                 throw Errors.Link.FileNotFound(file).ToException();
             }
 
+            var content = TestQuirks.RemoteFileProxy?.Invoke(file);
+            if (content != null)
+            {
+                return file;
+            }
             return DownloadFromUrl(file);
         }
 

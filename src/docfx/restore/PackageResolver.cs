@@ -44,9 +44,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options)
+        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options, FileResolver fileResolver)
         {
-            return new LocalPackage(ResolvePackage(package, options));
+            return package.Type switch
+            {
+                PackageType.PublicTemplate => new PublicTemplatePackage(package.Url, fileResolver),
+                _ => new LocalPackage(ResolvePackage(package, options)),
+            };
         }
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
@@ -57,7 +61,6 @@ namespace Microsoft.Docs.Build
                     var gitPath = DownloadGitRepository(package, options);
                     EnterGitReaderLock(gitPath);
                     return gitPath;
-
                 default:
                     return Path.Combine(_docsetPath, package.Path);
             }
