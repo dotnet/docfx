@@ -248,7 +248,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (propName, customRule) in mapping.Rules)
             {
-                jsonSchema.Rules.Add(propName, customRule);
+                jsonSchema.Rules.TryAdd(propName, customRule);
             }
 
             if (mapping.Items.schema != null)
@@ -258,17 +258,28 @@ namespace Microsoft.Docs.Build
                     case (null, null):
                         jsonSchema.Items = (mapping.Items.schema, null);
                         break;
-                    case (JsonSchema itemsSchema, _):
+
+                    case (JsonSchema itemsSchema, null):
                         LearnErrorMappingCore(itemsSchema, mapping.Items.schema);
+                        break;
+
+                    case (null, JsonSchema[] itemsSchemas):
+                        foreach (var schema in itemsSchemas)
+                        {
+                            LearnErrorMappingCore(schema, mapping.Items.schema);
+                        }
+
+                        if (jsonSchema.AdditionalItems != null && jsonSchema.AdditionalItems != JsonSchema.FalseSchema)
+                        {
+                            LearnErrorMappingCore(jsonSchema.AdditionalItems, mapping.Items.schema);
+                        }
                         break;
                 }
             }
 
             foreach (var (propName, subMapping) in mapping.Properties)
             {
-                jsonSchema.Properties.TryGetValue(propName, out JsonSchema? subJsonSchema);
-
-                if (subJsonSchema != null)
+                if (jsonSchema.Properties.TryGetValue(propName, out JsonSchema? subJsonSchema) && subJsonSchema != null)
                 {
                     LearnErrorMappingCore(subJsonSchema, subMapping);
                 }

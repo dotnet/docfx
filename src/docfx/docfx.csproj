@@ -47,16 +47,4 @@
     <ProjectReference Include="../Microsoft.Docs.LearnValidation/Microsoft.Docs.LearnValidation.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="data\schemas\learningpath-error-mapping.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\schemas\module-error-mapping.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="data\schemas\moduleunit-error-mapping.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
