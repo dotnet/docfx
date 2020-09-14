@@ -86,9 +86,10 @@ namespace Microsoft.Docs.Build
                                 hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
                             }
 
-                            var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                            var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = hrefRelativePath;
+                            var hrefRelativePathToDocset = Path.GetRelativePath(_docsetPath, hrefFileFullPath);
+                            var hrefFullPathOfDocset = $"~/{hrefRelativePathToDocset}";
+
+                            childHref = hrefFullPathOfDocset;
                         }
 
                         child = new ServicePageItem(childName, childHref, null);

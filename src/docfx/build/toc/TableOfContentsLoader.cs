@@ -67,13 +67,14 @@ namespace Microsoft.Docs.Build
                 var servicePages = new List<FilePath>();
                 var referencedFiles = new List<FilePath>();
                 var referencedTocs = new List<FilePath>();
-                var node = LoadTocFile(file, file, referencedFiles, referencedTocs);
+                TableOfContentsNode node = new TableOfContentsNode();
 
                 if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
                 {
                     if (joinTOCConfig.TopLevelToc != null)
                     {
-                        node = JoinToc(node, joinTOCConfig.TopLevelToc);
+                        node = LoadTocFile(file, file, referencedFiles, referencedTocs, false);
+                        node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
 
                         // Generate Service Page.
                         ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
@@ -86,39 +87,69 @@ namespace Microsoft.Docs.Build
                         node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
                     }
                 }
+                else
+                {
+                    node = LoadTocFile(file, file, referencedFiles, referencedTocs, true);
+                }
+
                 return (node, referencedFiles, referencedTocs, servicePages);
             });
         }
 
-        private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
+        private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath, JoinTOCConfig joinTOCConfig)
         {
             var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
-            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
+            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>(), joinTOCConfig);
             return topLevelToc;
         }
 
-        private void TraverseAndMerge(TableOfContentsNode node, List<SourceInfo<TableOfContentsNode>> itemsToMatch, HashSet<TableOfContentsNode> matched)
+        private void TraverseAndMerge(
+            TableOfContentsNode node,
+            List<SourceInfo<TableOfContentsNode>> itemsToMatch,
+            HashSet<TableOfContentsNode> matched,
+            JoinTOCConfig joinTOCConfig)
         {
+            var referenceTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.ReferenceToc);
+            referenceTOCRelativeDir = string.IsNullOrEmpty(referenceTOCRelativeDir) ? "." : referenceTOCRelativeDir;
+            var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
+
             foreach (var pattern in node.Children)
             {
                 foreach (var item in itemsToMatch)
                 {
                     if (item.Value.Name != null && !matched.Contains(item) && GlobUtility.CreateGlobMatcher(pattern)(item.Value.Name!))
                     {
-                        matched.Add(item);
-                        node.Items.Add(item);
+                        // calculate the href relative to TopLevelTOC instead of the ReferenceTOC file
+                        var itemHref = item.Value.Href.Value;
+                        if (!string.IsNullOrEmpty(itemHref) && !(itemHref.StartsWith("~/") || itemHref.StartsWith("~\\")))
+                        {
+                            var itemHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, itemHref));
+                            var itemHrefRelativeToDocset = Path.GetRelativePath(_docsetPath, itemHrefFullPath);
+                            var itemHrefFullPathOfDocset = $"~/{itemHrefRelativeToDocset}";
+                            var newTocNode = new TableOfContentsNode(item)
+                                { Href = new SourceInfo<string?>(itemHrefFullPathOfDocset, item.Value.Href.Source) };
+                            var newItem = new SourceInfo<TableOfContentsNode>(newTocNode, item.Source);
+
+                            matched.Add(newItem);
+                            node.Items.Add(newItem);
+                        }
+                        else
+                        {
+                            matched.Add(item);
+                            node.Items.Add(item);
+                        }
                     }
                 }
             }
 
             foreach (var item in node.Items)
             {
-                TraverseAndMerge(item, itemsToMatch, matched);
+                TraverseAndMerge(item, itemsToMatch, matched, joinTOCConfig);
             }
         }
 
         private TableOfContentsNode LoadTocFile(
-            FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs)
+            FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs, bool loadTocNodes = false)
         {
             // add to parent path
             t_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
@@ -135,7 +166,10 @@ namespace Microsoft.Docs.Build
                 t_recursionDetector.Value = recursionDetector;
 
                 var node = _parser.Parse(file, _errors);
-                node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
+                if (loadTocNodes)
+                {
+                    node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
+                }
 
                 if (file == rootPath)
                 {
@@ -331,7 +365,8 @@ namespace Microsoft.Docs.Build
                     referenceTocFilePath,
                     rootPath,
                     tocHrefType == TocHrefType.RelativeFolder ? new List<FilePath>() : referencedFiles,
-                    referencedTocs);
+                    referencedTocs,
+                    true);
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
