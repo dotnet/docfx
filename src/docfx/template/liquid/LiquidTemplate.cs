@@ -15,10 +15,14 @@ namespace Microsoft.Docs.Build
 {
     internal class LiquidTemplate
     {
-        private readonly ConcurrentDictionary<string, Lazy<Template?>> _templates = new ConcurrentDictionary<string, Lazy<Template?>>();
-        private readonly IncludeFileSystem _fileSystem;
-        private readonly string _templateDir;
+        private readonly Package _package;
+        private readonly PackageFileSystem _fileSystem;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
+
+        private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new ConcurrentDictionary<PathString, Lazy<Template?>>();
+
+        [ThreadStatic]
+        private static Package? t_package;
 
         static LiquidTemplate()
         {
@@ -27,33 +31,19 @@ namespace Microsoft.Docs.Build
             Template.RegisterTag<LocalizeTag>("loc");
         }
 
-        public LiquidTemplate(string templateDir, JObject? global = null)
+        public LiquidTemplate(Package package, JObject? global = null)
         {
-            _templateDir = templateDir;
+            _package = package;
+            _fileSystem = new PackageFileSystem(LoadTemplate);
             _localizedStrings = global is null
                 ? new Dictionary<string, string>()
                 : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
-            _fileSystem = new IncludeFileSystem(templateDir);
         }
 
         public string Render(string templateName, SourceInfo<string?> mime, JObject model)
         {
-            var template = _templates.GetOrAdd(
-                templateName,
-                new Lazy<Template?>(() =>
-                {
-                    var fileName = $"{templateName}.html.liquid";
-                    if (!File.Exists(Path.Combine(_templateDir, fileName)))
-                    {
-                        return null;
-                    }
-                    return LoadTemplate(Path.Combine(_templateDir, fileName));
-                })).Value;
-
-            if (template is null)
-            {
-                throw Errors.Template.LiquidNotFound(mime).ToException(isError: false);
-            }
+            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"))
+                ?? throw Errors.Template.LiquidNotFound(mime).ToException(isError: false);
 
             var registers = new Hash
             {
@@ -78,17 +68,36 @@ namespace Microsoft.Docs.Build
                     formatProvider: CultureInfo.InvariantCulture),
             };
 
-            return template.Render(parameters);
+            try
+            {
+                t_package = _package;
+                return template.Render(parameters);
+            }
+            finally
+            {
+                t_package = default;
+            }
         }
 
-        public static string GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
+        public static string? GetThemeRelativePath(string resourcePath)
         {
-            return Path.Combine((string)context["theme_rel"], resourcePath);
+            return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
         }
 
-        private static Template LoadTemplate(string fullPath)
+        private Template? LoadTemplate(PathString path)
         {
-            var template = Template.Parse(File.ReadAllText(fullPath));
+            return _templates.GetOrAdd(path, new Lazy<Template?>(() => LoadTemplateCore(path))).Value;
+        }
+
+        private Template? LoadTemplateCore(PathString path)
+        {
+            var content = _package.TryReadString(path);
+            if (content is null)
+            {
+                return null;
+            }
+
+            var template = Template.Parse(content);
             template.MakeThreadSafe();
             return template;
         }
@@ -106,21 +115,16 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private class IncludeFileSystem : ITemplateFileSystem
+        private class PackageFileSystem : ITemplateFileSystem
         {
-            private readonly string _templateDir;
-            private readonly ConcurrentDictionary<string, Lazy<Template>> _templates = new ConcurrentDictionary<string, Lazy<Template>>();
+            private readonly Func<PathString, Template?> _loadTemplate;
 
-            public IncludeFileSystem(string templateDir) => _templateDir = templateDir;
+            public PackageFileSystem(Func<PathString, Template?> loadTemplate) => _loadTemplate = loadTemplate;
+
+            public Template GetTemplate(DotLiquid.Context context, string templateName) =>
+                _loadTemplate(new PathString($"_includes/{templateName}.liquid")) ?? throw new FileNotFoundException($"_includes/{templateName}.liquid");
 
             public string ReadTemplateFile(DotLiquid.Context context, string templateName) => throw new NotSupportedException();
-
-            public Template GetTemplate(DotLiquid.Context context, string templateName)
-            {
-                return _templates.GetOrAdd(
-                    templateName,
-                    new Lazy<Template>(() => LoadTemplate(Path.Combine(_templateDir, "_includes", templateName + ".liquid")))).Value;
-            }
         }
     }
 }

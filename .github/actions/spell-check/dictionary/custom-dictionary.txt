@@ -80,6 +80,7 @@ css
 csx
 cwd
 daringfireball
+datalist
 datetime
 dedent
 dedup
@@ -233,6 +234,7 @@ jsondiskcache
 jsp
 jtoken
 jvalue
+keygen
 knowledgecenter
 lastexitcode
 letraset
@@ -297,6 +299,7 @@ noloc
 noninfringement
 noquote
 noreply
+noscript
 notnull
 npm
 nuget
@@ -421,6 +424,7 @@ td
 technet
 testsnippet
 testtoken
+textarea
 thead
 timespan
 timezone

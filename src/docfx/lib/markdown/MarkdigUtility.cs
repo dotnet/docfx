@@ -2,8 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
+using HtmlReaderWriter;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -180,6 +184,51 @@ namespace Microsoft.Docs.Build
             });
 
             return visible;
+        }
+
+        public static bool IsInlineImage(this MarkdownObject node, int imageIndex)
+        {
+            switch (node)
+            {
+                case Inline inline:
+                    return inline.IsInlineImage();
+                case HtmlBlock htmlBlock:
+                    return htmlBlock.IsInlineImage(imageIndex);
+                default:
+                    return false;
+            }
+        }
+
+        private static bool IsInlineImage(this Inline node)
+        {
+            switch (node)
+            {
+                case LinkInline linkInline when linkInline.IsImage:
+                case TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension:
+                case HtmlInline htmlInline when htmlInline.Tag.StartsWith("<img", StringComparison.InvariantCultureIgnoreCase):
+                    for (MarkdownObject current = node, parent = node.Parent; current != null;)
+                    {
+                        if (parent is ContainerInline containerInline)
+                        {
+                            foreach (var child in containerInline)
+                            {
+                                if (child != current && child.IsVisible())
+                                {
+                                    return true;
+                                }
+                            }
+                            current = parent;
+                            parent = containerInline.Parent;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return node.GetPathToRootExclusive().Any(o => o is TableCell || o is RowBlock || o is NestedColumnBlock);
+                default:
+                    return false;
+            }
         }
 
         private class DelegatingExtension : IMarkdownExtension
