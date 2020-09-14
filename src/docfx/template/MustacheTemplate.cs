@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
@@ -20,32 +19,34 @@ namespace Microsoft.Docs.Build
         private static readonly Tags s_defaultTags = new Tags("{{", "}}");
 
         private readonly JObject? _global;
-        private readonly string _templateDir;
+        private readonly Package _package;
+        private readonly PathString _baseDirectory;
         private readonly Lazy<JsonSchemaTransformer>? _jsonSchemaTransformer;
         private readonly ParserPipeline _parserPipeline;
 
-        private readonly ConcurrentDictionary<string, BlockToken?> _templates =
-                     new ConcurrentDictionary<string, BlockToken?>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, BlockToken?> _templates = new ConcurrentDictionary<string, BlockToken?>();
 
-        public MustacheTemplate(string templateDir, JObject? global = null, Lazy<JsonSchemaTransformer>? jsonSchemaTransformer = null)
+        public MustacheTemplate(
+            Package package, string? baseDirectory = null, JObject? global = null, Lazy<JsonSchemaTransformer>? jsonSchemaTransformer = null)
         {
             _global = global;
-            _templateDir = templateDir;
+            _package = package;
+            _baseDirectory = baseDirectory is null ? default : new PathString(baseDirectory);
             _jsonSchemaTransformer = jsonSchemaTransformer;
             _parserPipeline = new ParserPipelineBuilder().Build();
         }
 
         public bool HasTemplate(string templateName)
         {
-            return File.Exists(Path.Combine(_templateDir, $"{templateName}.primary.tmpl")) ||
-                   File.Exists(Path.Combine(_templateDir, $"{templateName}.tmpl"));
+            return _package.Exists(_baseDirectory.Concat(new PathString($"{templateName}.primary.tmpl"))) ||
+                   _package.Exists(_baseDirectory.Concat(new PathString($"{templateName}.tmpl")));
         }
 
         public string Render(string templateName, JToken model, FilePath? file = null)
         {
             var context = new Stack<JToken>();
             var template = GetTemplate($"{templateName}.primary.tmpl") ?? GetTemplate($"{templateName}.tmpl") ??
-                throw Errors.Template.MustacheNotFound(Path.Combine(_templateDir, $"{templateName}.tmpl")).ToException();
+                throw Errors.Template.MustacheNotFound($"{templateName}.tmpl").ToException();
 
             var result = new StringBuilder(1024);
             context.Push(model);
@@ -68,7 +69,7 @@ namespace Microsoft.Docs.Build
 
                     case PartialToken partial:
                         var template = GetTemplate(partial.Content.ToString()) ?? GetTemplate($"{partial.Content}.tmpl.partial") ??
-                            throw Errors.Template.MustacheNotFound(Path.Combine(_templateDir, $"{partial.Content}.tmpl.partial")).ToException();
+                            throw Errors.Template.MustacheNotFound($"{partial.Content}.tmpl.partial").ToException();
 
                         Render(template, result, context, file);
                         break;
@@ -199,15 +200,15 @@ namespace Microsoft.Docs.Build
 
         private BlockToken? GetTemplate(string name)
         {
-            return _templates.GetOrAdd(name, key =>
+            return _templates.GetOrAdd(name, _ =>
             {
-                var fileName = Path.Combine(_templateDir, name);
-                if (!File.Exists(fileName))
+                var content = _package.TryReadString(_baseDirectory.Concat(new PathString(name)));
+                if (content is null)
                 {
                     return null;
                 }
 
-                var template = MustacheXrefTagParser.ProcessXrefTag(File.ReadAllText(fileName).Replace("\r", ""));
+                var template = MustacheXrefTagParser.ProcessXrefTag(content.Replace("\r", ""));
 
                 return MustacheParser.Parse(template, s_defaultTags, 0, _parserPipeline);
             });

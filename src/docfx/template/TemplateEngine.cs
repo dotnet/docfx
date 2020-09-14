@@ -12,12 +12,10 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine : IDisposable
     {
-        private readonly string _templateDir;
-        private readonly string _schemaDir;
-        private readonly string _contentTemplateDir;
         private readonly Config _config;
         private readonly Output _output;
-        private readonly TemplateDefinition _templateDefinition;
+        private readonly Package _package;
+        private readonly Lazy<TemplateDefinition> _templateDefinition;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
@@ -37,31 +35,32 @@ namespace Microsoft.Docs.Build
             _config = config;
             _output = output;
 
-            _templateDir = config.Template.Type switch
+            var template = config.Template;
+            if (template.Type == PackageType.None)
             {
-                PackageType.None => Path.Combine(buildOptions.DocsetPath, "_themes"),
-                _ => packageResolver.ResolvePackage(config.Template, PackageFetchOptions.DepthOne),
-            };
+                template = new PackagePath(Path.Combine(buildOptions.DocsetPath, "_themes"));
+            }
 
-            _contentTemplateDir = Path.Combine(_templateDir, "ContentTemplate");
-            _schemaDir = Path.Combine(_contentTemplateDir, "schemas");
+            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
 
-            _templateDefinition = PathUtility.LoadYamlOrJson<TemplateDefinition>(errors, _templateDir, "template") ?? new TemplateDefinition();
+            _templateDefinition = new Lazy<TemplateDefinition>(() =>
+                _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
 
-            _global = LoadGlobalTokens();
-            _liquid = new LiquidTemplate(_templateDir, _global);
-            _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_contentTemplateDir, _global));
-            _mustacheTemplate = new MustacheTemplate(_contentTemplateDir, _global, jsonSchemaTransformer);
+            _global = _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token") ?? new JObject();
+
+            _liquid = new LiquidTemplate(_package, _global);
+            _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_package, _global));
+            _mustacheTemplate = new MustacheTemplate(_package, "ContentTemplate", _global, jsonSchemaTransformer);
         }
 
-        public bool IsHtml(ContentType contentType, string? mime)
+        public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
         {
             return contentType switch
             {
-                ContentType.Redirection => true,
-                ContentType.Page => IsConceptual(mime) || IsLandingData(mime) || _mustacheTemplate.HasTemplate($"{mime}.html"),
-                ContentType.TableOfContents => _mustacheTemplate.HasTemplate($"toc.html"),
-                _ => false,
+                ContentType.Redirection => RenderType.Content,
+                ContentType.Page => GetRenderType(mime),
+                ContentType.TableOfContents => GetTocRenderType(),
+                _ => RenderType.Component,
             };
         }
 
@@ -91,14 +90,12 @@ namespace Microsoft.Docs.Build
         public string RunLiquid(SourceInfo<string?> mime, TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? mime.Value ?? throw new InvalidOperationException();
-            var themeRelativePath = _templateDir;
 
             var liquidModel = new JObject
             {
                 ["content"] = model.Content,
                 ["page"] = model.RawMetadata,
                 ["metadata"] = model.PageMetadata,
-                ["theme_rel"] = themeRelativePath,
             };
 
             return _liquid.Render(layout, mime, liquidModel);
@@ -111,8 +108,8 @@ namespace Microsoft.Docs.Build
 
         public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
         {
-            var scriptPath = Path.Combine(_contentTemplateDir, scriptName);
-            if (!File.Exists(scriptPath))
+            var scriptPath = new PathString($"ContentTemplate/{scriptName}");
+            if (!_package.Exists(scriptPath))
             {
                 return model;
             }
@@ -135,18 +132,18 @@ namespace Microsoft.Docs.Build
 
         public void CopyAssetsToOutput()
         {
-            if (!_config.SelfContained || _templateDefinition.Assets.Length <= 0)
+            if (!_config.SelfContained || _templateDefinition.Value.Assets.Length <= 0)
             {
                 return;
             }
 
-            var glob = GlobUtility.CreateGlobMatcher(_templateDefinition.Assets);
+            var glob = GlobUtility.CreateGlobMatcher(_templateDefinition.Value.Assets);
 
-            Parallel.ForEach(PathUtility.GetFiles(_templateDir), file =>
+            Parallel.ForEach(_package.GetFiles(), file =>
             {
                 if (glob(file))
                 {
-                    _output.Copy(file, new FilePath(Path.Combine(_templateDir, file)));
+                    _output.Copy(file, _package, file);
                 }
             });
         }
@@ -161,24 +158,50 @@ namespace Microsoft.Docs.Build
             _js.Dispose();
         }
 
-        private JObject LoadGlobalTokens()
+        private RenderType GetRenderType(SourceInfo<string?> mime)
         {
-            var path = Path.Combine(_contentTemplateDir, "token.json");
-            return File.Exists(path) ? JObject.Parse(File.ReadAllText(path)) : new JObject();
+            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
+            {
+                return RenderType.Content;
+            }
+            try
+            {
+                return GetSchema(mime).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                return RenderType.Content;
+            }
+        }
+
+        private RenderType GetTocRenderType()
+        {
+            try
+            {
+                return GetSchema(new SourceInfo<string?>("toc")).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                // TODO: Remove after schema of toc is support in template
+                var isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                    || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+                return isContentRenderType ? RenderType.Content : RenderType.Component;
+            }
         }
 
         private JsonSchemaValidator? GetSchemaCore(string mime)
         {
-            var schemaFilePath = IsLandingData(mime)
-                ? Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")
-                : Path.Combine(_schemaDir, $"{mime}.schema.json");
+            var schemaFilePath = new PathString($"ContentTemplate/schemas/{mime}.schema.json");
+            var schemaString = IsLandingData(mime)
+                ? File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json"))
+                : _package.TryReadString(schemaFilePath);
 
-            if (!File.Exists(schemaFilePath))
+            if (schemaString is null)
             {
                 return null;
             }
 
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(schemaFilePath), new FilePath(schemaFilePath));
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schemaString, new FilePath(schemaFilePath));
 
             return new JsonSchemaValidator(jsonSchema, forceError: true);
         }

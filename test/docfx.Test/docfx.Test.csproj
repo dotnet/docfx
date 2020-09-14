@@ -13,7 +13,7 @@
     <PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="All" />
     <PackageReference Include="coverlet.msbuild" Version="2.8.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
-    <PackageReference Include="yunit" Version="1.0.0-preview-0040-ge2ed416392" />
+    <PackageReference Include="yunit" Version="1.0.0-preview-0043-g13cf1e97dc" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
   </ItemGroup>
