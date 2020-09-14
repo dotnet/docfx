@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
         private readonly OpsAccessor _opsAccessor;
 
         private static readonly object s_lock = new object();
-        private static Lazy<Task<string>>? getDocsetInfo;
+        private static readonly ConcurrentDictionary<string, Task<string>> s_docsetInfoCache = new ConcurrentDictionary<string, Task<string>>();
 
         public OpsConfigAdapter(OpsAccessor opsAccessor)
         {
@@ -69,14 +70,13 @@ namespace Microsoft.Docs.Build
             var xrefEndpoint = queries["xref_endpoint"];
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
+            Task<string> getDocsetInfo;
             lock (s_lock)
             {
-                if (getDocsetInfo == null)
-                {
-                    getDocsetInfo = new Lazy<Task<string>>(() => _opsAccessor.GetDocsetInfo(repository));
-                }
+                getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, (repositoryUrl) => _opsAccessor.GetDocsetInfo(repositoryUrl));
             }
-            var docsetInfo = await getDocsetInfo.Value;
+            var docsetInfo = await getDocsetInfo;
+
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
                 new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template = false } });
