@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
             { "strike", null },
         };
 
-        private static string[] inlineTags = new[]
+        private static string[] s_inlineTags = new[]
             {
                 "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
                 "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
                 "var", "video", "wbr",
             };
 
-        private static string[] selfClosingTags = new[]
+        private static string[] s_selfClosingTags = new[]
             {
                 "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
             };
@@ -509,11 +509,11 @@ namespace Microsoft.Docs.Build
             _ => true,
         };
 
-        private static bool IsInlineElement(string tagName) => inlineTags.Contains(tagName.ToLowerInvariant());
+        private static bool IsInlineElement(string tagName) => s_inlineTags.Contains(tagName.ToLowerInvariant());
 
         private static bool IsInlineElement(this HtmlToken token) => IsInlineElement(token.Name.ToString());
 
-        private static bool IsSelfClosingElement(string tagName) => selfClosingTags.Contains(tagName.ToLowerInvariant());
+        private static bool IsSelfClosingElement(string tagName) => s_selfClosingTags.Contains(tagName.ToLowerInvariant());
 
         private static bool IsSelfClosingElement(this HtmlToken token) => IsSelfClosingElement(token.Name.ToString());
 
