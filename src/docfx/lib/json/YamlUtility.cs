@@ -137,16 +137,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static JToken ToJToken(ErrorBuilder errors, IParser parser, FilePath? file, string? path = null)
+        private static JToken ToJToken(ErrorBuilder errors, IParser parser, FilePath? file, string? path = null, SourceInfo? keySourceInfo = null)
         {
             switch (parser.Consume<NodeEvent>())
             {
                 case Scalar scalar:
                     if (scalar.Style == ScalarStyle.Plain)
                     {
-                        return SetSourceInfo(ParseScalar(scalar.Value), scalar, file, path);
+                        return SetSourceInfo(ParseScalar(scalar.Value), scalar, file, path, keySourceInfo);
                     }
-                    return SetSourceInfo(new JValue(scalar.Value), scalar, file, path);
+                    return SetSourceInfo(new JValue(scalar.Value), scalar, file, path, keySourceInfo);
 
                 case SequenceStart seq:
                     var array = new JArray();
@@ -154,47 +154,38 @@ namespace Microsoft.Docs.Build
                     {
                         array.Add(ToJToken(errors, parser, file, path));
                     }
-                    return SetSourceInfo(array, seq, file, path);
+                    return SetSourceInfo(array, seq, file, path, keySourceInfo);
 
                 case MappingStart map:
                     var obj = new JObject();
                     while (!parser.TryConsume<MappingEnd>(out _))
                     {
                         var key = parser.Consume<Scalar>();
-                        var subPath = path is null ? key.Value : string.Concat(path, ".", key.Value);
+                        var subPath = JsonUtility.AppendPropertyName(path, key.Value);
 
                         if (obj.ContainsKey(key.Value))
                         {
                             errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file, subPath), key.Value));
                         }
 
-                        obj[key.Value] = ToJToken(errors, parser, file, subPath);
-                        SetSourceInfo(obj.Property(key.Value)!, key, file, subPath);
+                        var value = ToJToken(errors, parser, file, subPath, ToSourceInfo(key, file, subPath));
+                        obj[key.Value] = value;
                     }
-                    return SetSourceInfo(obj, map, file, path);
+                    return SetSourceInfo(obj, map, file, path, keySourceInfo);
 
                 default:
                     throw new NotSupportedException($"Yaml node '{parser.Current?.GetType().Name}' is not supported");
             }
         }
 
-        private static JToken SetSourceInfo(JToken token, ParsingEvent node, FilePath? file, string? path)
+        private static JToken SetSourceInfo(JToken token, ParsingEvent node, FilePath? file, string? path, SourceInfo? keySourceInfo)
         {
-            if (token is JProperty property)
-            {
-                var sourceInfo = JsonUtility.GetSourceInfo(property.Value);
-                if (sourceInfo != null)
-                {
-                    sourceInfo.KeySourceInfo = ToSourceInfo(node, file, path);
-                }
-                return token;
-            }
-            return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file, path));
+            return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file, path, keySourceInfo));
         }
 
-        private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file, string? path)
+        private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file, string? path, SourceInfo? keySourceInfo = null)
         {
-            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column, path);
+            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column, path, keySourceInfo);
         }
 
         private static JToken ParseScalar(string value)

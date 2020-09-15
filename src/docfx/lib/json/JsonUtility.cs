@@ -226,6 +226,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static string? AppendPropertyName(string? path, string name)
+        {
+            return string.IsNullOrEmpty(path) ? name : string.Concat(path, ".", name);
+        }
+
         public static void Merge(JObject container, params JObject[] overwrites)
         {
             Merge(Array.Empty<string>(), container, overwrites);
@@ -239,7 +244,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Merge(JObject container, JObject? overwrite, string[]? unionProperties = null)
+        public static void Merge(JObject container, JObject? overwrite, string[]? unionProperties = null, string? rebase = null)
         {
             if (overwrite is null)
             {
@@ -254,48 +259,23 @@ namespace Microsoft.Docs.Build
                 }
                 else if (container[key] is JObject containerObj && value is JObject overwriteObj)
                 {
-                    Merge(containerObj, overwriteObj, unionProperties);
+                    Merge(containerObj, overwriteObj, unionProperties, AppendPropertyName(rebase, key));
                 }
                 else if (container[key] is JArray array && value is JArray newArray && unionProperties?.Contains(key) == true)
                 {
                     // TODO: need to check if miss line info for JArray
-                    SetProperty(container, key, new JArray(newArray.Union(array)));
+                    SetProperty(container, key, new JArray(newArray.Union(array)), rebase);
                 }
                 else
                 {
-                    SetProperty(container, key, value);
+                    SetProperty(container, key, value, rebase);
                 }
             }
         }
 
         public static JToken DeepClone(JToken? token)
         {
-            if (token is JValue v)
-            {
-                return SetSourceInfo(new JValue(v), token.Annotation<SourceInfo>());
-            }
-
-            if (token is JObject obj)
-            {
-                var result = new JObject();
-                foreach (var (key, value) in obj)
-                {
-                    result[key] = DeepClone(value);
-                }
-                return SetSourceInfo(result, token.Annotation<SourceInfo>());
-            }
-
-            if (token is JArray array)
-            {
-                var result = new JArray();
-                foreach (var item in array)
-                {
-                    result.Add(DeepClone(item));
-                }
-                return SetSourceInfo(result, token.Annotation<SourceInfo>());
-            }
-
-            throw new NotSupportedException();
+            return DeepCloneCore(token, rebase: null);
         }
 
         public static void AddRange(this JArray container, IEnumerable arr)
@@ -309,11 +289,11 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Sets the property value. Prefer this method when you need to propagate source info.
         /// </summary>
-        public static void SetProperty(this JObject obj, string key, JToken value)
+        public static void SetProperty(this JObject obj, string key, JToken value, string? rebase = null)
         {
             // Assign a JToken to a property erases line info,
             // See https://github.com/JamesNK/Newtonsoft.Json/issues/2055.
-            var newValue = DeepClone(value);
+            var newValue = DeepCloneCore(value, AppendPropertyName(rebase, key));
 
             obj[key] = newValue;
 
@@ -419,16 +399,6 @@ namespace Microsoft.Docs.Build
             return token.Annotation<SourceInfo>()?.KeySourceInfo;
         }
 
-        public static JToken SetKeySourceInfo(JToken token, SourceInfo? source)
-        {
-            var sourceInfo = token.Annotation<SourceInfo>();
-            if (sourceInfo != null)
-            {
-                sourceInfo.KeySourceInfo = source;
-            }
-            return token;
-        }
-
         public static JObject SortProperties(JObject obj)
         {
             var properties = new SortedList<string, JProperty>();
@@ -450,6 +420,42 @@ namespace Microsoft.Docs.Build
                 {
                     break;
                 }
+            }
+        }
+
+        private static JToken DeepCloneCore(JToken? token, string? rebase)
+        {
+            if (token is JValue v)
+            {
+                return SetSourceInfo(new JValue(v), GetSourceInfo(v, rebase));
+            }
+
+            if (token is JObject obj)
+            {
+                var result = new JObject();
+                foreach (var (key, value) in obj)
+                {
+                    result[key] = DeepCloneCore(value, rebase is null ? rebase : AppendPropertyName(rebase, key));
+                }
+                return SetSourceInfo(result, GetSourceInfo(obj, rebase));
+            }
+
+            if (token is JArray array)
+            {
+                var result = new JArray();
+                foreach (var item in array)
+                {
+                    result.Add(DeepCloneCore(item, rebase));
+                }
+                return SetSourceInfo(result, GetSourceInfo(array, rebase));
+            }
+
+            throw new NotSupportedException();
+
+            static SourceInfo? GetSourceInfo(JToken token, string? rebase)
+            {
+                var sourceInfo = token.Annotation<SourceInfo>();
+                return sourceInfo != null && rebase != null ? sourceInfo.WithPropertyPath(rebase) : sourceInfo;
             }
         }
 
@@ -490,15 +496,10 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static JToken SetSourceInfo(JToken token, FilePath file, string? path = null, JProperty? property = null)
+        private static JToken SetSourceInfo(JToken token, FilePath file, string? path = null, SourceInfo? keySourceInfo = null)
         {
             var lineInfo = (IJsonLineInfo)token;
-            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition, path);
-            if (property != null)
-            {
-                var keyLineInfo = (IJsonLineInfo)property;
-                sourceInfo.KeySourceInfo = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition, path);
-            }
+            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition, path, keySourceInfo);
             SetSourceInfo(token, sourceInfo);
 
             switch (token)
@@ -515,10 +516,11 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JObject obj:
-                    foreach (var prop in obj.Properties())
+                    foreach (var property in obj.Properties())
                     {
-                        var subPath = string.IsNullOrEmpty(path) ? prop.Name : string.Concat(path, ".", prop.Name);
-                        SetSourceInfo(prop.Value, file, subPath, prop);
+                        var keyLineInfo = (IJsonLineInfo)property;
+                        var keySource = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition, path);
+                        SetSourceInfo(property.Value, file, AppendPropertyName(path, property.Name), keySource);
                     }
                     break;
             }

@@ -50,19 +50,22 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string? PropertyPath { get; }
 
-        // A special storage for source info of the JObject property key
-        // if this is a JObject property value.
-        internal SourceInfo? KeySourceInfo { get; set; }
+        /// <summary>
+        /// A special storage for source info of the JObject property key
+        /// if this is a JObject property value.
+        /// </summary>
+        public SourceInfo? KeySourceInfo { get; }
 
         public SourceInfo(FilePath file)
             : this(file, 0, 0, 0, 0)
         { }
 
-        public SourceInfo(FilePath file, int line, int column, string? propertyPath = null)
-            : this(file, line, column, line, column, propertyPath)
+        public SourceInfo(FilePath file, int line, int column, string? propertyPath = null, SourceInfo? keySourceInfo = null)
+            : this(file, line, column, line, column, propertyPath, keySourceInfo)
         { }
 
-        public SourceInfo(FilePath file, int startLine, int startColumn, int endLine, int endColumn, string? propertyPath = null)
+        public SourceInfo(
+            FilePath file, int startLine, int startColumn, int endLine, int endColumn, string? propertyPath = null, SourceInfo? keySourceInfo = null)
         {
             File = file;
             Line = startLine;
@@ -70,17 +73,27 @@ namespace Microsoft.Docs.Build
             EndLine = endLine;
             EndColumn = endColumn;
             PropertyPath = propertyPath;
+            KeySourceInfo = keySourceInfo;
         }
 
         public SourceInfo WithFile(FilePath file)
         {
-            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn, PropertyPath);
+            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn, PropertyPath, KeySourceInfo);
+        }
+
+        public SourceInfo WithKeySourceInfo(SourceInfo? keySourceInfo)
+        {
+            return new SourceInfo(File, Line, Column, EndLine, EndColumn, PropertyPath, keySourceInfo);
+        }
+
+        public SourceInfo WithPropertyPath(string propertyPath)
+        {
+            return new SourceInfo(File, Line, Column, EndLine, EndColumn, propertyPath, KeySourceInfo);
         }
 
         public SourceInfo AppendPropertyName(string name)
         {
-            var path = string.IsNullOrEmpty(PropertyPath) ? name : string.Concat(PropertyPath, ".", name);
-            return new SourceInfo(File, Line, Column, EndLine, EndColumn, path);
+            return new SourceInfo(File, Line, Column, EndLine, EndColumn, JsonUtility.AppendPropertyName(PropertyPath, name), KeySourceInfo);
         }
 
         public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);
