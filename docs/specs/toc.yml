@@ -1728,9 +1728,9 @@ outputs:
   a/toc.json: |
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
   a/_splitted/a/toc.json: |
-    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json", "universal_ref_toc": "/dotnet-test/api/toc.json"}}
   a/_splitted/b/toc.json: |
-    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+    {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json", "universal_ref_toc": "/dotnet-test/api/toc.json"}}
 ---
 # Service Page Generating
 repos:
