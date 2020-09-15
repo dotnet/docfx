@@ -46,12 +46,13 @@ namespace Microsoft.Docs.Build
             return Fetch($"{BuildServiceEndpoint()}/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
-        public async Task<string[]> GetXrefMaps(string tag, string xrefMapQueryParams, DocsEnvironment? xrefMapBuildServiceEndpoint)
+        public async Task<string[]> GetXrefMaps(string tag, string xrefEndpoint, string xrefMapQueryParams)
         {
-            var response = await Fetch($"{BuildServiceEndpoint(xrefMapBuildServiceEndpoint)}/v1/xrefmap{tag}{xrefMapQueryParams}", value404: "{}");
+            var response = await Fetch($"{GetXrefMapBuildServiceEndpoint(xrefEndpoint)}/v1/xrefmap{tag}{xrefMapQueryParams}", value404: "{}");
             return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links
                 ?? Array.Empty<string>();
         }
+
 
         public async Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple)
         {
@@ -200,7 +201,8 @@ namespace Microsoft.Docs.Build
 
         private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
         {
-            return (environment ?? DocsEnvironment) switch
+            var serviceEndpoint = Environment.GetEnvironmentVariable("DOCS_SERVICE_ENDPOINT");
+            return serviceEndpoint ?? (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://docspublic.azurefd.net/api/build",
                 DocsEnvironment.PPE => "https://docspubdev.azurefd.net/api/build",
@@ -208,6 +210,17 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.Perf => "https://docspubdev.azurefd.net/api/build",
                 _ => throw new NotSupportedException(),
             };
+        }
+
+        private static string GetXrefMapBuildServiceEndpoint(string xrefEndpoint)
+        {
+            if (!string.IsNullOrEmpty(xrefEndpoint) &&
+                string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
+            {
+                var serviceEndpoint = Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT");
+                return serviceEndpoint ?? BuildServiceEndpoint(DocsEnvironment.Prod);
+            }
+            return BuildServiceEndpoint();
         }
 
         private static async Task<string> GetSecret(string secret)

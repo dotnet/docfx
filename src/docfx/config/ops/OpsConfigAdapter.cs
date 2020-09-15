@@ -85,7 +85,6 @@ namespace Microsoft.Docs.Build
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
 
             var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&exclude_depot_name={docset.product_name}.{name}";
-            var xrefMapBuildServiceEndpoint = GetXrefMapBuildServiceEndpoint(xrefEndpoint);
             if (!string.IsNullOrEmpty(docset.base_path))
             {
                 xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);
@@ -93,7 +92,7 @@ namespace Microsoft.Docs.Build
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
             {
-                var links = await _opsAccessor.GetXrefMaps(tag, xrefMapQueryParams, xrefMapBuildServiceEndpoint);
+                var links = await _opsAccessor.GetXrefMaps(tag, xrefEndpoint, xrefMapQueryParams);
                 xrefMaps.AddRange(links);
             }
 
@@ -116,16 +115,6 @@ namespace Microsoft.Docs.Build
                 disallowlists = DisallowlistsApi,
                 xref = xrefMaps,
             });
-        }
-
-        private static DocsEnvironment? GetXrefMapBuildServiceEndpoint(string xrefEndpoint)
-        {
-            if (!string.IsNullOrEmpty(xrefEndpoint) &&
-                string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
-            {
-                return DocsEnvironment.Prod;
-            }
-            return null;
         }
 
         private static Task<string> GetOpsMetadata()
