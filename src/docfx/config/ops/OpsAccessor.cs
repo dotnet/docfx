@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Identity;
@@ -230,7 +231,11 @@ namespace Microsoft.Docs.Build
 
         private static async Task FillOpsToken(string url, HttpRequestMessage request, DocsEnvironment? environment = null)
         {
-            if (url.StartsWith(BuildServiceEndpoint(environment)) && !request.Headers.Contains("X-OP-BuildUserToken"))
+            // don't access key vault for osx since azure-cli will crash in osx
+            // https://github.com/Azure/azure-cli/issues/7519
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+                && url.StartsWith(BuildServiceEndpoint(environment))
+                && !request.Headers.Contains("X-OP-BuildUserToken"))
             {
                 // For development usage
                 try
