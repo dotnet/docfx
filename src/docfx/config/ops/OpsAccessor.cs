@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment? environment = null)
         {
             Debug.Assert(routePath.StartsWith("/"));
-            var url = BuildServiceEndpoint(environment) + routePath.TrimStart('/');
+            var url = BuildServiceEndpoint(environment) + routePath;
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
             {
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 Debug.Assert(routePath.StartsWith("/"));
-                var url = BuildServiceEndpoint(environment) + routePath.TrimStart('/');
+                var url = BuildServiceEndpoint(environment) + routePath;
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
