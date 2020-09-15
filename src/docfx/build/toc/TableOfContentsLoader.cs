@@ -64,37 +64,9 @@ namespace Microsoft.Docs.Build
         {
             return _cache.GetOrAdd(file, _ =>
             {
-                var servicePages = new List<FilePath>();
                 var referencedFiles = new List<FilePath>();
                 var referencedTocs = new List<FilePath>();
-                TableOfContentsNode node;
-
-                if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
-                {
-                    if (joinTOCConfig.TopLevelToc != null)
-                    {
-                        node = LoadTocFile(file, file, referencedFiles, referencedTocs, false);
-                        node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
-
-                        // Generate Service Page.
-                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
-
-                        foreach (var item in node.Items)
-                        {
-                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
-                        }
-
-                        node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
-                    }
-                    else
-                    {
-                        node = LoadTocFile(file, file, referencedFiles, referencedTocs, true);
-                    }
-                }
-                else
-                {
-                    node = LoadTocFile(file, file, referencedFiles, referencedTocs, true);
-                }
+                var (node, servicePages) = LoadTocFile(file, file, referencedFiles, referencedTocs);
 
                 return (node, referencedFiles, referencedTocs, servicePages);
             });
@@ -104,7 +76,7 @@ namespace Microsoft.Docs.Build
         {
             var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
             TraverseAndConvertHref(topLevelToc, joinTOCConfig);
-            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>(), joinTOCConfig);
+            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
             return topLevelToc;
         }
 
@@ -134,8 +106,7 @@ namespace Microsoft.Docs.Build
         private void TraverseAndMerge(
             TableOfContentsNode node,
             List<SourceInfo<TableOfContentsNode>> itemsToMatch,
-            HashSet<TableOfContentsNode> matched,
-            JoinTOCConfig joinTOCConfig)
+            HashSet<TableOfContentsNode> matched)
         {
             foreach (var pattern in node.Children)
             {
@@ -151,13 +122,15 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in node.Items)
             {
-                TraverseAndMerge(item, itemsToMatch, matched, joinTOCConfig);
+                TraverseAndMerge(item, itemsToMatch, matched);
             }
         }
 
-        private TableOfContentsNode LoadTocFile(
-            FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs, bool loadTocNodes = false)
+        private (TableOfContentsNode node, List<FilePath> servicePages) LoadTocFile(
+            FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs)
         {
+            var servicePages = new List<FilePath>();
+
             // add to parent path
             t_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
 
@@ -173,16 +146,32 @@ namespace Microsoft.Docs.Build
                 t_recursionDetector.Value = recursionDetector;
 
                 var node = _parser.Parse(file, _errors);
-                if (loadTocNodes)
+
+                // Generate service pages.
+                if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
                 {
-                    node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
+                    if (joinTOCConfig.TopLevelToc != null)
+                    {
+                        node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
+
+                        // Generate Service Page.
+                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
+
+                        foreach (var item in node.Items)
+                        {
+                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                        }
+                    }
                 }
+
+                // Resolve
+                node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
 
                 if (file == rootPath)
                 {
                     _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
                 }
-                return node;
+                return (node, servicePages);
             }
             finally
             {
@@ -368,12 +357,11 @@ namespace Microsoft.Docs.Build
             var referenceTocFilePath = ResolveTocHref(filePath, referencedTocs, tocHrefType, new SourceInfo<string>(hrefPath, tocHref));
             if (referenceTocFilePath != null)
             {
-                var nestedToc = LoadTocFile(
+                var (nestedToc, _) = LoadTocFile(
                     referenceTocFilePath,
                     rootPath,
                     tocHrefType == TocHrefType.RelativeFolder ? new List<FilePath>() : referencedFiles,
-                    referencedTocs,
-                    true);
+                    referencedTocs);
 
                 if (tocHrefType == TocHrefType.RelativeFolder)
                 {
