@@ -21,6 +21,18 @@ namespace Microsoft.Docs.Build
     {
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
+        private static readonly string DocsProdServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://docspublic.azurefd.net/api/build";
+
+        private static readonly string DocsPPEServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://docspubdev.azurefd.net/api/build";
+
+        private static readonly string DocsInternalServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://docspubdev.azurefd.net/api/build";
+
+        private static readonly string DocsPerfServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://docspubdev.azurefd.net/api/build";
+
         private static readonly SecretClient s_secretClient = new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenSandbox"));
@@ -37,42 +49,43 @@ namespace Microsoft.Docs.Build
 
         public async Task<string> GetDocsetInfo(string repositoryUrl)
         {
-            var fetchUrl = $"{BuildServiceEndpoint()}/v2/Queries/Docsets?git_repo_url={repositoryUrl}&docset_query_status=Created";
+            var fetchUrl = $"/v2/Queries/Docsets?git_repo_url={repositoryUrl}&docset_query_status=Created";
             return await Fetch(fetchUrl, value404: "[]");
         }
 
         public Task<string> GetMonikerDefinition()
         {
-            return Fetch($"{BuildServiceEndpoint()}/v2/monikertrees/allfamiliesproductsmonikers");
+            return Fetch("/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
         public async Task<string[]> GetXrefMaps(string tag, string xrefEndpoint, string xrefMapQueryParams)
         {
-            var response = await Fetch($"{GetXrefMapBuildServiceEndpoint(xrefEndpoint)}/v1/xrefmap{tag}{xrefMapQueryParams}", value404: "{}");
+            var xrefMapDocsEnvironment = GetXrefMapEnvironment(xrefEndpoint);
+            var response = await Fetch(
+                $"/v1/xrefmap{tag}{xrefMapQueryParams}", value404: "{}", environment: xrefMapDocsEnvironment);
             return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links
                 ?? Array.Empty<string>();
         }
 
-
         public async Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple)
         {
-            return await FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
+            return await FetchValidationRules($"/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
         }
 
         public async Task<string> GetAllowlists((string repositoryUrl, string branch) tuple)
         {
-            return await FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
+            return await FetchValidationRules($"/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
         }
 
         public async Task<string> GetDisallowlists((string repositoryUrl, string branch) tuple)
         {
-            return await FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/disallowlists", tuple.repositoryUrl, tuple.branch);
+            return await FetchValidationRules($"/route/validationmgt/validation/disallowlists", tuple.repositoryUrl, tuple.branch);
         }
 
         public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
         {
-            var metadataRules = FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
-            var allowlists = FetchValidationRules($"{BuildServiceEndpoint()}/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
+            var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
+            var allowlists = FetchValidationRules($"/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
@@ -80,17 +93,18 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetRegressionAllContentRules()
         {
             return await FetchValidationRules(
-                $"{BuildServiceEndpoint(DocsEnvironment.PPE)}/route/validationmgt/rulesets/contentrules?name=_regression_all_",
+                "/route/validationmgt/rulesets/contentrules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
         }
 
         public async Task<string> GetRegressionAllMetadataSchema()
         {
             var metadataRules = FetchValidationRules(
-                $"{BuildServiceEndpoint(DocsEnvironment.PPE)}/route/validationmgt/rulesets/metadatarules?name=_regression_all_",
+                "/route/validationmgt/rulesets/metadatarules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
             var allowlists = FetchValidationRules(
-                $"{BuildServiceEndpoint(DocsEnvironment.PPE)}/route/validationmgt/validation/allowlists", environment: DocsEnvironment.PPE);
+                "/route/validationmgt/validation/allowlists",
+                environment: DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
@@ -99,7 +113,7 @@ namespace Microsoft.Docs.Build
         {
             using var request = new HttpRequestMessage
             {
-                RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
+                RequestUri = new Uri("/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
@@ -111,7 +125,7 @@ namespace Microsoft.Docs.Build
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
+            var url = $"/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
@@ -127,8 +141,13 @@ namespace Microsoft.Docs.Build
             _http.Dispose();
         }
 
-        private async Task<string> Fetch(string url, IReadOnlyDictionary<string, string>? headers = null, string? value404 = null)
+        private async Task<string> Fetch(
+            string routePath,
+            IReadOnlyDictionary<string, string>? headers = null,
+            string? value404 = null,
+            DocsEnvironment? environment = null)
         {
+            var url = $"{BuildServiceEndpoint(environment)}/{routePath.TrimStart('/')}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
             {
@@ -137,7 +156,7 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
-            var response = await SendRequest(request);
+            var response = await SendRequest(request, environment);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -146,22 +165,11 @@ namespace Microsoft.Docs.Build
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
-        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
-        {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
-            {
-                _credentialProvider?.Invoke(request);
-
-                await FillOpsToken(request.RequestUri.AbsoluteUri, request);
-
-                return await _http.SendAsync(request);
-            }
-        }
-
-        private async Task<string> FetchValidationRules(string url, string repositoryUrl = "", string branch = "", DocsEnvironment? environment = null)
+        private async Task<string> FetchValidationRules(string routePath, string repositoryUrl = "", string branch = "", DocsEnvironment? environment = null)
         {
             try
             {
+                var url = $"{BuildServiceEndpoint(environment)}/{routePath.TrimStart('/')}";
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
@@ -172,13 +180,11 @@ namespace Microsoft.Docs.Build
                        .ExecuteAsync(async () =>
                        {
                            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-                           _credentialProvider?.Invoke(request);
 
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
-                           await FillOpsToken(url, request, environment);
-                           var response = await _http.SendAsync(request);
+                           var response = await SendRequest(request, environment);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
@@ -199,28 +205,38 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, DocsEnvironment? environment = null)
+        {
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
+            {
+                _credentialProvider?.Invoke(request);
+
+                await FillOpsToken(request.RequestUri.AbsoluteUri, request, environment);
+
+                return await _http.SendAsync(request);
+            }
+        }
+
         private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
         {
-            var serviceEndpoint = Environment.GetEnvironmentVariable("DOCS_SERVICE_ENDPOINT");
-            return serviceEndpoint ?? (environment ?? DocsEnvironment) switch
+            return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => "https://docspublic.azurefd.net/api/build",
-                DocsEnvironment.PPE => "https://docspubdev.azurefd.net/api/build",
-                DocsEnvironment.Internal => "https://docspubdev.azurefd.net/api/build",
-                DocsEnvironment.Perf => "https://docspubdev.azurefd.net/api/build",
+                DocsEnvironment.Prod => DocsProdServiceEndpoint,
+                DocsEnvironment.PPE => DocsPPEServiceEndpoint,
+                DocsEnvironment.Internal => DocsInternalServiceEndpoint,
+                DocsEnvironment.Perf => DocsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
         }
 
-        private static string GetXrefMapBuildServiceEndpoint(string xrefEndpoint)
+        private static DocsEnvironment GetXrefMapEnvironment(string xrefEndpoint)
         {
             if (!string.IsNullOrEmpty(xrefEndpoint) &&
                 string.Equals(xrefEndpoint.TrimEnd('/'), "https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase))
             {
-                var serviceEndpoint = Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT");
-                return serviceEndpoint ?? BuildServiceEndpoint(DocsEnvironment.Prod);
+                return DocsEnvironment.Prod;
             }
-            return BuildServiceEndpoint();
+            return DocsEnvironment;
         }
 
         private static async Task<string> GetSecret(string secret)
