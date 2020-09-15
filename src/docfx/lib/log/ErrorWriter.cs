@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 _ => 0,
             };
 
-            Telemetry.TrackErrorCount(error.Code, error.Level, error.Name);
+            Telemetry.TrackErrorCount(error.Code, error.Level, error.Source?.PropertyPath);
 
             if (_output != null)
             {

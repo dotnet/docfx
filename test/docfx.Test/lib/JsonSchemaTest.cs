@@ -374,7 +374,7 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'rules': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated'}}}}", "{'key1': 1}",
             "{'message_severity':'suggestion','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','file':'file','line':1,'end_line':1,'column':10,'end_column':10}")]
-        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'keys.key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'.','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
         [InlineData("{'dependencies': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]

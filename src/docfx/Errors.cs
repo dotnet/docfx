@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error ExceedMaxFileErrors(int maxErrors, ErrorLevel level, FilePath file)
-                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", file);
+                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", new SourceInfo(file));
 
             /// <summary>
             /// Build failure caused by English content when building localized docset.
@@ -478,140 +478,140 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error UnknownField(SourceInfo? source, string propName, string typeName)
-                => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source, propName);
+                => new Error(ErrorLevel.Warning, "unknown-field", $"Could not find member '{propName}' on object of type '{typeName}'.", source);
 
             /// <summary>
             /// The input value type does not match expected value type.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error UnexpectedType(SourceInfo? source, object expectedType, object actualType, string? name = null)
-                => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'.", source, name);
+            public static Error UnexpectedType(SourceInfo? source, object expectedType, object actualType)
+                => new Error(ErrorLevel.Warning, "unexpected-type", $"Expected type '{expectedType}' but got '{actualType}'.", source);
 
             /// <summary>
             /// The input value is not defined in a valid value list.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error InvalidValue(SourceInfo? source, string name, object value, string? propName = null)
-                => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'.", source, propName ?? name);
+            public static Error InvalidValue(SourceInfo? source, string name, object value)
+                => new Error(ErrorLevel.Warning, "invalid-value", $"Invalid value for '{name}': '{value}'.", source);
 
             /// <summary>
             /// The string type's value doesn't match given format.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error FormatInvalid(SourceInfo? source, string value, object type, string propName)
-                => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'.", source, propName);
+            public static Error FormatInvalid(SourceInfo? source, string value, object type)
+                => new Error(ErrorLevel.Warning, "format-invalid", $"String '{value}' is not a valid '{type}'.", source);
 
             /// <summary>
             /// Array length not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
-                => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
+                => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source);
 
             /// <summary>
             /// Array items not unique.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayNotUnique(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique.", source, propName);
+                => new Error(ErrorLevel.Warning, "array-not-unique", $"Array '{propName}' items should be unique.", source);
 
             /// <summary>
             /// Array items not unique.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayContainsFailed(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema.", source, propName);
+                => new Error(ErrorLevel.Warning, "array-contains-failed", $"Array '{propName}' should contain at least one item that matches JSON schema.", source);
 
             /// <summary>
             /// Error when JSON boolean schema failed.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error BooleanSchemaFailed(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'.", source, propName);
+                => new Error(ErrorLevel.Warning, "boolean-schema-failed", $"Boolean schema validation failed for '{propName}'.", source);
 
             /// <summary>
             /// Object property count not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error PropertyCountInvalid(SourceInfo? source, string propName, string criteria)
-                => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}.", source, propName);
+                => new Error(ErrorLevel.Warning, "property-count-invalid", $"Object '{propName}' property count should be {criteria}.", source);
 
             /// <summary>
             /// String length not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error StringLengthInvalid(SourceInfo? source, string propName, string type, int length, string criteria)
-                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' is too {type}: {length} characters. Length should be {criteria}.", source, propName);
+                => new Error(ErrorLevel.Warning, "string-length-invalid", $"String '{propName}' is too {type}: {length} characters. Length should be {criteria}.", source);
 
             /// <summary>
             /// Number not within min and max.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error NumberInvalid(SourceInfo? source, double value, string criteria, string propName)
-                => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}.", source, propName);
+            public static Error NumberInvalid(SourceInfo? source, double value, string criteria)
+                => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}.", source);
 
             /// <summary>
             /// A required attribute is missing.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MissingAttribute(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'.", source, name);
+                => new Error(ErrorLevel.Warning, "missing-attribute", $"Missing required attribute: '{name}'.", source);
 
             /// <summary>
             /// An attribute lacks the required dependency.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MissingPairedAttribute(SourceInfo? source, string name, string otherKey)
-                => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'.", source, name);
+                => new Error(ErrorLevel.Warning, "missing-paired-attribute", $"Missing attribute: '{otherKey}'. If you specify '{name}', you must also specify '{otherKey}'.", source);
 
             /// <summary>
             /// Attributes do not meet the requirements of either logic.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error MissingEitherAttribute(SourceInfo? source, IEnumerable<object> attributes, string propName)
-                => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {StringUtility.Join(attributes)}.", source, propName);
+            public static Error MissingEitherAttribute(SourceInfo? source, IEnumerable<object> attributes)
+                => new Error(ErrorLevel.Warning, "missing-either-attribute", $"One of the following attributes is required: {StringUtility.Join(attributes)}.", source);
 
             /// <summary>
             /// Attributes do not meet the requirements of precludes logic.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error PrecludedAttributes(SourceInfo? source, IEnumerable<object> attributes, string propName)
-                => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {StringUtility.Join(attributes)}.", source, propName);
+            public static Error PrecludedAttributes(SourceInfo? source, IEnumerable<object> attributes)
+                => new Error(ErrorLevel.Warning, "precluded-attributes", $"Only one of the following attributes can exist: {StringUtility.Join(attributes)}.", source);
 
             /// <summary>
             /// An attribute doesn't conform to date format.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DateFormatInvalid(SourceInfo? source, string name, string value)
-                => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid date format for '{name}': '{value}'.", source, name);
+                => new Error(ErrorLevel.Warning, "date-format-invalid", $"Invalid date format for '{name}': '{value}'.", source);
 
             /// <summary>
             /// Date out of range.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DateOutOfRange(SourceInfo? source, string name, string value)
-                => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'.", source, name);
+                => new Error(ErrorLevel.Warning, "date-out-of-range", $"Value out of range for '{name}': '{value}'.", source);
 
             /// <summary>
             /// An attribute is deprecated.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error AttributeDeprecated(SourceInfo? source, string name, string replacedBy)
-                => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead.")}", source, name);
+                => new Error(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead.")}", source);
 
             /// <summary>
             /// The value of paired attribute is invalid.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error InvalidPairedAttribute(SourceInfo? source, string name, object value, string dependentFieldName, object? dependentFieldValue, string propName)
-                => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'.", source, propName);
+            public static Error InvalidPairedAttribute(SourceInfo? source, string name, object value, string dependentFieldName, object? dependentFieldValue)
+                => new Error(ErrorLevel.Warning, "invalid-paired-attribute", $"Invalid value for '{name}': '{value}' is not valid with '{dependentFieldName}' value '{dependentFieldValue}'.", source);
 
             /// <summary>
             /// The value is not a valid Microsoft alias
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
-                => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias.", alias, name: name);
+                => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias.", alias);
 
             /// <summary>
             /// The attribute value is duplicated within docset
@@ -620,7 +620,7 @@ namespace Microsoft.Docs.Build
             public const string DuplicateAttributeCode = "duplicate-attribute";
 
             public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
-                => new Error(ErrorLevel.Suggestion, DuplicateAttributeCode, $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.", source, name);
+                => new Error(ErrorLevel.Suggestion, DuplicateAttributeCode, $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.", source);
         }
 
         public static class Metadata
@@ -640,7 +640,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error AttributeReserved(SourceInfo? source, string name)
-                => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs.", source, name);
+                => new Error(ErrorLevel.Warning, "attribute-reserved", $"Attribute {name} is reserved for use by Docs.", source);
         }
 
         public static class Content
@@ -673,19 +673,19 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(FilePath file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", new SourceInfo(file));
 
             /// <summary>
             /// Html Tag value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, name: tag);
+                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source);
 
             /// <summary>
             /// Html Attribute value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, name: $"{tag}_{attribute}");
+                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source);
         }
 
         public static class DependencyRepository

@@ -32,6 +32,24 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public int EndColumn { get; }
 
+        /// <summary>
+        /// Gets the JSON property path.
+        /// This is not the standard JsonPath, it is a simplified JSON property path string that uses '.' to separate JSON object,
+        /// JSON array index does not appear in the path.
+        ///
+        /// E.g. in the following JSON:
+        ///
+        /// ```json
+        /// {
+        ///   "a": 1,
+        ///   "b": { "c": 2 },
+        ///   "d": [3]
+        /// }
+        /// ```
+        /// The path for 1 is `a`, the path for 2 is `b.c`, the path for 3 is `d`.
+        /// </summary>
+        public string? PropertyPath { get; }
+
         // A special storage for source info of the JObject property key
         // if this is a JObject property value.
         internal SourceInfo? KeySourceInfo { get; set; }
@@ -40,25 +58,30 @@ namespace Microsoft.Docs.Build
             : this(file, 0, 0, 0, 0)
         { }
 
-        public SourceInfo(FilePath file, int line, int column)
-            : this(file, line, column, line, column)
+        public SourceInfo(FilePath file, int line, int column, string? propertyPath = null)
+            : this(file, line, column, line, column, propertyPath)
         { }
 
-        public SourceInfo(FilePath file, int startLine, int startColumn, int endLine, int endColumn)
+        public SourceInfo(FilePath file, int startLine, int startColumn, int endLine, int endColumn, string? propertyPath = null)
         {
             File = file;
             Line = startLine;
             Column = startColumn;
             EndLine = endLine;
             EndColumn = endColumn;
+            PropertyPath = propertyPath;
         }
 
         public SourceInfo WithFile(FilePath file)
         {
-            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn);
+            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn, PropertyPath);
         }
 
-        public static implicit operator SourceInfo(FilePath file) => new SourceInfo(file);
+        public SourceInfo AppendPropertyName(string name)
+        {
+            var path = string.IsNullOrEmpty(PropertyPath) ? name : string.Concat(PropertyPath, ".", name);
+            return new SourceInfo(File, Line, Column, EndLine, EndColumn, path);
+        }
 
         public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);
 

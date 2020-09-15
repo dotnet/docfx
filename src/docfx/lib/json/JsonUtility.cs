@@ -490,34 +490,35 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static JToken SetSourceInfo(JToken token, FilePath file, JProperty? property = null)
+        private static JToken SetSourceInfo(JToken token, FilePath file, string? path = null, JProperty? property = null)
         {
             var lineInfo = (IJsonLineInfo)token;
-            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition);
+            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition, path);
             if (property != null)
             {
                 var keyLineInfo = (IJsonLineInfo)property;
-                sourceInfo.KeySourceInfo = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition);
+                sourceInfo.KeySourceInfo = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition, path);
             }
             SetSourceInfo(token, sourceInfo);
 
             switch (token)
             {
                 case JProperty prop:
-                    SetSourceInfo(prop.Value, file);
+                    SetSourceInfo(prop.Value, file, path);
                     break;
 
                 case JArray arr:
                     foreach (var item in arr)
                     {
-                        SetSourceInfo(item, file);
+                        SetSourceInfo(item, file, path);
                     }
                     break;
 
                 case JObject obj:
                     foreach (var prop in obj.Properties())
                     {
-                        SetSourceInfo(prop.Value, file, prop);
+                        var subPath = string.IsNullOrEmpty(path) ? prop.Name : string.Concat(path, ".", prop.Name);
+                        SetSourceInfo(prop.Value, file, subPath, prop);
                     }
                     break;
             }

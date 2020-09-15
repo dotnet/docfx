@@ -16,8 +16,6 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public string? Name { get; }
-
         public SourceInfo? Source { get; }
 
         public PathString? OriginalPath { get; }
@@ -29,7 +27,6 @@ namespace Microsoft.Docs.Build
             string code,
             string message,
             SourceInfo? source = null,
-            string? name = null,
             PathString? originalPath = null,
             bool pullRequestOnly = false)
         {
@@ -37,7 +34,6 @@ namespace Microsoft.Docs.Build
             Code = code;
             Message = message;
             Source = source;
-            Name = name;
             OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
         }
@@ -61,24 +57,23 @@ namespace Microsoft.Docs.Build
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
                 string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
                 Source,
-                Name,
                 OriginalPath,
                 customRule.PullRequestOnly);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return level == Level ? this : new Error(level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
+            return level == Level ? this : new Error(level, Code, Message, Source, OriginalPath, PullRequestOnly);
         }
 
         public Error WithOriginalPath(PathString? originalPath)
         {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, originalPath, PullRequestOnly);
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, originalPath, PullRequestOnly);
         }
 
         public Error WithSource(SourceInfo? source)
         {
-            return new Error(Level, Code, Message, source, Name, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, source, OriginalPath, PullRequestOnly);
         }
 
         public override string ToString()
@@ -128,7 +123,6 @@ namespace Microsoft.Docs.Build
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&
-                       x.Name == y.Name &&
                        x.Source == y.Source &&
                        x.OriginalPath == y.OriginalPath &&
                        x.PullRequestOnly == y.PullRequestOnly;
@@ -140,7 +134,6 @@ namespace Microsoft.Docs.Build
                     obj.Level,
                     obj.Code,
                     obj.Message,
-                    obj.Name,
                     obj.Source,
                     obj.OriginalPath,
                     obj.PullRequestOnly);
