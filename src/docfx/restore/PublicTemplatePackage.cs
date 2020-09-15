@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
         private SourceInfo<string> GetPath(PathString path)
         {
-            if (path.StartsWithPath(new PathString("contentTemplate"), out var remainingPath))
+            if (path.StartsWithPath(new PathString("ContentTemplate"), out var remainingPath))
             {
                 path = remainingPath;
             }
