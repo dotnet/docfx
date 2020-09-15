@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 var servicePages = new List<FilePath>();
                 var referencedFiles = new List<FilePath>();
                 var referencedTocs = new List<FilePath>();
-                TableOfContentsNode node = new TableOfContentsNode();
+                TableOfContentsNode node;
 
                 if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
                 {
@@ -85,6 +85,10 @@ namespace Microsoft.Docs.Build
                         }
 
                         node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
+                    }
+                    else
+                    {
+                        node = LoadTocFile(file, file, referencedFiles, referencedTocs, true);
                     }
                 }
                 else
