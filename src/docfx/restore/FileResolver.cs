@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             if (UrlUtility.IsHttp(file))
             {
-                var content = TestQuirks.RemoteFileProxy?.Invoke(file);
+                var content = TestQuirks.HttpProxy?.Invoke(file);
                 if (content != null)
                 {
                     byte[] byteArray = Encoding.ASCII.GetBytes(content);
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.Link.FileNotFound(file).ToException();
             }
 
-            var content = TestQuirks.RemoteFileProxy?.Invoke(file);
+            var content = TestQuirks.HttpProxy?.Invoke(file);
             if (content != null)
             {
                 return file;

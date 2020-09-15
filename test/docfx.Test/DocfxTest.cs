@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                 return remote;
             };
 
-            TestQuirks.RemoteFileProxy = remote =>
+            TestQuirks.HttpProxy = remote =>
             {
                 var mockedRemoteFiles = t_remoteFiles.Value;
                 if (mockedRemoteFiles != null && mockedRemoteFiles.TryGetValue(remote, out var mockedContent))
