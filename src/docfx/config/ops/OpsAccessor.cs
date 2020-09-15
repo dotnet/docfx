@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
         {
             using var request = new HttpRequestMessage
             {
-                RequestUri = new Uri("/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
+                RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var url = $"/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
+            var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
