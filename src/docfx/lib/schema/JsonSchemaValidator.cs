@@ -445,7 +445,7 @@ namespace Microsoft.Docs.Build
 
                 if (!result)
                 {
-                    errors.Add(Errors.JsonSchema.MissingEitherAttribute(JsonUtility.GetSourceInfo(map), keys));
+                    errors.Add(Errors.JsonSchema.MissingEitherAttribute(JsonUtility.GetSourceInfo(map)?.AppendPropertyName(keys[0]), keys));
                 }
             }
         }
@@ -603,14 +603,14 @@ namespace Microsoft.Docs.Build
                         if (string.IsNullOrEmpty(dependentFieldNameWithIndex))
                         {
                             errors.Add(Errors.JsonSchema.InvalidValue(
-                                JsonUtility.GetSourceInfo(fieldValue),
+                                JsonUtility.GetSourceInfo(fieldValue)?.WithPropertyPath(fieldName),
                                 fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
                                 fieldValue));
                         }
                         else
                         {
                             errors.Add(Errors.JsonSchema.InvalidPairedAttribute(
-                                JsonUtility.GetSourceInfo(fieldValue),
+                                JsonUtility.GetSourceInfo(fieldValue)?.WithPropertyPath(dependentFieldName),
                                 fieldRawValue.Type == JTokenType.Array ? fieldNameWithIndex : fieldName,
                                 fieldValue,
                                 dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
@@ -623,7 +623,7 @@ namespace Microsoft.Docs.Build
                     if (!string.IsNullOrWhiteSpace(dependentFieldNameWithIndex) && allowList.Keys.All(k => IsStrictHaveValue(k)))
                     {
                         errors.Add(Errors.JsonSchema.InvalidPairedAttribute(
-                            JsonUtility.GetSourceInfo(map),
+                            JsonUtility.GetSourceInfo(map)?.WithPropertyPath(dependentFieldName),
                             fieldName,
                             fieldName,
                             dependentFieldRawValue?.Type == JTokenType.Array ? dependentFieldNameWithIndex : dependentFieldName,
