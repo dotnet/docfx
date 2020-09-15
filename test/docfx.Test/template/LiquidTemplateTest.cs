@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     public class LiquidTemplateTest
     {
-        private readonly LiquidTemplate _template = new LiquidTemplate("data/liquid");
+        private readonly LiquidTemplate _template = new LiquidTemplate(new LocalPackage("data/liquid"));
 
         [Theory]
         [InlineData("test", "{'description':'hello','tags':[1,2],'page':{'value':3}}", "<div>hello<div>a b<p>1</p><p>2</p></div>3</div>")]

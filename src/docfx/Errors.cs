@@ -220,8 +220,8 @@ namespace Microsoft.Docs.Build
             /// Examples: pointing template to a local folder that does not exist
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error DirectoryNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
+            public static Error DirectoryNotFound(string directory)
+                => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{directory}'.");
 
             /// <summary>
             /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).

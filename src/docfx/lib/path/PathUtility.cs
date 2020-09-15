@@ -55,6 +55,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static IEnumerable<PathString> GetFiles(string directory)
         {
+            if (!Directory.Exists(directory))
+            {
+                throw Errors.Config.DirectoryNotFound(directory).ToException();
+            }
+
             return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
             {
                 ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',

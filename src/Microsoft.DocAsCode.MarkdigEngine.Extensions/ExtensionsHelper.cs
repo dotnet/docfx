@@ -72,16 +72,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return pattern.Replace(input, replacement);
         }
 
-        public static string NormalizePath(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                return path;
-            }
-
-            return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        }
-
         public static bool MatchStart(ref StringSlice slice, string startString, bool isCaseSensitive = true)
         {
             var c = slice.CurrentChar;

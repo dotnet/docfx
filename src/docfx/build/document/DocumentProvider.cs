@@ -87,9 +87,9 @@ namespace Microsoft.Docs.Build
                 case ContentType.Redirection:
                     var fileExtension = _config.OutputType switch
                     {
-                        OutputType.Html => file.IsHtml ? ".html" : ".json",
+                        OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
                         OutputType.Json => ".json",
-                        OutputType.PageJson => file.IsHtml ? ".raw.page.json" : ".json",
+                        OutputType.PageJson => file.RenderType == RenderType.Content ? ".raw.page.json" : ".json",
                         _ => throw new NotSupportedException(),
                     };
                     outputPath = Path.ChangeExtension(outputPath, fileExtension);
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.TableOfContents:
                     var tocExtension = _config.OutputType switch
                     {
-                        OutputType.Html => file.IsHtml ? ".html" : ".json",
+                        OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
                         OutputType.Json => ".json",
                         OutputType.PageJson => ".json",
                         _ => throw new NotSupportedException(),
@@ -131,9 +131,9 @@ namespace Microsoft.Docs.Build
             return GetDocument(path).CanonicalUrl;
         }
 
-        public bool IsHtml(FilePath path)
+        public RenderType GetRenderType(FilePath path)
         {
-            return GetDocument(path).IsHtml;
+            return GetDocument(path).RenderType;
         }
 
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
@@ -145,8 +145,8 @@ namespace Microsoft.Docs.Build
                 return file.SiteUrl;
             }
 
-            var sitePath = FilePathToSitePath(path, file.ContentType, UrlType.Docs, file.IsHtml);
-            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, UrlType.Docs, file.IsHtml);
+            var sitePath = FilePathToSitePath(path, file.ContentType, UrlType.Docs, file.RenderType);
+            return PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), file.ContentType, UrlType.Docs, file.RenderType);
         }
 
         public string? GetPageType(FilePath file)
@@ -229,20 +229,20 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
-            var isHtml = _templateEngine.IsHtml(contentType, mime.Value);
-            var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, isHtml);
-            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, isHtml);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, isHtml);
+            var renderType = _templateEngine.GetRenderType(contentType, mime);
+            var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
+            var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
+            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, renderType);
 
-            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, isHtml);
+            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, renderType);
         }
 
-        private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, bool isHtml)
+        private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, RenderType renderType)
         {
             var sitePath = ApplyRoutes(filePath.Path).Value;
             if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
             {
-                if (contentType == ContentType.Page && !isHtml)
+                if (contentType == ContentType.Page && renderType == RenderType.Component)
                 {
                     sitePath = Path.ChangeExtension(sitePath, ".json");
                 }
@@ -272,17 +272,19 @@ namespace Microsoft.Docs.Build
             return sitePath.Replace('\\', '/');
         }
 
-        private static string PathToAbsoluteUrl(string path, ContentType contentType, UrlType urlType, bool isHtml)
+        private static string PathToAbsoluteUrl(string path, ContentType contentType, UrlType urlType, RenderType renderType)
         {
-            var url = PathToRelativeUrl(path, contentType, urlType, isHtml);
+            var url = PathToRelativeUrl(path, contentType, urlType, renderType);
             return url == "./" ? "/" : "/" + url;
         }
 
-        private static string PathToRelativeUrl(string path, ContentType contentType, UrlType urlType, bool isHtml)
+        private static string PathToRelativeUrl(string path, ContentType contentType, UrlType urlType, RenderType renderType)
         {
             var url = path.Replace('\\', '/');
 
-            if (contentType == ContentType.Redirection || contentType == ContentType.TableOfContents || (contentType == ContentType.Page && isHtml))
+            if (contentType == ContentType.Redirection
+                || contentType == ContentType.TableOfContents
+                || (contentType == ContentType.Page && renderType == RenderType.Content))
             {
                 if (urlType != UrlType.Ugly)
                 {
@@ -305,12 +307,12 @@ namespace Microsoft.Docs.Build
         /// In docs, canonical URL is later overwritten by template JINT code.
         /// TODO: need to handle the logic difference when template code is removed.
         /// </summary>
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, bool isHtml)
+        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, RenderType renderType)
         {
             if (isExperimental)
             {
                 sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, isHtml);
+                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, renderType);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";

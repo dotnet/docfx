@@ -39,22 +39,52 @@ inputs:
 outputs:
   docs/a b/index.html:
 ---
-# Treat TOC as JSON when toc.html.tmpl is missing
+# Treat TOC as JSON when toc content type is component
+noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
   TOC.md:
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs: 
   toc.json:
 ---
-# Treat TOC as HTML when toc.html.tmpl is present
+# Treat TOC as HTML when toc content type is component
+noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
   TOC.md:
-  _themes/ContentTemplate/toc.html.tmpl:
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"content\"}"
 outputs: 
-  toc.html:
+  toc.json:
+---
+# Treat TOC as HTML when the non-pdf template is used
+inputs: 
+  docfx.yml: |
+    template: _themes
+    outputType: html
+  TOC.md:
+  _themes/ContentTemplate/test:
+outputs: 
+  toc.html: 
+  toc.json:
+---
+# Treat TOC as HTML when the pdf template is used
+inputs: 
+  docfx.yml: |
+    template: _themes.pdf
+    outputType: html
+  TOC.md:
+  _themes.pdf/ContentTemplate/toc.html.js: |
+    exports.transform = function (model) {
+      return {
+        content: model.items
+      }
+    }
+  _themes.pdf/ContentTemplate/toc.html.tmpl:
+outputs: 
+  toc.html: 
   toc.json:
 ---
 # Apply template and produce html page when output type is html
@@ -155,18 +185,19 @@ inputs:
     routes:
       docs/v1/: .
     monikerDefinition: '{APP_BASE_PATH}/data/monikers.json'
-  _themes/Conceptual.html.liquid: |
+    template: _themes.pdf
+  _themes.pdf/Conceptual.html.liquid: |
     <!DOCTYPE html>
       <div>
           {{content}}
       </div>
-  _themes/ContentTemplate/toc.html.js: |
+  _themes.pdf/ContentTemplate/toc.html.js: |
     exports.transform = function (model) {
       return {
         content: model.items
       }
     }
-  _themes/ContentTemplate/toc.html.tmpl: |
+  _themes.pdf/ContentTemplate/toc.html.tmpl: |
     <!DOCTYPE html>
       <div>
           {{#content}}
@@ -228,7 +259,7 @@ inputs:
   docfx.yml: |
     outputType: html
     urlType: pretty
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"content\"}"
   a.yml: |
     #YamlMime:TestData
     prop: value
@@ -274,7 +305,7 @@ inputs:
         content: JSON.stringify({result: model.prop + " has run js data transform"})
       }
     }
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {"result": "value has run js data transform"}

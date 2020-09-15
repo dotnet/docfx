@@ -44,6 +44,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options)
+        {
+            return new LocalPackage(ResolvePackage(package, options));
+        }
+
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
             switch (package.Type)
@@ -54,12 +59,7 @@ namespace Microsoft.Docs.Build
                     return gitPath;
 
                 default:
-                    var dir = Path.Combine(_docsetPath, package.Path);
-                    if (!Directory.Exists(dir))
-                    {
-                        throw Errors.Config.DirectoryNotFound(new SourceInfo<string>(package.Path)).ToException();
-                    }
-                    return dir;
+                    return Path.Combine(_docsetPath, package.Path);
             }
         }
 
