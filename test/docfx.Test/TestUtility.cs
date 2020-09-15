@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
 
         private static void CreateZipFile(KeyValuePair<string, string> file, string filePath)
         {
-            var token = YamlUtility.ToJToken(file.Value);
+            var token = YamlUtility.Parse(ErrorBuilder.Null, file.Value, null);
             if (token is JObject obj)
             {
                 using var memoryStream = new MemoryStream();
