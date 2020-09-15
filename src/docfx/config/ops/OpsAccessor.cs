@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -147,7 +148,8 @@ namespace Microsoft.Docs.Build
             string? value404 = null,
             DocsEnvironment? environment = null)
         {
-            var url = $"{BuildServiceEndpoint(environment)}/{routePath.TrimStart('/')}";
+            Debug.Assert(routePath.StartsWith("/"));
+            var url = BuildServiceEndpoint(environment) + routePath.TrimStart('/');
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
             {
@@ -169,7 +171,8 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var url = $"{BuildServiceEndpoint(environment)}/{routePath.TrimStart('/')}";
+                Debug.Assert(routePath.StartsWith("/"));
+                var url = BuildServiceEndpoint(environment) + routePath.TrimStart('/');
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
