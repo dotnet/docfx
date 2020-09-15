@@ -23,21 +23,11 @@ namespace Microsoft.Docs.Build
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
         }
 
-        public override IEnumerable<PathString> GetFiles()
-        {
-            throw new NotSupportedException();
-        }
+        public override IEnumerable<PathString> GetFiles() => throw new NotSupportedException();
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 
-        public override PathString? TryGetPhysicalPath(PathString path)
-        {
-            if (_fileResolver.TryResolveFilePath(GetPath(path), out var fullPath))
-            {
-                return new PathString(fullPath!);
-            }
-            return null;
-        }
+        public override PathString? TryGetPhysicalPath(PathString path) => throw new NotSupportedException();
 
         private SourceInfo<string> GetPath(PathString path)
         {

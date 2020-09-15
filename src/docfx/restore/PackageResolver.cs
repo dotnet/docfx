@@ -19,14 +19,16 @@ namespace Microsoft.Docs.Build
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
         private readonly Repository? _repository;
+        private readonly FileResolver _fileResolver;
 
         private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
-        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, Repository? repository)
+        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
         {
             _docsetPath = docsetPath;
             _config = config;
             _fetchOptions = fetchOptions;
+            _fileResolver = fileResolver;
             _repository = repository;
         }
 
@@ -44,11 +46,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options, FileResolver fileResolver)
+        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options)
         {
             return package.Type switch
             {
-                PackageType.PublicTemplate => new PublicTemplatePackage(package.Url, fileResolver),
+                PackageType.PublicTemplate => new PublicTemplatePackage(package.Url, _fileResolver),
                 _ => new LocalPackage(ResolvePackage(package, options)),
             };
         }

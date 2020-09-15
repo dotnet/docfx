@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
             BuildOptions buildOptions,
             Output output,
             PackageResolver packageResolver,
-            FileResolver fileResolver,
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
@@ -42,7 +41,7 @@ namespace Microsoft.Docs.Build
                 template = new PackagePath(Path.Combine(buildOptions.DocsetPath, "_themes"));
             }
 
-            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne, fileResolver);
+            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
 
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());

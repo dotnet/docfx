@@ -494,7 +494,7 @@ inputs:
     #YamlMime:TestData
     test: b.md
   docs/b.md:
-remoteFiles:
+http:
   https://static.docs.com/ui/latest/schemas/TestData.schema.json: |
     {
       "renderType": "component",

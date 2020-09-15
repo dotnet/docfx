@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     t_repos.Value = repos;
-                    t_remoteFiles.Value = spec.RemoteFiles;
+                    t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
                     RunCore(docsetPath, outputPath, test, spec);
                 }

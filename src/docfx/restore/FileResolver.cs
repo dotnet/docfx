@@ -26,14 +26,14 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly string? _fallbackDocsetPath;
+        private readonly Lazy<string?>? _fallbackDocsetPath;
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
 
         public FileResolver(
             string docsetPath,
-            string? fallbackDocsetPath = null,
+            Lazy<string?>? fallbackDocsetPath = null,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
                 {
                     return localFilePath;
                 }
-                else if (_fallbackDocsetPath != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath, file)))
+                else if (_fallbackDocsetPath?.Value != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath.Value, file)))
                 {
                     return localFilePath;
                 }
