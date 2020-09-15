@@ -10,5 +10,7 @@ namespace Microsoft.Docs.Build
         public ExternalXrefSpec[] References { get; set; } = Array.Empty<ExternalXrefSpec>();
 
         public XrefProperties? Properties { get; set; }
+
+        public string? RepositoryName { get; set; }
     }
 }

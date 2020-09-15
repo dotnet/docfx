@@ -589,6 +589,38 @@ outputs:
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/a.json","line":6,"column":14}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
 ---
+# uid conflict globally
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "repositoryName": "a_repo",
+      "references":[{
+          "uid": "a",
+          "name": "String",
+          "fullName": "System.String",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "nameWithType": "System.String"
+      }]
+    }
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "uniqueScope": "Global" },
+      }
+    }
+outputs:
+  docs/a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"duplicate-uid-globally","message":"UID 'a' is duplicated globally in repo 'a_repo'.","file":"docs/a.json","line":3,"column":12}
+---
 # Xref property field which supports markdown content
 inputs:
   docfx.yml: |
