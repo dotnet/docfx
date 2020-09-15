@@ -99,8 +99,32 @@ namespace Microsoft.Docs.Build
         private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath, JoinTOCConfig joinTOCConfig)
         {
             var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
+            TraverseAndConvertHref(topLevelToc, joinTOCConfig);
             TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>(), joinTOCConfig);
             return topLevelToc;
+        }
+
+        private void TraverseAndConvertHref(TableOfContentsNode node, JoinTOCConfig joinTOCConfig)
+        {
+            if (!string.IsNullOrEmpty(node.Href.Value) && !(node.Href.Value.StartsWith("~/") || node.Href.Value.StartsWith("~\\")))
+            {
+                // convert href in TopLevelTOC to one that relative to ReferenceTOC
+                var referenceTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.ReferenceToc) ?? ".";
+                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
+
+                var topLevelTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.TopLevelToc) ?? ".";
+                var topLevelTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
+
+                var hrefFullPath = Path.GetFullPath(Path.Combine(topLevelTOCFullPath, node.Href.Value));
+
+                var hrefRelativeToReferenceTOC = Path.GetRelativePath(referenceTOCFullPath, hrefFullPath);
+
+                node.Href.With(hrefRelativeToReferenceTOC);
+            }
+            foreach (var item in node.Items)
+            {
+                TraverseAndConvertHref(item, joinTOCConfig);
+            }
         }
 
         private void TraverseAndMerge(
@@ -109,35 +133,14 @@ namespace Microsoft.Docs.Build
             HashSet<TableOfContentsNode> matched,
             JoinTOCConfig joinTOCConfig)
         {
-            var referenceTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.ReferenceToc);
-            referenceTOCRelativeDir = string.IsNullOrEmpty(referenceTOCRelativeDir) ? "." : referenceTOCRelativeDir;
-            var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
-
             foreach (var pattern in node.Children)
             {
                 foreach (var item in itemsToMatch)
                 {
                     if (item.Value.Name != null && !matched.Contains(item) && GlobUtility.CreateGlobMatcher(pattern)(item.Value.Name!))
                     {
-                        // calculate the href relative to TopLevelTOC instead of the ReferenceTOC file
-                        var itemHref = item.Value.Href.Value;
-                        if (!string.IsNullOrEmpty(itemHref) && !(itemHref.StartsWith("~/") || itemHref.StartsWith("~\\")))
-                        {
-                            var itemHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, itemHref));
-                            var itemHrefRelativeToDocset = Path.GetRelativePath(_docsetPath, itemHrefFullPath);
-                            var itemHrefFullPathOfDocset = $"~/{itemHrefRelativeToDocset}";
-                            var newTocNode = new TableOfContentsNode(item)
-                                { Href = new SourceInfo<string?>(itemHrefFullPathOfDocset, item.Value.Href.Source) };
-                            var newItem = new SourceInfo<TableOfContentsNode>(newTocNode, item.Source);
-
-                            matched.Add(newItem);
-                            node.Items.Add(newItem);
-                        }
-                        else
-                        {
-                            matched.Add(item);
-                            node.Items.Add(item);
-                        }
+                        matched.Add(item);
+                        node.Items.Add(item);
                     }
                 }
             }

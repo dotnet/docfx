@@ -1891,7 +1891,7 @@ outputs:
   test/a/_splitted/b/toc.json: |
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
 ---
-# Service Page href fix
+# Service Page href fix: TopLevelTOC and ReferenceTOC in different directory hierarchy
 repos:
   https://github.com/ops/service-page2:
   - files:
