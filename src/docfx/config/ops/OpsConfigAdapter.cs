@@ -28,8 +28,7 @@ namespace Microsoft.Docs.Build
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
         private readonly OpsAccessor _opsAccessor;
 
-        private static readonly object s_lock = new object();
-        private static readonly ConcurrentDictionary<string, Task<string>> s_docsetInfoCache = new ConcurrentDictionary<string, Task<string>>();
+        private static readonly ConcurrentDictionary<string, Lazy<Task<string>>> s_docsetInfoCache = new ConcurrentDictionary<string, Lazy<Task<string>>>();
 
         public OpsConfigAdapter(OpsAccessor opsAccessor)
         {
@@ -70,12 +69,8 @@ namespace Microsoft.Docs.Build
             var xrefEndpoint = queries["xref_endpoint"];
             var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
 
-            Task<string> getDocsetInfo;
-            lock (s_lock)
-            {
-                getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, (repositoryUrl) => _opsAccessor.GetDocsetInfo(repositoryUrl));
-            }
-            var docsetInfo = await getDocsetInfo;
+            var getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, new Lazy<Task<string>>(() => _opsAccessor.GetDocsetInfo(repository)));
+            var docsetInfo = await getDocsetInfo.Value;
 
             var docsets = JsonConvert.DeserializeAnonymousType(
                 docsetInfo,
