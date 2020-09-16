@@ -58,12 +58,17 @@ namespace Microsoft.Docs.Build
             return TransformContentCore(errors, definitions, file, schema, token, uidCount, contentFallback);
         }
 
-        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
+        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(
+            ErrorBuilder errors,
+            JsonSchema schema,
+            FilePath file,
+            JToken token,
+            bool contentFallback)
         {
             var xrefSpecs = new List<InternalXrefSpec>();
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
-            LoadXrefSpecsCore(errors, file, schema, definitions, token, xrefSpecs, uidCount);
+            LoadXrefSpecsCore(errors, file, schema, definitions, token, xrefSpecs, uidCount, contentFallback);
             return xrefSpecs;
         }
 
@@ -74,7 +79,8 @@ namespace Microsoft.Docs.Build
             JsonSchemaDefinition definitions,
             JToken node,
             List<InternalXrefSpec> xrefSpecs,
-            int uidCount)
+            int uidCount,
+            bool contentFallback)
         {
             schema = definitions.GetDefinition(schema);
             switch (node)
@@ -82,21 +88,21 @@ namespace Microsoft.Docs.Build
                 case JObject obj:
                     if (IsXrefSpec(obj, schema, out var uid))
                     {
-                        xrefSpecs.Add(LoadXrefSpec(errors, definitions, file, schema, uid, obj, uidCount));
+                        xrefSpecs.Add(LoadXrefSpec(errors, definitions, file, schema, uid, obj, uidCount, contentFallback));
                     }
 
                     foreach (var (key, value) in obj)
                     {
                         if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            LoadXrefSpecsCore(errors, file, propertySchema, definitions, value, xrefSpecs, uidCount);
+                            LoadXrefSpecsCore(errors, file, propertySchema, definitions, value, xrefSpecs, uidCount, contentFallback);
                         }
                     }
                     break;
                 case JArray array when schema.Items.schema != null:
                     foreach (var item in array)
                     {
-                        LoadXrefSpecsCore(errors, file, schema.Items.schema, definitions, item, xrefSpecs, uidCount);
+                        LoadXrefSpecsCore(errors, file, schema.Items.schema, definitions, item, xrefSpecs, uidCount, contentFallback);
                     }
                     break;
             }
@@ -109,7 +115,8 @@ namespace Microsoft.Docs.Build
             JsonSchema schema,
             SourceInfo<string> uid,
             JObject obj,
-            int uidCount)
+            int uidCount,
+            bool contentFallback)
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
@@ -135,7 +142,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(definitions, file, uid, value, propertySchema, uidCount),
+                    () => LoadXrefProperty(definitions, file, uid, value, propertySchema, uidCount, contentFallback),
                     LazyThreadSafetyMode.PublicationOnly);
             }
 
@@ -198,7 +205,8 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> uid,
             JToken value,
             JsonSchema schema,
-            int uidCount)
+            int uidCount,
+            bool contentFallback)
         {
             var recursionDetector = t_recursionDetector.Value!;
             if (recursionDetector.Contains(uid))
@@ -209,7 +217,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector.Push(uid);
-                return TransformContentCore(_errors, definitions, file, schema, value, uidCount);
+                return TransformContentCore(_errors, definitions, file, schema, value, uidCount, contentFallback);
             }
             finally
             {
@@ -225,7 +233,7 @@ namespace Microsoft.Docs.Build
             JsonSchema schema,
             JToken token,
             int uidCount,
-            bool contentFallback = true)
+            bool contentFallback)
         {
             schema = definitions.GetDefinition(schema);
             switch (token)
