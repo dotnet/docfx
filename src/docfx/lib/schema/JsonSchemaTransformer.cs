@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
-        private readonly TemplateEngine _templateEngine;
 
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
@@ -34,8 +33,7 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             ErrorBuilder errors,
-            MonikerProvider monikerProvider,
-            TemplateEngine templateEngine)
+            MonikerProvider monikerProvider)
         {
             _documentProvider = documentProvider;
             _markdownEngine = markdownEngine;
@@ -43,7 +41,6 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _errors = errors;
             _monikerProvider = monikerProvider;
-            _templateEngine = templateEngine;
         }
 
         public JToken GetMustacheXrefSpec(FilePath file, string uid)

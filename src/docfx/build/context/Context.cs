@@ -167,8 +167,7 @@ namespace Microsoft.Docs.Build
                 LinkResolver,
                 XrefResolver,
                 errorLog,
-                MonikerProvider,
-                TemplateEngine);
+                MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
                 BuildOptions.DocsetPath,
