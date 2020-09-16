@@ -47,7 +47,7 @@ repos:
         }
       a/docfx.yml: |
         http:
-          https://docspublic.azurefd.net/api/build:
+          https://op-build-prod.azurewebsites.net:
             headers:
               X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
       a/a.md:
