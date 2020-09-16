@@ -37,8 +37,8 @@ namespace Microsoft.Docs.Build
         private static void BuildDocset(
             ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options)
         {
-            errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
             using var disposables = new DisposableCollector();
+            errors = errors.WithDocsetPath(workingDirectory, docsetPath);
 
             try
             {
