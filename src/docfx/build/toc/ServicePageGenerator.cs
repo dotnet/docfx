@@ -42,7 +42,10 @@ namespace Microsoft.Docs.Build
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+
+                var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
+                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
 
                 var pageType = node.LandingPageType.Value;
                 FilePath servicePagePath;
@@ -70,25 +73,12 @@ namespace Microsoft.Docs.Build
 
                     if (!string.IsNullOrEmpty(childHref) && UrlUtility.GetLinkType(childHref) == LinkType.RelativePath)
                     {
-                        if (topLevelTOCRelativeDir != null)
+                        if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
                         {
-                            string? hrefFileFullPath;
-
-                            var topLevelTOCYmlDir = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
-
-                            if (childHref.StartsWith("~/") || childHref.StartsWith("~\\"))
-                            {
-                                childHref = childHref.Substring(2).TrimStart('/', '\\');
-                                hrefFileFullPath = Path.GetFullPath(Path.Combine(_docsetPath, childHref));
-                            }
-                            else
-                            {
-                                hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
-                            }
-
+                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
                             var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                            var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = hrefRelativePath;
+                            var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                            childHref = hrefRelativePathToReferenceTOC;
                         }
 
                         child = new ServicePageItem(childName, childHref, null);
