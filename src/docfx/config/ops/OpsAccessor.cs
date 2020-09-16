@@ -23,17 +23,18 @@ namespace Microsoft.Docs.Build
     {
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
+        // TODO: use Azure front door endpoint when it is stable
         private static readonly string DocsProdServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://docspublic.azurefd.net/api/build";
+            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
 
         private static readonly string DocsPPEServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://docspubdev.azurefd.net/api/build";
+            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
 
         private static readonly string DocsInternalServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://docspubdev.azurefd.net/api/build";
+            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
 
         private static readonly string DocsPerfServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://docspubdev.azurefd.net/api/build";
+            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
         private static readonly SecretClient s_secretClient = new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenProd"));
