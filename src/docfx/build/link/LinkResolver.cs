@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         public (Error? error, FilePath? file) ResolveContent(
             SourceInfo<string> href,
             FilePath referencingFile,
-            bool contentFallback,
+            bool contentFallback = true,
             bool? transitive = null)
         {
             var (error, file, _, _, _) = TryResolveFile(referencingFile, href, contentFallback, true);

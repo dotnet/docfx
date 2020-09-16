@@ -433,7 +433,7 @@ namespace Microsoft.Docs.Build
                     foreach (var name in s_tocFileNames)
                     {
                         var probingHref = new SourceInfo<string>(Path.Combine(href, name), href);
-                        var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath, contentFallback: true, transitive: false);
+                        var (_, subToc) = _linkResolver.ResolveContent(probingHref, filePath, transitive: false);
                         if (subToc != null)
                         {
                             if (!subToc.IsGitCommit)
@@ -455,7 +455,7 @@ namespace Microsoft.Docs.Build
                 case TocHrefType.TocFile:
 
                     // NOTE: to keep v2 parity, TOC include does not transit.
-                    var (error, referencedToc) = _linkResolver.ResolveContent(href, filePath, contentFallback: true, transitive: false);
+                    var (error, referencedToc) = _linkResolver.ResolveContent(href, filePath, transitive: false);
                     _errors.AddIfNotNull(error);
                     referencedTocs.AddIfNotNull(referencedToc);
                     return referencedToc;
