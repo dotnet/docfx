@@ -298,7 +298,16 @@ namespace Microsoft.Docs.Build
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath());
+            var contentFallback = true;
+            var referencingFile = origin.GetFilePath();
+            if (referencingFile.Path.Value.EndsWith(".yml"))
+            {
+                contentFallback = _templateEngine.GetSchema(_documentProvider.GetMime(referencingFile)).ContentFallback ?? contentFallback;
+            }
+            var (error, file) = _linkResolver.ResolveContent(
+                new SourceInfo<string>(path, origin.GetSourceInfo()),
+                referencingFile,
+                contentFallback);
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), file);

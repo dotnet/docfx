@@ -269,5 +269,10 @@ namespace Microsoft.Docs.Build
         /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
         public Dictionary<string, Dictionary<string, CustomRule>> Rules { get; } = new Dictionary<string, Dictionary<string, CustomRule>>();
+
+        /// <summary>
+        /// Whether content fallback is allowed for loc page
+        /// </summary>
+        public bool? ContentFallback { get; set; }
     }
 }
