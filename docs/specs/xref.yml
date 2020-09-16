@@ -619,7 +619,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-uid-globally","message":"UID 'a' is duplicated globally in repo 'a_repo'.","file":"docs/a.json","line":3,"column":12}
+    {"message_severity":"warning","code":"duplicate-uid-global","message":"UID 'a' is duplicated globally in repo 'a_repo'.","file":"docs/a.json","line":3,"column":12}
 ---
 # Xref property field which supports markdown content
 inputs:
