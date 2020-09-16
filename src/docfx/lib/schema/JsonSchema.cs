@@ -273,6 +273,6 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Whether content fallback is allowed for loc page
         /// </summary>
-        public bool? ContentFallback { get; set; }
+        public bool ContentFallback { get; set; } = true;
     }
 }

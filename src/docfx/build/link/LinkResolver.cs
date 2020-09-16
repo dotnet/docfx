@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, true);
+                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, contentFallback);
                         }
 
                         // Do not report error for landing page

@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
+        private readonly TemplateEngine _templateEngine;
 
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
@@ -33,7 +34,8 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             ErrorBuilder errors,
-            MonikerProvider monikerProvider)
+            MonikerProvider monikerProvider,
+            TemplateEngine templateEngine)
         {
             _documentProvider = documentProvider;
             _markdownEngine = markdownEngine;
@@ -41,6 +43,7 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _errors = errors;
             _monikerProvider = monikerProvider;
+            _templateEngine = templateEngine;
         }
 
         public JToken GetMustacheXrefSpec(FilePath file, string uid)
@@ -284,13 +287,19 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Markdown:
 
+                    var mime = _documentProvider.GetMime(file);
+                    var rootSchema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
+
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown);
+                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
 
                 case JsonSchemaContentType.InlineMarkdown:
 
+                    mime = _documentProvider.GetMime(file);
+                    rootSchema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
+
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.InlineMarkdown);
+                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
