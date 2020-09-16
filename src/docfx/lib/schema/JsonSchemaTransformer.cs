@@ -54,11 +54,11 @@ namespace Microsoft.Docs.Build
             return result ?? new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
         }
 
-        public JToken TransformContent(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
+        public JToken TransformContent(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token, bool contentFallback)
         {
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
-            return TransformContentCore(errors, definitions, file, schema, token, uidCount);
+            return TransformContentCore(errors, definitions, file, schema, token, uidCount, contentFallback);
         }
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
@@ -221,7 +221,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken TransformContentCore(ErrorBuilder errors, JsonSchemaDefinition definitions, FilePath file, JsonSchema schema, JToken token, int uidCount)
+        private JToken TransformContentCore(
+            ErrorBuilder errors,
+            JsonSchemaDefinition definitions,
+            FilePath file,
+            JsonSchema schema,
+            JToken token,
+            int uidCount,
+            bool contentFallback = true)
         {
             schema = definitions.GetDefinition(schema);
             switch (token)
@@ -236,7 +243,7 @@ namespace Microsoft.Docs.Build
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        newArray.Add(TransformContentCore(errors, definitions, file, schema.Items.schema, item, uidCount));
+                        newArray.Add(TransformContentCore(errors, definitions, file, schema.Items.schema, item, uidCount, contentFallback));
                     }
 
                     return newArray;
@@ -251,7 +258,7 @@ namespace Microsoft.Docs.Build
                         }
                         else if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            newObject[key] = TransformContentCore(errors, definitions, file, propertySchema, value, uidCount);
+                            newObject[key] = TransformContentCore(errors, definitions, file, propertySchema, value, uidCount, contentFallback);
                         }
                         else
                         {
@@ -261,14 +268,19 @@ namespace Microsoft.Docs.Build
                     return newObject;
 
                 case JValue value:
-                    return TransformScalar(errors, schema, file, value);
+                    return TransformScalar(errors, schema, file, value, contentFallback);
 
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        private JToken TransformScalar(ErrorBuilder errors, JsonSchema schema, FilePath file, JValue value)
+        private JToken TransformScalar(
+            ErrorBuilder errors,
+            JsonSchema schema,
+            FilePath file,
+            JValue value,
+            bool contentFallback)
         {
             if (value.Type == JTokenType.Null || schema.ContentType is null)
             {
@@ -287,19 +299,13 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Markdown:
 
-                    var mime = _documentProvider.GetMime(file);
-                    var rootSchema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
-
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, null, contentFallback);
 
                 case JsonSchemaContentType.InlineMarkdown:
 
-                    mime = _documentProvider.GetMime(file);
-                    rootSchema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
-
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.InlineMarkdown, null, contentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
