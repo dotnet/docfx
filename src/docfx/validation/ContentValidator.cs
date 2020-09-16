@@ -15,7 +15,8 @@ namespace Microsoft.Docs.Build
     internal class ContentValidator
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
-        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection" };
+        // Learn content: "learningpath", "module", "moduleunit"
+        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit" };
 
         private readonly Validator _validator;
         private readonly ErrorBuilder _errors;
