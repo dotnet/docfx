@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
 
         public static Func<string, string>? GitRemoteProxy { get; set; }
 
+        public static Func<string, string?>? HttpProxy { get; set; }
+
         public static bool? Verbose { get; set; }
     }
 }

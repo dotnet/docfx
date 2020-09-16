@@ -430,7 +430,7 @@ repos:
      docfx.yml: |
        outputType: pageJson
        http:
-         https://op-build-prod.azurewebsites.net:
+         https://docspublic.azurefd.net/api/build:
            headers:
              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
      path.yml: |

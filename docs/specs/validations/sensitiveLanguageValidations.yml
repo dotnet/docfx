@@ -74,7 +74,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","file":"docfx.yml","line":4,"end_line":4,"column":5,"end_column":5}
+    {"message_severity":"warning","code":"override-not-allowed","message":"Rule 'sensitive-language' can't be overridden in docfx.json.","file":"docfx.yml","line":4,"end_line":4,"column":5,"end_column":5}
   file1.json:
   a/b/c/file.json:
 ---
