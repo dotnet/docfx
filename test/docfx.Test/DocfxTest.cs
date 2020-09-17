@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
         private static readonly ConcurrentDictionary<string, object> s_locks = new ConcurrentDictionary<string, object>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
 
         static DocfxTest()
@@ -35,6 +36,16 @@ namespace Microsoft.Docs.Build
                     return mockedLocation;
                 }
                 return remote;
+            };
+
+            TestQuirks.HttpProxy = remote =>
+            {
+                var mockedRemoteFiles = t_remoteFiles.Value;
+                if (mockedRemoteFiles != null && mockedRemoteFiles.TryGetValue(remote, out var mockedContent))
+                {
+                    return mockedContent;
+                }
+                return null;
             };
         }
 
@@ -64,6 +75,7 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     t_repos.Value = repos;
+                    t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
                     RunCore(docsetPath, outputPath, test, spec);
                 }
@@ -78,6 +90,7 @@ namespace Microsoft.Docs.Build
                 finally
                 {
                     t_repos.Value = null;
+                    t_remoteFiles.Value = null;
                     t_appDataPath.Value = null;
                 }
             }

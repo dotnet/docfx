@@ -46,9 +46,13 @@ namespace Microsoft.Docs.Build
             _metadataProvider = metadataProvider;
         }
 
-        public (Error? error, FilePath? file) ResolveContent(SourceInfo<string> href, FilePath referencingFile, bool? transitive = null)
+        public (Error? error, FilePath? file) ResolveContent(
+            SourceInfo<string> href,
+            FilePath referencingFile,
+            bool contentFallback = true,
+            bool? transitive = null)
         {
-            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, true);
+            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, contentFallback, true);
             if (file is null)
             {
                 return default;
@@ -159,7 +163,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error? error, FilePath? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
-            FilePath referencingFile, SourceInfo<string> href, bool lookupGitCommits = false)
+            FilePath referencingFile, SourceInfo<string> href, bool contentFallback = true, bool lookupGitCommits = false)
         {
             href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -182,7 +186,7 @@ namespace Microsoft.Docs.Build
 
                     // resolve file
                     lookupGitCommits |= _buildScope.GetContentType(path) == ContentType.Resource;
-                    var file = TryResolveRelativePath(referencingFile, path, lookupGitCommits);
+                    var file = TryResolveRelativePath(referencingFile, path, lookupGitCommits, contentFallback);
 
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
@@ -192,7 +196,7 @@ namespace Microsoft.Docs.Build
                         if (file is null)
                         {
                             // try to resolve with .md for landing page
-                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits);
+                            file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, contentFallback);
                         }
 
                         // Do not report error for landing page
@@ -212,7 +216,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private FilePath? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits)
+        private FilePath? TryResolveRelativePath(FilePath referencingFile, string relativePath, bool lookupFallbackCommits, bool contentFallback)
         {
             FilePath? actualPath;
             PathString pathToDocset;
@@ -274,7 +278,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from fallback docset
-            if (_buildOptions.IsLocalizedBuild)
+            if (_buildOptions.IsLocalizedBuild && contentFallback)
             {
                 if (_buildScope.TryGetActualFilePath(FilePath.Fallback(pathToDocset), out actualPath))
                 {

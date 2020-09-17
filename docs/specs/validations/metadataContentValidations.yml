@@ -615,6 +615,62 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
 ---
+# validate learn included markdown
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - includes/**
+  rules.json: |
+    {
+      "images": {
+        "name": "Images",
+        "rules": [
+          {
+            "type": "ImageAltTextBadLength",
+            "message": "Alt text {0} is out of range at {1} characters. Alt text must be between {2} and {3} characters.",
+            "exclusions": [
+              "hubpage",
+              "landingpage"
+            ],
+            "severity": "SUGGESTION",
+            "code": "alt-text-bad-length",
+            "disabled": false,
+            "defaultminalttextlength": 41,
+            "defaultmaxalttextlength": 60,
+            "pullRequestOnly": false
+          }
+        ]
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    uid: learn.aks-workshop.b
+    title: Exercise - Deploy the ratings API
+    content: |
+      [!include[](includes/b.md)]
+  includes/b.md: |
+    # include File
+    :::image type="content" source="../media/05-aks-clusterip.png" border="false" alt-text="Diagram":::
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "content": {
+          "tags": ["localizable"],
+          "type": "string",
+          "contentType": "markdown"
+        },
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"alt-text-bad-length","message":"Alt text 'Diagram' is out of range at 7 characters. Alt text must be between 41 and 60 characters.","file":"includes/b.md","line":2,"column":1}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../media/05-aks-clusterip.png'.","file":"includes/b.md","line":2,"column":1}
+---
 # Content validation - H1 unique
 inputs:
   docfx.yml: |

@@ -24,14 +24,16 @@ namespace Microsoft.Docs.Build
 
         public bool PullRequestOnly { get; }
 
-        public Error(
-            ErrorLevel level,
-            string code,
-            string message,
-            SourceInfo? source = null,
-            string? name = null,
-            PathString? originalPath = null,
-            bool pullRequestOnly = false)
+        public Error(ErrorLevel level, string code, string message, SourceInfo? source = null, string? name = null)
+        {
+            Level = level;
+            Code = code;
+            Message = message;
+            Source = source;
+            Name = name;
+        }
+
+        private Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name, PathString? originalPath, bool pullRequestOnly)
         {
             Level = level;
             Code = code;

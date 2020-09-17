@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error ExceedMaxFileErrors(int maxErrors, ErrorLevel level, FilePath file)
-                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", file);
+                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", new SourceInfo(file));
 
             /// <summary>
             /// Build failure caused by English content when building localized docset.
@@ -673,7 +673,7 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(FilePath file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", new SourceInfo(file));
 
             /// <summary>
             /// Html Tag value must be in allowed list

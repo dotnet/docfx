@@ -32,33 +32,40 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public int EndColumn { get; }
 
-        // A special storage for source info of the JObject property key
-        // if this is a JObject property value.
-        internal SourceInfo? KeySourceInfo { get; set; }
+        /// <summary>
+        /// A special storage for source info of the JObject property key
+        /// if this is a JObject property value.
+        /// </summary>
+        public SourceInfo? KeySourceInfo { get; }
 
         public SourceInfo(FilePath file)
             : this(file, 0, 0, 0, 0)
         { }
 
-        public SourceInfo(FilePath file, int line, int column)
-            : this(file, line, column, line, column)
+        public SourceInfo(FilePath file, int line, int column, SourceInfo? keySourceInfo = null)
+            : this(file, line, column, line, column, keySourceInfo)
         { }
 
-        public SourceInfo(FilePath file, int startLine, int startColumn, int endLine, int endColumn)
+        public SourceInfo(
+            FilePath file, int startLine, int startColumn, int endLine, int endColumn, SourceInfo? keySourceInfo = null)
         {
             File = file;
             Line = startLine;
             Column = startColumn;
             EndLine = endLine;
             EndColumn = endColumn;
+            KeySourceInfo = keySourceInfo;
         }
 
         public SourceInfo WithFile(FilePath file)
         {
-            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn);
+            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn, KeySourceInfo);
         }
 
-        public static implicit operator SourceInfo(FilePath file) => new SourceInfo(file);
+        public SourceInfo WithKeySourceInfo(SourceInfo? keySourceInfo)
+        {
+            return new SourceInfo(File, Line, Column, EndLine, EndColumn, keySourceInfo);
+        }
 
         public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);
 
