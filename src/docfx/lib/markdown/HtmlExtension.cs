@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             Func<ErrorBuilder> getErrors,
             Func<SourceInfo<string>, string> getLink,
-            Func<SourceInfo<string>, MarkdownObject, string?, string> getImageLink,
+            Func<SourceInfo<string>, MarkdownObject, string?, int, string> getImageLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>

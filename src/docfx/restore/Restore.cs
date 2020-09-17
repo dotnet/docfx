@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             using var disposables = new DisposableCollector();
-            errors = new DocsetErrorWriter(errors, workingDirectory, docsetPath);
+            errors = errors.WithDocsetPath(workingDirectory, docsetPath);
 
             try
             {

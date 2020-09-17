@@ -15,7 +15,8 @@ namespace Microsoft.Docs.Build
     internal class ContentValidator
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
-        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection" };
+        // Learn content: "learningpath", "module", "moduleunit"
+        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit" };
 
         private readonly Validator _validator;
         private readonly ErrorBuilder _errors;
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
                 fileResolver.ResolveFilePath(config.Disallowlists));
         }
 
-        public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText)
+        public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)
         {
             // validate image link and altText here
             if (_links.TryAdd((file, link)) && TryGetValidationDocumentType(file, out var documentType))
@@ -55,6 +56,7 @@ namespace Microsoft.Docs.Build
                         UrlLink = link,
                         AltText = altText,
                         IsImage = true,
+                        IsInlineImage = origin.IsInlineImage(imageIndex),
                         SourceInfo = link.Source,
                         ParentSourceInfoList = origin.GetInclusionStack(),
                     }, validationContext).GetAwaiter().GetResult());

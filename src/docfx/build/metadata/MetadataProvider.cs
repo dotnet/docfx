@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (glob, value) in item.Value)
                 {
-                    JsonUtility.SetKeySourceInfo(value, item.Source?.KeySourceInfo);
+                    JsonUtility.SetSourceInfo(value, JsonUtility.GetSourceInfo(value)?.WithKeySourceInfo(item.Source?.KeySourceInfo));
                     var matcher = GlobUtility.CreateGlobMatcher(glob);
                     _rules.Add((matcher, key, value));
 

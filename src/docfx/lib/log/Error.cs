@@ -24,17 +24,19 @@ namespace Microsoft.Docs.Build
 
         public bool PullRequestOnly { get; }
 
-        public object[] OverrideParameters { get; }
+        public object?[] MessageParameters { get; } = Array.Empty<object>();
 
-        public Error(
-            ErrorLevel level,
-            string code,
-            string message,
-            SourceInfo? source = null,
-            string? name = null,
-            PathString? originalPath = null,
-            bool pullRequestOnly = false,
-            params object[] overrideParameters)
+        public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? name = null)
+        {
+            Level = level;
+            Code = code;
+            Message = message.ToString();
+            Source = source;
+            Name = name;
+            MessageParameters = message.GetArguments();
+        }
+
+        private Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name, PathString? originalPath, bool pullRequestOnly)
         {
             Level = level;
             Code = code;
@@ -43,7 +45,6 @@ namespace Microsoft.Docs.Build
             Name = name;
             OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
-            OverrideParameters = overrideParameters;
         }
 
         public Error WithCustomRule(CustomRule customRule, bool? enabled = null)
@@ -62,7 +63,7 @@ namespace Microsoft.Docs.Build
 
             var message = string.IsNullOrEmpty(customRule.OverrideMessage) ?
                 string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}"
-                : string.Format(customRule.OverrideMessage, OverrideParameters);
+                : string.Format(customRule.OverrideMessage, MessageParameters);
 
             return new Error(
                 level,

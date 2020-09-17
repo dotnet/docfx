@@ -615,6 +615,62 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
 ---
+# validate learn included markdown
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - includes/**
+  rules.json: |
+    {
+      "images": {
+        "name": "Images",
+        "rules": [
+          {
+            "type": "ImageAltTextBadLength",
+            "message": "Alt text {0} is out of range at {1} characters. Alt text must be between {2} and {3} characters.",
+            "exclusions": [
+              "hubpage",
+              "landingpage"
+            ],
+            "severity": "SUGGESTION",
+            "code": "alt-text-bad-length",
+            "disabled": false,
+            "defaultminalttextlength": 41,
+            "defaultmaxalttextlength": 60,
+            "pullRequestOnly": false
+          }
+        ]
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    uid: learn.aks-workshop.b
+    title: Exercise - Deploy the ratings API
+    content: |
+      [!include[](includes/b.md)]
+  includes/b.md: |
+    # include File
+    :::image type="content" source="../media/05-aks-clusterip.png" border="false" alt-text="Diagram":::
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "content": {
+          "tags": ["localizable"],
+          "type": "string",
+          "contentType": "markdown"
+        },
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"alt-text-bad-length","message":"Alt text 'Diagram' is out of range at 7 characters. Alt text must be between 41 and 60 characters.","file":"includes/b.md","line":2,"column":1}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../media/05-aks-clusterip.png'.","file":"includes/b.md","line":2,"column":1}
+---
 # Content validation - H1 unique
 inputs:
   docfx.yml: |
@@ -2558,6 +2614,73 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig2' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+---
+# Content Validation - inline image
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageInline",
+            "message": "Image '{0}' is inline with text.",
+            "code": "image-inline",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.jpg:
+  a.md: |
+    # :::image type="content" source="a.jpg" alt-text="in heading"::: Heading 1
+
+    ## ![in heading 2](a.jpg) Heading 2
+
+    | C1 | C2 |
+    |----|----|
+    | :::image type="content" source="a.jpg" alt-text="in table"::: | In Table |
+
+    [![image in link](a.jpg) in link](a.jpg) <img src="a.jpg" alt="html img"> <span><img src="a.jpg" alt="img in span"></span>
+
+    <p><img src="a.jpg" alt="not inline"></p>
+
+    <p><img src="a.jpg" alt="inline"> This image is inline</p>
+
+    <img src="a.jpg" alt="only html img">
+
+    <div>
+      <p><img src="a.jpg" alt="not inline"></p>
+      <img src="a.jpg" alt="still not inline"/>
+      <p><span><img src="a.jpg" alt="inline"></span> This image is inline</p>
+      <img src="a.jpg" alt="inline"/><img src="a.jpg" alt="inline"/>
+      <p>some text</p>
+    </div>
+outputs:
+  a.json:
+  a.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":1,"end_line":1,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":3,"end_line":3,"column":4,"end_column":4}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":7,"end_line":7,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":2,"end_column":2}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":52,"end_column":57}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":91,"end_column":96}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":13,"end_line":13,"column":14,"end_column":19}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":20,"end_line":20,"column":22,"end_column":27}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":21,"end_line":21,"column":13,"end_column":18}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":21,"end_line":21,"column":44,"end_column":49}
 ---
 # Hidden PR only validation rule result
 inputs:

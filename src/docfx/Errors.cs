@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error ExceedMaxFileErrors(int maxErrors, ErrorLevel level, FilePath file)
-                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", file);
+                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", new SourceInfo(file));
 
             /// <summary>
             /// Build failure caused by English content when building localized docset.
@@ -110,8 +110,8 @@ namespace Microsoft.Docs.Build
             /// Validation rule is not overridable in docfx config.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RuleOverrideInvalid(string code, SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.", source);
+            public static Error OverrideNotAllowed(string code, SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "override-not-allowed", $"Rule '{code}' can't be overridden in docfx.json.", source);
         }
 
         public static class Json
@@ -220,8 +220,8 @@ namespace Microsoft.Docs.Build
             /// Examples: pointing template to a local folder that does not exist
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error DirectoryNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
+            public static Error DirectoryNotFound(string directory)
+                => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{directory}'.");
 
             /// <summary>
             /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
@@ -673,7 +673,7 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(FilePath file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", new SourceInfo(file));
 
             /// <summary>
             /// Html Tag value must be in allowed list

@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             {
                 for (var j = 0; j < testFileErrors; j++)
                 {
-                    testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", j.ToString(), new FilePath($"file-{i}")));
+                    testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", j.ToString(), new SourceInfo(new FilePath($"file-{i}"))));
                 }
             }
 

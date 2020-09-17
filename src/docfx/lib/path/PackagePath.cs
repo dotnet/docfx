@@ -35,8 +35,16 @@ namespace Microsoft.Docs.Build
         {
             if (UrlUtility.IsHttp(value))
             {
-                Type = PackageType.Git;
-                (Url, Branch) = SplitGitUrl(value);
+                if (value.StartsWith("https://static.docs.com/ui/"))
+                {
+                    Type = PackageType.PublicTemplate;
+                    Url = value;
+                }
+                else
+                {
+                    Type = PackageType.Git;
+                    (Url, Branch) = SplitGitUrl(value);
+                }
             }
             else
             {
