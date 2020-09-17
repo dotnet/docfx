@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             {
                 if (customRules.ContainsKey(validationRule.Code))
                 {
-                    Add(Errors.Logging.OverrideNotAllowed(validationRule.Code, customRules[validationRule.Code].Source));
+                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code, customRules[validationRule.Code].Source));
                     customRules.Remove(validationRule.Code);
                 }
             }

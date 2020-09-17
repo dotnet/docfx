@@ -110,8 +110,8 @@ namespace Microsoft.Docs.Build
             /// Validation rule is not overridable in docfx config.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error OverrideNotAllowed(string code, SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "override-not-allowed", $"Rule '{code}' can't be overridden in docfx.json.", source);
+            public static Error RuleOverrideInvalid(string code, SourceInfo? source)
+                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.", source);
         }
 
         public static class Json
