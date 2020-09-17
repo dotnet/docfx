@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                 if (opts.OutputHtml)
                 {
                     docfxConfig["outputType"] = "html";
-                    docfxConfig["outputUrlType"] = "ugly";
+                    docfxConfig["urlType"] = "ugly";
                     docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
 
@@ -201,6 +201,7 @@ namespace Microsoft.Docs.Build
         {
             var legacyOption = !opts.OutputHtml ? "--legacy" : "";
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
 
             Exec(
@@ -212,7 +213,7 @@ namespace Microsoft.Docs.Build
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {legacyOption} {dryRunOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {legacyOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }

@@ -19,7 +19,7 @@ The output URL schema and output path schema are controlled by two config items:
     - `Html`: apply liquid to generate HTML output
     - `Json`: output Json file without liquid applied
 
-- OutputUrlType:
+- UrlType:
     - `Docs`: a.md -> `/xxx/a`
     - `Pretty`: a.md -> `/xxx/a/`
     - `Ugly`: a.md -> `/xxx/a.html`(or `/xxx/a.json`)
@@ -190,9 +190,9 @@ As the requirements mentioned, `Static build output xcopy deployable`, the outpu
 # Resource
 
 To improve docs publish performance, there is feature to skip copy resource files to the output folder.
-With those two new configs(`OutputType` and `OutputUrlType`) involved, whether need to copy resource should be determined  by `OutputUrlType`: skip copy resource files when it is `Docs`.
+With those two new configs(`OutputType` and `UrlType`) involved, whether need to copy resource should be determined  by `UrlType`: skip copy resource files when it is `Docs`.
 
 # Template
 
 For Docs hosting, `_themes` resources is published separately, so we don't need to copy them into the output folder.
-With those two new configs(`OutputType` and `OutputUrlType`) involved, whether need to copy used resources(`.css` files) should be determined  by `OutputUrlType`: skip copy resource files when it is `Docs`.
+With those two new configs(`OutputType` and `UrlType`) involved, whether need to copy used resources(`.css` files) should be determined  by `UrlType`: skip copy resource files when it is `Docs`.

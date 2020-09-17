@@ -146,8 +146,8 @@ namespace Microsoft.Docs.Build
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
-            if (file.Origin == FileOrigin.Fallback && _config.OutputUrlType != OutputUrlType.Docs &&
-                _documentProvider.GetDocument(file).ContentType == ContentType.Page)
+            if (file.Origin == FileOrigin.Fallback && _config.UrlType != UrlType.Docs &&
+                _documentProvider.GetContentType(file) == ContentType.Page)
             {
 #pragma warning disable CS0618 // Docs pdf build uses static url, but links in fallback repo should be resolved to docs site URL
                 var docsSiteUrl = _documentProvider.GetDocsSiteUrl(file);
@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (_templateEngine != null && TemplateEngine.IsLandingData(_documentProvider.GetDocument(referencingFile).Mime))
+                    if (_templateEngine != null && TemplateEngine.IsLandingData(_documentProvider.GetMime(referencingFile)))
                     {
                         if (file is null)
                         {

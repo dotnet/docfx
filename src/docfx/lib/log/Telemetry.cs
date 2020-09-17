@@ -125,15 +125,20 @@ namespace Microsoft.Docs.Build
             s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackBuildFileTypeCount(Document file)
+        public static void TrackBuildFileTypeCount(FilePath file, ContentType contentType, string? mime)
         {
-            var (fileExtension, documentType, mimeType) = GetFileType(file);
-            s_buildFileTypeCountMetric.TrackValue(1, fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
+
+            s_buildFileTypeCountMetric.TrackValue(
+                1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
 
-        public static void TrackMarkdownElement(Document file, Dictionary<string, int> elementCount)
+        public static void TrackMarkdownElement(FilePath file, ContentType contentType, string? mime, Dictionary<string, int> elementCount)
         {
-            var (fileExtension, documentType, mimeType) = GetFileType(file);
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
+            var documentType = contentType.ToString();
+            var mimeType = CoalesceEmpty(mime);
+
             foreach (var (elementType, value) in elementCount)
             {
                 s_markdownElementCountMetric.TrackValue(
@@ -183,13 +188,6 @@ namespace Microsoft.Docs.Build
             }
 
             s_telemetryClient.TrackEvent(eventTelemetry);
-        }
-
-        private static (string fileExtension, string documentType, string mimeType) GetFileType(Document file)
-        {
-            var fileExtension = CoalesceEmpty(Path.GetExtension(file.FilePath.Path)?.ToLowerInvariant());
-            var mimeType = CoalesceEmpty(file.Mime);
-            return (fileExtension, file.ContentType.ToString(), mimeType);
         }
 
         private static string CoalesceEmpty(string? str)
