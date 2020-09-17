@@ -1976,10 +1976,17 @@ repos:
       a/api/bot/TOC.yml: |
         splitItemsBy: name
         items:
+        - name: Test
+          items:
+          - name: T
         - name: MS.ServicePage2.xxx
           items:
           - name: MS.ServicePage.xxx
             href: ../../test/doc.md
+        - name: MS.ServicePage.yyy
+          href: _splitted/test/
+          items:
+          - name: yyy
       a/docs-ref-toc/top_level_toc.yml: |
         items:
         - name: API Reference
@@ -1990,5 +1997,8 @@ outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
+  a/api/bot/_splitted/ms.servicepage.yyy/toc.json:
+  a/api/bot/_splitted/test/toc.json:
   a/docs-ref-toc/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../test/doc"}], "pageType": "root"}
+    {"name": "API Reference", "fullName": "API Reference", 
+    "children": [{"name": "MS.ServicePage2.xxx"},{"name": "MS.ServicePage.yyy"}], "pageType": "root"}
