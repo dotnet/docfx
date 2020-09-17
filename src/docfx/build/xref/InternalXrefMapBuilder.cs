@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
         {
             var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
 
-            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token, schema.ContentFallback);
+            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
         private InternalXrefSpec[] AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
