@@ -90,6 +90,7 @@ namespace Microsoft.Docs.Build
             {
                 var overview = toc.Clone();
                 overview.Name = overview.Name.With("Overview");
+                overview.Items = new List<SourceInfo<TableOfContentsNode>>();
                 toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
                 toc.Uid = toc.Uid.With(null);
                 toc.Href = toc.Href.With(null);
