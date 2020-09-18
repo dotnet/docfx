@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                             servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
                         }
 
-                        TableOfContentsNode.SeperatedExpandableClickableNode(node);
+                        AddOverviewPage(node);
                     }
                 }
 
@@ -178,6 +178,28 @@ namespace Microsoft.Docs.Build
             finally
             {
                 t_recursionDetector.Value = recursionDetector.Pop();
+            }
+        }
+
+        private void AddOverviewPage(TableOfContentsNode toc)
+        {
+            if (toc == null || toc.Items == null || toc.Items.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var child in toc.Items)
+            {
+                AddOverviewPage(child);
+            }
+
+            if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
+            {
+                var overview = toc.CloneWithoutItems();
+                overview.Name = overview.Name.With("Overview");
+                toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
+                toc.Uid = toc.Uid.With(null);
+                toc.Href = toc.Href.With(null);
             }
         }
 
