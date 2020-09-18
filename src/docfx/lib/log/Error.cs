@@ -24,20 +24,32 @@ namespace Microsoft.Docs.Build
 
         public bool PullRequestOnly { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source = null, string? name = null)
+        public object?[] MessageArguments { get; }
+
+        public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? name = null)
         {
             Level = level;
             Code = code;
-            Message = message;
+            Message = message.ToString();
+            MessageArguments = message.GetArguments();
             Source = source;
             Name = name;
         }
 
-        private Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name, PathString? originalPath, bool pullRequestOnly)
+        private Error(
+            ErrorLevel level,
+            string code,
+            string message,
+            object?[] messageArguments,
+            SourceInfo? source,
+            string? name,
+            PathString? originalPath,
+            bool pullRequestOnly)
         {
             Level = level;
             Code = code;
             Message = message;
+            MessageArguments = messageArguments;
             Source = source;
             Name = name;
             OriginalPath = originalPath;
@@ -62,6 +74,7 @@ namespace Microsoft.Docs.Build
                 level,
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
                 string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
+                MessageArguments,
                 Source,
                 Name,
                 OriginalPath,
@@ -70,17 +83,17 @@ namespace Microsoft.Docs.Build
 
         public Error WithLevel(ErrorLevel level)
         {
-            return level == Level ? this : new Error(level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
+            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, Name, OriginalPath, PullRequestOnly);
         }
 
         public Error WithOriginalPath(PathString? originalPath)
         {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, originalPath, PullRequestOnly);
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, MessageArguments, Source, Name, originalPath, PullRequestOnly);
         }
 
         public Error WithSource(SourceInfo? source)
         {
-            return new Error(Level, Code, Message, source, Name, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, MessageArguments, source, Name, OriginalPath, PullRequestOnly);
         }
 
         public override string ToString()

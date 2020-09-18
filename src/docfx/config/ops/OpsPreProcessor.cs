@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
 
                 var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);
 
-                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, $"{item.Message}", source));
             }
 
             static ErrorLevel MapLevel(ECMAMessageSeverity level) => level switch
@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
 
                 var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);
 
-                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, $"{item.Message}", source));
             }
 
             static ErrorLevel MapLevel(MAMLMessageSeverity level) => level switch
