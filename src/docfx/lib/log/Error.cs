@@ -24,11 +24,11 @@ namespace Microsoft.Docs.Build
 
         public bool PullRequestOnly { get; }
 
-        public Error(ErrorLevel level, string code, string message, SourceInfo? source = null, string? name = null)
+        public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? name = null)
         {
             Level = level;
             Code = code;
-            Message = message;
+            Message = message.ToString();
             Source = source;
             Name = name;
         }

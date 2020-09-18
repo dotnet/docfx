@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
 
         private void Write(IEnumerable<ValidationError> validationErrors)
         {
-            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, e.Message, (SourceInfo?)e.SourceInfo)));
+            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, $"{e.Message}", (SourceInfo?)e.SourceInfo)));
 
             static ErrorLevel GetLevel(ValidationSeverity severity) =>
                 severity switch
