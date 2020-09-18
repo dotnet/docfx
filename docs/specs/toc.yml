@@ -2053,11 +2053,7 @@ outputs:
               "name": "API Test",
               "items": [
                 {
-                  "name": "Overview",
-                  "href": "../../test/doc",
-                  "items": [
-                    { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
-                  ]
+                  "name": "Overview"
                 },
                 { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
               ]
