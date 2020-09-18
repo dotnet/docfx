@@ -36,7 +36,8 @@ namespace Microsoft.Docs.Build
             Name = name;
         }
 
-        private Error(ErrorLevel level, string code, string message, object?[] messageArguments, SourceInfo? source, string? name, PathString? originalPath, bool pullRequestOnly)
+        private Error(
+            ErrorLevel level, string code, string message, object?[] messageArguments, SourceInfo? source, string? name, PathString? originalPath, bool pullRequestOnly)
         {
             Level = level;
             Code = code;
