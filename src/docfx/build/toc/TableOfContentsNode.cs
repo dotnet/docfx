@@ -73,5 +73,52 @@ namespace Microsoft.Docs.Build
             Children = item.Children;
             LandingPageType = item.LandingPageType;
         }
+
+        public static void SeperatedExpandableClickableNode(TableOfContentsNode toc)
+        {
+            if (toc == null || toc.Items == null || toc.Items.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var child in toc.Items)
+            {
+                SeperatedExpandableClickableNode(child);
+            }
+
+            if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
+            {
+                var overview = toc.Clone();
+                overview.Name = overview.Name.With("Overview");
+                toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
+                toc.Uid = toc.Uid.With(null);
+                toc.Href = toc.Href.With(null);
+            }
+        }
+
+        public TableOfContentsNode Clone()
+        {
+            var cloned = (TableOfContentsNode)this.MemberwiseClone();
+            if (cloned.Items != null && cloned.Items.Count > 0)
+            {
+                cloned.Items = CloneItems();
+            }
+            return cloned;
+        }
+
+        private List<SourceInfo<TableOfContentsNode>> CloneItems()
+        {
+            var items = this.Items;
+            var clonedItems = new List<SourceInfo<TableOfContentsNode>>();
+            if (items != null && items.Count > 0)
+            {
+                foreach (var item in items)
+                {
+                    var newItem = new SourceInfo<TableOfContentsNode>(item.Value.Clone(), item.Source);
+                    clonedItems.Add(newItem);
+                }
+            }
+            return clonedItems;
+        }
     }
 }

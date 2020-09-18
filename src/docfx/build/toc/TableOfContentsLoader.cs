@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
                 var hrefRelativeToReferenceTOC = Path.GetRelativePath(referenceTOCFullPath, hrefFullPath);
 
-                node.Href.With(hrefRelativeToReferenceTOC);
+                node.Href = node.Href.With(hrefRelativeToReferenceTOC);
             }
             foreach (var item in node.Items)
             {
@@ -161,6 +161,8 @@ namespace Microsoft.Docs.Build
                         {
                             servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
                         }
+
+                        TableOfContentsNode.SeperatedExpandableClickableNode(node);
                     }
                 }
 

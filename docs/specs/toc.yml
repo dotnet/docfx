@@ -1840,7 +1840,7 @@ outputs:
     }
   a/results/appservice/client.json: |
     {
-      "name": "Client", "fullName": "Client", "href": "../api/doc.md",
+      "name": "Client", "fullName": "Client", "href": "doc.md",
       "children": [{"name": "Client","uid": "aa"},{"name": "MS.ServicePage.xxx"},{"name": "MS.ServicePage.Client.Form"}],
       "langs": ["csharp"], "pageType": "service"
     }
@@ -1976,17 +1976,10 @@ repos:
       a/api/bot/TOC.yml: |
         splitItemsBy: name
         items:
-        - name: Test
-          items:
-          - name: T
         - name: MS.ServicePage2.xxx
           items:
           - name: MS.ServicePage.xxx
             href: ../../test/doc.md
-        - name: MS.ServicePage.yyy
-          href: _splitted/test/
-          items:
-          - name: yyy
       a/docs-ref-toc/top_level_toc.yml: |
         items:
         - name: API Reference
@@ -1997,8 +1990,82 @@ outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/api/bot/_splitted/ms.servicepage.yyy/toc.json:
-  a/api/bot/_splitted/test/toc.json:
   a/docs-ref-toc/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", 
-    "children": [{"name": "MS.ServicePage2.xxx"},{"name": "MS.ServicePage.yyy"}], "pageType": "root"}
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
+---
+# make overview page for service pages
+repos:
+  https://github.com/ops/service-page-overview:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/doc.md:
+      a/api/bot/TOC.yml: |
+        splitItemsBy: name
+        items:
+        - name: MS.ServicePage2.xxx
+          items:
+          - name: MS.ServicePage.xxx
+            href: ../../test/doc.md
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: API Test
+            href: ../test/doc.md
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/test/doc.json:
+  a/api/bot/toc.json: |
+    {
+      "items": [
+        {
+          "name": "API Reference",
+          "items": [
+            {
+              "name": "API Test",
+              "items": [
+                {
+                  "name": "Overview",
+                  "href": "../../test/doc",
+                  "items": [
+                    { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
+                  ]
+                },
+                { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
+  a/docs-ref-toc/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
