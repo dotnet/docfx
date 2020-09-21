@@ -59,15 +59,6 @@ namespace Microsoft.Docs.Build
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
-        public enum TocHrefType
-        {
-            None,
-            AbsolutePath,
-            RelativeFile,
-            RelativeFolder,
-            TocFile,
-        }
-
         public static TocHrefType GetHrefType(string? href)
         {
             var linkType = UrlUtility.GetLinkType(href);
