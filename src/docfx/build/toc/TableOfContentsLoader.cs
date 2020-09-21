@@ -59,6 +59,39 @@ namespace Microsoft.Docs.Build
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
+        public enum TocHrefType
+        {
+            None,
+            AbsolutePath,
+            RelativeFile,
+            RelativeFolder,
+            TocFile,
+        }
+
+        public static TocHrefType GetHrefType(string? href)
+        {
+            var linkType = UrlUtility.GetLinkType(href);
+            if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
+            {
+                return TocHrefType.AbsolutePath;
+            }
+
+            var (path, _, _) = UrlUtility.SplitUrl(href ?? "");
+            if (path.EndsWith('/') || path.EndsWith('\\'))
+            {
+                return TocHrefType.RelativeFolder;
+            }
+
+            var fileName = Path.GetFileName(path);
+
+            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
+            {
+                return TocHrefType.TocFile;
+            }
+
+            return TocHrefType.RelativeFile;
+        }
+
         public (TableOfContentsNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
             Load(FilePath file)
         {
@@ -510,39 +543,6 @@ namespace Microsoft.Docs.Build
         private static bool IsTocIncludeHref(TocHrefType tocHrefType)
         {
             return tocHrefType == TocHrefType.TocFile || tocHrefType == TocHrefType.RelativeFolder;
-        }
-
-        private static TocHrefType GetHrefType(string? href)
-        {
-            var linkType = UrlUtility.GetLinkType(href);
-            if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
-            {
-                return TocHrefType.AbsolutePath;
-            }
-
-            var (path, _, _) = UrlUtility.SplitUrl(href ?? "");
-            if (path.EndsWith('/') || path.EndsWith('\\'))
-            {
-                return TocHrefType.RelativeFolder;
-            }
-
-            var fileName = Path.GetFileName(path);
-
-            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
-            {
-                return TocHrefType.TocFile;
-            }
-
-            return TocHrefType.RelativeFile;
-        }
-
-        private enum TocHrefType
-        {
-            None,
-            AbsolutePath,
-            RelativeFile,
-            RelativeFolder,
-            TocFile,
         }
     }
 }

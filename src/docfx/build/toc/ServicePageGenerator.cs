@@ -71,20 +71,18 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
 
-                    if (!string.IsNullOrEmpty(childHref) && childHref.EndsWith('/'))
+                    if (!string.IsNullOrEmpty(childHref) &&
+                        TableOfContentsLoader.GetHrefType(childHref) == TableOfContentsLoader.TocHrefType.RelativeFolder)
                     {
                         childHref = null;
                     }
 
-                    if (!string.IsNullOrEmpty(childHref) && UrlUtility.GetLinkType(childHref) == LinkType.RelativePath)
+                    if (!string.IsNullOrEmpty(childHref) && !(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
                     {
-                        if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
-                        {
-                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
-                            var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                            var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = hrefRelativePathToReferenceTOC;
-                        }
+                        var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
+                        var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
+                        var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                        childHref = hrefRelativePathToReferenceTOC;
 
                         child = new ServicePageItem(childName, childHref, null);
                     }
