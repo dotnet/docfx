@@ -77,12 +77,15 @@ namespace Microsoft.Docs.Build
                         childHref = null;
                     }
 
-                    if (!string.IsNullOrEmpty(childHref) && !(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
+                    if (!string.IsNullOrEmpty(childHref))
                     {
-                        var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
-                        var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                        var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                        childHref = hrefRelativePathToReferenceTOC;
+                        if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
+                        {
+                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
+                            var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
+                            var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                            childHref = hrefRelativePathToReferenceTOC;
+                        }
 
                         child = new ServicePageItem(childName, childHref, null);
                     }
