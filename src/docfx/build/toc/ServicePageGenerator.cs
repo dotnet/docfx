@@ -71,7 +71,13 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
 
-                    if (!string.IsNullOrEmpty(childHref) && UrlUtility.GetLinkType(childHref) == LinkType.RelativePath)
+                    if (!string.IsNullOrEmpty(childHref) &&
+                        TableOfContentsLoader.GetHrefType(childHref) == TocHrefType.RelativeFolder)
+                    {
+                        childHref = null;
+                    }
+
+                    if (!string.IsNullOrEmpty(childHref))
                     {
                         if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
                         {
