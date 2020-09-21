@@ -38,11 +38,11 @@ namespace Microsoft.Docs.Build
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder);
+            return ToDocfxConfig(docsetPath, repository.Branch, opsConfig, buildSourceFolder);
         }
 
         private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
-            string? branch, OpsConfig opsConfig, PathString buildSourceFolder)
+            string docsetPath, string? branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                 GenerateJoinTocMetadataAndConfig(joinTOCPluginConfig, new PathString(buildSourceFolder));
             var sourceMaps = new JArray();
 
-            var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
+            var monodoc = GetMonodocConfig(docsetPath, docsetConfig, opsConfig, buildSourceFolder);
             if (monodoc != null)
             {
                 result["monodoc"] = monodoc;
@@ -123,7 +123,7 @@ namespace Microsoft.Docs.Build
                  select (obj, path, dep.PathToRoot.Value)).ToArray();
         }
 
-        private static JArray? GetMonodocConfig(OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
+        private static JArray? GetMonodocConfig(string docsetPath, OpsDocsetConfig? docsetConfig, OpsConfig opsConfig, string buildSourceFolder)
         {
             var result = new JArray();
             var ecma2YamlConfig = docsetConfig?.ECMA2Yaml ?? opsConfig.ECMA2Yaml;
@@ -132,7 +132,12 @@ namespace Microsoft.Docs.Build
                 foreach (var ecma2Yaml in ecma2YamlConfig)
                 {
                     var ecma2YamlJObject = JsonUtility.ToJObject(ecma2Yaml);
-                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
+                    var sourceXmlFolder = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.SourceXmlFolder);
+                    if (!Directory.Exists(Path.GetFullPath(Path.Combine(docsetPath, sourceXmlFolder))))
+                    {
+                        continue;
+                    }
+                    ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.SourceXmlFolder)] = sourceXmlFolder;
                     ecma2YamlJObject[nameof(ECMA2YamlRepoConfig.OutputYamlFolder)] = Path.GetRelativePath(buildSourceFolder, ecma2Yaml.OutputYamlFolder);
                     result.Add(ecma2YamlJObject);
                 }
