@@ -4,33 +4,33 @@
       "duplicate-uid": {
         "severity": "error",
         "code": "duplicate-uids",
-        "overrideMessage": "UID '{0}' is already defined in repo '{1}'."
+        "message": "UID '{0}' is already defined in repo '{1}'."
       },
       "missing-attribute": {
         "severity": "error",
         "code": "unit-uid-missing",
-        "overrideMessage": "Missing attribute: UID. A valid UID is required for each unit."
+        "message": "Missing attribute: UID. A valid UID is required for each unit."
       }
     },
     "durationInMinutes": {
       "missing-attribute": {
         "severity": "error",
         "code": "unit-duration-missing",
-        "overrideMessage": "Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0."
+        "message": "Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0."
       }
     },
     "quiz": {
       "precluded-attributes": {
         "severity": "error",
         "code": "unit-task-and-quiz",
-        "overrideMessage": "Unit can't have both quiz and task."
+        "message": "Unit can't have both quiz and task."
       }
     },
     "task": {
       "precluded-attributes": {
         "severity": "error",
         "code": "unit-task-and-quiz",
-        "overrideMessage": "Unit can't have both quiz and task."
+        "message": "Unit can't have both quiz and task."
       }
     }
   }

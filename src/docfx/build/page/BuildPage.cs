@@ -259,7 +259,20 @@ namespace Microsoft.Docs.Build
             }
 
             var schema = context.TemplateEngine.GetSchema(mime);
-            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
+            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(
+                errors.With(e =>
+                {
+                    if (!string.IsNullOrEmpty(e.Name) &&
+                        schema.Rules.TryGetValue(e.Name, out var attributeCustomRules) &&
+                        attributeCustomRules.TryGetValue(e.Code, out var customRule))
+                    {
+                        return e.WithCustomRule(customRule);
+                    }
+                    return e;
+                }),
+                schema,
+                file,
+                validatedObj);
 
             if (TemplateEngine.IsLandingData(mime))
             {

@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
         }
 
         private JToken TransformContentCore(
-            ErrorBuilder errors, JsonSchemaDefinition definitions, FilePath file, JsonSchema schema, JToken token, int uidCount, string? propName = null)
+            ErrorBuilder errors, JsonSchemaDefinition definitions, FilePath file, JsonSchema schema, JToken token, int uidCount, string? jsonPath = null)
         {
             schema = definitions.GetDefinition(schema);
             switch (token)
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        newArray.Add(TransformContentCore(errors, definitions, file, schema.Items.schema, item, uidCount, propName));
+                        newArray.Add(TransformContentCore(errors, definitions, file, schema.Items.schema, item, uidCount, jsonPath));
                     }
 
                     return newArray;
@@ -249,7 +249,14 @@ namespace Microsoft.Docs.Build
                         }
                         else if (schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            newObject[key] = TransformContentCore(errors, definitions, file, propertySchema, value, uidCount, key);
+                            newObject[key] = TransformContentCore(
+                                errors,
+                                definitions,
+                                file,
+                                propertySchema,
+                                value,
+                                uidCount,
+                                string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}");
                         }
                         else
                         {
@@ -259,14 +266,14 @@ namespace Microsoft.Docs.Build
                     return newObject;
 
                 case JValue value:
-                    return TransformScalar(errors, schema, file, value, propName);
+                    return TransformScalar(errors.With(e => e.WithName(jsonPath)), schema, file, value);
 
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        private JToken TransformScalar(ErrorBuilder errors, JsonSchema schema, FilePath file, JValue value, string? propName = null)
+        private JToken TransformScalar(ErrorBuilder errors, JsonSchema schema, FilePath file, JValue value)
         {
             if (value.Type == JTokenType.Null || schema.ContentType is null)
             {
@@ -312,8 +319,8 @@ namespace Microsoft.Docs.Build
                     {
                         // the content here must be an UID, not href
                         var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                            content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file), propName);
-                        errors.AddIfNotNull(GetCustomError(schema, xrefError));
+                            content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
+                        errors.AddIfNotNull(xrefError);
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
 
@@ -331,19 +338,6 @@ namespace Microsoft.Docs.Build
             }
 
             return value;
-        }
-
-        private static Error? GetCustomError(JsonSchema schema, Error? error)
-        {
-            if (error != null &&
-                !string.IsNullOrEmpty(error.Name) &&
-                schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
-                attributeCustomRules.TryGetValue(error.Code, out var customRule))
-            {
-                return error.WithCustomRule(customRule);
-            }
-
-            return error;
         }
     }
 }

@@ -1,44 +1,34 @@
 {
-  "properties": {
-    "modules": {
-      "items": {
-        "rules": {
-          "modules": {
-            "xref-not-found": {
-              "severity": "error",
-              "code": "path-child-not-found",
-              "overrideMessage": "Child UID(s): '{0}' can't be found."
-            }
-          }
-        }
-      }
-    }
-  },
   "rules": {
     "uid": {
       "duplicate-uid": {
         "severity": "error",
         "code": "duplicate-uids",
-        "overrideMessage": "UID '{0}' is already defined in repo '{1}'."
+        "message": "UID '{0}' is already defined in repo '{1}'."
       },
       "missing-attribute": {
         "severity": "error",
         "code": "path-uid-missing",
-        "overrideMessage": "Missing attribute: UID. A valid UID is required for each learning path."
+        "message": "Missing attribute: UID. A valid UID is required for each learning path."
       }
     },
     "modules": {
       "missing-attribute": {
         "severity": "error",
         "code": "path-modules-missing",
-        "overrideMessage": "Missing attribute: modules. At least one valid module is required for each learning path."
+        "message": "Missing attribute: modules. At least one valid module is required for each learning path."
+      },
+      "xref-not-found": {
+        "severity": "error",
+        "code": "path-child-not-found",
+        "message": "Child UID(s): '{0}' can't be found."
       }
     },
     "trophy": {
       "missing-either-attribute": {
         "severity": "error",
         "code": "path-trophy-missing",
-        "overrideMessage": "Missing attribute: trophy. A valid trophy is required for each learning path."
+        "message": "Missing attribute: trophy. A valid trophy is required for each learning path."
       }
     }
   }

@@ -229,53 +229,13 @@ namespace Microsoft.Docs.Build
                 }
 
                 var mapping = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(absoluteMappingPath), null);
-
-                LearnErrorMappingCore(jsonSchema, mapping);
+                foreach (var (propName, customRule) in mapping.Rules)
+                {
+                    jsonSchema.Rules.TryAdd(propName, customRule);
+                }
             }
 
             return jsonSchema;
-        }
-
-        private static void LearnErrorMappingCore(JsonSchema jsonSchema, JsonSchema mapping)
-        {
-            foreach (var (propName, customRule) in mapping.Rules)
-            {
-                jsonSchema.Rules.TryAdd(propName, customRule);
-            }
-
-            if (mapping.Items.schema != null)
-            {
-                switch (jsonSchema.Items)
-                {
-                    case (null, null):
-                        jsonSchema.Items = (mapping.Items.schema, null);
-                        break;
-
-                    case (JsonSchema itemsSchema, null):
-                        LearnErrorMappingCore(itemsSchema, mapping.Items.schema);
-                        break;
-
-                    case (null, JsonSchema[] itemsSchemas):
-                        foreach (var schema in itemsSchemas)
-                        {
-                            LearnErrorMappingCore(schema, mapping.Items.schema);
-                        }
-
-                        if (jsonSchema.AdditionalItems != null && jsonSchema.AdditionalItems != JsonSchema.FalseSchema)
-                        {
-                            LearnErrorMappingCore(jsonSchema.AdditionalItems, mapping.Items.schema);
-                        }
-                        break;
-                }
-            }
-
-            foreach (var (propName, subMapping) in mapping.Properties)
-            {
-                if (jsonSchema.Properties.TryGetValue(propName, out JsonSchema? subJsonSchema) && subJsonSchema != null)
-                {
-                    LearnErrorMappingCore(subJsonSchema, subMapping);
-                }
-            }
         }
     }
 }
