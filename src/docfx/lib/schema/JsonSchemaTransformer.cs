@@ -56,16 +56,7 @@ namespace Microsoft.Docs.Build
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
             return TransformContentCore(
-                errors.With(e =>
-                {
-                    if (!string.IsNullOrEmpty(e.Name) &&
-                        schema.Rules.TryGetValue(e.Name, out var attributeCustomRules) &&
-                        attributeCustomRules.TryGetValue(e.Code, out var customRule))
-                    {
-                        return e.WithCustomRule(customRule);
-                    }
-                    return e;
-                }),
+                errors.WithCustormRule(schema),
                 definitions,
                 file,
                 schema,
@@ -233,16 +224,7 @@ namespace Microsoft.Docs.Build
             {
                 recursionDetector.Push(uid);
                 return TransformContentCore(
-                    _errors.With(e =>
-                    {
-                        if (!string.IsNullOrEmpty(e.Name) &&
-                            schema.Rules.TryGetValue(e.Name, out var attributeCustomRules) &&
-                            attributeCustomRules.TryGetValue(e.Code, out var customRule))
-                        {
-                            return e.WithCustomRule(customRule);
-                        }
-                        return e;
-                    }),
+                    _errors.WithCustormRule(rootSchema),
                     definitions,
                     file,
                     rootSchema,
