@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
 
         private void AddOverviewPage(TableOfContentsNode toc)
         {
-            if (toc == null || toc.Items == null || toc.Items.Count == 0)
+            if (toc.Items.Count == 0)
             {
                 return;
             }
@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
             {
-                var overview = toc.CloneWithoutItems();
+                var overview = new TableOfContentsNode(toc) { Items = new List<SourceInfo<TableOfContentsNode>>() };
                 overview.Name = overview.Name.With("Overview");
                 toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
                 toc.Uid = toc.Uid.With(null);

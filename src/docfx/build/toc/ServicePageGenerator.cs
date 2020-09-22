@@ -72,7 +72,8 @@ namespace Microsoft.Docs.Build
                     var childUid = item.Value.Uid.Value;
 
                     if (!string.IsNullOrEmpty(childHref) &&
-                        TableOfContentsLoader.GetHrefType(childHref) == TocHrefType.RelativeFolder)
+                        (TableOfContentsLoader.GetHrefType(childHref) == TocHrefType.RelativeFolder ||
+                        TableOfContentsLoader.GetHrefType(childHref) == TocHrefType.TocFile))
                     {
                         childHref = null;
                     }
