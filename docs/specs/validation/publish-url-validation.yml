@@ -1,0 +1,143 @@
+# Content validation - Publish Url - max level
+# Validation is only worked in the conceptual page
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'v1/**': '< netcore-2.0'
+      'v2/**': '>= netcore-2.0'
+    markdownValidationRules: rules.json
+    basePath: /docs
+    routes:
+      v1/: folder/
+      v2/: folder/
+      folder0/: folder/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  redirections.yml: |
+    redirections:
+      folder0/folder1/folder2/c.md: "docs/folder/folder1/c"
+  rules.json: |
+    {
+      "publishurls": {
+        "name": "PublishUrls",
+        "description": "Validates publish urls",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "MaxLevel",
+            "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
+            "code": "path-too-deep",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc",
+              "redirection"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "maxLevel": 4
+          }
+        ]
+      }
+    }
+  folder0/folder1/folder2/index.md:  
+  v1/folder1/folder2/a.md: |
+    Moniker: netcore-1.0
+  v2/folder1/folder2/a.md: |
+    Moniker: netcore-2.0
+  folder0/folder1/folder2/TOC.md:
+  folder0/b.md: '![](folder1/folder2/image.png)'
+  folder0/folder1/folder2/image.png:
+outputs:
+  docs/folder/folder1/folder2/index.json:
+  docs/136a42ac/folder/folder1/folder2/a.json: 
+  docs/4667fedf/folder/folder1/folder2/a.json: 
+  docs/folder/folder1/folder2/toc.json:
+  docs/folder/b.json: |
+    {"conceptual": "<p><img src=\"folder1/folder2/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
+  docs/folder/folder1/folder2/image.png:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"path-too-deep","message":"Article URL '/docs/folder/folder1/folder2/' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.","file":"folder0/folder1/folder2/index.md"}
+    {"message_severity":"suggestion","code":"path-too-deep","message":"Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.","file":"v1/folder1/folder2/a.md"}
+    {"message_severity":"suggestion","code":"path-too-deep","message":"Article URL '/docs/folder/folder1/folder2/a' is '5' levels deep. For SEO, URLs should be '4' levels or fewer.","file":"v2/folder1/folder2/a.md"}
+---
+# Content validation - Publish Url - segment uniqueness
+# Validation is only worked in the conceptual page
+inputs:
+  docfx.yml: |
+    monikerRange:
+      'v1/**': '< netcore-2.0'
+      'v2/**': '>= netcore-2.0'
+    markdownValidationRules: rules.json
+    basePath: /docs
+    routes:
+      v1/: folder/
+      v2/: folder/
+      folder0/: folder/
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  redirections.yml: |
+    redirections:
+      folder0/duplicatedword/duplicatedword/c.md: "docs/folder/folder1/c"
+  rules.json: |
+    {
+      "publishurls": {
+        "name": "PublishUrls",
+        "description": "Validates publish urls",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SegmentUnique",
+            "message": "Article URL '{0}' contains duplicated text '{1}'. For SEO, article URLs should not contain duplication.",
+            "code": "path-duplication",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "inclusion",
+              "landingpage",
+              "hubpage",
+              "toc",
+              "redirection"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  folder0/duplicatedword/duplicatedword/index.md: '![](./image.png)'
+  v1/duplicatedword/folder1/DuplicatedWord.md: |
+    Moniker: netcore-1.0
+  v2/duplicatedword/folder1/DuplicatedWord.md: |
+    Moniker: netcore-2.0
+  folder0/duplicatedword/duplicatedword/TOC.md:
+  folder0/duplicatedword/duplicatedword/image.png:
+  folder0/duplicated-base-path/docs/a.md:
+outputs:
+  docs/folder/duplicatedword/duplicatedword/index.json:
+  docs/136a42ac/folder/duplicatedword/folder1/duplicatedword.json: 
+  docs/4667fedf/folder/duplicatedword/folder1/duplicatedword.json: 
+  docs/folder/duplicatedword/duplicatedword/toc.json:
+  docs/folder/duplicatedword/duplicatedword/image.png:
+  docs/folder/duplicated-base-path/docs/a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicatedword/duplicatedword/' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.","file":"folder0/duplicatedword/duplicatedword/index.md"}
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.","file":"v1/duplicatedword/folder1/DuplicatedWord.md"}
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicatedword/folder1/duplicatedword' contains duplicated text 'duplicatedword'. For SEO, article URLs should not contain duplication.","file":"v2/duplicatedword/folder1/DuplicatedWord.md"}
+    {"message_severity":"suggestion","code":"path-duplication","message":"Article URL '/docs/folder/duplicated-base-path/docs/a' contains duplicated text 'docs'. For SEO, article URLs should not contain duplication.","file":"folder0/duplicated-base-path/docs/a.md"}
+---
