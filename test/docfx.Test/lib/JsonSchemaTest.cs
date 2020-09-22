@@ -273,13 +273,13 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'keys.key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
 
         // dependencies as schema
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
-            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
+            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key1.key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // either validation
         [InlineData("{'either': []}", "{}", "")]

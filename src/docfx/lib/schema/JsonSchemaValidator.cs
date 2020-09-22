@@ -216,11 +216,13 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
+                var curJsonPath = string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}";
+
                 if (schema.PropertyNames != null)
                 {
                     var propertyName = new JValue(key);
                     JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetKeySourceInfo(value));
-                    Validate(schema.PropertyNames, string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}", propertyName, errors);
+                    Validate(schema.PropertyNames, curJsonPath, propertyName, errors);
                 }
 
                 var isAdditionalProperty = true;
@@ -228,7 +230,7 @@ namespace Microsoft.Docs.Build
                 // properties
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}", value, errors);
+                    Validate(propertySchema, curJsonPath, value, errors);
                     isAdditionalProperty = false;
                 }
 
@@ -237,7 +239,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (Regex.IsMatch(key, pattern))
                     {
-                        Validate(patternPropertySchema, string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}", value, errors);
+                        Validate(patternPropertySchema, curJsonPath, value, errors);
                         isAdditionalProperty = false;
                     }
                 }
@@ -248,11 +250,11 @@ namespace Microsoft.Docs.Build
                     if (schema.AdditionalProperties == JsonSchema.FalseSchema)
                     {
                         errors.Add(Errors.JsonSchema.UnknownField(
-                            JsonUtility.GetSourceInfo(value), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}", value.Type.ToString()));
+                            JsonUtility.GetSourceInfo(value), curJsonPath, value.Type.ToString()));
                     }
                     else if (schema.AdditionalProperties != JsonSchema.TrueSchema)
                     {
-                        Validate(schema.AdditionalProperties, string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}", value, errors);
+                        Validate(schema.AdditionalProperties, curJsonPath, value, errors);
                     }
                 }
             }
@@ -377,13 +379,15 @@ namespace Microsoft.Docs.Build
                             if (!IsStrictContain(map, otherKey))
                             {
                                 errors.Add(Errors.JsonSchema.MissingPairedAttribute(
-                                    JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}", otherKey));
+                                    JsonUtility.GetSourceInfo(map),
+                                    string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}",
+                                    string.IsNullOrWhiteSpace(jsonPath) ? $"{otherKey}" : jsonPath + $".{otherKey}"));
                             }
                         }
                     }
                     else if (subschema != null)
                     {
-                        Validate(subschema, jsonPath, map, errors);
+                        Validate(subschema, string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}", map, errors);
                     }
                 }
             }
@@ -396,7 +400,7 @@ namespace Microsoft.Docs.Build
                 if (!map.ContainsKey(key))
                 {
                     errors.Add(Errors.JsonSchema.MissingAttribute(
-                        JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}"));
+                        JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}"));
                 }
             }
         }
@@ -408,7 +412,7 @@ namespace Microsoft.Docs.Build
                 if (!IsStrictContain(map, key))
                 {
                     errors.Add(Errors.JsonSchema.MissingAttribute(
-                        JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath += $".{key}"));
+                        JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}"));
                 }
             }
         }
@@ -451,7 +455,7 @@ namespace Microsoft.Docs.Build
                 if (!result)
                 {
                     errors.Add(Errors.JsonSchema.MissingEitherAttribute(
-                        JsonUtility.GetSourceInfo(map), keys, string.IsNullOrWhiteSpace(jsonPath) ? $"{keys[0]}" : jsonPath += $".{keys[0]}"));
+                        JsonUtility.GetSourceInfo(map), keys, string.IsNullOrWhiteSpace(jsonPath) ? $"{keys[0]}" : jsonPath + $".{keys[0]}"));
                 }
             }
         }
@@ -466,7 +470,7 @@ namespace Microsoft.Docs.Build
                     if (IsStrictContain(map, key) && ++existNum > 1)
                     {
                         errors.Add(Errors.JsonSchema.PrecludedAttributes(
-                            JsonUtility.GetSourceInfo(map), keys, string.IsNullOrWhiteSpace(jsonPath) ? $"{keys[0]}" : jsonPath += $".{keys[0]}"));
+                            JsonUtility.GetSourceInfo(map), keys, string.IsNullOrWhiteSpace(jsonPath) ? $"{keys[0]}" : jsonPath + $".{keys[0]}"));
                         break;
                     }
                 }
