@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                         var monodocConfig = _config.Monodoc[index];
                         var xmlDirectory = Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder));
 
-                        // skip monidoc config if source xml folder does not exist
+                        // skip monodoc config if source xml folder does not exist
                         if (!Directory.Exists(xmlDirectory))
                         {
                             continue;
