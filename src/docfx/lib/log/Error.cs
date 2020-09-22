@@ -96,7 +96,8 @@ namespace Microsoft.Docs.Build
             {
                 message_severity = Level,
                 Code,
-                Message,
+                property_path = Name,
+                message = Message,
                 file,
                 line,
                 end_line,
