@@ -70,8 +70,7 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Off;
             }
 
-            var message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
-                Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
+            string message = Message;
 
             if (!string.IsNullOrEmpty(customRule.Message))
             {
@@ -81,9 +80,12 @@ namespace Microsoft.Docs.Build
                 }
                 catch (FormatException)
                 {
-                    message += " | ERROR: custom message format is invalid, e.g., too many parameters {n}.";
+                    message += "ERROR: custom message format is invalid, e.g., too many parameters {n}.";
                 }
             }
+
+            message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
+                message : $"{message}{(message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
 
             return new Error(
                 level,

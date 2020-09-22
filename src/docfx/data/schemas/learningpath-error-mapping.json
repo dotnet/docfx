@@ -30,6 +30,13 @@
         "code": "path-trophy-missing",
         "message": "Missing attribute: trophy. A valid trophy is required for each learning path."
       }
+    },
+    "parent_property.child_property": {
+      "missing-attribute": {
+        "severity": "error",
+        "code": "jsonpath-test",
+        "message": "jsonpath-test, missing attribute: parent_property.child_property, which is required."
+      }
     }
   }
 }

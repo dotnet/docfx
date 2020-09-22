@@ -55,7 +55,23 @@ namespace Microsoft.Docs.Build
         {
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
-            return TransformContentCore(errors, definitions, file, schema, schema, token, uidCount);
+            return TransformContentCore(
+                errors.With(e =>
+                {
+                    if (!string.IsNullOrEmpty(e.Name) &&
+                        schema.Rules.TryGetValue(e.Name, out var attributeCustomRules) &&
+                        attributeCustomRules.TryGetValue(e.Code, out var customRule))
+                    {
+                        return e.WithCustomRule(customRule);
+                    }
+                    return e;
+                }),
+                definitions,
+                file,
+                schema,
+                schema,
+                token,
+                uidCount);
         }
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(
@@ -216,7 +232,23 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector.Push(uid);
-                return TransformContentCore(_errors, definitions, file, rootSchema, schema, value, uidCount);
+                return TransformContentCore(
+                    _errors.With(e =>
+                    {
+                        if (!string.IsNullOrEmpty(e.Name) &&
+                            schema.Rules.TryGetValue(e.Name, out var attributeCustomRules) &&
+                            attributeCustomRules.TryGetValue(e.Code, out var customRule))
+                        {
+                            return e.WithCustomRule(customRule);
+                        }
+                        return e;
+                    }),
+                    definitions,
+                    file,
+                    rootSchema,
+                    schema,
+                    value,
+                    uidCount);
             }
             finally
             {
@@ -271,7 +303,7 @@ namespace Microsoft.Docs.Build
                                 propertySchema,
                                 value,
                                 uidCount,
-                                string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}");
+                                JsonUtility.AddToJsonPath(jsonPath, key));
                         }
                         else
                         {

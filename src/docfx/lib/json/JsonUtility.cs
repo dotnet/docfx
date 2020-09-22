@@ -306,6 +306,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static string AddToJsonPath(string? jsonPath, string key)
+        {
+            if (string.IsNullOrEmpty(jsonPath))
+            {
+                return $"{key}";
+            }
+            else
+            {
+                return jsonPath + $".{key}";
+            }
+        }
+
         /// <summary>
         /// Sets the property value. Prefer this method when you need to propagate source info.
         /// </summary>

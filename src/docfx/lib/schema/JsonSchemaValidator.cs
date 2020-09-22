@@ -68,92 +68,91 @@ namespace Microsoft.Docs.Build
             return errors.Select(error => GetError(_schema, error)).ToList();
         }
 
-        private void Validate(JsonSchema schema, string jsonPath, JToken token, List<Error> errors)
+        private void Validate(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             schema = _definitions.GetDefinition(schema);
 
-            if (!ValidateType(schema, jsonPath, token, errors))
+            if (!ValidateType(schema, name, token, errors))
             {
                 return;
             }
 
-            ValidateBooleanSchema(schema, jsonPath, token, errors);
-            ValidateDeprecated(schema, jsonPath, token, errors);
-            ValidateConst(schema, jsonPath, token, errors);
-            ValidateEnum(schema, jsonPath, token, errors);
+            ValidateBooleanSchema(schema, name, token, errors);
+            ValidateDeprecated(schema, name, token, errors);
+            ValidateConst(schema, name, token, errors);
+            ValidateEnum(schema, name, token, errors);
 
             switch (token)
             {
                 case JValue scalar:
-                    ValidateScalar(schema, jsonPath, scalar, errors);
+                    ValidateScalar(schema, name, scalar, errors);
                     break;
 
                 case JArray array:
-                    ValidateArray(schema, jsonPath, array, errors);
+                    ValidateArray(schema, name, array, errors);
                     break;
 
                 case JObject map:
-                    ValidateObject(schema, jsonPath, map, errors);
+                    ValidateObject(schema, name, map, errors);
                     break;
             }
         }
 
-        private static bool ValidateType(JsonSchema schema, string jsonPath, JToken token, List<Error> errors)
+        private static bool ValidateType(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Type != null)
             {
                 if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token.Type)))
                 {
-                    errors.Add(
-                        Errors.JsonSchema.UnexpectedType(JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString(), jsonPath));
+                    errors.Add(Errors.JsonSchema.UnexpectedType(JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString(), name));
                     return false;
                 }
             }
             return true;
         }
 
-        private void ValidateScalar(JsonSchema schema, string jsonPath, JValue scalar, List<Error> errors)
+        private void ValidateScalar(JsonSchema schema, string name, JValue scalar, List<Error> errors)
         {
             switch (scalar.Value)
             {
                 case string str:
-                    ValidateString(schema, jsonPath, scalar, str, errors);
+                    ValidateString(schema, name, scalar, str, errors);
                     break;
 
                 case double _:
                 case float _:
                 case long _:
-                    ValidateNumber(schema, jsonPath, scalar, Convert.ToDouble(scalar.Value), errors);
+                    ValidateNumber(schema, name, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
         }
 
-        private void ValidateArray(JsonSchema schema, string jsonPath, JArray array, List<Error> errors)
+        private void ValidateArray(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
             if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
             {
-                errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), jsonPath, $"<= {schema.MaxItems}"));
+                errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {schema.MaxItems}"));
             }
 
             if (schema.MinItems.HasValue && array.Count < schema.MinItems.Value)
             {
-                errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), jsonPath, $">= {schema.MinItems}"));
+                errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $">= {schema.MinItems}"));
             }
 
-            ValidateItems(schema, jsonPath, array, errors);
+            ValidateItems(schema, name, array, errors);
 
             if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
             {
-                errors.Add(Errors.JsonSchema.ArrayNotUnique(JsonUtility.GetSourceInfo(array), jsonPath));
+                errors.Add(Errors.JsonSchema.ArrayNotUnique(JsonUtility.GetSourceInfo(array), name));
             }
 
             if (schema.Contains != null && !array.Any(item => Validate(schema.Contains, item).Count == 0))
             {
-                errors.Add(Errors.JsonSchema.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), jsonPath));
+                errors.Add(Errors.JsonSchema.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), name));
             }
         }
 
-        private void ValidateItems(JsonSchema schema, string jsonPath, JArray array, List<Error> errors)
+        private void ValidateItems(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
             var (items, eachItem) = schema.Items;
 
@@ -161,7 +160,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in array)
                 {
-                    Validate(items, jsonPath, item, errors);
+                    Validate(items, name, item, errors);
                 }
             }
             else if (eachItem != null)
@@ -170,43 +169,43 @@ namespace Microsoft.Docs.Build
                 {
                     if (i < eachItem.Length)
                     {
-                        Validate(eachItem[i], jsonPath, array[i], errors);
+                        Validate(eachItem[i], name, array[i], errors);
                     }
                     else if (schema.AdditionalItems == JsonSchema.FalseSchema)
                     {
-                        errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), jsonPath, $"<= {eachItem.Length}"));
+                        errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), name, $"<= {eachItem.Length}"));
                         break;
                     }
                     else if (schema.AdditionalItems != null && schema.AdditionalItems != JsonSchema.FalseSchema)
                     {
-                        Validate(schema.AdditionalItems, jsonPath, array[i], errors);
+                        Validate(schema.AdditionalItems, name, array[i], errors);
                     }
                 }
             }
         }
 
-        private void ValidateObject(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private void ValidateObject(JsonSchema schema, string name, JObject map, List<Error> errors)
         {
-            ValidateRequired(schema, jsonPath, map, errors);
-            ValidateStrictRequired(schema, jsonPath, map, errors);
-            ValidateDependencies(schema, jsonPath, map, errors);
-            ValidateEither(schema, jsonPath, map, errors);
-            ValidatePrecludes(schema, jsonPath, map, errors);
+            ValidateRequired(schema, map, errors);
+            ValidateStrictRequired(schema, map, errors);
+            ValidateDependencies(schema, name, map, errors);
+            ValidateEither(schema, map, errors);
+            ValidatePrecludes(schema, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, "", "", null, null, map, errors);
             ValidateDocsetUnique(schema, map);
-            ValidateProperties(schema, jsonPath, map, errors);
+            ValidateProperties(schema, name, map, errors);
         }
 
-        private void ValidateProperties(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private void ValidateProperties(JsonSchema schema, string name, JObject map, List<Error> errors)
         {
             if (schema.MaxProperties.HasValue && map.Count > schema.MaxProperties.Value)
             {
-                errors.Add(Errors.JsonSchema.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), jsonPath, $"<= {schema.MaxProperties}"));
+                errors.Add(Errors.JsonSchema.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $"<= {schema.MaxProperties}"));
             }
 
             if (schema.MinProperties.HasValue && map.Count < schema.MinProperties.Value)
             {
-                errors.Add(Errors.JsonSchema.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), jsonPath, $">= {schema.MinProperties}"));
+                errors.Add(Errors.JsonSchema.PropertyCountInvalid(JsonUtility.GetSourceInfo(map), name, $">= {schema.MinProperties}"));
             }
 
             foreach (var (key, value) in map)
@@ -216,13 +215,11 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                var curJsonPath = string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}";
-
                 if (schema.PropertyNames != null)
                 {
                     var propertyName = new JValue(key);
                     JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetKeySourceInfo(value));
-                    Validate(schema.PropertyNames, curJsonPath, propertyName, errors);
+                    Validate(schema.PropertyNames, key, propertyName, errors);
                 }
 
                 var isAdditionalProperty = true;
@@ -230,7 +227,7 @@ namespace Microsoft.Docs.Build
                 // properties
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, curJsonPath, value, errors);
+                    Validate(propertySchema, key, value, errors);
                     isAdditionalProperty = false;
                 }
 
@@ -239,7 +236,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (Regex.IsMatch(key, pattern))
                     {
-                        Validate(patternPropertySchema, curJsonPath, value, errors);
+                        Validate(patternPropertySchema, key, value, errors);
                         isAdditionalProperty = false;
                     }
                 }
@@ -249,22 +246,21 @@ namespace Microsoft.Docs.Build
                 {
                     if (schema.AdditionalProperties == JsonSchema.FalseSchema)
                     {
-                        errors.Add(Errors.JsonSchema.UnknownField(
-                            JsonUtility.GetSourceInfo(value), curJsonPath, value.Type.ToString()));
+                        errors.Add(Errors.JsonSchema.UnknownField(JsonUtility.GetSourceInfo(value), key, value.Type.ToString()));
                     }
                     else if (schema.AdditionalProperties != JsonSchema.TrueSchema)
                     {
-                        Validate(schema.AdditionalProperties, curJsonPath, value, errors);
+                        Validate(schema.AdditionalProperties, name, value, errors);
                     }
                 }
             }
         }
 
-        private static void ValidateBooleanSchema(JsonSchema schema, string jsonPath, JToken token, List<Error> errors)
+        private static void ValidateBooleanSchema(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema == JsonSchema.FalseSchema)
             {
-                errors.Add(Errors.JsonSchema.BooleanSchemaFailed(JsonUtility.GetSourceInfo(token), jsonPath));
+                errors.Add(Errors.JsonSchema.BooleanSchemaFailed(JsonUtility.GetSourceInfo(token), name));
             }
         }
 
@@ -350,23 +346,23 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateConst(JsonSchema schema, string jsonPath, JToken token, List<Error> errors)
+        private static void ValidateConst(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Const != null && !JsonUtility.DeepEqualsComparer.Equals(schema.Const, token))
             {
-                errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), jsonPath, token));
+                errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), name, token));
             }
         }
 
-        private static void ValidateEnum(JsonSchema schema, string jsonPath, JToken token, List<Error> errors)
+        private static void ValidateEnum(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
             {
-                errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), jsonPath, token));
+                errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), name, token));
             }
         }
 
-        private void ValidateDependencies(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private void ValidateDependencies(JsonSchema schema, string name, JObject map, List<Error> errors)
         {
             foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
             {
@@ -378,41 +374,36 @@ namespace Microsoft.Docs.Build
                         {
                             if (!IsStrictContain(map, otherKey))
                             {
-                                errors.Add(Errors.JsonSchema.MissingPairedAttribute(
-                                    JsonUtility.GetSourceInfo(map),
-                                    string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}",
-                                    string.IsNullOrWhiteSpace(jsonPath) ? $"{otherKey}" : jsonPath + $".{otherKey}"));
+                                errors.Add(Errors.JsonSchema.MissingPairedAttribute(JsonUtility.GetSourceInfo(map), key, otherKey));
                             }
                         }
                     }
                     else if (subschema != null)
                     {
-                        Validate(subschema, string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}", map, errors);
+                        Validate(subschema, name, map, errors);
                     }
                 }
             }
         }
 
-        private static void ValidateRequired(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private static void ValidateRequired(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var key in schema.Required)
             {
                 if (!map.ContainsKey(key))
                 {
-                    errors.Add(Errors.JsonSchema.MissingAttribute(
-                        JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}"));
+                    errors.Add(Errors.JsonSchema.MissingAttribute(JsonUtility.GetSourceInfo(map), key));
                 }
             }
         }
 
-        private static void ValidateStrictRequired(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private static void ValidateStrictRequired(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var key in schema.StrictRequired)
             {
                 if (!IsStrictContain(map, key))
                 {
-                    errors.Add(Errors.JsonSchema.MissingAttribute(
-                        JsonUtility.GetSourceInfo(map), string.IsNullOrWhiteSpace(jsonPath) ? $"{key}" : jsonPath + $".{key}"));
+                    errors.Add(Errors.JsonSchema.MissingAttribute(JsonUtility.GetSourceInfo(map), key));
                 }
             }
         }
@@ -433,7 +424,7 @@ namespace Microsoft.Docs.Build
         private static bool IsStrictContain(JObject map, string key) =>
             map.TryGetValue(key, out var value) && IsStrictHaveValue(value);
 
-        private static void ValidateEither(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private static void ValidateEither(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var keys in schema.Either)
             {
@@ -454,13 +445,12 @@ namespace Microsoft.Docs.Build
 
                 if (!result)
                 {
-                    errors.Add(Errors.JsonSchema.MissingEitherAttribute(
-                        JsonUtility.GetSourceInfo(map), keys, string.IsNullOrWhiteSpace(jsonPath) ? $"{keys[0]}" : jsonPath + $".{keys[0]}"));
+                    errors.Add(Errors.JsonSchema.MissingEitherAttribute(JsonUtility.GetSourceInfo(map), keys, keys[0]));
                 }
             }
         }
 
-        private static void ValidatePrecludes(JsonSchema schema, string jsonPath, JObject map, List<Error> errors)
+        private static void ValidatePrecludes(JsonSchema schema, JObject map, List<Error> errors)
         {
             foreach (var keys in schema.Precludes)
             {
@@ -469,8 +459,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (IsStrictContain(map, key) && ++existNum > 1)
                     {
-                        errors.Add(Errors.JsonSchema.PrecludedAttributes(
-                            JsonUtility.GetSourceInfo(map), keys, string.IsNullOrWhiteSpace(jsonPath) ? $"{keys[0]}" : jsonPath + $".{keys[0]}"));
+                        errors.Add(Errors.JsonSchema.PrecludedAttributes(JsonUtility.GetSourceInfo(map), keys, keys[0]));
                         break;
                     }
                 }
@@ -520,11 +509,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateDeprecated(JsonSchema schema, string jsonPath, JToken token, List<Error> errors)
+        private static void ValidateDeprecated(JsonSchema schema, string name, JToken token, List<Error> errors)
         {
             if (IsStrictHaveValue(token) && schema.ReplacedBy != null)
             {
-                errors.Add(Errors.JsonSchema.AttributeDeprecated(JsonUtility.GetSourceInfo(token), jsonPath, schema.ReplacedBy));
+                errors.Add(Errors.JsonSchema.AttributeDeprecated(JsonUtility.GetSourceInfo(token), name, schema.ReplacedBy));
             }
         }
 

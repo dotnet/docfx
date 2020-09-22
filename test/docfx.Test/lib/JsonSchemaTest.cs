@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
             "{'message_severity':'warning','code':'unexpected-type','message':'Expected type 'Number' but got 'String'.','file':'file','line':1,'end_line':1,'column':33,'end_column':33}")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value1'.','file':'file','line':1,'end_line':1,'column':33,'end_column':33}")]
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': 'value1'.','file':'file','line':1,'end_line':1,'column':33,'end_column':33}")]
 
         // property name validation
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
@@ -273,13 +273,13 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
 
         // dependencies as schema
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
-            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key1.key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
+            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
 
         // either validation
         [InlineData("{'either': []}", "{}", "")]
@@ -374,7 +374,7 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'rules': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated'}}}}", "{'key1': 1}",
             "{'message_severity':'suggestion','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','file':'file','line':1,'end_line':1,'column':10,'end_column':10}")]
-        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'keys.key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'.','file':'file','line':1,'end_line':1,'column':11,'end_column':11}")]
         [InlineData("{'dependencies': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
