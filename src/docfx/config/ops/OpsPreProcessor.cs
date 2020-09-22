@@ -50,6 +50,14 @@ namespace Microsoft.Docs.Build
                     for (var index = 0; index < _config.Monodoc.Length; index++)
                     {
                         var monodocConfig = _config.Monodoc[index];
+                        var xmlDirectory = Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder));
+
+                        // skip monidoc config if source xml folder does not exist
+                        if (!Directory.Exists(xmlDirectory))
+                        {
+                            continue;
+                        }
+
                         Directory.CreateDirectory(monodocConfig.OutputYamlFolder);
 
                         var fallbackXmlPath = _buildOptions.FallbackDocsetPath is null
@@ -58,7 +66,6 @@ namespace Microsoft.Docs.Build
                         var fallbackOutputDirectory = _buildOptions.FallbackDocsetPath is null
                             ? null
                             : Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
-                        var xmlDirectory = Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.SourceXmlFolder));
                         var (repository, _) = _repositoryProvider.GetRepository(new PathString(xmlDirectory));
                         ECMA2YamlConverter.Run(
                             xmlDirectory,
@@ -113,7 +120,7 @@ namespace Microsoft.Docs.Build
 
                 var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);
 
-                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, $"{item.Message}", source));
             }
 
             static ErrorLevel MapLevel(ECMAMessageSeverity level) => level switch
@@ -136,7 +143,7 @@ namespace Microsoft.Docs.Build
 
                 var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);
 
-                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, item.Message, source));
+                _errors.Add(new Error(MapLevel(item.MessageSeverity), item.Code, $"{item.Message}", source));
             }
 
             static ErrorLevel MapLevel(MAMLMessageSeverity level) => level switch

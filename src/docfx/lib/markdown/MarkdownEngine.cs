@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
                 line is null ? (origin?.Line + 1) ?? 0 : (line.Value + 1),
                 line is null ? (origin?.Column + 1) ?? 0 : 0);
 
-            t_status.Value!.Peek().Errors.Add(new Error(level, code, message, source));
+            t_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", source));
         }
 
         private static ErrorBuilder GetErrors()
