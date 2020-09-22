@@ -1,0 +1,1260 @@
+# Content validation end to end scenario 
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
+            "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
+            "severity": "WARNING",
+            "code": "h1-missing"
+          }
+        ]
+      }
+    }
+  a.md: |
+    This is test.
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":0}
+---
+# Validate included markdown files within Yaml file
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
+            "exclusions": [],
+            "severity": "WARNING",
+            "code": "h1-missing"
+          }
+        ]
+      }
+    }
+  docs/a.yml: |
+    #YamlMime:YamlDocument
+    documentType: LandingData
+    title: my title
+    content: |
+      [!include[](b.md)]
+  docs/b.md: |
+    This is test.
+outputs:
+  docs/a.json: |
+    {
+      "title": "my title"
+    }
+  docs/b.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"docs/b.md","line":0}
+---
+# Content Validation - Setex Headings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude: b.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SetexHeadings",
+            "message": "Bad {0} format. Use hashes to create H1(#) or H2(##)",
+            "code": "headings-with-underline",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1 With Hashe
+    ## Title 2 With Hashes
+
+    Title 1
+    =======
+
+    Title 2
+    -------
+
+    Multiple Title2 Line 1
+    Multiple Title2 Line 2
+    -------
+
+    # Title With Hash and underline
+    ======
+
+        Not A title 1
+    ======
+
+    Not A Title 2
+        ------
+
+    [!include[](b.md)]
+  b.md: |
+    Title 2
+    ------
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"headings-with-underline","message":"Bad H1 'Title 1' format. Use hashes to create H1(#) or H2(##)","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"headings-with-underline","message":"Bad H2 'Title 2' format. Use hashes to create H1(#) or H2(##)","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"headings-with-underline","message":"Bad H2 'Multiple Title2 Line 1\nMultiple Title2 Line 2' format. Use hashes to create H1(#) or H2(##)","file":"a.md","line":12,"end_line":12,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"headings-with-underline","message":"Bad H2 'Title 2' format. Use hashes to create H1(#) or H2(##)","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Content Validation - Skip Level
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - b.md
+      - c.md
+      - d.md
+      - e.md
+      - f.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SkipLevel",
+            "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
+            "code": "heading-skipped",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1-1
+    ### Title 3
+
+    # Title 1-2
+    [!include[](b.md)]
+
+    [!include[](b.md)]
+    ##### Title 5
+
+    [!include[](b.md)]
+    [!include[](c.md)]
+
+    [!include[](d.md)]
+
+    [!include[](e.md)]
+
+    [!include[](f.md)]
+    ## Title 2
+  normal-1.md: |
+    # Title 1-3
+    ## Title 2
+    ### Title 3
+    # Title 1-4
+  normal-2.md: |
+    ### Title 3
+    # Title 1-4
+  b.md: |
+    ### Title 3-b
+  c.md: |
+    ##### Title 5-c
+  d.md: |
+    ### Title 3-d
+    ##### Title 5-d
+  e.md: |
+    [!include[](b.md)]
+    [!include[](c.md)]
+
+    [!include[](d.md)]
+  f.md:
+outputs:
+  a.json:
+  normal-1.json:
+  normal-2.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H1 'Title 1-1' followed by heading: H3 'Title 3'. Headings must increment with no skipped levels","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H1 'Title 1-2' followed by heading: H3 'Title 3-b'(a.md(5,1) -> b.md). Headings must increment with no skipped levels","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(7,1) -> b.md) followed by heading: H5 'Title 5'. Headings must increment with no skipped levels","file":"a.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(10,1) -> b.md) followed by heading: H5 'Title 5-c'(a.md(11,1) -> c.md). Headings must increment with no skipped levels","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(13,1) -> d.md) followed by heading: H5 'Title 5-d'(a.md(13,1) -> d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(15,1) -> e.md -> b.md) followed by heading: H5 'Title 5-c'(a.md(15,1) -> e.md(2,1) -> c.md). Headings must increment with no skipped levels","file":"e.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(15,1) -> e.md(4,1) -> d.md) followed by heading: H5 'Title 5-d'(a.md(15,1) -> e.md(4,1) -> d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Content validation - h1 in inclusion
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - b.md
+      - c.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "InclusionH1",
+            "message": "H1 headings aren't allowed in included files. Every parent file should have an H1.",
+            "code": "h1-in-include",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # H1 -a
+    [!include[](b.md)]
+  b.md: |
+    # H1 -b
+    [!include[](c.md)]
+  c.md: |
+    # H1 -c
+    ------
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-include","message":"H1 headings aren't allowed in included files. Every parent file should have an H1.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-include","message":"H1 headings aren't allowed in included files. Every parent file should have an H1.","file":"c.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content Validation - EmptyHeadings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude: b.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "HeadingEmpty",
+            "message": "Empty {0}. Headings must have content.",
+            "code": "heading-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    Empty headings
+    ## 
+    ###
+    #### <!-- comments -->
+    #####            
+    Ignore empty h1
+    # 
+    Headings below are not empty.
+    ##### <img src="image.png" alt="xxx"/>
+    ###### &nbsp;
+    ###### &#160;
+    ###### <a href="image.png"></a>
+    ###### <a href="image.png"> &nbsp; </a>
+    ###### <div><a href="image.png"> &nbsp; </a><div>
+    ###### <span>abc</span>
+    ###### <a href="image.png">abc</a>
+    [!include[](b.md)]
+  b.md: |
+    ## 
+  image.png:
+outputs:
+  a.json:
+  image.png:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H3. Headings must have content.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H4 '<!-- comments -->'. Headings must have content.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H5. Headings must have content.","file":"a.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - no content between headings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - b.md
+      - c.md
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "NoContent",
+            "message": "{0} contains no content. Add content or remove the unused heading.",
+            "code": "heading-no-content",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # H1 -a
+    ## H2-1 -a
+          
+                
+    ## H2-2 -a
+    some content
+    ### H3 -a
+    <!-- comments -->
+
+    [!include[](b.md)]
+    #### H4 -a
+
+  b.md: |
+    ### H3-1 -b
+    ### H3-2 -b
+    [!include[](c.md)]
+    ### H3-3 -b
+    [!include[](c.md)]
+    ## H2 -b
+    [!include[](c.md)]
+    abc
+  c.md: |
+    some content
+    ## H2 -c
+    ------
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2-1 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H3 'H3 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H3 'H3-1 -b'(a.md(10,1) -> b.md) contains no content. Add content or remove the unused heading.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2 -c'(a.md(10,1) -> b.md(5,1) -> c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"c.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H4 'H4 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":11, "end_line":11,"column":1,"end_column":1}
+---
+
+#Content validation - h1-not-first in docs zone
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before {0}.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target="docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+  b.md: |
+    ::: zone target="chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  c.md: |
+    ::: zone target="chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    This is paragraph
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  d.md: |
+    ## This is H2
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+  e.md: |
+    # This is H1
+
+    ::: zone target = "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+  f.md: |
+    ::: zone target = "docs"
+    This is paragraph
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  g.md: |
+    ::: zone target = "chromeless"
+    This is paragraph
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  h.md: |
+    ::: image type="complex" source="../media/buttonElementWithRenderers.png" alt-text="test":::
+        Indented line withon triple-colon syntax
+    ::: image-end:::
+  i.md: |
+    ::: zone
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+  j.md: |
+    ::: zone pivot = "test"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  g.json:
+  h.json:
+  j.json:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"i.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"c.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"d.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"f.md","line":3,"end_line":3,"column":1,"end_column":1}
+---
+# Content validation - comments shouldn't trigger H1 not first
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before {0}.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    [//]: # (START>DO_NOT_EDIT)
+    [//]: # (IMPORTANT:Do not edit any of the content between here and the END>DO_NOT_EDIT.)
+    [//]: # (Any modifications should be made in the .xml files in the ModernDev repo.)
+    # AppSourceCop Rule AS0024
+    [//]: # (IMPORTANT: END>DO_NOT_EDIT)
+    <!-- comment -->
+    # h1
+  b.md: |
+    See this markdown
+    # AppSourceCop
+  c.md: |
+    <!-- comment -->
+    # h1
+  d.md: |
+    <!-- comment 
+    -->
+    # h1
+  e.md: |
+    <!-- comment 
+    --><div>text</text>
+    # h1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'AppSourceCop'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'.","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
+---
+# Content validation - inclusion case, h1 node is in the included file
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before {0}.",
+            "code": "h1-not-first",
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # h1
+  b.md: |
+    ## h2
+    [!include[](a.md)]
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'h1'(b.md(2,1) -> a.md).","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+
+#Content validation - h1-missing in docs zone
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading",
+            "code": "h1-missing",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target="docs"
+    # H1 heading text\r\n
+    ::: zone-end
+  b.md: |
+    ::: zone target="docs"
+    #H1heading
+    ::: zone-end
+  c.md: |
+    ::: zone target="docs"
+    ::: zone-end
+  d.md: |
+    ::: zone
+    # H1heading
+    ::: zone-end
+  e.md: |
+    ::: zone target="chromeless"
+    # H1 heading text
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  e.json:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
+#Content validation - h1 in zone
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1InZone",
+            "message": "H1 in zone '{0}'. H1 is only allowed in Docs zones.",
+            "code": "h1-in-zone",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target= "docs"
+    # Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    ::: zone target = "pdf"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    ::: zone pivot = "test"
+    # Copy data to Azure Data Box
+    ::: zone-end
+
+    ::: zone target = "docs"
+    #Tutorial: Copy data to Azure Data Box via SMB
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    #Copy data to Azure Data Box
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    ## This is h2
+    ::: zone-end
+
+    ::: zone target = "chromeless"
+    # This is h1
+    #This is h1
+    ::: zone-end
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":6,"end_line":6,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":1,"end_column":1}
+---
+#Content validation - multiple-h1s in docs zone
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Multiples",
+            "message": "Multiple H1s are not allowed. You can only have one top-level heading",
+            "code": "multiple-h1s",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    a.md: |
+    ::: zone target="docs"
+    # H1 heading text
+    ::: zone-end
+  b.md: |
+    ::: zone target="docs"
+    # H1 heading text
+    #H1 heading text dup
+    ::: zone-end
+  c.md: |
+    ::: zone target="chromeless"
+    # H1 heading text
+    #H1 heading dup
+    ::: zone-end
+  d.md: |
+    ::: zone pivot = "test"
+    # H1 Heading text
+    # H1 heading text 2
+    ::: zone-end
+  e.md: |
+    ::: zone target="docs"
+    # H1 heading text
+    # H1 heading dup
+    ::: zone-end
+  f.md: |
+    ::: zone target="docs"
+    # H1 heading text
+    ::: zone-end
+    ::: zone target="chromeless"
+    # H1 heading text
+    ::: zone-end
+  g.md: |
+    # H1 heading
+    ::: zone target="docs"
+    # H1 heading text
+    ::: zone-end
+  h.md: |
+    #H1 heading
+    ::: zone target="docs"
+    # H1 heading text
+    ::: zone-end
+  i.md: |
+    # H1 heading
+    ::: zone target="chromeless"
+    # H1 heading text
+    ::: zone-end
+  j.md: |
+    # H1 heading
+    ::: zone pivot="test"
+    # H1 heading text
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  g.json:
+  h.json:
+  i.json:
+  j.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
+---
+# Canonial Version Only H1 Unique Check
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    ::: moniker range="<= netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  docs/v1/b.md: |
+    # h1
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "canonicalVersionOnly": true
+          }
+        ]
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/a.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/b.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+  2420f88b/docs/a.json:
+  2420f88b/docs/b.json:
+---
+# Canonial Version Only H1 Unique Check with Inclusion
+inputs:
+  docfx.yml: |
+    exclude:
+      - docs/v1/token1.md
+      - docs/v1/token2.md
+    markdownValidationRules: rules.json
+    monikerRange:
+      'docs/v1/**': '>= netcore-1.0 <= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    [!include[](token2.md)]
+  docs/v1/b.md: |
+    # h1
+    ::: moniker range="<= netcore-1.2"
+    [!include[](token1.md)]
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.1"
+    [!include[](token1.md)]
+    ::: moniker-end
+  docs/v1/token1.md: |
+    # h1
+  docs/v1/token2.md: |
+    ::: moniker range="<= netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "canonicalVersionOnly": true
+          }
+        ]
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
+  2420f88b/docs/a.json:
+  2420f88b/docs/b.json:
+---
+# Canonial Version Only H1 Unique Check with Inclusion
+# multiple-versioning file cases
+# invalid moniker zone is treated as non-versioning
+inputs:
+  docfx.yml: |
+    exclude:
+      - docs/v1/token1.md
+      - docs/v1/token2.md
+      - docs/v1/token3.md
+    markdownValidationRules: rules.json
+    monikerRange:
+      'docs/v1/**': '< netcore-1.2'
+      'docs/v2/**': '>= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+  docs/v1/a.md: |
+    [!include[](token2.md)]
+  docs/v1/b.md: |
+    # h1
+    ::: moniker range="<= netcore-1.2"
+    [!include[](token1.md)]
+    ::: moniker-end
+    ::: moniker range="< netcore-1.1"
+    [!include[](token1.md)]
+    ::: moniker-end
+  docs/v2/b.md: |
+    # h1
+    ::: moniker range="<= netcore-2.0"
+    [!include[](../v1/token1.md)]
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    [!include[](../v1/token1.md)]
+    ::: moniker-end
+    [!include[](../v1/token3.md)]
+  docs/v1/token1.md: |
+    # h1
+  docs/v1/token2.md: |
+    ::: moniker range="< netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  docs/v1/token3.md: |
+    ::: moniker range="< netcore-1.1"
+    # h1
+    ::: moniker-end
+    ::: moniker range="<= netcore-1.2"
+    # h1
+    ::: moniker-end
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "canonicalVersionOnly": true
+          }
+        ]
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v2/b.md'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v2/b.md'","file":"docs/v2/b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v1/token2.md(5,1), docs/v2/b.md'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string '< netcore-1.1' is 'netcore-1.0', while file level monikers is 'netcore-1.2', 'netcore-2.0'.","file":"docs/v1/token3.md","line":1,"end_line":1,"column":1,"end_column":1}
+  9d4e15fd/docs/a.json:
+  9d4e15fd/docs/b.json:
+  976da3a9/docs/b.json:
+---
+
+#Content validation - h1 disallowed headings
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    disallowlists: disallowed.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "DisallowedHeadings",
+            "message": "Heading '{0}' matches the text of a disallowed Docs template heading.",
+            "code": "disallowed-heading",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  disallowed.json: |
+    {
+     "list:header": {
+            "id": "list:header",
+            "dependent": null,
+            "desc": "Values for header",
+            "values": {
+                "Feedback": null,
+                "Is this page helpful?": null,
+            }
+     }
+    }
+  a.md: |
+    # Feedback
+    # header2
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"disallowed-heading","message":"Heading 'H1 'Feedback'' matches the text of a disallowed Docs template heading.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+#Content validation - h1 in moniker
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    monikerRange:
+      'v1/**': '< netcore-2.0'
+      'v2/**': '>= netcore-2.0'
+    monikerDefinition: monikerDefinition.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1InMoniker",
+            "message": "H1s are not allowed in moniker sections. Each article should have one and only one H1.",
+            "code": "h1-in-moniker",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Create your first pipeline
+  v2/b.md: |
+    ::: moniker range=">= netcore-2.0"
+    # Create your first pipeline
+    ::: moniker-end
+outputs:
+  a.json:
+  4667fedf/v2/b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-moniker","message":"H1s are not allowed in moniker sections. Each article should have one and only one H1.","file":"v2/b.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Content validation - H1 unique
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1
+  b.md: |
+    # Title 1
+  c.md: |
+    # Title 2
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - H1 unique log limit
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1
+  b.md: |
+    # Title 1
+  c.md: |
+    # Title 1
+  d.md: |
+    # Title 1
+  e.md: |
+    # Title 1
+  f.md: |
+    # Title 1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"c.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"f.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
