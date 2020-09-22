@@ -24,23 +24,32 @@ namespace Microsoft.Docs.Build
 
         public bool PullRequestOnly { get; }
 
-        public object?[] MessageParameters { get; } = Array.Empty<object>();
+        public object?[] MessageArguments { get; }
 
         public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? name = null)
         {
             Level = level;
             Code = code;
             Message = message.ToString();
+            MessageArguments = message.GetArguments();
             Source = source;
             Name = name;
-            MessageParameters = message.GetArguments();
         }
 
-        private Error(ErrorLevel level, string code, string message, SourceInfo? source, string? name, PathString? originalPath, bool pullRequestOnly)
+        private Error(
+            ErrorLevel level,
+            string code,
+            string message,
+            object?[] messageArguments,
+            SourceInfo? source,
+            string? name,
+            PathString? originalPath,
+            bool pullRequestOnly)
         {
             Level = level;
             Code = code;
             Message = message;
+            MessageArguments = messageArguments;
             Source = source;
             Name = name;
             OriginalPath = originalPath;
@@ -61,14 +70,26 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Off;
             }
 
-            var message = string.IsNullOrEmpty(customRule.OverrideMessage) ?
-                string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}"
-                : string.Format(customRule.OverrideMessage, MessageParameters);
+            var message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
+                Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
+
+            if (!string.IsNullOrEmpty(customRule.Message))
+            {
+                try
+                {
+                    message = string.Format(customRule.Message, MessageArguments);
+                }
+                catch (FormatException)
+                {
+                    message += " | ERROR: custom message format is invalid, e.g., too many parameters {n}.";
+                }
+            }
 
             return new Error(
                 level,
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
                 message,
+                MessageArguments,
                 Source,
                 Name,
                 OriginalPath,
@@ -77,17 +98,22 @@ namespace Microsoft.Docs.Build
 
         public Error WithLevel(ErrorLevel level)
         {
-            return level == Level ? this : new Error(level, Code, Message, Source, Name, OriginalPath, PullRequestOnly);
+            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, Name, OriginalPath, PullRequestOnly);
         }
 
         public Error WithOriginalPath(PathString? originalPath)
         {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, Source, Name, originalPath, PullRequestOnly);
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, MessageArguments, Source, Name, originalPath, PullRequestOnly);
         }
 
         public Error WithSource(SourceInfo? source)
         {
-            return new Error(Level, Code, Message, source, Name, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, MessageArguments, source, Name, OriginalPath, PullRequestOnly);
+        }
+
+        public Error WithName(string? name)
+        {
+            return new Error(Level, Code, Message, MessageArguments, Source, name, OriginalPath, PullRequestOnly);
         }
 
         public override string ToString()

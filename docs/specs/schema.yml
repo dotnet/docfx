@@ -355,6 +355,7 @@ outputs:
     {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'.","file":"a.yml","line":1,"column":1}
 ---
 # Validate bookmark against content HTML after applying template for SDP 
+noDryRun: true
 inputs:
   docfx.yml: |
     outputType: pageJson
@@ -653,3 +654,30 @@ outputs:
       "test": "b"
     }
   docs/b.json:
+---
+# Disable content fallback for loc page of ModuleUnit
+noDryRun: true
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        docfx.yml:
+        includes/b.md: |
+          **Text**
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        unit.yml: |
+          ### YamlMime:ModuleUnit
+          content: '[!include[](includes/b.md)]'
+        _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+          {
+            "contentFallback": false,
+            "properties": { 
+              "content": {"type":"string","contentType": "markdown"}
+              }
+          }
+        _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+outputs:
+  .errors.log: |
+    { "message_severity":"error","code":"include-not-found","message":"Invalid include link: 'includes/b.md'.","file":"unit.yml"}

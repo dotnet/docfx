@@ -100,13 +100,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string ToHtml(ErrorBuilder errors, string markdown, FilePath file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
+        public string ToHtml(
+            ErrorBuilder errors,
+            string markdown,
+            FilePath file,
+            MarkdownPipelineType pipelineType,
+            ConceptualModel? conceptual = null,
+            bool contentFallback = true)
         {
             using (InclusionContext.PushFile(file))
             {
                 try
                 {
-                    var status = new Status(errors, conceptual);
+                    var status = new Status(errors, contentFallback, conceptual);
 
                     t_status.Value!.Push(status);
 
@@ -272,7 +278,7 @@ namespace Microsoft.Docs.Build
                 line is null ? (origin?.Line + 1) ?? 0 : (line.Value + 1),
                 line is null ? (origin?.Column + 1) ?? 0 : 0);
 
-            t_status.Value!.Peek().Errors.Add(new Error(level, code, message, source));
+            t_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", source));
         }
 
         private static ErrorBuilder GetErrors()
@@ -298,7 +304,10 @@ namespace Microsoft.Docs.Build
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath());
+            var (error, file) = _linkResolver.ResolveContent(
+                new SourceInfo<string>(path, origin.GetSourceInfo()),
+                origin.GetFilePath(),
+                status.ContentFallback);
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), file);
@@ -384,10 +393,13 @@ namespace Microsoft.Docs.Build
 
             public ErrorBuilder Errors { get; }
 
-            public Status(ErrorBuilder errors, ConceptualModel? conceptual = null)
+            public bool ContentFallback { get; }
+
+            public Status(ErrorBuilder errors, bool contentFallback = true, ConceptualModel? conceptual = null)
             {
                 Errors = errors;
                 Conceptual = conceptual;
+                ContentFallback = contentFallback;
             }
         }
     }

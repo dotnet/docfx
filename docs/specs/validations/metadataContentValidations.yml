@@ -636,8 +636,8 @@ inputs:
             "severity": "SUGGESTION",
             "code": "alt-text-bad-length",
             "disabled": false,
-            "defaultminalttextlength": 41,
-            "defaultmaxalttextlength": 60,
+            "minalttextlength": 41,
+            "maxalttextlength": 60,
             "pullRequestOnly": false
           }
         ]
@@ -2530,8 +2530,8 @@ inputs:
               "hubpage",
               "toc"
             ],
-            "defaultMinAltTextLength": 10,
-            "defaultMaxAltTextLength": 20
+            "minAltTextLength": 10,
+            "maxAltTextLength": 20
           }
         ]
       }

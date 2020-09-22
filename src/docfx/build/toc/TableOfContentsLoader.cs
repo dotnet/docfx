@@ -59,6 +59,30 @@ namespace Microsoft.Docs.Build
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
+        public static TocHrefType GetHrefType(string? href)
+        {
+            var linkType = UrlUtility.GetLinkType(href);
+            if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
+            {
+                return TocHrefType.AbsolutePath;
+            }
+
+            var (path, _, _) = UrlUtility.SplitUrl(href ?? "");
+            if (path.EndsWith('/') || path.EndsWith('\\'))
+            {
+                return TocHrefType.RelativeFolder;
+            }
+
+            var fileName = Path.GetFileName(path);
+
+            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
+            {
+                return TocHrefType.TocFile;
+            }
+
+            return TocHrefType.RelativeFile;
+        }
+
         public (TableOfContentsNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
             Load(FilePath file)
         {
@@ -95,7 +119,7 @@ namespace Microsoft.Docs.Build
 
                 var hrefRelativeToReferenceTOC = Path.GetRelativePath(referenceTOCFullPath, hrefFullPath);
 
-                node.Href.With(hrefRelativeToReferenceTOC);
+                node.Href = node.Href.With(hrefRelativeToReferenceTOC);
             }
             foreach (var item in node.Items)
             {
@@ -161,6 +185,8 @@ namespace Microsoft.Docs.Build
                         {
                             servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
                         }
+
+                        AddOverviewPage(node);
                     }
                 }
 
@@ -176,6 +202,28 @@ namespace Microsoft.Docs.Build
             finally
             {
                 t_recursionDetector.Value = recursionDetector.Pop();
+            }
+        }
+
+        private void AddOverviewPage(TableOfContentsNode toc)
+        {
+            if (toc == null || toc.Items == null || toc.Items.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var child in toc.Items)
+            {
+                AddOverviewPage(child);
+            }
+
+            if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
+            {
+                var overview = toc.CloneWithoutItems();
+                overview.Name = overview.Name.With("Overview");
+                toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
+                toc.Uid = toc.Uid.With(null);
+                toc.Href = toc.Href.With(null);
             }
         }
 
@@ -486,39 +534,6 @@ namespace Microsoft.Docs.Build
         private static bool IsTocIncludeHref(TocHrefType tocHrefType)
         {
             return tocHrefType == TocHrefType.TocFile || tocHrefType == TocHrefType.RelativeFolder;
-        }
-
-        private static TocHrefType GetHrefType(string? href)
-        {
-            var linkType = UrlUtility.GetLinkType(href);
-            if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
-            {
-                return TocHrefType.AbsolutePath;
-            }
-
-            var (path, _, _) = UrlUtility.SplitUrl(href ?? "");
-            if (path.EndsWith('/') || path.EndsWith('\\'))
-            {
-                return TocHrefType.RelativeFolder;
-            }
-
-            var fileName = Path.GetFileName(path);
-
-            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
-            {
-                return TocHrefType.TocFile;
-            }
-
-            return TocHrefType.RelativeFile;
-        }
-
-        private enum TocHrefType
-        {
-            None,
-            AbsolutePath,
-            RelativeFile,
-            RelativeFolder,
-            TocFile,
         }
     }
 }
