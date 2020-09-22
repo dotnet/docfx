@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'number'}}", "{'key': 'value', 'key1': 'value1'}",
             "{'message_severity':'warning','code':'unexpected-type','message':'Expected type 'Number' but got 'String'.','file':'file','line':1,'end_line':1,'column':33,'end_column':33}")]
         [InlineData("{'properties': {'key': {'type': 'string'}}, 'additionalProperties': {'type': 'string', 'enum': ['a']}}", "{'key': 'value', 'key1': 'value1'}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': 'value1'.','file':'file','line':1,'end_line':1,'column':33,'end_column':33}")]
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value1'.','file':'file','line':1,'end_line':1,'column':33,'end_column':33}")]
 
         // property name validation
         [InlineData("{'propertyNames': {'maxLength': 1}}", "{'a': 0}", "")]
