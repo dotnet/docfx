@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
             if (error.Source != null)
             {
-                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File));
+                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File)?.Path);
             }
 
             var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());
