@@ -403,6 +403,7 @@ namespace Microsoft.Docs.Build
                     var obj = JObject.Parse(err.ToString());
                     obj.Remove("log_item_type");
                     obj.Remove("date_time");
+                    obj.Remove("property_path");
                     return obj.ToString(Formatting.None).Replace('"', '\'');
                 }).OrderBy(err => err).ToArray());
 

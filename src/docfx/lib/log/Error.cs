@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; }
 
-        public string? Name { get; }
+        public string? PropertyPath { get; }
 
         public SourceInfo? Source { get; }
 
@@ -26,14 +26,14 @@ namespace Microsoft.Docs.Build
 
         public object?[] MessageArguments { get; }
 
-        public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? name = null)
+        public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null)
         {
             Level = level;
             Code = code;
             Message = message.ToString();
             MessageArguments = message.GetArguments();
             Source = source;
-            Name = name;
+            PropertyPath = propertyPath;
         }
 
         private Error(
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             string message,
             object?[] messageArguments,
             SourceInfo? source,
-            string? name,
+            string? propertyPath,
             PathString? originalPath,
             bool pullRequestOnly)
         {
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
             Message = message;
             MessageArguments = messageArguments;
             Source = source;
-            Name = name;
+            PropertyPath = propertyPath;
             OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
         }
@@ -93,24 +93,24 @@ namespace Microsoft.Docs.Build
                 message,
                 MessageArguments,
                 Source,
-                Name,
+                PropertyPath,
                 OriginalPath,
                 customRule.PullRequestOnly);
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, Name, OriginalPath, PullRequestOnly);
+            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly);
         }
 
         public Error WithOriginalPath(PathString? originalPath)
         {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, MessageArguments, Source, Name, originalPath, PullRequestOnly);
+            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, originalPath, PullRequestOnly);
         }
 
         public Error WithSource(SourceInfo? source)
         {
-            return new Error(Level, Code, Message, MessageArguments, source, Name, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly);
         }
 
         public Error WithName(string? name)
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
             {
                 message_severity = Level,
                 Code,
-                Message,
+                message = Message,
                 file,
                 line,
                 end_line,
@@ -140,6 +140,7 @@ namespace Microsoft.Docs.Build
                 log_item_type = "user",
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
                 date_time = DateTime.UtcNow,
+                property_path = PropertyPath,
             });
         }
 
@@ -165,7 +166,7 @@ namespace Microsoft.Docs.Build
                 return x.Level == y.Level &&
                        x.Code == y.Code &&
                        x.Message == y.Message &&
-                       x.Name == y.Name &&
+                       x.PropertyPath == y.PropertyPath &&
                        x.Source == y.Source &&
                        x.OriginalPath == y.OriginalPath &&
                        x.PullRequestOnly == y.PullRequestOnly;
@@ -177,7 +178,7 @@ namespace Microsoft.Docs.Build
                     obj.Level,
                     obj.Code,
                     obj.Message,
-                    obj.Name,
+                    obj.PropertyPath,
                     obj.Source,
                     obj.OriginalPath,
                     obj.PullRequestOnly);

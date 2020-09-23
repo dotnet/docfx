@@ -71,8 +71,9 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
 
-                    if (!string.IsNullOrEmpty(childHref) &&
-                        TableOfContentsLoader.GetHrefType(childHref) == TocHrefType.RelativeFolder)
+                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
+
+                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
                     {
                         childHref = null;
                     }
@@ -91,7 +92,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        child = new ServicePageItem(childName, childHref, childUid);
+                        child = new ServicePageItem(childName, null, childUid);
                     }
 
                     children.Add(child);

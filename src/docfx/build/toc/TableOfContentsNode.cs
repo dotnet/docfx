@@ -68,17 +68,9 @@ namespace Microsoft.Docs.Build
             MaintainContext = item.MaintainContext;
             ExtensionData = item.ExtensionData;
             SplitItemsBy = item.SplitItemsBy;
-            Items = item.Items;
             Document = item.Document;
             Children = item.Children;
             LandingPageType = item.LandingPageType;
-        }
-
-        public TableOfContentsNode CloneWithoutItems()
-        {
-            var cloned = (TableOfContentsNode)this.MemberwiseClone();
-            cloned.Items = new List<SourceInfo<TableOfContentsNode>>();
-            return cloned;
         }
     }
 }
