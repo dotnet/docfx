@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        child = new ServicePageItem(childName, childHref, childUid);
+                        child = new ServicePageItem(childName, null, childUid);
                     }
 
                     children.Add(child);

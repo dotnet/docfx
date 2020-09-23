@@ -1520,4 +1520,3 @@ outputs:
         "a.md": [{ "source": "TOC.yml", "type": "metadata" }]
       }
     }
----
