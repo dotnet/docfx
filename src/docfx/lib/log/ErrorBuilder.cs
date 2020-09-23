@@ -75,8 +75,8 @@ namespace Microsoft.Docs.Build
         {
             return With(error =>
             {
-                if (!string.IsNullOrEmpty(error.Name) &&
-                    schema.Rules.TryGetValue(error.Name, out var attributeCustomRules) &&
+                if (!string.IsNullOrEmpty(error.PropertyPath) &&
+                    schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) &&
                     attributeCustomRules.TryGetValue(error.Code, out var customRule))
                 {
                     return error.WithCustomRule(customRule);
