@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public ErrorBuilder WithCustormRule(JsonSchema schema)
+        public ErrorBuilder WithCustomRule(JsonSchema schema)
         {
             return With(error =>
             {

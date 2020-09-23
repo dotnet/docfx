@@ -113,9 +113,9 @@ namespace Microsoft.Docs.Build
             return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly);
         }
 
-        public Error WithName(string? name)
+        public Error WithPropertyPath(string? propertyPath)
         {
-            return new Error(Level, Code, Message, MessageArguments, Source, name, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, MessageArguments, Source, propertyPath, OriginalPath, PullRequestOnly);
         }
 
         public override string ToString()

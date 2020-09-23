@@ -306,15 +306,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string AddToJsonPath(string? jsonPath, string key)
+        public static string AddToPropertyPath(string? propertyPath, string key)
         {
-            if (string.IsNullOrEmpty(jsonPath))
+            if (string.IsNullOrEmpty(propertyPath))
             {
                 return $"{key}";
             }
             else
             {
-                return jsonPath + $".{key}";
+                return $"{propertyPath}.{key}";
             }
         }
 

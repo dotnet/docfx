@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
                 _ => string.Empty,
             };
 
-            if (!string.IsNullOrWhiteSpace(mappingPath))
+            if (!string.IsNullOrEmpty(mappingPath))
             {
                 string absoluteMappingPath = Path.Combine(AppContext.BaseDirectory, mappingPath);
 
