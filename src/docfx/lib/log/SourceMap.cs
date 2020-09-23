@@ -40,11 +40,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public PathString? GetOriginalFilePath(FilePath path)
+        public FilePath? GetOriginalFilePath(FilePath path)
         {
             if (path.Origin == FileOrigin.Main && _map.TryGetValue(path.Path, out var originalPath))
             {
-                return originalPath;
+                return FilePath.Content(originalPath);
             }
             return null;
         }
