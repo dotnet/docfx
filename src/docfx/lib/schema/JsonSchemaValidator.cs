@@ -525,7 +525,8 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider?.GetFileLevelMonikers(ErrorBuilder.Null, t_filePath.Value!).ToList();
             if (monikers == null || !monikers.Any())
             {
-                monikers = new List<string>(new[] { string.Empty });
+                // Use empty string as default moniker if content versioning not enabled for this docset
+                monikers = new[] { string.Empty }.ToList();
             }
 
             foreach (var docsetUniqueKey in schema.DocsetUnique)

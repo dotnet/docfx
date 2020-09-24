@@ -29,9 +29,14 @@ namespace Microsoft.Docs.Build
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
-            var isCanonicalVersion = string.IsNullOrEmpty(moniker) ?
-                _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
+
+            // If content versioning not enabled for this depot, canonicalVersion will be null; otherwise, rule should be effective only on canonical version;
+            // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
+            // If content versioning enabled and moniker is not null, just compare canonicalVersion and moniker.
+            var isCanonicalVersion = string.IsNullOrEmpty(canonicalVersion) ? true :
+                string.IsNullOrEmpty(moniker) ? _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
                 canonicalVersion == moniker;
+
             if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
             {
                 return false;
