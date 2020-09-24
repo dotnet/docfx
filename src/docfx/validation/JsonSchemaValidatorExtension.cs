@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider?.GetFileLevelMonikers(_errorLog, filePath).ToList();
             if (monikers == null || !monikers.Any())
             {
-                return new List<string>(new[] { string.Empty });
+                return new[] { string.Empty }.ToList();
             }
 
             if (customRule != null && customRule.CanonicalVersionOnly)
@@ -53,16 +53,16 @@ namespace Microsoft.Docs.Build
                 var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
                 if (canonicalVersion != null && monikers.Contains(canonicalVersion))
                 {
-                    return new List<string>(new[] { canonicalVersion });
+                    return new[] { canonicalVersion }.ToList();
                 }
                 else
                 {
-                    return new List<string>();
+                    return Array.Empty<string>().ToList();
                 }
             }
             else
             {
-                return monikers.ToList();
+                return monikers;
             }
         }
     }
