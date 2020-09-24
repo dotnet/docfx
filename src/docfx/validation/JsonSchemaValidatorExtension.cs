@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
         {
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
 
-            // If content versioning not enabled for this depot, canonicalVersion will be null; otherwise, rule should be effective only on canonical version;
+            // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
             // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
             // If content versioning enabled and moniker is not null, just compare canonicalVersion and moniker.
             var isCanonicalVersion = string.IsNullOrEmpty(canonicalVersion) ? true :
