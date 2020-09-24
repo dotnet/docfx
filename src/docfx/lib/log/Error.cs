@@ -70,10 +70,27 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Off;
             }
 
+            string message = Message;
+
+            if (!string.IsNullOrEmpty(customRule.Message))
+            {
+                try
+                {
+                    message = string.Format(customRule.Message, MessageArguments);
+                }
+                catch (FormatException)
+                {
+                    message += "ERROR: custom message format is invalid, e.g., too many parameters {n}.";
+                }
+            }
+
+            message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
+                message : $"{message}{(message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
+
             return new Error(
                 level,
                 string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
-                string.IsNullOrEmpty(customRule.AdditionalMessage) ? Message : $"{Message}{(Message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}",
+                message,
                 MessageArguments,
                 Source,
                 PropertyPath,
@@ -94,6 +111,11 @@ namespace Microsoft.Docs.Build
         public Error WithSource(SourceInfo? source)
         {
             return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly);
+        }
+
+        public Error WithPropertyPath(string? propertyPath)
+        {
+            return new Error(Level, Code, Message, MessageArguments, Source, propertyPath, OriginalPath, PullRequestOnly);
         }
 
         public override string ToString()
