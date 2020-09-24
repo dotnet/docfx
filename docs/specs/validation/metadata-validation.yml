@@ -210,6 +210,46 @@ outputs:
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"a.md","line":2,"column":14}
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"docfx.yml","line":3,"column":16}
 ---
+# Json schema docset unique: monikers set on file-level
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    monikerDefinition: monikerDefinition.json
+    monikerRange:
+      'docs/v1/**': '<= netcore-2.1'
+      'docs/v2/**': '> netcore-2.1'
+  schema.json: |
+    {"docsetUnique": ["description"]}
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-3.1", "product_name": ".NET Core" }
+      ]
+    }
+  docs/v1/a.md: |
+    ---
+    description: a
+    ---
+    Moniker: netcore-2.1
+  docs/v1/b.md: |
+    ---
+    description: a
+    ---
+    Moniker: netcore-2.1
+  docs/v2/a.md: |
+    ---
+    description: a
+    ---
+    Moniker: netcore-3.1
+outputs:
+  e277e62e/docs/v1/a.json:
+  e277e62e/docs/v1/b.json:
+  8cec59bf/docs/v2/a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)' with moniker 'netcore-2.1'.","file":"docs/v1/b.md","line":2,"end_line":2,"column":14,"end_column":15}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)' with moniker 'netcore-2.1'.","file":"docs/v1/a.md","line":2,"end_line":2,"column":14,"end_column":15}
+---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:
   docfx.yml: |
