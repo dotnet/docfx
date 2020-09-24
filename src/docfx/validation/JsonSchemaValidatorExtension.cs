@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -24,10 +26,17 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
-        public bool IsEnable(FilePath filePath, CustomRule customRule)
+        public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
-            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion);
+
+            // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
+            // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
+            // If content versioning enabled and moniker is not null, just compare canonicalVersion and moniker.
+            var isCanonicalVersion = string.IsNullOrEmpty(canonicalVersion) ? true :
+                string.IsNullOrEmpty(moniker) ? _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
+                canonicalVersion == moniker;
+
             if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
             {
                 return false;
