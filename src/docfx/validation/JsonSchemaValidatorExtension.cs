@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -36,6 +38,32 @@ namespace Microsoft.Docs.Build
             var pageType = _documentProvider.GetPageType(filePath);
 
             return customRule.ContentTypes is null || customRule.ContentTypes.Contains(pageType);
+        }
+
+        public List<string> GetFileEffectiveMonikers(FilePath filePath, CustomRule? customRule)
+        {
+            var monikers = _monikerProvider?.GetFileLevelMonikers(_errorLog, filePath).ToList();
+            if (monikers == null || !monikers.Any())
+            {
+                return new List<string>(new[] { string.Empty });
+            }
+
+            if (customRule != null && customRule.CanonicalVersionOnly)
+            {
+                var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
+                if (canonicalVersion != null && monikers.Contains(canonicalVersion))
+                {
+                    return new List<string>(new[] { canonicalVersion });
+                }
+                else
+                {
+                    return new List<string>();
+                }
+            }
+            else
+            {
+                return monikers.ToList();
+            }
         }
     }
 }

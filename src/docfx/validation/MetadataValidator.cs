@@ -19,8 +19,6 @@ namespace Microsoft.Docs.Build
             Config config,
             MicrosoftGraphAccessor microsoftGraphAccessor,
             FileResolver fileResolver,
-            MonikerProvider monikerProvider,
-            ErrorBuilder errorBuilder,
             JsonSchemaValidatorExtension validatorExtension)
         {
             MetadataSchemas = Array.ConvertAll(
@@ -29,7 +27,7 @@ namespace Microsoft.Docs.Build
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, monikerProvider, errorBuilder, microsoftGraphAccessor, false, validatorExtension));
+                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, false, validatorExtension));
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
