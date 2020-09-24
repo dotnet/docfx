@@ -534,8 +534,8 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        var monikers = _ext?.GetFileEffectiveMonikers(t_filePath.Value!, customRule);
-                        monikers?.ForEach(moniker => _metadataBuilder.Add((schema, docsetUniqueKey, moniker, value, JsonUtility.GetSourceInfo(value))));
+                        var monikers = _ext?.GetFileEffectiveMonikers(t_filePath.Value!, customRule) ?? new List<string>(new[] { string.Empty });
+                        monikers.ForEach(moniker => _metadataBuilder.Add((schema, docsetUniqueKey, moniker, value, JsonUtility.GetSourceInfo(value))));
                     }
                 }
             }
