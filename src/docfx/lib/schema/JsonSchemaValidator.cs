@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
+        private readonly MonikerProvider? _monikerProvider;
         private readonly JsonSchemaValidatorExtension? _ext;
         private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder;
         private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
@@ -27,6 +28,7 @@ namespace Microsoft.Docs.Build
         public JsonSchemaValidator(
             JsonSchema schema,
             MicrosoftGraphAccessor? microsoftGraphAccessor = null,
+            MonikerProvider? monikerProvider = null,
             bool forceError = false,
             JsonSchemaValidatorExtension? ext = null)
         {
@@ -34,6 +36,7 @@ namespace Microsoft.Docs.Build
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
+            _monikerProvider = monikerProvider;
             _ext = ext;
             _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>();
         }
@@ -519,15 +522,31 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDocsetUnique(JsonSchema schema, JObject map)
         {
+            var monikers = _monikerProvider?.GetFileLevelMonikers(ErrorBuilder.Null, t_filePath.Value!).ToList();
+            if (monikers == null || !monikers.Any())
+            {
+                monikers = new List<string>(new[] { string.Empty });
+            }
+
             foreach (var docsetUniqueKey in schema.DocsetUnique)
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
                 {
-                    CustomRule? customRule = null;
-                    var hasRule = _schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
-                        customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out customRule);
-                    var monikers = _ext?.GetFileEffectiveMonikers(t_filePath.Value!, customRule) ?? new List<string>(new[] { string.Empty });
-                    monikers.ForEach(moniker => _metadataBuilder.Add((schema, docsetUniqueKey, moniker, value, JsonUtility.GetSourceInfo(value))));
+                    foreach (var moniker in monikers)
+                    {
+                        if (_schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
+                            customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out var customRule) &&
+                            _ext != null &&
+                            t_filePath.Value != null &&
+                            !_ext.IsEnable(t_filePath.Value, customRule, moniker))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            _metadataBuilder.Add((schema, docsetUniqueKey, moniker, value, JsonUtility.GetSourceInfo(value)));
+                        }
+                    }
                 }
             }
         }

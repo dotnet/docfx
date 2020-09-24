@@ -26,10 +26,12 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
         }
 
-        public bool IsEnable(FilePath filePath, CustomRule customRule)
+        public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
-            var isCanonicalVersion = _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion);
+            var isCanonicalVersion = string.IsNullOrEmpty(moniker) ?
+                _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
+                canonicalVersion == moniker;
             if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
             {
                 return false;
@@ -38,32 +40,6 @@ namespace Microsoft.Docs.Build
             var pageType = _documentProvider.GetPageType(filePath);
 
             return customRule.ContentTypes is null || customRule.ContentTypes.Contains(pageType);
-        }
-
-        public List<string> GetFileEffectiveMonikers(FilePath filePath, CustomRule? customRule)
-        {
-            var monikers = _monikerProvider?.GetFileLevelMonikers(_errorLog, filePath).ToList();
-            if (monikers == null || !monikers.Any())
-            {
-                return new[] { string.Empty }.ToList();
-            }
-
-            if (customRule != null && customRule.CanonicalVersionOnly)
-            {
-                var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
-                if (canonicalVersion != null && monikers.Contains(canonicalVersion))
-                {
-                    return new[] { canonicalVersion }.ToList();
-                }
-                else
-                {
-                    return Array.Empty<string>().ToList();
-                }
-            }
-            else
-            {
-                return monikers;
-            }
         }
     }
 }
