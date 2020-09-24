@@ -152,6 +152,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
             @"{'message_severity':'warning','code':'string-length-invalid','message':'String 'str' is too long: 3 characters. Length should be <= 2.','file':'file','line':1,'end_line':1,'column':13,'end_column':13}
               {'message_severity':'warning','code':'string-length-invalid','message':'String 'str' is too short: 3 characters. Length should be >= 4.','file':'file','line':1,'end_line':1,'column':13,'end_column':13}")]
+        [InlineData(
+            "{'properties': {'key':{'properties': {'str': {'maxLength': 2}}}}}",
+            "{'key':{'str': 'abc'}}",
+            "{'message_severity':'warning','code':'string-length-invalid','message':'String 'key.str' is too long: 3 characters. Length should be <= 2.','file':'file','line':1,'end_line':1,'column':20,'end_column':20}")]
 
         // number validation
         [InlineData("{'minimum': 1, 'maximum': 1}", "1", "")]
@@ -172,7 +176,9 @@ namespace Microsoft.Docs.Build
         // string format validation
         [InlineData("{'type': ['string'], 'format': 'date-time'}", "'1963-06-19T08:30:06Z'", "")]
         [InlineData("{'type': ['string', 'number'], 'format': 'date-time'}", "1", "")]
-        [InlineData("{'type': ['string'], 'format': 'date-time'}", "'invalid'",
+        [InlineData(
+            "{'type': ['string'], 'format': 'date-time'}",
+            "'invalid'",
             "{'message_severity':'warning','code':'format-invalid','message':'String 'invalid' is not a valid 'DateTime'.','file':'file','line':1,'end_line':1,'column':9,'end_column':9}")]
 
         [InlineData("{'type': ['string'], 'format': 'date'}", "'1963-06-19'", "")]
@@ -325,6 +331,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': '04/26/2019'}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
             "{'message_severity':'warning','code':'date-format-invalid','message':'Invalid date format for 'key1': 'Dec 5 2018'.','file':'file','line':1,'end_line':1,'column':21,'end_column':21}")]
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}}}",
+            "{'key': {'key1': 'Dec 5 2018'}}",
+            "{'message_severity':'warning','code':'date-format-invalid','message':'Invalid date format for 'key.key1': 'Dec 5 2018'.','file':'file','line':1,'end_line':1,'column':29,'end_column':29}")]
 
         // date range validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-10000000:00:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}", "")]
@@ -332,6 +342,10 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'date-out-of-range','message':'Value out of range for 'key1': '04/26/2019'.','file':'file','line':1,'end_line':1,'column':21,'end_column':21}")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/4019'}",
             "{'message_severity':'warning','code':'date-out-of-range','message':'Value out of range for 'key1': '04/26/4019'.','file':'file','line':1,'end_line':1,'column':21,'end_column':21}")]
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}}}",
+            "{'key': {'key1': '04/26/4019'}}",
+            "{'message_severity':'warning','code':'date-out-of-range','message':'Value out of range for 'key.key1': '04/26/4019'.','file':'file','line':1,'end_line':1,'column':29,'end_column':29}")]
 
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
@@ -341,6 +355,10 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'attribute-deprecated','message':'Deprecated attribute: 'key1'.','file':'file','line':1,'end_line':1,'column':10,'end_column':10}")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
             "{'message_severity':'warning','code':'attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','file':'file','line':1,'end_line':1,'column':10,'end_column':10}")]
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'replacedBy': 'key2'}}}}}",
+            "{'key': {'key1': 1}}",
+            "{'message_severity':'warning','code':'attribute-deprecated','message':'Deprecated attribute: 'key.key1', use 'key2' instead.','file':'file','line':1,'end_line':1,'column':18,'end_column':18}")]
 
         // enum dependencies validation
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer'}",
@@ -388,6 +406,10 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}", "{'b': 1}",
             "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':1,'end_column':1,'pull_request_only':true}")]
+        [InlineData(
+            "{'properties': {'key':{'required': ['author'],'properties': {'author': {'type': ['string']}}}},'rules': {'key.author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}",
+            "{'key': {'b': 1}}",
+            "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'key.author'. Add a valid GitHub ID.','file':'file','line':1,'end_line':1,'column':9,'end_column':9,'pull_request_only':true}")]
 
         // strict required validation
         [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
@@ -397,6 +419,11 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key1'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
         [InlineData("{'strictRequired': ['key1']}", "{'key1': ''}",
             "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key1'.','file':'file','line':1,'end_line':1,'column':1,'end_column':1}")]
+        [InlineData(
+            "{'properties': {'key':{'strictRequired': ['key1'],'properties': {'key1': {'type': ['string']}}}}}",
+            "{'key':{'key1': ''}}",
+            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key.key1'.','file':'file','line':1,'end_line':1,'column':8,'end_column':8}")]
+
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
@@ -443,6 +470,33 @@ namespace Microsoft.Docs.Build
 
             var errors = jsonSchemaValidator.PostValidate();
             Assert.Equal(errorCount, errors.Count);
+        }
+
+        [Theory]
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}}}",
+            "{'key': {'key1': 'Dec 5 2018'}}",
+            "{'message_severity':'warning','code':'date-format-invalid','message':'Invalid date format for 'key.key1': 'Dec 5 2018'.','file':'file','line':1,'end_line':1,'column':29,'end_column':29}")]
+
+        public void TestJsonSchemaValidation2(string schema, string json, string expectedErrors)
+        {
+            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
+            var filePath = new FilePath("file");
+            var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, filePath);
+            var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
+            var actual = string.Join(
+                '\n',
+                errors.Select(err =>
+                {
+                    var obj = JObject.Parse(err.ToString());
+                    obj.Remove("log_item_type");
+                    obj.Remove("date_time");
+                    obj.Remove("property_path");
+                    return obj.ToString(Formatting.None).Replace('"', '\'');
+                }).OrderBy(err => err).ToArray());
+
+            Assert.Equal(expected, actual);
         }
     }
 }
