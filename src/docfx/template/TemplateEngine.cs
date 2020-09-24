@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
 
         private static JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
         {
-            string mappingPath = mime switch
+            var mappingPath = mime switch
             {
                 "LearningPath" => "data/schemas/learningpath-error-mapping.json",
                 "Module" => "data/schemas/module-error-mapping.json",
@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(mappingPath))
             {
-                string absoluteMappingPath = Path.Combine(AppContext.BaseDirectory, mappingPath);
+                var absoluteMappingPath = Path.Combine(AppContext.BaseDirectory, mappingPath);
 
                 if (!File.Exists(absoluteMappingPath))
                 {

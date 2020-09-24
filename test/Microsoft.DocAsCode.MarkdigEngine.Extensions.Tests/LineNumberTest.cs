@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         public void LineNumberTest_General()
         {
             // prepare
-            string content = @"
+            var content = @"
 # a simple test for line number
 - list member 1
 - list member 2

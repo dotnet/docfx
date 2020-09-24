@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
                 var langs = new List<string?>();
                 if (_joinTOCConfig.ContainerPageMetadata != null)
                 {
-                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out JToken? lang);
+                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out var lang);
                     langs = lang?.ToObject<List<string?>>();
                 }
 

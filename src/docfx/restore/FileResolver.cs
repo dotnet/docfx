@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                 var content = TestQuirks.HttpProxy?.Invoke(file);
                 if (content != null)
                 {
-                    byte[] byteArray = Encoding.ASCII.GetBytes(content);
+                    var byteArray = Encoding.ASCII.GetBytes(content);
                     return new MemoryStream(byteArray);
                 }
             }

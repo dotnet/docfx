@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                 level = ErrorLevel.Off;
             }
 
-            string message = Message;
+            var message = Message;
 
             if (!string.IsNullOrEmpty(customRule.Message))
             {
