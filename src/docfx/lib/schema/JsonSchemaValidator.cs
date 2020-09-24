@@ -18,14 +18,18 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
+        private readonly MonikerProvider? _monikerProvider;
+        private readonly ErrorBuilder? _errorBuilder;
         private readonly JsonSchemaValidatorExtension? _ext;
-        private readonly ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)> _metadataBuilder;
+        private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder;
         private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
 
         public JsonSchema Schema => _schema;
 
         public JsonSchemaValidator(
             JsonSchema schema,
+            MonikerProvider? monikerProvider = null,
+            ErrorBuilder? errorBuilder = null,
             MicrosoftGraphAccessor? microsoftGraphAccessor = null,
             bool forceError = false,
             JsonSchemaValidatorExtension? ext = null)
@@ -34,8 +38,10 @@ namespace Microsoft.Docs.Build
             _forceError = forceError;
             _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
+            _monikerProvider = monikerProvider;
+            _errorBuilder = errorBuilder;
             _ext = ext;
-            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, JToken value, SourceInfo? source)>();
+            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>();
         }
 
         public List<Error> Validate(JToken token, FilePath filePath)
@@ -519,6 +525,12 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDocsetUnique(JsonSchema schema, JObject map)
         {
+            var monikers = _monikerProvider?.GetFileLevelMonikers(_errorBuilder!, t_filePath.Value!).ToList();
+            if (monikers == null || !monikers.Any())
+            {
+                monikers = new List<string>(new[] { string.Empty });
+            }
+
             foreach (var docsetUniqueKey in schema.DocsetUnique)
             {
                 if (map.TryGetValue(docsetUniqueKey, out var value))
@@ -533,7 +545,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        _metadataBuilder.Add((schema, docsetUniqueKey, value, JsonUtility.GetSourceInfo(value)));
+                        monikers.ForEach(moniker => _metadataBuilder.Add((schema, docsetUniqueKey, moniker, value, JsonUtility.GetSourceInfo(value))));
                     }
                 }
             }
@@ -545,20 +557,20 @@ namespace Microsoft.Docs.Build
             var validatedMetadataGroups = validatedMetadata
                 .Where(k => IsStrictHaveValue(k.value))
                 .GroupBy(
-                    k => (k.value, (k.key, k.schema)),
-                    ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, JsonSchema)>.Default));
+                    k => (k.value, (k.key, k.moniker, k.schema)),
+                    ValueTupleEqualityComparer.Create(JsonUtility.DeepEqualsComparer, EqualityComparer<(string, string, JsonSchema)>.Default));
 
             foreach (var group in validatedMetadataGroups)
             {
-                IEnumerable<(JsonSchema schema, string key, JToken value, SourceInfo? source)> items = group;
-                var (metadataValue, (metadataKey, _)) = group.Key;
+                IEnumerable<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> items = group;
+                var (metadataValue, (metadataKey, moniker, _)) = group.Key;
 
                 if (items.Count() > 1)
                 {
                     var metadataSources = (from g in items where g.source != null select g.source).ToArray();
                     foreach (var file in items)
                     {
-                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
+                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, moniker, metadataValue, metadataSources));
                     }
                 }
             }
