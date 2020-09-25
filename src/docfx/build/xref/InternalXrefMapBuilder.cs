@@ -181,8 +181,6 @@ namespace Microsoft.Docs.Build
                     {
                         if (!monikerFileDic[moniker].Add(path))
                         {
-                            var a = spec.Uid;
-
                             // duplicate uids in the same file.
                             error.Add(Errors.Xref.DuplicateUid(spec.Uid));
                             continue;
