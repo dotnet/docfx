@@ -593,4 +593,4 @@ inputs:
 outputs:
   .errors.log: | 
    { "message_severity":"error","code":"array-match-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml", "line":5,"column":3}
-   { "message_severity":"error","code":"array-match-invalid","message":"The array must have most 1 matched item(s).","file":"unit.yml", "line":15,"column":3}
+   { "message_severity":"error","code":"array-match-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml", "line":15,"column":3}

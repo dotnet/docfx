@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateMaxItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
+        private void ValidateMaxItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
             foreach (var (condition, value) in schema.MaxItemsWhen)
             {
@@ -287,7 +287,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void ValidateMinItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
+        private void ValidateMinItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
             foreach (var (condition, value) in schema.MinItemsWhen)
             {
@@ -310,19 +310,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool SchemaMatches(JsonSchema schema, JToken map)
+        private bool SchemaMatches(JsonSchema schema, JToken map)
         {
             if (map is JObject obj)
             {
-                foreach (var prop in schema.Properties)
+                var errors = Validate(schema, obj);
+                if (errors.Count == 0)
                 {
-                    if (obj.TryGetValue(prop.Key, StringComparison.OrdinalIgnoreCase, out var value)
-                        && prop.Value != null
-                        && prop.Value.Const != null
-                        && prop.Value.Const.Equals(value))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
