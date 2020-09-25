@@ -80,12 +80,16 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var opsAccessor = new OpsAccessor(errors, credentialProvider);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
-            var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
+
+            PackageResolver? packageResolver = default;
+            var fallbackDocsetPath = new Lazy<string?>(
+                () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
+            var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+
+            packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
             disposables.Add(packageResolver);
 
-            var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver);
-            var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
-            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath, outputPath, repository, preloadConfig);
+            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
 
             // Create full config

@@ -59,45 +59,78 @@ namespace Microsoft.Docs.Build
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
+        public static TocHrefType GetHrefType(string? href)
+        {
+            var linkType = UrlUtility.GetLinkType(href);
+            if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
+            {
+                return TocHrefType.AbsolutePath;
+            }
+
+            var (path, _, _) = UrlUtility.SplitUrl(href ?? "");
+            if (path.EndsWith('/') || path.EndsWith('\\'))
+            {
+                return TocHrefType.RelativeFolder;
+            }
+
+            var fileName = Path.GetFileName(path);
+
+            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
+            {
+                return TocHrefType.TocFile;
+            }
+
+            return TocHrefType.RelativeFile;
+        }
+
         public (TableOfContentsNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
             Load(FilePath file)
         {
             return _cache.GetOrAdd(file, _ =>
             {
-                var servicePages = new List<FilePath>();
                 var referencedFiles = new List<FilePath>();
                 var referencedTocs = new List<FilePath>();
-                var node = LoadTocFile(file, file, referencedFiles, referencedTocs);
+                var (node, servicePages) = LoadTocFile(file, file, referencedFiles, referencedTocs);
 
-                if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
-                {
-                    if (joinTOCConfig.TopLevelToc != null)
-                    {
-                        node = JoinToc(node, joinTOCConfig.TopLevelToc);
-
-                        // Generate Service Page.
-                        ServicePageGenerator servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
-
-                        foreach (var item in node.Items)
-                        {
-                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
-                        }
-
-                        node.Items = LoadTocNodes(node.Items, file, file, referencedFiles, referencedTocs);
-                    }
-                }
                 return (node, referencedFiles, referencedTocs, servicePages);
             });
         }
 
-        private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath)
+        private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath, JoinTOCConfig joinTOCConfig)
         {
             var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
+            TraverseAndConvertHref(topLevelToc, joinTOCConfig);
             TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
             return topLevelToc;
         }
 
-        private void TraverseAndMerge(TableOfContentsNode node, List<SourceInfo<TableOfContentsNode>> itemsToMatch, HashSet<TableOfContentsNode> matched)
+        private void TraverseAndConvertHref(TableOfContentsNode node, JoinTOCConfig joinTOCConfig)
+        {
+            if (!string.IsNullOrEmpty(node.Href.Value) && !(node.Href.Value.StartsWith("~/") || node.Href.Value.StartsWith("~\\")))
+            {
+                // convert href in TopLevelTOC to one that relative to ReferenceTOC
+                var referenceTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.ReferenceToc) ?? ".";
+                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
+
+                var topLevelTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.TopLevelToc) ?? ".";
+                var topLevelTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
+
+                var hrefFullPath = Path.GetFullPath(Path.Combine(topLevelTOCFullPath, node.Href.Value));
+
+                var hrefRelativeToReferenceTOC = Path.GetRelativePath(referenceTOCFullPath, hrefFullPath);
+
+                node.Href = node.Href.With(hrefRelativeToReferenceTOC);
+            }
+            foreach (var item in node.Items)
+            {
+                TraverseAndConvertHref(item, joinTOCConfig);
+            }
+        }
+
+        private void TraverseAndMerge(
+            TableOfContentsNode node,
+            List<SourceInfo<TableOfContentsNode>> itemsToMatch,
+            HashSet<TableOfContentsNode> matched)
         {
             foreach (var pattern in node.Children)
             {
@@ -117,9 +150,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private TableOfContentsNode LoadTocFile(
+        private (TableOfContentsNode node, List<FilePath> servicePages) LoadTocFile(
             FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs)
         {
+            var servicePages = new List<FilePath>();
+
             // add to parent path
             t_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
 
@@ -135,17 +170,60 @@ namespace Microsoft.Docs.Build
                 t_recursionDetector.Value = recursionDetector;
 
                 var node = _parser.Parse(file, _errors);
+
+                // Generate service pages.
+                if (_joinTOCConfigs.TryGetValue(file.Path, out var joinTOCConfig) && joinTOCConfig != null)
+                {
+                    if (joinTOCConfig.TopLevelToc != null)
+                    {
+                        node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
+
+                        // Generate Service Page.
+                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
+
+                        foreach (var item in node.Items)
+                        {
+                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                        }
+
+                        AddOverviewPage(node);
+                    }
+                }
+
+                // Resolve
                 node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
 
                 if (file == rootPath)
                 {
                     _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
                 }
-                return node;
+                return (node, servicePages);
             }
             finally
             {
                 t_recursionDetector.Value = recursionDetector.Pop();
+            }
+        }
+
+        private void AddOverviewPage(TableOfContentsNode toc)
+        {
+            if (toc.Items.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var child in toc.Items)
+            {
+                AddOverviewPage(child);
+            }
+
+            if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
+            {
+                var overview = new TableOfContentsNode(toc);
+                overview.Name = overview.Name.With("Overview");
+                toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
+                toc.Uid = toc.Uid.With(null);
+                toc.Href = toc.Href.With(null);
             }
         }
 
@@ -327,7 +405,7 @@ namespace Microsoft.Docs.Build
             var referenceTocFilePath = ResolveTocHref(filePath, referencedTocs, tocHrefType, new SourceInfo<string>(hrefPath, tocHref));
             if (referenceTocFilePath != null)
             {
-                var nestedToc = LoadTocFile(
+                var (nestedToc, _) = LoadTocFile(
                     referenceTocFilePath,
                     rootPath,
                     tocHrefType == TocHrefType.RelativeFolder ? new List<FilePath>() : referencedFiles,
@@ -456,39 +534,6 @@ namespace Microsoft.Docs.Build
         private static bool IsTocIncludeHref(TocHrefType tocHrefType)
         {
             return tocHrefType == TocHrefType.TocFile || tocHrefType == TocHrefType.RelativeFolder;
-        }
-
-        private static TocHrefType GetHrefType(string? href)
-        {
-            var linkType = UrlUtility.GetLinkType(href);
-            if (linkType == LinkType.AbsolutePath || linkType == LinkType.External)
-            {
-                return TocHrefType.AbsolutePath;
-            }
-
-            var (path, _, _) = UrlUtility.SplitUrl(href ?? "");
-            if (path.EndsWith('/') || path.EndsWith('\\'))
-            {
-                return TocHrefType.RelativeFolder;
-            }
-
-            var fileName = Path.GetFileName(path);
-
-            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
-            {
-                return TocHrefType.TocFile;
-            }
-
-            return TocHrefType.RelativeFile;
-        }
-
-        private enum TocHrefType
-        {
-            None,
-            AbsolutePath,
-            RelativeFile,
-            RelativeFolder,
-            TocFile,
         }
     }
 }

@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Polly;
 using Polly.Extensions.Http;
@@ -25,14 +26,14 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly string _docsetPath;
-        private readonly string? _fallbackDocsetPath;
+        private readonly Lazy<string?>? _fallbackDocsetPath;
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
 
         public FileResolver(
             string docsetPath,
-            string? fallbackDocsetPath = null,
+            Lazy<string?>? fallbackDocsetPath = null,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
@@ -44,6 +45,20 @@ namespace Microsoft.Docs.Build
             _credentialProvider = credentialProvider;
         }
 
+        public bool TryReadString(SourceInfo<string> file, out string? content)
+        {
+            try
+            {
+                content = ReadString(file);
+                return true;
+            }
+            catch (DocfxException)
+            {
+                content = null;
+                return false;
+            }
+        }
+
         public string ReadString(SourceInfo<string> file)
         {
             using var reader = new StreamReader(ReadStream(file));
@@ -52,7 +67,30 @@ namespace Microsoft.Docs.Build
 
         public Stream ReadStream(SourceInfo<string> file)
         {
+            if (UrlUtility.IsHttp(file))
+            {
+                var content = TestQuirks.HttpProxy?.Invoke(file);
+                if (content != null)
+                {
+                    var byteArray = Encoding.ASCII.GetBytes(content);
+                    return new MemoryStream(byteArray);
+                }
+            }
             return File.OpenRead(ResolveFilePath(file));
+        }
+
+        public bool TryResolveFilePath(SourceInfo<string> file, out string? result)
+        {
+            try
+            {
+                result = ResolveFilePath(file);
+                return true;
+            }
+            catch (DocfxException ex) when (ex.Error.Code == "file-not-found" || ex.Error.Code == "download-failed")
+            {
+                result = default;
+                return false;
+            }
         }
 
         public string ResolveFilePath(SourceInfo<string> file)
@@ -69,7 +107,7 @@ namespace Microsoft.Docs.Build
                 {
                     return localFilePath;
                 }
-                else if (_fallbackDocsetPath != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath, file)))
+                else if (_fallbackDocsetPath?.Value != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath.Value, file)))
                 {
                     return localFilePath;
                 }
@@ -77,6 +115,11 @@ namespace Microsoft.Docs.Build
                 throw Errors.Link.FileNotFound(file).ToException();
             }
 
+            var content = TestQuirks.HttpProxy?.Invoke(file);
+            if (content != null)
+            {
+                return file;
+            }
             return DownloadFromUrl(file);
         }
 

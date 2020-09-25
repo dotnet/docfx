@@ -102,9 +102,9 @@ namespace Microsoft.Docs.Build
 
         private MonikerList GetFileLevelMonikersCore(ErrorBuilder errors, FilePath file)
         {
-            if (file.Monikers.HasMonikers)
+            if (file.RedirectionMonikers.HasMonikers)
             {
-                return file.Monikers;
+                return file.RedirectionMonikers;
             }
 
             var metadata = _metadataProvider.GetMetadata(errors, file);

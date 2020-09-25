@@ -499,3 +499,204 @@ outputs:
                {"source_path":"unit.yml"},
                {"source_path":"unita.yml", "has_error":true}]
     }
+---
+# error mapping for Learn Valdiation based on SDP, LearningPath
+inputs:
+  docfx.yml: 
+  patha.yml: |
+    #YamlMime:LearningPath
+    a: a
+  pathb.yml: |
+    #YamlMime:LearningPath
+    uid: path_b
+    modules: ['module_not_found']
+    trophy: {
+      uid: trophy_b
+    }
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "required": ["uid", "modules"],
+      "either": [["trophy", "achievement"]],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "contentType": "uid"
+        },
+        "modules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "contentType": "xref"
+          }
+        },
+        "trophy": {
+          "type": "object",
+          "required": ["uid"],
+          "properties": {
+            "uid": {
+              "type": "string",
+              "contentType": "uid"
+            }
+          }
+        },
+        "achievement": {
+          "type": "string",
+          "contentType": "xref"
+        }
+      }
+    }
+outputs:
+  pathb.json:
+  .errors.log: |
+    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: UID. A valid UID is required for each learning path.","file":"patha.yml","line":2}
+    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"patha.yml","line":2}
+    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"patha.yml","line":2}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'module_not_found'.","file":"pathb.yml","line":3}
+# now we do not mapping xref-not-found to path-child-not-found, because some module are shared beyond repos
+---
+# error mapping for Learn Valdiation based on SDP, Module
+inputs:
+  docfx.yml: 
+  modulea.yml: |
+    #YamlMime:Module
+    a: a
+  moduleb.yml: |
+    #YamlMime:Module
+    uid: module_b
+    units: ['unit_not_found']
+    badge: {
+      uid: badge_b
+    }
+  _themes/ContentTemplate/schemas/Module.schema.json: |
+    {
+      "required": ["uid", "units"],
+      "either": [["badge", "achievement"]],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "contentType": "uid"
+        },
+        "units": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "contentType": "xref"
+          }
+        },
+        "badge": {
+          "type": "object",
+          "required": ["uid"],
+          "properties": {
+            "uid": {
+              "type": "string",
+              "contentType": "uid"
+            }
+          }
+        },
+        "achievement": {
+          "type": "string",
+          "contentType": "xref"
+        }
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: UID. A valid UID is required for each module.","file":"modulea.yml","line":2}
+    {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"modulea.yml","line":2}
+    {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"modulea.yml","line":2}
+    {"message_severity":"error","code":"module-child-not-found","message":"Child UID(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
+---
+# error mapping for Learn Valdiation based on SDP, ModuleUnit
+inputs:
+  docfx.yml: 
+  unita.yml: |
+    #YamlMime:ModuleUnit
+    a: a
+  unitb.yml: |
+    #YamlMime:ModuleUnit
+    uid: unit_a
+    durationInMinutes: 10
+    quiz: quiz_a
+    tasks: quiz_b
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "required": ["uid", "durationInMinutes"],
+      "precludes": [["quiz", "tasks"]],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "contentType": "uid"
+        },
+        "durationInMinutes": {
+          "type": "number"
+        },
+        "quiz": {
+          "type": "string",
+        },
+        "tasks": {
+          "type": "string",
+        }
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"unit-uid-missing","message":"Missing attribute: UID. A valid UID is required for each unit.","file":"unita.yml","line":2}
+    {"message_severity":"error","code":"unit-duration-missing","message":"Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.","file":"unita.yml","line":2}
+    {"message_severity":"error","code":"unit-task-and-quiz","message":"Unit can't have both quiz and task.","file":"unitb.yml","line":2}
+# validate learn included markdown
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - includes/**
+  rules.json: |
+    {
+      "images": {
+        "name": "Images",
+        "rules": [
+          {
+            "type": "ImageAltTextBadLength",
+            "message": "Alt text {0} is out of range at {1} characters. Alt text must be between {2} and {3} characters.",
+            "exclusions": [
+              "hubpage",
+              "landingpage"
+            ],
+            "severity": "SUGGESTION",
+            "code": "alt-text-bad-length",
+            "disabled": false,
+            "minalttextlength": 41,
+            "maxalttextlength": 60,
+            "pullRequestOnly": false
+          }
+        ]
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    uid: learn.aks-workshop.b
+    title: Exercise - Deploy the ratings API
+    content: |
+      [!include[](includes/b.md)]
+  includes/b.md: |
+    # include File
+    :::image type="content" source="../media/05-aks-clusterip.png" border="false" alt-text="Diagram":::
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+        "content": {
+          "tags": ["localizable"],
+          "type": "string",
+          "contentType": "markdown"
+        },
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"alt-text-bad-length","message":"Alt text 'Diagram' is out of range at 7 characters. Alt text must be between 41 and 60 characters.","file":"includes/b.md","line":2,"column":1}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../media/05-aks-clusterip.png'.","file":"includes/b.md","line":2,"column":1}

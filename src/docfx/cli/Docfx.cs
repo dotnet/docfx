@@ -78,6 +78,7 @@ namespace Microsoft.Docs.Build
 
                 return command switch
                 {
+                    "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
                     "build" => Build.Run(workingDirectory, options),
                     _ => false,
@@ -104,11 +105,17 @@ namespace Microsoft.Docs.Build
                     // Handle parse errors by us
                     syntax.HandleErrors = false;
 
-                    // Restore command
+                    // new command
+                    syntax.DefineCommand("new", ref command, "Creates a new docset.");
+                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place generated output.");
+                    syntax.DefineOption("force", ref options.Force, "Forces content to be generated even if it would change existing files.");
+                    syntax.DefineParameter("type", ref workingDirectory, "Docset template name");
+
+                    // restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
-                    // Build command
+                    // build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
 

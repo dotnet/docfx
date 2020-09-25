@@ -306,6 +306,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static string AddToPropertyPath(string? propertyPath, string key)
+        {
+            if (string.IsNullOrEmpty(propertyPath))
+            {
+                return $"{key}";
+            }
+            else
+            {
+                return $"{propertyPath}.{key}";
+            }
+        }
+
         /// <summary>
         /// Sets the property value. Prefer this method when you need to propagate source info.
         /// </summary>
@@ -419,16 +431,6 @@ namespace Microsoft.Docs.Build
             return token.Annotation<SourceInfo>()?.KeySourceInfo;
         }
 
-        public static JToken SetKeySourceInfo(JToken token, SourceInfo? source)
-        {
-            var sourceInfo = token.Annotation<SourceInfo>();
-            if (sourceInfo != null)
-            {
-                sourceInfo.KeySourceInfo = source;
-            }
-            return token;
-        }
-
         public static JObject SortProperties(JObject obj)
         {
             var properties = new SortedList<string, JProperty>();
@@ -490,23 +492,14 @@ namespace Microsoft.Docs.Build
                 (token.Type == JTokenType.Undefined);
         }
 
-        private static JToken SetSourceInfo(JToken token, FilePath file, JProperty? property = null)
+        private static JToken SetSourceInfo(JToken token, FilePath file, SourceInfo? keySourceInfo = null)
         {
             var lineInfo = (IJsonLineInfo)token;
-            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition);
-            if (property != null)
-            {
-                var keyLineInfo = (IJsonLineInfo)property;
-                sourceInfo.KeySourceInfo = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition);
-            }
+            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition, keySourceInfo);
             SetSourceInfo(token, sourceInfo);
 
             switch (token)
             {
-                case JProperty prop:
-                    SetSourceInfo(prop.Value, file);
-                    break;
-
                 case JArray arr:
                     foreach (var item in arr)
                     {
@@ -515,9 +508,11 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JObject obj:
-                    foreach (var prop in obj.Properties())
+                    foreach (var property in obj.Properties())
                     {
-                        SetSourceInfo(prop.Value, file, prop);
+                        var keyLineInfo = (IJsonLineInfo)property;
+                        var keySource = new SourceInfo(file, keyLineInfo.LineNumber, keyLineInfo.LinePosition);
+                        SetSourceInfo(property.Value, file, keySource);
                     }
                     break;
             }

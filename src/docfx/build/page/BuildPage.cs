@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -63,9 +62,9 @@ namespace Microsoft.Docs.Build
             var systemMetadata = CreateSystemMetadata(errors, context, file, userMetadata);
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
-            // The current bookmark validation for SDP validates against HTML produced from mustache,
-            // so we need to run the full template for SDP even in --dry-run mode.
-            if (context.Config.DryRun && TemplateEngine.IsConceptual(mime))
+            // The bookmark validation for SDP can be skipped when the public template is used since the mustache is not accessable for public template
+            if (context.Config.DryRun
+                && (TemplateEngine.IsConceptual(mime) || context.Config.Template.Type == PackageType.PublicTemplate))
             {
                 return (new JObject(), new JObject());
             }
