@@ -583,7 +583,7 @@ namespace Microsoft.Docs.Build
                     var metadataSources = (from g in items where g.source != null select g.source).ToArray();
                     foreach (var file in items)
                     {
-                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, moniker, metadataValue, metadataSources));
+                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
                     }
                 }
             }

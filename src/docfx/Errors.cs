@@ -608,11 +608,11 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public const string DuplicateAttributeCode = "duplicate-attribute";
 
-            public static Error DuplicateAttribute(SourceInfo? source, string name, string moniker, object value, IEnumerable<SourceInfo> duplicatedSources)
+            public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
                 => new Error(
                     ErrorLevel.Suggestion,
                     DuplicateAttributeCode,
-                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}{(string.IsNullOrEmpty(moniker) ? "" : $" with moniker '{moniker}'")}.",
+                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
         }

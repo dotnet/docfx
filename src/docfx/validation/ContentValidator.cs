@@ -49,7 +49,12 @@ namespace Microsoft.Docs.Build
             // validate image link and altText here
             if (_links.TryAdd((file, link)) && TryGetValidationDocumentType(file, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType, File = file.Path };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                };
                 Write(_validator.ValidateLink(
                     new Link
                     {
@@ -59,6 +64,7 @@ namespace Microsoft.Docs.Build
                         IsInlineImage = origin.IsInlineImage(imageIndex),
                         SourceInfo = link.Source,
                         ParentSourceInfoList = origin.GetInclusionStack(),
+                        Monikers = origin.GetZoneLevelMonikers().ToList(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }
@@ -67,7 +73,12 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, isInclude, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                };
                 Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
             }
         }
@@ -76,7 +87,12 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, isInclude, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType, FileSourceInfo = new SourceInfo(file) };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                    Monikers = isInclude ? null : _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
@@ -99,7 +115,12 @@ namespace Microsoft.Docs.Build
                     Title = GetOgTitle(title.Value, titleSuffix),
                     SourceInfo = title.Source,
                 };
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                    Monikers = monikers.ToList(),
+                };
                 Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
             }
 
@@ -124,7 +145,11 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                };
 
                 using var reader = new StringReader(content);
                 var lineCount = 1;
@@ -151,7 +176,11 @@ namespace Microsoft.Docs.Build
                     SourceInfo = new SourceInfo(file, 0, 0),
                 };
 
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                };
                 Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
             }
         }
@@ -160,7 +189,11 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                };
                 var tocItem = new DeprecatedTocItem()
                 {
                     FilePath = file.Path.Value,
@@ -174,7 +207,11 @@ namespace Microsoft.Docs.Build
         {
             if (TryGetValidationDocumentType(file, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                };
                 var tocItem = new MissingTocItem()
                 {
                     FilePath = file.Path.Value,
@@ -190,7 +227,12 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(node.Value?.Href)
                 && TryGetValidationDocumentType(file, out var documentType))
             {
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                };
                 var tocItem = new ExternalBreadcrumbTocItem()
                 {
                     FilePath = node.Value.Href!,
@@ -209,7 +251,12 @@ namespace Microsoft.Docs.Build
                     .Select(item => item.Path.Value)
                     .ToList();
 
-                var validationContext = new ValidationContext { DocumentType = documentType };
+                var validationContext = new ValidationContext
+                {
+                    DocumentType = documentType,
+                    FileSourceInfo = new SourceInfo(file),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                };
                 var tocItem = new DuplicatedTocItem()
                 {
                     FilePaths = filePaths,
