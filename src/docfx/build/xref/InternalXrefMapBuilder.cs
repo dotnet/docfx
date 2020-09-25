@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
             // uid conflicts with overlapping monikers
             // log an warning and take the first one order by the declaring file
             var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
-            if (CheckOverlappingMonikers(specsWithSameUid, out var overlappingMonikers))
+            if (CheckOverlappingMonikers(specsWithSameUid, _errors, out var overlappingMonikers))
             {
                 _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
@@ -160,15 +160,35 @@ namespace Microsoft.Docs.Build
                    .ToArray();
         }
 
-        private static bool CheckOverlappingMonikers(IXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
+        private static bool CheckOverlappingMonikers(InternalXrefSpec[] specsWithSameUid, ErrorBuilder error, out HashSet<string> overlappingMonikers)
         {
             var isOverlapping = false;
             overlappingMonikers = new HashSet<string>();
             var monikerHashSet = new HashSet<string>();
+            var monikerFileDic = new Dictionary<string, HashSet<string>>();
+
             foreach (var spec in specsWithSameUid)
             {
+                var path = spec.DeclaringFile == null ? "" : spec.DeclaringFile.Path.Value;
                 foreach (var moniker in spec.Monikers)
                 {
+                    if (!monikerFileDic.Keys.Contains(moniker))
+                    {
+                        monikerFileDic[moniker] = new HashSet<string>();
+                        monikerFileDic[moniker].Add(path);
+                    }
+                    else
+                    {
+                        if (!monikerFileDic[moniker].Add(path))
+                        {
+                            var a = spec.Uid;
+
+                            // duplicate uids in the same file.
+                            error.Add(Errors.Xref.DuplicateUid(spec.Uid));
+                            continue;
+                        }
+                    }
+
                     if (!monikerHashSet.Add(moniker))
                     {
                         overlappingMonikers.Add(moniker);

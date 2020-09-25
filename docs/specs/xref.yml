@@ -1748,3 +1748,27 @@ outputs:
     {
       "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
     }
+---
+# multiple duplicated uids within a file
+inputs:
+  docfx.json: |
+    {"build": {"content": [{"files": ["**/*.yml"], "version": "latest"}], "monikerDefinition": "monikerDefinition.json"}}
+  _themes/ContentTemplate/schemas/test.schema.json: |
+    {
+      "type": "object",
+      "required": ["members", "uid"],
+      "properties": {
+        "uid": {"contentType": "uid","type": "string"},
+        "members": {"items":{"properties": {"uid": {"contentType": "uid","type": "string"}}}}
+      }
+    }
+  monikerDefinition.json: |
+    {"monikers": [{ "moniker_name": "latest" }]}
+  test.yml: |
+    ### YamlMime:test
+    uid: "a"
+    members:
+    - uid: "a"
+outputs: 
+  .errors.log: |
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'a' is duplicated.","file":"test.yml","line":4,"column":8}
