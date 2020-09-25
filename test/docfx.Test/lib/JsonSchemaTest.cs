@@ -471,32 +471,5 @@ namespace Microsoft.Docs.Build
             var errors = jsonSchemaValidator.PostValidate();
             Assert.Equal(errorCount, errors.Count);
         }
-
-        [Theory]
-        [InlineData(
-            "{'properties':{ 'key':{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}}}",
-            "{'key': {'key1': 'Dec 5 2018'}}",
-            "{'message_severity':'warning','code':'date-format-invalid','message':'Invalid date format for 'key.key1': 'Dec 5 2018'.','file':'file','line':1,'end_line':1,'column':29,'end_column':29}")]
-
-        public void TestJsonSchemaValidation2(string schema, string json, string expectedErrors)
-        {
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var filePath = new FilePath("file");
-            var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, filePath);
-            var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
-            var actual = string.Join(
-                '\n',
-                errors.Select(err =>
-                {
-                    var obj = JObject.Parse(err.ToString());
-                    obj.Remove("log_item_type");
-                    obj.Remove("date_time");
-                    obj.Remove("property_path");
-                    return obj.ToString(Formatting.None).Replace('"', '\'');
-                }).OrderBy(err => err).ToArray());
-
-            Assert.Equal(expected, actual);
-        }
     }
 }
