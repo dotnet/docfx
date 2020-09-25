@@ -190,7 +190,7 @@ hello world";
         [Trait("Related", "DfmMarkdown")]
         public void TestTabGroup()
         {
-            string actual = @"# [title-a](#tab/a)
+            var actual = @"# [title-a](#tab/a)
 content-a
 # <a id=""x""></a>[title-b](#tab/b/c)
 content-b
@@ -220,7 +220,7 @@ content-b
         [Trait("Related", "DfmMarkdown")]
         public void TestTabGroup_2()
         {
-            string actual = @"# [title-a](#tab/a)
+            var actual = @"# [title-a](#tab/a)
 content-a
 # [title-b](#tab/b/c)
 content-b
@@ -273,7 +273,7 @@ content-b
         [Trait("Related", "DfmMarkdown")]
         public void TestAllExtensions()
         {
-            string source = @"---
+            var source = @"---
 title: ""如何使用 Visual C++ 工具集报告问题 | Microsoft Docs""
 ms.custom: 
 ms.date: 11/04/2016
@@ -372,15 +372,15 @@ http://your.company.abc, abc
 - Bar
   ---
   baz";
-            string blockIncludeFile = @"Hello World.
+            var blockIncludeFile = @"Hello World.
 
 [!code[Main](~/code/code.cs?range=2,4-7,9-20 ""Test in include file"")]
 
 Update without force build, while a.md include b.md and b.md updated.";
 
-            string testtoken = @"terry & jack";
+            var testtoken = @"terry & jack";
 
-            string code = @"// <snippet1>
+            var code = @"// <snippet1>
 using System;
 
 public struct Temperature
@@ -406,7 +406,7 @@ public struct Temperature
 csr
 #endregion";
 
-            string expected = @"<h2 id=""inclusion"">Inclusion</h2>
+            var expected = @"<h2 id=""inclusion"">Inclusion</h2>
 <h3 id=""block-inclusion"">Block inclusion</h3>
 <p>Hello World.</p>
 <pre><code name=""Main"" title=""Test in include file"">using System;

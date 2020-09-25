@@ -71,7 +71,14 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
 
-                    if (!string.IsNullOrEmpty(childHref) && UrlUtility.GetLinkType(childHref) == LinkType.RelativePath)
+                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
+
+                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
+                    {
+                        childHref = null;
+                    }
+
+                    if (!string.IsNullOrEmpty(childHref))
                     {
                         if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
                         {
@@ -85,7 +92,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        child = new ServicePageItem(childName, childHref, childUid);
+                        child = new ServicePageItem(childName, null, childUid);
                     }
 
                     children.Add(child);
@@ -94,7 +101,7 @@ namespace Microsoft.Docs.Build
                 var langs = new List<string?>();
                 if (_joinTOCConfig.ContainerPageMetadata != null)
                 {
-                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out JToken? lang);
+                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out var lang);
                     langs = lang?.ToObject<List<string?>>();
                 }
 

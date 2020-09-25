@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var newToc = new TableOfContentsNode(toc) { Items = new List<SourceInfo<TableOfContentsNode>>() };
+            var newToc = new TableOfContentsNode(toc);
 
             foreach (var item in toc.Items)
             {
@@ -253,7 +253,6 @@ namespace Microsoft.Docs.Build
                 var newChild = new TableOfContentsNode(child)
                 {
                     Href = child.Href.With($"_splitted/{name}/"),
-                    Items = new List<SourceInfo<TableOfContentsNode>>(),
                 };
 
                 newToc.Items.Add(new SourceInfo<TableOfContentsNode>(newChild, item.Source));
@@ -272,7 +271,6 @@ namespace Microsoft.Docs.Build
                 TopicHref = node.TopicHref.With(FixHref(node.TopicHref)),
                 TocHref = node.TopicHref.With(FixHref(node.TocHref)),
                 Href = node.TopicHref.With(FixHref(node.Href)),
-                Items = new List<SourceInfo<TableOfContentsNode>>(),
             };
 
             foreach (var item in node.Items)

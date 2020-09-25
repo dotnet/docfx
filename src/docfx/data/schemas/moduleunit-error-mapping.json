@@ -1,0 +1,38 @@
+{
+  "rules": {
+    "uid": {
+      "duplicate-uid": {
+        "severity": "error",
+        "code": "duplicate-uids",
+        "message": "UID '{0}' is already defined in repo '{1}'."
+      },
+      "missing-attribute": {
+        "severity": "error",
+        "code": "unit-uid-missing",
+        "message": "Missing attribute: UID. A valid UID is required for each unit."
+      }
+    },
+    "durationInMinutes": {
+      "missing-attribute": {
+        "severity": "error",
+        "code": "unit-duration-missing",
+        "message": "Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0."
+      }
+    },
+    "quiz": {
+      "precluded-attributes": {
+        "severity": "error",
+        "code": "unit-task-and-quiz",
+        "message": "Unit can't have both quiz and task."
+      }
+    },
+    "task": {
+      "precluded-attributes": {
+        "severity": "error",
+        "code": "unit-task-and-quiz",
+        "message": "Unit can't have both quiz and task."
+      }
+    }
+  }
+}
+

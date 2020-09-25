@@ -1,0 +1,378 @@
+# Remove object form metadata from publish.json
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      key1: {}
+    fileMetadata:
+      key2:
+        '**/*':
+          - a: 1
+  a.md:
+outputs:
+  a.json: |
+    { "key1": {}, "key2": [{ "a": 1 }] }
+  .publish.json: |
+    {
+      "files": [{ "url": "/a", "key1": undefined, "key2": undefined }]
+    }
+---
+# Additional metadata validation from external JSON schema
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    globalMetadata:
+      key1: []
+    fileMetadata:
+      key2:
+        '**/*': XNAGameStudio
+  schema.json: |
+    {
+      "properties":{
+        "key1": { "type": "string" },
+        "key2": { "type": "string", "enum": ["VS", "MSDN"] },
+        "key3": { "type": "integer" }
+      }
+    }
+  a.md: |
+    ---
+    key3: net462
+    ---
+outputs:
+  a.json: |
+    {
+      "key1": [],
+      "key2": "XNAGameStudio",
+      "key3": "net462"
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'.","file":"docfx.yml","line":3,"column":9}
+    {"message_severity":"warning","code":"invalid-value","message":"Invalid value for 'key2': 'XNAGameStudio'.","file":"docfx.yml","line":6,"column":13}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Integer' but got 'String'.","file":"a.md","line":2,"column":7}
+---
+# Report missing-attribute at file level when yaml header missing
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { "required": ["a"] }
+  a.md:
+  b.md: |
+    ---
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"b.md","line":1,"column":1}
+---
+# Allow multiple metadata schema definitions
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema1.json
+      - schema2.json
+  schema1.json: |
+    { "required": ["a"] }
+  schema2.json: |
+    { "properties": { "key": { "type": "string" } } }
+  a.md: |
+    ---
+    key: []
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Array'.","file":"a.md","line":2,"column":6}
+---
+# Validate each metadata schema individually for multiple metadata schema definitions
+inputs:
+  docfx.yml: |
+    metadataSchema:
+      - schema1.json
+      - schema2.json
+  schema1.json: |
+    { "required": ["a"], "properties": { "key": { "type": "string" } } }
+  schema2.json: |
+    { "required": ["b"], "properties": { "key": { "type": "array" } } }
+  a.md: |
+    ---
+    key: 1
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'a'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'String' but got 'Integer'.","file":"a.md","line":2,"column":6}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'b'.","file":"a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"unexpected-type","message":"Expected type 'Array' but got 'Integer'.","file":"a.md","line":2,"column":6}
+---
+# Skip content validation for yaml files
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
+            "exclusions": [],
+            "severity": "WARNING",
+            "code": "h1-missing"
+          }
+        ]
+      }
+    }
+  docs/a.yml: |
+    #YamlMime:YamlDocument
+    documentType: LandingData
+    title: my title
+    abstract:
+      description: this is test.
+outputs:
+  docs/a.json: |
+    {
+      "title": "my title"
+    }
+---
+# Json schema docset unique: the attribute value must be unique within docset
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"]
+    }
+  a.md: |
+    ---
+    title: title1
+    description: description1
+    ---
+  b.md: |
+    ---
+    description: description1
+    title: title2
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'.","file":"b.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'.","file":"a.md","line":3,"column":14}
+---
+# Json schema docset unique: null/empty values are not in-scope
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"]
+    }
+  a.md: |
+    ---
+    title: null
+    description:
+    ---
+  b.md: |
+    ---
+    description:
+    title: null
+    ---
+outputs:
+  a.json:
+  b.json:
+---
+# Json schema docset unique: global metadata and file metadata
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    globalMetadata:
+      description: abc
+  schema.json: |
+    {
+      "docsetUnique": ["description"]
+    }
+  a.md: |
+    ---
+    description: abc
+    ---
+  b.md:
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"a.md","line":2,"column":14}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"docfx.yml","line":3,"column":16}
+---
+# Json schema docset unique: monikers set on file-level
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    monikerDefinition: monikerDefinition.json
+    monikerRange:
+      'docs/v1/**': '<= netcore-2.1'
+      'docs/v2/**': '> netcore-2.1'
+  schema.json: |
+    {"docsetUnique": ["description"]}
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-3.1", "product_name": ".NET Core" }
+      ]
+    }
+  docs/v1/a.md: |
+    ---
+    description: a
+    ---
+    Moniker: netcore-2.1
+  docs/v1/b.md: |
+    ---
+    description: a
+    ---
+    Moniker: netcore-2.1
+  docs/v2/a.md: |
+    ---
+    description: a
+    ---
+    Moniker: netcore-3.1
+outputs:
+  e277e62e/docs/v1/a.json:
+  e277e62e/docs/v1/b.json:
+  8cec59bf/docs/v2/a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)' with moniker 'netcore-2.1'.","file":"docs/v1/b.md","line":2,"end_line":2,"column":14,"end_column":15}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)' with moniker 'netcore-2.1'.","file":"docs/v1/a.md","line":2,"end_line":2,"column":14,"end_column":15}
+---
+# Json schema length rule: the length of string must be in range of MinLength and MaxLength
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 2,
+          "maxLength": 10
+        }
+      }
+    }
+  a.md: |
+    ---
+    description: a
+    ---
+  b.md: |
+    ---
+    description: a long description
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"a.md","line":2,"column":14}
+    {"message_severity":"warning","code":"string-length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10.","file":"b.md","line":2,"column":14}
+---
+# Json schema metadata rule: validate reference content
+inputs:
+  docfx.yml: |
+    metadataSchema: rules.json
+  rules.json: |
+    {
+      "required": ["title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "rules": {
+          "title": {
+              "string-length-invalid": {
+                  "contentTypes": ["conceptual", "include", "dotnet"],
+                  "severity": "suggestion",
+                  "code": "title-bad-length",
+                  "pullRequestOnly": false
+              },
+              "missing-attribute": {
+                  "contentTypes": ["conceptual", "include"],
+                  "severity": "suggestion",
+                  "code": "title-missing",
+                  "additionalMessage": "Add a title string to show in search engine results."
+              },
+          },
+          "description": {
+              "string-length-invalid": {
+                  "contentTypes": ["conceptual", "include"],
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "pullRequestOnly": true
+              }
+          }
+      },
+    }
+  docs/a.yml: |
+    #YamlMime:NetType
+    name: TryCreateSectionNameMatcher
+    metadata:
+      author: dotnet-bot
+      title: a
+      description: a
+  docs/b.yml: |
+    #YamlMime:PowershellCmdlet
+    name: TryCreateSectionNameMatcher
+    metadata:
+      author: dotnet-bot
+      title: a
+      description: a
+  docs/TOC.md:
+    # [Index](index.md)
+  _themes/ContentTemplate/schemas/NetType.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+          "breadcrumb_path": {"contentType": "Href"},
+          "toc_rel": {"contentType": "Href"},
+      }
+    }
+  _themes/ContentTemplate/schemas/PowershellCmdlet.schema.json: |
+    {
+      "type": "object",
+      "properties": {
+          "breadcrumb_path": {"contentType": "Href"},
+          "toc_rel": {"contentType": "Href"},
+      }
+    }
+  _themes/ContentTemplate/NetType.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+  _themes/ContentTemplate/PowershellCmdlet.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/toc.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
+---

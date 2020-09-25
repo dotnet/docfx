@@ -45,6 +45,20 @@ namespace Microsoft.Docs.Build
             _credentialProvider = credentialProvider;
         }
 
+        public bool TryReadString(SourceInfo<string> file, out string? content)
+        {
+            try
+            {
+                content = ReadString(file);
+                return true;
+            }
+            catch (DocfxException)
+            {
+                content = null;
+                return false;
+            }
+        }
+
         public string ReadString(SourceInfo<string> file)
         {
             using var reader = new StreamReader(ReadStream(file));
@@ -58,7 +72,7 @@ namespace Microsoft.Docs.Build
                 var content = TestQuirks.HttpProxy?.Invoke(file);
                 if (content != null)
                 {
-                    byte[] byteArray = Encoding.ASCII.GetBytes(content);
+                    var byteArray = Encoding.ASCII.GetBytes(content);
                     return new MemoryStream(byteArray);
                 }
             }

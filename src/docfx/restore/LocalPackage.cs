@@ -54,5 +54,10 @@ namespace Microsoft.Docs.Build
 
             return null;
         }
+
+        public override PathString? TryGetGitFilePath(PathString path)
+        {
+            return new PathString(Path.Combine(_directory, path));
+        }
     }
 }

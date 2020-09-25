@@ -248,6 +248,12 @@ repos:
               "Flatten": true,
               "SDPMode": true,
             },
+            {
+              "SourceXmlFolder": "non-existing/xml",
+              "OutputYamlFolder": "non-existing/api",
+              "Flatten": true,
+              "SDPMode": true,
+            }
           ]
         }
       cat/docfx.yml: |
