@@ -67,13 +67,13 @@ namespace Microsoft.Docs.Build
 
             if (InclusionContext.IsCircularReference(file, out var dependencyChain))
             {
-                throw Errors.Link.CircularReference(new SourceInfo((FilePath)file), file, dependencyChain.Reverse()).ToException();
+                throw Errors.Link.CircularReference((SourceInfo)file, file, dependencyChain.Reverse()).ToException();
             }
 
             using (InclusionContext.PushInclusion(file))
             {
                 var child = Markdown.Parse(content, pipeline);
-                child.SetFilePath((FilePath)file);
+                child.SetSourceInfo((SourceInfo)file);
                 ExpandInclude(context, child, pipeline, inlinePipeline, errors);
                 inclusionBlock.Add(child);
             }
@@ -91,7 +91,7 @@ namespace Microsoft.Docs.Build
 
             if (InclusionContext.IsCircularReference(file, out var dependencyChain))
             {
-                throw Errors.Link.CircularReference(new SourceInfo((FilePath)file), file, dependencyChain.Reverse()).ToException();
+                throw Errors.Link.CircularReference((SourceInfo)file, file, dependencyChain.Reverse()).ToException();
             }
 
             using (InclusionContext.PushInclusion(file))
@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (block is LeafBlock leaf && leaf.Inline != null)
                     {
-                        leaf.Inline.SetFilePath((FilePath)file);
+                        leaf.Inline.SetSourceInfo((SourceInfo)file);
                         inclusionInline.AppendChild(leaf.Inline);
                     }
                 }

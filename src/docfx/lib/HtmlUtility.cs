@@ -254,7 +254,7 @@ namespace Microsoft.Docs.Build
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.GetSourceInfo(attribute.ValueRange);
+                    var source = block?.GetSourceInfo()?.WithOffset(attribute.ValueRange);
                     var link = HttpUtility.HtmlEncode(
                         !IsImage(ref token, attribute) || transformImageLink == null
                             ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
@@ -321,8 +321,8 @@ namespace Microsoft.Docs.Build
             suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo(token.Range)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo(token.Range)),
+                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
+                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
@@ -373,6 +373,11 @@ namespace Microsoft.Docs.Build
             }
 
             return result.ToString();
+        }
+
+        public static SourceInfo WithOffset(this SourceInfo sourceInfo, in HtmlTextRange range)
+        {
+            return sourceInfo.WithOffset(range.Start.Line + 1, range.Start.Column + 1, range.End.Line + 1, range.End.Column + 1);
         }
 
         /// <summary>
@@ -428,7 +433,7 @@ namespace Microsoft.Docs.Build
             var tokenName = token.Name.ToString();
             if (!s_allowedTagAttributeMap.TryGetValue(tokenName, out var additionalAttributes))
             {
-                errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(token.NameRange), tokenName));
+                errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo()?.WithOffset(token.NameRange), tokenName));
                 return;
             }
 
@@ -444,7 +449,7 @@ namespace Microsoft.Docs.Build
 
                 if (additionalAttributes is null || !additionalAttributes.Contains(attributeName))
                 {
-                    errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(attribute.NameRange), tokenName, attributeName));
+                    errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo()?.WithOffset(attribute.NameRange), tokenName, attributeName));
                 }
             }
         }
