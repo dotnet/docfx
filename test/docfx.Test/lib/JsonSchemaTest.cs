@@ -152,6 +152,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'str': {'maxLength': 2, 'minLength': 4}}}", "{'str': 'abc'}",
             @"{'message_severity':'warning','code':'string-length-invalid','message':'String 'str' is too long: 3 characters. Length should be <= 2.','line':1,'column':13}
               {'message_severity':'warning','code':'string-length-invalid','message':'String 'str' is too short: 3 characters. Length should be >= 4.','line':1,'column':13}")]
+        [InlineData(
+            "{'properties': {'key':{'properties': {'str': {'maxLength': 2}}}}}",
+            "{'key':{'str': 'abc'}}",
+            "{'message_severity':'warning','code':'string-length-invalid','message':'String 'key.str' is too long: 3 characters. Length should be <= 2.','line':1,'column':20}")]
 
         // number validation
         [InlineData("{'minimum': 1, 'maximum': 1}", "1", "")]
@@ -272,7 +276,7 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
         [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':11}")]
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','line':1,'column':11}")]
 
         // dependencies as schema
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{}", "")]
@@ -326,12 +330,22 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}", "{'key1': 'Dec 5 2018'}",
             "{'message_severity':'warning','code':'date-format-invalid','message':'Invalid date format for 'key1': 'Dec 5 2018'.','line':1,'column':21}")]
 
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'dateFormat': 'M/d/yyyy'}}}}}",
+            "{'key': {'key1': 'Dec 5 2018'}}",
+            "{'message_severity':'warning','code':'date-format-invalid','message':'Invalid date format for 'key.key1': 'Dec 5 2018'.','line':1,'column':29}")]
+
         // date range validation
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-10000000:00:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}", "")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/2019'}",
             "{'message_severity':'warning','code':'date-out-of-range','message':'Value out of range for 'key1': '04/26/2019'.','line':1,'column':21}")]
         [InlineData("{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}", "{'key1': '04/26/4019'}",
             "{'message_severity':'warning','code':'date-out-of-range','message':'Value out of range for 'key1': '04/26/4019'.','line':1,'column':21}")]
+
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'dateFormat': 'M/d/yyyy', 'relativeMinDate': '-2:00:00', 'relativeMaxDate': '5:00:00:00'}}}}}",
+            "{'key': {'key1': '04/26/4019'}}",
+            "{'message_severity':'warning','code':'date-out-of-range','message':'Value out of range for 'key.key1': '04/26/4019'.','line':1,'column':29}")]
 
         // deprecated validation
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{}", "")]
@@ -341,6 +355,11 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'attribute-deprecated','message':'Deprecated attribute: 'key1'.','line':1,'column':10}")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}}", "{'key1': 1}",
             "{'message_severity':'warning','code':'attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','line':1,'column':10}")]
+
+        [InlineData(
+            "{'properties':{ 'key':{'properties': {'key1': {'replacedBy': 'key2'}}}}}",
+            "{'key': {'key1': 1}}",
+            "{'message_severity':'warning','code':'attribute-deprecated','message':'Deprecated attribute: 'key.key1', use 'key2' instead.','line':1,'column':18}")]
 
         // enum dependencies validation
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer'}",
@@ -366,6 +385,15 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yyy','tabs']}",
             "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1[0]': 'yyy'.','line':1,'column':15}")]
 
+        [InlineData(
+            "{'properties': {'key': {'type': 'object','properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}}}",
+            "{'key': {'key1': 'yammer', 'key2': 'abc'}}",
+            "{'message_severity':'warning','code':'invalid-paired-attribute','message':'Invalid value for 'key.key2': 'abc' is not valid with 'key.key1' value 'yammer'.','line':1,'column':40}")]
+        [InlineData(
+            "{'properties': {'key':{'type': 'object','properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}}}",
+            "{'key': {'key1': ['yyy','tabs']}}",
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key.key1[0]': 'yyy'.','line':1,'column':23}")]
+
         // custom errors
         [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
             "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]
@@ -373,10 +401,17 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]
         [InlineData("{'properties': {'key1': {'replacedBy': 'key2'}}, 'rules': {'key1': {'attribute-deprecated': {'severity': 'suggestion', 'code': 'key1-attribute-deprecated'}}}}", "{'key1': 1}",
             "{'message_severity':'suggestion','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','line':1,'column':10}")]
-        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
+        [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'keys.key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'.','line':1,'column':11}")]
         [InlineData("{'dependencies': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}", "{'b': 1}",
+            "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]
+
+        [InlineData(
+            "{'properties': {'key':{'required': ['author'],'properties': {'author': {'type': ['string']}}}},'rules': {'key.author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}",
+            "{'key': {'b': 1}}",
+            "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'key.author'. Add a valid GitHub ID.','line':1,'column':9}")]
 
         // strict required validation
         [InlineData("{'strictRequired': ['key1']}", "{'key1': 'a'}", "")]
@@ -386,6 +421,12 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key1'.','line':1,'column':1}")]
         [InlineData("{'strictRequired': ['key1']}", "{'key1': ''}",
             "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key1'.','line':1,'column':1}")]
+
+        [InlineData(
+            "{'properties': {'key':{'strictRequired': ['key1'],'properties': {'key1': {'type': ['string']}}}}}",
+            "{'key':{'key1': ''}}",
+            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key.key1'.','line':1,'column':8}")]
+
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var propertiesToCompare = new[] { "message_severity", "code", "message", "line", "column" };
