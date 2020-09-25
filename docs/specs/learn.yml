@@ -547,11 +547,13 @@ inputs:
       }
     }
 outputs:
+  pathb.json:
   .errors.log: |
     {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: UID. A valid UID is required for each learning path.","file":"patha.yml","line":2}
     {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"patha.yml","line":2}
     {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-child-not-found","message":"Child UID(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'module_not_found'.","file":"pathb.yml","line":3}
+# now we do not mapping xref-not-found to path-child-not-found, because some module are shared beyond repos
 ---
 # error mapping for Learn Valdiation based on SDP, Module
 inputs:
