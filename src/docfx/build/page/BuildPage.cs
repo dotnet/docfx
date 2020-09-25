@@ -62,8 +62,9 @@ namespace Microsoft.Docs.Build
             var systemMetadata = CreateSystemMetadata(errors, context, file, userMetadata);
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
-            // The bookmark validation for SDP is out of scope in dry-run mode, so we can skip creating template model for SDP as well
-            if (context.Config.DryRun)
+            // The bookmark validation for SDP can be skipped when the public template is used since the mustache is not accessable for public template
+            if (context.Config.DryRun
+                && (TemplateEngine.IsConceptual(mime) || context.Config.Template.Type == PackageType.PublicTemplate))
             {
                 return (new JObject(), new JObject());
             }
