@@ -497,6 +497,9 @@ namespace Microsoft.Docs.Build
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
 
+            public static Error ArrayMatchInvalid(SourceInfo? source, string propName, string message)
+                => new Error(ErrorLevel.Error, "array-match-invalid", $"{message}", source, propName);
+
             /// <summary>
             /// Array items not unique.
             /// </summary>
