@@ -139,8 +139,8 @@ namespace Microsoft.Docs.Build
                 end_column,
                 log_item_type = "user",
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
-                date_time = DateTime.UtcNow,
                 property_path = PropertyPath,
+                date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
             });
         }
 
