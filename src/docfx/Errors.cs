@@ -406,7 +406,19 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repoName)
-                => new Error(ErrorLevel.Warning, "duplicate-uid-global", string.IsNullOrEmpty(repoName) ? $"UID '{uid}' is duplicated globally." : $"UID '{uid}' is duplicated globally in repo '{repoName}'.", uid);
+            {
+                FormattableString message;
+                if (string.IsNullOrEmpty(repoName))
+                {
+                    message = $"UID '{uid}' is duplicated globally.";
+                }
+                else
+                {
+                    message = $"UID '{uid}' is duplicated globally in repo '{repoName}'.";
+                }
+
+                return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);
+            }
 
             /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.
