@@ -403,7 +403,7 @@ no-note text 2-2</p>
         public void TestSectionWithTextFollowed(string source)
         {
             // not supported, render this to block quote
-            string expected = @"<blockquote>
+            var expected = @"<blockquote>
 <p>[!div class=&quot;All&quot; id=&quot;All&quot;] Followed text
 We should support that.</p>
 </blockquote>

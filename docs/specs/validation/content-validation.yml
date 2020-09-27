@@ -1,4 +1,62 @@
+---
+# Check git merge conflict marker
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    <<<<<<< HEAD
+    foo
+    =======
+    bar
+    >>>>>>> cb1abc6bd98cfc84317f8aa95a7662815417802d
+outputs:
+  docs/a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"merge-conflict","message":"File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.","file":"docs/a.md","line":1,"column":1}
+---
+# Ignore git merge conflict marker inside code blocks
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    a
 
+    ```markdown
+    <<<<<<< HEAD
+    ...
+    =======
+    ...
+    >>>>>>> 1d82c7efe18f86136247fb366df5030843199c19
+    ```
+outputs:
+  docs/a.json:
+---
+# Validate user html
+inputs:
+  docfx.yml:
+  a.md: |
+    <H2 id="head" TITLE="HEAD"></H2>
+    <BUTTON>click</BUTTON>
+    <img height="docs"></img>
+    <h1 height="docs"></h1>
+    <div onclick="alert();" data-source="docs"></div>
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":2}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"column":2}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":4,"column":2}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
+---
+# Suppress disallowed HTML on archive content
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      is_archived: true
+  a.md: |
+    <div><script></script></div>
+outputs:
+  a.json: |
+    { "conceptual": "<div></div>" }
+---
 # SensitiveLanguage - sensitive-language
 inputs:
   docfx.yml: |
@@ -74,7 +132,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":1,"end_line":1,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"override-not-allowed","message":"Rule 'sensitive-language' can't be overridden in docfx.json.","file":"docfx.yml","line":4,"end_line":4,"column":5,"end_column":5}
+    {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","file":"docfx.yml","line":4,"end_line":4,"column":5,"end_column":5}
   file1.json:
   a/b/c/file.json:
 ---

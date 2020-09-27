@@ -209,7 +209,7 @@ d: true
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
-            for (int i = 0; i < values.Count; i++)
+            for (var i = 0; i < values.Count; i++)
             {
                 Assert.Equal(i, values[i].B);
                 Assert.Equal($"Good{i}!", values[i].C);

@@ -176,7 +176,7 @@ jobs:
       DocsRoot:
         params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 80 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 90 --regression-markdown-rule --regression-metadata-schema
       sql-docs-pr:
         params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-markdown-rule --regression-metadata-schema
       docs:

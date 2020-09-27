@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
             if (error.Source != null)
             {
-                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File));
+                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File)?.Path);
             }
 
             var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
             {
                 if (customRules.ContainsKey(validationRule.Code))
                 {
-                    Add(Errors.Logging.OverrideNotAllowed(validationRule.Code, customRules[validationRule.Code].Source));
+                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code, customRules[validationRule.Code].Source));
                     customRules.Remove(validationRule.Code);
                 }
             }

@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             _queue.Post(() =>
             {
                 var targetPhysicalPath = GetDestinationPath(destRelativePath);
-                if (_input.TryGetPhysicalPath(file, out var sourcePhysicalPath))
+                if (_input.TryGetPhysicalPath(file) is PathString sourcePhysicalPath)
                 {
                     File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
                     return;

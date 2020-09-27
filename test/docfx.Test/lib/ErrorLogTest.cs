@@ -13,9 +13,9 @@ namespace Microsoft.Docs.Build
         {
             using var errors = new ErrorWriter();
             var errorLog = new ErrorLog(errors, new Config());
-            errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
-            errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", "message 1"));
-            errorLog.Add(new Error(ErrorLevel.Warning, "an-error-code", "message 2"));
+            errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", $"message 1"));
+            errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", $"message 1"));
+            errorLog.Add(new Error(ErrorLevel.Warning, "an-error-code", $"message 2"));
 
             Assert.Equal(1, errors.ErrorCount);
             Assert.Equal(1, errors.WarningCount);
@@ -37,13 +37,13 @@ namespace Microsoft.Docs.Build
             {
                 for (var j = 0; j < testFileErrors; j++)
                 {
-                    testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", j.ToString(), new FilePath($"file-{i}")));
+                    testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", $"{j}", new SourceInfo(new FilePath($"file-{i}"))));
                 }
             }
 
             for (var i = 0; i < testEmptyFileErrors; i++)
             {
-                testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", i.ToString()));
+                testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", $"{i}"));
             }
 
             ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Add(testError));

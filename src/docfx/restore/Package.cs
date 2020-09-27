@@ -16,6 +16,9 @@ namespace Microsoft.Docs.Build
 
         public abstract PathString? TryGetPhysicalPath(PathString path);
 
+        // TODO: Retire this method after abstracting git read operations in Package.
+        public virtual PathString? TryGetGitFilePath(PathString path) => null;
+
         public virtual string? TryReadString(PathString path)
         {
             if (!Exists(path))

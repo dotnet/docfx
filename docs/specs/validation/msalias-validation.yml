@@ -1,0 +1,183 @@
+
+# Json schema microsoft alias rule: Mute error, when no connection with Graph API
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+outputs:
+  a.json: |
+    { "ms.author": "over123" }
+---
+# Json schema microsoft alias rule: The author is in the allow list
+os: windows
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":["amlstudiodocs", "over123"]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json: |
+    { "ms.author": "over123" }
+---
+# Json schema microsoft alias rule: The author is in the cache
+os: windows
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+cache:
+  msgraph-users.json: |
+    { 
+      "items": [{ "alias": "over123", "id": "1" }]
+    }
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json: |
+    { "ms.author": "over123" }
+---
+# Json schema microsoft alias rule: Missing author in the cache
+os: windows
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: over123
+    ---
+cache:
+  msgraph-users.json: |
+    { 
+      "items": [{ "alias": "over123" }]
+    }
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'over123' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
+---
+# Json schema microsoft alias rule: The author is valid with graph call
+os: windows
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: yufeih
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json: |
+    { "ms.author": "yufeih" }
+---
+# Json schema microsoft alias rule: The author is invalid with graph call
+os: windows
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "ms.author":
+        { 
+          "microsoftAlias": 
+          {
+            "allowedDLs":[]
+          }
+        }
+      } 
+    }
+  a.md: |
+    ---
+    ms.author: abc1234cba
+    ---
+environments:
+  - MICROSOFT_GRAPH_CLIENT_SECRET
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
+---

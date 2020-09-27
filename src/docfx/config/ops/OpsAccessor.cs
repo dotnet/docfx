@@ -214,6 +214,9 @@ namespace Microsoft.Docs.Build
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
             {
+                // Default header which allows fallback to public data when credential is not provided.
+                request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
+
                 _credentialProvider?.Invoke(request);
 
                 await FillOpsToken(request.RequestUri.AbsoluteUri, request, environment);

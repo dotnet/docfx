@@ -2,10 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
-using HtmlReaderWriter;
 using Markdig;
 using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;

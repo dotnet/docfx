@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 var publishItem = new PublishItem(
                     url,
                     buildOutput ? result.outputPath : null,
-                    _sourceMap.GetOriginalFilePath(sourcePath) ?? sourcePath.Path,
+                    _sourceMap.GetOriginalFilePath(sourcePath)?.Path ?? sourcePath.Path,
                     _locale,
                     monikers,
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
