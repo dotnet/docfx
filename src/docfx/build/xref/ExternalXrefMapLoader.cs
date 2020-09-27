@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefMapLoader
     {
-        private const string RepoNameKey = "repositoryName";
+        private const string RepoUrlKey = "repositoryUrl";
 
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                         var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                         foreach (var spec in xrefMap.References)
                         {
-                            result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryName, spec)));
+                            result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryUrl, spec)));
                         }
                     }
                     else
@@ -55,15 +55,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static List<(string, Lazy<(string? repoName, ExternalXrefSpec spec)>)> LoadJsonFile(string filePath)
+        public static List<(string, Lazy<(string? repoUrl, ExternalXrefSpec spec)>)> LoadJsonFile(string filePath)
         {
             var result = new List<(string, Lazy<(string?, ExternalXrefSpec)>)>();
             var content = File.ReadAllBytes(filePath);
 
-            GetStringProperties(content, RepoNameKey).TryGetValue(RepoNameKey, out var repoName);
-
             // TODO: cache this position mapping if xref map file not updated, reuse it
-            var xrefSpecPositions = GetXrefSpecPositions(content);
+            var (xrefSpecPositions, propertiesDic) = GetXrefSpecPosAndStrProperties(content, RepoUrlKey);
+            propertiesDic.TryGetValue(RepoUrlKey, out var repoUrl);
 
             foreach (var (uid, start, end) in xrefSpecPositions)
             {
@@ -71,7 +70,7 @@ namespace Microsoft.Docs.Build
                 {
                     using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     var json = ReadJsonFragment(stream, start, end);
-                    return (repoName, JsonUtility.DeserializeData<ExternalXrefSpec>(json, new FilePath(filePath)));
+                    return (repoUrl, JsonUtility.DeserializeData<ExternalXrefSpec>(json, new FilePath(filePath)));
                 })));
             }
             return result;
@@ -90,7 +89,7 @@ namespace Microsoft.Docs.Build
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
-                        result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryName, spec)));
+                        result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryUrl, spec)));
                     }
                 }
                 else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
@@ -99,44 +98,17 @@ namespace Microsoft.Docs.Build
                     var xrefMap = JsonUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
-                        result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryName, spec)));
+                        result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryUrl, spec)));
                     }
                 }
             }
         }
 
-        private static Dictionary<string, string> GetStringProperties(ReadOnlySpan<byte> content, params string[] propertyNames)
+        private static (List<(string uid, long start, long end)>, Dictionary<string, string>) GetXrefSpecPosAndStrProperties(
+            ReadOnlySpan<byte> content, params string[] propertyNames)
         {
-            var properties = new Dictionary<string, string>();
-
-            if (propertyNames.Length == 0)
-            {
-                return properties;
-            }
-
-            var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
-            while (reader.Read())
-            {
-                switch (reader.TokenType)
-                {
-                    case JsonTokenType.PropertyName:
-                        foreach (var pname in propertyNames)
-                        {
-                            if (reader.ValueTextEquals(Encoding.UTF8.GetBytes(pname)) && reader.Read() && reader.TokenType == JsonTokenType.String)
-                            {
-                                properties.TryAdd(pname, Encoding.UTF8.GetString(reader.ValueSpan));
-                            }
-                        }
-                        break;
-                }
-            }
-
-            return properties;
-        }
-
-        private static List<(string uid, long start, long end)> GetXrefSpecPositions(ReadOnlySpan<byte> content)
-        {
-            var result = new List<(string uid, long start, long end)>();
+            var xrefSpecPos = new List<(string uid, long start, long end)>();
+            var propertiesDic = new Dictionary<string, string>();
             var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
             while (reader.Read())
@@ -148,6 +120,16 @@ namespace Microsoft.Docs.Build
                         {
                             stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
                         }
+                        if (propertyNames.Length > 0 && stack.Count == 1)
+                        {
+                            foreach (var pname in propertyNames)
+                            {
+                                if (reader.ValueTextEquals(Encoding.UTF8.GetBytes(pname)) && reader.Read() && reader.TokenType == JsonTokenType.String)
+                                {
+                                    propertiesDic.TryAdd(pname, Encoding.UTF8.GetString(reader.ValueSpan));
+                                }
+                            }
+                        }
                         break;
                     case JsonTokenType.StartObject:
                         stack.Push((null, (int)reader.TokenStartIndex));
@@ -155,12 +137,12 @@ namespace Microsoft.Docs.Build
                     case JsonTokenType.EndObject:
                         if (stack.TryPop(out var item) && item.uid != null)
                         {
-                            result.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
+                            xrefSpecPos.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
                         }
                         break;
                 }
             }
-            return result;
+            return (xrefSpecPos, propertiesDic);
         }
 
         private static string ReadJsonFragment(Stream stream, long start, long end)

@@ -596,13 +596,9 @@ inputs:
     - 1.xrefmap.json
   1.xrefmap.json: |
     {
-      "repositoryName": "a_repo",
+      "repositoryUrl": "a_repo",
       "references":[{
-          "uid": "a",
-          "name": "String",
-          "fullName": "System.String",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string",
-          "nameWithType": "System.String"
+          "uid": "a"
       }]
     }
   docs/a.json: |
@@ -613,7 +609,7 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-        "uid": { "contentType": "uid", "uniqueScope": "Global" },
+        "uid": { "contentType": "uid", "UIDGlobalUnique": true }
       }
     }
 outputs:

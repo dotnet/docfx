@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<IReadOnlyDictionary<string, Lazy<(string? repoName, ExternalXrefSpec spec)>>> _externalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, Lazy<(string? repoUrl, ExternalXrefSpec spec)>>> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -134,9 +134,9 @@ namespace Microsoft.Docs.Build
             FilePath referencingFile,
             FilePath inclusionRoot,
             MonikerList? monikers = null,
-            UIDUniqueScope? uniqueScope = UIDUniqueScope.Docset)
+            bool uIDGlobalUnique = false)
         {
-            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers, uniqueScope);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, uIDGlobalUnique, monikers);
             if (xrefSpec == null)
             {
                 return (error, null, null);
@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
                     .ToArray();
             }
 
-            var model = new XrefMapModel { References = references, RepositoryName = _config.Name };
+            var model = new XrefMapModel { References = references, RepositoryUrl = _repository?.Remote };
 
             if (_config.UrlType == UrlType.Docs && references.Length > 0)
             {
@@ -239,14 +239,14 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> uid,
             FilePath referencingFile,
             FilePath inclusionRoot,
-            MonikerList? monikers = null,
-            UIDUniqueScope? uniqueScope = UIDUniqueScope.Docset)
+            bool uIDGlobalUnique,
+            MonikerList? monikers = null)
         {
             var (internalXrefSpec, internalHref) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
 
-            if (uniqueScope == UIDUniqueScope.Global || internalXrefSpec == null)
+            if (uIDGlobalUnique || internalXrefSpec == null)
             {
-                var (externalXrefSpec, externalHref, repoName) = ResolveExternalXrefSpec(uid);
+                var (externalXrefSpec, externalHref, repoUrl) = ResolveExternalXrefSpec(uid);
 
                 if (internalXrefSpec == null && externalXrefSpec == null)
                 {
@@ -256,9 +256,9 @@ namespace Microsoft.Docs.Build
                 {
                     return (null, externalXrefSpec, externalHref);
                 }
-                else if (internalXrefSpec != null && externalXrefSpec != null && uniqueScope == UIDUniqueScope.Global)
+                else if (internalXrefSpec != null && externalXrefSpec != null && uIDGlobalUnique)
                 {
-                    return (Errors.Xref.DuplicateUidGlobal(uid, repoName), internalXrefSpec, internalHref);
+                    return (Errors.Xref.DuplicateUidGlobal(uid, repoUrl), internalXrefSpec, internalHref);
                 }
             }
 
@@ -270,7 +270,7 @@ namespace Microsoft.Docs.Build
             if (_externalXrefMap.Value.TryGetValue(uid, out var repoNameAndSpec))
             {
                 var href = RemoveSharingHost(repoNameAndSpec.Value.spec.Href, _config.HostName);
-                return (repoNameAndSpec.Value.spec, href, repoNameAndSpec.Value.repoName);
+                return (repoNameAndSpec.Value.spec, href, repoNameAndSpec.Value.repoUrl);
             }
             return default;
         }

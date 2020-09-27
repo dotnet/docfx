@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that indicate the uid unique scope
         /// </summary>
-        public UIDUniqueScope? UniqueScope { get; set; } = UIDUniqueScope.Docset;
+        public bool UIDGlobalUnique { get; set; }
 
         /// <summary>
         /// Properties that are built into xref map

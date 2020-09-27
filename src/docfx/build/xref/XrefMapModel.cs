@@ -11,6 +11,6 @@ namespace Microsoft.Docs.Build
 
         public XrefProperties? Properties { get; set; }
 
-        public string? RepositoryName { get; set; }
+        public string? RepositoryUrl { get; set; }
     }
 }
