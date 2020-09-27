@@ -16,8 +16,12 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(sourceMap))
                 {
-                    var content = fileResolver.ReadString(sourceMap);
-                    var map = JsonUtility.DeserializeData<SourceMapModel>(content, new FilePath(sourceMap));
+                    if (!fileResolver.TryReadString(sourceMap, out var content))
+                    {
+                        continue;
+                    }
+
+                    var map = JsonUtility.DeserializeData<SourceMapModel>(content!, new FilePath(sourceMap));
                     var sourceMapDirectory = Path.GetDirectoryName(fileResolver.ResolveFilePath(sourceMap)) ?? "";
 
                     foreach (var (path, originalPath) in map.Files)
@@ -36,11 +40,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public PathString? GetOriginalFilePath(FilePath path)
+        public FilePath? GetOriginalFilePath(FilePath path)
         {
             if (path.Origin == FileOrigin.Main && _map.TryGetValue(path.Path, out var originalPath))
             {
-                return originalPath;
+                return FilePath.Content(originalPath);
             }
             return null;
         }

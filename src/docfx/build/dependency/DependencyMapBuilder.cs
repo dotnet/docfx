@@ -35,8 +35,8 @@ namespace Microsoft.Docs.Build
             }
 
             _dependencyItems.TryAdd(new DependencyItem(
-                fromOriginalPath is null ? from : new FilePath(fromOriginalPath),
-                toOriginalPath is null ? to : new FilePath(toOriginalPath),
+                fromOriginalPath is null ? from : fromOriginalPath,
+                toOriginalPath is null ? to : toOriginalPath,
                 type,
                 transitive));
         }

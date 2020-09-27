@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -17,29 +16,39 @@ namespace Microsoft.Docs.Build
     internal class Input
     {
         private readonly Config _config;
-        private readonly BuildOptions _buildOptions;
+        private readonly SourceMap _sourceMap;
+        private readonly Package _mainPackage;
+        private readonly Package? _fallbackPackage;
+        private readonly Package? _alternativeFallbackPackage;
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
+
         private readonly MemoryCache<FilePath, JToken> _jsonTokenCache = new MemoryCache<FilePath, JToken>();
         private readonly MemoryCache<FilePath, JToken> _yamlTokenCache = new MemoryCache<FilePath, JToken>();
         private readonly MemoryCache<PathString, byte[]?> _gitBlobCache = new MemoryCache<PathString, byte[]?>();
+
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
+
         private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
-            new ConcurrentDictionary<FilePath, (string?, JToken)>();
+                     new ConcurrentDictionary<FilePath, (string?, JToken)>();
 
-        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache
-                   = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
-
-        private readonly PathString? _alternativeFallbackFolder;
-
-        public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider)
+        public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider, SourceMap sourceMap)
         {
             _config = config;
-            _buildOptions = buildOptions;
+            _sourceMap = sourceMap;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            if (!Directory.Exists(_alternativeFallbackFolder = _buildOptions.DocsetPath.Concat(new PathString(".fallback"))))
+            _mainPackage = new LocalPackage(buildOptions.DocsetPath);
+
+            if (buildOptions.FallbackDocsetPath != null)
             {
-                _alternativeFallbackFolder = null;
+                _fallbackPackage = new LocalPackage(buildOptions.FallbackDocsetPath);
+            }
+
+            var alternativeFallbackPath = buildOptions.DocsetPath.Concat(new PathString(".fallback"));
+            if (Directory.Exists(alternativeFallbackPath))
+            {
+                _alternativeFallbackPackage = new LocalPackage(alternativeFallbackPath);
             }
         }
 
@@ -53,41 +62,14 @@ namespace Microsoft.Docs.Build
                 return _generatedContents.ContainsKey(file);
             }
 
-            var fullPath = GetFullPath(file);
-
-            return file.IsGitCommit ? ReadBytesFromGit(fullPath) != null : File.Exists(fullPath);
-        }
-
-        public PathString GetFullPath(FilePath file)
-        {
-            switch (file.Origin)
+            if (file.IsGitCommit)
             {
-                case FileOrigin.Main:
-                case FileOrigin.Generated:
-                case FileOrigin.External:
-                    return _buildOptions.DocsetPath.Concat(file.Path);
-
-                case FileOrigin.Dependency:
-                    var package = _config.Dependencies[file.DependencyName];
-                    var packagePath = _packageResolver.ResolvePackage(package, package.PackageFetchOptions);
-                    var pathToPackage = Path.GetRelativePath(file.DependencyName, file.Path);
-                    Debug.Assert(!pathToPackage.StartsWith('.'));
-                    return new PathString(Path.Combine(packagePath, pathToPackage));
-
-                case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
-                    if (_alternativeFallbackFolder != null)
-                    {
-                        var pathFromFallbackFolder = _alternativeFallbackFolder.Value.Concat(file.Path);
-                        if (File.Exists(pathFromFallbackFolder))
-                        {
-                            return pathFromFallbackFolder;
-                        }
-                    }
-                    return _buildOptions.FallbackDocsetPath.Value.Concat(file.Path);
-
-                default:
-                    throw new InvalidOperationException();
+                return ReadBytesFromGit(file) != null;
             }
+
+            var (package, path) = ResolveFilePath(file);
+
+            return package.Exists(path);
         }
 
         /// <summary>
@@ -95,20 +77,28 @@ namespace Microsoft.Docs.Build
         /// Some file path like content from a bare git repo does not exist physically
         /// on disk but we can still read its content.
         /// </summary>
-        public bool TryGetPhysicalPath(FilePath file, [NotNullWhen(true)] out string? physicalPath)
+        public PathString? TryGetPhysicalPath(FilePath file)
         {
-            if (!file.IsGitCommit && file.Origin != FileOrigin.Generated)
+            if (file.IsGitCommit || file.Origin == FileOrigin.Generated)
             {
-                var fullPath = GetFullPath(file);
-                if (File.Exists(fullPath))
-                {
-                    physicalPath = fullPath;
-                    return true;
-                }
+                return default;
             }
 
-            physicalPath = null;
-            return false;
+            var (package, path) = ResolveFilePath(file);
+
+            return package.TryGetPhysicalPath(path);
+        }
+
+        public PathString? TryGetOriginalPhysicalPath(FilePath file)
+        {
+            if (file.IsGitCommit || file.Origin == FileOrigin.Generated)
+            {
+                return default;
+            }
+
+            var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
+
+            return package.TryGetPhysicalPath(path);
         }
 
         /// <summary>
@@ -169,15 +159,16 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException();
             }
 
-            var fullPath = GetFullPath(file);
-            if (!file.IsGitCommit)
+            if (file.IsGitCommit)
             {
-                return File.OpenRead(fullPath);
+                var bytes = ReadBytesFromGit(file) ?? throw new InvalidOperationException($"Error reading '{file}'");
+
+                return new MemoryStream(bytes, writable: false);
             }
 
-            var bytes = ReadBytesFromGit(fullPath) ?? throw new InvalidOperationException($"Error reading '{file}'");
+            var (package, path) = ResolveFilePath(file);
 
-            return new MemoryStream(bytes, writable: false);
+            return package.ReadStream(path);
         }
 
         /// <summary>
@@ -188,20 +179,19 @@ namespace Microsoft.Docs.Build
             switch (origin)
             {
                 case FileOrigin.Main:
-                    return PathUtility.GetFiles(_buildOptions.DocsetPath).Select(file => FilePath.Content(file)).ToArray();
+                    return _mainPackage.GetFiles().Select(FilePath.Content).ToArray();
 
-                case FileOrigin.Fallback when _buildOptions.FallbackDocsetPath != null:
-                    var files = _alternativeFallbackFolder != null
-                        ? PathUtility.GetFiles(_alternativeFallbackFolder).Select(f => FilePath.Fallback(f))
-                        : Array.Empty<FilePath>();
-                    return files.Concat(PathUtility.GetFiles(_buildOptions.FallbackDocsetPath).Select(f => FilePath.Fallback(f))).ToArray();
+                case FileOrigin.Fallback:
+                    var alternativeFiles = _alternativeFallbackPackage?.GetFiles() ?? Array.Empty<PathString>();
+                    var files = _fallbackPackage?.GetFiles() ?? Array.Empty<PathString>();
+                    return alternativeFiles.Concat(files).Select(file => FilePath.Fallback(file)).ToArray();
 
                 case FileOrigin.Dependency when dependencyName != null:
-                    var package = _config.Dependencies[dependencyName.Value];
-                    var packagePath = _packageResolver.ResolvePackage(package, package.PackageFetchOptions);
+                    var packagePath = _config.Dependencies[dependencyName.Value];
+                    var package = _packageResolver.ResolveAsPackage(packagePath, packagePath.PackageFetchOptions);
 
                     return (
-                        from file in PathUtility.GetFiles(packagePath)
+                        from file in package.GetFiles()
                         let path = dependencyName.Value.Concat(file)
                         select FilePath.Dependency(path, dependencyName.Value)).ToArray();
 
@@ -263,15 +253,54 @@ namespace Microsoft.Docs.Build
             return _generatedContents[file].yamlMime;
         }
 
-        private byte[]? ReadBytesFromGit(PathString fullPath)
+        private (Package, PathString) ResolveFilePath(FilePath file)
         {
-            var (repo, pathToRepo) = _repositoryProvider.GetRepository(fullPath);
+            switch (file.Origin)
+            {
+                case FileOrigin.Main:
+                case FileOrigin.External:
+                    return (_mainPackage, file.Path);
+
+                case FileOrigin.Dependency:
+                    var packagePath = _config.Dependencies[file.DependencyName];
+                    var package = _packageResolver.ResolveAsPackage(packagePath, packagePath.PackageFetchOptions);
+                    var pathToPackage = new PathString(Path.GetRelativePath(file.DependencyName, file.Path));
+                    Debug.Assert(!pathToPackage.Value.StartsWith('.'));
+                    return (package, pathToPackage);
+
+                case FileOrigin.Fallback when _fallbackPackage != null:
+                    if (_alternativeFallbackPackage != null && _alternativeFallbackPackage.Exists(file.Path))
+                    {
+                        return (_alternativeFallbackPackage, file.Path);
+                    }
+                    return (_fallbackPackage, file.Path);
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        private byte[]? ReadBytesFromGit(FilePath file)
+        {
+            var (package, path) = ResolveFilePath(file);
+
+            return ReadBytesFromGit(package.TryGetGitFilePath(path));
+        }
+
+        private byte[]? ReadBytesFromGit(PathString? physicalPath)
+        {
+            if (physicalPath is null)
+            {
+                return null;
+            }
+
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(physicalPath.Value);
             if (repo is null || pathToRepo is null)
             {
                 return null;
             }
 
-            return _gitBlobCache.GetOrAdd(fullPath, path =>
+            return _gitBlobCache.GetOrAdd(physicalPath.Value, path =>
             {
                 var (repo, _, commits) = _repositoryProvider.GetCommitHistory(path);
                 if (repo is null || commits.Length <= 1)
