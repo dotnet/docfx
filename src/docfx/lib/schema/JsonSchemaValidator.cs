@@ -266,61 +266,53 @@ namespace Microsoft.Docs.Build
 
         private void ValidateMaxItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
-            foreach (var (condition, value) in schema.MaxItemsWhen)
+            foreach (var check in schema.MaxItemsWhen)
             {
                 var count = 0;
                 for (var i = 0; i < array.Count; i++)
                 {
-                    if (SchemaMatches(condition, array[i]))
+                    if (check.Condition != null && SchemaMatches(check.Condition, array[i]))
                     {
                         count++;
                     }
                 }
 
-                if (count > value)
+                if (count > check.Value)
                 {
                     errors.Add(Errors.JsonSchema.ArrayMatchInvalid(
                         JsonUtility.GetSourceInfo(array),
                         name,
-                        $"The array must not have more than {value} matched item(s)."));
+                        $"The array must not have more than {check.Value} matched item(s)."));
                 }
             }
         }
 
         private void ValidateMinItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
         {
-            foreach (var (condition, value) in schema.MinItemsWhen)
+            foreach (var check in schema.MinItemsWhen)
             {
                 var count = 0;
                 for (var i = 0; i < array.Count; i++)
                 {
-                    if (SchemaMatches(condition, array[i]))
+                    if (check.Condition != null && SchemaMatches(check.Condition, array[i]))
                     {
                         count++;
                     }
                 }
 
-                if (count < value)
+                if (count < check.Value)
                 {
                     errors.Add(Errors.JsonSchema.ArrayMatchInvalid(
                         JsonUtility.GetSourceInfo(array),
                         name,
-                        $"The array must have least {value} matched item(s)."));
+                        $"The array must have least {check.Value} matched item(s)."));
                 }
             }
         }
 
         private bool SchemaMatches(JsonSchema schema, JToken map)
         {
-            if (map is JObject obj)
-            {
-                var errors = Validate(schema, obj);
-                if (errors.Count == 0)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Validate(schema, map).Count <= 0;
         }
 
         private static void ValidateBooleanSchema(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)

@@ -270,14 +270,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that are used to hold min item count that meet condition.
         /// </summary>
-        [JsonConverter(typeof(ValueTupleConverter<JsonSchema, int>), "condition", "value")]
-        public (JsonSchema, int)[] MinItemsWhen { get; set; } = Array.Empty<(JsonSchema, int)>();
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ConditionalCheckSchema[] MinItemsWhen { get; private set; } = Array.Empty<ConditionalCheckSchema>();
 
         /// <summary>
         /// Properties that are used to hold max item count that meet condition.
         /// </summary>
-        [JsonConverter(typeof(ValueTupleConverter<JsonSchema, int>), "condition", "value")]
-        public (JsonSchema, int)[] MaxItemsWhen { get; set; } = Array.Empty<(JsonSchema, int)>();
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ConditionalCheckSchema[] MaxItemsWhen { get; private set; } = Array.Empty<ConditionalCheckSchema>();
 
         // JSON schema metadata validation error extensions
         //-------------------------------------------
