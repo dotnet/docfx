@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 {
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
-                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file),
                 };
                 Write(_validator.ValidateLink(
                     new Link
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
                         IsInlineImage = origin.IsInlineImage(imageIndex),
                         SourceInfo = link.Source,
                         ParentSourceInfoList = origin.GetInclusionStack(),
-                        Monikers = origin.GetZoneLevelMonikers().ToList(),
+                        Monikers = origin.GetZoneLevelMonikers(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }
@@ -77,21 +77,21 @@ namespace Microsoft.Docs.Build
                 {
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
-                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file),
                 };
                 Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateHeadings(FilePath file, List<ContentNode> nodes, bool isInclude)
+        public void ValidateHeadings(FilePath file, List<ContentNode> nodes)
         {
-            if (TryGetValidationDocumentType(file, isInclude, out var documentType))
+            if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var validationContext = new ValidationContext
                 {
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
-                    Monikers = isInclude ? null : _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file),
                 };
                 Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
             }
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                 {
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
-                    Monikers = monikers.ToList(),
+                    Monikers = monikers,
                 };
                 Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
             }
@@ -231,7 +231,7 @@ namespace Microsoft.Docs.Build
                 {
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
-                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file),
                 };
                 var tocItem = new ExternalBreadcrumbTocItem()
                 {
@@ -255,7 +255,7 @@ namespace Microsoft.Docs.Build
                 {
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
-                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file).ToList(),
+                    Monikers = _monikerProvider.GetFileLevelMonikers(_errors, file),
                 };
                 var tocItem = new DuplicatedTocItem()
                 {
