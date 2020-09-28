@@ -787,3 +787,11 @@ inputs:
 outputs:
   a.json: |
     { "conceptual": "<p><a href=\"#to\" name=\"to\">to</a></p><p>a<br></br>b</p>" }
+---
+# Skip resolvement of autolink `tel` to avoid `file-not-found`
+inputs:
+  docfx.yml:
+  index.md: |
+    tel:
+outputs:
+  index.json: 

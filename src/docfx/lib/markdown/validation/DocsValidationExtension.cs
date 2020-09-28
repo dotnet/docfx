@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
-                var currentFile = (FilePath)InclusionContext.File;
+                var currentFile = ((SourceInfo)InclusionContext.File).File;
                 if (currentFile.Format != FileFormat.Markdown)
                 {
                     return;
@@ -156,9 +156,9 @@ namespace Microsoft.Docs.Build
 
         private static int GetFencedCodeBlockNetLineCount(FencedCodeBlock fencedCodeBlock)
         {
-            int netLineCount = 0;
+            var netLineCount = 0;
 
-            for (int i = 0; i < fencedCodeBlock.Lines.Count; i++)
+            for (var i = 0; i < fencedCodeBlock.Lines.Count; i++)
             {
                 var temSlice = fencedCodeBlock.Lines.Lines[i].Slice;
                 temSlice.Trim();

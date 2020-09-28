@@ -306,6 +306,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static string AddToPropertyPath(string? propertyPath, string key)
+        {
+            if (string.IsNullOrEmpty(propertyPath))
+            {
+                return $"{key}";
+            }
+            else
+            {
+                return $"{propertyPath}.{key}";
+            }
+        }
+
         /// <summary>
         /// Sets the property value. Prefer this method when you need to propagate source info.
         /// </summary>

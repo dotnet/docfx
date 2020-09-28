@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             Assert.Empty(errors);
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
-            for (int i = 0; i < values.Count; i++)
+            for (var i = 0; i < values.Count; i++)
             {
                 Assert.Equal(i, values[i].B);
                 Assert.Equal($"Good{i}!", values[i].C);
@@ -400,9 +400,9 @@ namespace Microsoft.Docs.Build
             var basic = new BasicClass
             {
                 B = 1,
-                Property = new SourceInfo<string>(null, new SourceInfo(new FilePath(""), 0, 0)),
-                Array = new SourceInfo<string[]>(Array.Empty<string>(), new SourceInfo(new FilePath(""), 0, 0)),
-                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(new FilePath(""), 0, 0)),
+                Property = new SourceInfo<string>(null, new SourceInfo(new FilePath(""))),
+                Array = new SourceInfo<string[]>(Array.Empty<string>(), new SourceInfo(new FilePath(""))),
+                GenericArray = new SourceInfo<List<string>>(new List<string>(), new SourceInfo(new FilePath(""))),
             };
             var result = JsonUtility.Serialize(basic);
             Assert.Equal("{\"b\":1,\"d\":false}", result);

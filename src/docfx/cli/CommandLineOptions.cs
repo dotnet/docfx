@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         public bool DryRun;
         public bool NoDrySync;
         public bool Stdin;
+        public bool Force;
         public bool NoCache;
         public bool NoRestore;
         public string? Template;

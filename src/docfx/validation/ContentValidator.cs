@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 var manifestItem = new ManifestItem()
                 {
                     PublishUrl = _documentProvider.GetSiteUrl(file),
-                    SourceInfo = new SourceInfo(file, 0, 0),
+                    SourceInfo = new SourceInfo(file),
                 };
 
                 var validationContext = new ValidationContext { DocumentType = documentType };
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
                 var tocItem = new DeprecatedTocItem()
                 {
                     FilePath = file.Path.Value,
-                    SourceInfo = new SourceInfo(file, 0, 0),
+                    SourceInfo = new SourceInfo(file),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
                 {
                     FilePath = file.Path.Value,
                     HasReferencedTocs = hasReferencedTocs,
-                    SourceInfo = new SourceInfo(file, 0, 0),
+                    SourceInfo = new SourceInfo(file),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
                 var tocItem = new DuplicatedTocItem()
                 {
                     FilePaths = filePaths,
-                    SourceInfo = new SourceInfo(file, 0, 0),
+                    SourceInfo = new SourceInfo(file),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
 
         private void Write(IEnumerable<ValidationError> validationErrors)
         {
-            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, e.Message, (SourceInfo?)e.SourceInfo)));
+            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, $"{e.Message}", (SourceInfo?)e.SourceInfo)));
 
             static ErrorLevel GetLevel(ValidationSeverity severity) =>
                 severity switch
