@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
                 return value;
             }
 
-            var sourceInfo = JsonUtility.GetSourceInfo(value);
+            var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
 
             switch (schema.ContentType)
@@ -343,12 +343,12 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Markdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
 
                 case JsonSchemaContentType.InlineMarkdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
@@ -357,7 +357,8 @@ namespace Microsoft.Docs.Build
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {
-                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                            var source = new SourceInfo<string>(href, content.Source?.WithOffset(href.Source));
+                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
                         });

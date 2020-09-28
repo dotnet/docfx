@@ -1554,8 +1554,8 @@ outputs:
   136a42ac/docs/b.json:
   4667fedf/docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
 ---
 # referencing multiple version, using uid with intersection for toc & SDP
 inputs:
@@ -1628,7 +1628,7 @@ outputs:
   4667fedf/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # can cross version referencing single-version uid
 inputs:
@@ -1726,7 +1726,7 @@ outputs:
     {"content": "<a href=\"../v2/a.json\" data-linktype=\"relative-path\"> name 2.0 </a>"}
   439a76d0/v3/b.mta.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:

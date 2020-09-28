@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
-                var currentFile = (FilePath)InclusionContext.File;
+                var currentFile = ((SourceInfo)InclusionContext.File).File;
                 if (currentFile.Format != FileFormat.Markdown)
                 {
                     return;

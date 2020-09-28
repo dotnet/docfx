@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(document =>
             {
-                var file = (FilePath)InclusionContext.File;
+                var file = ((SourceInfo)InclusionContext.File).File;
                 var elementCount = new Dictionary<string, int>();
 
                 document.Visit(node =>
