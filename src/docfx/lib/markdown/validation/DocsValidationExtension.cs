@@ -59,9 +59,9 @@ namespace Microsoft.Docs.Build
 
                 contentValidator.ValidateHeadings(currentFile, documentNodes);
 
-                foreach (var (isInclude, codeBlockItem) in codeBlockNodes)
+                foreach (var (_, codeBlockItem) in codeBlockNodes)
                 {
-                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, isInclude);
+                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
                 }
             });
         }

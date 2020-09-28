@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem, bool isInclude)
+        public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem)
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
