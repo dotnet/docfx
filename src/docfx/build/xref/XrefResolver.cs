@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using DotLiquid.Util;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,8 +16,10 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<IReadOnlyDictionary<string, Lazy<(string? repoUrl, ExternalXrefSpec spec)>>> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
+        private readonly Lazy<(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap, IReadOnlyList<(string, SourceInfo?)> globalUIDs)>
+            _internalXrefMapAndGlobalUID;
+
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
@@ -42,18 +45,19 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
-                () => new InternalXrefMapBuilder(
-                            errorLog,
-                            templateEngine,
-                            documentProvider,
-                            metadataProvider,
-                            monikerProvider,
-                            input,
-                            buildScope,
-                            jsonSchemaTransformer.Value).Build());
+            _internalXrefMapAndGlobalUID =
+                new Lazy<(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap, IReadOnlyList<(string, SourceInfo?)> globalUIDs)>(
+                    () => new InternalXrefMapBuilder(
+                                errorLog,
+                                templateEngine,
+                                documentProvider,
+                                metadataProvider,
+                                monikerProvider,
+                                input,
+                                buildScope,
+                                jsonSchemaTransformer.Value).Build());
 
-            _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<(string?, ExternalXrefSpec)>>>(
+            _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
             _dependencyMapBuilder = dependencyMapBuilder;
@@ -133,10 +137,9 @@ namespace Microsoft.Docs.Build
             SourceInfo<string> uid,
             FilePath referencingFile,
             FilePath inclusionRoot,
-            MonikerList? monikers = null,
-            bool uIDGlobalUnique = false)
+            MonikerList? monikers = null)
         {
-            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, uIDGlobalUnique, monikers);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec == null)
             {
                 return (error, null, null);
@@ -147,7 +150,6 @@ namespace Microsoft.Docs.Build
         public XrefMapModel ToXrefMapModel(bool isLocalizedBuild)
         {
             var repositoryBranch = _repository?.Branch;
-
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
             var references = Array.Empty<ExternalXrefSpec>();
@@ -194,7 +196,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateInternalXrefProperties()
         {
-            foreach (var xrefs in _internalXrefMap.Value.Values)
+            foreach (var xrefs in _internalXrefMapAndGlobalUID.Value.internalXrefMap.Values)
             {
                 if (xrefs.Length == 1)
                 {
@@ -218,6 +220,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void ValidateUIDGlobalUnique()
+        {
+            foreach (var (uid, source) in _internalXrefMapAndGlobalUID.Value.globalUIDs)
+            {
+                _externalXrefMap.Value.TryGetValue(uid, out var spec);
+
+                if (spec?.Value != null)
+                {
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(new SourceInfo<string>(uid, source), spec.Value.RepoUrl));
+                }
+            }
+        }
+
         private static string RemoveSharingHost(string url, string hostName)
         {
             // TODO: this workaround can be removed when all xref related repos migrated to v3
@@ -236,58 +251,46 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error?, IXrefSpec?, string? href) Resolve(
-            SourceInfo<string> uid,
-            FilePath referencingFile,
-            FilePath inclusionRoot,
-            bool uIDGlobalUnique,
-            MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            var (internalXrefSpec, internalHref) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
-
-            if (uIDGlobalUnique || internalXrefSpec == null)
+            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
+            if (xrefSpec is null)
             {
-                var (externalXrefSpec, externalHref, repoUrl) = ResolveExternalXrefSpec(uid);
-
-                if (internalXrefSpec == null && externalXrefSpec == null)
-                {
-                    return (Errors.Xref.XrefNotFound(uid), null, null);
-                }
-                else if (internalXrefSpec == null && externalXrefSpec != null)
-                {
-                    return (null, externalXrefSpec, externalHref);
-                }
-                else if (internalXrefSpec != null && externalXrefSpec != null && uIDGlobalUnique)
-                {
-                    return (Errors.Xref.DuplicateUidGlobal(uid, repoUrl), internalXrefSpec, internalHref);
-                }
+                (xrefSpec, href) = ResolveExternalXrefSpec(uid);
             }
 
-            return (null, internalXrefSpec, internalHref);
+            if (xrefSpec is null)
+            {
+                return (Errors.Xref.XrefNotFound(uid), null, null);
+            }
+
+            return (null, xrefSpec, href);
         }
 
-        private (IXrefSpec? xrefSpec, string? href, string? repoName) ResolveExternalXrefSpec(string uid)
+        private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            if (_externalXrefMap.Value.TryGetValue(uid, out var repoNameAndSpec))
+            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
-                var href = RemoveSharingHost(repoNameAndSpec.Value.spec.Href, _config.HostName);
-                return (repoNameAndSpec.Value.spec, href, repoNameAndSpec.Value.repoUrl);
+                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
+                return (spec.Value, href);
             }
             return default;
         }
 
         private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
         {
-            if (!_internalXrefMap.IsValueCreated)
+            if (!_internalXrefMapAndGlobalUID.IsValueCreated)
             {
-                _ = _internalXrefMap.Value;
+                _ = _internalXrefMapAndGlobalUID.Value;
             }
 
             if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
             {
                 ValidateInternalXrefProperties();
+                ValidateUIDGlobalUnique();
             }
 
-            return _internalXrefMap.Value;
+            return _internalXrefMapAndGlobalUID.Value.internalXrefMap;
         }
 
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(

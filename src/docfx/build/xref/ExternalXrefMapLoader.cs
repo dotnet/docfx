@@ -16,11 +16,11 @@ namespace Microsoft.Docs.Build
 
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
 
-        public static IReadOnlyDictionary<string, Lazy<(string?, ExternalXrefSpec)>> Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
+        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
             using (Progress.Start("Loading external xref map"))
             {
-                var result = new Dictionary<string, Lazy<(string?, ExternalXrefSpec)>>();
+                var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
 
                 foreach (var url in config.Xref)
                 {
@@ -36,16 +36,17 @@ namespace Microsoft.Docs.Build
                         var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                         foreach (var spec in xrefMap.References)
                         {
-                            result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryUrl, spec)));
+                            spec.RepoUrl = xrefMap.RepositoryUrl;
+                            result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                         }
                     }
                     else
                     {
                         // Fast pass for JSON xref files
-                        foreach (var (uid, repoNameAndSpec) in LoadJsonFile(physicalPath))
+                        foreach (var (uid, spec) in LoadJsonFile(physicalPath))
                         {
                             // for same uid with multiple specs, we should respect the order of the list
-                            result.TryAdd(uid, repoNameAndSpec);
+                            result.TryAdd(uid, spec);
                         }
                     }
                 }
@@ -55,9 +56,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static List<(string, Lazy<(string? repoUrl, ExternalXrefSpec spec)>)> LoadJsonFile(string filePath)
+        public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath)
         {
-            var result = new List<(string, Lazy<(string?, ExternalXrefSpec)>)>();
+            var result = new List<(string, Lazy<ExternalXrefSpec>)>();
             var content = File.ReadAllBytes(filePath);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
@@ -66,17 +67,18 @@ namespace Microsoft.Docs.Build
 
             foreach (var (uid, start, end) in xrefSpecPositions)
             {
-                result.Add((uid, new Lazy<(string?, ExternalXrefSpec)>(() =>
+                result.Add((uid, new Lazy<ExternalXrefSpec>(() =>
                 {
                     using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    var json = ReadJsonFragment(stream, start, end);
-                    return (repoUrl, JsonUtility.DeserializeData<ExternalXrefSpec>(json, new FilePath(filePath)));
+                    var spec = JsonUtility.DeserializeData<ExternalXrefSpec>(ReadJsonFragment(stream, start, end), new FilePath(filePath));
+                    spec.RepoUrl = repoUrl;
+                    return spec;
                 })));
             }
             return result;
         }
 
-        private static void LoadZipFile(Dictionary<string, Lazy<(string?, ExternalXrefSpec)>> result, FilePath path, string physicalPath, ErrorBuilder errors)
+        private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorBuilder errors)
         {
             using var stream = File.OpenRead(physicalPath);
             using var archive = new ZipArchive(stream);
@@ -89,7 +91,8 @@ namespace Microsoft.Docs.Build
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
-                        result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryUrl, spec)));
+                        spec.RepoUrl = xrefMap.RepositoryUrl;
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
                 }
                 else if (entry.FullName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
@@ -98,7 +101,8 @@ namespace Microsoft.Docs.Build
                     var xrefMap = JsonUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
-                        result.TryAdd(spec.Uid, new Lazy<(string?, ExternalXrefSpec)>(() => (xrefMap.RepositoryUrl, spec)));
+                        spec.RepoUrl = xrefMap.RepositoryUrl;
+                        result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
                 }
             }

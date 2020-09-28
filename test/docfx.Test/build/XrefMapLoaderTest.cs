@@ -47,9 +47,9 @@ namespace Microsoft.Docs.Build
             var filePath = WriteJsonToTempFile(json);
             var result = ExternalXrefMapLoader.LoadJsonFile(filePath);
             var resultUids = new List<string>();
-            foreach (var (uid, repoNameAndSpec) in result)
+            foreach (var (uid, spec) in result)
             {
-                resultUids.Add(((ExternalXrefSpec)repoNameAndSpec.Value.spec).Uid);
+                resultUids.Add(((ExternalXrefSpec)spec.Value).Uid);
             }
             Assert.Equal(uids, resultUids);
         }

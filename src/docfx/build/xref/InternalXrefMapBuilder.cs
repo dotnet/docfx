@@ -40,16 +40,17 @@ namespace Microsoft.Docs.Build
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
-        public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
+        public (IReadOnlyDictionary<string, InternalXrefSpec[]>, IReadOnlyList<(string, SourceInfo?)>) Build()
         {
             var builder = new ListBuilder<InternalXrefSpec>();
+            var globalUIDs = new ListBuilder<(string, SourceInfo?)>();
 
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
                     _errors,
                     _buildScope.GetFiles(ContentType.Page),
-                    file => Load(_errors, builder, file));
+                    file => Load(_errors, builder, globalUIDs, file));
             }
 
             var xrefmap =
@@ -62,10 +63,10 @@ namespace Microsoft.Docs.Build
             var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
             result.TrimExcess();
 
-            return result;
+            return (result, globalUIDs.AsList());
         }
 
-        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
+        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, ListBuilder<(string, SourceInfo?)> globalUIDs, FilePath file)
         {
             switch (file.Format)
             {
@@ -82,14 +83,14 @@ namespace Microsoft.Docs.Build
                 case FileFormat.Yaml:
                     {
                         var token = _input.ReadYaml(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
+                        var specs = LoadSchemaDocument(errors, token, file, globalUIDs);
                         xrefs.AddRange(specs);
                         break;
                     }
                 case FileFormat.Json:
                     {
                         var token = _input.ReadJson(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
+                        var specs = LoadSchemaDocument(errors, token, file, globalUIDs);
                         xrefs.AddRange(specs);
                         break;
                     }
@@ -111,11 +112,12 @@ namespace Microsoft.Docs.Build
             return xref;
         }
 
-        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
+        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(
+            ErrorBuilder errors, JToken token, FilePath file, ListBuilder<(string, SourceInfo?)> globalUIDs)
         {
             var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
 
-            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
+            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token, globalUIDs);
         }
 
         private InternalXrefSpec[] AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
