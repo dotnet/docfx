@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
 
                 if (count > check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.ConditionalCheckInvalid(
+                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
                         JsonUtility.GetSourceInfo(array),
                         name,
                         $"The array must not have more than {check.Value} matched item(s)."));
@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
 
                 if (count < check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.ConditionalCheckInvalid(
+                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
                         JsonUtility.GetSourceInfo(array),
                         name,
                         $"The array must have least {check.Value} matched item(s)."));
