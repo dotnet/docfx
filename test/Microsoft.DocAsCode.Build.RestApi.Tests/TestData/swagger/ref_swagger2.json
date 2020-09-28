@@ -41,7 +41,12 @@
         },
         "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
         "summary": "Change a contact's properties.",
-        "operationId": "update contact"
+        "operationId": "update contact",
+        "x-ms-examples": {
+          "contacts": {
+            "$ref": "#/definitions/contacts"
+          }
+        }
       }
     }
   },
