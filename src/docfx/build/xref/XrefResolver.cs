@@ -7,7 +7,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Web;
-using DotLiquid.Util;
 
 namespace Microsoft.Docs.Build
 {
@@ -46,7 +45,7 @@ namespace Microsoft.Docs.Build
             _repository = repository;
             _documentProvider = documentProvider;
             _internalXrefMapAndGlobalUID =
-                new Lazy<(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap, IReadOnlyList<(string, SourceInfo?)> globalUIDs)>(
+                new Lazy<(IReadOnlyDictionary<string, InternalXrefSpec[]>, IReadOnlyList<(string, SourceInfo?)>)>(
                     () => new InternalXrefMapBuilder(
                                 errorLog,
                                 templateEngine,
@@ -134,10 +133,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
-            SourceInfo<string> uid,
-            FilePath referencingFile,
-            FilePath inclusionRoot,
-            MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
             var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec == null)
