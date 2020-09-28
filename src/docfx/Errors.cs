@@ -497,7 +497,7 @@ namespace Microsoft.Docs.Build
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
 
-            public static Error ArrayMatchInvalid(SourceInfo? source, string propName, string message)
+            public static Error ConditionalCheckInvalid(SourceInfo? source, string propName, string message)
                 => new Error(ErrorLevel.Error, "conditional-check-invalid", $"{message}", source, propName);
 
             /// <summary>
