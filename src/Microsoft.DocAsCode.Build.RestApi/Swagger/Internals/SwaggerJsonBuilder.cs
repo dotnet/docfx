@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             return LoadCore(token, swaggerPath);
         }
 
-        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath)
+        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath, bool isExample = false)
         {
             // Fetch from cache first
             var location = JsonLocationHelper.GetLocation(token);
@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             if (token is JObject jObject)
             {
                 // Only one $ref is allowed inside a swagger JObject
-                if (jObject.TryGetValue(ReferenceKey, out JToken referenceToken))
+                if (jObject.TryGetValue(ReferenceKey, out JToken referenceToken) && !isExample)
                 {
                     if (referenceToken.Type != JTokenType.String && referenceToken.Type != JTokenType.Null)
                     {
@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerObject = new SwaggerObject { Location = location };
                 foreach (KeyValuePair<string, JToken> property in jObject)
                 {
-                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath));
+                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || IsExampleProperty(property.Key)));
                 }
 
                 _documentObjectCache.Add(jsonLocationInfo, swaggerObject);
@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerArray = new SwaggerArray { Location = location };
                 foreach (var property in jArray)
                 {
-                    swaggerArray.Array.Add(LoadCore(property, swaggerPath));
+                    swaggerArray.Array.Add(LoadCore(property, swaggerPath, isExample));
                 }
 
                 return swaggerArray;
@@ -156,6 +156,14 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 Location = location,
                 Token = token
             };
+        }
+
+        private static bool IsExampleProperty(string propertyName)
+        {
+            return !string.IsNullOrEmpty(propertyName)
+                && (propertyName == "x-ms-examples"
+                || propertyName == "examples"
+                || propertyName == "example");
         }
 
         private static JObject LoadExternalReference(string externalSwaggerPath)
