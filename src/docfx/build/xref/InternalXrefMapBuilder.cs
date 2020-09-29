@@ -134,23 +134,24 @@ namespace Microsoft.Docs.Build
 
             // multiple uid conflicts
             // log an warning and take the first one order by the declaring file
-            var duplicatedSpecs = specsWithSameUid.GroupBy(spec => spec.Monikers);
-            var duplicateMonikerList = new HashSet<MonikerList>();
-            foreach (var monikerGroup in duplicatedSpecs)
+            var duplicateGroups = specsWithSameUid.GroupBy(spec => spec.Monikers);
+            var duplicateSpecs = new HashSet<InternalXrefSpec>();
+            foreach (var monikerGroup in duplicateGroups)
             {
                 var specsWithSameMonikerList = monikerGroup.ToList();
-                var duplicateSource = (from spec in specsWithSameMonikerList where spec.Uid.Value != null select spec.Uid.Source).ToArray();
                 if (specsWithSameMonikerList.Count > 1)
                 {
-                    duplicateMonikerList.Add(monikerGroup.Key);
+                    var duplicateSource = (from spec in specsWithSameMonikerList where spec.Uid.Value != null select spec.Uid.Source).ToArray();
+
                     foreach (var spec in specsWithSameMonikerList)
                     {
+                        duplicateSpecs.Add(spec);
                         _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource));
                     }
                 }
             }
 
-            var conflictsWithoutDuplicated = specsWithSameUid.Where(spec => !duplicateMonikerList.Contains(spec.Monikers)).ToArray();
+            var conflictsWithoutDuplicated = specsWithSameUid.Where(spec => !duplicateSpecs.Contains(spec)).ToArray();
 
             // when the MonikerList is not equal but overlapped, log an moniker-overlapping warning and take the first one order by the declaring file
             if (CheckOverlappingMonikers(conflictsWithoutDuplicated, out var overlappingMonikers))
