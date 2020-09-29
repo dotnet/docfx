@@ -284,7 +284,7 @@ namespace Microsoft.Docs.Build
             if (headCommit == IntPtr.Zero)
             {
                 git_object_free(walk);
-                throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();
+                throw Errors.Config.CommittishNotFound(_repository.Url, committish).ToException();
             }
 
             var lastCommitId = *git_object_id(headCommit);

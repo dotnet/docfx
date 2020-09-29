@@ -247,8 +247,8 @@ outputs:
   e277e62e/docs/v1/b.json:
   8cec59bf/docs/v2/a.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)' with moniker 'netcore-2.1'.","file":"docs/v1/b.md","line":2,"end_line":2,"column":14,"end_column":15}
-    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)' with moniker 'netcore-2.1'.","file":"docs/v1/a.md","line":2,"end_line":2,"column":14,"end_column":15}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)'.","file":"docs/v1/b.md","line":2,"end_line":2,"column":14,"end_column":15}
+    {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)'.","file":"docs/v1/a.md","line":2,"end_line":2,"column":14,"end_column":15}
 ---
 # Json schema length rule: the length of string must be in range of MinLength and MaxLength
 inputs:

@@ -13,22 +13,22 @@ namespace Microsoft.Docs.Build
         public FilePath File { get; }
 
         /// <summary>
-        /// A one based start line value.
+        /// A one based start line value, or zero if there is no line info.
         /// </summary>
         public int Line { get; }
 
         /// <summary>
-        /// A one based start column value.
+        /// A one based start column value, or zero if there is no line info.
         /// </summary>
         public int Column { get; }
 
         /// <summary>
-        /// A one based end line value.
+        /// A one based end line value, or zero if there is no line info.
         /// </summary>
         public int EndLine { get; }
 
         /// <summary>
-        /// A one based end column value.
+        /// A one based end column value, or zero if there is no line info.
         /// </summary>
         public int EndColumn { get; }
 
@@ -67,6 +67,36 @@ namespace Microsoft.Docs.Build
             return new SourceInfo(File, Line, Column, EndLine, EndColumn, keySourceInfo);
         }
 
+        public SourceInfo WithOffset(SourceInfo? offset)
+        {
+            if (offset is null)
+            {
+                return this;
+            }
+
+            if (offset.File != File)
+            {
+                return offset;
+            }
+
+            return WithOffset(offset.Line, offset.Column, offset.EndLine, offset.EndColumn);
+        }
+
+        public SourceInfo WithOffset(int line, int column)
+        {
+            var start = OffSet(Line, Column, line, column);
+
+            return new SourceInfo(File, start.line, start.column, start.line, start.column);
+        }
+
+        public SourceInfo WithOffset(int line, int column, int endLine, int endColumn)
+        {
+            var start = OffSet(Line, Column, line, column);
+            var end = OffSet(Line, Column, endLine, endColumn);
+
+            return new SourceInfo(File, start.line, start.column, end.line, end.column);
+        }
+
         public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);
 
         public static bool operator !=(SourceInfo? a, SourceInfo? b) => !Equals(a, b);
@@ -93,6 +123,10 @@ namespace Microsoft.Docs.Build
 
         public override string ToString()
         {
+            if (ApexValidationExtension.ForceSourceInfoToStringFilePathOnly)
+            {
+                return File.ToString();
+            }
             return Line <= 1 && Column <= 1 ? File.ToString() : $"{File}({Line},{Column})";
         }
 
@@ -125,6 +159,16 @@ namespace Microsoft.Docs.Build
             }
 
             return result;
+        }
+
+        private static (int line, int column) OffSet(int line1, int column1, int line2, int column2)
+        {
+            line1 = line1 <= 0 ? 1 : line1;
+            column1 = column1 <= 0 ? 1 : column1;
+            line2 = line2 <= 0 ? 1 : line2;
+            column2 = column2 <= 0 ? 1 : column2;
+
+            return line2 == 1 ? (line1, column1 + column2 - 1) : (line1 + line2 - 1, column2);
         }
     }
 }

@@ -427,7 +427,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error XrefPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
-                => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
+                => new Error(ErrorLevel.Info, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
         }
 
         public static class Versioning
@@ -515,6 +515,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
+
+            /// <summary>
+            /// Array conditional check not within min or max value
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error ArrayCheckInvalid(SourceInfo? source, string propName, string message)
+                => new Error(ErrorLevel.Warning, "array-check-invalid", $"{message}", source, propName);
 
             /// <summary>
             /// Array items not unique.
@@ -627,11 +634,11 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public const string DuplicateAttributeCode = "duplicate-attribute";
 
-            public static Error DuplicateAttribute(SourceInfo? source, string name, string moniker, object value, IEnumerable<SourceInfo> duplicatedSources)
+            public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
                 => new Error(
                     ErrorLevel.Suggestion,
                     DuplicateAttributeCode,
-                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}{(string.IsNullOrEmpty(moniker) ? "" : $" with moniker '{moniker}'")}.",
+                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
         }
