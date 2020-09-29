@@ -32,7 +32,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 var documentNodes = new List<ContentNode>();
-                var inclusionDocumentNodes = new Dictionary<FilePath, List<ContentNode>>();
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockItem codeBlockItem)>();
 
                 var canonicalVersion = getCanonicalVersion();
@@ -51,22 +50,18 @@ namespace Microsoft.Docs.Build
 
                     var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, node.GetZoneLevelMonikers());
 
-                    BuildHeadingNodes(node, markdownEngine, documentNodes, inclusionDocumentNodes, isCanonicalVersion);
+                    BuildHeadingNodes(node, markdownEngine, documentNodes, isCanonicalVersion);
 
                     BuildCodeBlockNodes(node, codeBlockNodes, isCanonicalVersion);
 
                     return false;
                 });
 
-                contentValidator.ValidateHeadings(currentFile, documentNodes, false);
-                foreach (var (inclusion, inclusionNodes) in inclusionDocumentNodes)
-                {
-                    contentValidator.ValidateHeadings(inclusion, inclusionNodes, true);
-                }
+                contentValidator.ValidateHeadings(currentFile, documentNodes);
 
-                foreach (var (isInclude, codeBlockItem) in codeBlockNodes)
+                foreach (var (_, codeBlockItem) in codeBlockNodes)
                 {
-                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem, isInclude);
+                    contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
                 }
             });
         }
@@ -75,7 +70,6 @@ namespace Microsoft.Docs.Build
             MarkdownObject node,
             MarkdownEngine markdownEngine,
             List<ContentNode> documentNodes,
-            Dictionary<FilePath, List<ContentNode>> inclusionDocumentNodes,
             bool isCanonicalVersion)
         {
             ContentNode? documentNode = null;
@@ -104,16 +98,6 @@ namespace Microsoft.Docs.Build
             if (documentNode != null)
             {
                 documentNodes.Add(documentNode);
-                if (node.IsInclude())
-                {
-                    var file = node.GetFilePath();
-                    if (!inclusionDocumentNodes.TryGetValue(file, out var inclusionNodes))
-                    {
-                        inclusionDocumentNodes[file] = inclusionNodes = new List<ContentNode>();
-                    }
-
-                    inclusionNodes.Add(documentNode);
-                }
             }
         }
 

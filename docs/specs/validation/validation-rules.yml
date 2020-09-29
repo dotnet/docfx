@@ -153,8 +153,8 @@ outputs:
     {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
     {"message_severity":"suggestion","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/a.md","line":3,"end_line":3,"column":14,"end_column":15}
     {"message_severity":"suggestion","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
-    {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)' with moniker 'netcore-2.0'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
-    {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)' with moniker 'netcore-2.0'. Title must be unique within a docset.","file":"docs/v2/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/a.md","line":2,"end_line":2,"column":8,"end_column":9}
   9d4e15fd/docs/a.json:
   9d4e15fd/docs/b.json:
   976da3a9/docs/a.json:
