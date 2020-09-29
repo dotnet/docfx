@@ -216,6 +216,76 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-b'(a.md(15,1) -> e.md -> b.md) followed by heading: H5 'Title 5-c'(a.md(15,1) -> e.md(2,1) -> c.md). Headings must increment with no skipped levels","file":"e.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H3 'Title 3-d'(a.md(15,1) -> e.md(4,1) -> d.md) followed by heading: H5 'Title 5-d'(a.md(15,1) -> e.md(4,1) -> d.md(2,1)). Headings must increment with no skipped levels","file":"d.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
+# Content Validation - Skip Level with moniker
+inputs:
+  docfx.yml: |
+    monikerRange:
+      '**': '>= netcore-1.0 <= netcore-1.2'
+    monikerDefinition: monikerDefinition.json
+    markdownValidationRules: rules.json
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+      ]
+    }
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SkipLevel",
+            "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
+            "code": "heading-skipped",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: moniker range="<= netcore-1.1"
+    ## h2 heading
+    ::: moniker-end
+
+    ::: moniker range=">= netcore-1.2"
+    #### h4 heading
+    ::: moniker-end
+  b.md: |
+    ::: moniker range="<= netcore-1.1"
+    ## h2 heading
+    ::: moniker-end
+
+    ::: moniker range="<= netcore-1.2"
+    #### h4 heading
+    ::: moniker-end
+  c.md: |
+    ## h2 heading
+
+    ::: moniker range="<= netcore-1.2"
+    #### h4 heading
+    ::: moniker-end
+outputs:
+  2420f88b/a.json:
+  2420f88b/b.json:
+  2420f88b/c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"b.md","line":6,"end_line":6,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"c.md","line":4,"end_line":4,"column":1,"end_column":1}
+---
 # Content validation - h1 in inclusion
 inputs:
   docfx.yml: |
