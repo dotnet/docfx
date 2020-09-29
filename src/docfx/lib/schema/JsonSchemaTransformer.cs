@@ -70,13 +70,12 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             JsonSchema schema,
             FilePath file,
-            JToken token,
-            ListBuilder<(string, SourceInfo?)> globalUIDs)
+            JToken token)
         {
             var xrefSpecs = new List<InternalXrefSpec>();
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
-            LoadXrefSpecsCore(errors, file, schema, schema, definitions, token, xrefSpecs, uidCount, globalUIDs);
+            LoadXrefSpecsCore(errors, file, schema, schema, definitions, token, xrefSpecs, uidCount);
             return xrefSpecs;
         }
 
@@ -89,7 +88,6 @@ namespace Microsoft.Docs.Build
             JToken node,
             List<InternalXrefSpec> xrefSpecs,
             int uidCount,
-            ListBuilder<(string, SourceInfo?)> globalUIDs,
             string? propertyPath = null)
         {
             schema = definitions.GetDefinition(schema);
@@ -106,11 +104,6 @@ namespace Microsoft.Docs.Build
                     {
                         if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
-                            if (key.Equals("uid") && propertySchema.ContentType == JsonSchemaContentType.Uid && propertySchema.UIDGlobalUnique)
-                            {
-                                globalUIDs.Add((value.Value<string>(), value.GetSourceInfo()));
-                            }
-
                             LoadXrefSpecsCore(
                                 errors,
                                 file,
@@ -120,7 +113,6 @@ namespace Microsoft.Docs.Build
                                 value,
                                 xrefSpecs,
                                 uidCount,
-                                globalUIDs,
                                 JsonUtility.AddToPropertyPath(propertyPath, key));
                         }
                     }
@@ -128,7 +120,7 @@ namespace Microsoft.Docs.Build
                 case JArray array when schema.Items.schema != null:
                     foreach (var item in array)
                     {
-                        LoadXrefSpecsCore(errors, file, rootSchema, schema.Items.schema, definitions, item, xrefSpecs, uidCount, globalUIDs, propertyPath);
+                        LoadXrefSpecsCore(errors, file, rootSchema, schema.Items.schema, definitions, item, xrefSpecs, uidCount, propertyPath);
                     }
                     break;
             }
@@ -148,6 +140,11 @@ namespace Microsoft.Docs.Build
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
+
+            if (schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.UIDGlobalUnique)
+            {
+                xref.UIDGlobalUnique = true;
+            }
 
             foreach (var xrefProperty in schema.XrefProperties)
             {

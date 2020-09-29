@@ -22,6 +22,9 @@ namespace Microsoft.Docs.Build
 
         string IXrefSpec.Uid => Uid.Value;
 
+        [JsonIgnore]
+        public bool UIDGlobalUnique { get; set; }
+
         // TODO: change to use xrefSpec type to express what kind of xref spec it is: e.g. achievement, module
         [JsonIgnore]
         internal string? DeclaringPropertyPath { get; }

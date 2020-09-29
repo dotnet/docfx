@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         public MonikerList Monikers { get; private set; }
 
         [JsonIgnore]
-        public string? RepoUrl { get; set; }
+        public string? RepositoryUrl { get; set; }
 
         [JsonExtensionData]
         public JObject ExtensionData { get; private set; } = new JObject();

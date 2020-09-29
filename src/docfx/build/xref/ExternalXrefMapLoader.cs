@@ -12,9 +12,9 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefMapLoader
     {
-        private const string RepoUrlKey = "repositoryUrl";
-
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
+
+        private static readonly byte[] s_repoUrlBytes = Encoding.UTF8.GetBytes("repositoryUrl");
 
         public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
@@ -36,14 +36,14 @@ namespace Microsoft.Docs.Build
                         var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                         foreach (var spec in xrefMap.References)
                         {
-                            spec.RepoUrl = xrefMap.RepositoryUrl;
+                            spec.RepositoryUrl = xrefMap.RepositoryUrl;
                             result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                         }
                     }
                     else
                     {
                         // Fast pass for JSON xref files
-                        foreach (var (uid, spec) in LoadJsonFile(physicalPath))
+                        foreach (var (uid, spec) in LoadJsonFile(physicalPath, errors))
                         {
                             // for same uid with multiple specs, we should respect the order of the list
                             result.TryAdd(uid, spec);
@@ -56,14 +56,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath)
+        public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath, ErrorBuilder errors)
         {
             var result = new List<(string, Lazy<ExternalXrefSpec>)>();
             var content = File.ReadAllBytes(filePath);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
-            var (xrefSpecPositions, propertiesDic) = GetXrefSpecPosAndStrProperties(content, RepoUrlKey);
-            propertiesDic.TryGetValue(RepoUrlKey, out var repoUrl);
+            var (xrefSpecPositions, repositoryUrl) = GetXrefSpecPosAndRepoUrl(content, errors, filePath);
 
             foreach (var (uid, start, end) in xrefSpecPositions)
             {
@@ -71,7 +70,7 @@ namespace Microsoft.Docs.Build
                 {
                     using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     var spec = JsonUtility.DeserializeData<ExternalXrefSpec>(ReadJsonFragment(stream, start, end), new FilePath(filePath));
-                    spec.RepoUrl = repoUrl;
+                    spec.RepositoryUrl = repositoryUrl;
                     return spec;
                 })));
             }
@@ -91,7 +90,7 @@ namespace Microsoft.Docs.Build
                     var xrefMap = YamlUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
-                        spec.RepoUrl = xrefMap.RepositoryUrl;
+                        spec.RepositoryUrl = xrefMap.RepositoryUrl;
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
                 }
@@ -101,18 +100,18 @@ namespace Microsoft.Docs.Build
                     var xrefMap = JsonUtility.Deserialize<XrefMapModel>(errors, reader, path);
                     foreach (var spec in xrefMap.References)
                     {
-                        spec.RepoUrl = xrefMap.RepositoryUrl;
+                        spec.RepositoryUrl = xrefMap.RepositoryUrl;
                         result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                     }
                 }
             }
         }
 
-        private static (List<(string uid, long start, long end)>, Dictionary<string, string>) GetXrefSpecPosAndStrProperties(
-            ReadOnlySpan<byte> content, params string[] propertyNames)
+        private static (List<(string uid, long start, long end)>, string?) GetXrefSpecPosAndRepoUrl(
+            ReadOnlySpan<byte> content, ErrorBuilder errors, string filePath)
         {
             var xrefSpecPos = new List<(string uid, long start, long end)>();
-            var propertiesDic = new Dictionary<string, string>();
+            string repositoryUrl = string.Empty;
             var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
             while (reader.Read())
@@ -124,14 +123,16 @@ namespace Microsoft.Docs.Build
                         {
                             stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
                         }
-                        if (propertyNames.Length > 0 && stack.Count == 1)
+                        if (string.IsNullOrEmpty(repositoryUrl) && stack.Count == 1 && reader.ValueTextEquals(s_repoUrlBytes) && reader.Read())
                         {
-                            foreach (var pname in propertyNames)
+                            if (reader.TokenType == JsonTokenType.String)
                             {
-                                if (reader.ValueTextEquals(Encoding.UTF8.GetBytes(pname)) && reader.Read() && reader.TokenType == JsonTokenType.String)
-                                {
-                                    propertiesDic.TryAdd(pname, Encoding.UTF8.GetString(reader.ValueSpan));
-                                }
+                                repositoryUrl = Encoding.UTF8.GetString(reader.ValueSpan);
+                            }
+                            else
+                            {
+                                errors.Add(Errors.Json.UnexpectedType($"Loading failed, unexpected token type when loading xrefmap file '{filePath}'."));
+                                return default;
                             }
                         }
                         break;
@@ -146,7 +147,7 @@ namespace Microsoft.Docs.Build
                         break;
                 }
             }
-            return (xrefSpecPos, propertiesDic);
+            return (xrefSpecPos, repositoryUrl);
         }
 
         private static string ReadJsonFragment(Stream stream, long start, long end)

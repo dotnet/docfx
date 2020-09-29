@@ -129,6 +129,9 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ❌
             public static Error ViolateSchema(SourceInfo? source, string message)
                 => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
+
+            public static Error UnexpectedType(FormattableString message)
+                => new Error(ErrorLevel.Error, "unexpected-type", message);
         }
 
         public static class Yaml
@@ -405,16 +408,16 @@ namespace Microsoft.Docs.Build
             /// The same uid is defined in multiple docsets
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repoName)
+            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl)
             {
                 FormattableString message;
-                if (string.IsNullOrEmpty(repoName))
+                if (string.IsNullOrEmpty(repositoryUrl))
                 {
                     message = $"UID '{uid}' is duplicated globally.";
                 }
                 else
                 {
-                    message = $"UID '{uid}' is duplicated globally in repo '{repoName}'.";
+                    message = $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.";
                 }
 
                 return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);

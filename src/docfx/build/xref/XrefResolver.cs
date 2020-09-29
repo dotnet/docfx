@@ -16,8 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
-        private readonly Lazy<(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap, IReadOnlyList<(string, SourceInfo?)> globalUIDs)>
-            _internalXrefMapAndGlobalUID;
+        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -44,8 +43,7 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            _internalXrefMapAndGlobalUID =
-                new Lazy<(IReadOnlyDictionary<string, InternalXrefSpec[]>, IReadOnlyList<(string, SourceInfo?)>)>(
+            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
                     () => new InternalXrefMapBuilder(
                                 errorLog,
                                 templateEngine,
@@ -172,7 +170,7 @@ namespace Microsoft.Docs.Build
 
             var model = new XrefMapModel { References = references, RepositoryUrl = _repository?.Remote };
 
-            if (_config.UrlType == UrlType.Docs && references.Length > 0)
+            if (_config.UrlType == UrlType.Docs)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
@@ -192,7 +190,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateInternalXrefProperties()
         {
-            foreach (var xrefs in _internalXrefMapAndGlobalUID.Value.internalXrefMap.Values)
+            foreach (var xrefs in _internalXrefMap.Value.Values)
             {
                 if (xrefs.Length == 1)
                 {
@@ -218,13 +216,13 @@ namespace Microsoft.Docs.Build
 
         private void ValidateUIDGlobalUnique()
         {
-            foreach (var (uid, source) in _internalXrefMapAndGlobalUID.Value.globalUIDs)
-            {
-                _externalXrefMap.Value.TryGetValue(uid, out var spec);
+            var globalUIDs = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UIDGlobalUnique)).Select(xrefs => xrefs.First().Uid);
 
-                if (spec?.Value != null)
+            foreach (var uid in globalUIDs)
+            {
+                if (_externalXrefMap.Value.TryGetValue(uid.Value, out var spec) && spec?.Value != null)
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(new SourceInfo<string>(uid, source), spec.Value.RepoUrl));
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec.Value.RepositoryUrl));
                 }
             }
         }
@@ -275,9 +273,9 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
         {
-            if (!_internalXrefMapAndGlobalUID.IsValueCreated)
+            if (!_internalXrefMap.IsValueCreated)
             {
-                _ = _internalXrefMapAndGlobalUID.Value;
+                _ = _internalXrefMap.Value;
             }
 
             if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
@@ -286,7 +284,7 @@ namespace Microsoft.Docs.Build
                 ValidateUIDGlobalUnique();
             }
 
-            return _internalXrefMapAndGlobalUID.Value.internalXrefMap;
+            return _internalXrefMap.Value;
         }
 
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
