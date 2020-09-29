@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 lock (s_lock)
                 {
                     LearnValidationEntry.Run(
-                        repoUrl: _buildOptions.Repository?.Remote,
+                        repoUrl: _buildOptions.Repository?.Url,
                         repoBranch: _buildOptions.Repository?.Branch,
                         docsetName: _config.Name,
                         docsetPath: _buildOptions.DocsetPath,

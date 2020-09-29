@@ -216,6 +216,11 @@ namespace Microsoft.Docs.Build
         public JsonSchemaContentType? ContentType { get; set; }
 
         /// <summary>
+        /// Properties that indicate the uid unique scope
+        /// </summary>
+        public bool UIDGlobalUnique { get; set; }
+
+        /// <summary>
         /// Properties that are built into xref map
         /// </summary>
         public HashSet<string> XrefProperties { get; } = new HashSet<string>();
@@ -273,6 +278,23 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public HashSet<string> DocsetUnique { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// Whether content fallback is allowed for loc page
+        /// </summary>
+        public bool ContentFallback { get; set; } = true;
+
+        /// <summary>
+        /// Properties that are used to hold min item count that meet condition.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ConditionalCheckSchema[] MinItemsWhen { get; private set; } = Array.Empty<ConditionalCheckSchema>();
+
+        /// <summary>
+        /// Properties that are used to hold max item count that meet condition.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ConditionalCheckSchema[] MaxItemsWhen { get; private set; } = Array.Empty<ConditionalCheckSchema>();
+
         // JSON schema metadata validation error extensions
         //-------------------------------------------
 
@@ -280,10 +302,5 @@ namespace Microsoft.Docs.Build
         /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
         public Dictionary<string, Dictionary<string, CustomRule>> Rules { get; } = new Dictionary<string, Dictionary<string, CustomRule>>();
-
-        /// <summary>
-        /// Whether content fallback is allowed for loc page
-        /// </summary>
-        public bool ContentFallback { get; set; } = true;
     }
 }

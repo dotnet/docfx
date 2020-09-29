@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlReaderWriter;
@@ -119,10 +120,10 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out var uid))
+                    if (IsXrefSpec(obj, schema, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, definitions, file, rootSchema, schema, uid, obj, uidCount, propertyPath));
+                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
                     }
 
                     foreach (var (key, value) in obj)
@@ -157,6 +158,7 @@ namespace Microsoft.Docs.Build
             FilePath file,
             JsonSchema rootSchema,
             JsonSchema schema,
+            JsonSchema uidSchema,
             SourceInfo<string> uid,
             JObject obj,
             int uidCount,
@@ -165,6 +167,11 @@ namespace Microsoft.Docs.Build
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
+
+            if (uidSchema.UIDGlobalUnique)
+            {
+                xref.UIDGlobalUnique = true;
+            }
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
@@ -201,7 +208,7 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out _))
+                    if (IsXrefSpec(obj, schema, out _, out _))
                     {
                         count++;
                     }
@@ -224,14 +231,16 @@ namespace Microsoft.Docs.Build
             return count;
         }
 
-        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
+        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema outSchema)
         {
             uid = default;
+            outSchema = default;
 
             // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
             if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
                 schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
             {
+                outSchema = uidSchema;
                 uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
                 return true;
             }
@@ -356,7 +365,7 @@ namespace Microsoft.Docs.Build
                 return value;
             }
 
-            var sourceInfo = JsonUtility.GetSourceInfo(value);
+            var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
 
             switch (schema.ContentType)
@@ -369,12 +378,12 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Markdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
 
                 case JsonSchemaContentType.InlineMarkdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
@@ -383,7 +392,8 @@ namespace Microsoft.Docs.Build
                     {
                         HtmlUtility.TransformLink(ref token, null, href =>
                         {
-                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(new SourceInfo<string>(href, content), file, file);
+                            var source = new SourceInfo<string>(href, content.Source?.WithOffset(href.Source));
+                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
                         });

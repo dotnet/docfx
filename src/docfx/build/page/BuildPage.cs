@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
             context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
 
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
-            var html = context.MarkdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, conceptual);
+            var html = context.MarkdownEngine.ToHtml(errors, content, new SourceInfo(file), MarkdownPipelineType.Markdown, conceptual);
 
             context.SearchIndexBuilder.SetTitle(file, conceptual.Title);
             context.ContentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);

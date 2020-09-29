@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         {
             // load and trace entry repository
             var repository = Repository.Create(docsetPath);
-            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+            Telemetry.SetRepository(repository?.Url, repository?.Branch);
 
             var docfxConfig = LoadConfig(errors, docsetPath);
             if (docfxConfig is null)
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
             var extendQuery =
                 $"name={WebUtility.UrlEncode(config.Name)}" +
                 $"&locale={WebUtility.UrlEncode(locale)}" +
-                $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
+                $"&repository_url={WebUtility.UrlEncode(repository?.Url)}" +
                 $"&branch={WebUtility.UrlEncode(repository?.Branch ?? "main")}" +
                 $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
                 $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
