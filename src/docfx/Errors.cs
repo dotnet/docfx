@@ -129,9 +129,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ❌
             public static Error ViolateSchema(SourceInfo? source, string message)
                 => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
-
-            public static Error UnexpectedType(FormattableString message)
-                => new Error(ErrorLevel.Error, "unexpected-type", message);
         }
 
         public static class Yaml

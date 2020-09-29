@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlReaderWriter;
@@ -94,10 +95,10 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out var uid))
+                    if (IsXrefSpec(obj, schema, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, definitions, file, rootSchema, schema, uid, obj, uidCount, propertyPath));
+                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
                     }
 
                     foreach (var (key, value) in obj)
@@ -132,6 +133,7 @@ namespace Microsoft.Docs.Build
             FilePath file,
             JsonSchema rootSchema,
             JsonSchema schema,
+            JsonSchema uidSchema,
             SourceInfo<string> uid,
             JObject obj,
             int uidCount,
@@ -141,7 +143,7 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
 
-            if (schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.UIDGlobalUnique)
+            if (uidSchema.UIDGlobalUnique)
             {
                 xref.UIDGlobalUnique = true;
             }
@@ -181,7 +183,7 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out _))
+                    if (IsXrefSpec(obj, schema, out _, out _))
                     {
                         count++;
                     }
@@ -204,14 +206,16 @@ namespace Microsoft.Docs.Build
             return count;
         }
 
-        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
+        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema outSchema)
         {
             uid = default;
+            outSchema = default;
 
             // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
             if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
                 schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
             {
+                outSchema = uidSchema;
                 uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
                 return true;
             }

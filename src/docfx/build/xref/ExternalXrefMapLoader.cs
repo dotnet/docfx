@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
                     else
                     {
                         // Fast pass for JSON xref files
-                        foreach (var (uid, spec) in LoadJsonFile(physicalPath, errors))
+                        foreach (var (uid, spec) in LoadJsonFile(physicalPath))
                         {
                             // for same uid with multiple specs, we should respect the order of the list
                             result.TryAdd(uid, spec);
@@ -56,13 +56,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath, ErrorBuilder errors)
+        public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath)
         {
             var result = new List<(string, Lazy<ExternalXrefSpec>)>();
             var content = File.ReadAllBytes(filePath);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
-            var (xrefSpecPositions, repositoryUrl) = GetXrefSpecPosAndRepoUrl(content, errors, filePath);
+            var (xrefSpecPositions, repositoryUrl) = GetXrefSpecPosAndRepoUrl(content, filePath);
 
             foreach (var (uid, start, end) in xrefSpecPositions)
             {
@@ -107,8 +107,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<(string uid, long start, long end)>, string?) GetXrefSpecPosAndRepoUrl(
-            ReadOnlySpan<byte> content, ErrorBuilder errors, string filePath)
+        private static (List<(string uid, long start, long end)>, string?) GetXrefSpecPosAndRepoUrl(ReadOnlySpan<byte> content, string filePath)
         {
             var xrefSpecPos = new List<(string uid, long start, long end)>();
             string repositoryUrl = string.Empty;
@@ -131,8 +130,7 @@ namespace Microsoft.Docs.Build
                             }
                             else
                             {
-                                errors.Add(Errors.Json.UnexpectedType($"Loading failed, unexpected token type when loading xrefmap file '{filePath}'."));
-                                return default;
+                                throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
                             }
                         }
                         break;
