@@ -402,6 +402,25 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
 
             /// <summary>
+            /// The same uid is defined in multiple docsets
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl)
+            {
+                FormattableString message;
+                if (string.IsNullOrEmpty(repositoryUrl))
+                {
+                    message = $"UID '{uid}' is duplicated globally.";
+                }
+                else
+                {
+                    message = $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.";
+                }
+
+                return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);
+            }
+
+            /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.
             /// Examples:
             ///   - Same uid defined in multiple .md files with different versions have different titles.

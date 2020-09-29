@@ -205,6 +205,11 @@ namespace Microsoft.Docs.Build
         public JsonSchemaContentType? ContentType { get; set; }
 
         /// <summary>
+        /// Properties that indicate the uid unique scope
+        /// </summary>
+        public bool UIDGlobalUnique { get; set; }
+
+        /// <summary>
         /// Properties that are built into xref map
         /// </summary>
         public HashSet<string> XrefProperties { get; } = new HashSet<string>();
