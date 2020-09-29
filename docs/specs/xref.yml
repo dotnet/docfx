@@ -1778,24 +1778,17 @@ outputs:
     }
 ---
 # support uid reference count validation 1
-noDryRun: true
 inputs:
   docfx.yml:
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData1.json",
-      "uid": "a"
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
-      "ref_other": "a"
-    }
-  docs/c.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
-      "ref_other": "a"
-    }
+  docs/a.yml: |
+    ### YamlMime:TestData1
+    uid: a
+  docs/b.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  docs/c.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
   _themes/ContentTemplate/schemas/TestData1.schema.json: |
     {
       "properties": {
@@ -1816,21 +1809,15 @@ outputs:
 # support uid reference count validation 2
 inputs:
   docfx.yml:
-  docs/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData1.json",
-      "uid": "a"
-    }
-  docs/b.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
-      "ref_other": "a"
-    }
-  docs/c.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
-      "ref_other": "a"
-    }
+  docs/a.yml: |
+    ### YamlMime:TestData1
+    uid: a
+  docs/b.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  docs/c.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
   _themes/ContentTemplate/schemas/TestData1.schema.json: |
     {
       "properties": {
@@ -1848,8 +1835,8 @@ outputs:
   docs/b.json:
   docs/c.json:
   .errors.log: |
-    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.json(3,12)' reference count should be <= 1, but now is 2 ('docs/b.json(3,18)', 'docs/c.json(3,18)').","file":"docs/a.json","line":3,"column":12}
-    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.json(3,12)' reference count should be >= 3, but now is 2 ('docs/b.json(3,18)', 'docs/c.json(3,18)').","file":"docs/a.json","line":3,"column":12}
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.yml(2,6)' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.yml(2,6)' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
 ---
 # multiple duplicated uids with the same MonkerList
 inputs:
