@@ -641,6 +641,9 @@ namespace Microsoft.Docs.Build
                     $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
+
+            public static Error ReferenceCountInvalid(SourceInfo? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "reference-count-invalid", $"UID '{source}' reference count should be {criteria}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
         }
 
         public static class Metadata

@@ -1777,6 +1777,67 @@ outputs:
       "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
     }
 ---
+# support uid reference count validation 1
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    ### YamlMime:TestData1
+    uid: a
+  docs/b.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  docs/c.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  _themes/ContentTemplate/schemas/TestData1.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "minReferenceCount": 1, "maxReferenceCount" : 3}
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData2.schema.json: |
+    {
+      "properties": {
+        "ref_other": { "contentType": "xref"}
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+---
+# support uid reference count validation 2
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    ### YamlMime:TestData1
+    uid: a
+  docs/b.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  docs/c.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  _themes/ContentTemplate/schemas/TestData1.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "minReferenceCount": 3, "maxReferenceCount" : 1}
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData2.schema.json: |
+    {
+      "properties": {
+        "ref_other": { "contentType": "xref"}
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.yml(2,6)' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.yml(2,6)' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+---
 # multiple duplicated uids with the same MonkerList
 inputs:
   docfx.json: |
