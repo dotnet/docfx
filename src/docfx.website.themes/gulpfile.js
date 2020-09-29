@@ -69,7 +69,7 @@ var pack = {
             "cwd": "common",
         },
         {
-            "files": templateFiles,
+            "files": templateFiles.concat([ "fonts/*" ]),
             "cwd": "default",
         },
         {
