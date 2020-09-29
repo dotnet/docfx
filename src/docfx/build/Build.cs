@@ -95,7 +95,8 @@ namespace Microsoft.Docs.Build
                 () => context.ContributionProvider.Save(),
                 () => context.RepositoryProvider.Save(),
                 () => context.ErrorBuilder.AddRange(context.GitHubAccessor.Save()),
-                () => context.ErrorBuilder.AddRange(context.MicrosoftGraphAccessor.Save()));
+                () => context.ErrorBuilder.AddRange(context.MicrosoftGraphAccessor.Save()),
+                () => context.JsonSchemaTransformer.PostValidate());
 
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = context.XrefResolver.ToXrefMapModel(context.BuildOptions.IsLocalizedBuild);

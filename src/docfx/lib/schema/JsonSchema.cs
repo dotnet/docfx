@@ -79,6 +79,17 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public int? MinProperties { get; set; }
 
+
+        /// <summary>
+        /// The maximum reference count of current uid
+        /// </summary>
+        public int? MaxReferenceCount { get; set; }
+
+        /// <summary>
+        /// The minimum reference count of current uid
+        /// </summary>
+        public int? MinReferenceCount { get; set; }
+
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>

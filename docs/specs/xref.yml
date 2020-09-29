@@ -1748,3 +1748,78 @@ outputs:
     {
       "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
     }
+---
+# support uid reference count validation 1
+noDryRun: true
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData1.json",
+      "uid": "a"
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
+      "ref_other": "a"
+    }
+  docs/c.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
+      "ref_other": "a"
+    }
+  _themes/ContentTemplate/schemas/TestData1.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "minReferenceCount": 1, "maxReferenceCount" : 3}
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData2.schema.json: |
+    {
+      "properties": {
+        "ref_other": { "contentType": "xref"}
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+---
+# support uid reference count validation 2
+inputs:
+  docfx.yml:
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData1.json",
+      "uid": "a"
+    }
+  docs/b.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
+      "ref_other": "a"
+    }
+  docs/c.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData2.json",
+      "ref_other": "a"
+    }
+  _themes/ContentTemplate/schemas/TestData1.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "minReferenceCount": 3, "maxReferenceCount" : 1}
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData2.schema.json: |
+    {
+      "properties": {
+        "ref_other": { "contentType": "xref"}
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.json(3,12)' reference count should be <= 1, but now is 2 ('docs/b.json(3,18)', 'docs/c.json(3,18)').","file":"docs/a.json","line":3,"column":12}
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.json(3,12)' reference count should be >= 3, but now is 2 ('docs/b.json(3,18)', 'docs/c.json(3,18)').","file":"docs/a.json","line":3,"column":12}
+
