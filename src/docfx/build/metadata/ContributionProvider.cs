@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
             // Resolve contributors from commits
             var contributors = new List<Contributor>();
             if (UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out var repoOwner, out var repoName) ||
-                UrlUtility.TryParseGitHubUrl(repo.Remote, out repoOwner, out repoName))
+                UrlUtility.TryParseGitHubUrl(repo.Url, out repoOwner, out repoName))
             {
                 foreach (var commit in contributionCommits)
                 {
@@ -148,9 +148,9 @@ namespace Microsoft.Docs.Build
                     return default;
                 }
 
-                var gitUrlTemplate = GetGitUrlTemplate(repo.Remote, pathToRepo);
-                var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
+                var gitUrlTemplate = GetGitUrlTemplate(repo.Url, pathToRepo);
+                var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Url).Replace("{branch}", repo.Branch);
+                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Url, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
 
                 return (
                     contentGitUrl,
@@ -175,10 +175,10 @@ namespace Microsoft.Docs.Build
 
             var commit = commits.Length > 0 ? commits[0].Sha : repo.Commit;
 
-            return UrlUtility.TryParseGitHubUrl(repo.Remote, out _, out _)
-                ? $"{repo.Remote}/blob/{commit}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(repo.Remote, out _, out _, out _)
-                ? $"{repo.Remote}/commit/{commit}?path=/{pathToRepo}&_a=contents"
+            return UrlUtility.TryParseGitHubUrl(repo.Url, out _, out _)
+                ? $"{repo.Url}/blob/{commit}/{pathToRepo}"
+                : UrlUtility.TryParseAzureReposUrl(repo.Url, out _, out _, out _)
+                ? $"{repo.Url}/commit/{commit}?path=/{pathToRepo}&_a=contents"
                 : null;
         }
 
@@ -212,11 +212,11 @@ namespace Microsoft.Docs.Build
             return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", committish);
         }
 
-        private static string? GetGitUrlTemplate(string remote, string pathToRepo)
+        private static string? GetGitUrlTemplate(string url, string pathToRepo)
         {
-            return UrlUtility.TryParseGitHubUrl(remote, out _, out _)
+            return UrlUtility.TryParseGitHubUrl(url, out _, out _)
                 ? $"{{repo}}/blob/{{branch}}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(remote, out _, out _, out _)
+                : UrlUtility.TryParseAzureReposUrl(url, out _, out _, out _)
                 ? $"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents"
                 : null;
         }

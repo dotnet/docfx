@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    throw Errors.DependencyRepository.RepositoryOwnerSSOIssue(_repository?.Remote, _config.DocsRepositoryOwnerName, url).ToException(ex);
+                    throw Errors.DependencyRepository.RepositoryOwnerSSOIssue(_repository?.Url, _config.DocsRepositoryOwnerName, url).ToException(ex);
                 }
             }
             else if (IsPermissionInsufficient(ex))
@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
                     else
                     {
                         // Service accounts are not supported for Azure DevOps repos. So this scenario only occurs for GitHub repos.
-                        UrlUtility.TryParseGitHubUrl(_repository?.Remote, out var repoOrg, out _);
+                        UrlUtility.TryParseGitHubUrl(_repository?.Url, out var repoOrg, out _);
                         throw Errors.DependencyRepository.ServiceAccountPermissionInsufficient(repoOrg, _config.DocsRepositoryOwnerName, url).ToException(ex);
                     }
                 }
