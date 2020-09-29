@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
                     .ToArray();
             }
 
-            var model = new XrefMapModel { References = references, RepositoryUrl = _repository?.Remote };
+            var model = new XrefMapModel { References = references, RepositoryUrl = _repository?.Url };
 
             if (_config.UrlType == UrlType.Docs)
             {
