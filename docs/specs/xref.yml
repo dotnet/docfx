@@ -1748,3 +1748,29 @@ outputs:
     {
       "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
     }
+---
+# multiple duplicated uids with the same MonkerList
+inputs:
+  docfx.json: |
+    {"build": {"content": [{"files": ["**/*.yml"], "version": "latest"}], "monikerDefinition": "monikerDefinition.json"}}
+  _themes/ContentTemplate/schemas/test.schema.json: |
+    {
+      "type": "object",
+      "required": ["members", "uid"],
+      "properties": {
+        "uid": {"contentType": "uid","type": "string"},
+        "members": {"items":{"properties": {"uid": {"contentType": "uid","type": "string"}}}}
+      }
+    }
+  monikerDefinition.json: |
+    {"monikers": [{ "moniker_name": "latest" }]}
+  test.yml: |
+    ### YamlMime:test
+    uid: "a"
+    members:
+    - uid: "a"
+outputs: 
+  71ccb7a3/test.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":4,"column":8}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":2,"column":6}
