@@ -79,7 +79,6 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public int? MinProperties { get; set; }
 
-
         /// <summary>
         /// The maximum reference count of current uid
         /// </summary>
