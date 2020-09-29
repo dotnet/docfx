@@ -401,9 +401,6 @@ namespace Microsoft.Docs.Build
             public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts)
                 => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
 
-            public static Error DuplicateUid(SourceInfo<string> uid)
-                => new Error(ErrorLevel.Error, "duplicate-uid", $"UID '{uid}' is duplicated.", uid);
-
             /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.
             /// Examples:
