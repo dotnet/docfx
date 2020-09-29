@@ -45,7 +45,7 @@ Now you can view the generated website on http://localhost:8080.
 
 > [!Important]
 >
-> For macOS/Linux users: Use [Mono](https://www.mono-project.com/) version >= 5.10.
+> For macOS/Linux users: Use [Mono](https://www.mono-project.com/) version >= 5.10. The following command line can be used on Debian/Ubuntu: `sudo apt-get install mono-runtime mono-devel`.
 >
 > For macOS users: **DO NOT** Install Mono from Homebrew, but rather from the [Mono download page](https://www.mono-project.com/download/stable/#download-mac).
 
