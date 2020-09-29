@@ -132,33 +132,28 @@ namespace Microsoft.Docs.Build
                 specsWithSameUid = specsWithSameUid.Where(spec => spec.DeclaringFile.Origin != FileOrigin.Fallback).ToArray();
             }
 
-            // multiple uid conflicts without moniker range definition
+            // multiple uid conflicts
             // log an warning and take the first one order by the declaring file
-            var duplicatedSpecs = specsWithSameUid.Where(item => item.Monikers.Count == 0).ToArray();
-            if (duplicatedSpecs.Length > 1)
+            var duplicatedSpecs = specsWithSameUid.GroupBy(spec => spec.Monikers);
+            var duplicateMonikerList = new HashSet<MonikerList>();
+            foreach (var monikerGroup in duplicatedSpecs)
             {
-                var duplicatedSources = (from spec in duplicatedSpecs where spec.Uid.Source != null select spec.Uid.Source).ToArray();
-                foreach (var spec in duplicatedSpecs)
+                var specsWithSameMonikerList = monikerGroup.ToList();
+                var duplicateSource = (from spec in specsWithSameMonikerList where spec.Uid.Value != null select spec.Uid.Source).ToArray();
+                if (specsWithSameMonikerList.Count > 1)
                 {
-                    _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSources));
+                    duplicateMonikerList.Add(monikerGroup.Key);
+                    foreach (var spec in specsWithSameMonikerList)
+                    {
+                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource));
+                    }
                 }
             }
 
-            // uid conflicts with overlapping monikers
-            // when an uid's monikers are completely same, log a 'duplicated-uid' warning
-            var conflictsWithMoniker = specsWithSameUid.Where(x => x.Monikers.Count > 0).ToArray();
-            InternalXrefSpec[] conflictWithoutDuplicated;
-            if (CheckDuplicatedUidWithMonikers(conflictsWithMoniker, out var duplicatedUidSpecWithMonikers, out conflictWithoutDuplicated))
-            {
-                var duplicatedSourcesWithMonikers = (from spec in duplicatedUidSpecWithMonikers where spec.Uid.Source != null select spec.Uid.Source).ToArray();
-                foreach (var spec in duplicatedUidSpecWithMonikers)
-                {
-                    _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicatedSourcesWithMonikers));
-                }
-            }
+            var conflictsWithoutDuplicated = specsWithSameUid.Where(spec => !duplicateMonikerList.Contains(spec.Monikers)).ToArray();
 
             // when the MonikerList is not equal but overlapped, log an moniker-overlapping warning and take the first one order by the declaring file
-            if (CheckOverlappingMonikers(conflictWithoutDuplicated, out var overlappingMonikers))
+            if (CheckOverlappingMonikers(conflictsWithoutDuplicated, out var overlappingMonikers))
             {
                 _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
@@ -169,38 +164,6 @@ namespace Microsoft.Docs.Build
                         : int.MaxValue)
                    .ThenBy(spec => spec.DeclaringFile)
                    .ToArray();
-        }
-
-        private static bool CheckDuplicatedUidWithMonikers(
-            InternalXrefSpec[] conflictWithMonikers,
-            out List<InternalXrefSpec> duplicatedUidSpec,
-            out InternalXrefSpec[] conflictWithoutDuplicated)
-        {
-            var isDuplicated = false;
-
-            var allNoDupMonikerDic = new Dictionary<MonikerList, InternalXrefSpec>();
-            var duplicatedMonikerList = new HashSet<MonikerList>();
-            duplicatedUidSpec = new List<InternalXrefSpec>();
-
-            foreach (var spec in conflictWithMonikers)
-            {
-                if (allNoDupMonikerDic.Keys.Contains(spec.Monikers))
-                {
-                    isDuplicated = true;
-                    duplicatedMonikerList.Add(spec.Monikers);
-                    duplicatedUidSpec.Add(spec);
-                    duplicatedUidSpec.Add(allNoDupMonikerDic[spec.Monikers]);
-                }
-                else
-                {
-                    allNoDupMonikerDic.Add(spec.Monikers, spec);
-                }
-            }
-
-            // remove duplicated-uid specs in confictWithMonikers array
-            conflictWithoutDuplicated = conflictWithMonikers.Where(spec => !duplicatedMonikerList.Contains(spec.Monikers)).ToArray();
-
-            return isDuplicated;
         }
 
         private static bool CheckOverlappingMonikers(InternalXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
