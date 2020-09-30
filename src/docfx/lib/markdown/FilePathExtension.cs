@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using HtmlReaderWriter;
 using Markdig;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -27,7 +26,7 @@ namespace Microsoft.Docs.Build
                 var file = item.GetData(s_filePathKey);
                 if (file != null)
                 {
-                    return (FilePath)file;
+                    return ((SourceInfo)file).File;
                 }
             }
 
@@ -36,35 +35,32 @@ namespace Microsoft.Docs.Build
 
         public static SourceInfo? GetSourceInfo(this MarkdownObject obj, int? line = null)
         {
-            var path = GetFilePath(obj);
+            foreach (var item in obj.GetPathToRootInclusive())
+            {
+                var file = item.GetData(s_filePathKey);
+                if (file != null)
+                {
+                    return ((SourceInfo)file).WithOffset(obj, line);
+                }
+            }
 
+            throw new InvalidOperationException();
+        }
+
+        public static SourceInfo WithOffset(this SourceInfo sourceInfo, MarkdownObject? obj, int? line = null)
+        {
             if (line != null)
             {
-                return new SourceInfo(path, line.Value + 1, 0);
+                return new SourceInfo(sourceInfo.File, line.Value + 1, 0);
             }
 
             if (obj is null)
             {
-                return new SourceInfo(path, 0, 0);
+                return sourceInfo;
             }
 
             // Line info in markdown object is zero based, turn it into one based.
-            return new SourceInfo(path, obj.Line + 1, obj.Column + 1);
-        }
-
-        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, in HtmlTextRange html)
-        {
-            var path = GetFilePath(obj);
-
-            var start = OffSet(obj.Line, obj.Column, html.Start.Line, html.Start.Column);
-            var end = OffSet(obj.Line, obj.Column, html.End.Line, html.End.Column);
-
-            return new SourceInfo(path, start.line + 1, start.column + 1, end.line + 1, end.column + 1);
-
-            static (int line, int column) OffSet(int line1, int column1, int line2, int column2)
-            {
-                return line2 == 0 ? (line1, column1 + column2) : (line1 + line2, column2);
-            }
+            return sourceInfo.WithOffset(obj.Line + 1, obj.Column + 1);
         }
 
         public static bool IsInclude(this MarkdownObject obj)
@@ -100,7 +96,7 @@ namespace Microsoft.Docs.Build
                     if (file != null)
                     {
                         result ??= new List<object?>();
-                        result.Insert(0, new SourceInfo((FilePath)file, source.Value.line, source.Value.column));
+                        result.Insert(0, ((SourceInfo)file).WithOffset(source.Value.line, source.Value.column));
                         source = null;
                     }
                 }
@@ -109,7 +105,7 @@ namespace Microsoft.Docs.Build
             return result ?? s_emptyInclusionStack;
         }
 
-        public static void SetFilePath(this MarkdownObject obj, FilePath value)
+        public static void SetSourceInfo(this MarkdownObject obj, SourceInfo value)
         {
             obj.SetData(s_filePathKey, value);
         }

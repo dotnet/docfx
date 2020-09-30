@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
         {
             return branch switch
             {
-                "master" => new string[] { "main", "master" },
+                "master" => new string[] { "master", "main" },
                 "main" => new string[] { "main", "master" },
                 _ => new string[] { branch },
             };

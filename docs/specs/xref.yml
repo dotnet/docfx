@@ -257,6 +257,33 @@ outputs:
   a.json: |
     { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid from fallback</a></p>\n"}
 ---
+# uid in loc has higher priority than in fallback(path can be different)
+# and report no error
+locale: zh-cn
+repos:
+  https://docs.com/xref-fallback#master:
+    - files:
+        docfx.yml:
+        dir/b.md: |
+          ---
+          title: uid in fallback
+          uid: b
+          ---
+  https://docs.com/xref-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        b.md: |
+          ---
+          title: uid in loc
+          uid: b
+          ---
+        a.md: |
+          @b
+outputs:
+  a.json: |
+    { "conceptual":"<p><a href=\"b\" data-linktype=\"relative-path\">uid in loc</a></p>\n"}
+  b.json:
+---
 # Define uid in SDP
 # Resolve xref with display property in conceptual document
 # Resolve xref with non-existing display property, display name
@@ -279,6 +306,7 @@ inputs:
     Link to <xref:a?displayProperty=notExisting>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "uid": { "contentType": "uid" },
         "fullName": { "type": "string" },
@@ -331,6 +359,7 @@ repos:
         docs/c.md: Link to @a
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "properties": {
               "uid": { "contentType": "uid" }
             }
@@ -366,6 +395,7 @@ repos:
           }
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "properties": {
               "uid": { "contentType": "uid" },
               "xref": { "contentType": "Xref" },
@@ -452,6 +482,7 @@ inputs:
   docs/b.md: Link to @a.b
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "uid": { "contentType": "uid" },
         "description": { "type": "string" },
@@ -557,6 +588,34 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/a.json","line":6,"column":14}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'b' is duplicated in 'docs/a.json(6,14)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
+---
+# uid conflict globally
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "repositoryUrl": "a_repo",
+      "references":[{
+          "uid": "a"
+      }]
+    }
+  docs/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a"
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "UIDGlobalUnique": true }
+      }
+    }
+outputs:
+  docs/a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"duplicate-uid-global","message":"UID 'a' is duplicated globally in repository 'a_repo'.","file":"docs/a.json","line":3,"column":12}
 ---
 # Xref property field which supports markdown content
 inputs:
@@ -783,6 +842,7 @@ inputs:
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
           "uid": { "contentType": "uid" },
           "xref": { "contentType": "Xref" }
@@ -846,6 +906,7 @@ inputs:
     }
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "properties": {
         "summary": { "contentType": "Markdown" },
         "inlineDescription": { "contentType": "InlineMarkdown" },
@@ -1039,6 +1100,7 @@ repos:
           Link to @children.c?displayProperty=child.c
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "definitions": {
               "testChild": {
                 "properties": {
@@ -1160,6 +1222,7 @@ repos:
                 - "3.0"
         _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
+            "renderType": "component",
             "definitions": {
               "testChild": {
                 "properties": {
@@ -1484,6 +1547,14 @@ inputs:
     uid: a
     name: name 1
     description: test 1
+  docs/v1/b.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-1.0
+    uid: b
+    name: name b
+    description: test b
   docs/v2/a.yml: |
     ### YamlMime:TestData
     metadata:
@@ -1491,9 +1562,10 @@ inputs:
       - netcore-2.0
     uid: a
     name: name 2
-    description: test 2
+    description: test 2 <xref:b>
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name", "description"],
       "properties": { 
         "metadata": {
@@ -1501,20 +1573,22 @@ inputs:
             "monikers": { "type": "array" }
           }
         },
-        "uid": { "contentType": "uid" } 
+        "uid": { "contentType": "uid" },
+        "description": { "contentType": "Markdown" }
       }
     }
 outputs:
   136a42ac/docs/a.json:
+  136a42ac/docs/b.json:
   4667fedf/docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: 'test 1', 'test 2'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
 ---
 # referencing multiple version, using uid with intersection for toc & SDP
-legacy: true
 inputs:
   docfx.yml: |
+    outputType: pageJson
     monikerRange:
       'docs/v1/**': 'netcore-1.0'
       'docs/v2/**': 'netcore-2.0'
@@ -1551,6 +1625,7 @@ inputs:
         uid: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name"],
       "properties": { 
         "metadata": {
@@ -1581,12 +1656,12 @@ outputs:
   4667fedf/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # can cross version referencing single-version uid
-legacy: true
 inputs:
   docfx.yml: |
+    outputType: pageJson
     monikerDefinition: monikerDefinition.json
   monikerDefinition.json: |
     {
@@ -1608,6 +1683,7 @@ inputs:
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name"],
       "properties": { "uid": { "contentType": "uid" }}
     }
@@ -1627,9 +1703,9 @@ outputs:
   4667fedf/v2/b.mta.json:
 ---
 # can cross version reference, using highest version
-legacy: true
 inputs:
   docfx.yml: |
+    outputType: pageJson
     monikerDefinition: monikerDefinition.json
   monikerDefinition.json: |
     {
@@ -1658,6 +1734,7 @@ inputs:
     xref: a
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
+      "renderType": "component",
       "xrefProperties": ["name"],
       "properties": { "uid": { "contentType": "uid" }}
     }
@@ -1677,7 +1754,7 @@ outputs:
     {"content": "<a href=\"../v2/a.json\" data-linktype=\"relative-path\"> name 2.0 </a>"}
   439a76d0/v3/b.mta.json:
   .errors.log: |
-    {"message_severity":"warning","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
+    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:
@@ -1699,3 +1776,90 @@ outputs:
     {
       "conceptual": "<p>str <span class=\"xref\">SlackAPI.Block</span></p>"
     }
+---
+# support uid reference count validation 1
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    ### YamlMime:TestData1
+    uid: a
+  docs/b.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  docs/c.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  _themes/ContentTemplate/schemas/TestData1.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "minReferenceCount": 1, "maxReferenceCount" : 3}
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData2.schema.json: |
+    {
+      "properties": {
+        "ref_other": { "contentType": "xref"}
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+---
+# support uid reference count validation 2
+inputs:
+  docfx.yml:
+  docs/a.yml: |
+    ### YamlMime:TestData1
+    uid: a
+  docs/b.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  docs/c.yml: |
+    ### YamlMime:TestData2
+    ref_other: a
+  _themes/ContentTemplate/schemas/TestData1.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid", "minReferenceCount": 3, "maxReferenceCount" : 1}
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData2.schema.json: |
+    {
+      "properties": {
+        "ref_other": { "contentType": "xref"}
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.yml(2,6)' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'docs/a.yml(2,6)' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+---
+# multiple duplicated uids with the same MonkerList
+inputs:
+  docfx.json: |
+    {"build": {"content": [{"files": ["**/*.yml"], "version": "latest"}], "monikerDefinition": "monikerDefinition.json"}}
+  _themes/ContentTemplate/schemas/test.schema.json: |
+    {
+      "type": "object",
+      "required": ["members", "uid"],
+      "properties": {
+        "uid": {"contentType": "uid","type": "string"},
+        "members": {"items":{"properties": {"uid": {"contentType": "uid","type": "string"}}}}
+      }
+    }
+  monikerDefinition.json: |
+    {"monikers": [{ "moniker_name": "latest" }]}
+  test.yml: |
+    ### YamlMime:test
+    uid: "a"
+    members:
+    - uid: "a"
+outputs: 
+  71ccb7a3/test.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":4,"column":8}
+    {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":2,"column":6}

@@ -36,8 +36,8 @@ namespace Microsoft.Docs.Build
         [InlineData("a-active-directory-domain-services", "multi-factor-authentication", 5)]
         public static void LevenshteinDistanceStringList(string src, string target, int expectedDistance)
         {
-            string[] srcNames = Regex.Split(src, "[^a-zA-Z0-9]+").Where(word => !string.IsNullOrWhiteSpace(word)).ToArray();
-            string[] targetNames = Regex.Split(target, "[^a-zA-Z0-9]+").Where(word => !string.IsNullOrWhiteSpace(word)).ToArray();
+            var srcNames = Regex.Split(src, "[^a-zA-Z0-9]+").Where(word => !string.IsNullOrWhiteSpace(word)).ToArray();
+            var targetNames = Regex.Split(target, "[^a-zA-Z0-9]+").Where(word => !string.IsNullOrWhiteSpace(word)).ToArray();
             Assert.Equal(expectedDistance, Levenshtein.GetLevenshteinDistance(srcNames, targetNames, StringComparer.OrdinalIgnoreCase));
         }
     }

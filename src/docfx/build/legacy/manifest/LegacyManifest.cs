@@ -65,11 +65,11 @@ namespace Microsoft.Docs.Build
             var legacyOutputPathRelativeToBasePath = document.ToLegacyOutputPathRelativeToBasePath(context, fileManifest.Value);
             var legacySiteUrlRelativeToBasePath = document.ToLegacySiteUrlRelativeToBasePath(context);
             var contentType = context.DocumentProvider.GetContentType(document);
-            var isHtml = context.DocumentProvider.IsHtml(document);
+            var isContentRenderType = context.DocumentProvider.GetRenderType(document) == RenderType.Content;
 
             var output = new LegacyManifestOutput
             {
-                MetadataOutput = (contentType == ContentType.Page && !isHtml) || contentType == ContentType.Resource
+                MetadataOutput = (contentType == ContentType.Page && !isContentRenderType) || contentType == ContentType.Resource
                 ? null
                 : new LegacyManifestOutputItem
                 {
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
 
             if (contentType == ContentType.Page || contentType == ContentType.Redirection)
             {
-                if (isHtml)
+                if (isContentRenderType)
                 {
                     output.PageOutput = new LegacyManifestOutputItem
                     {
@@ -136,9 +136,9 @@ namespace Microsoft.Docs.Build
             {
                 AssetId = legacySiteUrlRelativeToBasePath,
                 Original = fileManifest.Value.SourcePath,
-                SourceRelativePath = context.SourceMap.GetOriginalFilePath(document) ?? document.Path,
+                SourceRelativePath = context.SourceMap.GetOriginalFilePath(document)?.Path ?? document.Path,
                 OriginalType = GetOriginalType(contentType, context.DocumentProvider.GetMime(document)),
-                Type = GetType(context, contentType, isHtml),
+                Type = GetType(contentType, isContentRenderType),
                 Output = output,
                 SkipNormalization = !(contentType == ContentType.Resource),
                 SkipSchemaCheck = !(contentType == ContentType.Resource),
@@ -163,9 +163,9 @@ namespace Microsoft.Docs.Build
             _ => string.Empty,
         };
 
-        private static string GetType(Context context, ContentType type, bool isHtml)
+        private static string GetType(ContentType type, bool isContentRenderType)
         {
-            if (context.Config.OutputType == OutputType.Json && type == ContentType.Page && !isHtml)
+            if (type == ContentType.Page && !isContentRenderType)
             {
                 return "Toc";
             }

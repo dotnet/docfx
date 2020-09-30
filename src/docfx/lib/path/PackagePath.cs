@@ -35,8 +35,16 @@ namespace Microsoft.Docs.Build
         {
             if (UrlUtility.IsHttp(value))
             {
-                Type = PackageType.Git;
-                (Url, Branch) = SplitGitUrl(value);
+                if (value.StartsWith("https://static.docs.com/ui/"))
+                {
+                    Type = PackageType.PublicTemplate;
+                    Url = value;
+                }
+                else
+                {
+                    Type = PackageType.Git;
+                    (Url, Branch) = SplitGitUrl(value);
+                }
             }
             else
             {
@@ -45,10 +53,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public PackagePath(string remote, string? branch)
+        public PackagePath(string url, string? branch)
         {
             Type = PackageType.Git;
-            Url = remote;
+            Url = url;
             Branch = branch ?? "main";
         }
 
@@ -56,7 +64,7 @@ namespace Microsoft.Docs.Build
         {
             PackageType.Folder => Path,
             PackageType.Git => $"{Url}#{Branch}",
-            _ => $"{Url}, (type: {Type.ToString()})",
+            _ => $"{Url}, (type: {Type})",
         };
 
         public override int GetHashCode()
@@ -83,9 +91,9 @@ namespace Microsoft.Docs.Build
 
         public static bool operator !=(PackagePath? a, PackagePath? b) => !Equals(a, b);
 
-        private static (string remote, string refspec) SplitGitUrl(string remoteUrl)
+        private static (string url, string refspec) SplitGitUrl(string repositoryUrl)
         {
-            var (path, _, fragment) = UrlUtility.SplitUrl(remoteUrl);
+            var (path, _, fragment) = UrlUtility.SplitUrl(repositoryUrl);
 
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;

@@ -16,7 +16,7 @@ using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class FileCommitProvider : IDisposable
+    internal sealed class GitCommitLoader : IDisposable
     {
         private static readonly DictionarySlim<uint, Tree> s_emptyTree = new DictionarySlim<uint, Tree>();
 
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         private int _isDisposed;
         private Task? _warmup;
 
-        public FileCommitProvider(ErrorBuilder errors, Repository repository, string cacheFilePath)
+        public GitCommitLoader(ErrorBuilder errors, Repository repository, string cacheFilePath)
         {
             if (git_repository_open(out _repo, repository.Path) != 0)
             {
@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        ~FileCommitProvider()
+        ~GitCommitLoader()
         {
             Dispose();
         }
@@ -284,7 +284,7 @@ namespace Microsoft.Docs.Build
             if (headCommit == IntPtr.Zero)
             {
                 git_object_free(walk);
-                throw Errors.Config.CommittishNotFound(_repository.Remote, committish).ToException();
+                throw Errors.Config.CommittishNotFound(_repository.Url, committish).ToException();
             }
 
             var lastCommitId = *git_object_id(headCommit);

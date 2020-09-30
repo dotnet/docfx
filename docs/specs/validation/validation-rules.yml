@@ -1,0 +1,290 @@
+# Content validation - too many parameters in error message
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1Empty",
+            "message": "H1 is required. Add content to your top-level heading. {0} {1}",
+            "code": "h1-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # <!-- comments -->
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-empty","message":"H1 is required. Add content to your top-level heading. {0} {1} | ERROR: message format is invalid, e.g., too many parameters {n}.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - too less parameters in error message
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1InZone",
+            "message": "H1 is not allowed in zone '{0}' sections. Each article should have one and only one H1.",
+            "code": "h1-in-zone",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ::: zone target = "pdf"
+    # Copy data to Azure Data Box
+    ::: zone-end
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 is not allowed in zone 'pdf' sections. Each article should have one and only one H1.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Canonial Version Only Metadata Validation
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+    monikerRange:
+      'docs/v1/**': '< netcore-1.2'
+      'docs/v2/**': '>= netcore-1.2'
+    routes:
+      docs/v1/: docs/
+      docs/v2/: docs/
+    monikerDefinition: monikerDefinition.json
+    globalMetadata:
+      layout: conceptual
+  docs/v1/a.md: |
+    ---
+    title: t
+    description: a
+    ---
+  docs/v1/b.md: |
+    ---
+    title: t
+    description: b
+    ---
+  docs/v2/a.md: |
+    ---
+    title: t
+    description: c
+    ---
+  docs/v2/b.md: |
+    ---
+    title: t
+    description: d
+    ---
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+  schema.json: |
+    {
+      "docsetUnique": [ "title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "rules": {
+          "title": {
+              "duplicate-attribute": {
+                  "severity": "suggestion",
+                  "code": "duplicate-title-within-docset",
+                  "canonicalVersionOnly": true,
+                  "additionalMessage": "Title must be unique within a docset."
+              },
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "title-bad-length"
+              }
+          },
+          "description": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "canonicalVersionOnly": true
+              }
+          }
+      },
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v1/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/a.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
+    {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
+    {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/a.md","line":2,"end_line":2,"column":8,"end_column":9}
+  9d4e15fd/docs/a.json:
+  9d4e15fd/docs/b.json:
+  976da3a9/docs/a.json:
+  976da3a9/docs/b.json:
+---
+# Hidden PR only validation rule result
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    metadataSchema: schema.json
+    rules:
+      h1-missing: warning
+      heading-empty: warning
+  schema.json: |
+    {
+      "required": ["title"],
+      "properties": {
+          "description": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          },
+          "title": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 2,
+              "maxLength": 10
+          }
+      },
+      "rules": {
+          "title": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "title-bad-length",
+                  "pullRequestOnly": false
+              },
+              "missing-attribute": {
+                  "severity": "suggestion",
+                  "code": "title-missing",
+                  "additionalMessage": "Add a title string to show in search engine results."
+              },
+          },
+          "description": {
+              "string-length-invalid": {
+                  "severity": "suggestion",
+                  "code": "description-bad-length",
+                  "pullRequestOnly": true
+              }
+          }
+      },
+    }
+  rules.json: |
+    {
+      "headings": {
+        "rules": [
+          {
+            "type": "H1Missing",
+            "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
+            "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
+            "severity": "SUGGESTION",
+            "code": "h1-missing",
+            "docfxOverride": true
+          },
+          {
+            "type": "H1NotFirst",
+            "message": "Markdown content is not allowed before {0}.",
+            "code": "h1-not-first",
+            "severity": "SUGGESTION",
+            "exclusions": [ "includes", "landingpage", "hubpage" ],
+            "excludedDocfxVersions": [
+              "v2"
+            ] ,
+            "pullRequestOnly": false,
+            "docfxOverride": true
+          },
+          {
+            "type": "HeadingEmpty",
+            "message": "Empty {0}. Headings must have content.",
+            "code": "heading-empty",
+            "severity": "SUGGESTION",
+            "exclusions": [ "landingpage", "hubpage", "toc" ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "pullRequestOnly": true,
+            "docfxOverride": true
+          },
+          {
+            "type": "NoContent",
+            "message": "{0} contains no content. Add content or remove the unused heading.",
+            "code": "heading-no-content",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ],
+            "pullRequestOnly": true,
+            "docfxOverride": true
+          }
+        ]
+      }
+    }
+  a.md: |
+    ---
+    title: too long title
+    description: too long description
+    ---
+  b.md: |
+    Some thing
+    # heading1
+    ## 
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"title-missing","message":"Missing required attribute: 'title'. Add a title string to show in search engine results.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"description-bad-length","message":"String 'description' is too long: 20 characters. Length should be <= 10.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":34,"pull_request_only":true}
+    {"message_severity":"suggestion","log_item_type":"user","code":"title-bad-length","message":"String 'title' is too long: 14 characters. Length should be <= 10.","file":"a.md","line":2,"end_line":2,"column":8,"end_column":22}
+    {"message_severity":"warning","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'heading1'.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
+    {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
+---

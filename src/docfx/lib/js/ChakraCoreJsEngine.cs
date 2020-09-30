@@ -17,21 +17,19 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ChakraCoreJsEngine : JavaScriptEngine
     {
-        private static readonly JavaScriptNativeFunction s_requireFunction = new JavaScriptNativeFunction(Require);
-        private static readonly ThreadLocal<Stack<string>> t_dirnames = new ThreadLocal<Stack<string>>(() => new Stack<string>());
-        private static readonly ThreadLocal<Dictionary<string, JavaScriptValue>?> t_modules = new ThreadLocal<Dictionary<string, JavaScriptValue>?>();
-
         private static int s_currentSourceContext;
 
+        private readonly Package _package;
         private readonly JavaScriptContext _context = CreateContext();
         private readonly JavaScriptValue _global;
-        private readonly string _scriptDir;
+        private readonly JavaScriptNativeFunction _requireFunction;
+        private readonly Stack<string> _dirnames = new Stack<string>();
+        private readonly Dictionary<PathString, JavaScriptValue> _modules = new Dictionary<PathString, JavaScriptValue>();
 
-        private readonly Dictionary<string, JavaScriptValue> _scriptExports = new Dictionary<string, JavaScriptValue>();
-
-        public ChakraCoreJsEngine(string scriptDir, JObject? global = null)
+        public ChakraCoreJsEngine(Package package, JObject? global = null)
         {
-            _scriptDir = scriptDir;
+            _package = package;
+            _requireFunction = new JavaScriptNativeFunction(Require);
 
             if (global != null)
             {
@@ -48,7 +46,7 @@ namespace Microsoft.Docs.Build
         {
             return RunInContext(() =>
             {
-                var exports = GetScriptExports(Path.GetFullPath(Path.Combine(_scriptDir, scriptPath)));
+                var exports = Run(new PathString(scriptPath));
                 var method = exports.GetProperty(JavaScriptPropertyId.FromString(methodName));
                 var input = ToJavaScriptValue(arg);
 
@@ -90,38 +88,14 @@ namespace Microsoft.Docs.Build
             return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
         }
 
-        private JavaScriptValue GetScriptExports(string scriptPath)
+        private JavaScriptValue Run(PathString scriptPath)
         {
-            if (_scriptExports.TryGetValue(scriptPath, out var result))
+            if (_modules.TryGetValue(scriptPath, out var result))
             {
                 return result;
             }
 
-            t_modules.Value = new Dictionary<string, JavaScriptValue>(PathUtility.PathComparer);
-
-            try
-            {
-                var exports = Run(scriptPath);
-
-                // Avoid exports been GCed by javascript garbage collector.
-                exports.AddRef();
-                return _scriptExports[scriptPath] = exports;
-            }
-            finally
-            {
-                t_modules.Value = null;
-            }
-        }
-
-        private static JavaScriptValue Run(string scriptPath)
-        {
-            var modules = t_modules.Value!;
-            if (modules.TryGetValue(scriptPath, out var result))
-            {
-                return result;
-            }
-
-            var sourceCode = File.ReadAllText(scriptPath);
+            var sourceCode = _package.ReadString(scriptPath);
             var exports = JavaScriptValue.CreateObject();
             var module = JavaScriptValue.CreateObject();
             var exportsProperty = JavaScriptPropertyId.FromString("exports");
@@ -132,7 +106,7 @@ namespace Microsoft.Docs.Build
 }})";
             var dirname = Path.GetDirectoryName(scriptPath) ?? "";
 
-            t_dirnames.Value!.Push(dirname);
+            _dirnames.Push(dirname);
 
             try
             {
@@ -145,19 +119,23 @@ namespace Microsoft.Docs.Build
                         module,
                         exports,
                         JavaScriptValue.FromString(dirname),
-                        JavaScriptValue.CreateFunction(s_requireFunction),
+                        JavaScriptValue.CreateFunction(_requireFunction),
                         JavaScriptValue.CreateObject(),
                     });
 
-                return modules[scriptPath] = module.GetProperty(exportsProperty);
+                var moduleExports = module.GetProperty(exportsProperty);
+
+                // Avoid exports been GCed by javascript garbage collector.
+                moduleExports.AddRef();
+                return _modules[scriptPath] = moduleExports;
             }
             finally
             {
-                t_dirnames.Value.Pop();
+                _dirnames.Pop();
             }
         }
 
-        private static JavaScriptValue Require(
+        private JavaScriptValue Require(
             JavaScriptValue callee,
             [MarshalAs(UnmanagedType.U1)] bool isConstructCall,
             [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] JavaScriptValue[] arguments,
@@ -172,10 +150,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var dirname = t_dirnames.Value!.Peek();
-                var scriptPath = Path.GetFullPath(Path.Combine(dirname, arguments[1].ToString()));
-
-                return Run(scriptPath);
+                return Run(new PathString(Path.Combine(_dirnames.Peek(), arguments[1].ToString())));
             }
             catch (Exception ex)
             {

@@ -58,13 +58,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error GitCloneFailed(string url, string branch)
-            {
-                var message = $"Failure to clone the repository `{url}#{branch}`."
-                        + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com)."
-                        + "This could also be caused by not having the proper permission the repository, "
-                        + "please confirm that the GitHub group/team that triggered the build has access to the repository.";
-                return new Error(ErrorLevel.Error, "git-clone-failed", message);
-            }
+                => new Error(ErrorLevel.Error, "git-clone-failed", $"Failure to clone the repository `{url}#{branch}`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). This could also be caused by not having the proper permission the repository, please confirm that the GitHub group/team that triggered the build has access to the repository.");
 
             /// <summary>
             /// Failed to compute specific info of a commit.
@@ -97,7 +91,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error ExceedMaxFileErrors(int maxErrors, ErrorLevel level, FilePath file)
-                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", file);
+                => new Error(ErrorLevel.Info, "exceed-max-file-errors", $"{level} count exceed '{maxErrors}'. Build will continue but newer logs in '{file}' will be ignored.", new SourceInfo(file));
 
             /// <summary>
             /// Build failure caused by English content when building localized docset.
@@ -123,7 +117,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error JsonSyntaxError(SourceInfo? source, string message)
-                => new Error(ErrorLevel.Error, "json-syntax-error", message, source);
+                => new Error(ErrorLevel.Error, "json-syntax-error", $"{message}", source);
 
             // Behavior: ✔️ Message: ❌
             public static Error NullArrayValue(SourceInfo? source, string name)
@@ -134,7 +128,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error ViolateSchema(SourceInfo? source, string message)
-                => new Error(ErrorLevel.Error, "violate-schema", message, source);
+                => new Error(ErrorLevel.Error, "violate-schema", $"{message}", source);
         }
 
         public static class Yaml
@@ -152,14 +146,14 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error YamlSyntaxError(SourceInfo? source, string message)
-                => new Error(ErrorLevel.Error, "yaml-syntax-error", message, source);
+                => new Error(ErrorLevel.Error, "yaml-syntax-error", $"{message}", source);
 
             /// <summary>
             /// Syntax error in yaml header(not duplicate key).
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error YamlHeaderSyntaxError(Error error)
-                => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", error.Message, error.Source);
+                => new Error(ErrorLevel.Warning, "yaml-header-syntax-error", $"{error.Message}", error.Source);
 
             /// <summary>
             /// Used duplicate yaml key in markdown yml header or schema document(yml).
@@ -220,8 +214,8 @@ namespace Microsoft.Docs.Build
             /// Examples: pointing template to a local folder that does not exist
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error DirectoryNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{source}'.", source);
+            public static Error DirectoryNotFound(string directory)
+                => new Error(ErrorLevel.Error, "directory-not-found", $"Invalid directory: '{directory}'.");
 
             /// <summary>
             /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
@@ -333,12 +327,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RedirectUrlInvalid(string from, SourceInfo<string> source)
-            {
-                var message = $"Can't redirect document ID for redirected file '{from}' " +
-                            $"because redirect URL '{source}' is invalid or is in a different docset. " +
-                            "Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.";
-                return new Error(ErrorLevel.Suggestion, "redirect-url-invalid", message, source);
-            }
+                => new Error(ErrorLevel.Suggestion, "redirect-url-invalid", $"Can't redirect document ID for redirected file '{from}' because redirect URL '{source}' is invalid or is in a different docset. Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.", source);
 
             public static Error CircularRedirection(SourceInfo? source, IEnumerable<FilePath> redirectionChain)
                 => new Error(ErrorLevel.Warning, "circular-redirection", $"Build has identified circular redirection: {string.Join(" --> ", redirectionChain)}.", source);
@@ -413,13 +402,32 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
 
             /// <summary>
+            /// The same uid is defined in multiple docsets
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl)
+            {
+                FormattableString message;
+                if (string.IsNullOrEmpty(repositoryUrl))
+                {
+                    message = $"UID '{uid}' is duplicated globally.";
+                }
+                else
+                {
+                    message = $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.";
+                }
+
+                return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);
+            }
+
+            /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.
             /// Examples:
             ///   - Same uid defined in multiple .md files with different versions have different titles.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error XrefPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
-                => new Error(ErrorLevel.Warning, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
+                => new Error(ErrorLevel.Info, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
         }
 
         public static class Versioning
@@ -439,7 +447,7 @@ namespace Microsoft.Docs.Build
             /// Failed to parse moniker string.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeInvalid(SourceInfo? operand, string message)
+            public static Error MonikerRangeInvalid(SourceInfo? operand, FormattableString message)
                 => new Error(ErrorLevel.Error, "moniker-range-invalid", message, operand);
 
             /// <summary>
@@ -448,7 +456,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MonikerRangeUndefined(SourceInfo? source)
-                => new Error(ErrorLevel.Suggestion, "moniker-range-undefined", "Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.", source);
+                => new Error(ErrorLevel.Suggestion, "moniker-range-undefined", $"Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.", source);
 
             /// <summary>
             /// Moniker-zone defined in article.md has no intersection with file-level monikers.
@@ -507,6 +515,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
+
+            /// <summary>
+            /// Array conditional check not within min or max value
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error ArrayCheckInvalid(SourceInfo? source, string propName, string message)
+                => new Error(ErrorLevel.Warning, "array-check-invalid", $"{message}", source, propName);
 
             /// <summary>
             /// Array items not unique.
@@ -611,7 +626,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error MsAliasInvalid(SourceInfo<string> alias, string name)
-                => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias.", alias, name: name);
+                => new Error(ErrorLevel.Warning, "ms-alias-invalid", $"Invalid value for '{name}', '{alias}' is not a valid Microsoft alias.", alias, propertyPath: name);
 
             /// <summary>
             /// The attribute value is duplicated within docset
@@ -620,7 +635,15 @@ namespace Microsoft.Docs.Build
             public const string DuplicateAttributeCode = "duplicate-attribute";
 
             public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
-                => new Error(ErrorLevel.Suggestion, DuplicateAttributeCode, $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.", source, name);
+                => new Error(
+                    ErrorLevel.Suggestion,
+                    DuplicateAttributeCode,
+                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
+                    source,
+                    name);
+
+            public static Error ReferenceCountInvalid(SourceInfo? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "reference-count-invalid", $"UID '{source}' reference count should be {criteria}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
         }
 
         public static class Metadata
@@ -658,7 +681,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MergeConflict(SourceInfo? source)
-                => new Error(ErrorLevel.Suggestion, "merge-conflict", "File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
+                => new Error(ErrorLevel.Suggestion, "merge-conflict", $"File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
 
             /// <summary>
             /// Defined reference with by #bookmark fragment within articles, which doesn't exist.
@@ -673,19 +696,19 @@ namespace Microsoft.Docs.Build
             ///   - user want their 404.md to be built and shown as their 404 page of the website.
             /// </summary>
             public static Error Custom404Page(FilePath file)
-                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", file);
+                => new Error(ErrorLevel.Warning, "custom-404-page", $"Custom 404 page will be deprecated in future. Please remove the 404.md file to resolve this warning.", new SourceInfo(file));
 
             /// <summary>
             /// Html Tag value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, name: tag);
+                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
 
             /// <summary>
             /// Html Attribute value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, name: $"{tag}_{attribute}");
+                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
         }
 
         public static class DependencyRepository
@@ -698,48 +721,28 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RestoreDependentRepositoryFailed(string url, string branch)
-            {
-                var message = $"Failed to restore dependent repository `{url}#{branch}`. "
-                        + "This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). "
-                        + $"If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.";
-                return new Error(ErrorLevel.Error, "restore-dependent-repository-failed", message);
-            }
+                => new Error(ErrorLevel.Error, "restore-dependent-repository-failed", $"Failed to restore dependent repository `{url}#{branch}`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.");
 
             /// <summary>
             /// Repository owner did not re-authorize his/her GitHub account to Docs Build with SSO.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RepositoryOwnerSSOIssue(string? repoUrl, string? repoOwner, string dependentRepoUrl)
-            {
-                var message = $"Owner of {repoUrl} repository does not have access to {dependentRepoUrl}. "
-                    + $"Please ask the repository owner '{repoOwner}' to re-authorize his/her GitHub account to Docs Build "
-                    + $"(reference: https://teams.microsoft.com/l/message/19:7ecffca1166a4a3986fed528cf0870ee@thread.skype/1590030602688?tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47&groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&parentMessageId=1590030602688&teamName=Docs%20Support&channelName=General&createdTime=1590030602688).";
-                return new Error(ErrorLevel.Error, "repository-owner-sso-issue", message);
-            }
+                => new Error(ErrorLevel.Error, "repository-owner-sso-issue", $"Owner of {repoUrl} repository does not have access to {dependentRepoUrl}. Please ask the repository owner '{repoOwner}' to re-authorize his/her GitHub account to Docs Build (reference: https://teams.microsoft.com/l/message/19:7ecffca1166a4a3986fed528cf0870ee@thread.skype/1590030602688?tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47&groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&parentMessageId=1590030602688&teamName=Docs%20Support&channelName=General&createdTime=1590030602688).");
 
             /// <summary>
             /// Service accounts do not have 'Write' permissions on CRR.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error ServiceAccountPermissionInsufficient(string? repoOrg, string? repoOwner, string dependentRepoUrl)
-            {
-                var message = $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under "
-                    + $"'{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. "
-                    + $"For any support, please open a ticket in https://SiteHelp.";
-                return new Error(ErrorLevel.Error, "service-account-permission-insufficient", message);
-            }
+                => new Error(ErrorLevel.Error, "service-account-permission-insufficient", $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under '{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. For any support, please open a ticket in https://SiteHelp.");
 
             /// <summary>
             /// Repository owner does not have 'Read' permission on CRR.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RepositoryOwnerPermissionInsufficient(string? repoOwner, string? dependentRepoOrg, string? dependentRepoName, string dependentRepoUrl)
-            {
-                var message = $"Docs Build cannot access CRR repo {dependentRepoUrl} using the access token from user {repoOwner} because {repoOwner} does not have Read access to the CRR repo. "
-                    + $"Please ask {repoOwner} to contact the admins of the CRR repo {dependentRepoUrl} to get Read permission. Don't know who to contact? "
-                    + $"This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/";
-                return new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", message);
-            }
+                => new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", $"Docs Build cannot access CRR repo {dependentRepoUrl} using the access token from user {repoOwner} because {repoOwner} does not have Read access to the CRR repo. Please ask {repoOwner} to contact the admins of the CRR repo {dependentRepoUrl} to get Read permission. Don't know who to contact? This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/");
         }
 
         public static class Template

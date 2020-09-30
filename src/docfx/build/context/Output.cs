@@ -90,13 +90,38 @@ namespace Microsoft.Docs.Build
             _queue.Post(() =>
             {
                 var targetPhysicalPath = GetDestinationPath(destRelativePath);
-                if (_input.TryGetPhysicalPath(file, out var sourcePhysicalPath))
+                if (_input.TryGetPhysicalPath(file) is PathString sourcePhysicalPath)
                 {
                     File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
                     return;
                 }
 
                 using var sourceStream = _input.ReadStream(file);
+                using var targetStream = File.Create(targetPhysicalPath);
+                sourceStream.CopyTo(targetStream);
+                sourceStream.Flush();
+            });
+        }
+
+        /// <summary>
+        /// Copies a file from source to destination, throws if source does not exists.
+        /// Throws if multiple threads trying to write to the same destination concurrently.
+        /// </summary>
+        public void Copy(string destRelativePath, Package package, PathString sourcePath)
+        {
+            EnsureNoDryRun();
+
+            _queue.Post(() =>
+            {
+                var targetPhysicalPath = GetDestinationPath(destRelativePath);
+                var sourcePhysicalPath = package.TryGetPhysicalPath(sourcePath);
+                if (sourcePhysicalPath != null)
+                {
+                    File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
+                    return;
+                }
+
+                using var sourceStream = package.ReadStream(sourcePath);
                 using var targetStream = File.Create(targetPhysicalPath);
                 sourceStream.CopyTo(targetStream);
                 sourceStream.Flush();

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -114,24 +115,18 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                var result = ToJToken(
-                    input,
-                    onKeyDuplicate: key => errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file), key.Value)),
-                    onConvert: (token, node) =>
-                    {
-                        if (token is JProperty property)
-                        {
-                            var sourceInfo = JsonUtility.GetSourceInfo(property.Value);
-                            if (sourceInfo != null)
-                            {
-                                sourceInfo.KeySourceInfo = ToSourceInfo(node, file);
-                            }
-                            return token;
-                        }
-                        return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file));
-                    });
+                JToken? result = null;
 
-                return result;
+                var parser = new Parser(input);
+                parser.Consume<StreamStart>();
+                if (!parser.TryConsume<StreamEnd>(out _))
+                {
+                    parser.Consume<DocumentStart>();
+                    result = ToJToken(errors, parser, file);
+                    parser.Consume<DocumentEnd>();
+                }
+
+                return result ?? JValue.CreateNull();
             }
             catch (YamlException ex)
             {
@@ -142,9 +137,102 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file)
+        private static JToken ToJToken(ErrorBuilder errors, IParser parser, FilePath? file, SourceInfo? keySourceInfo = null)
         {
-            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column);
+            switch (parser.Consume<NodeEvent>())
+            {
+                case Scalar scalar:
+                    if (scalar.Style == ScalarStyle.Plain)
+                    {
+                        return SetSourceInfo(ParseScalar(scalar.Value), scalar, file, keySourceInfo);
+                    }
+                    return SetSourceInfo(new JValue(scalar.Value), scalar, file, keySourceInfo);
+
+                case SequenceStart seq:
+                    var array = new JArray();
+                    while (!parser.TryConsume<SequenceEnd>(out _))
+                    {
+                        array.Add(ToJToken(errors, parser, file));
+                    }
+                    return SetSourceInfo(array, seq, file, keySourceInfo);
+
+                case MappingStart map:
+                    var obj = new JObject();
+                    while (!parser.TryConsume<MappingEnd>(out _))
+                    {
+                        var key = parser.Consume<Scalar>();
+
+                        if (obj.ContainsKey(key.Value))
+                        {
+                            errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file), key.Value));
+                        }
+
+                        var value = ToJToken(errors, parser, file, ToSourceInfo(key, file));
+                        obj[key.Value] = value;
+                    }
+                    return SetSourceInfo(obj, map, file, keySourceInfo);
+
+                default:
+                    throw new NotSupportedException($"Yaml node '{parser.Current?.GetType().Name}' is not supported");
+            }
+        }
+
+        private static JToken SetSourceInfo(JToken token, ParsingEvent node, FilePath? file, SourceInfo? keySourceInfo)
+        {
+            return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file, keySourceInfo));
+        }
+
+        private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file, SourceInfo? keySourceInfo = null)
+        {
+            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column, keySourceInfo);
+        }
+
+        private static JToken ParseScalar(string value)
+        {
+            // https://yaml.org/spec/1.2/2009-07-21/spec.html
+            //
+            //  Regular expression       Resolved to tag
+            //
+            //    null | Null | NULL | ~                          tag:yaml.org,2002:null
+            //    /* Empty */                                     tag:yaml.org,2002:null
+            //    true | True | TRUE | false | False | FALSE      tag:yaml.org,2002:bool
+            //    [-+]?[0 - 9]+                                   tag:yaml.org,2002:int(Base 10)
+            //    0o[0 - 7] +                                     tag:yaml.org,2002:int(Base 8)
+            //    0x[0 - 9a - fA - F] +                           tag:yaml.org,2002:int(Base 16)
+            //    [-+] ? ( \. [0-9]+ | [0-9]+ ( \. [0-9]* )? ) ( [eE][-+]?[0 - 9]+ )?   tag:yaml.org,2002:float (Number)
+            //    [-+]? ( \.inf | \.Inf | \.INF )                 tag:yaml.org,2002:float (Infinity)
+            //    \.nan | \.NaN | \.NAN                           tag:yaml.org,2002:float (Not a number)
+            //    *                                               tag:yaml.org,2002:str(Default)
+            if (string.IsNullOrEmpty(value) || value == "~" || value.Equals("null", StringComparison.OrdinalIgnoreCase))
+            {
+                return JValue.CreateNull();
+            }
+            if (bool.TryParse(value, out var b))
+            {
+                return new JValue(b);
+            }
+            if (long.TryParse(value, out var l))
+            {
+                return new JValue(l);
+            }
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var d) &&
+                !double.IsNaN(d) && !double.IsPositiveInfinity(d) && !double.IsNegativeInfinity(d))
+            {
+                return new JValue(d);
+            }
+            if (value.Equals(".nan", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.NaN);
+            }
+            if (value.Equals(".inf", StringComparison.OrdinalIgnoreCase) || value.Equals("+.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.PositiveInfinity);
+            }
+            if (value.Equals("-.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new JValue(double.NegativeInfinity);
+            }
+            return new JValue(value);
         }
     }
 }

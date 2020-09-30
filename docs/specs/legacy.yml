@@ -1,11 +1,11 @@
-# Build with --legacy
-legacy: true
+# Build output as page json
 repos:
   https://github.com/legacy/test:
   - author: Charlie
     email: charlie@contoso.com
     files:
       docfx.yml: |
+        outputType: pageJson
         template: https://docs.com/theme
         metadataSchema: schema.json
         updateTimeAsCommitBuildTime: true
@@ -70,7 +70,7 @@ outputs:
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/882f998f63d445aeaae7362eea74195ce5e3c333/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/e88185569e9862b31cce708c78de92c3be696df6/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
@@ -83,6 +83,7 @@ outputs:
         <meta name=\"updated_at\" content=\"2020-04-01 08:08 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
     }
+  d.png:
   c.mta.json: |
     { "locale": "en-us", "ms.author": "yufeih", "is_dynamic_rendering": true }
   toc.json:
@@ -233,7 +234,6 @@ outputs:
     { "message_severity": "warning", "code": "output-path-conflict" }
 ---
 # Redirection file href shouldn't have extension
-legacy: true
 inputs:
   docfx.yml:
   redirections.yml: |
@@ -242,9 +242,8 @@ inputs:
   a.md: |
     [link](redirect.md)
 outputs:
-  a.mta.json:
-  a.raw.page.json: |
-    { "content": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
+  a.json: |
+    { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
 ---
 # Legacy metadata black list
 inputs:
@@ -266,19 +265,17 @@ outputs:
     {"message_severity":"warning","code":"attribute-reserved","message":"Attribute ms.contentlang is reserved for use by Docs.","file":"docs/a.md","line":2,"column":1}
 ---
 # Context object type is TOC
-legacy: true
 inputs:
   docfx.yml: |
   docs/a.yml: |
     #YamlMime: ContextObject
-  _themes/ContentTemplate/schemas/ContextObject.schema.json: "{}"
+  _themes/ContentTemplate/schemas/ContextObject.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   docs/a.json:
   .manifest.json: |
     {"files":[{"asset_id":"docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"ContextObject","type":"Toc"}]}
 ---
 # Do not copy resource when the selfContained is false
-legacy: true
 inputs:
   docfx.yml: |
     files: a.png
@@ -291,9 +288,9 @@ outputs:
     {"files":[{"asset_id":"a.png","output":{"resource":{"is_raw_page":false,"relative_path":"a.png"}}}]}
 ---
 # Build versioning repository
-legacy: true
 inputs:
   docfx.yml: |
+    outputType: pageJson
     monikerRange:
       'docs/v1/**': '< netcore-2.0'
       'docs/v2/**': 'netcore-2.0'
@@ -354,7 +351,6 @@ outputs:
     }
 ---
 # Orphan file, with multiple toc of same site path, look up by file path(sub then parent)
-legacy: true # only legacy has toc dependency for orphan file
 inputs:
   docfx.yml: |
     monikerRange:
@@ -380,18 +376,15 @@ inputs:
     }
 outputs:
   docs/136a42ac/toc.json:
-  docs/136a42ac/f1/a.mta.json:
-  docs/136a42ac/f1/a.raw.page.json: |
-    {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/136a42ac/f1/a.json: |
+    {"_tocRel": "../toc.json"}
   docs/4667fedf/toc.json:
-  docs/4667fedf/f1/a.mta.json:
-  docs/4667fedf/f1/a.raw.page.json: |
-    {"rawMetadata":{"_tocRel": "../toc.json"}}
+  docs/4667fedf/f1/a.json: |
+    {"_tocRel": "../toc.json"}
   docs/filemap.json:
 ---
-# legacy errors from source repo [repo mapping]
+# Errors from source repo [repo mapping]
 locale: zh-cn
-legacy: true
 repos:
   https://docs.com/error-from-source-legacy#test:
     - files:
@@ -406,15 +399,14 @@ repos:
         docs/a.md: |
           @a
 outputs:
-  docs/a.mta.json:
-  docs/a.raw.page.json:
+  docs/a.json:
   .errors.log: |
     {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}
 ---
 # Replace empty content with <div></div>
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.md:
   b.yml: '#YamlMime:TestPage'
   _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
@@ -426,9 +418,9 @@ outputs:
   b.raw.page.json: '{"content": "<div></div>"}'
 ---
 # Add data-linktype to urls
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.md: '[](https://github.com)'
   b.yml: |
     #YamlMime:TestPage
@@ -456,9 +448,9 @@ outputs:
         <p><a data-linktype='relative-path' href='a'></a></p>" }
 ---
 # The site base path is empty.
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   index.md:
 outputs:
   index.mta.json:
@@ -467,9 +459,9 @@ outputs:
     {"files":[{"asset_id":"index","original":"index.md","source_relative_path":"index.md","original_type":"Conceptual","type":"Content"}]}
 ---
 # Verify output path
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   offboarding-mailbox-fails-homemdb-homemta.md:
   a.b.md:
 outputs:

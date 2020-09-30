@@ -93,11 +93,11 @@ namespace Microsoft.Docs.Build
             SourceMap = sourceMap;
             RepositoryProvider = repositoryProvider;
 
-            Input = new Input(buildOptions, config, packageResolver, RepositoryProvider);
+            Input = new Input(buildOptions, config, packageResolver, RepositoryProvider, sourceMap);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
             TemplateEngine = new TemplateEngine(
-                errorLog, config, buildOptions, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
+                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
 
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
-            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider, sourceMap);
+            ContributionProvider = new ContributionProvider(config, buildOptions, Input, GitHubAccessor, RepositoryProvider);
             FileLinkMapBuilder = new FileLinkMapBuilder(errorLog, DocumentProvider, MonikerProvider, ContributionProvider);
             XrefResolver = new XrefResolver(
                 config,
@@ -161,7 +161,13 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
-            JsonSchemaTransformer = new JsonSchemaTransformer(DocumentProvider, MarkdownEngine, LinkResolver, XrefResolver, errorLog, MonikerProvider);
+            JsonSchemaTransformer = new JsonSchemaTransformer(
+                DocumentProvider,
+                MarkdownEngine,
+                LinkResolver,
+                XrefResolver,
+                errorLog,
+                MonikerProvider);
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
                 BuildOptions.DocsetPath,
@@ -183,7 +189,7 @@ namespace Microsoft.Docs.Build
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, DocumentProvider, SourceMap);
 
             var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
-            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, validatorExtension);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, validatorExtension);
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 

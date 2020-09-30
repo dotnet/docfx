@@ -2,8 +2,6 @@
 
 This document specifies docfx output file layout. It is designed to satisfy these requirements:
 
-- **Backward compatible with legacy system**: the output files should contain all the information needed to transform to whatever the *legacy system* desires. With an *undocumented* command line switch `--legacy`, `docfx` converts the output files to the legacy format.
-
 - **Dynamic build output maps directly to hosting server**: the build output for dynamic rendering should map directly to what the hosting layer expects, without permutation.
   > *Hosting server* here is a fictional server using `documentdb`
 

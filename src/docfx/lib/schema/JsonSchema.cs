@@ -42,6 +42,11 @@ namespace Microsoft.Docs.Build
         public JsonSchemaType[]? Type { get; set; }
 
         /// <summary>
+        /// Type of the render type.
+        /// </summary>
+        public RenderType RenderType { get; set; } = RenderType.Content;
+
+        /// <summary>
         /// The JSON schema that applies to each property if the current value is object.
         /// </summary>
         public Dictionary<string, JsonSchema> Properties { get; } = new Dictionary<string, JsonSchema>();
@@ -73,6 +78,16 @@ namespace Microsoft.Docs.Build
         /// The minimum item count that an array can hold.
         /// </summary>
         public int? MinProperties { get; set; }
+
+        /// <summary>
+        /// The maximum reference count of current uid
+        /// </summary>
+        public int? MaxReferenceCount { get; set; }
+
+        /// <summary>
+        /// The minimum reference count of current uid
+        /// </summary>
+        public int? MinReferenceCount { get; set; }
 
         /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
@@ -200,6 +215,11 @@ namespace Microsoft.Docs.Build
         public JsonSchemaContentType? ContentType { get; set; }
 
         /// <summary>
+        /// Properties that indicate the uid unique scope
+        /// </summary>
+        public bool UIDGlobalUnique { get; set; }
+
+        /// <summary>
         /// Properties that are built into xref map
         /// </summary>
         public HashSet<string> XrefProperties { get; } = new HashSet<string>();
@@ -256,6 +276,23 @@ namespace Microsoft.Docs.Build
         /// Properties' value must be unique within the docset
         /// </summary>
         public HashSet<string> DocsetUnique { get; set; } = new HashSet<string>();
+
+        /// <summary>
+        /// Whether content fallback is allowed for loc page
+        /// </summary>
+        public bool ContentFallback { get; set; } = true;
+
+        /// <summary>
+        /// Properties that are used to hold min item count that meet condition.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ConditionalCheckSchema[] MinItemsWhen { get; private set; } = Array.Empty<ConditionalCheckSchema>();
+
+        /// <summary>
+        /// Properties that are used to hold max item count that meet condition.
+        /// </summary>
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public ConditionalCheckSchema[] MaxItemsWhen { get; private set; } = Array.Empty<ConditionalCheckSchema>();
 
         // JSON schema metadata validation error extensions
         //-------------------------------------------

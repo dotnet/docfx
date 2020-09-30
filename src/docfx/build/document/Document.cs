@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets a value indicating whether the current document is output as HTML.
         /// </summary>
-        public bool IsHtml { get; }
+        public RenderType RenderType { get; }
 
         /// <summary>
         /// Intentionally left as private. Use <see cref="Document.CreateFromFile(Docset, string)"/> instead.
@@ -65,14 +65,14 @@ namespace Microsoft.Docs.Build
             string canonicalUrl,
             ContentType contentType,
             SourceInfo<string?> mime,
-            bool isHtml = true)
+            RenderType renderType)
         {
             SitePath = sitePath;
             SiteUrl = siteUrl;
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;
-            IsHtml = isHtml;
+            RenderType = renderType;
 
             Debug.Assert(SiteUrl.StartsWith('/'));
             Debug.Assert(!SiteUrl.EndsWith('/') || Path.GetFileNameWithoutExtension(SitePath) == "index");

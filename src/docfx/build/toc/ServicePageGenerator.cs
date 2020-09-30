@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -42,7 +41,10 @@ namespace Microsoft.Docs.Build
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = string.IsNullOrEmpty(_joinTOCConfig.OutputFolder) ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+
+                var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
+                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
 
                 var pageType = node.LandingPageType.Value;
                 FilePath servicePagePath;
@@ -68,34 +70,28 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
 
-                    if (!string.IsNullOrEmpty(childHref) && UrlUtility.GetLinkType(childHref) == LinkType.RelativePath)
+                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
+
+                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
                     {
-                        if (topLevelTOCRelativeDir != null)
+                        childHref = null;
+                    }
+
+                    if (!string.IsNullOrEmpty(childHref))
+                    {
+                        if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
                         {
-                            string? hrefFileFullPath;
-
-                            var topLevelTOCYmlDir = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
-
-                            if (childHref.StartsWith("~/") || childHref.StartsWith("~\\"))
-                            {
-                                childHref = childHref.Substring(2).TrimStart('/', '\\');
-                                hrefFileFullPath = Path.GetFullPath(Path.Combine(_docsetPath, childHref));
-                            }
-                            else
-                            {
-                                hrefFileFullPath = Path.GetFullPath(Path.Combine(topLevelTOCYmlDir == null ? "" : topLevelTOCYmlDir, childHref));
-                            }
-
+                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
                             var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                            var hrefRelativePath = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = hrefRelativePath;
+                            var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                            childHref = hrefRelativePathToReferenceTOC;
                         }
 
                         child = new ServicePageItem(childName, childHref, null);
                     }
                     else
                     {
-                        child = new ServicePageItem(childName, childHref, childUid);
+                        child = new ServicePageItem(childName, null, childUid);
                     }
 
                     children.Add(child);
@@ -104,7 +100,7 @@ namespace Microsoft.Docs.Build
                 var langs = new List<string?>();
                 if (_joinTOCConfig.ContainerPageMetadata != null)
                 {
-                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out JToken? lang);
+                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out var lang);
                     langs = lang?.ToObject<List<string?>>();
                 }
 

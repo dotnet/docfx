@@ -19,26 +19,29 @@ namespace Microsoft.Docs.Build
                      new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
 
         private readonly RepositoryProvider _repositoryProvider;
-        private readonly SourceMap _sourceMap;
 
         private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls =
                      new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
 
         public ContributionProvider(
-            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider, SourceMap sourceMap)
+            Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider)
         {
             _input = input;
             _config = config;
             _buildOptions = buildOptions;
             _githubAccessor = githubAccessor;
             _repositoryProvider = repositoryProvider;
-            _sourceMap = sourceMap;
         }
 
         public ContributionInfo? GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
         {
-            var fullPath = GetOriginalFullPath(file);
-            var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath);
+            var fullPath = _input.TryGetOriginalPhysicalPath(file);
+            if (fullPath is null)
+            {
+                return null;
+            }
+
+            var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath.Value);
             if (repo is null)
             {
                 return null;
@@ -61,7 +64,7 @@ namespace Microsoft.Docs.Build
             var contributionBranch = LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
             if (!string.IsNullOrEmpty(contributionBranch))
             {
-                (_, _, contributionCommits) = _repositoryProvider.GetCommitHistory(fullPath, contributionBranch);
+                (_, _, contributionCommits) = _repositoryProvider.GetCommitHistory(fullPath.Value, contributionBranch);
             }
 
             var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
@@ -71,7 +74,7 @@ namespace Microsoft.Docs.Build
             // Resolve contributors from commits
             var contributors = new List<Contributor>();
             if (UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out var repoOwner, out var repoName) ||
-                UrlUtility.TryParseGitHubUrl(repo.Remote, out repoOwner, out repoName))
+                UrlUtility.TryParseGitHubUrl(repo.Url, out repoOwner, out repoName))
             {
                 foreach (var commit in contributionCommits)
                 {
@@ -121,9 +124,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return _input.TryGetPhysicalPath(file, out var physicalPath)
-                ? File.GetLastWriteTimeUtc(physicalPath)
-                : default;
+            return _input.TryGetOriginalPhysicalPath(file) is PathString physicalPath ? File.GetLastWriteTimeUtc(physicalPath) : default;
         }
 
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate)
@@ -135,15 +136,21 @@ namespace Microsoft.Docs.Build
             {
                 var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
 
-                var (repo, pathToRepo) = _repositoryProvider.GetRepository(GetOriginalFullPath(file));
+                var fullPath = _input.TryGetOriginalPhysicalPath(file);
+                if (fullPath is null)
+                {
+                    return default;
+                }
+
+                var (repo, pathToRepo) = _repositoryProvider.GetRepository(fullPath.Value);
                 if (repo is null || pathToRepo is null)
                 {
                     return default;
                 }
 
-                var gitUrlTemplate = GetGitUrlTemplate(repo.Remote, pathToRepo);
-                var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Remote).Replace("{branch}", repo.Branch);
-                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Remote, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
+                var gitUrlTemplate = GetGitUrlTemplate(repo.Url, pathToRepo);
+                var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Url).Replace("{branch}", repo.Branch);
+                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Url, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
 
                 return (
                     contentGitUrl,
@@ -154,7 +161,13 @@ namespace Microsoft.Docs.Build
 
         public string? GetGitCommitUrl(FilePath file)
         {
-            var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(GetOriginalFullPath(file));
+            var fullPath = _input.TryGetOriginalPhysicalPath(file);
+            if (fullPath is null)
+            {
+                return default;
+            }
+
+            var (repo, pathToRepo, commits) = _repositoryProvider.GetCommitHistory(fullPath.Value);
             if (repo is null || pathToRepo is null)
             {
                 return default;
@@ -162,10 +175,10 @@ namespace Microsoft.Docs.Build
 
             var commit = commits.Length > 0 ? commits[0].Sha : repo.Commit;
 
-            return UrlUtility.TryParseGitHubUrl(repo.Remote, out _, out _)
-                ? $"{repo.Remote}/blob/{commit}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(repo.Remote, out _, out _, out _)
-                ? $"{repo.Remote}/commit/{commit}?path=/{pathToRepo}&_a=contents"
+            return UrlUtility.TryParseGitHubUrl(repo.Url, out _, out _)
+                ? $"{repo.Url}/blob/{commit}/{pathToRepo}"
+                : UrlUtility.TryParseAzureReposUrl(repo.Url, out _, out _, out _)
+                ? $"{repo.Url}/commit/{commit}?path=/{pathToRepo}&_a=contents"
                 : null;
         }
 
@@ -175,12 +188,6 @@ namespace Microsoft.Docs.Build
             {
                 commitBuildTimeProvider.Value.Save();
             }
-        }
-
-        private PathString GetOriginalFullPath(FilePath file)
-        {
-            var originalPath = _sourceMap.GetOriginalFilePath(file);
-            return _input.GetFullPath(originalPath is null ? file : new FilePath(originalPath));
         }
 
         private string? GetContentGitUrl(string repo, string? committish, string pathToRepo)
@@ -205,11 +212,11 @@ namespace Microsoft.Docs.Build
             return gitUrlTemplate?.Replace("{repo}", repo).Replace("{branch}", committish);
         }
 
-        private static string? GetGitUrlTemplate(string remote, string pathToRepo)
+        private static string? GetGitUrlTemplate(string url, string pathToRepo)
         {
-            return UrlUtility.TryParseGitHubUrl(remote, out _, out _)
+            return UrlUtility.TryParseGitHubUrl(url, out _, out _)
                 ? $"{{repo}}/blob/{{branch}}/{pathToRepo}"
-                : UrlUtility.TryParseAzureReposUrl(remote, out _, out _, out _)
+                : UrlUtility.TryParseAzureReposUrl(url, out _, out _, out _)
                 ? $"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents"
                 : null;
         }

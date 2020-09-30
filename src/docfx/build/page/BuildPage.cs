@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,9 +22,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var isHtml = context.DocumentProvider.IsHtml(file);
+            var isContentRenderType = context.DocumentProvider.GetRenderType(file) == RenderType.Content;
 
-            var (output, metadata) = isHtml
+            var (output, metadata) = isContentRenderType
                 ? CreatePageOutput(errors, context, file, sourceModel)
                 : CreateDataOutput(context, file, sourceModel);
 
@@ -33,20 +32,16 @@ namespace Microsoft.Docs.Build
 
             if (!context.ErrorBuilder.FileHasError(file) && !context.Config.DryRun)
             {
-                if (context.Config.OutputType == OutputType.Json)
-                {
-                    context.Output.WriteJson(outputPath, output);
-                }
-                else if (output is string str)
+                if (output is string str)
                 {
                     context.Output.WriteText(outputPath, str);
                 }
                 else
                 {
-                    context.Output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
+                    context.Output.WriteJson(outputPath, output);
                 }
 
-                if (context.Config.Legacy && isHtml)
+                if (context.Config.OutputType == OutputType.PageJson && isContentRenderType)
                 {
                     var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
                     context.Output.WriteJson(metadataPath, metadata);
@@ -67,9 +62,9 @@ namespace Microsoft.Docs.Build
             var systemMetadata = CreateSystemMetadata(errors, context, file, userMetadata);
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
-            // The current bookmark validation for SDP validates against HTML produced from mustache,
-            // so we need to run the full template for SDP even in --dry-run mode.
-            if (context.Config.DryRun && TemplateEngine.IsConceptual(mime) && context.Config.OutputType != OutputType.Html)
+            // The bookmark validation for SDP can be skipped when the public template is used since the mustache is not accessable for public template
+            if (context.Config.DryRun
+                && (TemplateEngine.IsConceptual(mime) || context.Config.Template.Type == PackageType.PublicTemplate))
             {
                 return (new JObject(), new JObject());
             }
@@ -91,13 +86,14 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
-            if (context.Config.OutputType == OutputType.Json && !context.Config.Legacy)
+            if (context.Config.OutputType == OutputType.Json)
             {
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
             var (templateModel, templateMetadata) = CreateTemplateModel(context, file, mime, JsonUtility.SortProperties(outputModel));
-            if (context.Config.OutputType == OutputType.Json)
+
+            if (context.Config.OutputType == OutputType.PageJson)
             {
                 return (templateModel, JsonUtility.SortProperties(templateMetadata));
             }
@@ -215,7 +211,7 @@ namespace Microsoft.Docs.Build
             context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
 
             var conceptual = new ConceptualModel { Title = userMetadata.Title };
-            var html = context.MarkdownEngine.ToHtml(errors, content, file, MarkdownPipelineType.Markdown, conceptual);
+            var html = context.MarkdownEngine.ToHtml(errors, content, new SourceInfo(file), MarkdownPipelineType.Markdown, conceptual);
 
             context.SearchIndexBuilder.SetTitle(file, conceptual.Title);
             context.ContentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
@@ -252,7 +248,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(validatedObj, obj);
 
             // transform model via json schema
-            if (context.DocumentProvider.IsHtml(file))
+            if (context.DocumentProvider.GetRenderType(file) == RenderType.Content)
             {
                 // transform metadata via json schema
                 var userMetadata = context.MetadataProvider.GetMetadata(errors, file);
@@ -265,7 +261,7 @@ namespace Microsoft.Docs.Build
             var schema = context.TemplateEngine.GetSchema(mime);
             var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
 
-            if (context.Config.Legacy && TemplateEngine.IsLandingData(mime))
+            if (TemplateEngine.IsLandingData(mime))
             {
                 var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
                 var razorHtml = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();

@@ -88,6 +88,7 @@ inputs:
     toc_rel: A/TOC.yml
   _themes/ContentTemplate/schemas/ContextObject.schema.json: |
     {
+      "renderType": "component",
       "type": "object",
       "properties": {
           "breadcrumb_path": {"contentType": "Href"},
@@ -261,9 +262,9 @@ inputs:
     #YamlMime:TestData
   docs/page.yml: |
     #YamlMime:TestPage
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
   _themes/ContentTemplate/TestPage.html.tmpl:
-  _themes/ContentTemplate/schemas/TestPage.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{\"renderType\": \"content\"}"
 outputs:
   docs/a.json: |
     { "conceptual": "<p>link to <a href=\"data.json\"> data</a> or <a href=\"page\"> page</a></p>" }
@@ -299,6 +300,7 @@ inputs:
     a: b:
   docs/b.json: |
     {
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"yaml-syntax-error","file":"docs/a.yml","line":2,"column":5}
@@ -326,7 +328,7 @@ inputs:
     prop: value
     metadata:
       userMta: user
-  _themes/ContentTemplate/schemas/TestData.schema.json: "{}"
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs:
   a.json: |
     {
@@ -344,7 +346,7 @@ outputs:
 # Throw error when content is not an object
 inputs:
   docfx.yml:
-  _themes/ContentTemplate/schemas/test.schema.json: '{}'
+  _themes/ContentTemplate/schemas/test.schema.json: "{\"renderType\": \"component\"}"
   a.yml: |
     #YamlMime:test
     - array
@@ -353,9 +355,9 @@ outputs:
     {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'.","file":"a.yml","line":1,"column":1}
 ---
 # Validate bookmark against content HTML after applying template for SDP 
-legacy: true
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestPage
     heading: heading-1
@@ -386,9 +388,9 @@ inputs:
     <h2 id="{{heading}}"></h2>{{{description}}}
 outputs:
   .errors.log: |
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":4}
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3}
-    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":7}
+    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'b.yml', did you mean '#heading-1'?","file":"b.yml","line":6,"column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"c.md","line":3,"column":1}
+    {"message_severity":"warning","log_item_type":"user","code":"bookmark-not-found","message":"Cannot find bookmark '#heading-3' in 'a.yml', did you mean '#heading-1'?","file":"b.yml","line":9,"column":1}
   a.mta.json:
   a.raw.page.json:
   b.mta.json:
@@ -469,8 +471,8 @@ inputs:
   redirections.yml: |
     redirections:
       original_b.md: /b
-  _themes/ContentTemplate/schemas/TestData.schema.json: '{}'
-  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
+  _themes/ContentTemplate/schemas/TestPage.schema.json: "{\"renderType\": \"content\"}"
   _themes/ContentTemplate/TestPage.html.tmpl:
 outputs:
   a.json:
@@ -483,3 +485,132 @@ outputs:
         {"asset_id": "original_b", "original_type": "Conceptual"},
       ]
     }
+---
+# Support public template
+inputs:
+  docfx.yml: |
+    template: "https://static.docs.com/ui/latest"
+  docs/a.yml: |
+    #YamlMime:TestData
+    test: b.md
+  docs/b.md:
+http:
+  https://static.docs.com/ui/latest/schemas/TestData.schema.json: |
+    {
+      "renderType": "component",
+      "type": "object",
+      "properties": {
+        "test": {"contentType": "Href"},
+      }
+    }
+outputs:
+  docs/a.json: |
+    {
+      "test": "b"
+    }
+  docs/b.json:
+---
+# Disable content fallback for loc page of ModuleUnit
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        docfx.yml:
+        includes/b.md: |
+          **Text**
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        unit.yml: |
+          ### YamlMime:ModuleUnit
+          content: '[!include[](includes/b.md)]'
+        _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+          {
+            "contentFallback": false,
+            "properties": { 
+              "content": {"type":"string","contentType": "markdown"}
+              }
+          }
+        _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+outputs:
+  .errors.log: |
+    { "message_severity":"error","code":"include-not-found","message":"Invalid include link: 'includes/b.md'.","file":"unit.yml"}
+---
+# Report approximate line number for markdown contents inside YAML
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime: Test
+    markdowns:
+    - '[!include[](a.md)]'
+    - '[!include[](b.md)]'
+  _themes/ContentTemplate/schemas/Test.schema.json: |
+    {
+      "properties": {
+        "markdowns": {
+          "items": { "contentType": "markdown" }
+        }
+      }
+    }
+outputs:
+  .errors.log: |
+    { "code":"include-not-found","file":"a.yml","line":3,"column":3,"end_line":3,"end_column":3 }
+    { "code":"include-not-found","file":"a.yml","line":4,"column":3,"end_line":4,"end_column":3 }
+---
+# Require min or max item count that meet condition
+noDryRun: true
+inputs:
+  docfx.yml:
+  unit.yml: |
+    ### YamlMime:ModuleUnit
+    questions:
+    - content: "question #1"
+      choices:
+      - content: "choice 1-1"
+        isCorrect: false
+      - content: "choice 1-2"
+        isCorrect: false
+      - content: "choice 1-3"
+        isCorrect: false
+      - content: "choice 1-4"
+        isCorrect: false
+    - content: "questin #2"
+      choices:
+      - content: "choice 2-1"
+        isCorrect: true
+      - content: "choice 2-2"
+        isCorrect: true
+      - content: "choice 2-3"
+        isCorrect: false
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "questions": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "choices" : {
+                "type": "array",
+                "minItemsWhen": [
+                  {
+                    "value": 1,
+                    "condition": {"properties": {"isCorrect": {"const": true}}}
+                  }
+                ],
+                "maxItemsWhen": [
+                  {
+                    "value": 1,
+                    "condition": {"properties": {"isCorrect": {"const": true}}}
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+outputs:
+  .errors.log: | 
+   { "message_severity":"error","code":"array-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml", "line":5,"column":3}
+   { "message_severity":"error","code":"array-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml", "line":15,"column":3}

@@ -104,6 +104,19 @@ namespace Microsoft.Docs.Build
             { "strike", null },
         };
 
+        private static string[] s_inlineTags = new[]
+            {
+                "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
+                "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
+                "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
+                "var", "video", "wbr",
+            };
+
+        private static string[] s_selfClosingTags = new[]
+            {
+                "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
+            };
+
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
             var result = new ArrayBufferWriter<char>(html.Length + 64);
@@ -155,33 +168,101 @@ namespace Microsoft.Docs.Build
             }
 
             return false;
+        }
 
-            static bool IsVisible(ref HtmlToken token) => token.Type switch
+        public static bool IsInlineImage(this HtmlBlock node, int imageIndex)
+        {
+            var stack = new Stack<(HtmlToken? token, int visibleInlineCount, bool hasImage)>();
+            stack.Push((null, 0, false));
+            var reader = new HtmlReader(node.Lines.ToString());
+            while (reader.Read(out var token))
             {
-                HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
-                HtmlTokenType.Comment => false,
-                _ => true,
-            };
+                var top = stack.Pop();
+                switch (token.Type)
+                {
+                    case HtmlTokenType.StartTag:
+                        if (token.IsInlineElement())
+                        {
+                            top.visibleInlineCount += 1;
+
+                            // Only look for the image specified by source info
+                            if (token.NameIs("img") && token.Range.Start.Index == imageIndex)
+                            {
+                                top.hasImage = true;
+                            }
+                        }
+                        else
+                        {
+                            if (top.hasImage && top.visibleInlineCount > 1)
+                            {
+                                return true;
+                            }
+
+                            top.visibleInlineCount = 0;
+                            top.hasImage = false;
+                        }
+                        stack.Push(top);
+                        if (!token.IsSelfClosing && !token.IsSelfClosingElement())
+                        {
+                            stack.Push((token, 0, false));
+                        }
+                        break;
+                    case HtmlTokenType.EndTag:
+                        if (!top.token.HasValue || !top.token.Value.NameIs(token.Name.Span))
+                        {
+                            // Invalid HTML structure, should throw warning
+                            stack.Push(top);
+                        }
+                        else
+                        {
+                            if (top.hasImage)
+                            {
+                                if (top.visibleInlineCount > 1)
+                                {
+                                    return true;
+                                }
+                                if (top.token.Value.IsInlineElement())
+                                {
+                                    var parent = stack.Pop();
+                                    parent.hasImage = true;
+                                    stack.Push(parent);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        if (IsVisible(ref token))
+                        {
+                            top.visibleInlineCount++;
+                        }
+                        stack.Push(top);
+                        break;
+                }
+            }
+
+            // Should check if all tags are closed properly and throw warning if not
+            return false;
         }
 
         public static void TransformLink(
             ref HtmlToken token,
             MarkdownObject? block,
             Func<SourceInfo<string>, string> transformLink,
-            Func<SourceInfo<string>, MarkdownObject?, string?, string>? transformImageLink = null)
+            Func<SourceInfo<string>, MarkdownObject?, string?, int, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.GetSourceInfo(attribute.ValueRange);
+                    var source = block?.GetSourceInfo()?.WithOffset(attribute.ValueRange);
                     var link = HttpUtility.HtmlEncode(
                         !IsImage(ref token, attribute) || transformImageLink == null
                             ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
                             : transformImageLink(
                                 new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
                                 block,
-                                token.GetAttributeValueByName("alt")));
+                                token.GetAttributeValueByName("alt"),
+                                token.Range.Start.Index));
 
                     attribute = attribute.WithValue(link);
                 }
@@ -240,8 +321,8 @@ namespace Microsoft.Docs.Build
             suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo(token.Range)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo(token.Range)),
+                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
+                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
@@ -292,6 +373,11 @@ namespace Microsoft.Docs.Build
             }
 
             return result.ToString();
+        }
+
+        public static SourceInfo WithOffset(this SourceInfo sourceInfo, in HtmlTextRange range)
+        {
+            return sourceInfo.WithOffset(range.Start.Line + 1, range.Start.Column + 1, range.End.Line + 1, range.End.Column + 1);
         }
 
         /// <summary>
@@ -347,7 +433,7 @@ namespace Microsoft.Docs.Build
             var tokenName = token.Name.ToString();
             if (!s_allowedTagAttributeMap.TryGetValue(tokenName, out var additionalAttributes))
             {
-                errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(token.NameRange), tokenName));
+                errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo()?.WithOffset(token.NameRange), tokenName));
                 return;
             }
 
@@ -363,7 +449,7 @@ namespace Microsoft.Docs.Build
 
                 if (additionalAttributes is null || !additionalAttributes.Contains(attributeName))
                 {
-                    errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo(attribute.NameRange), tokenName, attributeName));
+                    errors.Add(Errors.Content.DisallowedHtml(obj.GetSourceInfo()?.WithOffset(attribute.NameRange), tokenName, attributeName));
                 }
             }
         }
@@ -420,6 +506,21 @@ namespace Microsoft.Docs.Build
         {
             return token.NameIs("img") && attribute.NameIs("src") && !attribute.Value.IsEmpty;
         }
+
+        private static bool IsVisible(ref HtmlToken token) => token.Type switch
+        {
+            HtmlTokenType.Text => !token.RawText.Span.IsWhiteSpace(),
+            HtmlTokenType.Comment => false,
+            _ => true,
+        };
+
+        private static bool IsInlineElement(string tagName) => s_inlineTags.Contains(tagName.ToLowerInvariant());
+
+        private static bool IsInlineElement(this HtmlToken token) => IsInlineElement(token.Name.ToString());
+
+        private static bool IsSelfClosingElement(string tagName) => s_selfClosingTags.Contains(tagName.ToLowerInvariant());
+
+        private static bool IsSelfClosingElement(this HtmlToken token) => IsSelfClosingElement(token.Name.ToString());
 
         private static int CountWordInText(ReadOnlySpan<char> text)
         {

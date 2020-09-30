@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         private void PostProcessLearnValidation()
         {
-            if (!_config.RunLearnValidation || !_config.Legacy || _config.DryRun)
+            if (!_config.RunLearnValidation || _config.OutputType != OutputType.PageJson || _config.DryRun)
             {
                 return;
             }
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 lock (s_lock)
                 {
                     LearnValidationEntry.Run(
-                        repoUrl: _buildOptions.Repository?.Remote,
+                        repoUrl: _buildOptions.Repository?.Url,
                         repoBranch: _buildOptions.Repository?.Branch,
                         docsetName: _config.Name,
                         docsetPath: _buildOptions.DocsetPath,
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
         private void LogError(LearnLogItem item)
         {
             var source = item.File is null ? null : new SourceInfo(new FilePath(item.File));
-            _errors.Add(new Error(MapLevel(item.ErrorLevel), item.ErrorCode.ToString(), item.Message, source));
+            _errors.Add(new Error(MapLevel(item.ErrorLevel), item.ErrorCode.ToString(), $"{item.Message}", source));
 
             static ErrorLevel MapLevel(LearnErrorLevel level) => level switch
             {

@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             "_site/**",             // Default output location
             "_localization/**",     // Localization file when using folder convention
             "_themes/**",           // Default template location
+            "_themes.pdf/**",       // Default PDF template location
         };
 
         /// <summary>
@@ -127,11 +128,6 @@ namespace Microsoft.Docs.Build
         /// Gets host name used for generating .xrefmap.json
         /// </summary>
         public string XrefHostName { get; private set; } = "";
-
-        /// <summary>
-        /// Gets whether we are running in legacy mode
-        /// </summary>
-        public bool Legacy { get; private set; }
 
         /// <summary>
         /// Gets whether we are running in dry run mode

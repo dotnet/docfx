@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Monikers for redirection files.
         /// </summary>
-        public MonikerList Monikers { get; }
+        public MonikerList RedirectionMonikers { get; }
 
         /// <summary>
         /// Creates an unknown file path.
@@ -62,9 +62,9 @@ namespace Microsoft.Docs.Build
             DependencyName = dependencyName;
             IsGitCommit = isGitCommit;
             Format = GetFormat(path);
-            Monikers = monikers;
+            RedirectionMonikers = monikers;
 
-            _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, Monikers);
+            _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, RedirectionMonikers);
         }
 
         public static FilePath Content(PathString path)
@@ -73,10 +73,10 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Main, path, default, default, default);
         }
 
-        public static FilePath Redirection(PathString path, MonikerList monikers)
+        public static FilePath Redirection(PathString path, MonikerList redirectionMonikers)
         {
             Debug.Assert(!System.IO.Path.IsPathRooted(path));
-            return new FilePath(FileOrigin.Redirection, path, default, default, monikers);
+            return new FilePath(FileOrigin.Redirection, path, default, default, redirectionMonikers);
         }
 
         public static FilePath Fallback(PathString path, bool isGitCommit = false)
@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
 
         public FilePath WithPath(PathString path)
         {
-            return path == Path ? this : new FilePath(Origin, path, DependencyName, IsGitCommit, Monikers);
+            return path == Path ? this : new FilePath(Origin, path, DependencyName, IsGitCommit, RedirectionMonikers);
         }
 
         /// <summary>
@@ -134,9 +134,9 @@ namespace Microsoft.Docs.Build
                     break;
             }
 
-            if (Monikers.HasMonikers)
+            if (RedirectionMonikers.HasMonikers)
             {
-                tags += $"[{Monikers}]";
+                tags += $"[{RedirectionMonikers}]";
             }
 
             if (IsGitCommit)
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
                    DependencyName.Equals(other.DependencyName) &&
                    other.Origin == Origin &&
                    IsGitCommit == other.IsGitCommit &&
-                   Monikers == other.Monikers;
+                   RedirectionMonikers == other.RedirectionMonikers;
         }
 
         public int CompareTo(FilePath? other)
@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
 
             if (result == 0)
             {
-                result = Monikers.CompareTo(other.Monikers);
+                result = RedirectionMonikers.CompareTo(other.RedirectionMonikers);
             }
 
             return result;

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -70,16 +69,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static string ReplaceRegex(this string input, Regex pattern, string replacement)
         {
             return pattern.Replace(input, replacement);
-        }
-
-        public static string NormalizePath(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                return path;
-            }
-
-            return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
         public static bool MatchStart(ref StringSlice slice, string startString, bool isCaseSensitive = true)

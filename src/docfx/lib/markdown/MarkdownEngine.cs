@@ -81,9 +81,9 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public MarkdownDocument Parse(ErrorBuilder errors, string content, FilePath file, MarkdownPipelineType pipelineType)
+        public MarkdownDocument Parse(ErrorBuilder errors, string content, SourceInfo sourceInfo, MarkdownPipelineType pipelineType)
         {
-            using (InclusionContext.PushFile(file))
+            using (InclusionContext.PushFile(sourceInfo))
             {
                 try
                 {
@@ -100,13 +100,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public string ToHtml(ErrorBuilder errors, string markdown, FilePath file, MarkdownPipelineType pipelineType, ConceptualModel? conceptual = null)
+        public string ToHtml(
+            ErrorBuilder errors,
+            string markdown,
+            SourceInfo sourceInfo,
+            MarkdownPipelineType pipelineType,
+            ConceptualModel? conceptual = null,
+            bool contentFallback = true)
         {
-            using (InclusionContext.PushFile(file))
+            using (InclusionContext.PushFile(sourceInfo))
             {
                 try
                 {
-                    var status = new Status(errors, conceptual);
+                    var status = new Status(errors, contentFallback, conceptual);
 
                     t_status.Value!.Push(status);
 
@@ -267,12 +273,7 @@ namespace Microsoft.Docs.Build
         {
             // At parser stage, we are unable to reliably access GetPathToRoot method,
             // use InclusionContext to report syntax diagnostics.
-            var source = new SourceInfo(
-                (FilePath)InclusionContext.File,
-                line is null ? (origin?.Line + 1) ?? 0 : (line.Value + 1),
-                line is null ? (origin?.Column + 1) ?? 0 : 0);
-
-            t_status.Value!.Peek().Errors.Add(new Error(level, code, message, source));
+            t_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", ((SourceInfo)InclusionContext.File).WithOffset(origin, line)));
         }
 
         private static ErrorBuilder GetErrors()
@@ -290,25 +291,23 @@ namespace Microsoft.Docs.Build
             return _metadataProvider.GetMetadata(GetErrors(), path).Layout;
         }
 
-        private bool IsArchived(FilePath path)
-        {
-            return _metadataProvider.GetMetadata(GetErrors(), path).IsArchived;
-        }
-
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
-            var (error, file) = _linkResolver.ResolveContent(new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath());
+            var (error, file) = _linkResolver.ResolveContent(
+                new SourceInfo<string>(path, origin.GetSourceInfo()),
+                origin.GetFilePath(),
+                status.ContentFallback);
             status.Errors.AddIfNotNull(error);
 
-            return file is null ? default : (_input.ReadString(file).Replace("\r", ""), file);
+            return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
         private string GetLink(string path, MarkdownObject origin)
         {
             var status = t_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(
-                new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), (FilePath)InclusionContext.RootFile);
+                new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -321,12 +320,12 @@ namespace Microsoft.Docs.Build
                 altText = ToPlainText(origin);
             }
 
-            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText);
+            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText, -1);
         }
 
-        private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText)
+        private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            _contentValidator.ValidateImageLink((FilePath)InclusionContext.RootFile, href, origin, altText);
+            _contentValidator.ValidateImageLink(GetRootFilePath(), href, origin, altText, imageIndex);
             var link = GetLink(href);
             return link;
         }
@@ -334,7 +333,7 @@ namespace Microsoft.Docs.Build
         private string GetLink(SourceInfo<string> href)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), (FilePath)InclusionContext.RootFile);
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
 
             return link;
@@ -346,9 +345,9 @@ namespace Microsoft.Docs.Build
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), (FilePath)InclusionContext.RootFile)
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath())
                 : uid.HasValue
-                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), (FilePath)InclusionContext.RootFile)
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), GetRootFilePath())
                     : default;
 
             if (!suppressXrefNotFound)
@@ -360,22 +359,27 @@ namespace Microsoft.Docs.Build
 
         private static FilePath GetFilePath<T>(SourceInfo<T> sourceInfo)
         {
-            return sourceInfo.Source?.File ?? (FilePath)InclusionContext.File;
+            return sourceInfo.Source?.File ?? ((SourceInfo)InclusionContext.File).File;
+        }
+
+        private static FilePath GetRootFilePath()
+        {
+            return ((SourceInfo)InclusionContext.RootFile).File;
         }
 
         private MonikerList ParseMonikerRange(SourceInfo<string?> monikerRange)
         {
-            return _monikerProvider.GetZoneLevelMonikers(GetErrors(), (FilePath)InclusionContext.RootFile, monikerRange);
+            return _monikerProvider.GetZoneLevelMonikers(GetErrors(), GetRootFilePath(), monikerRange);
         }
 
         private MonikerList GetFileLevelMonikers()
         {
-            return _monikerProvider.GetFileLevelMonikers(GetErrors(), (FilePath)InclusionContext.RootFile);
+            return _monikerProvider.GetFileLevelMonikers(GetErrors(), GetRootFilePath());
         }
 
         private string? GetCanonicalVersion()
         {
-            return _publishUrlMap.Value.GetCanonicalVersion((FilePath)InclusionContext.RootFile);
+            return _publishUrlMap.Value.GetCanonicalVersion(GetRootFilePath());
         }
 
         private class Status
@@ -384,10 +388,13 @@ namespace Microsoft.Docs.Build
 
             public ErrorBuilder Errors { get; }
 
-            public Status(ErrorBuilder errors, ConceptualModel? conceptual = null)
+            public bool ContentFallback { get; }
+
+            public Status(ErrorBuilder errors, bool contentFallback = true, ConceptualModel? conceptual = null)
             {
                 Errors = errors;
                 Conceptual = conceptual;
+                ContentFallback = contentFallback;
             }
         }
     }

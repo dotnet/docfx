@@ -19,13 +19,13 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             Func<ErrorBuilder> getErrors,
             Func<SourceInfo<string>, string> getLink,
-            Func<SourceInfo<string>, MarkdownObject, string?, string> getImageLink,
+            Func<SourceInfo<string>, MarkdownObject, string?, int, string> getImageLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
             {
                 var errors = getErrors();
-                var file = (FilePath)InclusionContext.File;
+                var file = ((SourceInfo)InclusionContext.File).File;
                 var scanTags = TemplateEngine.IsConceptual(documentProvider.GetMime(file)) &&
                     !metadataProvider.GetMetadata(errors, file).IsArchived;
 

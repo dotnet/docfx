@@ -8,5 +8,6 @@ namespace Microsoft.Docs.Build
         None,
         Folder,
         Git,
+        PublicTemplate,
     }
 }

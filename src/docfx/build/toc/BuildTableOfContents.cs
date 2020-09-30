@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             {
                 if (context.Config.OutputType == OutputType.Html)
                 {
-                    if (context.DocumentProvider.IsHtml(file))
+                    if (context.DocumentProvider.GetRenderType(file) == RenderType.Content)
                     {
                         var viewModel = context.TemplateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
                         var html = context.TemplateEngine.RunMustache($"toc.html", viewModel, file);

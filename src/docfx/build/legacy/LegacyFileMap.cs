@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                         switch (contentType)
                         {
                             case ContentType.Unknown:
-                            case ContentType.Page when !context.DocumentProvider.IsHtml(document):
+                            case ContentType.Page when context.DocumentProvider.GetRenderType(document) == RenderType.Component:
                                 return;
                         }
 
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
                             fileManifest.Value.ConfigMonikerRange,
                             fileManifest.Value.Monikers);
 
-                        listBuilder.Add((context.SourceMap.GetOriginalFilePath(document) ?? document.Path, fileItem));
+                        listBuilder.Add((context.SourceMap.GetOriginalFilePath(document)?.Path ?? document.Path, fileItem));
                         filemapBuilder.Add((document.Path, fileItem));
                     });
 

@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         {
             // load and trace entry repository
             var repository = Repository.Create(docsetPath);
-            Telemetry.SetRepository(repository?.Remote, repository?.Branch);
+            Telemetry.SetRepository(repository?.Url, repository?.Branch);
 
             var docfxConfig = LoadConfig(errors, docsetPath);
             if (docfxConfig is null)
@@ -80,12 +80,16 @@ namespace Microsoft.Docs.Build
             var credentialProvider = preloadConfig.GetCredentialProvider();
             var opsAccessor = new OpsAccessor(errors, credentialProvider);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
-            var packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, repository);
+
+            PackageResolver? packageResolver = default;
+            var fallbackDocsetPath = new Lazy<string?>(
+                () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
+            var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+
+            packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
             disposables.Add(packageResolver);
 
-            var fallbackDocsetPath = LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver);
-            var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
-            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath, outputPath, repository, preloadConfig);
+            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
 
             // Create full config
@@ -129,7 +133,7 @@ namespace Microsoft.Docs.Build
             var extendQuery =
                 $"name={WebUtility.UrlEncode(config.Name)}" +
                 $"&locale={WebUtility.UrlEncode(locale)}" +
-                $"&repository_url={WebUtility.UrlEncode(repository?.Remote)}" +
+                $"&repository_url={WebUtility.UrlEncode(repository?.Url)}" +
                 $"&branch={WebUtility.UrlEncode(repository?.Branch ?? "main")}" +
                 $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
                 $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
