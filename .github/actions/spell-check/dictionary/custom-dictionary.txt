@@ -554,3 +554,5 @@ langs
 ILearn
 Formattable
 Memberwise
+nettrace
+speedscope

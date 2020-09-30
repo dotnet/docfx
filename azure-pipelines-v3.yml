@@ -224,6 +224,10 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
+  # Install dotnet-trace
+  - script: dotnet tool update -g dotnet-trace
+    displayName: 'Install dotnet-trace'
+
   # Download RegressionTest binary
   - download: current
     displayName: Download RegressionTest binary

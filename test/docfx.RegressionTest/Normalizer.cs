@@ -58,11 +58,7 @@ namespace Microsoft.Docs.Build
                     }
                     break;
 
-                case ".html":
-                case ".yml":
-                    break;
-
-                default:
+                case ".pdf":
                     File.Delete(path);
                     break;
             }

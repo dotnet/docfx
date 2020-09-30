@@ -207,6 +207,7 @@ namespace Microsoft.Docs.Build
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
             var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
+            var traceFilePath = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.nettrace");
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
@@ -215,11 +216,17 @@ namespace Microsoft.Docs.Build
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
-            return Exec(
+            var time = Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
-                cwd: repositoryPath);
+                cwd: repositoryPath,
+                traceFilePath: traceFilePath);
+
+            Console.WriteLine($"##vso[artifact.upload artifactname=trace;]{traceFilePath}", traceFilePath);
+            Console.WriteLine($"##vso[artifact.upload artifactname=trace;]{traceFilePath}.json", $"{traceFilePath}.json");
+
+            return time;
         }
 
         private static void Compare(Options opts, string workingFolder, string outputPath, string existingOutputPath, TimeSpan buildTime)
@@ -292,6 +299,7 @@ namespace Microsoft.Docs.Build
             bool ignoreError = false,
             bool redirectStandardError = false,
             int[]? allowExitCodes = null,
+            string? traceFilePath = null,
             params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -301,6 +309,7 @@ namespace Microsoft.Docs.Build
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
             Console.ResetColor();
+
             var process = Process.Start(new ProcessStartInfo
             {
                 FileName = fileName,
@@ -310,11 +319,18 @@ namespace Microsoft.Docs.Build
                 RedirectStandardError = redirectStandardError,
                 RedirectStandardInput = !string.IsNullOrEmpty(stdin),
             });
+
+            if (traceFilePath != null)
+            {
+                CollectTrace(traceFilePath, process.Id);
+            }
+
             if (!string.IsNullOrEmpty(stdin))
             {
                 process.StandardInput.Write(stdin);
                 process.StandardInput.Close();
             }
+
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
@@ -327,6 +343,23 @@ namespace Microsoft.Docs.Build
             stopwatch.Stop();
             Console.WriteLine($"'{fileName} {sanitizedArguments}' done in '{stopwatch.Elapsed}'");
             return stopwatch.Elapsed;
+        }
+
+        private static void CollectTrace(string traceFilePath, int processId)
+        {
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine($"Collecting dotnet traces from process {processId} to '{traceFilePath}'");
+                Console.ResetColor();
+                Process.Start("dotnet", $"trace collect --format speedscope -p {processId} -o \"{traceFilePath}\"");
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"dotnet-trace failed: \n{ex}");
+                Console.ResetColor();
+            }
         }
 
         private static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)
