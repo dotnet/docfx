@@ -107,6 +107,19 @@ namespace Microsoft.Docs.Build
                 results.Add(servicePagePath);
                 var servicePageToken = new ServicePageModel(name, fullName, href, uid, children, langs, pageType);
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
+
+                // Add Overview page
+                if (node.Items.Count > 0)
+                {
+                    // add toc item of the overview page
+                    var overviewTocItem = new TableOfContentsNode(node);
+                    overviewTocItem.Name = overviewTocItem.Name.With("Overview");
+                    node.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overviewTocItem));
+
+                    // need to calculate the href to the overview page
+
+                    // add overview service page
+                }
             }
 
             foreach (var item in node.Items)

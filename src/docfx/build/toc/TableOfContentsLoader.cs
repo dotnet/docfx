@@ -222,8 +222,6 @@ namespace Microsoft.Docs.Build
                 var overview = new TableOfContentsNode(toc);
                 overview.Name = overview.Name.With("Overview");
                 toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
-                toc.Uid = toc.Uid.With(null);
-                toc.Href = toc.Href.With(null);
             }
         }
 
