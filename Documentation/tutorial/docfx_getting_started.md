@@ -45,7 +45,7 @@ Now you can view the generated website on http://localhost:8080.
 
 > [!Important]
 >
-> For macOS/Linux users: Use [Mono](https://www.mono-project.com/) version >= 5.10. The following command line can be used on Debian/Ubuntu: `sudo apt-get install mono-runtime mono-devel`.
+> For macOS/Linux users: Use [Mono](https://www.mono-project.com/) version >= 5.10. Do **NOT** install Debian/Ubuntu-provided packages, since they typically do not provide all the packages required (for example, `msbuild` is missing). Once you have the Mono project's repositories added, the following command line can be used to install the prerequisites on Debian/Ubuntu: `sudo apt-get install mono-runtime mono-devel msbuild`.
 >
 > For macOS users: **DO NOT** Install Mono from Homebrew, but rather from the [Mono download page](https://www.mono-project.com/download/stable/#download-mac).
 
@@ -78,7 +78,7 @@ Now you can view the generated website on http://localhost:8080.
 
 ## 4.1 Steps
 
-*DocFX* can be used in a Continuous Integration (CI) environment. 
+*DocFX* can be used in a Continuous Integration (CI) environment.
 
 Consider a typical scenario: We want to set up a job on a CI service (e.g. [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)) to build documents automatically and publish to a website (e.g. [GitHub Pages](https://pages.github.com/)). We can achieve this with a script in a CI job with the following steps:
 
