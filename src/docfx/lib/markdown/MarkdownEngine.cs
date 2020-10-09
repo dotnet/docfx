@@ -184,9 +184,6 @@ namespace Microsoft.Docs.Build
                 .UseHeadingIdRewriter()
                 .UseTabGroup(_markdownContext)
                 .UseInteractiveCode()
-
-                // Place markdown rewriters before `EnsureParent` as rewriters breaks parent chain.
-                .UseEnsureParent()
                 .UseFilePath()
                 .UseYamlFrontMatter()
                 .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
@@ -235,8 +232,7 @@ namespace Microsoft.Docs.Build
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
-            builder.UseEnsureParent()
-                   .UseFilePath()
+            builder.UseFilePath()
                    .UseYamlFrontMatter()
                    .UseXref()
                    .UsePreciseSourceLocation();
