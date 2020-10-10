@@ -61,8 +61,8 @@ namespace Microsoft.Docs.Build
                 var fullName = node.Name;
                 var uid = node.Uid;
                 var href = node.Href;
-
                 var children = new List<ServicePageItem>();
+
                 foreach (var item in node.Items)
                 {
                     ServicePageItem child;
@@ -83,8 +83,8 @@ namespace Microsoft.Docs.Build
                         {
                             var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
                             var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                            var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = hrefRelativePathToReferenceTOC;
+                            var hrefRelativePathToServicePage = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                            childHref = hrefRelativePathToServicePage;
                         }
 
                         child = new ServicePageItem(childName, childHref, null);
@@ -107,19 +107,7 @@ namespace Microsoft.Docs.Build
                 results.Add(servicePagePath);
                 var servicePageToken = new ServicePageModel(name, fullName, href, uid, children, langs, pageType);
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
-
-                // Add Overview page
-                if (node.Items.Count > 0)
-                {
-                    // add toc item of the overview page
-                    var overviewTocItem = new TableOfContentsNode(node);
-                    overviewTocItem.Name = overviewTocItem.Name.With("Overview");
-                    node.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overviewTocItem));
-
-                    // need to calculate the href to the overview page
-
-                    // add overview service page
-                }
+                WriteToFile(servicePageToken, servicePagePath.Path);
             }
 
             foreach (var item in node.Items)
@@ -133,6 +121,23 @@ namespace Microsoft.Docs.Build
                     GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");
                 }
             }
+        }
+
+        private static void WriteToFile(ServicePageModel model, string path)
+        {
+            var se = new YamlDotNet.Serialization.Serializer();
+            var s = se.Serialize(model);
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+            }
+
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+            }
+
+            File.WriteAllText(path, s);
         }
     }
 }
