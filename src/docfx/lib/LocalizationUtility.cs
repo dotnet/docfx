@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 
             var (fallbackRemote, fallbackBranch) = fallbackRepository?.Type == PackageType.Git
                 ? (fallbackRepository?.Url, fallbackRepository?.Branch)
-                : GetFallbackRepository(repository!.Remote, repository.Branch);
+                : GetFallbackRepository(repository!.Url, repository.Branch);
             if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
 
         public static string? GetLocale(Repository? repository)
         {
-            return repository is null ? null : TryRemoveLocale(repository.Remote, out _, out var remoteLocale) ? remoteLocale : null;
+            return repository is null ? null : TryRemoveLocale(repository.Url, out _, out var remoteLocale) ? remoteLocale : null;
         }
 
         public static bool TryGetContributionBranch(string? branch, [NotNullWhen(true)] out string? contributionBranch)
@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            GitUtility.Fetch(config, repository.Path, repository.Remote, $"+{branch}:{branch}", "--update-head-ok");
+                            GitUtility.Fetch(config, repository.Path, repository.Url, $"+{branch}:{branch}", "--update-head-ok");
                             succeeded = true;
                             break;
                         }
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (!succeeded)
                     {
-                        throw Errors.Config.CommittishNotFound(repository.Remote, contributionBranch).ToException(exception!);
+                        throw Errors.Config.CommittishNotFound(repository.Url, contributionBranch).ToException(exception!);
                     }
 
                     s_fetchedLocalizationRepositories.TryAdd(repository);
@@ -123,14 +123,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static (string? fallbackRemote, string? fallbackBranch) GetFallbackRepository(string? remote, string? branch)
+        internal static (string? fallbackUrl, string? fallbackBranch) GetFallbackRepository(string? url, string? branch)
         {
-            if (string.IsNullOrEmpty(remote) || string.IsNullOrEmpty(branch))
+            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(branch))
             {
                 return default;
             }
 
-            if (TryRemoveLocale(remote, out var fallbackRemote, out _))
+            if (TryRemoveLocale(url, out var fallbackUrl, out _))
             {
                 var fallbackBranch = branch;
                 if (TryRemoveLocale(branch, out var branchWithoutLocale, out _))
@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
                     fallbackBranch = contributionBranch;
                 }
 
-                return (fallbackRemote, fallbackBranch);
+                return (fallbackUrl, fallbackBranch);
             }
 
             return default;

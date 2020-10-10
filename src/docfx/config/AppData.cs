@@ -29,15 +29,15 @@ namespace Microsoft.Docs.Build
             return Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url));
         }
 
-        public static string GetCommitCachePath(string remote)
+        public static string GetCommitCachePath(string repositoryUrl)
         {
-            return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(remote));
+            return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(repositoryUrl));
         }
 
-        public static string GetCommitBuildTimePath(string remote, string branch)
+        public static string GetCommitBuildTimePath(string repositoryUrl, string branch)
         {
             return Path.Combine(
-                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(remote)}_{HashUtility.GetMd5Guid(branch)}.json");
+                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(repositoryUrl)}_{HashUtility.GetMd5Guid(branch)}.json");
         }
 
         /// <summary>

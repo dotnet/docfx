@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
                             logWriter: LogError,
                             logContentBaseDirectory: _buildOptions.DocsetPath,
                             sourceMapFilePath: Path.Combine(_buildOptions.DocsetPath, $".sourcemap-ecma-{index}.json"),
-                            publicGitRepoUrl: _config.EditRepositoryUrl ?? repository?.Remote,
+                            publicGitRepoUrl: _config.EditRepositoryUrl ?? repository?.Url,
                             publicGitBranch: _config.EditRepositoryBranch ?? repository?.Branch,
                             config: monodocConfig);
                     }

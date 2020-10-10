@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal class Repository
     {
-        public string Remote { get; }
+        public string Url { get; }
 
         public string? Branch { get; }
 
@@ -15,24 +15,24 @@ namespace Microsoft.Docs.Build
 
         public PathString Path { get; }
 
-        private Repository(string remote, string? branch, string commit, PathString path)
+        private Repository(string url, string? branch, string commit, PathString path)
         {
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
-            Remote = Regex.Replace(remote, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
+            Url = Regex.Replace(url, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
             Branch = branch;
             Commit = commit;
             Path = path;
         }
 
         /// <summary>
-        /// Create repository from environment variable(remote + branch), fallback to git info if they are not set
+        /// Create repository from environment variable(url + branch), fallback to git info if they are not set
         /// </summary>
         public static Repository? Create(string path)
         {
             var repository = Create(path, EnvironmentVariable.RepositoryBranch, EnvironmentVariable.RepositoryUrl);
             if (repository != null)
             {
-                Log.Write($"Repository {repository.Remote}#{repository.Branch} at committish: {repository.Commit}");
+                Log.Write($"Repository {repository.Url}#{repository.Branch} at committish: {repository.Commit}");
             }
             return repository;
         }
@@ -49,13 +49,13 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            var (remote, repoBranch, repoCommit) = GitUtility.GetRepoInfo(repoPath);
+            var (url, repoBranch, repoCommit) = GitUtility.GetRepoInfo(repoPath);
             if (repoCommit is null)
             {
                 return null;
             }
 
-            return new Repository(repoUrl ?? remote ?? "", branch ?? repoBranch, repoCommit, new PathString(repoPath));
+            return new Repository(repoUrl ?? url ?? "", branch ?? repoBranch, repoCommit, new PathString(repoPath));
         }
     }
 }

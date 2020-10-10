@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             Assert.NotNull(repo);
 
             using var errors = new ErrorWriter();
-            using var gitCommitProvider = new FileCommitProvider(errors, repo, "git-commit-test-cache");
+            using var gitCommitProvider = new GitCommitLoader(errors, repo, "git-commit-test-cache");
             var pathToRepo = PathUtility.NormalizeFile(file);
 
             // current branch

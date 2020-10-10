@@ -144,6 +144,8 @@ namespace Microsoft.Docs.Build
             }
 
             ValidateItems(schema, propertyPath, array, errors);
+            ValidateMinItemsWhen(schema, propertyPath, array, errors);
+            ValidateMaxItemsWhen(schema, propertyPath, array, errors);
 
             if (schema.UniqueItems && array.Distinct(JsonUtility.DeepEqualsComparer).Count() != array.Count)
             {
@@ -260,6 +262,57 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private void ValidateMaxItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
+        {
+            foreach (var check in schema.MaxItemsWhen)
+            {
+                var count = 0;
+                for (var i = 0; i < array.Count; i++)
+                {
+                    if (check.Condition != null && SchemaMatches(check.Condition, array[i]))
+                    {
+                        count++;
+                    }
+                }
+
+                if (count > check.Value)
+                {
+                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
+                        JsonUtility.GetSourceInfo(array),
+                        name,
+                        $"The array must not have more than {check.Value} matched item(s)."));
+                }
+            }
+        }
+
+        private void ValidateMinItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
+        {
+            foreach (var check in schema.MinItemsWhen)
+            {
+                var count = 0;
+                for (var i = 0; i < array.Count; i++)
+                {
+                    if (check.Condition != null && SchemaMatches(check.Condition, array[i]))
+                    {
+                        count++;
+                    }
+                }
+
+                if (count < check.Value)
+                {
+                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
+                        JsonUtility.GetSourceInfo(array),
+                        name,
+                        $"The array must have least {check.Value} matched item(s)."));
+                }
+            }
+        }
+
+        private bool SchemaMatches(JsonSchema schema, JToken map)
+        {
+            return Validate(schema, map).Count <= 0;
         }
 
         private static void ValidateBooleanSchema(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -583,7 +636,7 @@ namespace Microsoft.Docs.Build
                     var metadataSources = (from g in items where g.source != null select g.source).ToArray();
                     foreach (var file in items)
                     {
-                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, moniker, metadataValue, metadataSources));
+                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
                     }
                 }
             }
