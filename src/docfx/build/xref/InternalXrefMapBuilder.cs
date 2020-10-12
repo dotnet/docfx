@@ -82,8 +82,7 @@ namespace Microsoft.Docs.Build
                 case FileFormat.Yaml:
                     {
                         var token = _input.ReadYaml(errors, file);
-                        IReadOnlyList<InternalXrefSpec> specs;
-                        specs = LoadSchemaDocument(errors, token, file);
+                        var specs = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
                         break;
                     }
@@ -115,6 +114,7 @@ namespace Microsoft.Docs.Build
         private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
         {
             var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
+
             return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
