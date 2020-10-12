@@ -106,6 +106,8 @@ export class GithubApi {
             headers: {
                 'Content-Type': info.contentType,
             },
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity,
             data: info.data
         }
         return this.request(config);
