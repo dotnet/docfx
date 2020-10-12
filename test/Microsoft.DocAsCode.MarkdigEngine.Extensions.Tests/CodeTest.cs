@@ -1799,8 +1799,8 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
 ")]
         public void CodeTestBlockGeneral(string source, string expected)
         {
-            var filename = string.Empty;
-            var content = string.Empty;
+            var filename = "";
+            var content = "";
 
             // arrange
             if (source.Contains("source.cs"))
@@ -1891,8 +1891,8 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         public void CodeTestBlockGeneralCSharp_Error(string source)
         {
             // arrange
-            var filename = string.Empty;
-            var content = string.Empty;
+            var filename = "";
+            var content = "";
             if (source.Contains("source.cs"))
             {
                 filename = "source.cs";
@@ -1916,7 +1916,7 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
             else
             {
                 filename = "source.missing";
-                content = string.Empty;
+                content = "";
             }
 
             // act

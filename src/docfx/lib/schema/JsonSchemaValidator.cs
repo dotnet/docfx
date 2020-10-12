@@ -590,7 +590,7 @@ namespace Microsoft.Docs.Build
             if (monikers == null || !monikers.Any())
             {
                 // Use empty string as default moniker if content versioning not enabled for this docset
-                monikers = new[] { string.Empty }.ToList();
+                monikers = new[] { "" }.ToList();
             }
 
             foreach (var docsetUniqueKey in schema.DocsetUnique)

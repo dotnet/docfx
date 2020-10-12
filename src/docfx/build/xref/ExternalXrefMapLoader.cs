@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
         private static (List<(string uid, long start, long end)>, string?) GetXrefSpecPosAndRepoUrl(ReadOnlySpan<byte> content, string filePath)
         {
             var xrefSpecPos = new List<(string uid, long start, long end)>();
-            string repositoryUrl = string.Empty;
+            string repositoryUrl = "";
             var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
             while (reader.Read())

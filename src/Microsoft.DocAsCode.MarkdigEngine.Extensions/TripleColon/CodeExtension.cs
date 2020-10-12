@@ -65,12 +65,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
-            var source = string.Empty;
-            var range = string.Empty;
-            var id = string.Empty;
-            var highlight = string.Empty;
-            var language = string.Empty;
-            var interactive = string.Empty;
+            var source = "";
+            var range = "";
+            var id = "";
+            var highlight = "";
+            var language = "";
+            var interactive = "";
 
             foreach (var attribute in attributes)
             {
