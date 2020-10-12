@@ -54,8 +54,10 @@ namespace Microsoft.Docs.Build
                                 buildScope,
                                 jsonSchemaTransformer.Value).Build());
 
+            var externalXrefMapAndValidateXref = ExternalXrefMapLoader.Load(config, fileResolver, errorLog);
+
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
+                () => externalXrefMapAndValidateXref.Value.externalXrefMap);
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;

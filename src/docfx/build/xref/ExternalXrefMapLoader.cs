@@ -13,14 +13,17 @@ namespace Microsoft.Docs.Build
     internal class ExternalXrefMapLoader
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
-
         private static readonly byte[] s_repoUrlBytes = Encoding.UTF8.GetBytes("repositoryUrl");
+        private static readonly byte[] s_referencesBytes = Encoding.UTF8.GetBytes("references");
+        private static readonly byte[] s_externalXrefsBytes = Encoding.UTF8.GetBytes("externalXrefs");
 
-        public static IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
+        public static Lazy<(IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> externalXrefMap, IReadOnlyList<Lazy<ExternalXref>> validateXref)> Load(
+            Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
             using (Progress.Start("Loading external xref map"))
             {
-                var result = new Dictionary<string, Lazy<ExternalXrefSpec>>();
+                var externalXrefMap = new Dictionary<string, Lazy<ExternalXrefSpec>>();
+                var validateXref = new List<Lazy<ExternalXref>>();
 
                 foreach (var url in config.Xref)
                 {
@@ -28,7 +31,7 @@ namespace Microsoft.Docs.Build
                     var physicalPath = fileResolver.ResolveFilePath(url);
                     if (url.Value.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                     {
-                        LoadZipFile(result, path, physicalPath, errors);
+                        LoadZipFile(externalXrefMap, path, physicalPath, errors);
                     }
                     else if (url.Value.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
                     {
@@ -37,36 +40,41 @@ namespace Microsoft.Docs.Build
                         foreach (var spec in xrefMap.References)
                         {
                             spec.RepositoryUrl = xrefMap.RepositoryUrl;
-                            result.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
+                            externalXrefMap.TryAdd(spec.Uid, new Lazy<ExternalXrefSpec>(() => spec));
                         }
                     }
                     else
                     {
+                        var externalXrefAndValidateXref = LoadJsonFile(physicalPath);
                         // Fast pass for JSON xref files
-                        foreach (var (uid, spec) in LoadJsonFile(physicalPath))
+                        foreach (var (uid, spec) in externalXrefAndValidateXref.externalXref)
                         {
                             // for same uid with multiple specs, we should respect the order of the list
-                            result.TryAdd(uid, spec);
+                            externalXrefMap.TryAdd(uid, spec);
                         }
+                        validateXref = externalXrefAndValidateXref.validateXref;
                     }
                 }
 
-                result.TrimExcess();
-                return result;
+                externalXrefMap.TrimExcess();
+                return new Lazy<(IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>, IReadOnlyList<Lazy<ExternalXref>>)>(
+                    () => (externalXrefMap, validateXref));
             }
         }
 
-        public static List<(string, Lazy<ExternalXrefSpec>)> LoadJsonFile(string filePath)
+        public static (List<(string, Lazy<ExternalXrefSpec>)> externalXref, List<Lazy<ExternalXref>> validateXref) LoadJsonFile(string filePath)
         {
-            var result = new List<(string, Lazy<ExternalXrefSpec>)>();
+            var externalXref = new List<(string, Lazy<ExternalXrefSpec>)>();
+            var validateXref = new List<Lazy<ExternalXref>>();
+
             var content = File.ReadAllBytes(filePath);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
-            var (xrefSpecPositions, repositoryUrl) = GetXrefSpecPosAndRepoUrl(content, filePath);
+            var (xrefSpecPositions, xrefPositions, repositoryUrl) = GetXrefSpecPosAndRepoUrl(content, filePath);
 
             foreach (var (uid, start, end) in xrefSpecPositions)
             {
-                result.Add((uid, new Lazy<ExternalXrefSpec>(() =>
+                externalXref.Add((uid, new Lazy<ExternalXrefSpec>(() =>
                 {
                     using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     var spec = JsonUtility.DeserializeData<ExternalXrefSpec>(ReadJsonFragment(stream, start, end), new FilePath(filePath));
@@ -74,7 +82,17 @@ namespace Microsoft.Docs.Build
                     return spec;
                 })));
             }
-            return result;
+
+            foreach (var (start, end) in xrefPositions)
+            {
+                validateXref.Add(new Lazy<ExternalXref>(() =>
+                {
+                    using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    return JsonUtility.DeserializeData<ExternalXref>(ReadJsonFragment(stream, start, end), new FilePath(filePath));
+                }));
+            }
+
+            return (externalXref, validateXref);
         }
 
         private static void LoadZipFile(Dictionary<string, Lazy<ExternalXrefSpec>> result, FilePath path, string physicalPath, ErrorBuilder errors)
@@ -107,17 +125,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (List<(string uid, long start, long end)>, string?) GetXrefSpecPosAndRepoUrl(ReadOnlySpan<byte> content, string filePath)
+        private static (List<(string uid, long start, long end)>, List<(long start, long end)>, string?) GetXrefSpecPosAndRepoUrl(
+            ReadOnlySpan<byte> content, string filePath)
         {
             var xrefSpecPos = new List<(string uid, long start, long end)>();
+            var xrefPos = new List<(long start, long end)>();
             string repositoryUrl = string.Empty;
             var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
+            bool inReferencesObj = true;
+
             while (reader.Read())
             {
                 switch (reader.TokenType)
                 {
                     case JsonTokenType.PropertyName:
+                        if (reader.ValueTextEquals(s_referencesBytes) || reader.ValueTextEquals(s_externalXrefsBytes))
+                        {
+                            inReferencesObj = reader.ValueTextEquals(s_referencesBytes) ? true : false;
+                            break;
+                        }
+
                         if (reader.ValueTextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
                         {
                             stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
@@ -134,18 +162,27 @@ namespace Microsoft.Docs.Build
                             }
                         }
                         break;
+
                     case JsonTokenType.StartObject:
                         stack.Push((null, (int)reader.TokenStartIndex));
                         break;
+
                     case JsonTokenType.EndObject:
                         if (stack.TryPop(out var item) && item.uid != null)
                         {
-                            xrefSpecPos.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
+                            if (inReferencesObj)
+                            {
+                                xrefSpecPos.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
+                            }
+                            else
+                            {
+                                xrefPos.Add((item.start, (int)reader.TokenStartIndex + 1));
+                            }
                         }
                         break;
                 }
             }
-            return (xrefSpecPos, repositoryUrl);
+            return (xrefSpecPos, xrefPos, repositoryUrl);
         }
 
         private static string ReadJsonFragment(Stream stream, long start, long end)
