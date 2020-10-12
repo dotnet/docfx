@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,10 +17,11 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
+        private readonly Lazy<IReadOnlyList<Lazy<ExternalXref>>> _externalXref;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo
-        private readonly Lazy<IReadOnlyList<SourceInfo<string>>> _externalXrefList;
+        private readonly Lazy<IReadOnlyList<SourceInfo<string>>> _valdiateExternalXrefList;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -57,12 +59,12 @@ namespace Microsoft.Docs.Build
                                 buildScope,
                                 jsonSchemaTransformer.Value).Build());
 
-            var externalXrefMapAndValidateXref = ExternalXrefMapLoader.Load(config, fileResolver, errorLog);
-
+            var externalXrefMapAndExternalXref = ExternalXrefMapLoader.Load(config, fileResolver, errorLog);
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => externalXrefMapAndValidateXref.Value.externalXrefMap);
-
-            _externalXrefList = new Lazy<IReadOnlyList<SourceInfo<string>>>(() => jsonSchemaTransformer.Value.ExternalXrefList.ToArray());
+                () => externalXrefMapAndExternalXref.Value.externalXrefMap);
+            _externalXref = new Lazy<IReadOnlyList<Lazy<ExternalXref>>>(() => externalXrefMapAndExternalXref.Value.externalXref);
+            _valdiateExternalXrefList = new Lazy<IReadOnlyList<SourceInfo<string>>>(
+                () => jsonSchemaTransformer.Value.XrefList.Where(item => item.validateExternalXrefs).Select(item => item.xref).ToList());
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
@@ -198,16 +200,16 @@ namespace Microsoft.Docs.Build
             return model;
         }
 
-        // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo, this function return net xrefs, which defined external repo
+        // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo
+        // this function return net xrefs, which defined external repo
         private ExternalXref[] GetNetExternalXrefs()
         {
-            if (!_externalXrefMap.IsValueCreated || !_externalXrefList.IsValueCreated)
+            if (!_valdiateExternalXrefList.IsValueCreated)
             {
-                _ = _externalXrefMap.Value;
-                _ = _externalXrefList.Value;
+                _ = _valdiateExternalXrefList.Value;
             }
 
-            return _externalXrefList.Value.Where(uid => !_internalXrefMap.Value.ContainsKey(uid.Value)).GroupBy(uid => uid.Value).Select(uidGroup =>
+            return _valdiateExternalXrefList.Value.Where(uid => !_internalXrefMap.Value.ContainsKey(uid.Value)).GroupBy(uid => uid.Value).Select(uidGroup =>
                {
                    var repositoryUrl = string.Empty;
 
@@ -217,7 +219,7 @@ namespace Microsoft.Docs.Build
                    }
 
                    return new ExternalXref { Uid = uidGroup.Key, Count = uidGroup.Count(), RepositoryUrl = repositoryUrl };
-               }).ToArray();
+               }).OrderBy(xref => xref.Uid).ToArray();
         }
 
         private void ValidateInternalXrefProperties()
@@ -255,6 +257,26 @@ namespace Microsoft.Docs.Build
                 if (_externalXrefMap.Value.TryGetValue(uid.Value, out var spec) && spec?.Value != null)
                 {
                     _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec.Value.RepositoryUrl));
+                }
+            }
+        }
+
+        private void ValidateExternalXref()
+        {
+            if (!_externalXref.IsValueCreated)
+            {
+                _ = _externalXref.Value;
+            }
+
+            var localXrefGroups = _externalXref.Value
+                .Where(xref => string.Equals(xref.Value.RepositoryUrl, _repository?.Url, StringComparison.OrdinalIgnoreCase))
+                .GroupBy(xref => xref.Value.Uid);
+
+            foreach (var xrefGroup in localXrefGroups)
+            {
+                if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
+                {
+                    _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.Value.ReferencedRepositoryUrl).Distinct()));
                 }
             }
         }
@@ -314,6 +336,7 @@ namespace Microsoft.Docs.Build
             {
                 ValidateInternalXrefProperties();
                 ValidateUIDGlobalUnique();
+                ValidateExternalXref();
             }
 
             return _internalXrefMap.Value;

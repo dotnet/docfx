@@ -29,10 +29,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
             new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
 
-        private readonly ConcurrentBag<SourceInfo<string>> _xrefList = new ConcurrentBag<SourceInfo<string>>();
-
-        // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo
-        public ConcurrentBag<SourceInfo<string>> ExternalXrefList { get; } = new ConcurrentBag<SourceInfo<string>>();
+        public ConcurrentBag<(SourceInfo<string> xref, bool validateExternalXrefs)> XrefList { get; } =
+            new ConcurrentBag<(SourceInfo<string> xref, bool validateExternalXrefs)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -57,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (uid, propertyPath, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
             {
-                var references = _xrefList.Where(xref => xref.Value.Equals(uid.Value)).Select(xref => xref.Source).ToArray();
+                var references = XrefList.Where(item => item.xref.Value.Equals(uid.Value)).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
@@ -412,14 +410,9 @@ namespace Microsoft.Docs.Build
                             schema.MinReferenceCount,
                             schema.MaxReferenceCount));
                     }
-                    else
+                    else if (schema.ContentType == JsonSchemaContentType.Xref)
                     {
-                        _xrefList.Add(new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()));
-
-                        if (schema.ValidateExternalXrefs)
-                        {
-                            ExternalXrefList.Add(new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()));
-                        }
+                        XrefList.Add((new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()), schema.ValidateExternalXrefs));
                     }
 
                     if (!_mustacheXrefSpec.ContainsKey((file, content)))

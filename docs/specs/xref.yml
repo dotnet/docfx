@@ -1838,6 +1838,69 @@ outputs:
     {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
     {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
 ---
+# support validate external xref
+repos:
+  https://docs.com/test-valdiate-external-xref:
+    - files:
+        docfx.yml: |
+          xref:
+          - 1.xrefmap.json
+        1.xrefmap.json: |
+          {
+            "repositoryUrl": "b_repo",
+            "references":[
+              {
+                "uid": "c"
+              },
+              {
+                "uid": "d"
+              }
+            ],
+            "externalXrefs":[
+              {
+                "uid": "b",
+                "repositoryUrl": "https://docs.com/test-valdiate-external-xref",
+                "count": 1
+              }
+            ]
+          }
+        docs/a.yml: |
+          ### YamlMime:TestData1
+          uid: a
+          ref_other: ["c", "d"]
+        _themes/ContentTemplate/schemas/TestData1.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid"},
+              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
+            }
+          }
+outputs:
+  docs/a.json:
+  .xrefmap.json: |
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://docs.com/docs/a?branch=main"
+        }
+      ],
+      "externalXrefs":[
+        {
+          "uid": "c", 
+          "repositoryUrl": "b_repo",
+          "count": 1
+        },
+        {
+          "uid": "d", 
+          "repositoryUrl": "b_repo",
+          "count": 1
+        }
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"uid-not-found","message":"Uid 'b' not found, which is referenced by repository 'b_repo'.","line":0,"column":0}
+---
 # multiple duplicated uids with the same MonkerList
 inputs:
   docfx.json: |
