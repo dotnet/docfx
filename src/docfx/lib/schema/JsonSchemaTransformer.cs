@@ -31,6 +31,9 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentBag<SourceInfo<string>> _xrefList = new ConcurrentBag<SourceInfo<string>>();
 
+        // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo
+        public ConcurrentBag<SourceInfo<string>> ExternalXrefList { get; } = new ConcurrentBag<SourceInfo<string>>();
+
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
@@ -412,6 +415,11 @@ namespace Microsoft.Docs.Build
                     else
                     {
                         _xrefList.Add(new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()));
+
+                        if (schema.ValidateExternalXrefs)
+                        {
+                            ExternalXrefList.Add(new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()));
+                        }
                     }
 
                     if (!_mustacheXrefSpec.ContainsKey((file, content)))
