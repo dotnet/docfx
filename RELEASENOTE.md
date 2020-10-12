@@ -1,8 +1,12 @@
-Version Notes (Current Version: v2.57)
+Version Notes (Current Version: v2.56.3)
 =======================================
 
-v2.57(Pre-release)
+v2.56.3
 -----------
+1. Bug fix:
+    1. Display all levels in PDF TOC in default PDF template. Thanks @icnocop! (#3015)
+    2. Fix alerts and other glyphicons styling not rendered in default PDF template. (#3016)
+    3. Ignore resolving in example for swagger loading. (#6603)
 
 v2.56.2
 -----------
