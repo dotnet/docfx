@@ -13,8 +13,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
 
         private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<string, FileCommitProvider> _fileCommitProvidersByRepoPath =
-            new ConcurrentDictionary<string, FileCommitProvider>();
+        private readonly ConcurrentDictionary<PathString, GitCommitLoader> _commitLoaders = new ConcurrentDictionary<PathString, GitCommitLoader>();
 
         public Repository? Repository { get; }
 
@@ -25,7 +24,7 @@ namespace Microsoft.Docs.Build
 
             if (Repository != null && !config.DryRun && !buildOptions.IsLocalizedBuild)
             {
-                GetCommitProvider(Repository).WarmUp();
+                GetCommitLoader(Repository).WarmUp();
             }
         }
 
@@ -56,12 +55,12 @@ namespace Microsoft.Docs.Build
                 return (null, null, Array.Empty<GitCommit>());
             }
 
-            return (repo, pathToRepo, GetCommitProvider(repo).GetCommitHistory(pathToRepo, committish));
+            return (repo, pathToRepo, GetCommitLoader(repo).GetCommitHistory(pathToRepo, committish));
         }
 
         public void Save()
         {
-            foreach (var p in _fileCommitProvidersByRepoPath.Values)
+            foreach (var p in _commitLoaders.Values)
             {
                 p.Save();
             }
@@ -69,7 +68,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            foreach (var provider in _fileCommitProvidersByRepoPath.Values)
+            foreach (var provider in _commitLoaders.Values)
             {
                 provider.Dispose();
             }
@@ -91,11 +90,11 @@ namespace Microsoft.Docs.Build
             return Repository.Create(repoPath, branch: null);
         }
 
-        private FileCommitProvider GetCommitProvider(Repository repo)
+        private GitCommitLoader GetCommitLoader(Repository repo)
         {
-            return _fileCommitProvidersByRepoPath.GetOrAdd(
+            return _commitLoaders.GetOrAdd(
                 repo.Path,
-                _ => new FileCommitProvider(_errors, repo, AppData.GetCommitCachePath(repo.Remote)));
+                _ => new GitCommitLoader(_errors, repo, AppData.GetCommitCachePath(repo.Url)));
         }
     }
 }

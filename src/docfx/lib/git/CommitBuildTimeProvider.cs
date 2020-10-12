@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         {
             _repo = repo;
             _config = config;
-            _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Remote, repo.Branch!);
+            _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Url, repo.Branch!);
             _buildTime = config.BuildTime ?? DateTime.UtcNow;
 
             var exists = File.Exists(_commitBuildTimePath);
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             {
                 var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
 
-                // TODO: retrieve git log from `FileCommitProvider` since it should already be there.
+                // TODO: retrieve git log from `GitCommitProvider` since it should already be there.
                 foreach (var diffCommit in GitUtility.GetCommits(_repo.Path, _repo.Commit))
                 {
                     if (!_buildTimeByCommit.ContainsKey(diffCommit))

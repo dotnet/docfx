@@ -5,6 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlReaderWriter;
@@ -24,6 +26,11 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
 
+        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
+            new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
+
+        private readonly ConcurrentBag<SourceInfo<string>> _xrefList = new ConcurrentBag<SourceInfo<string>>();
+
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
 
@@ -41,6 +48,24 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _errors = errors;
             _monikerProvider = monikerProvider;
+        }
+
+        public void PostValidate()
+        {
+            foreach (var (uid, propertyPath, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
+            {
+                var references = _xrefList.Where(xref => xref.Value.Equals(uid.Value)).Select(xref => xref.Source).ToArray();
+
+                if (minReferenceCount != null && references.Length < minReferenceCount)
+                {
+                    _errors.Add(Errors.JsonSchema.ReferenceCountInvalid(uid, $">= {minReferenceCount}", references, propertyPath));
+                }
+
+                if (maxReferenceCount != null && references.Length > maxReferenceCount)
+                {
+                    _errors.Add(Errors.JsonSchema.ReferenceCountInvalid(uid, $"<= {maxReferenceCount}", references, propertyPath));
+                }
+            }
         }
 
         public JToken GetMustacheXrefSpec(FilePath file, string uid)
@@ -94,10 +119,10 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out var uid))
+                    if (IsXrefSpec(obj, schema, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, definitions, file, rootSchema, schema, uid, obj, uidCount, propertyPath));
+                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
                     }
 
                     foreach (var (key, value) in obj)
@@ -132,6 +157,7 @@ namespace Microsoft.Docs.Build
             FilePath file,
             JsonSchema rootSchema,
             JsonSchema schema,
+            JsonSchema uidSchema,
             SourceInfo<string> uid,
             JObject obj,
             int uidCount,
@@ -140,6 +166,11 @@ namespace Microsoft.Docs.Build
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
+
+            if (uidSchema.UIDGlobalUnique)
+            {
+                xref.UIDGlobalUnique = true;
+            }
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
@@ -176,7 +207,7 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out _))
+                    if (IsXrefSpec(obj, schema, out _, out _))
                     {
                         count++;
                     }
@@ -199,14 +230,16 @@ namespace Microsoft.Docs.Build
             return count;
         }
 
-        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid)
+        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema outSchema)
         {
             uid = default;
+            outSchema = default;
 
             // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
             if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
                 schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
             {
+                outSchema = uidSchema;
                 uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
                 return true;
             }
@@ -311,7 +344,7 @@ namespace Microsoft.Docs.Build
                     return newObject;
 
                 case JValue value:
-                    return TransformScalar(errors.With(e => e.WithPropertyPath(propertyPath)), rootSchema, schema, file, value);
+                    return TransformScalar(errors.With(e => e.WithPropertyPath(propertyPath)), rootSchema, schema, file, value, propertyPath);
 
                 default:
                     throw new NotSupportedException();
@@ -323,7 +356,8 @@ namespace Microsoft.Docs.Build
             JsonSchema rootSchema,
             JsonSchema schema,
             FilePath file,
-            JValue value)
+            JValue value,
+            string? propertyPath)
         {
             if (value.Type == JTokenType.Null || schema.ContentType is null)
             {
@@ -366,6 +400,20 @@ namespace Microsoft.Docs.Build
 
                 case JsonSchemaContentType.Uid:
                 case JsonSchemaContentType.Xref:
+
+                    if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
+                    {
+                        _uidReferenceCountList.Add((
+                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            propertyPath,
+                            schema.MinReferenceCount,
+                            schema.MaxReferenceCount));
+                    }
+                    else
+                    {
+                        _xrefList.Add(new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()));
+                    }
+
                     if (!_mustacheXrefSpec.ContainsKey((file, content)))
                     {
                         // the content here must be an UID, not href

@@ -80,6 +80,16 @@ namespace Microsoft.Docs.Build
         public int? MinProperties { get; set; }
 
         /// <summary>
+        /// The maximum reference count of current uid
+        /// </summary>
+        public int? MaxReferenceCount { get; set; }
+
+        /// <summary>
+        /// The minimum reference count of current uid
+        /// </summary>
+        public int? MinReferenceCount { get; set; }
+
+        /// <summary>
         /// The JSON schema that applies to the array items if the current value is array.
         /// </summary>
         [JsonConverter(typeof(UnionTypeConverter))]
@@ -203,6 +213,11 @@ namespace Microsoft.Docs.Build
         /// Properties that are transformed using specified pipeline like 'markup'
         /// </summary>
         public JsonSchemaContentType? ContentType { get; set; }
+
+        /// <summary>
+        /// Properties that indicate the uid unique scope
+        /// </summary>
+        public bool UIDGlobalUnique { get; set; }
 
         /// <summary>
         /// Properties that are built into xref map

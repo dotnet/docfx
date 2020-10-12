@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
 
                 if (count > check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.ConditionalCheckInvalid(
+                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
                         JsonUtility.GetSourceInfo(array),
                         name,
                         $"The array must not have more than {check.Value} matched item(s)."));
@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
 
                 if (count < check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.ConditionalCheckInvalid(
+                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
                         JsonUtility.GetSourceInfo(array),
                         name,
                         $"The array must have least {check.Value} matched item(s)."));
@@ -636,7 +636,7 @@ namespace Microsoft.Docs.Build
                     var metadataSources = (from g in items where g.source != null select g.source).ToArray();
                     foreach (var file in items)
                     {
-                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, moniker, metadataValue, metadataSources));
+                        errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
                     }
                 }
             }

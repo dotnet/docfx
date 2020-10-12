@@ -402,6 +402,25 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
 
             /// <summary>
+            /// The same uid is defined in multiple docsets
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl)
+            {
+                FormattableString message;
+                if (string.IsNullOrEmpty(repositoryUrl))
+                {
+                    message = $"UID '{uid}' is duplicated globally.";
+                }
+                else
+                {
+                    message = $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.";
+                }
+
+                return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);
+            }
+
+            /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.
             /// Examples:
             ///   - Same uid defined in multiple .md files with different versions have different titles.
@@ -497,8 +516,12 @@ namespace Microsoft.Docs.Build
             public static Error ArrayLengthInvalid(SourceInfo? source, string propName, string criteria)
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
 
-            public static Error ConditionalCheckInvalid(SourceInfo? source, string propName, string message)
-                => new Error(ErrorLevel.Error, "conditional-check-invalid", $"{message}", source, propName);
+            /// <summary>
+            /// Array conditional check not within min or max value
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error ArrayCheckInvalid(SourceInfo? source, string propName, string message)
+                => new Error(ErrorLevel.Warning, "array-check-invalid", $"{message}", source, propName);
 
             /// <summary>
             /// Array items not unique.
@@ -611,13 +634,16 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public const string DuplicateAttributeCode = "duplicate-attribute";
 
-            public static Error DuplicateAttribute(SourceInfo? source, string name, string moniker, object value, IEnumerable<SourceInfo> duplicatedSources)
+            public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
                 => new Error(
                     ErrorLevel.Suggestion,
                     DuplicateAttributeCode,
-                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}{(string.IsNullOrEmpty(moniker) ? "" : $" with moniker '{moniker}'")}.",
+                    $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
+
+            public static Error ReferenceCountInvalid(SourceInfo<string>? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "reference-count-invalid", $"UID '{source}' reference count should be {criteria}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
         }
 
         public static class Metadata

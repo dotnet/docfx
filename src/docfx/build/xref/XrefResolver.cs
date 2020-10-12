@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
@@ -43,15 +44,16 @@ namespace Microsoft.Docs.Build
             _repository = repository;
             _documentProvider = documentProvider;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
-                () => new InternalXrefMapBuilder(
-                            errorLog,
-                            templateEngine,
-                            documentProvider,
-                            metadataProvider,
-                            monikerProvider,
-                            input,
-                            buildScope,
-                            jsonSchemaTransformer.Value).Build());
+                    () => new InternalXrefMapBuilder(
+                                errorLog,
+                                templateEngine,
+                                documentProvider,
+                                metadataProvider,
+                                monikerProvider,
+                                input,
+                                buildScope,
+                                jsonSchemaTransformer.Value).Build());
+
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
@@ -166,9 +168,9 @@ namespace Microsoft.Docs.Build
                     .ToArray();
             }
 
-            var model = new XrefMapModel { References = references };
+            var model = new XrefMapModel { References = references, RepositoryUrl = _repository?.Url };
 
-            if (_config.UrlType == UrlType.Docs && references.Length > 0)
+            if (_config.UrlType == UrlType.Docs)
             {
                 var properties = new XrefProperties();
                 properties.Tags.Add(basePath);
@@ -208,6 +210,19 @@ namespace Microsoft.Docs.Build
                     {
                         _errorLog.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
                     }
+                }
+            }
+        }
+
+        private void ValidateUIDGlobalUnique()
+        {
+            var globalUIDs = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UIDGlobalUnique)).Select(xrefs => xrefs.First().Uid);
+
+            foreach (var uid in globalUIDs)
+            {
+                if (_externalXrefMap.Value.TryGetValue(uid.Value, out var spec) && spec?.Value != null)
+                {
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec.Value.RepositoryUrl));
                 }
             }
         }
@@ -266,6 +281,7 @@ namespace Microsoft.Docs.Build
             if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
             {
                 ValidateInternalXrefProperties();
+                ValidateUIDGlobalUnique();
             }
 
             return _internalXrefMap.Value;

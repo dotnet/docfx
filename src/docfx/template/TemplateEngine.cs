@@ -27,7 +27,6 @@ namespace Microsoft.Docs.Build
         public TemplateEngine(
             ErrorBuilder errors,
             Config config,
-            BuildOptions buildOptions,
             Output output,
             PackageResolver packageResolver,
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
@@ -38,7 +37,7 @@ namespace Microsoft.Docs.Build
             var template = config.Template;
             if (template.Type == PackageType.None)
             {
-                template = new PackagePath(Path.Combine(buildOptions.DocsetPath, "_themes"));
+                template = new PackagePath("_themes");
             }
 
             _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
