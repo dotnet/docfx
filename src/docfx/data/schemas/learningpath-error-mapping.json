@@ -17,6 +17,11 @@
         "severity": "error",
         "code": "path-modules-missing",
         "message": "Missing attribute: modules. At least one valid module is required for each learning path."
+      },
+      "xref-not-found": {
+        "severity": "error",
+        "code": "path-child-not-found",
+        "message": "Child UID(s): '{0}' can't be found."
       }
     },
     "trophy": {
