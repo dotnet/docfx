@@ -242,7 +242,5 @@ namespace Microsoft.Docs.Build
 
             return jsonSchema;
         }
-
-
     }
 }
