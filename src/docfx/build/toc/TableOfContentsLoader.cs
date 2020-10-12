@@ -25,7 +25,6 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
         private readonly ErrorBuilder _errors;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
-        private readonly JsonSchemaTransformer _jsonSchemaTransformer;
 
         private readonly MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)> _cache =
                      new MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)>();
@@ -46,8 +45,7 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             ContentValidator contentValidator,
             Config config,
-            ErrorBuilder errors,
-            JsonSchemaTransformer jsonSchemaTransformer)
+            ErrorBuilder errors)
         {
             _docsetPath = docsetPath;
             _input = input;
@@ -59,7 +57,6 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _errors = errors;
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
-            _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
         public static TocHrefType GetHrefType(string? href)
@@ -188,9 +185,6 @@ namespace Microsoft.Docs.Build
                         {
                             servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
                         }
-
-                        _xrefResolver.AddServicePageXref(servicePages, _jsonSchemaTransformer);
-
                         AddOverviewPage(node);
                     }
                 }

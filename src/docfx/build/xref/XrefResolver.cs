@@ -16,14 +16,13 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
         private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
-        private readonly Lazy<Dictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
         private int internalXrefPropertiesValidated;
-        private InternalXrefMapBuilder internalXrefMapBuilder;
 
         public XrefResolver(
             Config config,
@@ -44,7 +43,8 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            internalXrefMapBuilder = new InternalXrefMapBuilder(
+            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
+                    () => new InternalXrefMapBuilder(
                                 errorLog,
                                 templateEngine,
                                 documentProvider,
@@ -52,21 +52,14 @@ namespace Microsoft.Docs.Build
                                 monikerProvider,
                                 input,
                                 buildScope,
-                                jsonSchemaTransformer.Value);
-            _internalXrefMap = new Lazy<Dictionary<string, InternalXrefSpec[]>>(
-                    () => internalXrefMapBuilder.Build());
+                                jsonSchemaTransformer.Value).Build());
+
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
-        }
-
-        public void AddServicePageXref(List<FilePath> servicePages, JsonSchemaTransformer jsonSchemaTransformer)
-        {
-            var servicePageXrefMap = internalXrefMapBuilder.BuildXrefMapForServicePage(servicePages, jsonSchemaTransformer);
-            _internalXrefMap.Value.AddRange(servicePageXrefMap);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(

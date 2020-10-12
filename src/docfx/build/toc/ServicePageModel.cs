@@ -12,10 +12,6 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string?> FullName { get; private set; }
 
-        public SourceInfo<string?> Href { get; private set; }
-
-        public SourceInfo<string?> Uid { get; private set; }
-
         public List<ServicePageItem> Children { get; private set; } = new List<ServicePageItem>();
 
         public List<string?>? Langs { get; private set; } = new List<string?>();
@@ -27,16 +23,12 @@ namespace Microsoft.Docs.Build
         public ServicePageModel(
             SourceInfo<string?> name,
             SourceInfo<string?> fullName,
-            SourceInfo<string?> href,
-            SourceInfo<string?> uid,
             List<ServicePageItem> children,
             List<string?>? langs,
             LandingPageType? pageType)
         {
             Name = name;
             FullName = fullName;
-            Href = href;
-            Uid = uid;
             Children = children;
             Langs = langs;
             PageType = pageType;

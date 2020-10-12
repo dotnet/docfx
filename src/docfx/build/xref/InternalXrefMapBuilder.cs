@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
-        public Dictionary<string, InternalXrefSpec[]> Build()
+        public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
@@ -65,34 +65,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public Dictionary<string, InternalXrefSpec[]> BuildXrefMapForServicePage(
-            IEnumerable<FilePath> servicePages,
-            JsonSchemaTransformer jsonSchemaTransformer)
-        {
-            var builder = new ListBuilder<InternalXrefSpec>();
-
-            using (Progress.Start("Building Xref map for Service Pages..."))
-            {
-                ParallelUtility.ForEach(
-                    _errors,
-                    servicePages,
-                    file => Load(_errors, builder, file, jsonSchemaTransformer));
-            }
-
-            var xrefmap =
-                from spec in builder.AsList()
-                group spec by spec.Uid.Value into g
-                let uid = g.Key
-                let spec = AggregateXrefSpecs(uid, g.ToArray())
-                select (uid, spec);
-
-            var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
-            result.TrimExcess();
-
-            return result;
-        }
-
-        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file, JsonSchemaTransformer? jsonSchemaTransformer = null)
+        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
         {
             switch (file.Format)
             {
@@ -110,14 +83,7 @@ namespace Microsoft.Docs.Build
                     {
                         var token = _input.ReadYaml(errors, file);
                         IReadOnlyList<InternalXrefSpec> specs;
-                        if (jsonSchemaTransformer != null)
-                        {
-                            specs = LoadSchemaDocument(errors, token, file, jsonSchemaTransformer);
-                        }
-                        else
-                        {
-                            specs = LoadSchemaDocument(errors, token, file);
-                        }
+                        specs = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
                         break;
                     }
@@ -146,19 +112,9 @@ namespace Microsoft.Docs.Build
             return xref;
         }
 
-        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(
-            ErrorBuilder errors,
-            JToken token,
-            FilePath file,
-            JsonSchemaTransformer? jsonSchemaTransformer = null)
+        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
         {
             var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
-
-            if (jsonSchemaTransformer != null)
-            {
-                return jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
-            }
-
             return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
