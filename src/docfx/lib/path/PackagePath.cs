@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
 
         public string Branch { get; private set; } = "main";
 
+        public bool IsMainOrMaster => "main".Equals(Branch) || "master".Equals(Branch);
+
         public PackagePath()
         {
         }
