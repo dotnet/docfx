@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
+        private readonly BuildOptions _buildOptions;
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
@@ -29,10 +30,12 @@ namespace Microsoft.Docs.Build
             Config config,
             Output output,
             PackageResolver packageResolver,
-            Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
+            Lazy<JsonSchemaTransformer> jsonSchemaTransformer,
+            BuildOptions buildOptions)
         {
             _config = config;
             _output = output;
+            _buildOptions = buildOptions;
 
             var template = config.Template;
             if (template.Type == PackageType.None)
@@ -45,7 +48,10 @@ namespace Microsoft.Docs.Build
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
 
-            _global = _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token") ?? new JObject();
+            _global = _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}")
+                ?? _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_config.DefaultLocale}")
+                ?? _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token")
+                ?? new JObject();
 
             _liquid = new LiquidTemplate(_package, _global);
             _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_package, _global));
@@ -236,5 +242,7 @@ namespace Microsoft.Docs.Build
 
             return jsonSchema;
         }
+
+
     }
 }

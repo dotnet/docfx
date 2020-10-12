@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
             TemplateEngine = new TemplateEngine(
-                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
+                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer), buildOptions);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
