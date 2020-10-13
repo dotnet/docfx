@@ -89,6 +89,7 @@ namespace Microsoft.Docs.Build
                 })));
             }
 
+            // TODO: for externalXref, where data loading is not so costly, so we will remove the following optimized process in another PR
             foreach (var (start, end) in xrefPositions)
             {
                 using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);

@@ -1892,7 +1892,7 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
-# support validate external xref, local build
+# support validate external xref, locale build
 locale: zh-cn
 repos:
   https://docs.com/test-valdiate-external-xref.zh-cn:
