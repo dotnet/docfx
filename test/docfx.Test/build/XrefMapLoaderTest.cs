@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
             var result = ExternalXrefMapLoader.LoadJsonFile(filePath);
             var resultUids = new List<string>();
             var resultExternalUids = new List<string>();
-            foreach (var (uid, spec) in result.externalXrefSpec)
+            foreach (var (_, spec) in result.externalXrefSpec)
             {
                 resultUids.Add(((ExternalXrefSpec)spec.Value).Uid);
             }
