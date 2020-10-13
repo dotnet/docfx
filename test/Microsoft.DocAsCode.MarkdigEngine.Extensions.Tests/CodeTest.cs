@@ -1198,8 +1198,8 @@ using System.Windows;
 }
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
-<code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">Table tbl = new Table();
+        [InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" language=""csharp"" interactive=""try-dotnet"":::", @"<pre>
+<code class=""lang-csharp"" data-interactive=""csharp"" data-interactive-mode=""try-dotnet"">Table tbl = new Table();
 int rowGroupsToAdd = 4;
 for (int x = 0; x &lt; rowGroupsToAdd; x++)
     tbl.RowGroups.Add(new TableRowGroup());
