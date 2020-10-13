@@ -30,8 +30,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
             new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> xref, bool validateExternalXrefs)> _xrefList =
-            new ConcurrentBag<(SourceInfo<string> xref, bool validateExternalXrefs)>();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList =
+            new ConcurrentBag<(SourceInfo<string> xref, string? docsetName)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -70,9 +70,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public IReadOnlyList<SourceInfo<string>> GetValidateExternalXrefs()
+        public ExternalXref[] GetValidateExternalXrefs()
         {
-            return _xrefList.Where(item => item.validateExternalXrefs).Select(item => item.xref).ToList();
+            return _xrefList.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
+            {
+                return new ExternalXref { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName };
+            }).OrderBy(externalXref => externalXref.Uid).ToArray();
         }
 
         public JToken GetMustacheXrefSpec(FilePath file, string uid)
@@ -438,8 +441,9 @@ namespace Microsoft.Docs.Build
                     }
                     else if (schema.ContentType == JsonSchemaContentType.Xref)
                     {
-                        _xrefList.Add(
-                            (new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()), spec is ExternalXrefSpec && schema.ValidateExternalXrefs));
+                        _xrefList.Add((
+                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            (spec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null));
                     }
                     return value;
             }

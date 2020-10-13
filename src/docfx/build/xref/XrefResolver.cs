@@ -15,17 +15,14 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
-        private readonly Lazy<IReadOnlyList<Lazy<ExternalXref>>> _externalXref;
+        private readonly Lazy<LoadedExternalXrefMap> _loadedExternalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
-
-        // xrefs marked ValidateExternalXrefs and defined external
-        private readonly Lazy<IReadOnlyList<SourceInfo<string>>> _valdiateExternalXrefs;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
+        private readonly Lazy<JsonSchemaTransformer> _jsonSchemaTransformer;
 
         private int _internalXrefMapValidated;
 
@@ -59,12 +56,10 @@ namespace Microsoft.Docs.Build
                                 buildScope,
                                 jsonSchemaTransformer.Value).Build());
 
-            var externalXrefMapAndExternalXref = ExternalXrefMapLoader.Load(config, fileResolver, errorLog);
-            _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => externalXrefMapAndExternalXref.externalXrefMap);
-            _externalXref = new Lazy<IReadOnlyList<Lazy<ExternalXref>>>(() => externalXrefMapAndExternalXref.externalXref);
-            _valdiateExternalXrefs = new Lazy<IReadOnlyList<SourceInfo<string>>>(
-                () => jsonSchemaTransformer.Value.GetValidateExternalXrefs());
+            _loadedExternalXrefMap = new Lazy<LoadedExternalXrefMap>(
+                () => new LoadedExternalXrefMap(ExternalXrefMapLoader.Load(config, fileResolver, errorLog)));
+
+            _jsonSchemaTransformer = jsonSchemaTransformer;
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
@@ -177,17 +172,7 @@ namespace Microsoft.Docs.Build
                     .OrderBy(xref => xref.Uid)
                     .ToArray();
 
-                externalXrefs = _valdiateExternalXrefs.Value.GroupBy(uid => uid.Value).Select(uidGroup =>
-                {
-                    var docsetName = "";
-
-                    if (_externalXrefMap.Value.TryGetValue(uidGroup.Key, out var spec))
-                    {
-                        docsetName = spec.Value.DocsetName;
-                    }
-
-                    return new ExternalXref { Uid = uidGroup.Key, Count = uidGroup.Count(), DocsetName = docsetName };
-                }).OrderBy(xref => xref.Uid).ToArray();
+                externalXrefs = _jsonSchemaTransformer.Value.GetValidateExternalXrefs();
             }
 
             var model =
@@ -243,7 +228,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var uid in globalUIDs)
             {
-                if (_externalXrefMap.Value.TryGetValue(uid.Value, out var spec) && spec?.Value != null)
+                if (_loadedExternalXrefMap.Value.GetExternalXrefMap().TryGetValue(uid.Value, out var spec) && spec?.Value != null)
                 {
                     _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec.Value.RepositoryUrl));
                 }
@@ -252,7 +237,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateExternalXref()
         {
-            var localXrefGroups = _externalXref.Value
+            var localXrefGroups = _loadedExternalXrefMap.Value.GetExternalXref()
                 .Where(xref => string.Equals(xref.Value.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(xref => xref.Value.Uid);
 
@@ -301,7 +286,7 @@ namespace Microsoft.Docs.Build
 
         private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
+            if (_loadedExternalXrefMap.Value.GetExternalXrefMap().TryGetValue(uid, out var spec))
             {
                 var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
                 return (spec.Value, href);
