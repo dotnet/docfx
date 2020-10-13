@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             }
             foreach (var xref in result.externalXref)
             {
-                resultExternalUids.Add(xref.Value.Uid);
+                resultExternalUids.Add(xref.Uid);
             }
             Assert.Equal(uids, resultUids);
             Assert.Equal(externalUids, resultExternalUids);

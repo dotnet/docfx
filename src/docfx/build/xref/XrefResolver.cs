@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<LoadedExternalXrefMap> _loadedExternalXrefMap;
+        private readonly Lazy<ExternalXrefMap> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
@@ -56,8 +56,8 @@ namespace Microsoft.Docs.Build
                                 buildScope,
                                 jsonSchemaTransformer.Value).Build());
 
-            _loadedExternalXrefMap = new Lazy<LoadedExternalXrefMap>(
-                () => new LoadedExternalXrefMap(ExternalXrefMapLoader.Load(config, fileResolver, errorLog)));
+            _externalXrefMap = new Lazy<ExternalXrefMap>(
+                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
 
             _jsonSchemaTransformer = jsonSchemaTransformer;
 
@@ -228,24 +228,24 @@ namespace Microsoft.Docs.Build
 
             foreach (var uid in globalUIDs)
             {
-                if (_loadedExternalXrefMap.Value.GetExternalXrefMap().TryGetValue(uid.Value, out var spec) && spec?.Value != null)
+                if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid.Value, out var spec))
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec.Value.RepositoryUrl));
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec!.RepositoryUrl));
                 }
             }
         }
 
         private void ValidateExternalXref()
         {
-            var localXrefGroups = _loadedExternalXrefMap.Value.GetExternalXref()
-                .Where(xref => string.Equals(xref.Value.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
-                .GroupBy(xref => xref.Value.Uid);
+            var localXrefGroups = _externalXrefMap.Value.GetExternalXref()
+                .Where(xref => string.Equals(xref.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
+                .GroupBy(xref => xref.Uid);
 
             foreach (var xrefGroup in localXrefGroups)
             {
                 if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
                 {
-                    _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.Value.ReferencedRepositoryUrl).Distinct()));
+                    _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct()));
                 }
             }
         }
@@ -286,10 +286,10 @@ namespace Microsoft.Docs.Build
 
         private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            if (_loadedExternalXrefMap.Value.GetExternalXrefMap().TryGetValue(uid, out var spec))
+            if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid, out var spec))
             {
-                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
-                return (spec.Value, href);
+                var href = RemoveSharingHost(spec!.Href, _config.HostName);
+                return (spec, href);
             }
             return default;
         }
