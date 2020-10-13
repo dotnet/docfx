@@ -38,11 +38,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             // var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
-            block.Attributes.TryGetValue("language", out var language);
             var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
             var snippet = new CodeSnippet(null);
             snippet.CodePath = currentSource;
-            snippet.Language = language;
             snippet.TagName = currentId;
 
             HtmlCodeSnippetRenderer.TryGetLineRanges(currentRange, out var ranges);
