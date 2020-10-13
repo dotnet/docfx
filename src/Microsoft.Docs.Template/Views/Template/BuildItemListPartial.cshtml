@@ -127,7 +127,7 @@ else if (Model.Style == "cards")
                             <img class="cardImage" role="presentation" src="@listItem.Image.Src">
                             }
                             <div class="cardText">
-                                <h3>@listItem.Title</h3>
+                                <h3>@Html.Raw(listItem.Title)</h3>
                                 @if (!string.IsNullOrEmpty(listItem.Text))
                                 {
                                     <p>@listItem.Text</p>
