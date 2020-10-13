@@ -3,14 +3,15 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
     internal class LoadedExternalXrefMap
     {
-        private IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
+        private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
 
-        private IReadOnlyList<Lazy<ExternalXref>> _externalXref;
+        private readonly IReadOnlyList<Lazy<ExternalXref>> _externalXref;
 
         public LoadedExternalXrefMap(
             (IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> externalXrefMap, IReadOnlyList<Lazy<ExternalXref>> externalXref) input)
