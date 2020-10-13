@@ -14,5 +14,7 @@ namespace Microsoft.Docs.Build
         public XrefProperties? Properties { get; set; }
 
         public string? RepositoryUrl { get; set; }
+
+        public string? DocsetName { get; set; }
     }
 }

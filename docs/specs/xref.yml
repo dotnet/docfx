@@ -1843,18 +1843,20 @@ repos:
   https://docs.com/test-valdiate-external-xref:
     - files:
         docfx.yml: |
+          name: docset_a
           xref:
           - 1.xrefmap.json
         1.xrefmap.json: |
           {
-            "repositoryUrl": "b_repo",
+            "repositoryUrl": "b_repository_url",
+            "docsetName": "docset_b",
             "references":[
               {"uid": "c"},
               {"uid": "d"}
             ],
             "externalXrefs":[
               {"uid": "nofound",
-                "repositoryUrl": "https://docs.com/test-valdiate-external-xref",
+                "docsetName": "docset_a",
                 "count": 1}
             ]
           }
@@ -1878,23 +1880,72 @@ outputs:
   docs/b.json:
   .xrefmap.json: |
     {
-      "references":[
-        {"uid": "a",
-          "href": "https://docs.com/docs/a?branch=main"},
-        {"uid": "b",
-          "href": "https://docs.com/docs/b?branch=main"}
-      ],
       "externalXrefs":[
         {"uid": "c", 
-          "repositoryUrl": "b_repo",
+          "docsetName": "docset_b",
           "count": 2},
         {"uid": "d", 
-          "repositoryUrl": "b_repo",
+          "docsetName": "docset_b",
           "count": 1}
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repo'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+---
+# support validate external xref, local build
+locale: zh-cn
+repos:
+  https://docs.com/test-valdiate-external-xref.zh-cn:
+    - files:
+        docfx.yml: |
+          name: docset_a
+          xref:
+          - 1.xrefmap.json
+        1.xrefmap.json: |
+          {
+            "repositoryUrl": "b_repository_url",
+            "docsetName": "docset_b",
+            "references":[
+              {"uid": "c"},
+              {"uid": "d"}
+            ],
+            "externalXrefs":[
+              {"uid": "nofound",
+                "docsetName": "docset_a",
+                "count": 1}
+            ]
+          }
+        docs/a.yml: |
+          ### YamlMime:TestData1
+          uid: a
+          ref_other: ["b", "c", "d"]
+        docs/b.yml: |
+          ### YamlMime:TestData1
+          uid: b
+          ref_other: ["c"]
+        _themes/ContentTemplate/schemas/TestData1.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid"},
+              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
+            }
+          }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  .xrefmap.json: |
+    {
+      "externalXrefs":[
+        {"uid": "c", 
+          "docsetName": "docset_b",
+          "count": 2},
+        {"uid": "d", 
+          "docsetName": "docset_b",
+          "count": 1}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # multiple duplicated uids with the same MonkerList
 inputs:

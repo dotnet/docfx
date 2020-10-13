@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; set; } = "";
 
-        public string? RepositoryUrl { get; set; }
+        public string? DocsetName { get; set; }
 
         public int Count { get; set; }
 

@@ -179,18 +179,19 @@ namespace Microsoft.Docs.Build
 
                 externalXrefs = _valdiateExternalXrefs.Value.GroupBy(uid => uid.Value).Select(uidGroup =>
                 {
-                    var repositoryUrl = "";
+                    var docsetName = "";
 
                     if (_externalXrefMap.Value.TryGetValue(uidGroup.Key, out var spec))
                     {
-                        repositoryUrl = spec.Value.RepositoryUrl;
+                        docsetName = spec.Value.DocsetName;
                     }
 
-                    return new ExternalXref { Uid = uidGroup.Key, Count = uidGroup.Count(), RepositoryUrl = repositoryUrl };
+                    return new ExternalXref { Uid = uidGroup.Key, Count = uidGroup.Count(), DocsetName = docsetName };
                 }).OrderBy(xref => xref.Uid).ToArray();
             }
 
-            var model = new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url };
+            var model =
+                new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
 
             if (_config.UrlType == UrlType.Docs)
             {
@@ -252,7 +253,7 @@ namespace Microsoft.Docs.Build
         private void ValidateExternalXref()
         {
             var localXrefGroups = _externalXref.Value
-                .Where(xref => string.Equals(xref.Value.RepositoryUrl, _repository?.Url, StringComparison.OrdinalIgnoreCase))
+                .Where(xref => string.Equals(xref.Value.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(xref => xref.Value.Uid);
 
             foreach (var xrefGroup in localXrefGroups)
