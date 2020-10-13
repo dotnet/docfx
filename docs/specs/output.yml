@@ -74,6 +74,23 @@ outputs:
       "files": [{ "url": "/a", "ms.my": 1 }]
     }
 ---
+# Publish manifest contains theme_branch if template branch is not main or master
+repos:
+  https://docs.com/markdown-note:
+  - files:
+      docsets.yml:
+      a/docfx.yml: 'template: https://docs.com/template#master'
+      b/docfx.yml: 'template: https://docs.com/template#main'
+      c/docfx.yml: 'template: https://docs.com/template#test'
+  https://docs.com/template#main:
+  - files:
+  https://docs.com/template#test:
+  - files:
+outputs:
+  a/.publish.json: '{"theme_branch": undefined}'
+  b/.publish.json: '{"theme_branch": undefined}'
+  c/.publish.json: '{"theme_branch": "test"}'
+---
 # Manifest contains Toc dependencies
 inputs:
   docfx.yml:

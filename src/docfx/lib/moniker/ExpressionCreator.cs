@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
 
         private static bool TryMatchSymbol(ref string rangeString, SymbolType type, out string value)
         {
-            value = string.Empty;
+            value = "";
 
             Match match;
 

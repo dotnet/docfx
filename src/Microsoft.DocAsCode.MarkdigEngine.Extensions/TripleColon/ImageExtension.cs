@@ -26,10 +26,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
-            var src = string.Empty;
-            var alt = string.Empty;
-            var type = string.Empty;
-            var loc_scope = string.Empty;
+            var src = "";
+            var alt = "";
+            var type = "";
+            var loc_scope = "";
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;

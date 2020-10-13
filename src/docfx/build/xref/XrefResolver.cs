@@ -26,7 +26,8 @@ namespace Microsoft.Docs.Build
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
-        private int internalXrefPropertiesValidated;
+
+        private int _internalXrefMapValidated;
 
         public XrefResolver(
             Config config,
@@ -178,7 +179,7 @@ namespace Microsoft.Docs.Build
 
                 externalXrefs = _valdiateExternalXrefs.Value.GroupBy(uid => uid.Value).Select(uidGroup =>
                 {
-                    var repositoryUrl = string.Empty;
+                    var repositoryUrl = "";
 
                     if (_externalXrefMap.Value.TryGetValue(uidGroup.Key, out var spec))
                     {
@@ -309,12 +310,7 @@ namespace Microsoft.Docs.Build
 
         private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
         {
-            if (!_internalXrefMap.IsValueCreated)
-            {
-                _ = _internalXrefMap.Value;
-            }
-
-            if (Interlocked.Exchange(ref internalXrefPropertiesValidated, 1) == 0)
+            if (Interlocked.Exchange(ref _internalXrefMapValidated, 1) == 0)
             {
                 ValidateInternalXrefProperties();
                 ValidateUIDGlobalUnique();

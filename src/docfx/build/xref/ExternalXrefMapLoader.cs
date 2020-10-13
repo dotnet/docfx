@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
         {
             var xrefSpecPos = new List<(string uid, long start, long end)>();
             var xrefPos = new List<(long start, long end)>();
-            string repositoryUrl = string.Empty;
+            string repositoryUrl = "";
             var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
             var inReferencesObj = true;

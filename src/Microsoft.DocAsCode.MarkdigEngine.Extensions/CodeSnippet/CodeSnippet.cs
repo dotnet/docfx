@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }));
             }
 
-            return string.Empty;
+            return "";
         }
     }
 }

@@ -189,7 +189,7 @@ namespace ChakraHost.Hosting
         /// <returns>A <c>Function</c> representing the script code.</returns>
         public static JavaScriptValue ParseScript(string script)
         {
-            return ParseScript(script, JavaScriptSourceContext.None, string.Empty);
+            return ParseScript(script, JavaScriptSourceContext.None, "");
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace ChakraHost.Hosting
         /// <returns>A <c>Function</c> representing the script code.</returns>
         public static JavaScriptValue ParseScript(string script, byte[] buffer)
         {
-            return ParseScript(script, buffer, JavaScriptSourceContext.None, string.Empty);
+            return ParseScript(script, buffer, JavaScriptSourceContext.None, "");
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace ChakraHost.Hosting
         /// <returns>The result of the script, if any.</returns>
         public static JavaScriptValue RunScript(string script)
         {
-            return RunScript(script, JavaScriptSourceContext.None, string.Empty);
+            return RunScript(script, JavaScriptSourceContext.None, "");
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace ChakraHost.Hosting
         /// <returns>The result of the script, if any.</returns>
         public static JavaScriptValue RunScript(string script, byte[] buffer)
         {
-            return RunScript(script, buffer, JavaScriptSourceContext.None, string.Empty);
+            return RunScript(script, buffer, JavaScriptSourceContext.None, "");
         }
 
         /// <summary>

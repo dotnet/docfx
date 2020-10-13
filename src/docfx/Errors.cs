@@ -684,7 +684,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MergeConflict(SourceInfo? source)
-                => new Error(ErrorLevel.Suggestion, "merge-conflict", $"File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
+                => new Error(ErrorLevel.Warning, "merge-conflict", $"File contains merge conflict markers.", source);
 
             /// <summary>
             /// Defined reference with by #bookmark fragment within articles, which doesn't exist.

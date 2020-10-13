@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             int startSpan,
             int offset)
         {
-            var groupId = GetMd5String(items[0]?.Content?.ToString() ?? string.Empty).Replace("/", "-").Remove(10);
+            var groupId = GetMd5String(items[0]?.Content?.ToString() ?? "").Replace("/", "-").Remove(10);
 
             context.AggregateTo(
                 new TabGroupBlock(

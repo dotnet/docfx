@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                 targetQueryParameters[key] = sourceQueryParameters[key];
             }
 
-            var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : string.Empty;
+            var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : "";
             if (string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(sourceQuery))
             {
                 query = sourceQuery;

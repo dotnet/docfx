@@ -215,7 +215,7 @@ namespace Microsoft.Docs.Build
                 "LearningPath" => "data/schemas/learningpath-error-mapping.json",
                 "Module" => "data/schemas/module-error-mapping.json",
                 "ModuleUnit" => "data/schemas/moduleunit-error-mapping.json",
-                _ => string.Empty,
+                _ => "",
             };
 
             if (!string.IsNullOrEmpty(mappingPath))

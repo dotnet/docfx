@@ -183,7 +183,7 @@ namespace Microsoft.Docs.Build
         {
             if (headingBlock.Inline is null || !headingBlock.Inline.Any())
             {
-                return string.Empty;
+                return "";
             }
 
             return GetContainerInlineContent(headingBlock.Inline);
