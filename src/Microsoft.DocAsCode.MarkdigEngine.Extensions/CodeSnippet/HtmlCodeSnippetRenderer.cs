@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "handlebars", new string[] { "hbs" } },
             { "haskell", new string[] { "hs" } },
             { "html", new string[] { "jsp", "asp", "aspx", "ascx" } },
-            { "cshtml", new string[] { "aspx-cs", "aspx-csharp" } },
+            { "cshtml", new string[] { "aspx-cs", "aspx-csharp", "razor" } },
             { "vbhtml", new string[] { "aspx-vb" } },
             { "java", new string[] { "gradle" } },
             { "javascript", new string[] { "js", "node", "json" } },
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new[]
                 {
                     "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript",
-                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript",
+                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript", "scss",
                 },
                 new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(
@@ -169,7 +169,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false));
             AddExtractorItems(
-                new[] { "css" },
+                new[] { "css", "scss" },
                 new CodeSnippetExtractor(CSSCodeSnippetRegionStartLineTemplate, CSSCodeSnippetRegionEndLineTemplate, false));
 
             static void BuildFileExtensionLanguageMap()
