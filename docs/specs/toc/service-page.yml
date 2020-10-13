@@ -87,7 +87,6 @@ repos:
               - 'MS.ServicePage*'
               items:
                   - name: Client
-                    uid: aa
                     landingPageType: Service
                     children:
                     - 'MS.ServicePage.Client*'
@@ -103,17 +102,17 @@ outputs:
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service", "href": "../api/doc"}], "langs": ["csharp"], "pageType": "root"}
   a/results/appservice.json: |
     {
-      "name": "App Service", "fullName": "App Service", "href": "~/api/doc.md", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
+      "name": "App Service", "fullName": "App Service", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
       "langs": ["csharp"], "pageType": "service"
     }
   a/results/appservice/client.json: |
     {
-      "name": "Client", "fullName": "Client", "href": "doc.md",
-      "children": [{"name": "Client","uid": "aa"},{"name": "MS.ServicePage.xxx"},{"name": "MS.ServicePage.Client.Form"}],
+      "name": "Client", "fullName": "Client",
+      "children": [{"name": "Client"},{"name": "MS.ServicePage.xxx"},{"name": "MS.ServicePage.Client.Form"}],
       "langs": ["csharp"], "pageType": "service"
     }
   a/results/appservice/client/client.json: |
-    {"name":"Client","fullName":"Client","uid":"aa","langs":["csharp"],"pageType":"service"}
+    {"name":"Client","fullName":"Client","langs":["csharp"],"pageType":"service"}
 ---
 # Service Page href fix: TopLevelTOC and ReferenceTOC in different directory hierarchy
 repos:
@@ -272,13 +271,14 @@ outputs:
       "items": [
         {
           "name": "API Reference",
+          "href": "../../docs-ref-toc/",
           "items": [
+            { "name": "Overview", "href": "../../docs-ref-toc/" },
             {
               "name": "API Test",
+              "href": "../../test/doc",
               "items": [
-                {
-                  "name": "Overview"
-                },
+                { "name": "Overview", "href": "../../test/doc" },
                 { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
               ]
             }

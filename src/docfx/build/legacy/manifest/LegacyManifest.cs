@@ -40,8 +40,8 @@ namespace Microsoft.Docs.Build
                         }) : null,
                         default_version_info = new
                         {
-                            name = string.Empty,
-                            version_folder = string.Empty,
+                            name = "",
+                            version_folder = "",
                             xref_map = "xrefmap.yml",
                         },
                         files = convertedItems
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
             ContentType.Redirection => "Conceptual", // todo: support reference redirection
             ContentType.Resource => "Resource",
             ContentType.TableOfContents => "Toc",
-            _ => string.Empty,
+            _ => "",
         };
 
         private static string GetType(ContentType type, bool isContentRenderType)
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 case ContentType.TableOfContents:
                     return "Toc";
                 default:
-                    return string.Empty;
+                    return "";
             }
         }
     }

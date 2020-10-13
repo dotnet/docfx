@@ -150,7 +150,7 @@ namespace Microsoft.Docs.LearnValidation
                 Console.WriteLine($"[{PluginName}] exception occurs during dry sync step: {ex}");
 
                 // regard current hierarchy as valid if any unhandled exceptions occurs to avoid blocking build.
-                return new ValidationResult(branch, locale, true, string.Empty);
+                return new ValidationResult(branch, locale, true, "");
             }
         }
 

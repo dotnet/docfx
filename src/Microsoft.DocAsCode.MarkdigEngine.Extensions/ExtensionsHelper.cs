@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         ? ((char)Convert.ToInt32(n.Substring(2), 16)).ToString()
                         : ((char)Convert.ToInt32(n.Substring(1))).ToString();
                 }
-                return string.Empty;
+                return "";
             });
         }
 

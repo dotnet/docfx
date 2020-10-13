@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                 schema,
                 token,
                 uidCount,
-                string.Empty);
+                "");
         }
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(

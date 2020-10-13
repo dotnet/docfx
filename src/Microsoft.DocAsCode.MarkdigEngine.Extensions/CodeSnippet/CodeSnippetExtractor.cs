@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     tagLines.Add(index);
                     if (!_isEndLineContainsTagName)
                     {
-                        tagName = tagStack.Count > 0 ? tagStack.Pop() : string.Empty;
+                        tagName = tagStack.Count > 0 ? tagStack.Pop() : "";
                     }
 
                     if (result.ContainsKey(tagName))
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static bool MatchTag(string line, string template, out string tagName, bool containTagname = true)
         {
-            tagName = string.Empty;
+            tagName = "";
             if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template))
             {
                 return false;
@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var splitedTemplate = template.Split(new[] { TagNamePlaceHolder }, StringSplitOptions.None);
             var beforeTagName = splitedTemplate[0];
-            var afterTagName = splitedTemplate.Length == 2 ? splitedTemplate[1] : string.Empty;
+            var afterTagName = splitedTemplate.Length == 2 ? splitedTemplate[1] : "";
 
             var column = 0;
             var index = 0;

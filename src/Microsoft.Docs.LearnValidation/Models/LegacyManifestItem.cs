@@ -13,7 +13,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public string SourceRelativePath { get; set; }
 
-        public string OriginalType { get; set; } = string.Empty;
+        public string OriginalType { get; set; } = "";
 
         public LegacyManifestOutput Output { get; set; }
     }

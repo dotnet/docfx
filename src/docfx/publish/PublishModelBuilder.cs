@@ -79,6 +79,7 @@ namespace Microsoft.Docs.Build
                 _config.Name,
                 _config.Product,
                 _config.BasePath.ValueWithLeadingSlash,
+                _config.Template.IsMainOrMaster ? null : _config.Template.Branch,
                 items,
                 monikerGroups);
 

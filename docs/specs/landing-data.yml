@@ -56,3 +56,44 @@ outputs:
   docs/index.mta.json:
   docs/index.raw.page.json: |
     { "content": "<h2>Service</h2><div class=\"columnHolder\"><div class=\"column50\"><ul class=\"panelContent cardsD\"><li><div class=\"cardSize\"><div class=\"cardPadding\"><div class=\"card\"><div class=\"cardText\"><h3>Item1</h3><p>item1</p></div></div></div></div></li><li><div class=\"cardSize\"><div class=\"cardPadding\"><div class=\"card\"><div class=\"cardText\"><h3>Item2</h3><p>item2</p></div></div></div></div></li></ul></div><div class=\"column50\"><ul class=\"panelContent cardsD\"><li><div class=\"cardSize\"><div class=\"cardPadding\"><div class=\"card\"><div class=\"cardText\"><h3>Item3</h3><p>item3</p></div></div></div></div></li><li><div class=\"cardSize\"><div class=\"cardPadding\"><div class=\"card\"><div class=\"cardText\"><h3>Item4</h3><p>item4</p></div></div></div></div></li></ul></div></div>" }
+---
+# escape &amp; test
+inputs:
+  docfx.yml:
+  index.yml: |
+    ### YamlMime:YamlDocument
+    documentType: LandingData
+    sections:
+      - items:
+        - type: list
+          style: cards
+          className: cardsM
+          columns: 1
+          items:
+          - href: /a
+            html: <p>Developer tools for .NET and .NET Core</p>
+            title: SDK &amp; Tools
+outputs:
+  index.json: |
+    {
+      "conceptual": "<ul class=\"cardsM cols cols1\">
+                       <li>
+                         <a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\">
+                           <div class=\"cardText\">
+                             <h3>SDK &amp; Tools</h3>
+                             <p>Developer tools for .NET and .NET Core</p>
+                            </div>
+                         </a>
+                       </li>
+                     </ul>",
+      "sections": [{
+          "items": [{
+              "type": "list", "style": "cards", "className": "cardsM", "columns": 1,
+              "items": [{
+                  "href": "/a",
+                  "html": "<p>Developer tools for .NET and .NET Core</p>",
+                  "title": "SDK &amp; Tools"
+                }]
+            }]
+        }]
+    }

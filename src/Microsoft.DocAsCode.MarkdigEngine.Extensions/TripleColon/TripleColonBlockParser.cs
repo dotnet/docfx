@@ -193,7 +193,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static bool TryMatchIdentifier(ref StringSlice slice, out string name)
         {
-            name = string.Empty;
+            name = "";
             var c = slice.CurrentChar;
             if (c.IsAlpha())
             {
@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static bool TryMatchAttributeValue(ref StringSlice slice, out string value, string attributeName, Action<string> logError)
         {
-            value = string.Empty;
+            value = "";
             var c = slice.CurrentChar;
             if (c != '"')
             {
@@ -258,7 +258,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     return false;
                 }
 
-                var value = string.Empty;
+                var value = "";
 
                 ExtensionsHelper.SkipSpaces(ref slice);
                 if (slice.CurrentChar == '=')

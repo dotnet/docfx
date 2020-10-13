@@ -259,7 +259,7 @@ valueRequired: a
         [Fact]
         public void TestStringEmpty()
         {
-            var yaml = string.Empty;
+            var yaml = "";
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
         }

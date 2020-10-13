@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
 
         public string BasePath { get; }
 
+        public string? ThemeBranch { get; }
+
         public PublishItem[] Files { get; }
 
         public IReadOnlyDictionary<string, MonikerList> MonikerGroups { get; }
@@ -24,12 +26,14 @@ namespace Microsoft.Docs.Build
             string name,
             string product,
             string basePath,
+            string? themeBranch,
             PublishItem[] files,
             IReadOnlyDictionary<string, MonikerList> monikerGroups)
         {
             Name = name;
             Product = product;
             BasePath = basePath;
+            ThemeBranch = themeBranch;
             Files = files;
             MonikerGroups = monikerGroups;
         }
