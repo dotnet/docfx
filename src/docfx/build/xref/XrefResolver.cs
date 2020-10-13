@@ -7,7 +7,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Web;
-using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.Docs.Build
 {
@@ -20,8 +19,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<IReadOnlyList<Lazy<ExternalXref>>> _externalXref;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
-        // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo
-        private readonly Lazy<IReadOnlyList<SourceInfo<string>>> _valdiateExternalXrefList;
+        // xrefs marked ValidateExternalXrefs and defined external
+        private readonly Lazy<IReadOnlyList<SourceInfo<string>>> _valdiateExternalXrefs;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -61,10 +60,10 @@ namespace Microsoft.Docs.Build
 
             var externalXrefMapAndExternalXref = ExternalXrefMapLoader.Load(config, fileResolver, errorLog);
             _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
-                () => externalXrefMapAndExternalXref.Value.externalXrefMap);
-            _externalXref = new Lazy<IReadOnlyList<Lazy<ExternalXref>>>(() => externalXrefMapAndExternalXref.Value.externalXref);
-            _valdiateExternalXrefList = new Lazy<IReadOnlyList<SourceInfo<string>>>(
-                () => jsonSchemaTransformer.Value.XrefList.Where(item => item.validateExternalXrefs).Select(item => item.xref).ToList());
+                () => externalXrefMapAndExternalXref.externalXrefMap);
+            _externalXref = new Lazy<IReadOnlyList<Lazy<ExternalXref>>>(() => externalXrefMapAndExternalXref.externalXref);
+            _valdiateExternalXrefs = new Lazy<IReadOnlyList<SourceInfo<string>>>(
+                () => jsonSchemaTransformer.Value.GetValidateExternalXrefs());
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
@@ -177,7 +176,17 @@ namespace Microsoft.Docs.Build
                     .OrderBy(xref => xref.Uid)
                     .ToArray();
 
-                externalXrefs = GetNetExternalXrefs();
+                externalXrefs = _valdiateExternalXrefs.Value.GroupBy(uid => uid.Value).Select(uidGroup =>
+                {
+                    var repositoryUrl = string.Empty;
+
+                    if (_externalXrefMap.Value.TryGetValue(uidGroup.Key, out var spec))
+                    {
+                        repositoryUrl = spec.Value.RepositoryUrl;
+                    }
+
+                    return new ExternalXref { Uid = uidGroup.Key, Count = uidGroup.Count(), RepositoryUrl = repositoryUrl };
+                }).OrderBy(xref => xref.Uid).ToArray();
             }
 
             var model = new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url };
@@ -198,28 +207,6 @@ namespace Microsoft.Docs.Build
             }
 
             return model;
-        }
-
-        // xrefs marked ValidateExternalXrefs, including uids defined internal or external repo
-        // this function return net xrefs, which defined external repo
-        private ExternalXref[] GetNetExternalXrefs()
-        {
-            if (!_valdiateExternalXrefList.IsValueCreated)
-            {
-                _ = _valdiateExternalXrefList.Value;
-            }
-
-            return _valdiateExternalXrefList.Value.Where(uid => !_internalXrefMap.Value.ContainsKey(uid.Value)).GroupBy(uid => uid.Value).Select(uidGroup =>
-               {
-                   var repositoryUrl = string.Empty;
-
-                   if (_externalXrefMap.Value.TryGetValue(uidGroup.Key, out var spec))
-                   {
-                       repositoryUrl = spec.Value.RepositoryUrl;
-                   }
-
-                   return new ExternalXref { Uid = uidGroup.Key, Count = uidGroup.Count(), RepositoryUrl = repositoryUrl };
-               }).OrderBy(xref => xref.Uid).ToArray();
         }
 
         private void ValidateInternalXrefProperties()
@@ -263,11 +250,6 @@ namespace Microsoft.Docs.Build
 
         private void ValidateExternalXref()
         {
-            if (!_externalXref.IsValueCreated)
-            {
-                _ = _externalXref.Value;
-            }
-
             var localXrefGroups = _externalXref.Value
                 .Where(xref => string.Equals(xref.Value.RepositoryUrl, _repository?.Url, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(xref => xref.Value.Uid);

@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private static readonly byte[] s_referencesBytes = Encoding.UTF8.GetBytes("references");
         private static readonly byte[] s_externalXrefsBytes = Encoding.UTF8.GetBytes("externalXrefs");
 
-        public static Lazy<(IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> externalXrefMap, IReadOnlyList<Lazy<ExternalXref>> externalXref)> Load(
+        public static (IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> externalXrefMap, IReadOnlyList<Lazy<ExternalXref>> externalXref) Load(
             Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
             using (Progress.Start("Loading external xref map"))
@@ -62,8 +62,7 @@ namespace Microsoft.Docs.Build
                 externalXrefMap.TrimExcess();
                 externalXref.TrimExcess();
 
-                return new Lazy<(IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>, IReadOnlyList<Lazy<ExternalXref>>)>(
-                    () => (externalXrefMap, externalXref));
+                return (externalXrefMap, externalXref);
             }
         }
 
@@ -147,7 +146,7 @@ namespace Microsoft.Docs.Build
             string repositoryUrl = string.Empty;
             var stack = new Stack<(string? uid, long start)>();
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
-            bool inReferencesObj = true;
+            var inReferencesObj = true;
 
             while (reader.Read())
             {
@@ -169,9 +168,16 @@ namespace Microsoft.Docs.Build
                                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
                             }
                         }
-                        if (reader.ValueTextEquals(s_referencesBytes) || reader.ValueTextEquals(s_externalXrefsBytes))
+                        if (stack.Count == 1)
                         {
-                            inReferencesObj = reader.ValueTextEquals(s_referencesBytes) ? true : false;
+                            if (reader.ValueTextEquals(s_referencesBytes))
+                            {
+                                inReferencesObj = true;
+                            }
+                            else if (reader.ValueTextEquals(s_externalXrefsBytes))
+                            {
+                                inReferencesObj = false;
+                            }
                         }
                         break;
 
