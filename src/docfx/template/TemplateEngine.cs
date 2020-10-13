@@ -48,10 +48,7 @@ namespace Microsoft.Docs.Build
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
 
-            _global = _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}")
-                ?? _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_config.DefaultLocale}")
-                ?? _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token")
-                ?? new JObject();
+            _global = LoadLocaleToken(errors);
 
             _liquid = new LiquidTemplate(_package, _global);
             _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_package, _global));
@@ -241,6 +238,18 @@ namespace Microsoft.Docs.Build
             }
 
             return jsonSchema;
+        }
+
+        private JObject LoadLocaleToken(ErrorBuilder errors)
+        {
+            var defaultToken = _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token");
+            var localeToken = _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            if (defaultToken == null)
+            {
+                return localeToken ?? new JObject();
+            }
+            JsonUtility.Merge(defaultToken, localeToken);
+            return defaultToken;
         }
     }
 }
