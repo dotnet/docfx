@@ -1913,7 +1913,7 @@ inputs:
     {
       "references":[
         {"uid": "achieve_b2", "type": "trophy"},
-        {"uid": "module_c", "type": "learningpath"},
+        {"uid": "module_c", "schemaType": "learningpath"},
         {"uid": "module_d"}
       ]
     }

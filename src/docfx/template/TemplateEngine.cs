@@ -7,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
