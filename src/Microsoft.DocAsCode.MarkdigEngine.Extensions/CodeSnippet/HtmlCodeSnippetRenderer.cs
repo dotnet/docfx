@@ -11,6 +11,7 @@ using System.Text;
 using Markdig.Helpers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -234,7 +235,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return s_languageByFileExtension.TryGetValue(extension, out var result) ? result : null;
         }
 
-        public string GetContent(string content, CodeSnippet obj)
+        public string GetContent(string content, CodeSnippet obj, MarkdownObject source)
         {
             var allLines = ReadAllLines(content).ToArray();
 
@@ -255,7 +256,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     _context.LogWarning(
                         "unknown-language-code",
                         $"Unrecognized language value '{lang}' in code snippet '{obj.TagName}' in file '{obj.CodePath}'. Your code snippet might not render correctly. If this is the case, you can request a new value or use range instead.",
-                        obj);
+                        source);
                 }
 
                 var tagWithPrefix = TagPrefix + obj.TagName;
@@ -304,7 +305,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             codeSnippet.SetAttributeString();
 
             renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-            renderer.WriteEscape(GetContent(content, codeSnippet));
+            renderer.WriteEscape(GetContent(content, codeSnippet, codeSnippet));
             renderer.Write("</code></pre>");
         }
 

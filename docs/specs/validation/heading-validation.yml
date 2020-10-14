@@ -459,7 +459,6 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2 -c'(a.md(10,1) -> b.md(5,1) -> c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"c.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H4 'H4 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":11, "end_line":11,"column":1,"end_column":1}
 ---
-
 #Content validation - h1-not-first in docs zone
 inputs:
   docfx.yml: |
