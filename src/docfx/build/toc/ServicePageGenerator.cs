@@ -34,12 +34,45 @@ namespace Microsoft.Docs.Build
             }
 
             var filename = Regex.Replace(node.Name, @"\s+", "");
+
+            var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
+            var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
+            var nodeHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, node.Href.Value ?? ""));
+
+            if (string.IsNullOrEmpty(node.Href.Value) || !File.Exists(nodeHrefFullPath))
+            {
+                TryToGenerateServicePageForItem(node, directoryName, filename, referenceTOCFullPath, results);
+            }
+
+            if (!string.IsNullOrEmpty(node.Href.Value))
+            {
+                node.Uid = node.Uid.With(null);
+            }
+
+            foreach (var item in node.Items)
+            {
+                if (node.LandingPageType == LandingPageType.Root)
+                {
+                    GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}");
+                }
+                else
+                {
+                    GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");
+                }
+            }
+        }
+
+        private void TryToGenerateServicePageForItem(
+            TableOfContentsNode node,
+            string directoryName,
+            string filename,
+            string referenceTOCFullPath,
+            List<FilePath> results)
+        {
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
                 var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
-                var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
-                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
                 var pageType = node.LandingPageType.Value;
                 FilePath servicePagePath;
                 if (pageType == LandingPageType.Root)
@@ -61,7 +94,6 @@ namespace Microsoft.Docs.Build
 
                 var name = node.Name;
                 var fullName = node.Name;
-                node.Uid = node.Uid.With(null);
                 var children = new List<ServicePageItem>();
                 foreach (var item in node.Items)
                 {
@@ -121,18 +153,6 @@ namespace Microsoft.Docs.Build
                 results.Add(servicePagePath);
                 var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
-            }
-
-            foreach (var item in node.Items)
-            {
-                if (node.LandingPageType == LandingPageType.Root)
-                {
-                    GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}");
-                }
-                else
-                {
-                    GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");
-                }
             }
         }
 
