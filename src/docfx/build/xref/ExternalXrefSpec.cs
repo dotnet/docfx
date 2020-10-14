@@ -20,6 +20,9 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public string? RepositoryUrl { get; set; }
 
+        [JsonIgnore]
+        public string? DocsetName { get; set; }
+
         [JsonExtensionData]
         public JObject ExtensionData { get; private set; } = new JObject();
 

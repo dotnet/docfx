@@ -24,12 +24,14 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
 
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
-        private readonly ConcurrentDictionary<(FilePath, string), JObject?> _mustacheXrefSpec = new ConcurrentDictionary<(FilePath, string), JObject?>();
+        private readonly ConcurrentDictionary<(FilePath, string), (IXrefSpec? spec, JObject? specObj)> _mustacheXrefSpec =
+            new ConcurrentDictionary<(FilePath, string), (IXrefSpec?, JObject?)>();
 
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
             new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
 
-        private readonly ConcurrentBag<SourceInfo<string>> _xrefList = new ConcurrentBag<SourceInfo<string>>();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList =
+            new ConcurrentBag<(SourceInfo<string> xref, string? docsetName)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -54,7 +56,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (uid, propertyPath, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
             {
-                var references = _xrefList.Where(xref => xref.Value.Equals(uid.Value)).Select(xref => xref.Source).ToArray();
+                var references = _xrefList.Where(item => item.xref.Value.Equals(uid.Value)).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
@@ -68,12 +70,20 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public ExternalXref[] GetValidateExternalXrefs()
+        {
+            return _xrefList.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
+            {
+                return new ExternalXref { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName };
+            }).OrderBy(externalXref => externalXref.Uid).ToArray();
+        }
+
         public JToken GetMustacheXrefSpec(FilePath file, string uid)
         {
-            var result = _mustacheXrefSpec.TryGetValue((file, uid), out var value) ? value : null;
+            var (_, specObj) = _mustacheXrefSpec.TryGetValue((file, uid), out var value) ? value : (null, null);
 
             // Ensure these well known properties does not fallback to mustache parent variable scope
-            return result ?? new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
+            return specObj ?? new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
         }
 
         public JToken TransformContent(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
@@ -406,24 +416,12 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Uid:
                 case JsonSchemaContentType.Xref:
 
-                    if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
-                    {
-                        _uidReferenceCountList.Add((
-                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
-                            propertyPath,
-                            schema.MinReferenceCount,
-                            schema.MaxReferenceCount));
-                    }
-                    else
-                    {
-                        _xrefList.Add(new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()));
-                    }
-
-                    if (!_mustacheXrefSpec.ContainsKey((file, content)))
+                    var (spec, specObj) = _mustacheXrefSpec.GetOrAdd((file, content), _ =>
                     {
                         // the content here must be an UID, not href
                         var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
                             content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
+
                         errors.AddIfNotNull(xrefError);
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
@@ -435,8 +433,22 @@ namespace Microsoft.Docs.Build
                             xrefSpecObj["name"] ??= xrefSpecObj["uid"] ?? null;
                             xrefSpecObj["href"] ??= null;
                         }
+                        return (xrefSpec, xrefSpecObj);
+                    });
 
-                        _mustacheXrefSpec.TryAdd((file, content), xrefSpecObj);
+                    if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
+                    {
+                        _uidReferenceCountList.Add((
+                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            propertyPath,
+                            schema.MinReferenceCount,
+                            schema.MaxReferenceCount));
+                    }
+                    else if (schema.ContentType == JsonSchemaContentType.Xref)
+                    {
+                        _xrefList.Add((
+                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            (spec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null));
                     }
                     return value;
             }

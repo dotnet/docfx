@@ -16,6 +16,25 @@ outputs:
   docs/a.json: |
     { "conceptual": "<div class=\"NOTE\"><p>my note</p><p>note</p></div>" }
 ---
+# note token text can be replaced by template with locale
+repos:
+  https://docs.com/markdown-note.zh-cn:
+  - files:
+      docfx.yml: |
+        template: https://docs.com/template/token
+      docs/a.md: |
+        >[!NOTE]
+        >note
+  https://docs.com/template/token:
+  - files:
+      ContentTemplate/token.json: |
+        { "note": "<p>my note</p>" }
+      ContentTemplate/token.zh-cn.json: |
+        { "note": "<p>中文</p>" }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<div class=\"NOTE\"><p>中文</p><p>note</p></div>" }
+---
 # Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
   docfx.yml:
