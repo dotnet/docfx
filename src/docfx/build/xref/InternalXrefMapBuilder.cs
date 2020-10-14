@@ -40,32 +40,33 @@ namespace Microsoft.Docs.Build
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
-        public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
+        public InternalXrefMap Build()
         {
-            var builder = new ListBuilder<InternalXrefSpec>();
+            var xrefBuilder = new ListBuilder<InternalXrefSpec>();
+            var xrefTypeBuilder = new ListBuilder<(SourceInfo<string>, string)>();
 
             using (Progress.Start("Building Xref map"))
             {
                 ParallelUtility.ForEach(
                     _errors,
                     _buildScope.GetFiles(ContentType.Page),
-                    file => Load(_errors, builder, file));
+                    file => Load(_errors, xrefBuilder, xrefTypeBuilder, file));
             }
 
             var xrefmap =
-                from spec in builder.AsList()
+                from spec in xrefBuilder.AsList()
                 group spec by spec.Uid.Value into g
                 let uid = g.Key
                 let spec = AggregateXrefSpecs(uid, g.ToArray())
                 select (uid, spec);
 
-            var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
-            result.TrimExcess();
+            var internalXrefMap = xrefmap.ToDictionary(item => item.uid, item => item.spec);
+            internalXrefMap.TrimExcess();
 
-            return result;
+            return new InternalXrefMap(internalXrefMap, xrefTypeBuilder.AsList());
         }
 
-        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
+        private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, ListBuilder<(SourceInfo<string>, string)> xrefTypes, FilePath file)
         {
             switch (file.Format)
             {
@@ -82,15 +83,17 @@ namespace Microsoft.Docs.Build
                 case FileFormat.Yaml:
                     {
                         var token = _input.ReadYaml(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
+                        var (specs, types) = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
+                        xrefTypes.AddRange(types);
                         break;
                     }
                 case FileFormat.Json:
                     {
                         var token = _input.ReadJson(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
+                        var (specs, types) = LoadSchemaDocument(errors, token, file);
                         xrefs.AddRange(specs);
+                        xrefTypes.AddRange(types);
                         break;
                     }
             }
@@ -111,7 +114,8 @@ namespace Microsoft.Docs.Build
             return xref;
         }
 
-        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
+        private (IReadOnlyList<InternalXrefSpec>, IReadOnlyList<(SourceInfo<string>, string)>) LoadSchemaDocument(
+            ErrorBuilder errors, JToken token, FilePath file)
         {
             var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
 

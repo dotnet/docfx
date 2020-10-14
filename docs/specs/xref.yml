@@ -1840,27 +1840,30 @@ outputs:
 ---
 # support SDP validation xrefType
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "achieve_b2", "type": "badge"},
+        {"uid": "module_c", "schemaType": "module"}
+      ]
+    }
   docs/path.yml: |
     ### YamlMime:LearningPath
     uid: path_a
-    modules: ['module_a']
+    modules: ['module_a', 'module_c']
     achievement: achieve_t
   docs/module.yml: |
     ### YamlMime:Module
     uid: module_a
-    units: ['unit_a']
-    achievement: achieve_b
-  docs/unit.yml: |
-    ### YamlMime:ModuleUnit
-    uid: unit_a
-  achievement.yml: |
+    achievement: achieve_b2
+  docs/achievement.yml: |
     ### YamlMime:Achievement
     achievements:
     - uid: achieve_t
       type: trophy
-    - uid: achieve_b
-      type: badge
   _themes/ContentTemplate/schemas/LearningPath.schema.json: |
     {
       "properties": {
@@ -1869,7 +1872,6 @@ inputs:
         "achievement": {"contentType": "xref", "xrefType": "trophy"}
       }
     }
-  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
       "properties": {
@@ -1878,17 +1880,8 @@ inputs:
         "achievement": {"contentType": "xref", "xrefType": "badge"}
       }
     }
-  _themes/ContentTemplate/Module.html.primary.tmpl:
-  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"}
-      }
-    }
-  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
-      "renderType": "component",
       "properties": {
         "achievements": { 
           "items": { 
@@ -1901,23 +1894,87 @@ inputs:
 outputs:
   docs/path.json:
   docs/module.json:
+  docs/achievement.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "achieve_t", "href": "https://docs.com/docs/achievement?branch=support-xref-type", "type": "trophy"},
+        {"uid": "module_a", "href": "https://docs.com/docs/module?branch=support-xref-type", "schemaType": "module"},
+        {"uid": "path_a", "href": "https://docs.com/docs/path?branch=support-xref-type", "schemaType": "learningpath"}
+      ]
+    }
+---
+# support SDP validation xrefType 2
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "achieve_b2", "type": "trophy"},
+        {"uid": "module_c", "type": "learningpath"},
+        {"uid": "module_d"}
+      ]
+    }
+  docs/path.yml: |
+    ### YamlMime:LearningPath
+    uid: path_a
+    modules: ['unit_a', 'module_c', 'module_d']
+    achievement: achieve_t
+  docs/unit.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit_a
+  docs/achievement.yml: |
+    ### YamlMime:Achievement
+    achievements:
+    - uid: achieve_t
+      type: badge
+    - uid: achieve
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "modules": {"items": {"contentType": "xref", "xrefType": "module"}},
+        "achievement": {"contentType": "xref", "xrefType": "trophy"}
+      }
+    }
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+  _themes/ContentTemplate/schemas/Achievement.schema.json: |
+    {
+      "properties": {
+        "achievements": { 
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}},
+            "xrefProperties": ["type"]
+          }
+        }
+      }
+    }
+outputs:
+  docs/path.json:
   docs/unit.json:
   docs/achievement.json:
   .xrefmap.json: | 
     {
       "references":[
-        {
-          "uid": "achieve_b",
-          "href": "https://docs.com/docs/a?branch=support-xref-type#achieve_b",
-          "type": "badge"
-        },
-        {
-          "uid": "module_a",
-          "href": "https://docs.com/docs/a?branch=support-xref-type",
-          "schemaType": "module"
-        }
+        {"uid": "achieve", "href": "https://docs.com/docs/achievement?branch=support-xref-type#achieve", "type": null},
+        {"uid": "achieve_t", "href": "https://docs.com/docs/achievement?branch=support-xref-type#achieve_t", "type": "badge"},
+        {"uid": "path_a", "href": "https://docs.com/docs/path?branch=support-xref-type", "schemaType": "learningpath"},
+        {"uid": "unit_a", "href": "https://docs.com/docs/unit?branch=support-xref-type", "schemaType": "moduleunit"},
       ]
     }
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'achieve_t' invalid type, which is expected 'trophy' but now is 'badge'.","file":"docs/path.yml","line":4}
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'module_c' invalid type, which is expected 'module' but now is 'learningpath'.","file":"docs/path.yml","line":3}
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'unit_a' invalid type, which is expected 'module' but now is 'moduleunit'.","file":"docs/path.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-not-found","message":"Cross reference 'module_d' type not found, which is expected 'module'.","file":"docs/path.yml","line":3}
+---
 # support SDP validation validateExternalXrefs
 repos:
   https://docs.com/test-valdiate-external-xref:
@@ -1960,7 +2017,7 @@ outputs:
   docs/b.json:
   .xrefmap.json: |
     {
-      "externalXrefs":[
+      "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
           "count": 2},
@@ -1972,7 +2029,7 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
-# support validate external xref, locale build
+# support SDP validation validateExternalXrefs, locale build
 locale: zh-cn
 repos:
   https://docs.com/test-valdiate-external-xref.zh-cn:
@@ -2015,7 +2072,7 @@ outputs:
   docs/b.json:
   .xrefmap.json: |
     {
-      "externalXrefs":[
+      "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
           "count": 2},

@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
         private readonly Lazy<ExternalXrefMap> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+        private readonly Lazy<InternalXrefMap> _internalXrefMap;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
+            _internalXrefMap = new Lazy<InternalXrefMap>(
                     () => new InternalXrefMapBuilder(
                                 errorLog,
                                 templateEngine,
@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateInternalXrefProperties()
         {
-            foreach (var xrefs in _internalXrefMap.Value.Values)
+            foreach (var xrefs in _internalXrefMap.Value.GetInternalXrefValues())
             {
                 if (xrefs.Length == 1)
                 {
@@ -224,7 +224,8 @@ namespace Microsoft.Docs.Build
 
         private void ValidateUIDGlobalUnique()
         {
-            var globalUIDs = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UIDGlobalUnique)).Select(xrefs => xrefs.First().Uid);
+            var globalUIDs = _internalXrefMap.Value.GetInternalXrefValues()
+                .Where(xrefs => xrefs.Any(xref => xref.UIDGlobalUnique)).Select(xrefs => xrefs.First().Uid);
 
             foreach (var uid in globalUIDs)
             {
@@ -243,9 +244,50 @@ namespace Microsoft.Docs.Build
 
             foreach (var xrefGroup in localXrefGroups)
             {
-                if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
+                if (!_internalXrefMap.Value.InternalXrefMapContainsKey(xrefGroup.Key))
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct()));
+                }
+            }
+        }
+
+        private void ValidateXrefType()
+        {
+            var a = _internalXrefMap.Value.GetXrefTypes();
+            foreach (var (xref, xrefType) in _internalXrefMap.Value.GetXrefTypes())
+            {
+                if (EnsureInternalXrefMap().TryGetValue(xref.Value, out var specs))
+                {
+                    var spec = specs.First();
+                    if ((!string.IsNullOrEmpty(spec.SchemaType) &&
+                        !spec.SchemaType.Equals(xrefType, StringComparison.OrdinalIgnoreCase)) ||
+                        (spec.XrefProperties.ContainsKey("type") &&
+                        spec.XrefProperties["type"].ToString() != null &&
+                        !spec.XrefProperties["type"].ToString()!.Equals(xrefType, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        _errorLog.Add(Errors.Xref.InvalidXrefType(
+                            xref, xrefType, string.IsNullOrEmpty(spec.SchemaType) ? spec.XrefProperties["type"].ToString()! : spec.SchemaType));
+                    }
+                    else if (string.IsNullOrEmpty(spec.SchemaType) && !spec.XrefProperties.ContainsKey("type"))
+                    {
+                        _errorLog.Add(Errors.Xref.XrefTypeNotFound(xref, xrefType));
+                    }
+                }
+                else if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(xref.Value, out var spec))
+                {
+                    if ((!string.IsNullOrEmpty(spec?.SchemaType) &&
+                        !spec.SchemaType.Equals(xrefType, StringComparison.OrdinalIgnoreCase)) ||
+                        (spec!.ExtensionData.ContainsKey("type") &&
+                        spec.ExtensionData["type"] != null &&
+                        !spec.ExtensionData["type"]!.ToString().Equals(xrefType, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        _errorLog.Add(Errors.Xref.InvalidXrefType(
+                            xref, xrefType, string.IsNullOrEmpty(spec.SchemaType) ? spec.ExtensionData["type"]!.ToString() : spec.SchemaType));
+                    }
+                    else if (string.IsNullOrEmpty(spec.SchemaType) && !spec.ExtensionData.ContainsKey("type"))
+                    {
+                        _errorLog.Add(Errors.Xref.XrefTypeNotFound(xref, xrefType));
+                    }
                 }
             }
         }
@@ -301,9 +343,10 @@ namespace Microsoft.Docs.Build
                 ValidateInternalXrefProperties();
                 ValidateUIDGlobalUnique();
                 ValidateExternalXref();
+                ValidateXrefType();
             }
 
-            return _internalXrefMap.Value;
+            return _internalXrefMap.Value.GetInternalXrefMap();
         }
 
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(

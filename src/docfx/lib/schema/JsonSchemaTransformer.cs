@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
             new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList =
-            new ConcurrentBag<(SourceInfo<string> xref, string? docsetName)>();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList = new ConcurrentBag<(SourceInfo<string>, string?)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -101,17 +100,18 @@ namespace Microsoft.Docs.Build
                 "");
         }
 
-        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(
+        public (IReadOnlyList<InternalXrefSpec>, IReadOnlyList<(SourceInfo<string>, string)>) LoadXrefSpecs(
             ErrorBuilder errors,
             JsonSchema schema,
             FilePath file,
             JToken token)
         {
             var xrefSpecs = new List<InternalXrefSpec>();
+            var xrefTypes = new List<(SourceInfo<string>, string)>();
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
-            LoadXrefSpecsCore(errors, file, schema, schema, definitions, token, xrefSpecs, uidCount);
-            return xrefSpecs;
+            LoadXrefSpecsCore(errors, file, schema, schema, definitions, token, xrefSpecs, xrefTypes, uidCount);
+            return (xrefSpecs, xrefTypes);
         }
 
         private void LoadXrefSpecsCore(
@@ -122,6 +122,7 @@ namespace Microsoft.Docs.Build
             JsonSchemaDefinition definitions,
             JToken node,
             List<InternalXrefSpec> xrefSpecs,
+            List<(SourceInfo<string>, string)> xrefTypes,
             int uidCount,
             string? propertyPath = null)
         {
@@ -139,6 +140,11 @@ namespace Microsoft.Docs.Build
                     {
                         if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
                         {
+                            if (propertySchema.ContentType == JsonSchemaContentType.Xref && !string.IsNullOrEmpty(propertySchema.XrefType))
+                            {
+                                xrefTypes.Add((new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()), propertySchema.XrefType));
+                            }
+
                             LoadXrefSpecsCore(
                                 errors,
                                 file,
@@ -147,15 +153,23 @@ namespace Microsoft.Docs.Build
                                 definitions,
                                 value,
                                 xrefSpecs,
+                                xrefTypes,
                                 uidCount,
                                 JsonUtility.AddToPropertyPath(propertyPath, key));
                         }
                     }
                     break;
                 case JArray array when schema.Items.schema != null:
+                    var itemSchema = schema.Items.schema;
+
                     foreach (var item in array)
                     {
-                        LoadXrefSpecsCore(errors, file, rootSchema, schema.Items.schema, definitions, item, xrefSpecs, uidCount, propertyPath);
+                        if (itemSchema.ContentType == JsonSchemaContentType.Xref && !string.IsNullOrEmpty(itemSchema.XrefType))
+                        {
+                            xrefTypes.Add((new SourceInfo<string>(item.Value<string>(), item.GetSourceInfo()), itemSchema.XrefType));
+                        }
+
+                        LoadXrefSpecsCore(errors, file, rootSchema, itemSchema, definitions, item, xrefSpecs, xrefTypes, uidCount, propertyPath);
                     }
                     break;
             }
@@ -175,7 +189,7 @@ namespace Microsoft.Docs.Build
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
+            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, string.IsNullOrEmpty(propertyPath) ? schema.SchemaType : null);
 
             if (uidSchema.UIDGlobalUnique)
             {
@@ -205,11 +219,6 @@ namespace Microsoft.Docs.Build
                     () => LoadXrefProperty(
                         definitions, file, uid, value, rootSchema, propertySchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
                     LazyThreadSafetyMode.PublicationOnly);
-            }
-
-            if (string.IsNullOrWhiteSpace(propertyPath))
-            {
-                xref.XrefProperties["schemaType"] = new Lazy<JToken>(rootSchema.SchemaType);
             }
 
             return xref;
