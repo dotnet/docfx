@@ -265,12 +265,10 @@ outputs:
       "items": [
         {
           "name": "API Reference",
-          "href": "../../docs-ref-toc/",
           "items": [
             { "name": "Overview", "href": "../../docs-ref-toc/" },
             {
               "name": "API Test",
-              "href": "../../test/doc",
               "items": [
                 { "name": "Overview", "href": "../../test/doc" },
                 { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
@@ -387,12 +385,10 @@ outputs:
       "items": [
         {
           "name": "API Reference",
-          "href": "../../docs-ref-toc/",
           "items": [
             { "name": "Overview", "href": "../../docs-ref-toc/", "uid": undefined},
             {
               "name": "API Test",
-              "href": "../../test/doc",
               "items": [
                 { "name": "Overview", "href": "../../test/doc" },
                 { "name": "MS.ServicePage2.xxx", "href": "../../test/doc" }
