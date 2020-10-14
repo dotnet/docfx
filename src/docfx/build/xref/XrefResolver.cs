@@ -15,13 +15,14 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>> _externalXrefMap;
+        private readonly Lazy<ExternalXrefMap> _externalXrefMap;
         private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
+        private readonly Lazy<JsonSchemaTransformer> _jsonSchemaTransformer;
 
         private int _internalXrefMapValidated;
 
@@ -55,8 +56,10 @@ namespace Microsoft.Docs.Build
                                 buildScope,
                                 jsonSchemaTransformer.Value).Build());
 
-            _externalXrefMap = new Lazy<IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>>>(
+            _externalXrefMap = new Lazy<ExternalXrefMap>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
+
+            _jsonSchemaTransformer = jsonSchemaTransformer;
 
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
@@ -148,6 +151,7 @@ namespace Microsoft.Docs.Build
             var basePath = _config.BasePath.ValueWithLeadingSlash;
 
             var references = Array.Empty<ExternalXrefSpec>();
+            var externalXrefs = Array.Empty<ExternalXref>();
 
             if (!isLocalizedBuild)
             {
@@ -167,9 +171,12 @@ namespace Microsoft.Docs.Build
                     })
                     .OrderBy(xref => xref.Uid)
                     .ToArray();
+
+                externalXrefs = _jsonSchemaTransformer.Value.GetValidateExternalXrefs();
             }
 
-            var model = new XrefMapModel { References = references, RepositoryUrl = _repository?.Url };
+            var model =
+                new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
 
             if (_config.UrlType == UrlType.Docs)
             {
@@ -221,9 +228,24 @@ namespace Microsoft.Docs.Build
 
             foreach (var uid in globalUIDs)
             {
-                if (_externalXrefMap.Value.TryGetValue(uid.Value, out var spec) && spec?.Value != null)
+                if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid.Value, out var spec))
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec.Value.RepositoryUrl));
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec!.RepositoryUrl));
+                }
+            }
+        }
+
+        private void ValidateExternalXref()
+        {
+            var localXrefGroups = _externalXrefMap.Value.GetExternalXref()
+                .Where(xref => string.Equals(xref.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
+                .GroupBy(xref => xref.Uid);
+
+            foreach (var xrefGroup in localXrefGroups)
+            {
+                if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
+                {
+                    _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct()));
                 }
             }
         }
@@ -264,10 +286,10 @@ namespace Microsoft.Docs.Build
 
         private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
+            if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid, out var spec))
             {
-                var href = RemoveSharingHost(spec.Value.Href, _config.HostName);
-                return (spec.Value, href);
+                var href = RemoveSharingHost(spec!.Href, _config.HostName);
+                return (spec, href);
             }
             return default;
         }
@@ -278,6 +300,7 @@ namespace Microsoft.Docs.Build
             {
                 ValidateInternalXrefProperties();
                 ValidateUIDGlobalUnique();
+                ValidateExternalXref();
             }
 
             return _internalXrefMap.Value;

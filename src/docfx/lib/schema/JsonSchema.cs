@@ -220,6 +220,11 @@ namespace Microsoft.Docs.Build
         public bool UIDGlobalUnique { get; set; }
 
         /// <summary>
+        /// Properties that indicate whether the xref need to externally validate
+        /// </summary>
+        public bool ValidateExternalXrefs { get; set; }
+
+        /// <summary>
         /// Properties that are built into xref map
         /// </summary>
         public HashSet<string> XrefProperties { get; } = new HashSet<string>();

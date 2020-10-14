@@ -9,8 +9,12 @@ namespace Microsoft.Docs.Build
     {
         public ExternalXrefSpec[] References { get; set; } = Array.Empty<ExternalXrefSpec>();
 
+        public ExternalXref[] ExternalXrefs { get; set; } = Array.Empty<ExternalXref>();
+
         public XrefProperties? Properties { get; set; }
 
         public string? RepositoryUrl { get; set; }
+
+        public string? DocsetName { get; set; }
     }
 }
