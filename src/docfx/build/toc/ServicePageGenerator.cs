@@ -33,11 +33,6 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (!string.IsNullOrEmpty(node.Href.Value))
-            {
-                node.Uid = node.Uid.With(null);
-            }
-
             var filename = Regex.Replace(node.Name, @"\s+", "");
             if (node.LandingPageType.Value != null)
             {
@@ -66,7 +61,6 @@ namespace Microsoft.Docs.Build
 
                 var name = node.Name;
                 var fullName = node.Name;
-                node.Uid = node.Uid.With(null);
                 var children = new List<ServicePageItem>();
                 foreach (var item in node.Items)
                 {
@@ -126,6 +120,11 @@ namespace Microsoft.Docs.Build
                 results.Add(servicePagePath);
                 var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
+            }
+
+            if (!string.IsNullOrEmpty(node.Href.Value))
+            {
+                node.Uid = node.Uid.With(null);
             }
 
             foreach (var item in node.Items)
