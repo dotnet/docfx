@@ -197,6 +197,11 @@ namespace Microsoft.Docs.Build
                     LazyThreadSafetyMode.PublicationOnly);
             }
 
+            if (string.IsNullOrWhiteSpace(propertyPath))
+            {
+                xref.XrefProperties["schemaType"] = new Lazy<JToken>(rootSchema.SchemaType);
+            }
+
             return xref;
         }
 

@@ -12,6 +12,11 @@ namespace Microsoft.Docs.Build
     internal class JsonSchema
     {
         /// <summary>
+        /// the mime type of schema
+        /// </summary>
+        public string? SchemaType { get; set; }
+
+        /// <summary>
         /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
         /// </summary>
         public static readonly JsonSchema TrueSchema = new JsonSchema();
@@ -213,6 +218,11 @@ namespace Microsoft.Docs.Build
         /// Properties that are transformed using specified pipeline like 'markup'
         /// </summary>
         public JsonSchemaContentType? ContentType { get; set; }
+
+        /// <summary>
+        /// Property indicate the type of xref
+        /// </summary>
+        public string? XrefType { get; set; }
 
         /// <summary>
         /// Properties that indicate the uid unique scope

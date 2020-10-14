@@ -1838,6 +1838,87 @@ outputs:
     {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
     {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
 ---
+# support SDP xrefType validation
+inputs:
+  docfx.yml:
+  docs/path.yml: |
+    ### YamlMime:LearningPath
+    uid: path_a
+    modules: ['module_a']
+    achievement: achieve_t
+  docs/module.yml: |
+    ### YamlMime:Module
+    uid: module_a
+    units: ['unit_a']
+    achievement: achieve_b
+  docs/unit.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit_a
+  achievement.yml: |
+    ### YamlMime:Achievement
+    achievements:
+    - uid: achieve_t
+      type: trophy
+    - uid: achieve_b
+      type: badge
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "modules": {"items": {"contentType": "xref", "xrefType": "module"}},
+        "achievement": {"contentType": "xref", "xrefType": "trophy"}
+      }
+    }
+  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Module.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "units": {"items": {"contentType": "xref", "xrefType": "moduleunit"}},
+        "achievement": {"contentType": "xref", "xrefType": "badge"}
+      }
+    }
+  _themes/ContentTemplate/Module.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Achievement.schema.json: |
+    {
+      "renderType": "component",
+      "properties": {
+        "achievements": { 
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}},
+            "xrefProperties": ["type"]
+          }
+        }
+      }
+    }
+outputs:
+  docs/path.json:
+  docs/module.json:
+  docs/unit.json:
+  docs/achievement.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "achieve_b",
+          "href": "https://docs.com/docs/a?branch=support-xref-type#achieve_b",
+          "type": "badge"
+        },
+        {
+          "uid": "module_a",
+          "href": "https://docs.com/docs/a?branch=support-xref-type",
+          "schemaType": "module"
+        }
+      ]
+    }
+---
 # multiple duplicated uids with the same MonkerList
 inputs:
   docfx.json: |

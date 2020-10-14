@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -201,6 +203,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schemaString, new FilePath(schemaFilePath));
+            jsonSchema.SchemaType = mime.ToLower(new CultureInfo("en-US"));
 
             // temporary mapping, will retired after we support config it in UI portal
             jsonSchema = LearnErrorMapping(mime, jsonSchema);
