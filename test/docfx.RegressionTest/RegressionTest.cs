@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
 
             if (buildTime.TotalSeconds > opts.Timeout)
             {
-                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: ${s_repositoryName}");
+                Console.WriteLine($"##vso[task.complete result=SucceededWithIssues]Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
                 Console.WriteLine($"Test failed, build timeout: {buildTime.TotalSeconds} Repo: ${s_repositoryName}");
             }
 
