@@ -33,34 +33,23 @@ namespace Microsoft.Docs.Build
             throw new InvalidOperationException();
         }
 
-        public static SourceInfo? GetSourceInfo(this MarkdownObject obj, int? line = null)
+        public static SourceInfo GetSourceInfo(this MarkdownObject obj, int? line = null)
         {
             foreach (var item in obj.GetPathToRootInclusive())
             {
-                var file = item.GetData(s_filePathKey);
-                if (file != null)
+                if (item.GetData(s_filePathKey) is SourceInfo file)
                 {
-                    return ((SourceInfo)file).WithOffset(obj, line);
+                    if (line != null)
+                    {
+                        return new SourceInfo(file.File, line.Value + 1, 0);
+                    }
+
+                    // Line info in markdown object is zero based, turn it into one based.
+                    return file.WithOffset(obj.Line + 1, obj.Column + 1);
                 }
             }
 
             throw new InvalidOperationException();
-        }
-
-        public static SourceInfo WithOffset(this SourceInfo sourceInfo, MarkdownObject? obj, int? line = null)
-        {
-            if (line != null)
-            {
-                return new SourceInfo(sourceInfo.File, line.Value + 1, 0);
-            }
-
-            if (obj is null)
-            {
-                return sourceInfo;
-            }
-
-            // Line info in markdown object is zero based, turn it into one based.
-            return sourceInfo.WithOffset(obj.Line + 1, obj.Column + 1);
         }
 
         public static bool IsInclude(this MarkdownObject obj)
