@@ -28,7 +28,9 @@
   <ItemGroup>
     <PackageReference Include="Dotnet.ProjInfo" Version="0.9.0" />
     <PackageReference Include="FSharp.Compiler.Service" Version="34.1.1" />
-    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" Version="34.1.1" />
+    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" Version="34.1.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
