@@ -33,6 +33,11 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
+            if (!string.IsNullOrEmpty(node.Href.Value))
+            {
+                node.Uid = node.Uid.With(null);
+            }
+
             var filename = Regex.Replace(node.Name, @"\s+", "");
             if (node.LandingPageType.Value != null)
             {
