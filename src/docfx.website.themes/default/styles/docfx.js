@@ -301,12 +301,17 @@ $(function () {
 
     function handleSearchResults(hits) {
       var numPerPage = 10;
-      $('#pagination').empty();
-      $('#pagination').removeData("twbs-pagination");
+      var pagination = $('#pagination');
+      pagination.empty();
+      pagination.removeData("twbs-pagination");
       if (hits.length === 0) {
         $('#search-results>.sr-items').html('<p>No results found</p>');
-      } else {
-        $('#pagination').twbsPagination({
+      } else {        
+        pagination.twbsPagination({
+          first: pagination.data('first'),
+          prev: pagination.data('prev'),
+          next: pagination.data('next'),
+          last: pagination.data('last'),
           totalPages: Math.ceil(hits.length / numPerPage),
           visiblePages: 5,
           onPageClick: function (event, page) {

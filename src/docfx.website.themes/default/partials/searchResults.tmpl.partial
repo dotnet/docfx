@@ -5,5 +5,5 @@
   <div class="sr-items">
     <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
   </div>
-  <ul id="pagination"></ul>
+  <ul id="pagination" data-first={{__global.pageFirst}} data-prev={{__global.pagePrev}} data-next={{__global.pageNext}} data-last={{__global.pageLast}}></ul>
 </div>
