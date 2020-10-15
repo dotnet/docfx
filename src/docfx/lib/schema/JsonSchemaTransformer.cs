@@ -371,18 +371,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static Error? ValidateXrefType(JsonSchema schema, IXrefSpec xrefSpec, SourceInfo<string> xref)
-        {
-            if ((xrefSpec.SchemaType is null && xrefSpec.GetXrefPropertyValueAsString("type") is null) ||
-                !((xrefSpec.SchemaType != null && xrefSpec.SchemaType.Equals(schema.XrefType)) ||
-                (xrefSpec.GetXrefPropertyValueAsString("type") != null && xrefSpec.GetXrefPropertyValueAsString("type")!.Equals(schema.XrefType))))
-            {
-                return Errors.Xref.InvalidXrefType(xref, schema.XrefType!, xrefSpec.SchemaType ?? xrefSpec?.GetXrefPropertyValueAsString("type"));
-            }
-
-            return null;
-        }
-
         private JToken TransformScalar(
             ErrorBuilder errors,
             JsonSchema rootSchema,
@@ -441,9 +429,13 @@ namespace Microsoft.Docs.Build
 
                         errors.AddIfNotNull(xrefError);
 
-                        if (xrefSpec != null && schema.XrefType != null && schema.ContentType == JsonSchemaContentType.Xref)
+                        if (xrefSpec != null &&
+                        schema.XrefType != null &&
+                        schema.ContentType == JsonSchemaContentType.Xref &&
+                        (xrefSpec.SchemaType is null ||
+                        !xrefSpec.SchemaType.Equals(schema.XrefType)))
                         {
-                            errors.AddIfNotNull(ValidateXrefType(schema, xrefSpec, content));
+                            errors.AddIfNotNull(Errors.Xref.InvalidXrefType(content, schema.XrefType!, xrefSpec.SchemaType));
                         }
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
