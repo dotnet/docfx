@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public string Uid { get; private set; } = "";
 
+        public string? SchemaType { get; private set; }
+
         public string Href { get; private set; } = "";
 
         FilePath? IXrefSpec.DeclaringFile => null;
@@ -28,11 +30,12 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec() { }
 
-        public ExternalXrefSpec(string uid, string href, MonikerList monikers)
+        public ExternalXrefSpec(string uid, string href, MonikerList monikers, string? schemaType)
         {
             Uid = uid;
             Href = href;
             Monikers = monikers;
+            SchemaType = schemaType;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
@@ -47,7 +50,7 @@ namespace Microsoft.Docs.Build
         public string? GetName() => GetXrefPropertyValueAsString("name");
 
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) =>
-            new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers)
+            new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers, SchemaType)
             {
                 ExtensionData = ExtensionData,
             };

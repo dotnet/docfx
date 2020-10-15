@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
     {
         public SourceInfo<string> Uid { get; }
 
+        public string? SchemaType { get; private set; }
+
         public string Href { get; }
 
         public FilePath DeclaringFile { get; }
@@ -29,13 +31,20 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         internal string? DeclaringPropertyPath { get; }
 
-        public InternalXrefSpec(SourceInfo<string> uid, string href, FilePath declaringFile, MonikerList monikerList, string? declaringPropertyPath = null)
+        public InternalXrefSpec(
+            SourceInfo<string> uid,
+            string href,
+            FilePath declaringFile,
+            MonikerList monikerList,
+            string? declaringPropertyPath = null,
+            string? schemaType = null)
         {
             Uid = uid;
             Href = href;
             DeclaringFile = declaringFile;
             Monikers = monikerList;
             DeclaringPropertyPath = declaringPropertyPath;
+            SchemaType = schemaType;
         }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
@@ -50,7 +59,7 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
         {
-            var spec = new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers);
+            var spec = new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers, SchemaType);
 
             foreach (var (key, value) in XrefProperties)
             {

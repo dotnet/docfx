@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
             new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList =
-            new ConcurrentBag<(SourceInfo<string> xref, string? docsetName)>();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList = new ConcurrentBag<(SourceInfo<string>, string?)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -175,7 +174,7 @@ namespace Microsoft.Docs.Build
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path);
+            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, string.IsNullOrEmpty(propertyPath) ? schema.SchemaType : null);
 
             if (uidSchema.UIDGlobalUnique)
             {
