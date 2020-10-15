@@ -614,3 +614,24 @@ outputs:
   .errors.log: | 
    { "message_severity":"error","code":"array-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml", "line":5,"column":3}
    { "message_severity":"error","code":"array-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml", "line":15,"column":3}
+---
+# export schemaType to xrefmap.json
+inputs:
+  docfx.yml:
+  a.yml: |
+    ### YamlMime:TestData
+    uid: a
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+outputs:
+  a.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "a", "schemaType": "TestData"}
+      ]
+    }

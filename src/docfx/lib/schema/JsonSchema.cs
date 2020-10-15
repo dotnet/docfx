@@ -192,6 +192,11 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// the mime type of schema
+        /// </summary>
+        public string? SchemaType { get; set; }
+
+        /// <summary>
         /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
         /// </summary>
         public string? HtmlMetaName { get; set; }
