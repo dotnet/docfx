@@ -632,6 +632,6 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "a", "href": "https://docs.com/a?branch=export-schemaType-to-xrefmap", "schemaType": "testdata"}
+        {"uid": "a", "schemaType": "testdata"}
       ]
     }
