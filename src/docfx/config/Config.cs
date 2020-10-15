@@ -92,22 +92,22 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the maximum errors of each file to output.
         /// </summary>
-        public int MaxFileErrors { get; private set; } = 1000;
+        public int MaxFileErrors { get; private set; } = 100;
 
         /// <summary>
         /// Gets the maximum warnings of each file to output.
         /// </summary>
-        public int MaxFileWarnings { get; private set; } = 10000;
+        public int MaxFileWarnings { get; private set; } = 1000;
 
         /// <summary>
         /// Gets the maximum suggestions of each file to output.
         /// </summary>
-        public int MaxFileSuggestions { get; private set; } = 10000;
+        public int MaxFileSuggestions { get; private set; } = 1000;
 
         /// <summary>
         /// Gets the maximum info of each file to output.
         /// </summary>
-        public int MaxFileInfos { get; private set; } = 200;
+        public int MaxFileInfos { get; private set; } = 20;
 
         /// <summary>
         /// Gets the global metadata added to each document.
