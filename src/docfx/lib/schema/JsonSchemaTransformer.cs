@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                 file,
                 monikers,
                 obj.Parent?.Path,
-                schema == rootSchema ? schema.SchemaType is null ? _documentProvider.GetMime(file).Value : schema.SchemaType : null);
+                schema.SchemaType ?? (schema == rootSchema ? _documentProvider.GetMime(file).Value : null));
 
             if (uidSchema.UIDGlobalUnique)
             {
