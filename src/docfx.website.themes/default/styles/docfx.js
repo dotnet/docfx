@@ -593,7 +593,10 @@ $(function () {
   //Setup Affix
   function renderAffix() {
     var hierarchy = getHierarchy();
-    if (hierarchy && hierarchy.length > 0) {
+    if (!hierarchy || hierarchy.length <= 0) {
+      $("#affix").hide();
+    }
+    else {
       var html = util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix>div").empty().append(html);
       if ($('footer').is(':visible')) {
