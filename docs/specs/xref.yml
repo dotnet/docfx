@@ -1898,9 +1898,9 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "achieve_t", "href": "https://docs.com/docs/achievement?branch=support-xref-type", "type": "trophy"},
-        {"uid": "module_a", "href": "https://docs.com/docs/module?branch=support-xref-type", "schemaType": "module"},
-        {"uid": "path_a", "href": "https://docs.com/docs/path?branch=support-xref-type", "schemaType": "learningpath"}
+        {"uid": "achieve_t", "type": "trophy"},
+        {"uid": "module_a", "schemaType": "module"},
+        {"uid": "path_a", "schemaType": "learningpath"}
       ]
     }
 ---
@@ -1963,10 +1963,10 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "achieve", "href": "https://docs.com/docs/achievement?branch=support-xref-type#achieve", "type": null},
-        {"uid": "achieve_t", "href": "https://docs.com/docs/achievement?branch=support-xref-type#achieve_t", "type": "badge"},
-        {"uid": "path_a", "href": "https://docs.com/docs/path?branch=support-xref-type", "schemaType": "learningpath"},
-        {"uid": "unit_a", "href": "https://docs.com/docs/unit?branch=support-xref-type", "schemaType": "moduleunit"},
+        {"uid": "achieve", "type": null},
+        {"uid": "achieve_t", "type": "badge"},
+        {"uid": "path_a", "schemaType": "learningpath"},
+        {"uid": "unit_a", "schemaType": "moduleunit"},
       ]
     }
   .errors.log: |

@@ -262,11 +262,10 @@ namespace Microsoft.Docs.Build
                     if ((!string.IsNullOrEmpty(spec.SchemaType) &&
                         !spec.SchemaType.Equals(xrefType, StringComparison.OrdinalIgnoreCase)) ||
                         (spec.XrefProperties.ContainsKey("type") &&
-                        spec.XrefProperties["type"].ToString() != null &&
-                        !spec.XrefProperties["type"].ToString()!.Equals(xrefType, StringComparison.OrdinalIgnoreCase)))
+                        !spec.XrefProperties["type"].Value.ToString().Equals(xrefType, StringComparison.OrdinalIgnoreCase)))
                     {
                         _errorLog.Add(Errors.Xref.InvalidXrefType(
-                            xref, xrefType, string.IsNullOrEmpty(spec.SchemaType) ? spec.XrefProperties["type"].ToString()! : spec.SchemaType));
+                            xref, xrefType, string.IsNullOrEmpty(spec.SchemaType) ? spec.XrefProperties["type"].Value.ToString()! : spec.SchemaType));
                     }
                     else if (string.IsNullOrEmpty(spec.SchemaType) && !spec.XrefProperties.ContainsKey("type"))
                     {
