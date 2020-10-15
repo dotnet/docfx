@@ -227,10 +227,10 @@ namespace Microsoft.Docs.Build
             // For temporary normalize: use 'NormalizeJsonFiles' for output files
             Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: opts.ErrorLevel);
 
-            if (buildTime.TotalSeconds > opts.Timeout)
+            if (buildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
             {
-                Console.WriteLine($"##vso[task.complete result=SucceededWithIssues]Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
-                Console.WriteLine($"Test failed, build timeout: {buildTime.TotalSeconds} Repo: ${s_repositoryName}");
+                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
             }
 
             if (s_isPullRequest)
