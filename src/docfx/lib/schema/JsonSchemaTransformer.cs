@@ -174,7 +174,13 @@ namespace Microsoft.Docs.Build
         {
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, string.IsNullOrEmpty(propertyPath) ? schema.SchemaType : null);
+            var xref = new InternalXrefSpec(
+                uid,
+                href,
+                file,
+                monikers,
+                obj.Parent?.Path,
+                schema == rootSchema ? schema.SchemaType is null ? _documentProvider.GetMime(file).Value : schema.SchemaType : null);
 
             if (uidSchema.UIDGlobalUnique)
             {

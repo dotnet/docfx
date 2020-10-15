@@ -12,11 +12,6 @@ namespace Microsoft.Docs.Build
     internal class JsonSchema
     {
         /// <summary>
-        /// the mime type of schema
-        /// </summary>
-        public string? SchemaType { get; set; }
-
-        /// <summary>
         /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
         /// </summary>
         public static readonly JsonSchema TrueSchema = new JsonSchema();
@@ -195,6 +190,11 @@ namespace Microsoft.Docs.Build
 
         // JSON schema custom validation extensions
         //-------------------------------------------
+
+        /// <summary>
+        /// the mime type of schema
+        /// </summary>
+        public string? SchemaType { get; set; }
 
         /// <summary>
         /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.

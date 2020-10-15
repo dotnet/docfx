@@ -632,6 +632,6 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "a", "schemaType": "testdata"}
+        {"uid": "a", "schemaType": "TestData"}
       ]
     }
