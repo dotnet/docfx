@@ -256,7 +256,7 @@ $(function () {
           } else {
             flipContents("hide");
             $("body").trigger("queryReady");
-            $('#search-results>.search-list').text('Search Results for "' + query + '"');
+            $('#search-results>.search-list>span').text('"' + query + '"');
           }
         }).off("keydown");
       });
