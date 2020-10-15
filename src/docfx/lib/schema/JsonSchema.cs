@@ -202,6 +202,11 @@ namespace Microsoft.Docs.Build
         public string? XrefType { get; set; }
 
         /// <summary>
+        /// Property indicate which property will fallback to xrefType when SchemaType is null
+        /// </summary>
+        public string? SchemaTypeProperty { get; set; }
+
+        /// <summary>
         /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
         /// </summary>
         public string? HtmlMetaName { get; set; }

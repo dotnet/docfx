@@ -619,20 +619,77 @@ outputs:
 inputs:
   docfx.yml:
   a.yml: |
-    ### YamlMime:TestData
+    ### YamlMime:TestData_a
     uid: a
-  _themes/ContentTemplate/schemas/TestData.schema.json: |
+  _themes/ContentTemplate/schemas/TestData_a.schema.json: |
     {
       "properties": {
         "uid" : {"contentType": "uid"}
       }
     }
+  b.yml: |
+    ### YamlMime:TestData_b
+    uid: b
+  _themes/ContentTemplate/schemas/TestData_b.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid", "schemaType": "b_type"}
+      }
+    }
+  c.yml: |
+    ### YamlMime:TestData_c
+    uid: c
+    type: c_type
+  _themes/ContentTemplate/schemas/TestData_c.schema.json: |
+    {
+      "schemaTypeProperty": "type",
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "type": {"type": "string"}
+      }
+    }
+  d.yml: |
+    ### YamlMime:TestData_d
+    uid: d
+    type: d1_type
+  _themes/ContentTemplate/schemas/TestData_d.schema.json: |
+    {
+      "schemaTypeProperty": "type",
+      "properties": {
+        "uid" : {"contentType": "uid", "schemaType": "d2_type"},
+        "type": {"type": "string"}
+      }
+    }
+  e.yml: |
+    ### YamlMime:TestData_e
+    uid: e_parent
+    obj:
+      uid: e
+  _themes/ContentTemplate/schemas/TestData_e.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "obj": {
+          "type": "object",
+          "properties": {"uid": {"contentType": "uid"}}
+        }
+      }
+    }
 outputs:
   a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "a", "schemaType": "TestData"}
+        {"uid": "a", "schemaType": "TestData_a"},
+        {"uid": "b", "schemaType": "b_type"},
+        {"uid": "c", "schemaType": "c_type"},
+        {"uid": "d", "schemaType": "d2_type"},
+        {"uid": "e"},
+        {"uid": "e_parent", "schemaType": "TestData_e"}
       ]
     }
 ---
@@ -644,14 +701,13 @@ inputs:
   1.xrefmap.json: |
     {
       "references":[
-        {"uid": "external_b", "schemaType": "b_type"},
-        {"uid": "external_c", "type": "c2_type"}
+        {"uid": "external_c", "schemaType": "c2_type"}
       ]
     }
   docs/a.yml: |
     ### YamlMime:a_type
     uid: uid_a
-    bs: ['uid_b', 'external_b']
+    bs: ['uid_b']
     achieve: uid_c
   docs/b.yml: |
     ### YamlMime:b_type
@@ -683,7 +739,7 @@ inputs:
         "achieves": {
           "items": { 
             "properties": {"uid" : {"contentType": "uid"}},
-            "xrefProperties": ["type"]
+            "schemaTypeProperty": "type"
           }
         }
       }
@@ -697,7 +753,7 @@ outputs:
       "references":[
         {"uid": "uid_a", "schemaType": "a_type"},
         {"uid": "uid_b", "schemaType": "b_type"},
-        {"uid": "uid_c", "type": "c3_type"}
+        {"uid": "uid_c", "schemaType": "c3_type"}
       ]
     }
 ---
@@ -709,15 +765,14 @@ inputs:
   1.xrefmap.json: |
     {
       "references":[
-        {"uid": "external_b", "schemaType": "c_type"},
-        {"uid": "external_c", "type": "c_type"},
+        {"uid": "external_c", "schemaType": "c_type"},
         {"uid": "external_d"}
       ]
     }
   docs/a.yml: |
     ### YamlMime:a_type
     uid: uid_a
-    bs: ['uid_e', 'external_b', 'external_d', 'uid_d']
+    bs: ['uid_e', 'external_d', 'uid_d']
     achieve: uid_c
   docs/e.yml: |
     ### YamlMime:e_type
@@ -750,7 +805,7 @@ inputs:
         "achieves": {
           "items": { 
             "properties": {"uid" : {"contentType": "uid"}},
-            "xrefProperties": ["type"]
+            "schemaTypeProperty": "type"
           }
         }
       }
@@ -763,14 +818,13 @@ outputs:
     {
       "references":[
         {"uid": "uid_a", "schemaType": "a_type"},
-        {"uid": "uid_c", "type": "c3_type"},
-        {"uid": "uid_d", "type": null},
+        {"uid": "uid_c", "schemaType": "c3_type"},
+        {"uid": "uid_d"},
         {"uid": "uid_e", "schemaType": "e_type"}
       ]
     }
   .errors.log: |
     {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'uid_e' invalid type, 'b_type' is expected, but now is 'e_type'.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_c' invalid type, 'c2_type' is expected, but now is 'c_type'.","file":"docs/e.yml","line":3}
-    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_b' invalid type, 'b_type' is expected, but now is 'c_type'.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_d' invalid type, 'b_type' is expected, but now is ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'uid_d' invalid type, 'b_type' is expected, but now is ''.","file":"docs/a.yml","line":3}
