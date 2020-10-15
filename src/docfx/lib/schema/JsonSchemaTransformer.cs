@@ -366,6 +366,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static Error? ValidateXrefType(JsonSchema schema, IXrefSpec xrefSpec, SourceInfo<string> xref)
+        {
+            if ((xrefSpec.SchemaType is null && xrefSpec.GetXrefPropertyValueAsString("type") is null) ||
+                !((xrefSpec.SchemaType != null && xrefSpec.SchemaType.Equals(schema.XrefType)) ||
+                (xrefSpec.GetXrefPropertyValueAsString("type") != null && xrefSpec.GetXrefPropertyValueAsString("type")!.Equals(schema.XrefType))))
+            {
+                return Errors.Xref.InvalidXrefType(xref, schema.XrefType!, xrefSpec.SchemaType ?? xrefSpec?.GetXrefPropertyValueAsString("type"));
+            }
+
+            return null;
+        }
+
         private JToken TransformScalar(
             ErrorBuilder errors,
             JsonSchema rootSchema,
@@ -423,6 +435,11 @@ namespace Microsoft.Docs.Build
                             content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
 
                         errors.AddIfNotNull(xrefError);
+
+                        if (xrefSpec != null && schema.XrefType != null && schema.ContentType == JsonSchemaContentType.Xref)
+                        {
+                            errors.AddIfNotNull(ValidateXrefType(schema, xrefSpec, content));
+                        }
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
 

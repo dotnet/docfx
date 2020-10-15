@@ -635,3 +635,142 @@ outputs:
         {"uid": "a", "schemaType": "TestData"}
       ]
     }
+---
+# support SDP validation xrefType
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "external_b", "schemaType": "b_type"},
+        {"uid": "external_c", "type": "c2_type"}
+      ]
+    }
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_b', 'external_b']
+    achieve: uid_c
+  docs/b.yml: |
+    ### YamlMime:b_type
+    uid: uid_b
+    achieve: external_c
+  docs/c.yml: |
+    ### YamlMime:c_type
+    achieves:
+    - uid: uid_c
+      type: c3_type
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+        "achieve": {"contentType": "xref", "xrefType": "c3_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/b_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "achieve": {"contentType": "xref", "xrefType": "c2_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/c_type.schema.json: |
+    {
+      "properties": {
+        "achieves": {
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}},
+            "xrefProperties": ["type"]
+          }
+        }
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type"},
+        {"uid": "uid_b", "schemaType": "b_type"},
+        {"uid": "uid_c", "type": "c3_type"}
+      ]
+    }
+---
+# support SDP validation xrefType 2
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "external_b", "schemaType": "c_type"},
+        {"uid": "external_c", "type": "c_type"},
+        {"uid": "external_d"}
+      ]
+    }
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_e', 'external_b', 'external_d', 'uid_d']
+    achieve: uid_c
+  docs/e.yml: |
+    ### YamlMime:e_type
+    uid: uid_e
+    achieve: external_c
+  docs/c.yml: |
+    ### YamlMime:c_type
+    achieves:
+    - uid: uid_c
+      type: c3_type
+    - uid: uid_d
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+        "achieve": {"contentType": "xref", "xrefType": "c3_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/e_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "achieve": {"contentType": "xref", "xrefType": "c2_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/c_type.schema.json: |
+    {
+      "properties": {
+        "achieves": {
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}},
+            "xrefProperties": ["type"]
+          }
+        }
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/c.json:
+  docs/e.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type"},
+        {"uid": "uid_c", "type": "c3_type"},
+        {"uid": "uid_d", "type": null},
+        {"uid": "uid_e", "schemaType": "e_type"}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'uid_e' invalid type, 'b_type' is expected, but now is 'e_type'.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_c' invalid type, 'c2_type' is expected, but now is 'c_type'.","file":"docs/e.yml","line":3}
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_b' invalid type, 'b_type' is expected, but now is 'c_type'.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_d' invalid type, 'b_type' is expected, but now is ''.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'uid_d' invalid type, 'b_type' is expected, but now is ''.","file":"docs/a.yml","line":3}
