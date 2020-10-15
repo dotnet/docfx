@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
             }
 
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schemaString, new FilePath(schemaFilePath));
-            jsonSchema.SchemaType = mime.ToLower(new CultureInfo("en-US"));
+            jsonSchema.SchemaType = mime.ToLowerInvariant();
 
             // temporary mapping, will retired after we support config it in UI portal
             jsonSchema = LearnErrorMapping(mime, jsonSchema);
