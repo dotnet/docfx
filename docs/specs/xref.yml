@@ -596,7 +596,7 @@ inputs:
     - 1.xrefmap.json
   1.xrefmap.json: |
     {
-      "repositoryUrl": "a_repo",
+      "repository_url": "a_repo",
       "references":[{
           "uid": "a"
       }]
@@ -1848,13 +1848,13 @@ repos:
           - 1.xrefmap.json
         1.xrefmap.json: |
           {
-            "repositoryUrl": "b_repository_url",
-            "docsetName": "docset_b",
+            "repository_url": "b_repository_url",
+            "docset_name": "docset_b",
             "references":[
               {"uid": "c"},
               {"uid": "d"}
             ],
-            "externalXrefs":[
+            "external_xrefs":[
               {"uid": "nofound",
                 "docsetName": "docset_a",
                 "count": 1}
@@ -1880,6 +1880,8 @@ outputs:
   docs/b.json:
   .xrefmap.json: |
     {
+      "docset_name": "docset_a",
+      "repository_url": "https://docs.com/test-valdiate-external-xref",
       "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
@@ -1903,13 +1905,13 @@ repos:
           - 1.xrefmap.json
         1.xrefmap.json: |
           {
-            "repositoryUrl": "b_repository_url",
-            "docsetName": "docset_b",
+            "repository_url": "b_repository_url",
+            "docset_name": "docset_b",
             "references":[
               {"uid": "c"},
               {"uid": "d"}
             ],
-            "externalXrefs":[
+            "external_xrefs":[
               {"uid": "nofound",
                 "docsetName": "docset_a",
                 "count": 1}
@@ -1935,6 +1937,8 @@ outputs:
   docs/b.json:
   .xrefmap.json: |
     {
+      "docset_name": "docset_a",
+      "repository_url": "https://docs.com/test-valdiate-external-xref.zh-cn",
       "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
