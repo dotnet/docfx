@@ -824,7 +824,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'uid_e' invalid type, 'b_type' is expected, but now is 'e_type'.","file":"docs/a.yml","line":3}
-    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_c' invalid type, 'c2_type' is expected, but now is 'c_type'.","file":"docs/e.yml","line":3}
-    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'external_d' invalid type, 'b_type' is expected, but now is ''.","file":"docs/a.yml","line":3}
-    {"message_severity":"warning","code":"xref-invalid-type","message":"Cross reference 'uid_d' invalid type, 'b_type' is expected, but now is ''.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_c'. Expected type 'c2_type' but got 'c_type'.","file":"docs/e.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_e'. Expected type 'b_type' but got 'e_type'.","file":"docs/a.yml","line":3}
