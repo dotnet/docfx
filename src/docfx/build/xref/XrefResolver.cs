@@ -270,8 +270,6 @@ namespace Microsoft.Docs.Build
         private (Error?, IXrefSpec?, string? href) Resolve(
             SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            var a = uid.Value;
-
             var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
             {
