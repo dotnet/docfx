@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                 'name': 'Title from yaml header b'
             }
         ],
-        'externalXrefs':[
+        'external_xrefs':[
             {
                 'uid': 'c',
                 'repositoryUrl': 'c_repo',
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
 ", new string[] { "a", "b" }, new string[] { "c", "d" })]
 
         [InlineData(
-            @"{'references':[{'uid': 'a','href': 'https://docs.com/docs/a','name': 'Title from yaml header a'},{'uid': 'b','href': 'https://docs.com/docs/b','name': 'Title from yaml header b'}],'externalXrefs':[{'uid':'c','repositoryUrl':'c_repo','count':1},{'uid':'d','repositoryUrl':'d_repo','count':2}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
+            @"{'references':[{'uid': 'a','href': 'https://docs.com/docs/a','name': 'Title from yaml header a'},{'uid': 'b','href': 'https://docs.com/docs/b','name': 'Title from yaml header b'}],'external_xrefs':[{'uid':'c','repositoryUrl':'c_repo','count':1},{'uid':'d','repositoryUrl':'d_repo','count':2}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
 
         [InlineData(
             @"{'references':[ { 'uid': 'a',
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
 'uid': 'b',
 'href': 'https://docs.com/docs/b',
 'name': 'Title from yaml header b' } ],
-        'externalXrefs':[ { 'uid': 'c',
+        'external_xrefs':[ { 'uid': 'c',
 'repositoryUrl': 'c_repo',
 'count': 1
 },
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
 }]}",
             new string[] { "a", "b" }, new string[] { "c", "d" })]
 
-        [InlineData(@"{'references':[{'uid': 'a', 'prop': {'test':1}}, {'uid': 'b', 'prop': {'test':2}}], 'externalXrefs':[{'uid':'c','prop': {'test':1}},{'uid':'d','prop': {'test':2}}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
+        [InlineData(@"{'references':[{'uid': 'a', 'prop': {'test':1}}, {'uid': 'b', 'prop': {'test':2}}], 'external_xrefs':[{'uid':'c','prop': {'test':1}},{'uid':'d','prop': {'test':2}}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
         public void LoadXrefMapFile(string json, string[] uids, string[] externalUids)
         {
             var filePath = WriteJsonToTempFile(json);

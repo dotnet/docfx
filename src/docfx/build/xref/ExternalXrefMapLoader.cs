@@ -14,10 +14,10 @@ namespace Microsoft.Docs.Build
     internal class ExternalXrefMapLoader
     {
         private static readonly byte[] s_uidBytes = Encoding.UTF8.GetBytes("uid");
-        private static readonly byte[] s_repositoryUrlBytes = Encoding.UTF8.GetBytes("repositoryUrl");
-        private static readonly byte[] s_docsetNameBytes = Encoding.UTF8.GetBytes("docsetName");
+        private static readonly byte[] s_repositoryUrlBytes = Encoding.UTF8.GetBytes("repository_url");
+        private static readonly byte[] s_docsetNameBytes = Encoding.UTF8.GetBytes("docset_name");
         private static readonly byte[] s_referencesBytes = Encoding.UTF8.GetBytes("references");
-        private static readonly byte[] s_externalXrefsBytes = Encoding.UTF8.GetBytes("externalXrefs");
+        private static readonly byte[] s_externalXrefsBytes = Encoding.UTF8.GetBytes("external_xrefs");
 
         public static ExternalXrefMap Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
