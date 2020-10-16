@@ -320,6 +320,8 @@ namespace Microsoft.Docs.Build
 
         public JoinTOCConfig[] JoinTOC { get; private set; } = Array.Empty<JoinTOCConfig>();
 
+        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)

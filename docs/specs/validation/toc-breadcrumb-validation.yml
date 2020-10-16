@@ -165,7 +165,6 @@ inputs:
     }
     }
   TOC.yml: |
-    splitItemsBy: name
     items:
     - name: 1
       href: a.md
