@@ -191,7 +191,6 @@ repos:
         }
       a/test/doc.md:
       a/api/bot/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: MS.ServicePage2.xxx
           items:
@@ -243,7 +242,6 @@ repos:
         }
       a/test/doc.md:
       a/api/bot/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: MS.ServicePage2.xxx
           items:
@@ -362,7 +360,6 @@ repos:
         }
       a/test/doc.md:
       a/api/bot/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: MS.ServicePage2.xxx
           items:

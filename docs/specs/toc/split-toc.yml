@@ -71,7 +71,6 @@ repos:
           key:
             _splitted/**/TOC.yml: value
       TOC.yml: |
-        splitItemsBy: name
         items:
         - name: 1
           items:
@@ -106,7 +105,6 @@ repos:
         }
     
       TOC.yml: |
-        splitItemsBy: name
         items:
         - name: 1
           items:
@@ -214,7 +212,6 @@ repos:
           ]
         }
       a/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: a
           items:
@@ -223,7 +220,6 @@ repos:
           items:
           - name: b-b
       b/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: 1
           items:
@@ -258,7 +254,6 @@ repos:
           ]
         }
       test/a/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: a
           items:
@@ -267,7 +262,6 @@ repos:
           items:
           - name: b-b
       test/b/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: 1
           items:
