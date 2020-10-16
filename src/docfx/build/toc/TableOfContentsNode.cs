@@ -34,10 +34,6 @@ namespace Microsoft.Docs.Build
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
-        public string? SplitItemsBy { get; set; }
-
-        public static bool ShouldSerializeSplitItemsBy() => false;
-
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public MonikerList Monikers { get; set; }
 
@@ -67,7 +63,6 @@ namespace Microsoft.Docs.Build
             Expanded = item.Expanded;
             MaintainContext = item.MaintainContext;
             ExtensionData = item.ExtensionData;
-            SplitItemsBy = item.SplitItemsBy;
             Document = item.Document;
             Children = item.Children;
             LandingPageType = item.LandingPageType;
