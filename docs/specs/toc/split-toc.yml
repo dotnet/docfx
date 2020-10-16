@@ -1,19 +1,29 @@
 # TOC splitItemsBy produces multiple output TOCs with correct link and _tocRel
-inputs:
-  docfx.yml:
-  TOC.yml: |
-    splitItemsBy: name
-    items:
-    - name: 1
-      href: a.md
-      items:
-      - name: 1-1
-        href: b.md
-    - name: 2
-      href: c.md
-  a.md:
-  b.md:
-  c.md:
+repos:
+  https://github.com/ops/split-toc-default-by-name:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            {
+              "build_source_folder": ".", 
+              "SplitTOC": ["TOC.yml"]
+            }
+          ]
+        }
+      docfx.yml:
+      TOC.yml: |
+        items:
+        - name: 1
+          href: a.md
+          items:
+          - name: 1-1
+            href: b.md
+        - name: 2
+          href: c.md
+      a.md:
+      b.md:
+      c.md:
 outputs:
   a.json: '{ "_tocRel": "_splitted/1/toc.json" }'
   b.json: '{ "_tocRel": "_splitted/1/toc.json" }'

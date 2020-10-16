@@ -22,6 +22,9 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string[]>? CustomizedTasks { get; private set; }
 
+        [JsonProperty("SplitTOC")]
+        public string[] SplitTOC { get; private set; } = Array.Empty<string>();
+
         [JsonProperty(nameof(JoinTOCPlugin))]
         public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
 
