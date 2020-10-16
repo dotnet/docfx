@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         string IXrefSpec.Uid => Uid.Value;
 
         [JsonIgnore]
-        public bool UIDGlobalUnique { get; set; }
+        public bool UidGlobalUnique { get; }
 
         // TODO: change to use xrefSpec type to express what kind of xref spec it is: e.g. achievement, module
         [JsonIgnore]
@@ -37,6 +37,7 @@ namespace Microsoft.Docs.Build
             FilePath declaringFile,
             MonikerList monikerList,
             string? declaringPropertyPath = null,
+            bool uidGlobalUnique = false,
             string? schemaType = null)
         {
             Uid = uid;
@@ -44,6 +45,7 @@ namespace Microsoft.Docs.Build
             DeclaringFile = declaringFile;
             Monikers = monikerList;
             DeclaringPropertyPath = declaringPropertyPath;
+            UidGlobalUnique = uidGlobalUnique;
             SchemaType = schemaType;
         }
 
