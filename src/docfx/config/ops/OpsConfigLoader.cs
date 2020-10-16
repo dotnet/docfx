@@ -82,7 +82,7 @@ namespace Microsoft.Docs.Build
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
 
-                result["SplitTOC"] = JArray.FromObject(docsetConfig.SplitTOC);
+                result["splitTOC"] = JArray.FromObject(docsetConfig.SplitTOC);
             }
 
             var joinTOCPluginConfig = docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>();
