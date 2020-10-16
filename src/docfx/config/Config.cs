@@ -320,7 +320,7 @@ namespace Microsoft.Docs.Build
 
         public JoinTOCConfig[] JoinTOC { get; private set; } = Array.Empty<JoinTOCConfig>();
 
-        public string[] SplitTOC { get; private set; } = Array.Empty<string>();
+        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
