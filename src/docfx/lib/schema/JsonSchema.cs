@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that indicate the uid unique scope
         /// </summary>
-        public bool UIDGlobalUnique { get; set; }
+        public bool UidGlobalUnique { get; set; }
 
         /// <summary>
         /// Properties that indicate whether the xref need to externally validate

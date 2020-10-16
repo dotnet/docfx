@@ -175,22 +175,21 @@ namespace Microsoft.Docs.Build
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
 
-            string? schemaType = uidSchema.SchemaType;
-            if (schemaType is null && schema.SchemaTypeProperty != null && obj.TryGetValue(schema.SchemaTypeProperty, out var type))
+            var schemaType = uidSchema.SchemaType;
+            if (schemaType is null)
             {
-                schemaType = type.Value<string>();
-            }
-            else if (schemaType is null && schema == rootSchema)
-            {
-                schemaType = _documentProvider.GetMime(file);
+                if (schema.SchemaTypeProperty != null)
+                {
+                    schemaType = obj.TryGetValue(schema.SchemaTypeProperty, out var type) && type is JValue typeValue && typeValue.Value is string typeString ?
+                        typeString : null;
+                }
+                else if (schema == rootSchema)
+                {
+                    schemaType = _documentProvider.GetMime(file);
+                }
             }
 
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, schemaType);
-
-            if (uidSchema.UIDGlobalUnique)
-            {
-                xref.UIDGlobalUnique = true;
-            }
+            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, uidSchema.UidGlobalUnique, schemaType);
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
@@ -430,12 +429,10 @@ namespace Microsoft.Docs.Build
                         errors.AddIfNotNull(xrefError);
 
                         if (xrefSpec != null &&
-                        schema.XrefType != null &&
-                        schema.ContentType == JsonSchemaContentType.Xref &&
-                        (xrefSpec.SchemaType is null ||
-                        !xrefSpec.SchemaType.Equals(schema.XrefType)))
+                            schema.XrefType != null &&
+                            schema.XrefType.Equals(xrefSpec.SchemaType, StringComparison.OrdinalIgnoreCase))
                         {
-                            errors.AddIfNotNull(Errors.Xref.InvalidXrefType(content, schema.XrefType!, xrefSpec.SchemaType));
+                            errors.Add(Errors.Xref.XrefTypeInvalid(content, schema.XrefType, xrefSpec.SchemaType));
                         }
 
                         var xrefSpecObj = xrefSpec is null ? null : JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));

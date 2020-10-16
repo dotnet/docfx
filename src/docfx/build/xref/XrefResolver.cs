@@ -224,9 +224,9 @@ namespace Microsoft.Docs.Build
 
         private void ValidateUIDGlobalUnique()
         {
-            var globalUIDs = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UIDGlobalUnique)).Select(xrefs => xrefs.First().Uid);
+            var globalUids = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First().Uid);
 
-            foreach (var uid in globalUIDs)
+            foreach (var uid in globalUids)
             {
                 if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid.Value, out var spec))
                 {
