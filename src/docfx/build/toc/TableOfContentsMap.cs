@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
 
         private void SplitToc(FilePath file, TableOfContentsNode toc, ConcurrentBag<FilePath> result)
         {
-            if (Array.Exists<string>(_config.SplitTOC, e => e.Equals(file.Path.Value)) || toc.Items.Count <= 0)
+            if (!Array.Exists(_config.SplitTOC, e => e.Equals(file.Path.Value)) || toc.Items.Count <= 0)
             {
                 result.Add(file);
                 return;
