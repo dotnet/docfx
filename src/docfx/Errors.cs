@@ -392,6 +392,12 @@ namespace Microsoft.Docs.Build
             public static Error XrefNotFound(SourceInfo<string> source)
                 => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'.", source);
 
+            public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
+               => new Error(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
+
+            public static Error UidNotFound(string uid, IEnumerable<string?> repositories)
+                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' not found, which is referenced by repository {StringUtility.Join(repositories)}.");
+
             /// <summary>
             /// The same uid of the same version is defined in multiple places
             /// Examples:
@@ -642,7 +648,7 @@ namespace Microsoft.Docs.Build
                     source,
                     name);
 
-            public static Error ReferenceCountInvalid(SourceInfo? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+            public static Error ReferenceCountInvalid(SourceInfo<string>? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
                 => new Error(ErrorLevel.Warning, "reference-count-invalid", $"UID '{source}' reference count should be {criteria}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
         }
 
@@ -681,7 +687,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error MergeConflict(SourceInfo? source)
-                => new Error(ErrorLevel.Suggestion, "merge-conflict", $"File contains merge conflict markers. NOTE: This Suggestion will become a Warning on 06/30/2020.", source);
+                => new Error(ErrorLevel.Warning, "merge-conflict", $"File contains merge conflict markers.", source);
 
             /// <summary>
             /// Defined reference with by #bookmark fragment within articles, which doesn't exist.

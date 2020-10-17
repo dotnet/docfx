@@ -18,10 +18,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public static bool EndingTripleColons => false;
 
         private readonly MarkdownContext _context;
+        private readonly HtmlCodeSnippetRenderer _codeSnippetRenderer;
 
         public CodeExtension(MarkdownContext context)
         {
             _context = context;
+            _codeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
         }
 
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
@@ -37,15 +39,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            // var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
-            var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
-            var snippet = new CodeSnippet(null);
-            snippet.CodePath = currentSource;
-            snippet.TagName = currentId;
-
             HtmlCodeSnippetRenderer.TryGetLineRanges(currentRange, out var ranges);
-            snippet.CodeRanges = ranges;
-            var updatedCode = htmlCodeSnippetRenderer.GetContent(code, snippet);
+
+            var snippet = new CodeSnippet(null)
+            {
+                CodePath = currentSource,
+                TagName = currentId,
+                CodeRanges = ranges,
+            };
+
+            var updatedCode = _codeSnippetRenderer.GetContent(code, snippet, markdownObject);
             updatedCode = ExtensionsHelper.Escape(updatedCode).TrimEnd();
 
             if (string.IsNullOrEmpty(updatedCode))
@@ -65,12 +68,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
-            var source = string.Empty;
-            var range = string.Empty;
-            var id = string.Empty;
-            var highlight = string.Empty;
-            var language = string.Empty;
-            var interactive = string.Empty;
+            var source = "";
+            var range = "";
+            var id = "";
+            var highlight = "";
+            var language = "";
+            var interactive = "";
 
             foreach (var attribute in attributes)
             {

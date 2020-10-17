@@ -19,9 +19,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
-            var model = string.Empty;
-            var action = string.Empty;
-            var submitText = string.Empty;
+            var model = "";
+            var action = "";
+            var submitText = "";
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;

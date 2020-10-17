@@ -192,6 +192,21 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
+        /// the mime type of schema
+        /// </summary>
+        public string? SchemaType { get; set; }
+
+        /// <summary>
+        /// Property indicate the type of xref
+        /// </summary>
+        public string? XrefType { get; set; }
+
+        /// <summary>
+        /// Property indicate which property will fallback to xrefType when SchemaType is null
+        /// </summary>
+        public string? SchemaTypeProperty { get; set; }
+
+        /// <summary>
         /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
         /// </summary>
         public string? HtmlMetaName { get; set; }
@@ -217,7 +232,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Properties that indicate the uid unique scope
         /// </summary>
-        public bool UIDGlobalUnique { get; set; }
+        public bool UidGlobalUnique { get; set; }
+
+        /// <summary>
+        /// Properties that indicate whether the xref need to externally validate
+        /// </summary>
+        public bool ValidateExternalXrefs { get; set; }
 
         /// <summary>
         /// Properties that are built into xref map

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Markdig;
 using Markdig.Extensions.Tables;
@@ -48,6 +49,45 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        public static IEnumerable<MarkdownObject> GetPathToRootInclusive(this MarkdownObject obj)
+        {
+            yield return obj;
+
+            foreach (var item in obj.GetPathToRootExclusive())
+            {
+                yield return item;
+            }
+        }
+
+        public static IEnumerable<MarkdownObject> GetPathToRootExclusive(this MarkdownObject obj)
+        {
+            while (true)
+            {
+                var parent = obj switch
+                {
+                    Block block => block.Parent,
+                    ContainerInline containerInline => containerInline.Parent as MarkdownObject ?? containerInline.ParentBlock,
+                    Inline inline => inline.Parent,
+                    _ => null,
+                };
+
+                if (parent is null)
+                {
+                    if (obj is MarkdownDocument)
+                    {
+                        yield break;
+                    }
+
+                    throw new InvalidOperationException(
+                        "This operation is not supported in a markdig parser extension, move it to the render extension or the DocumentProcessed handler.");
+                }
+
+                obj = parent;
+
+                yield return obj;
+            }
         }
 
         /// <summary>
@@ -131,7 +171,11 @@ namespace Microsoft.Docs.Build
                         return inline;
 
                     case LeafBlock leaf:
-                        leaf.Inline = ReplaceCore(leaf.Inline, action) as ContainerInline;
+                        var leafInline = ReplaceCore(leaf.Inline, action) as ContainerInline;
+                        if (leafInline != leaf.Inline)
+                        {
+                            leaf.Inline = leafInline;
+                        }
                         return leaf;
 
                     case MarkdownObject other:

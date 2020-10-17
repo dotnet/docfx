@@ -34,10 +34,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     break;
 
                 case LinkInline linkInline:
-                    if (linkInline.IsAutoLink && string.Equals(linkInline.Url, "tel"))
-                    {
-                        break;
-                    }
                     linkInline.Url = linkInline.IsImage
                         ? _context.GetImageLink(linkInline.Url, linkInline, null)
                         : _context.GetLink(linkInline.Url, linkInline);

@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
         {
             var level = customRule.Severity ?? Level;
 
-            if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? string.Empty))
+            if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? ""))
             {
                 level = ErrorLevel.Off;
             }

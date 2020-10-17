@@ -22,6 +22,9 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string[]>? CustomizedTasks { get; private set; }
 
+        [JsonProperty(nameof(SplitTOC))]
+        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
+
         [JsonProperty(nameof(JoinTOCPlugin))]
         public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
 

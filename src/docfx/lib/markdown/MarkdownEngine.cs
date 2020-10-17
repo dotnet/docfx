@@ -184,9 +184,6 @@ namespace Microsoft.Docs.Build
                 .UseHeadingIdRewriter()
                 .UseTabGroup(_markdownContext)
                 .UseInteractiveCode()
-
-                // Place markdown rewriters before `EnsureParent` as rewriters breaks parent chain.
-                .UseEnsureParent()
                 .UseFilePath()
                 .UseYamlFrontMatter()
                 .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
@@ -235,8 +232,7 @@ namespace Microsoft.Docs.Build
 
             builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
 
-            builder.UseEnsureParent()
-                   .UseFilePath()
+            builder.UseFilePath()
                    .UseYamlFrontMatter()
                    .UseXref()
                    .UsePreciseSourceLocation();
@@ -271,9 +267,26 @@ namespace Microsoft.Docs.Build
 
         private static void LogItem(ErrorLevel level, string code, string message, MarkdownObject? origin, int? line)
         {
-            // At parser stage, we are unable to reliably access GetPathToRoot method,
-            // use InclusionContext to report syntax diagnostics.
-            t_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", ((SourceInfo)InclusionContext.File).WithOffset(origin, line)));
+            var source = (SourceInfo)InclusionContext.File;
+            if (origin != null)
+            {
+                try
+                {
+                    // After parse stage, where the markdown object tree has fully constructed
+                    source = source.WithOffset(origin.GetSourceInfo(line));
+                }
+                catch (InvalidOperationException)
+                {
+                    // In parse stage, where the markdown object tree hasn't been constructed yet
+                    source = source.WithOffset(origin.Line + 1, origin.Column + 1);
+                }
+            }
+            else if (line != null)
+            {
+                source = source.WithOffset(line.Value + 1, 0);
+            }
+
+            t_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", source));
         }
 
         private static ErrorBuilder GetErrors()

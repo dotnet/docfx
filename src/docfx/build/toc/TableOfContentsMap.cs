@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class TableOfContentsMap
     {
+        private readonly Config _config;
         private readonly Input _input;
         private readonly ErrorBuilder _errors;
         private readonly BuildScope _buildScope;
@@ -27,6 +28,7 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<(Dictionary<FilePath, FilePath[]> tocToTocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
         public TableOfContentsMap(
+            Config config,
             ErrorBuilder errors,
             Input input,
             BuildScope buildScope,
@@ -36,6 +38,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             ContentValidator contentValidator)
         {
+            _config = config;
             _errors = errors;
             _input = input;
             _buildScope = buildScope;
@@ -218,7 +221,7 @@ namespace Microsoft.Docs.Build
 
         private void SplitToc(FilePath file, TableOfContentsNode toc, ConcurrentBag<FilePath> result)
         {
-            if (string.IsNullOrEmpty(toc.SplitItemsBy) || toc.Items.Count <= 0)
+            if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
             {
                 result.Add(file);
                 return;
@@ -237,7 +240,7 @@ namespace Microsoft.Docs.Build
 
                 var newNode = SplitTocNode(child);
                 var newNodeToken = JsonUtility.ToJObject(newNode);
-                var name = newNodeToken.TryGetValue<JValue>(toc.SplitItemsBy, out var splitByValue) ? splitByValue.ToString() : null;
+                var name = newNodeToken.TryGetValue<JValue>("name", out var splitByValue) ? splitByValue.ToString() : null;
                 if (string.IsNullOrEmpty(name))
                 {
                     newToc.Items.Add(item);

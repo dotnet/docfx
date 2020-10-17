@@ -614,3 +614,217 @@ outputs:
   .errors.log: | 
    { "message_severity":"error","code":"array-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml", "line":5,"column":3}
    { "message_severity":"error","code":"array-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml", "line":15,"column":3}
+---
+# export schemaType to xrefmap.json
+inputs:
+  docfx.yml:
+  a.yml: |
+    ### YamlMime:TestData_a
+    uid: a
+  _themes/ContentTemplate/schemas/TestData_a.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+  b.yml: |
+    ### YamlMime:TestData_b
+    uid: b
+  _themes/ContentTemplate/schemas/TestData_b.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid", "schemaType": "b_type"}
+      }
+    }
+  c.yml: |
+    ### YamlMime:TestData_c
+    uid: c
+    type: c_type
+  _themes/ContentTemplate/schemas/TestData_c.schema.json: |
+    {
+      "schemaTypeProperty": "type",
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "type": {"type": "string"}
+      }
+    }
+  d.yml: |
+    ### YamlMime:TestData_d
+    uid: d
+    type: d1_type
+  _themes/ContentTemplate/schemas/TestData_d.schema.json: |
+    {
+      "schemaTypeProperty": "type",
+      "properties": {
+        "uid" : {"contentType": "uid", "schemaType": "d2_type"},
+        "type": {"type": "string"}
+      }
+    }
+  e.yml: |
+    ### YamlMime:TestData_e
+    uid: e_parent
+    obj:
+      uid: e
+  _themes/ContentTemplate/schemas/TestData_e.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "obj": {
+          "type": "object",
+          "properties": {"uid": {"contentType": "uid"}}
+        }
+      }
+    }
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "a", "schemaType": "TestData_a"},
+        {"uid": "b", "schemaType": "b_type"},
+        {"uid": "c", "schemaType": "c_type"},
+        {"uid": "d", "schemaType": "d2_type"},
+        {"uid": "e"},
+        {"uid": "e_parent", "schemaType": "TestData_e"}
+      ]
+    }
+---
+# support SDP validation xrefType
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "external_c", "schemaType": "c2_type"}
+      ]
+    }
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_b']
+    achieve: uid_c
+  docs/b.yml: |
+    ### YamlMime:b_type
+    uid: uid_b
+    achieve: external_c
+  docs/c.yml: |
+    ### YamlMime:c_type
+    achieves:
+    - uid: uid_c
+      type: c3_type
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+        "achieve": {"contentType": "xref", "xrefType": "c3_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/b_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "achieve": {"contentType": "xref", "xrefType": "c2_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/c_type.schema.json: |
+    {
+      "properties": {
+        "achieves": {
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}},
+            "schemaTypeProperty": "type"
+          }
+        }
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  docs/c.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type"},
+        {"uid": "uid_b", "schemaType": "b_type"},
+        {"uid": "uid_c", "schemaType": "c3_type"}
+      ]
+    }
+---
+# support SDP validation xrefType 2
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "external_c", "schemaType": "c_type"},
+        {"uid": "external_d"}
+      ]
+    }
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_e', 'external_d', 'uid_d']
+    achieve: uid_c
+  docs/e.yml: |
+    ### YamlMime:e_type
+    uid: uid_e
+    achieve: external_c
+  docs/c.yml: |
+    ### YamlMime:c_type
+    achieves:
+    - uid: uid_c
+      type: c3_type
+    - uid: uid_d
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+        "achieve": {"contentType": "xref", "xrefType": "c3_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/e_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "achieve": {"contentType": "xref", "xrefType": "c2_type"}
+      }
+    }
+  _themes/ContentTemplate/schemas/c_type.schema.json: |
+    {
+      "properties": {
+        "achieves": {
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}},
+            "schemaTypeProperty": "type"
+          }
+        }
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/c.json:
+  docs/e.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type"},
+        {"uid": "uid_c", "schemaType": "c3_type"},
+        {"uid": "uid_d"},
+        {"uid": "uid_e", "schemaType": "e_type"}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_c'. Expected type 'c2_type' but got 'c_type'.","file":"docs/e.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_e'. Expected type 'b_type' but got 'e_type'.","file":"docs/a.yml","line":3}
