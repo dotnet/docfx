@@ -484,20 +484,20 @@ namespace Microsoft.Docs.Build
             public static Error ZonePivotGroupDefinitionNotFound(FilePath file)
                 => new Error(ErrorLevel.Warning, "zone-pivot-not-defined", $"Unable to load zone pivot groups definition for '{file}'. Try specify 'zone_pivot_groups_filename' in file metadata.", new SourceInfo(file));
 
-            public static Error ZonePivotGroupNotFound(SourceInfo? source, string groupId, FilePath definitionFile)
+            public static Error ZonePivotGroupNotFound(SourceInfo? source, string groupId, FilePath? definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Pivot group '{groupId}' isn't defined in '{definitionFile}'. Make sure every pivot group you reference in your content has been properly defined.", source);
 
-            public static Error ZonePivotIdNotFound(SourceInfo? source, string pivotId, string groupId, FilePath definitionFile)
+            public static Error ZonePivotIdNotFound(SourceInfo? source, string pivotId, string groupId, FilePath? definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-id-not-found", $"Pivot ID '{pivotId}' is not defined in the '{groupId}' group in '{definitionFile}'. You can only use pivots that have been defined in the referenced pivot group.", source);
 
-            public static Error ZonePivotIdUnused(SourceInfo? source, string pivotId, string groupId, FilePath definitionFile)
+            public static Error ZonePivotIdUnused(SourceInfo? source, string pivotId, string groupId, FilePath? definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-id-unused", $"Pivot ID '{pivotId}' is defined in the '{groupId}' group in '{definitionFile}', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.", source);
 
             public static Error DuplicatedPivotGroups(SourceInfo? source, string pivotGroupId)
                 => new Error(ErrorLevel.Warning, "duplicate-pivot-groups", $"Pivot group id '{pivotGroupId}' is duplicated in '{source}'. Only the first group with this ID will be used. Delete or rename the subsequent group.", source);
 
             public static Error DuplicatedPivotIds(SourceInfo? source, string pivotId, string groupId)
-                => new Error(ErrorLevel.Warning, "duplicate-pivot-ids", $"Pivot  id '{pivotId}' is duplicated in pivot group '{groupId}' in '{source}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.", source);
+                => new Error(ErrorLevel.Warning, "duplicate-pivot-ids", $"Pivot id '{pivotId}' is duplicated in pivot group '{groupId}' in '{source}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.", source);
         }
 
         public static class Markdown

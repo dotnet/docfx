@@ -13,8 +13,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly ErrorBuilder _errors;
         private readonly MetadataProvider _metadataProvider;
-        private readonly FileResolver _fileResolver;
-        private readonly LinkResolver _linkResolver;
+        private readonly Input _input;
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
 
         private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
         private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinitionModel?> _zonePivotDefinitionModelCache =
@@ -23,29 +23,29 @@ namespace Microsoft.Docs.Build
         public ZonePivotProvider(
             ErrorBuilder errors,
             MetadataProvider metadataProvider,
-            FileResolver fileResolver,
-            LinkResolver linkResolver)
+            Input input,
+            Lazy<PublishUrlMap> publishUrlMap)
         {
             _errors = errors;
             _metadataProvider = metadataProvider;
-            _fileResolver = fileResolver;
-            _linkResolver = linkResolver;
+            _input = input;
+            _publishUrlMap = publishUrlMap;
         }
 
-        public ZonePivotGroup? TryGetZonePivotGroup(FilePath file)
+        public (FilePath?, ZonePivotGroup?) GetZonePivotGroup(FilePath file)
         {
             var groupId = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroups;
             if (groupId != null)
             {
-                return TryGetZonePivotGroup(file, groupId);
+                return (GetZonePivotGroupDefinitionFile(file), GetZonePivotGroup(file, groupId));
             }
             else
             {
-                return null;
+                return (null, null);
             }
         }
 
-        private ZonePivotGroup? TryGetZonePivotGroup(FilePath file, string pivotGroupId)
+        private ZonePivotGroup? GetZonePivotGroup(FilePath file, string pivotGroupId)
         {
             var zonePivotGroupDefinition = GetZonePivotGroupDefinitionModel(file);
             if (zonePivotGroupDefinition != null)
@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
                 var group = zonePivotGroupDefinition.Groups.Where(group => group.Id == pivotGroupId).FirstOrDefault();
                 if (group == null)
                 {
-                    _errors.Add(Errors.ZonePivot.ZonePivotGroupNotFound(new SourceInfo(file), pivotGroupId, GetZonePivotGroupDefinitionFile(file)!));
+                    _errors.Add(Errors.ZonePivot.ZonePivotGroupNotFound(new SourceInfo(file), pivotGroupId, GetZonePivotGroupDefinitionFile(file)));
                 }
 
                 return group;
@@ -71,12 +71,13 @@ namespace Microsoft.Docs.Build
 
         private ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModelCore(FilePath file)
         {
-            var zonePivotGroupFilename = GetZonePivotGroupDefinitionFile(file);
-            SourceInfo<string> source = zonePivotGroupFilename != null ? new SourceInfo<string>(zonePivotGroupFilename.Path) : default;
-            if (zonePivotGroupFilename != null && _fileResolver.TryReadString(source, out var content))
+            var zonePivotGroupDefinitionFile = GetZonePivotGroupDefinitionFile(file);
+            if (zonePivotGroupDefinitionFile != null)
             {
-                var zonePivotGroupDefinition = YamlUtility.DeserializeData<ZonePivotGroupDefinitionModel>(content!, zonePivotGroupFilename);
-                NormalizeZonePivotGroupDefinitionModel(zonePivotGroupDefinition, source);
+                var zonePivotGroupDefinition = YamlUtility.DeserializeData<ZonePivotGroupDefinitionModel>(
+                    _input.ReadString(zonePivotGroupDefinitionFile),
+                    zonePivotGroupDefinitionFile);
+                NormalizeZonePivotGroupDefinitionModel(zonePivotGroupDefinition, new SourceInfo(zonePivotGroupDefinitionFile));
                 return zonePivotGroupDefinition;
             }
             else
@@ -90,16 +91,17 @@ namespace Microsoft.Docs.Build
         {
             return _zonePivotDefinitionFileCache.GetOrAdd(file, _ =>
                 {
-                    var definitionFile = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename;
-                    var (error, f) = definitionFile != null ?
-                        _linkResolver.ResolveContent(new SourceInfo<string>(definitionFile), file) :
-                        (null, new FilePath("zone-pivot-groups.yml"));
-                    if (error != null)
+                    var definitionFile = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename ?? "zone-pivot-groups.json";
+                    var files = _publishUrlMap.Value.GetFilesByUrl("/" + definitionFile).ToList();
+                    if (files.Count != 1)
                     {
-                        _errors.Add(error);
+                        _errors.Add(Errors.ZonePivot.ZonePivotGroupDefinitionNotFound(file));
+                        return null;
                     }
-
-                    return f;
+                    else
+                    {
+                        return files.First();
+                    }
                 });
         }
 

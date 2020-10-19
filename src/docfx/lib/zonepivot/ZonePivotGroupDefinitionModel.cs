@@ -10,6 +10,6 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class ZonePivotGroupDefinitionModel
     {
-        public List<ZonePivotGroup> Groups { get; } = new List<ZonePivotGroup>();
+        public List<ZonePivotGroup> Groups { get; private set; } = new List<ZonePivotGroup>();
     }
 }

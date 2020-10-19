@@ -106,6 +106,7 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
+            ZonePivotProvider = new ZonePivotProvider(ErrorBuilder, MetadataProvider, Input, new Lazy<PublishUrlMap>(() => PublishUrlMap));
             DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
@@ -118,7 +119,7 @@ namespace Microsoft.Docs.Build
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             ContentValidator = new ContentValidator(
-                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, ZonePivotProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
@@ -151,8 +152,6 @@ namespace Microsoft.Docs.Build
                 TemplateEngine,
                 FileLinkMapBuilder,
                 MetadataProvider);
-
-            ZonePivotProvider = new ZonePivotProvider(ErrorBuilder, MetadataProvider, fileResolver, LinkResolver);
 
             MarkdownEngine = new MarkdownEngine(
                 Config,

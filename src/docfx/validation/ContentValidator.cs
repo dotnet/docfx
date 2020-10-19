@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Markdig.Syntax;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -22,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
+        private readonly ZonePivotProvider _zonePivotProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
 
@@ -31,11 +33,13 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
+            ZonePivotProvider zonePivotProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
             _errors = errors;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
+            _zonePivotProvider = zonePivotProvider;
             _publishUrlMap = publishUrlMap;
 
             _validator = new Validator(
@@ -213,6 +217,31 @@ namespace Microsoft.Docs.Build
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
+        }
+
+        public void ValidateZonePivots(FilePath file, List<(TripleColonBlock, string)> zonePivotUsages)
+        {
+            var (definitionFile, group) = _zonePivotProvider.GetZonePivotGroup(file);
+            var usage = group == null ? new Dictionary<string, bool>() : group.Pivots.Select(p => p.Id).Distinct().ToDictionary(p => p, _ => false);
+            if ((definitionFile == null || group == null) && zonePivotUsages.Any())
+            {
+                // TODO: throw error because we are unable to load definition file or group, yet got zone pivot usages
+                return;
+            }
+
+            foreach (var (tripleColon, pivotId) in zonePivotUsages)
+            {
+                if (usage.ContainsKey(pivotId))
+                {
+                    usage[pivotId] = true;
+                }
+                else
+                {
+                    _errors.Add(Errors.ZonePivot.ZonePivotIdNotFound(tripleColon.GetSourceInfo(), pivotId, group!.Id, definitionFile));
+                }
+            }
+
+            _errors.AddRange(usage.Where(p => !p.Value).Select(p => Errors.ZonePivot.ZonePivotIdUnused(new SourceInfo(file), p.Key, group!.Id, definitionFile)));
         }
 
         public void PostValidate()

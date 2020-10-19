@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class ZonePivot
     {
-        public string Id { get; } = "";
+        public string Id { get; private set; } = "";
 
-        public string Title { get; } = "";
+        public string Title { get; private set; } = "";
     }
 }
