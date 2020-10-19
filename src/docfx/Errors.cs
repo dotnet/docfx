@@ -490,6 +490,9 @@ namespace Microsoft.Docs.Build
             public static Error ZonePivotIdNotFound(SourceInfo? source, string pivotId, string groupId, FilePath definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-id-not-found", $"Pivot ID '{pivotId}' is not defined in the '{groupId}' group in '{definitionFile}'. You can only use pivots that have been defined in the referenced pivot group.", source);
 
+            public static Error ZonePivotIdUnused(SourceInfo? source, string pivotId, string groupId, FilePath definitionFile)
+                => new Error(ErrorLevel.Warning, "pivot-id-unused", $"Pivot ID '{pivotId}' is defined in the '{groupId}' group in '{definitionFile}', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.", source);
+
             public static Error DuplicatedPivotGroups(SourceInfo? source, string pivotGroupId)
                 => new Error(ErrorLevel.Warning, "duplicate-pivot-groups", $"Pivot group id '{pivotGroupId}' is duplicated in '{source}'. Only the first group with this ID will be used. Delete or rename the subsequent group.", source);
 
