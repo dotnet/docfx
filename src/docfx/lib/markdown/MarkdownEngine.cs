@@ -27,7 +27,6 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly ZonePivotProvider _zonePivotProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly ContentValidator _contentValidator;
 
@@ -48,7 +47,6 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
-            ZonePivotProvider zonePivotProvider,
             TemplateEngine templateEngine,
             ContentValidator contentValidator,
             Lazy<PublishUrlMap> publishUrlMap)
@@ -59,7 +57,6 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
-            _zonePivotProvider = zonePivotProvider;
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
@@ -215,7 +212,7 @@ namespace Microsoft.Docs.Build
                 .UseExpandInclude(_markdownContext, GetErrors)
 
                 // Extensions after this line sees an expanded inclusion AST only once.
-                .UseDocsValidation(this, _zonePivotProvider, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
+                .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
                 .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)

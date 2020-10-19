@@ -163,7 +163,6 @@ namespace Microsoft.Docs.Build
                 DocumentProvider,
                 MetadataProvider,
                 MonikerProvider,
-                ZonePivotProvider,
                 TemplateEngine,
                 ContentValidator,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
