@@ -39,7 +39,6 @@ namespace Microsoft.Docs.Build
             { "RESTService  ", "rest" },
             { "PowershellCmdlet", "powershell" },
             { "PowershellModule ", "powershell" },
-            { "ZonePivotGroups", "toc" },
         };
 
         public DocumentProvider(
