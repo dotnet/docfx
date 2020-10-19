@@ -92,17 +92,17 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the maximum errors of each file to output.
         /// </summary>
-        public int MaxFileErrors { get; private set; } = 10;
+        public int MaxFileErrors { get; private set; } = 100;
 
         /// <summary>
         /// Gets the maximum warnings of each file to output.
         /// </summary>
-        public int MaxFileWarnings { get; private set; } = 100;
+        public int MaxFileWarnings { get; private set; } = 1000;
 
         /// <summary>
         /// Gets the maximum suggestions of each file to output.
         /// </summary>
-        public int MaxFileSuggestions { get; private set; } = 100;
+        public int MaxFileSuggestions { get; private set; } = 1000;
 
         /// <summary>
         /// Gets the maximum info of each file to output.
@@ -319,6 +319,8 @@ namespace Microsoft.Docs.Build
         public string[]? MAMLMonikerPath { get; private set; }
 
         public JoinTOCConfig[] JoinTOC { get; private set; } = Array.Empty<JoinTOCConfig>();
+
+        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {

@@ -77,6 +77,7 @@ inputs:
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
             "exclusions": ["includes"],
+            "exceptions":["tree/master"],
             "docfxOverride": true
           }
         ]
@@ -86,6 +87,7 @@ inputs:
   file2.md: There is#whitelist-with-special chars in the content, this will error
   file3.md: This is no sensitive language in this file, something like masterclass is ok.
   file4.md: Blacklist at the start, ends with Master
+  file5.md: tree/master is valid
   a/b/c/file.md: skipped bad language check for master due to exclusion
   n/m/o/file.md: not skipped bad language check for master due to exclusion
 outputs:
@@ -99,6 +101,7 @@ outputs:
   file2.json:
   file3.json:
   file4.json:
+  file5.json:
   a/b/c/file.json:
   n/m/o/file.json:
 ---

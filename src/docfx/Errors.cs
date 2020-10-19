@@ -392,6 +392,12 @@ namespace Microsoft.Docs.Build
             public static Error XrefNotFound(SourceInfo<string> source)
                 => new Error(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'.", source);
 
+            public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
+               => new Error(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
+
+            public static Error UidNotFound(string uid, IEnumerable<string?> repositories)
+                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' not found, which is referenced by repository {StringUtility.Join(repositories)}.");
+
             /// <summary>
             /// The same uid of the same version is defined in multiple places
             /// Examples:
