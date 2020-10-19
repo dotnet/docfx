@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                     if (IsXrefSpec(obj, schema, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, JsonUtility.AddToPropertyPath(propertyPath, "uid")));
+                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
                     }
 
                     foreach (var (key, value) in obj)
@@ -196,7 +196,8 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var schemaType = GetSchemaType(rootSchema, schema, uidSchema, obj, file);
 
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, propertyPath, uidSchema.UidGlobalUnique, schemaType);
+            var xref = new InternalXrefSpec(
+                uid, href, file, monikers, obj.Parent?.Path, JsonUtility.AddToPropertyPath(propertyPath, "uid"), uidSchema.UidGlobalUnique, schemaType);
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
