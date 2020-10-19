@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
         public static MarkdownPipelineBuilder UseDocsValidation(
             this MarkdownPipelineBuilder builder,
             MarkdownEngine markdownEngine,
+            ZonePivotProvider zonePivotProvider,
             ContentValidator contentValidator,
             Func<MonikerList> getFileLevelMonikers,
             Func<string?> getCanonicalVersion)
@@ -36,6 +37,8 @@ namespace Microsoft.Docs.Build
 
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
+
+                var zonePivotGroup = zonePivotProvider.TryGetZonePivotGroup(currentFile);
 
                 document.Visit(node =>
                 {

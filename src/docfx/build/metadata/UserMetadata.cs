@@ -52,6 +52,10 @@ namespace Microsoft.Docs.Build
 
         public string? OriginalContentGitUrlTemplate { get; private set; }
 
+        public string? ZonePivotGroupFilename { get; private set; }
+
+        public string? ZonePivotGroups { get; private set; }
+
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
     }

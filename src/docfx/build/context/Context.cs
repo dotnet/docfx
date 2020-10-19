@@ -34,6 +34,8 @@ namespace Microsoft.Docs.Build
 
         public MonikerProvider MonikerProvider { get; }
 
+        public ZonePivotProvider ZonePivotProvider { get; }
+
         public RepositoryProvider RepositoryProvider { get; }
 
         public BookmarkValidator BookmarkValidator { get; }
@@ -148,6 +150,8 @@ namespace Microsoft.Docs.Build
                 FileLinkMapBuilder,
                 MetadataProvider);
 
+            ZonePivotProvider = new ZonePivotProvider(ErrorBuilder, MetadataProvider, fileResolver, LinkResolver);
+
             MarkdownEngine = new MarkdownEngine(
                 Config,
                 Input,
@@ -157,6 +161,7 @@ namespace Microsoft.Docs.Build
                 DocumentProvider,
                 MetadataProvider,
                 MonikerProvider,
+                ZonePivotProvider,
                 TemplateEngine,
                 ContentValidator,
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
