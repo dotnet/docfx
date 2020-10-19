@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Docs.Build
 {
@@ -76,6 +77,7 @@ namespace Microsoft.Docs.Build
 
         public SearchIndexBuilder SearchIndexBuilder { get; }
 
+        [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Supress MEN003 for Context")]
         public Context(
             ErrorBuilder errorLog,
             Config config,
