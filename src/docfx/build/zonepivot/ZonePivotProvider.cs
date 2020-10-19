@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly FileResolver _fileResolver;
         private readonly LinkResolver _linkResolver;
 
-        private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivitDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
+        private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
         private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinitionModel?> _zonePivotDefinitionModelCache =
             new ConcurrentDictionary<FilePath, ZonePivotGroupDefinitionModel?>();
 
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
 
         internal FilePath? GetZonePivotGroupDefinitionFile(FilePath file)
         {
-            return _zonePivitDefinitionFileCache.GetOrAdd(file, _ =>
+            return _zonePivotDefinitionFileCache.GetOrAdd(file, _ =>
                 {
                     var definitionFile = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename;
                     var (error, f) = definitionFile != null ?
