@@ -52,6 +52,9 @@ namespace Microsoft.Docs.Build
 
         public string? OriginalContentGitUrlTemplate { get; private set; }
 
+        /// <summary>
+        /// Published zone pivot groups definition filename (not the source file, should ends with .json)
+        /// </summary>
         public string? ZonePivotGroupFilename { get; private set; }
 
         public string? ZonePivotGroups { get; private set; }

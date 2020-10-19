@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal ZonePivotGroup? TryGetZonePivotGroup(FilePath file, string pivotGroupId)
+        private ZonePivotGroup? TryGetZonePivotGroup(FilePath file, string pivotGroupId)
         {
             var zonePivotGroupDefinition = GetZonePivotGroupDefinitionModel(file);
             if (zonePivotGroupDefinition != null)
@@ -64,12 +64,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModel(FilePath file)
+        private ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModel(FilePath file)
         {
-            return _zonePivotDefinitionModelCache.GetOrAdd(file, _ => GetZonePivotGroupDefinitionModelCore(file));
+            return _zonePivotDefinitionModelCache.GetOrAdd(file, GetZonePivotGroupDefinitionModelCore);
         }
 
-        internal ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModelCore(FilePath file)
+        private ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModelCore(FilePath file)
         {
             var zonePivotGroupFilename = GetZonePivotGroupDefinitionFile(file);
             SourceInfo<string> source = zonePivotGroupFilename != null ? new SourceInfo<string>(zonePivotGroupFilename.Path) : default;
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal FilePath? GetZonePivotGroupDefinitionFile(FilePath file)
+        private FilePath? GetZonePivotGroupDefinitionFile(FilePath file)
         {
             return _zonePivotDefinitionFileCache.GetOrAdd(file, _ =>
                 {
@@ -103,37 +103,27 @@ namespace Microsoft.Docs.Build
                 });
         }
 
-        internal void NormalizeZonePivotGroupDefinitionModel(ZonePivotGroupDefinitionModel model, SourceInfo? source)
+        private void NormalizeZonePivotGroupDefinitionModel(ZonePivotGroupDefinitionModel model, SourceInfo? source)
         {
             var set = new HashSet<string>();
             foreach (var group in model.Groups)
             {
-                if (set.Contains(group.Id))
+                NormalizeZonePivotGroup(group, source);
+                if (!set.Add(group.Id))
                 {
                     _errors.Add(Errors.ZonePivot.DuplicatedPivotGroups(source, group.Id));
-                    model.Groups.Remove(group);
-                }
-                else
-                {
-                    set.Add(group.Id);
-                    NormalizeZonePivotGroup(group, source);
                 }
             }
         }
 
-        internal void NormalizeZonePivotGroup(ZonePivotGroup group, SourceInfo? source)
+        private void NormalizeZonePivotGroup(ZonePivotGroup group, SourceInfo? source)
         {
             var set = new HashSet<string>();
             foreach (var pivot in group.Pivots)
             {
-                if (set.Contains(pivot.Id))
+                if (!set.Add(pivot.Id))
                 {
                     _errors.Add(Errors.ZonePivot.DuplicatedPivotIds(source, pivot.Id, group.Id));
-                    group.Pivots.Remove(pivot);
-                }
-                else
-                {
-                    set.Add(pivot.Id);
                 }
             }
         }
