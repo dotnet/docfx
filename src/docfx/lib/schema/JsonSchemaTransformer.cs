@@ -30,7 +30,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
             new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList = new ConcurrentBag<(SourceInfo<string>, string?)>();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList =
+            new ConcurrentBag<(SourceInfo<string>, string?, string?)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -73,7 +74,8 @@ namespace Microsoft.Docs.Build
         {
             return _xrefList.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
             {
-                return new ExternalXref { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName };
+                return new ExternalXref
+                    { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName, SchemaType = xrefGroup.First().schemaType };
             }).OrderBy(externalXref => externalXref.Uid).ToArray();
         }
 
@@ -131,7 +133,7 @@ namespace Microsoft.Docs.Build
                     if (IsXrefSpec(obj, schema, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
+                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, JsonUtility.AddToPropertyPath(propertyPath, "uid")));
                     }
 
                     foreach (var (key, value) in obj)
@@ -194,7 +196,7 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var schemaType = GetSchemaType(rootSchema, schema, uidSchema, obj, file);
 
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, uidSchema.UidGlobalUnique, schemaType);
+            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, propertyPath, uidSchema.UidGlobalUnique, schemaType);
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
@@ -464,7 +466,8 @@ namespace Microsoft.Docs.Build
                     {
                         _xrefList.Add((
                             new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
-                            (spec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null));
+                            (spec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null,
+                            spec?.SchemaType));
                     }
                     return value;
             }

@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
         {
             var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
 
-            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
+            return _jsonSchemaTransformer.LoadXrefSpecs(errors.WithCustomRule(schema), schema, file, token);
         }
 
         private InternalXrefSpec[] AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
                     foreach (var spec in specsWithSameMonikerList)
                     {
                         duplicateSpecs.Add(spec);
-                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource));
+                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath));
                     }
                 }
             }

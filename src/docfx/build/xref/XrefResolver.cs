@@ -224,13 +224,13 @@ namespace Microsoft.Docs.Build
 
         private void ValidateUIDGlobalUnique()
         {
-            var globalUids = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First().Uid);
+            var globalXrefSpecs = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First());
 
-            foreach (var uid in globalUids)
+            foreach (var xrefSpec in globalXrefSpecs)
             {
-                if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid.Value, out var spec))
+                if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(xrefSpec.Uid, out var spec))
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec!.RepositoryUrl));
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath));
                 }
             }
         }
@@ -245,7 +245,8 @@ namespace Microsoft.Docs.Build
             {
                 if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
                 {
-                    _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct()));
+                    _errorLog.Add(Errors.Xref.UidNotFound(
+                        xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType));
                 }
             }
         }

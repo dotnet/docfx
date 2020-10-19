@@ -395,8 +395,8 @@ namespace Microsoft.Docs.Build
             public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
                => new Error(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
 
-            public static Error UidNotFound(string uid, IEnumerable<string?> repositories)
-                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' not found, which is referenced by repository {StringUtility.Join(repositories)}.");
+            public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null, propertyPath);
 
             /// <summary>
             /// The same uid of the same version is defined in multiple places
@@ -404,27 +404,15 @@ namespace Microsoft.Docs.Build
             ///   - both files with no monikers defined same uid
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts)
-                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
+            public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid, propertyPath);
 
             /// <summary>
             /// The same uid is defined in multiple docsets
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl)
-            {
-                FormattableString message;
-                if (string.IsNullOrEmpty(repositoryUrl))
-                {
-                    message = $"UID '{uid}' is duplicated globally.";
-                }
-                else
-                {
-                    message = $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.";
-                }
-
-                return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);
-            }
+            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "duplicate-uid-global", $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.", uid, propertyPath);
 
             /// <summary>
             /// Same uid defined within different versions with different values of the same xref property.

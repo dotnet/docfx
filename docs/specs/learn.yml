@@ -349,7 +349,6 @@ outputs:
     {"dependency_type":"hierarchy","from_file_path":"*module2.yml*","to_file_path":"*unit2.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*path.yml*","to_file_path":"*module1.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*patha.yml*","to_file_path":"*module1.yml*"}
-
   op_aggregated_file_map_info.json: |
     {
       "aggregated_file_map_items": {
