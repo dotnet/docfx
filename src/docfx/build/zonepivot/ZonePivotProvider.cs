@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
     internal class ZonePivotProvider
     {
         private const string DefaultDefinitionFile = "zone-pivot-groups.json";
-        private static readonly Regex s_extensionReplacementRegex = new Regex(@"\.\w*$");
 
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
