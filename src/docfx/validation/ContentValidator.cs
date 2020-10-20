@@ -225,7 +225,8 @@ namespace Microsoft.Docs.Build
             {
                 if (zonePivotUsages.Any())
                 {
-                    // TODO: throw error because we are unable to load definition file or group, yet got zone pivot usages;
+                    // Unable to load definition file or group, yet got zone pivot usages;
+                    _errors.Add(Errors.ZonePivot.ZonePivotGroupNotSpecified(new SourceInfo(file)));
                 }
 
                 return;

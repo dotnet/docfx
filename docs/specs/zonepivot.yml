@@ -20,8 +20,8 @@ inputs:
     # Group not found
   docs/c.md: |
     ---
-    zone_pivot_groups: test-group
-    zone_pivot_groups_filename: zone-pivot-groups-2.json
+    zone_pivot_groups: test-group-2
+    zone_pivot_group_filename: zone-pivot-groups-2.json
     ---
     # Custom pivot file name
     ::: zone pivot="test-pivot-1"
@@ -33,18 +33,6 @@ inputs:
   docs/d.md: |
     # Group ID not specified
     ::: zone pivot="test-pivot-1"
-    ## H2
-    ::: zone-end
-  docs/e.md: |
-    ---
-    zone_pivot_groups: test-group
-    zone_pivot_groups_filename: zone-pivot-groups-2.yml
-    ---
-    # Custom pivot file name
-    ::: zone pivot="test-pivot-1"
-    ## H2
-    ::: zone-end
-    ::: zone pivot="test-pivot-2"
     ## H2
     ::: zone-end
   zone-pivot-groups.yml: |
@@ -65,13 +53,13 @@ inputs:
   zone-pivot-groups-2.yml: |
     # YamlMime:ZonePivotGroups
     groups:
-    - id: test-group
+    - id: test-group-2
       title: Test Group
       prompt: Test Group
       pivots:
-      - id: test-pivot-1
+      - id: test-pivot-3
         title: First tab
-      - id: test-pivot-2
+      - id: test-pivot-4
         title: Second tab
   _themes/ContentTemplate/schemas/ZonePivotGroups.schema.json: |
     {"renderType": "component"}
@@ -80,15 +68,15 @@ outputs:
   docs/b.json:
   docs/c.json:
   docs/d.json:
-  docs/e.json:
   zone-pivot-groups.json:
   zone-pivot-groups-2.json:
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-pivot-ids","message":"Pivot id 'test-pivot-2' is duplicated in pivot group 'test-group' in 'zone-pivot-groups.yml'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.","file":"zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"duplicate-pivot-groups","message":"Pivot group id 'test-group' is duplicated in 'zone-pivot-groups.yml'. Only the first group with this ID will be used. Delete or rename the subsequent group.","file":"zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"pivot-group-not-found","message":"Pivot group 'not-found-group' isn't defined in 'zone-pivot-groups.yml'. Make sure every pivot group you reference in your content has been properly defined.","file":"docs/b.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"pivot-id-unused","message":"Pivot ID 'test-pivot-2' is defined in the 'test-group' group in 'zone-pivot-groups.yml', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.","file":"docs/c.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"pivot-id-not-found","message":"Pivot ID 'test-pivot-3' is not defined in the 'test-group' group in 'zone-pivot-groups.yml'. You can only use pivots that have been defined in the referenced pivot group.","file":"docs/c.md","line":9,"end_line":9,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"pivot-id-unused","message":"Pivot ID 'test-pivot-4' is defined in the 'test-group-2' group in 'zone-pivot-groups-2.yml', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.","file":"docs/c.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"pivot-id-not-found","message":"Pivot ID 'test-pivot-1' is not defined in the 'test-group-2' group in 'zone-pivot-groups-2.yml'. You can only use pivots that have been defined in the referenced pivot group.","file":"docs/c.md","line":6,"end_line":6,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"docs/d.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - versioned definition file
 inputs:
@@ -154,6 +142,8 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"pivot-group-definition-conflict","message":"Unable to load zone pivot groups definition for 'docs/v1/a.md' because more than one source file found for '/docs/zone-pivot-groups.json'. Multiple version for pivot group definition is currently not supported.","file":"docs/v1/a.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"pivot-group-definition-conflict","message":"Unable to load zone pivot groups definition for 'docs/v2/a.md' because more than one source file found for '/docs/zone-pivot-groups.json'. Multiple version for pivot group definition is currently not supported.","file":"docs/v2/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"docs/v1/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"docs/v2/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - Definition file not found
 inputs:
@@ -162,14 +152,15 @@ inputs:
     ---
     zone_pivot_groups: test-group
     ---
-    # Normal test
+    # Definition file not found
     ::: zone pivot="test-pivot-1"
     ## H2
     ::: zone-end
 outputs:
   docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Unable to load zone pivot groups definition for 'docs/a.md' because no source file found for '/zone-pivot-groups.json'. Try specify 'zone_pivot_groups_filename' in file metadata. Cross docset reference to zone pivot groups definition not supported by docfx, but may work on rendered page.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"file-not-found","message":"Unable to load zone pivot groups definition for 'docs/a.md' because no source file found for '/zone-pivot-groups.json'. Try specify 'zone_pivot_group_filename' in file metadata. Cross docset reference to zone pivot groups definition not supported by docfx, but may work on rendered page.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - Base path
 inputs:
@@ -179,7 +170,7 @@ inputs:
     ---
     zone_pivot_groups: test-group
     ---
-    # Normal test
+    # With base path
     ::: zone pivot="test-pivot-1"
     ## H2
     ::: zone-end
@@ -210,10 +201,6 @@ inputs:
     ---
     zone_pivot_groups: test-group
     ---
-    # Normal test
-    ::: zone pivot="test-pivot-1"
-    ## H2
-    ::: zone-end
   zone-pivot-groups.yml: |
     # YamlMime:ZonePivotGroups
     groups:
@@ -229,7 +216,7 @@ outputs:
   azure/test/docs/a.json:
   azure/test/zone-pivot-groups.json:
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Unable to load zone pivot groups definition for 'docs/a.md' because no source file found for '/azure/zone-pivot-groups.json'. Try specify 'zone_pivot_groups_filename' in file metadata. Cross docset reference to zone pivot groups definition not supported by docfx, but may work on rendered page.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"file-not-found","message":"Unable to load zone pivot groups definition for 'docs/a.md' because no source file found for '/azure/zone-pivot-groups.json'. Try specify 'zone_pivot_group_filename' in file metadata. Cross docset reference to zone pivot groups definition not supported by docfx, but may work on rendered page.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - Multiple pivot groups
 inputs:

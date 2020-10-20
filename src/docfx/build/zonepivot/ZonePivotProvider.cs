@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ZonePivotProvider
     {
-        private static readonly string s_defaultDefinitionFile = "zone-pivot-groups.json";
+        private const string DefaultDefinitionFile = "zone-pivot-groups.json";
         private static readonly Regex s_extensionReplacementRegex = new Regex(@"\.\w*$");
 
         private readonly Config _config;
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             var zonePivotGroupDefinition = GetZonePivotGroupDefinitionModel(file);
             if (zonePivotGroupDefinition != null)
             {
-                var group = GetZonePivotGroupDefinitionModel(file)?.Groups.Where(group => group.Id == pivotGroupId).FirstOrDefault();
+                var group = zonePivotGroupDefinition.Groups.Where(group => group.Id == pivotGroupId).FirstOrDefault();
                 if (group == null)
                 {
                     _errors.Add(Errors.ZonePivot.ZonePivotGroupNotFound(new SourceInfo(file), pivotGroupId, GetZonePivotGroupDefinitionFile(file)));
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
         /// <returns>Published URL of zone pivots definition file.</returns>
         private string GetZonePivotDefinitionPublishUrl(string? definitionFilename)
         {
-            var filename = definitionFilename ?? s_defaultDefinitionFile;
+            var filename = definitionFilename ?? DefaultDefinitionFile;
             return "/" + UrlUtility.Combine(
                 _config.BasePath.Value.Split('/').FirstOrDefault(),
                 filename.ReplaceRegex(s_extensionReplacementRegex, ".json"));
