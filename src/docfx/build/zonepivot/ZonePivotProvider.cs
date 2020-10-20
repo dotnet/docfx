@@ -89,7 +89,6 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                _errors.Add(Errors.ZonePivot.ZonePivotGroupDefinitionNotFound(file));
                 return null;
             }
         }
