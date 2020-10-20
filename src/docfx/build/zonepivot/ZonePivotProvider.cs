@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -158,7 +159,9 @@ namespace Microsoft.Docs.Build
         private string GetZonePivotDefinitionPublishUrl(FilePath file, string? definitionFilename)
         {
             return "/" + PathUtility.NormalizeFile(UrlUtility.Combine(
+#pragma warning disable CS0618 // Type or member is obsolete
                 _documentProvider.GetDocsSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
+#pragma warning restore CS0618 // Type or member is obsolete
                 Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json")));
         }
     }
