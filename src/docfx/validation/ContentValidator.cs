@@ -18,6 +18,7 @@ namespace Microsoft.Docs.Build
         // Learn content: "learningpath", "module", "moduleunit"
         private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit" };
 
+        private readonly Config _config;
         private readonly Validator _validator;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
@@ -35,6 +36,7 @@ namespace Microsoft.Docs.Build
             ZonePivotProvider zonePivotProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
+            _config = config;
             _errors = errors;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
@@ -42,9 +44,9 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
 
             _validator = new Validator(
-                fileResolver.ResolveFilePath(config.MarkdownValidationRules),
-                fileResolver.ResolveFilePath(config.Allowlists),
-                fileResolver.ResolveFilePath(config.Disallowlists));
+                fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
+                fileResolver.ResolveFilePath(_config.Allowlists),
+                fileResolver.ResolveFilePath(_config.Disallowlists));
         }
 
         public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)
@@ -220,6 +222,12 @@ namespace Microsoft.Docs.Build
 
         public void ValidateZonePivots(FilePath file, List<SourceInfo<string>> zonePivotUsages)
         {
+            // Build types other than Docs is not supported
+            if (_config.UrlType != UrlType.Docs)
+            {
+                return;
+            }
+
             var zonePivotGroup = _zonePivotProvider.TryGetZonePivotGroups(file);
             if (zonePivotGroup == null)
             {
