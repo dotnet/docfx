@@ -104,7 +104,7 @@ namespace Microsoft.Docs.Build
         {
             return _zonePivotDefinitionFileCache.GetOrAdd(file, _ =>
                 {
-                    var publishUrl = GetZonePivotDefinitionPublishUrl(_metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename);
+                    var publishUrl = GetZonePivotDefinitionPublishUrl(file, _metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename);
                     var files = _publishUrlMap.Value.GetFilesByUrl(publishUrl).ToList();
                     switch (files.Count)
                     {
@@ -148,13 +148,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Get publish URL of zone pivots definition file.
         /// </summary>
+        /// <param name="file">Path of the file referencing zone pivot groups</param>
         /// <param name="definitionFilename">The definition filename from metadata, if null, use default "zone-pivot-groups.json".</param>
         /// <returns>Published URL of zone pivots definition file.</returns>
-        private string GetZonePivotDefinitionPublishUrl(string? definitionFilename)
+        private string GetZonePivotDefinitionPublishUrl(FilePath file, string? definitionFilename)
         {
-            return "/" + UrlUtility.Combine(
-                _config.BasePath.Value.Split('/').FirstOrDefault(),
-                Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json"));
+            return "/" + PathUtility.NormalizeFile(UrlUtility.Combine(
+                _publishUrlMap.Value.TryGetPublishUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
+                Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json")));
         }
     }
 }

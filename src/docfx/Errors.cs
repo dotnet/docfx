@@ -491,7 +491,7 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Pivot group '{groupId}' isn't defined in '{definitionFile}'. Make sure every pivot group you reference in your content has been properly defined.", source);
 
             public static Error ZonePivotGroupNotSpecified(SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata", source);
+                => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata.", source);
 
             public static Error ZonePivotIdNotFound(SourceInfo? source, string pivotId, IEnumerable<string> groupIds, FilePath? definitionFile)
             {
