@@ -20,7 +20,6 @@ namespace Microsoft.Docs.Build
         private readonly TableOfContentsMap _tocMap;
 
         private readonly HashSet<FilePath> _files;
-        private readonly IReadOnlyDictionary<FilePath, PublishUrlMapItem> _sourcePathMap;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
         private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
 
@@ -41,7 +40,6 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _tocMap = tocMap;
             _publishUrlMap = Initialize();
-            _sourcePathMap = _publishUrlMap.Values.SelectMany(x => x).ToDictionary(x => x.SourcePath);
             _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
 
@@ -58,11 +56,6 @@ namespace Microsoft.Docs.Build
                 return items.Select(x => x.SourcePath);
             }
             return Array.Empty<FilePath>();
-        }
-
-        public string TryGetPublishUrl(FilePath source)
-        {
-            return _sourcePathMap[source].Url;
         }
 
         public HashSet<FilePath> GetAllFiles() => _files;

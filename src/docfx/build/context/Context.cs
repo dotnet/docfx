@@ -106,8 +106,14 @@ namespace Microsoft.Docs.Build
             BuildScope = new BuildScope(Config, Input, buildOptions);
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
-            ZonePivotProvider = new ZonePivotProvider(Config, ErrorBuilder, MetadataProvider, Input, new Lazy<PublishUrlMap>(() => PublishUrlMap));
             DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
+            ZonePivotProvider = new ZonePivotProvider(
+                Config,
+                ErrorBuilder,
+                DocumentProvider,
+                MetadataProvider,
+                Input,
+                new Lazy<PublishUrlMap>(() => PublishUrlMap));
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,

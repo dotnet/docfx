@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
 
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
+        private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly Input _input;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
@@ -30,12 +31,14 @@ namespace Microsoft.Docs.Build
         public ZonePivotProvider(
             Config config,
             ErrorBuilder errors,
+            DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             Input input,
             Lazy<PublishUrlMap> publishUrlMap)
         {
             _config = config;
             _errors = errors;
+            _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
             _input = input;
             _publishUrlMap = publishUrlMap;
@@ -153,7 +156,7 @@ namespace Microsoft.Docs.Build
         private string GetZonePivotDefinitionPublishUrl(FilePath file, string? definitionFilename)
         {
             return "/" + PathUtility.NormalizeFile(UrlUtility.Combine(
-                _publishUrlMap.Value.TryGetPublishUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
+                _documentProvider.GetSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
                 Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json")));
         }
     }
