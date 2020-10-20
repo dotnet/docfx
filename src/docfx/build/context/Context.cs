@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
         public SearchIndexBuilder SearchIndexBuilder { get; }
 
-        [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Supress MEN003 for Context")]
+        [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Suppress MEN003 for Context")]
         public Context(
             ErrorBuilder errorLog,
             Config config,
