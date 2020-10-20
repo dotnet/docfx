@@ -219,29 +219,29 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateZonePivots(FilePath file, List<(TripleColonBlock, string)> zonePivotUsages)
+        public void ValidateZonePivots(FilePath file, List<SourceInfo<string>> zonePivotUsages)
         {
             var (definitionFile, group) = _zonePivotProvider.GetZonePivotGroup(file);
-            var usage = group == null ? new Dictionary<string, bool>() : group.Pivots.Select(p => p.Id).Distinct().ToDictionary(p => p, _ => false);
+            var usages = group == null ? new Dictionary<string, bool>() : group.Pivots.Select(p => p.Id).Distinct().ToDictionary(p => p, _ => false);
             if ((definitionFile == null || group == null) && zonePivotUsages.Any())
             {
                 // TODO: throw error because we are unable to load definition file or group, yet got zone pivot usages
                 return;
             }
 
-            foreach (var (tripleColon, pivotId) in zonePivotUsages)
+            foreach (var usage in zonePivotUsages)
             {
-                if (usage.ContainsKey(pivotId))
+                if (usages.ContainsKey(usage.Value))
                 {
-                    usage[pivotId] = true;
+                    usages[usage.Value] = true;
                 }
                 else
                 {
-                    _errors.Add(Errors.ZonePivot.ZonePivotIdNotFound(tripleColon.GetSourceInfo(), pivotId, group!.Id, definitionFile));
+                    _errors.Add(Errors.ZonePivot.ZonePivotIdNotFound(usage.Source, usage.Value, group!.Id, definitionFile));
                 }
             }
 
-            _errors.AddRange(usage.Where(p => !p.Value).Select(p => Errors.ZonePivot.ZonePivotIdUnused(new SourceInfo(file), p.Key, group!.Id, definitionFile)));
+            _errors.AddRange(usages.Where(p => !p.Value).Select(p => Errors.ZonePivot.ZonePivotIdUnused(new SourceInfo(file), p.Key, group!.Id, definitionFile)));
         }
 
         public void PostValidate()

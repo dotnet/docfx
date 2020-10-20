@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
 
-                var zonePivotUsages = new List<(TripleColonBlock, string pivotId)>();
+                var zonePivotUsages = new List<SourceInfo<string>>();
 
                 document.Visit(node =>
                 {
@@ -144,11 +144,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void BuildZonePivotUsages(TripleColonBlock tripleColon, List<(TripleColonBlock, string)> usages)
+        private static void BuildZonePivotUsages(TripleColonBlock tripleColon, List<SourceInfo<string>> usages)
         {
             if (tripleColon.Extension is ZoneExtension && tripleColon.Attributes.TryGetValue("pivot", out var pivotId))
             {
-                usages.Add((tripleColon, pivotId));
+                usages.Add(new SourceInfo<string>(pivotId, tripleColon.GetSourceInfo()));
             }
         }
 
