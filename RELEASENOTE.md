@@ -1,8 +1,10 @@
-Version Notes (Current Version: v2.57)
+Version Notes (Current Version: v2.56.4)
 =======================================
 
-v2.57(Pre-release)
+v2.56.4
 -----------
+1. Fix DocFX breaking under Linux and macOS. (#5785)
+2. Support more localized strings under zh-CN template. Thanks @alaincroisetiere! (#6648, #6649, #6659, #6660, #6667)
 
 v2.56.3
 -----------
