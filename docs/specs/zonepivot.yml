@@ -189,3 +189,70 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"pivot-id-unused","message":"Pivot ID 'test-pivot-2' is defined in the 'test-group' group in 'zone-pivot-groups.yml', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
+# Zone pivots validation - Multiple pivot groups
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    zone_pivot_groups: platform,azure-interface
+    ---
+    # Zones
+    ::: zone target="docs"
+    ## Docs-only content
+    ::: zone-end
+    ## Pivots
+    Here are some pivots.
+    ::: zone pivot="linux"
+    ## Linux
+    Lorem ipsum
+    ::: zone-end
+    ::: zone pivot="macos"
+    ## Linux
+    Lorem ipsum
+    ::: zone-end
+    ::: zone pivot="windows"
+    ## Windows
+    Lorem ipsum
+    ::: zone-end
+    ::: zone pivot="windows,linux"
+    ## Windows & Linux
+    Lorem ipsum
+    ::: zone-end
+    ::: zone pivot="bash"
+    ## Bash
+    Lorem ipsum
+    ::: zone-end
+    ::: zone pivot="powershell"
+    ## PowerShell
+    Lorem ipsum
+    ::: zone-end
+  zone-pivot-groups.yml: |
+    # YamlMime:ZonePivotGroups
+    groups:
+    - id: platform
+      title: Platform
+      prompt: Choose your platform
+      pivots:
+        - id: linux
+          title: Linux
+        - id: windows
+          title: Windows
+        - id: ios
+          title: iOS
+    - id: azure-interface
+      title: Shell
+      prompt: Choose your shell
+      pivots:
+      - id: bash
+        title: Bash
+      - id: powershell
+        title: PowerShell
+  _themes/ContentTemplate/schemas/ZonePivotGroups.schema.json: |
+    {"renderType": "component"}
+outputs:
+  docs/a.json:
+  zone-pivot-groups.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"pivot-id-not-found","message":"Pivot ID 'macos' is not defined in any group of 'platform', 'azure-interface' in 'zone-pivot-groups.yml'. You can only use pivots that have been defined in the referenced pivot group.","file":"docs/a.md","line":14,"end_line":14,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"pivot-id-unused","message":"Pivot ID 'ios' is defined in the 'platform' group in 'zone-pivot-groups.yml', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+---

@@ -487,8 +487,11 @@ namespace Microsoft.Docs.Build
             public static Error ZonePivotGroupNotFound(SourceInfo? source, string groupId, FilePath? definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Pivot group '{groupId}' isn't defined in '{definitionFile}'. Make sure every pivot group you reference in your content has been properly defined.", source);
 
-            public static Error ZonePivotIdNotFound(SourceInfo? source, string pivotId, string groupId, FilePath? definitionFile)
-                => new Error(ErrorLevel.Warning, "pivot-id-not-found", $"Pivot ID '{pivotId}' is not defined in the '{groupId}' group in '{definitionFile}'. You can only use pivots that have been defined in the referenced pivot group.", source);
+            public static Error ZonePivotIdNotFound(SourceInfo? source, string pivotId, IEnumerable<string> groupIds, FilePath? definitionFile)
+            {
+                var groupMessage = groupIds.Count() > 1 ? $"any group of '{string.Join("', '", groupIds)}'" : $"the '{groupIds.First()}' group";
+                return new Error(ErrorLevel.Warning, "pivot-id-not-found", $"Pivot ID '{pivotId}' is not defined in {groupMessage} in '{definitionFile}'. You can only use pivots that have been defined in the referenced pivot group.", source);
+            }
 
             public static Error ZonePivotIdUnused(SourceInfo? source, string pivotId, string groupId, FilePath? definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-id-unused", $"Pivot ID '{pivotId}' is defined in the '{groupId}' group in '{definitionFile}', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.", source);

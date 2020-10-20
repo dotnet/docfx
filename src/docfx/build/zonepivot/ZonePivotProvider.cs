@@ -35,16 +35,16 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
         }
 
-        public (FilePath DefinitionFile, ZonePivotGroup PivotGroup)? TryGetZonePivotGroup(FilePath file)
+        public (FilePath DefinitionFile, List<ZonePivotGroup> PivotGroups)? TryGetZonePivotGroups(FilePath file)
         {
-            var groupId = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroups;
-            if (groupId != null)
+            var groupIds = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroups?.Split(",");
+            if (groupIds != null)
             {
                 var definitionFile = GetZonePivotGroupDefinitionFile(file);
-                var group = GetZonePivotGroup(file, groupId);
-                if (definitionFile != null && group != null)
+                if (definitionFile != null)
                 {
-                    return (definitionFile, group);
+                    var groups = groupIds.Select(groupId => GetZonePivotGroup(file, groupId)).Where(p => p != null).OfType<ZonePivotGroup>().ToList();
+                    return (definitionFile, groups);
                 }
             }
 

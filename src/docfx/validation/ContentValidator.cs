@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Markdig.Syntax;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -221,7 +220,7 @@ namespace Microsoft.Docs.Build
 
         public void ValidateZonePivots(FilePath file, List<SourceInfo<string>> zonePivotUsages)
         {
-            var zonePivotGroup = _zonePivotProvider.TryGetZonePivotGroup(file);
+            var zonePivotGroup = _zonePivotProvider.TryGetZonePivotGroups(file);
             if (zonePivotGroup == null)
             {
                 if (zonePivotUsages.Any())
@@ -232,8 +231,13 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var (definitionFile, group) = zonePivotGroup.Value;
-            var usages = group.Pivots.Select(p => p.Id).Distinct().ToDictionary(p => p, _ => false);
+            var (definitionFile, groups) = zonePivotGroup.Value;
+            var groupIds = groups.Select(g => g.Id);
+            var usages = groups
+                .SelectMany(group => group.Pivots)
+                .Select(p => p.Id)
+                .Distinct()
+                .ToDictionary(p => p, _ => false);
 
             foreach (var usage in zonePivotUsages)
             {
@@ -243,12 +247,15 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    _errors.Add(Errors.ZonePivot.ZonePivotIdNotFound(usage.Source, usage.Value, group.Id, definitionFile));
+                    _errors.Add(Errors.ZonePivot.ZonePivotIdNotFound(usage.Source, usage.Value, groupIds, definitionFile));
                 }
             }
 
-            _errors.AddRange(usages.Where(p => !p.Value).Select(p =>
-                Errors.ZonePivot.ZonePivotIdUnused(new SourceInfo(file), p.Key, group!.Id, definitionFile)));
+            var unusedGroups = groups
+                .SelectMany(group => group.Pivots.Select(pivot => (Group: group.Id, Pivot: pivot.Id)))
+                .Where(p => !usages[p.Pivot]);
+            _errors.AddRange(unusedGroups.Select(p =>
+                Errors.ZonePivot.ZonePivotIdUnused(new SourceInfo(file), p.Pivot, p.Group, definitionFile)));
         }
 
         public void PostValidate()
