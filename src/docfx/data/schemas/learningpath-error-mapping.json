@@ -1,43 +1,34 @@
 {
   "rules": {
-    "uid": {
-      "duplicate-uid": {
-        "severity": "error",
-        "code": "duplicate-uids",
-        "message": "UID '{0}' is already defined in repo '{1}'."
-      },
-      "missing-attribute": {
-        "severity": "error",
-        "code": "path-uid-missing",
-        "message": "Missing attribute: UID. A valid UID is required for each learning path."
-      }
+    "duplicate-uid/uid": {
+      "severity": "error",
+      "code": "duplicate-uids",
+      "message": "UID '{0}' is already defined in repo '{1}'."
     },
-    "modules": {
-      "missing-attribute": {
-        "severity": "error",
-        "code": "path-modules-missing",
-        "message": "Missing attribute: modules. At least one valid module is required for each learning path."
-      },
-      "xref-not-found": {
-        "severity": "error",
-        "code": "path-child-not-found",
-        "message": "Child UID(s): '{0}' can't be found."
-      }
+    "missing-attribute/uid": {
+      "severity": "error",
+      "code": "path-uid-missing",
+      "message": "Missing attribute: UID. A valid UID is required for each learning path."
     },
-    "trophy": {
-      "missing-either-attribute": {
-        "severity": "error",
-        "code": "path-trophy-missing",
-        "message": "Missing attribute: trophy. A valid trophy is required for each learning path."
-      }
+    "missing-attribute/modules": {
+      "severity": "error",
+      "code": "path-modules-missing",
+      "message": "Missing attribute: modules. At least one valid module is required for each learning path."
     },
-    "parent_property.child_property": {
-      "missing-attribute": {
-        "severity": "error",
-        "code": "jsonpath-test",
-        "message": "jsonpath-test, missing attribute: parent_property.child_property, which is required."
-      }
+    "xref-not-found/modules": {
+      "severity": "error",
+      "code": "path-child-not-found",
+      "message": "Child UID(s): '{0}' can't be found."
+    },
+    "missing-either-attribute/trophy": {
+      "severity": "error",
+      "code": "path-trophy-missing",
+      "message": "Missing attribute: trophy. A valid trophy is required for each learning path."
+    },
+    "missing-attribute/parent_property.child_property": {
+      "severity": "error",
+      "code": "jsonpath-test",
+      "message": "jsonpath-test, missing attribute: parent_property.child_property, which is required."
     }
   }
 }
-

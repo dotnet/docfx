@@ -599,8 +599,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var moniker in monikers)
                     {
-                        if (_schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
-                            customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out var customRule) &&
+                        if (_schema.TryGetCustomRule(Errors.JsonSchema.DuplicateAttributeCode, docsetUniqueKey, out var customRule) &&
                             _ext != null &&
                             t_filePath.Value != null &&
                             !_ext.IsEnable(t_filePath.Value, customRule, moniker))
@@ -752,9 +751,7 @@ namespace Microsoft.Docs.Build
                 error = error.WithLevel(ErrorLevel.Error);
             }
 
-            if (!string.IsNullOrEmpty(error.PropertyPath) &&
-                schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) &&
-                attributeCustomRules.TryGetValue(error.Code, out var customRule))
+            if (schema.TryGetCustomRule(error.Code, error.PropertyPath, out var customRule))
             {
                 return error.WithCustomRule(customRule, t_filePath.Value == null ? null : _ext?.IsEnable(t_filePath.Value, customRule));
             }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -320,6 +321,22 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// This field is used to provide additional error information and only can be set in root level of schema
         /// </summary>
-        public Dictionary<string, Dictionary<string, CustomRule>> Rules { get; } = new Dictionary<string, Dictionary<string, CustomRule>>();
+        public Dictionary<string, CustomRule> Rules { get; } = new Dictionary<string, CustomRule>();
+
+        // TODO: merge `Rules` with `Config.Rules`
+        public bool TryGetCustomRule(string code, string? propertyPath, [MaybeNullWhen(false)] out CustomRule result)
+        {
+            if (propertyPath != null && Rules.TryGetValue($"{code}/{propertyPath}", out result))
+            {
+                return true;
+            }
+
+            if (Rules.TryGetValue(code, out result))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -1,36 +1,29 @@
 {
   "rules": {
-    "uid": {
-      "duplicate-uid": {
-        "severity": "error",
-        "code": "duplicate-uids",
-        "message": "UID '{0}' is already defined in repo '{1}'."
-      },
-      "missing-attribute": {
-        "severity": "error",
-        "code": "module-uid-missing",
-        "message": "Missing attribute: UID. A valid UID is required for each module."
-      }
+    "duplicate-uid/uid": {
+      "severity": "error",
+      "code": "duplicate-uids",
+      "message": "UID '{0}' is already defined in repo '{1}'."
     },
-    "units": {
-      "missing-attribute": {
-        "severity": "error",
-        "code": "module-units-missing",
-        "message": "Missing attribute: units. At least one valid unit is required for each module."
-      },
-      "xref-not-found": {
-        "severity": "error",
-        "code": "module-child-not-found",
-        "message": "Child UID(s): '{0}' can't be found."
-      }
+    "missing-attribute/uid": {
+      "severity": "error",
+      "code": "module-uid-missing",
+      "message": "Missing attribute: UID. A valid UID is required for each module."
     },
-    "badge": {
-      "missing-either-attribute": {
-        "severity": "error",
-        "code": "module-badge-missing",
-        "message": "Missing attribute: badge. A valid badge is required for each module."
-      }
+    "missing-attribute/units": {
+      "severity": "error",
+      "code": "module-units-missing",
+      "message": "Missing attribute: units. At least one valid unit is required for each module."
+    },
+    "xref-not-found/units": {
+      "severity": "error",
+      "code": "module-child-not-found",
+      "message": "Child UID(s): '{0}' can't be found."
+    },
+    "missing-either-attribute/badge": {
+      "severity": "error",
+      "code": "module-badge-missing",
+      "message": "Missing attribute: badge. A valid badge is required for each module."
     }
   }
 }
-

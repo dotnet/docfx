@@ -124,24 +124,20 @@ inputs:
           }
       },
       "rules": {
-          "title": {
-              "duplicate-attribute": {
-                  "severity": "suggestion",
-                  "code": "duplicate-title-within-docset",
-                  "canonicalVersionOnly": true,
-                  "additionalMessage": "Title must be unique within a docset."
-              },
-              "string-length-invalid": {
-                  "severity": "suggestion",
-                  "code": "title-bad-length"
-              }
+          "duplicate-attribute/title": {
+              "severity": "suggestion",
+              "code": "duplicate-title-within-docset",
+              "canonicalVersionOnly": true,
+              "additionalMessage": "Title must be unique within a docset."
           },
-          "description": {
-              "string-length-invalid": {
-                  "severity": "suggestion",
-                  "code": "description-bad-length",
-                  "canonicalVersionOnly": true
-              }
+          "string-length-invalid/title": {
+              "severity": "suggestion",
+              "code": "title-bad-length"
+          },
+          "string-length-invalid/description": {
+              "severity": "suggestion",
+              "code": "description-bad-length",
+              "canonicalVersionOnly": true
           }
       },
     }
@@ -190,24 +186,20 @@ inputs:
           }
       },
       "rules": {
-          "title": {
-              "string-length-invalid": {
-                  "severity": "suggestion",
-                  "code": "title-bad-length",
-                  "pullRequestOnly": false
-              },
-              "missing-attribute": {
-                  "severity": "suggestion",
-                  "code": "title-missing",
-                  "additionalMessage": "Add a title string to show in search engine results."
-              },
+          "string-length-invalid/title": {
+              "severity": "suggestion",
+              "code": "title-bad-length",
+              "pullRequestOnly": false
           },
-          "description": {
-              "string-length-invalid": {
-                  "severity": "suggestion",
-                  "code": "description-bad-length",
-                  "pullRequestOnly": true
-              }
+          "missing-attribute/title": {
+              "severity": "suggestion",
+              "code": "title-missing",
+              "additionalMessage": "Add a title string to show in search engine results."
+          },
+          "string-length-invalid/description": {
+              "severity": "suggestion",
+              "code": "description-bad-length",
+              "pullRequestOnly": true
           }
       },
     }

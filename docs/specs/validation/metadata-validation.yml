@@ -309,27 +309,23 @@ inputs:
           }
       },
       "rules": {
-          "title": {
-              "string-length-invalid": {
-                  "contentTypes": ["conceptual", "include", "dotnet"],
-                  "severity": "suggestion",
-                  "code": "title-bad-length",
-                  "pullRequestOnly": false
-              },
-              "missing-attribute": {
-                  "contentTypes": ["conceptual", "include"],
-                  "severity": "suggestion",
-                  "code": "title-missing",
-                  "additionalMessage": "Add a title string to show in search engine results."
-              },
+          "string-length-invalid/title": {
+              "contentTypes": ["conceptual", "include", "dotnet"],
+              "severity": "suggestion",
+              "code": "title-bad-length",
+              "pullRequestOnly": false
           },
-          "description": {
-              "string-length-invalid": {
-                  "contentTypes": ["conceptual", "include"],
-                  "severity": "suggestion",
-                  "code": "description-bad-length",
-                  "pullRequestOnly": true
-              }
+          "missing-attribute/title": {
+              "contentTypes": ["conceptual", "include"],
+              "severity": "suggestion",
+              "code": "title-missing",
+              "additionalMessage": "Add a title string to show in search engine results."
+          },
+          "string-length-invalid/description": {
+              "contentTypes": ["conceptual", "include"],
+              "severity": "suggestion",
+              "code": "description-bad-length",
+              "pullRequestOnly": true
           }
       },
     }
