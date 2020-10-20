@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
         {
             if (tripleColon.Extension is ZoneExtension && tripleColon.Attributes.TryGetValue("pivot", out var pivotId))
             {
-                usages.AddRange(pivotId.Replace(" ", "").Split(",").Select(p => new SourceInfo<string>(p, tripleColon.GetSourceInfo())));
+                usages.AddRange(pivotId.Split(",").Select(p => new SourceInfo<string>(p.Trim(), tripleColon.GetSourceInfo())));
             }
         }
 
