@@ -6,11 +6,17 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Graph;
 
 namespace Microsoft.Docs.Build
 {
     internal class ZonePivotProvider
     {
+        private static readonly string s_defaultDefinitionFile = "zone-pivot-groups.json";
+        private static readonly Regex s_extensionReplacementRegex = new Regex(@"\.\w*$");
+
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly MetadataProvider _metadataProvider;
@@ -97,16 +103,18 @@ namespace Microsoft.Docs.Build
         {
             return _zonePivotDefinitionFileCache.GetOrAdd(file, _ =>
                 {
-                    var definitionFile = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename ?? "zone-pivot-groups.json";
-                    var files = _publishUrlMap.Value.GetFilesByUrl(UrlUtility.Combine(_config.BasePath.ValueWithLeadingSlash, definitionFile)).ToList();
-                    if (files.Count != 1)
+                    var publishUrl = GetZonePivotDefinitionPublishUrl(_metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename);
+                    var files = _publishUrlMap.Value.GetFilesByUrl(publishUrl).ToList();
+                    switch (files.Count)
                     {
-                        _errors.Add(Errors.ZonePivot.ZonePivotGroupDefinitionNotFound(file));
-                        return null;
-                    }
-                    else
-                    {
-                        return files.First();
+                        case 0:
+                            _errors.Add(Errors.ZonePivot.ZonePivotGroupDefinitionNotFound(file, publishUrl));
+                            return null;
+                        case 1:
+                            return files.First();
+                        default:
+                            _errors.Add(Errors.ZonePivot.ZonePivotGroupDefinitionConflict(file, publishUrl));
+                            return null;
                     }
                 });
         }
@@ -134,6 +142,19 @@ namespace Microsoft.Docs.Build
                     _errors.Add(Errors.ZonePivot.DuplicatedPivotIds(source, pivot.Id, group.Id));
                 }
             }
+        }
+
+        /// <summary>
+        /// Get publish URL of zone pivots definition file.
+        /// </summary>
+        /// <param name="definitionFilename">The definition filename from metadata, if null, use default "zone-pivot-groups.json".</param>
+        /// <returns>Published URL of zone pivots definition file.</returns>
+        private string GetZonePivotDefinitionPublishUrl(string? definitionFilename)
+        {
+            var filename = definitionFilename ?? s_defaultDefinitionFile;
+            return "/" + UrlUtility.Combine(
+                _config.BasePath.Value.Split('/').FirstOrDefault(),
+                filename.ReplaceRegex(s_extensionReplacementRegex, ".json"));
         }
     }
 }

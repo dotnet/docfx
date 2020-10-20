@@ -481,8 +481,11 @@ namespace Microsoft.Docs.Build
 
         public static class ZonePivot
         {
-            public static Error ZonePivotGroupDefinitionNotFound(FilePath file)
-                => new Error(ErrorLevel.Warning, "zone-pivot-not-defined", $"Unable to load zone pivot groups definition for '{file}'. Try specify 'zone_pivot_groups_filename' in file metadata.", new SourceInfo(file));
+            public static Error ZonePivotGroupDefinitionNotFound(FilePath file, string publishUrl)
+                => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to load zone pivot groups definition for '{file}' because no source file found for '{publishUrl}'. Try specify 'zone_pivot_groups_filename' in file metadata. Cross docset reference to zone pivot groups definition not supported by docfx, but may work on rendered page.", new SourceInfo(file));
+
+            public static Error ZonePivotGroupDefinitionConflict(FilePath file, string publishUrl)
+                => new Error(ErrorLevel.Warning, "pivot-group-definition-conflict", $"Unable to load zone pivot groups definition for '{file}' because more than one source file found for '{publishUrl}'. Multiple version for pivot group definition is currently not supported.", new SourceInfo(file));
 
             public static Error ZonePivotGroupNotFound(SourceInfo? source, string groupId, FilePath? definitionFile)
                 => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Pivot group '{groupId}' isn't defined in '{definitionFile}'. Make sure every pivot group you reference in your content has been properly defined.", source);
