@@ -35,17 +35,20 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
         }
 
-        public (FilePath?, ZonePivotGroup?) GetZonePivotGroup(FilePath file)
+        public (FilePath DefinitionFile, ZonePivotGroup PivotGroup)? TryGetZonePivotGroup(FilePath file)
         {
             var groupId = _metadataProvider.GetMetadata(_errors, file).ZonePivotGroups;
             if (groupId != null)
             {
-                return (GetZonePivotGroupDefinitionFile(file), GetZonePivotGroup(file, groupId));
+                var definitionFile = GetZonePivotGroupDefinitionFile(file);
+                var group = GetZonePivotGroup(file, groupId);
+                if (definitionFile != null && group != null)
+                {
+                    return (definitionFile, group);
+                }
             }
-            else
-            {
-                return (null, null);
-            }
+
+            return null;
         }
 
         private ZonePivotGroup? GetZonePivotGroup(FilePath file, string pivotGroupId)
