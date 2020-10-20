@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
         private string GetZonePivotDefinitionPublishUrl(FilePath file, string? definitionFilename)
         {
             return "/" + PathUtility.NormalizeFile(UrlUtility.Combine(
-                _documentProvider.GetSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
+                _documentProvider.GetDocsSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
                 Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json")));
         }
     }
