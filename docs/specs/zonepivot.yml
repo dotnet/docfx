@@ -18,6 +18,9 @@ inputs:
     zone_pivot_groups: not-found-group
     ---
     # Group not found
+    ::: zone pivot="test-pivot-1"
+    ## H2
+    ::: zone-end
   docs/c.md: |
     ---
     zone_pivot_groups: test-group-2
@@ -87,6 +90,7 @@ outputs:
     {"message_severity":"warning","code":"duplicate-pivot-ids","message":"Pivot id 'test-pivot-2' is duplicated in pivot group 'test-group' in 'docs/zone-pivot-groups.yml'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.","file":"docs/zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"duplicate-pivot-groups","message":"Pivot group id 'test-group' is duplicated in 'docs/zone-pivot-groups.yml'. Only the first group with this ID will be used. Delete or rename the subsequent group.","file":"docs/zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"pivot-group-not-found","message":"Pivot group 'not-found-group' isn't defined in 'docs/zone-pivot-groups.yml'. Make sure every pivot group you reference in your content has been properly defined.","file":"docs/b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata.","file":"docs/b.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"pivot-id-unused","message":"Pivot ID 'test-pivot-4' is defined in the 'test-group-2' group in 'docs/zone-pivot-groups-2.yml', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.","file":"docs/c.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"pivot-id-not-found","message":"Pivot ID 'test-pivot-1' is not defined in the 'test-group-2' group in 'docs/zone-pivot-groups-2.yml'. You can only use pivots that have been defined in the referenced pivot group.","file":"docs/c.md","line":6,"end_line":6,"column":1,"end_column":1}
     {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata.","file":"docs/d.md","line":0,"end_line":0,"column":0,"end_column":0}

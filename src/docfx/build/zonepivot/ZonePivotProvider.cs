@@ -53,10 +53,12 @@ namespace Microsoft.Docs.Build
                 if (definitionFile != null)
                 {
                     var groups = groupIds.Select(groupId => GetZonePivotGroup(file, groupId)).Where(p => p != null).OfType<ZonePivotGroup>().ToList();
-                    return (definitionFile, groups);
+                    if (groups.Any())
+                    {
+                        return (definitionFile, groups);
+                    }
                 }
             }
-
             return null;
         }
 

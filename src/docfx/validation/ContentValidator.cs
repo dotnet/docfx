@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (definitionFile, groups) = zonePivotGroup.Value;
-            var groupIds = groups.Select(g => g.Id);
+            var groupIds = groups.Select(g => g.Id).ToList();
             var usages = groups
                 .SelectMany(group => group.Pivots)
                 .Select(p => p.Id)
