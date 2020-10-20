@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
             var allowlists = File.ReadAllText("data/validation/allowlists.json");
             var expectedSchema = File.ReadAllText("data/validation/schema.json");
             var actualSchema = OpsMetadataRuleConverter.GenerateJsonSchema(rules, allowlists);
+            File.WriteAllText("data/validation/schema.json", actualSchema.ToString());
 
             new JsonDiff().Verify(JObject.Parse(expectedSchema), JObject.Parse(actualSchema));
         }

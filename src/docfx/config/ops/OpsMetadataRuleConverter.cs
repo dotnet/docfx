@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 either = new List<List<string>>(),
                 precludes = new List<List<string>>(),
                 enumDependencies = new EnumDependenciesSchema(),
-                rules = new Dictionary<string, Dictionary<string, dynamic>>(),
+                rules = new Dictionary<string, dynamic>(),
             };
 
             foreach (var (attribute, attributeRules) in rules)
@@ -82,10 +82,7 @@ namespace Microsoft.Docs.Build
                     schema.properties.Add(attribute, property);
                 }
 
-                if (TryGetAttributeCustomRules(rulesInfo, out var attributeCustomRules))
-                {
-                    schema.rules.Add(attribute, attributeCustomRules);
-                }
+                PopulateCustomRules(attribute, rulesInfo, schema.rules);
 
                 if (rulesInfo.ContainsKey("Uniqueness"))
                 {
@@ -132,33 +129,28 @@ namespace Microsoft.Docs.Build
             return jsonSchema;
         }
 
-        private static bool TryGetAttributeCustomRules(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)
+        private static bool PopulateCustomRules(string attribute, Dictionary<string, OpsMetadataRule> rulesInfo, Dictionary<string, dynamic> customRules)
         {
-            attributeCustomRules = new Dictionary<string, dynamic>();
-
             foreach (var (ruleName, ruleInfo) in rulesInfo)
             {
                 if (s_ruleNameConvert.TryGetValue(ruleName, out var baseCodes))
                 {
                     foreach (var baseCode in baseCodes)
                     {
-                        if (!attributeCustomRules.ContainsKey(baseCode))
+                        customRules.TryAdd($"{baseCode}/{attribute}", new
                         {
-                            attributeCustomRules.Add(baseCode, new
-                            {
-                                severity = string.IsNullOrEmpty(ruleInfo.Severity) ? null : ruleInfo.Severity.ToLowerInvariant(),
-                                code = ruleInfo.Code,
-                                additionalMessage = ruleInfo.AdditionalErrorMessage,
-                                canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
-                                pullRequestOnly = ruleInfo.PullRequestOnly,
-                                contentTypes = ruleInfo.ContentTypes,
-                            });
-                        }
+                            severity = string.IsNullOrEmpty(ruleInfo.Severity) ? null : ruleInfo.Severity.ToLowerInvariant(),
+                            code = ruleInfo.Code,
+                            additionalMessage = ruleInfo.AdditionalErrorMessage,
+                            canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
+                            pullRequestOnly = ruleInfo.PullRequestOnly,
+                            contentTypes = ruleInfo.ContentTypes,
+                        });
                     }
                 }
             }
 
-            return attributeCustomRules.Count != 0;
+            return customRules.Count != 0;
         }
 
         private static bool TryGetAllowlist(
