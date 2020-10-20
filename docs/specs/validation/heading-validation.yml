@@ -572,6 +572,7 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"d.md","line":4,"end_line":4,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"file-not-found","message":"Invalid file link: '../media/buttonElementWithRenderers.png'.","file":"h.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"f.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"j.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Content validation - comments shouldn't trigger H1 not first
 inputs:
@@ -804,6 +805,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 #Content validation - multiple-h1s in docs zone
 inputs:
@@ -900,6 +902,8 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"pivot-group-not-found","message":"Zone pivots found but we can't find pivot group definition. Try specify 'zone_pivot_groups' or 'zone_pivot_group_filename' in file metadata","file":"j.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Canonial Version Only H1 Unique Check
 inputs:
