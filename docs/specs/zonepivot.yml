@@ -142,3 +142,50 @@ outputs:
     {"message_severity":"warning","code":"zone-pivot-not-defined","message":"Unable to load zone pivot groups definition for 'docs/v1/a.md'. Try specify 'zone_pivot_groups_filename' in file metadata.","file":"docs/v1/a.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"zone-pivot-not-defined","message":"Unable to load zone pivot groups definition for 'docs/v2/a.md'. Try specify 'zone_pivot_groups_filename' in file metadata.","file":"docs/v2/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
+# Zone pivots validation - Definition file not found
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    zone_pivot_groups: test-group
+    ---
+    # Normal test
+    ::: zone pivot="test-pivot-1"
+    ## H2
+    ::: zone-end
+outputs:
+  docs/a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"zone-pivot-not-defined","message":"Unable to load zone pivot groups definition for 'docs/a.md'. Try specify 'zone_pivot_groups_filename' in file metadata.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
+# Zone pivots validation - Base path
+inputs:
+  docfx.yml: |
+    basePath: /azure
+  docs/a.md: |
+    ---
+    zone_pivot_groups: test-group
+    ---
+    # Normal test
+    ::: zone pivot="test-pivot-1"
+    ## H2
+    ::: zone-end
+  zone-pivot-groups.yml: |
+    # YamlMime:ZonePivotGroups
+    groups:
+    - id: test-group
+      title: This is the title for your zone pivot group
+      prompt: This text is rendered for the user above their selection
+      pivots:
+      - id: test-pivot-1
+        title: First tab
+      - id: test-pivot-2
+        title: Second tab
+  _themes/ContentTemplate/schemas/ZonePivotGroups.schema.json: |
+    {"renderType": "component"}
+outputs:
+  azure/docs/a.json:
+  azure/zone-pivot-groups.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"pivot-id-unused","message":"Pivot ID 'test-pivot-2' is defined in the 'test-group' group in 'zone-pivot-groups.yml', but not used. You must use all pivot IDs in a pivot group to avoid blank tabs.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
