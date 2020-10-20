@@ -53,10 +53,10 @@ namespace Microsoft.Docs.Build
 
         private ZonePivotGroup? GetZonePivotGroup(FilePath file, string pivotGroupId)
         {
-            var (definitionFile, zonePivotGroupDefinition) = GetZonePivotGroupDefinitionModel(file);
+            var zonePivotGroupDefinition = GetZonePivotGroupDefinitionModel(file);
             if (zonePivotGroupDefinition != null)
             {
-                var group = zonePivotGroupDefinition.Groups.Where(group => group.Id == pivotGroupId).FirstOrDefault();
+                var group = GetZonePivotGroupDefinitionModel(file)?.Groups.Where(group => group.Id == pivotGroupId).FirstOrDefault();
                 if (group == null)
                 {
                     _errors.Add(Errors.ZonePivot.ZonePivotGroupNotFound(new SourceInfo(file), pivotGroupId, GetZonePivotGroupDefinitionFile(file)));
@@ -70,10 +70,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (FilePath?, ZonePivotGroupDefinitionModel?) GetZonePivotGroupDefinitionModel(FilePath file)
+        private ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModel(FilePath file)
         {
             var definitionFile = GetZonePivotGroupDefinitionFile(file);
-            return (definitionFile, definitionFile != null ? _zonePivotDefinitionModelCache.GetOrAdd(file, GetZonePivotGroupDefinitionModelCore) : null);
+            return definitionFile != null ? _zonePivotDefinitionModelCache.GetOrAdd(file, GetZonePivotGroupDefinitionModelCore) : null;
         }
 
         private ZonePivotGroupDefinitionModel? GetZonePivotGroupDefinitionModelCore(FilePath file)
