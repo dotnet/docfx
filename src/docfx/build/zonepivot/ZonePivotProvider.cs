@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -151,10 +152,9 @@ namespace Microsoft.Docs.Build
         /// <returns>Published URL of zone pivots definition file.</returns>
         private string GetZonePivotDefinitionPublishUrl(string? definitionFilename)
         {
-            var filename = definitionFilename ?? DefaultDefinitionFile;
             return "/" + UrlUtility.Combine(
                 _config.BasePath.Value.Split('/').FirstOrDefault(),
-                filename.ReplaceRegex(s_extensionReplacementRegex, ".json"));
+                Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json"));
         }
     }
 }

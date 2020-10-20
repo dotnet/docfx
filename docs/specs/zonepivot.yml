@@ -35,6 +35,18 @@ inputs:
     ::: zone pivot="test-pivot-1"
     ## H2
     ::: zone-end
+  docs/e.md: |
+    ---
+    zone_pivot_groups: test-group-2
+    zone_pivot_group_filename: zone-pivot-groups-2.yml
+    ---
+    # Custom pivot file name with extension other than json
+    ::: zone pivot="test-pivot-3"
+    ## H2
+    ::: zone-end
+    ::: zone pivot="test-pivot-4"
+    ## H2
+    ::: zone-end
   zone-pivot-groups.yml: |
     # YamlMime:ZonePivotGroups
     groups:
@@ -68,6 +80,7 @@ outputs:
   docs/b.json:
   docs/c.json:
   docs/d.json:
+  docs/e.json:
   zone-pivot-groups.json:
   zone-pivot-groups-2.json:
   .errors.log: |
