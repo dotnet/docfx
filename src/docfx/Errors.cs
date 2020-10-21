@@ -514,15 +514,15 @@ namespace Microsoft.Docs.Build
             /// Array conditional check not within min value
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MinItemsWhenInvalid(SourceInfo? source, string propertyPath, int value)
-                => new Error(ErrorLevel.Warning, "min-items-when-invalid", $"The array must have least {value} matched item(s).", source, propertyPath);
+            public static Error ArrayMinCheckInvalid(SourceInfo? source, string propertyPath, int value)
+                => new Error(ErrorLevel.Warning, "array-min-check-invalid", $"The array must have least {value} matched item(s).", source, propertyPath);
 
             /// <summary>
             /// Array conditional check not within max value
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MaxItemsWhenInvalid(SourceInfo? source, string propertyPath, int value)
-                => new Error(ErrorLevel.Warning, "max-items-when-invalid", $"The array must not have more than {value} matched item(s).", source, propertyPath);
+            public static Error ArrayMaxCheckInvalid(SourceInfo? source, string propertyPath, int value)
+                => new Error(ErrorLevel.Warning, "array-max-check-invalid", $"The array must not have more than {value} matched item(s).", source, propertyPath);
 
             /// <summary>
             /// Array items not unique.

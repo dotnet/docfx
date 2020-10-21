@@ -279,7 +279,7 @@ namespace Microsoft.Docs.Build
 
                 if (count > check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.MaxItemsWhenInvalid(JsonUtility.GetSourceInfo(array), propertyPath, check.Value));
+                    errors.Add(Errors.JsonSchema.ArrayMaxCheckInvalid(JsonUtility.GetSourceInfo(array), propertyPath, check.Value));
                 }
             }
         }
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
 
                 if (count < check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.MinItemsWhenInvalid(JsonUtility.GetSourceInfo(array), propertyPath, check.Value));
+                    errors.Add(Errors.JsonSchema.ArrayMinCheckInvalid(JsonUtility.GetSourceInfo(array), propertyPath, check.Value));
                 }
             }
         }

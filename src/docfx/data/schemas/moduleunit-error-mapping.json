@@ -56,12 +56,12 @@
       }
     },
     "quiz.questions.choices": {
-      "min-items-when-invalid": {
+      "array-min-check-invalid": {
         "severity": "error",
         "code": "quiz-no-answer",
         "message": "Question must have one correct answer."
       },
-      "max-items-when-invalid": {
+      "array-max-check-invalid": {
         "severity": "error",
         "code": "quiz-multiple-answers",
         "message": "Question must have one correct answer."
