@@ -1,15 +1,10 @@
 {
   "rules": {
     "uid": {
-      "duplicate-uid": {
-        "severity": "error",
-        "code": "duplicate-uids",
-        "message": "UID '{0}' is already defined in repo '{1}'."
-      },
       "missing-attribute": {
         "severity": "error",
         "code": "module-uid-missing",
-        "message": "Missing attribute: UID. A valid UID is required for each module."
+        "message": "Missing attribute: Uid. A valid Uid is required for each module."
       }
     },
     "units": {
@@ -18,10 +13,20 @@
         "code": "module-units-missing",
         "message": "Missing attribute: units. At least one valid unit is required for each module."
       },
+      "array-length-invalid": {
+        "severity": "error",
+        "code": "module-units-missing",
+        "message": "Missing attribute: units. At least one valid unit is required for each module."
+      },
       "xref-not-found": {
         "severity": "error",
         "code": "module-child-not-found",
-        "message": "Child UID(s): '{0}' can't be found."
+        "message": "Child Uid(s): '{0}' can't be found."
+      },
+      "xref-type-invalid": {
+        "severity": "error",
+        "code": "module-child-not-unit",
+        "message": "Invalid child Uid(s): '{0}'. A module can only have unit as children."
       }
     },
     "badge": {
@@ -29,6 +34,18 @@
         "severity": "error",
         "code": "module-badge-missing",
         "message": "Missing attribute: badge. A valid badge is required for each module."
+      }
+    },
+    "achievement": {
+      "xref-not-found": {
+        "severity": "error",
+        "code": "module-achievement-not-found",
+        "message": "Achievement Uid '{0}' can't be found."
+      },
+      "xref-type-invalid": {
+        "severity": "error",
+        "code": "module-achievement-not-badge",
+        "message": "Uid '{0}' is not a badge. A module can only have badge as achievement."
       }
     }
   }

@@ -395,8 +395,8 @@ namespace Microsoft.Docs.Build
             public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
                => new Error(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
 
-            public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? propertyPath)
-                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null, propertyPath);
+            public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaTpye)
+                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaTpye}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
 
             /// <summary>
             /// The same uid of the same version is defined in multiple places
@@ -511,11 +511,18 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
 
             /// <summary>
-            /// Array conditional check not within min or max value
+            /// Array conditional check not within min value
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error ArrayCheckInvalid(SourceInfo? source, string propName, string message)
-                => new Error(ErrorLevel.Warning, "array-check-invalid", $"{message}", source, propName);
+            public static Error MinItemsWhenInvalid(SourceInfo? source, string propertyPath, int value)
+                => new Error(ErrorLevel.Warning, "min-items-when-invalid", $"The array must have least {value} matched item(s).", source, propertyPath);
+
+            /// <summary>
+            /// Array conditional check not within max value
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MaxItemsWhenInvalid(SourceInfo? source, string propertyPath, int value)
+                => new Error(ErrorLevel.Warning, "max-items-when-invalid", $"The array must not have more than {value} matched item(s).", source, propertyPath);
 
             /// <summary>
             /// Array items not unique.
@@ -636,8 +643,11 @@ namespace Microsoft.Docs.Build
                     source,
                     name);
 
-            public static Error ReferenceCountInvalid(SourceInfo<string>? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
-                => new Error(ErrorLevel.Warning, "reference-count-invalid", $"UID '{source}' reference count should be {criteria}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
+            public static Error MinReferenceCountInvalid(SourceInfo<string>? source, int? minReferenceCount, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "min-reference-count-invalid", $"UID '{source}' reference count should be leaset {minReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
+
+            public static Error MaxReferenceCountInvalid(SourceInfo<string>? source, int? maxReferenceCount, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "max-reference-count-invalid", $"UID '{source}' reference count should not be more than {maxReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
         }
 
         public static class Metadata

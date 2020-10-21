@@ -609,7 +609,7 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-        "uid": { "contentType": "uid", "UIDGlobalUnique": true }
+        "uid": { "contentType": "uid", "uidGlobalUnique": true }
       }
     }
 outputs:
@@ -1835,8 +1835,8 @@ outputs:
   docs/b.json:
   docs/c.json:
   .errors.log: |
-    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
-    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"warning","code":"max-reference-count-invalid","message":"UID 'a' reference count should not be more than 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
+    {"message_severity":"warning","code":"min-reference-count-invalid","message":"UID 'a' reference count should be leaset 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
 ---
 # support SDP validation validateExternalXrefs
 repos:
@@ -1851,12 +1851,13 @@ repos:
             "repository_url": "b_repository_url",
             "docset_name": "docset_b",
             "references":[
-              {"uid": "c"},
-              {"uid": "d"}
+              {"uid": "c", "schemaType": "c-type"},
+              {"uid": "d", "schemaType": "d-type"}
             ],
             "external_xrefs":[
               {"uid": "nofound",
                 "docsetName": "docset_a",
+                "schemaType": "a-type",
                 "count": 1}
             ]
           }
@@ -1885,14 +1886,16 @@ outputs:
       "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
+          "schemaType": "c-type",
           "count": 2},
         {"uid": "d", 
           "docsetName": "docset_b",
+          "schemaType": "d-type",
           "count": 1}
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # support SDP validation validateExternalXrefs, locale build
 locale: zh-cn
@@ -1908,12 +1911,13 @@ repos:
             "repository_url": "b_repository_url",
             "docset_name": "docset_b",
             "references":[
-              {"uid": "c"},
-              {"uid": "d"}
+              {"uid": "c", "schemaType": "c-type"},
+              {"uid": "d", "schemaType": "d-type"}
             ],
             "external_xrefs":[
               {"uid": "nofound",
                 "docsetName": "docset_a",
+                "schemaType": "a-type",
                 "count": 1}
             ]
           }
@@ -1942,14 +1946,16 @@ outputs:
       "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
+          "schemaType": "c-type",
           "count": 2},
         {"uid": "d", 
           "docsetName": "docset_b",
+          "schemaType": "d-type",
           "count": 1}
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # multiple duplicated uids with the same MonkerList
 inputs:

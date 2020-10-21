@@ -547,10 +547,10 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: UID. A valid UID is required for each learning path.","file":"patha.yml","line":2}
+    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","file":"patha.yml","line":2}
     {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"patha.yml","line":2}
     {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-child-not-found","message":"Child UID(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
+    {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
 ---
 # error mapping for Learn Valdiation based on SDP, Module
 inputs:
@@ -600,10 +600,10 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: UID. A valid UID is required for each module.","file":"modulea.yml","line":2}
+    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each module.","file":"modulea.yml","line":2}
     {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"modulea.yml","line":2}
     {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-child-not-found","message":"Child UID(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
+    {"message_severity":"error","code":"module-child-not-found","message":"Child Uid(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
 ---
 # error mapping for Learn Valdiation based on SDP, ModuleUnit
 inputs:
@@ -639,7 +639,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"unit-uid-missing","message":"Missing attribute: UID. A valid UID is required for each unit.","file":"unita.yml","line":2}
+    {"message_severity":"error","code":"unit-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each unit.","file":"unita.yml","line":2}
     {"message_severity":"error","code":"unit-duration-missing","message":"Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.","file":"unita.yml","line":2}
     {"message_severity":"error","code":"unit-task-and-quiz","message":"Unit can't have both quiz and task.","file":"unitb.yml","line":2}
 ---
@@ -698,3 +698,410 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"alt-text-bad-length","message":"Alt text 'Diagram' is out of range at 7 characters. Alt text must be between 41 and 60 characters.","file":"includes/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../media/05-aks-clusterip.png'.","file":"includes/b.md","line":2,"column":1}
+---
+# Test: duplicate-uid, duplicate-uid-global, path-uid-missing
+# same as: duplicate-uid, duplicate-uid-global of module and unit, module-uid-missing
+# SDP validation to implement Learn Validation 
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+      docfx.yml: |
+        xref:
+        - 1.xrefmap.json
+      1.xrefmap.json: |
+        {
+          "repository_url": "a_repo",
+          "references":[{
+              "uid": "path-c"
+          }]
+        }      
+      path-a.yml: |
+        ### YamlMime:LearningPath
+        uid: path-a
+      path-b.yml: |
+        ### YamlMime:LearningPath
+        uid: path-a
+      path-c.yml: |
+        ### YamlMime:LearningPath
+        uid: path-c
+      path-d.yml: |
+        ### YamlMime:LearningPath
+      _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+        {
+          "required": ["uid"],
+          "properties": {
+            "uid": { "contentType": "uid", "uidGlobalUnique": true }
+          }
+        }
+outputs:
+  path-d.json:
+  .errors.log: |
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'path-a' is duplicated in 'path-a.yml(2,6)', 'path-b.yml(2,6)'.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'path-a' is duplicated in 'path-a.yml(2,6)', 'path-b.yml(2,6)'.","file":"path-b.yml","line":2}
+    {"message_severity":"error","code":"duplicate-uid-global","message":"UID 'path-c' is duplicated globally in repository 'a_repo'.","file":"path-c.yml","line":2}
+    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","line":0}
+---
+# Test: path-modules-missing, path-child-not-found, path-child-not-module
+# same as: module-units-missing, module-child-not-found, module-child-not-unit
+# SDP validation to implement Learn Validation 
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+      docfx.yml: |
+        xref:
+        - 1.xrefmap.json
+      1.xrefmap.json: |
+        {
+          "repository_url": "a_repo",
+          "references":[{
+              "uid": "external-path-a",
+              "schemaType": "LearningPath"
+          }]
+        }  
+      path-a.yml: |
+        ### YamlMime:LearningPath
+      path-b.yml: |
+        ### YamlMime:LearningPath
+        modules: []
+      path-c.yml: |
+        ### YamlMime:LearningPath
+        modules: ["module-nofound"]
+      path-d.yml: |
+        ### YamlMime:LearningPath
+        modules: ["unit-a", "external-path-a"]
+      unit-a.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit-a
+      _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+        {
+          "required": ["modules"],
+          "properties": {
+            "modules": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "contentType": "xref",
+                "xrefType": "Module"
+              }
+            }
+          }
+        }
+      _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        {
+          "properties": {"uid": {"contentType": "uid"}}
+        }
+outputs:
+  path-a.json:
+  unit-a.json:
+  .errors.log: |
+    {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module-nofound' can't be found.","file":"path-c.yml","line":2}
+    {"message_severity":"error","code":"path-child-not-module","message":"Invalid child Uid(s): 'external-path-a'. A learning path can only have module as children.","file":"path-d.yml","line":2}
+    {"message_severity":"error","code":"path-child-not-module","message":"Invalid child Uid(s): 'unit-a'. A learning path can only have module as children.","file":"path-d.yml","line":2}
+    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"path-b.yml","line":2}
+    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","line":0}
+---
+# Test: path-trophy-missing, path-achievement-not-found, path-achievement-not-trophy
+# same as: module-badge-missing, module-achievement-not-found, module-achievement-not-badge
+# SDP validation to implement Learn Validation 
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+      docfx.yml: 
+      path-a.yml: |
+        ### YamlMime:LearningPath
+      path-b.yml: |
+        ### YamlMime:LearningPath
+        trophy:
+          uid: define-trophy
+      path-c.yml: |
+        ### YamlMime:LearningPath
+        achievement: trophy-a
+      path-d.yml: |
+        ### YamlMime:LearningPath
+        achievement: badge-a
+      path-e.yml: |
+        ### YamlMime:LearningPath
+        achievement: trophy-nofound
+      achieve-a.yml: |
+        ### YamlMime:Achievements
+        achievements:
+        - uid: trophy-a
+          type: trophy
+        - uid: badge-a
+          type: badge
+      _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+        {
+          "either": [["trophy", "achievement"]],
+          "properties": {
+            "trophy": { "properties": { "uid": {"contentType": "uid"}}},
+            "achievement": {
+              "contentType": "xref",
+              "xrefType": "trophy"
+            }
+          }
+        }
+      _themes/ContentTemplate/schemas/Achievements.schema.json: |
+        {
+          "properties": {
+            "achievements": {
+                "type": "array",
+                "items": {
+                  "properties": {
+                    "uid": {"type": "string", "contentType": "uid"},
+                    "type": {"type": "string", "enum": ["trophy", "badge"]}
+                  },
+                  "schemaTypeProperty": "type"
+                }
+            }
+          }
+        }
+outputs:
+  path-a.json:
+  path-b.json:
+  path-c.json:
+  achieve-a.json:
+  .errors.log: |
+    {"message_severity":"error","code":"path-achievement-not-found","message":"Achievement Uid 'trophy-nofound' can't be found.","file":"path-e.yml","line":2}
+    {"message_severity":"error","code":"path-achievement-not-trophy","message":"Uid 'badge-a' is not a trophy. A learning path can only have trophy as achievement.","file":"path-d.yml","line":2}
+    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","line":0}
+---
+# Test: unit-duration-missing, unit-multiple-parents, unit-no-module-parent, uid-not-found
+# SDP validation to implement Learn Validation 
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+      docfx.yml: |
+        name: learn-pr
+        xref:
+        - 1.xrefmap.json
+      1.xrefmap.json: |
+        {
+          "repository_url": "https://github.com/learn/learn-pr2",
+          "docset_name": "docset_b",
+          "external_xrefs":[
+            {"uid": "nofound",
+              "docsetName": "learn-pr",
+              "schemaType": "module",
+              "count": 1}
+          ]
+        }  
+      module-a.yml: |
+        ### YamlMime:Module
+        units: ["unit-b", "unit-c"]
+      module-b.yml: |
+        ### YamlMime:Module
+        units: ["unit-c"]
+      unit-a.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit-a
+      unit-b.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit-b
+        durationInMinutes: 0
+      unit-c.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit-c
+        durationInMinutes: 5
+      _themes/ContentTemplate/schemas/Module.schema.json: |
+        {
+          "properties": {
+            "units": { "type": "array", "items": { "contentType": "xref" }}
+          }
+        }
+      _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        {
+          "required": ["durationInMinutes"],
+          "properties": {
+            "durationInMinutes": {
+              "type": "number",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "string",
+              "contentType": "uid",
+              "maxReferenceCount": 1,
+              "minReferenceCount": 1
+            }
+          }
+        }
+outputs:
+  module-a.json:
+  module-b.json:
+  unit-c.json:
+  .errors.log: |
+    {"message_severity":"error","code":"unit-duration-missing","message":"Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.","file":"unit-a.yml","line":2}
+    {"message_severity":"error","code":"unit-duration-missing","message":"Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.","file":"unit-b.yml","line":3}
+    {"message_severity":"error","code":"unit-multiple-parents","message":"Unit 'unit-c' can't have two or more parents ('module-a.yml(2,19)', 'module-b.yml(2,9)').","file":"unit-c.yml","line":2}
+    {"message_severity":"error","code":"unit-no-module-parent","message":"Unit 'unit-a' must belong to a valid module.","file":"unit-a.yml","line":2}
+    {"message_severity":"error","code":"uid-not-found","message":"UID 'nofound' with type 'module' not found, which is referenced by repository 'https://github.com/learn/learn-pr2'.","line": 0}
+---
+# Test: unit-task-and-quiz, task-type-invalid, tasks-format-invalid, quiz-no-answer, quiz-multiple-answers
+# SDP validation to implement Learn Validation 
+repos:
+  https://github.com/learn/learn-pr:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": ".",
+            "customized_tasks": {
+              "docset_postbuild": [
+                "_dependentPackages/CommonPlugins/tools/TripleCrownValidation.ps1"
+              ]
+            }
+          }]
+        }
+      docfx.yml: 
+      unit-a.yml: |
+        ### YamlMime:ModuleUnit
+      unit-b.yml: |
+        ### YamlMime:ModuleUnit
+        tasks:
+        - azure:
+            resource:
+              type: a/1
+        quiz:
+          questions:
+          - choices:
+            - content: a
+              isCorrect: true
+            - content: b
+              isCorrect: false
+      unit-c.yml: |
+        ### YamlMime:ModuleUnit
+        tasks:
+        - azure:
+            resource:
+              type: a/1/1
+      unit-d.yml: |
+        ### YamlMime:ModuleUnit
+        tasks:
+        - azure:
+            resource:
+              type: c/1
+      unit-e.yml: |
+        ### YamlMime:ModuleUnit
+        quiz:
+          questions:
+          - choices:
+            - content: a
+              isCorrect: true
+            - content: b
+              isCorrect: true
+      unit-f.yml: |
+        ### YamlMime:ModuleUnit
+        quiz:
+          questions:
+          - choices:
+            - content: a
+              isCorrect: false
+            - content: b
+              isCorrect: false
+      _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        {
+          "precludes": [["quiz", "tasks"]],
+          "properties": {
+            "quiz": { "$ref": "#/definitions/quiz" },
+            "tasks": { "$ref": "#/definitions/tasks" }
+          },
+          "definitions": {
+            "quiz": {
+              "type": "object",
+              "properties": {
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "choices": { 
+                        "type": "array", 
+                          "items": { 
+                          "type": "object", 
+                          "properties": { "isCorrect": { "type": "boolean" }}},
+                          "minItemsWhen": [{"value": 1, "condition": {"properties": {"isCorrect": {"const": true}}}}],
+                          "maxItemsWhen": [{"value": 1, "condition": {"properties": {"isCorrect": {"const": true}}}}]
+                        }
+                    }
+                  }
+                }
+              }
+            },
+            "tasks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "azure": {
+                    "type": "object",
+                    "properties": {
+                      "resource": {
+                        "type": "object",
+                        "properties": {
+                          "type": {"type": "string", "enum": ["a/1", "a/2", "a/1/1", "a/1/2"], "pattern": "^[\\w\\.]*\\/[\\w\\.]*$"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+outputs:
+  unit-a.json:
+  .errors.log: |
+    {"message_severity":"error","code":"quiz-multiple-answers","message":"Question must have one correct answer.","file":"unit-e.yml","line":5}
+    {"message_severity":"error","code":"quiz-no-answer","message":"Question must have one correct answer.","file":"unit-f.yml","line":5}
+    {"message_severity":"error","code":"tasks-format-invalid","message":"Task has invalid Azure resource type 'a/1/1'. Type must be formatted as '*/*' when name is specified.","file":"unit-c.yml","line":5}
+    {"message_severity":"error","code":"task-type-invalid","message":"Task has invalid Azure resource type: 'c/1'.","file":"unit-d.yml","line":5}
+    {"message_severity":"error","code":"unit-task-and-quiz","message":"Unit can't have both quiz and task.","file":"unit-b.yml","line":2}
+

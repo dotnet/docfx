@@ -27,8 +27,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<(FilePath, string), (IXrefSpec? spec, JObject? specObj)> _mustacheXrefSpec =
             new ConcurrentDictionary<(FilePath, string), (IXrefSpec?, JObject?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
-            new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
+        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema schema, int? minReferenceCount, int? maxReferenceCount)>
+            _uidReferenceCountList = new ConcurrentBag<(SourceInfo<string>, string?, JsonSchema, int?, int?)>();
 
         private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList =
             new ConcurrentBag<(SourceInfo<string>, string?, string?)>();
@@ -54,18 +54,18 @@ namespace Microsoft.Docs.Build
 
         public void PostValidate()
         {
-            foreach (var (uid, propertyPath, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
+            foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
             {
                 var references = _xrefList.Where(item => item.xref.Value.Equals(uid.Value)).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
-                    _errors.Add(Errors.JsonSchema.ReferenceCountInvalid(uid, $">= {minReferenceCount}", references, propertyPath));
+                    _errors.WithCustomRule(schema).Add(Errors.JsonSchema.MinReferenceCountInvalid(uid, minReferenceCount, references, propertyPath));
                 }
 
                 if (maxReferenceCount != null && references.Length > maxReferenceCount)
                 {
-                    _errors.Add(Errors.JsonSchema.ReferenceCountInvalid(uid, $"<= {maxReferenceCount}", references, propertyPath));
+                    _errors.WithCustomRule(schema).Add(Errors.JsonSchema.MaxReferenceCountInvalid(uid, maxReferenceCount, references, propertyPath));
                 }
             }
         }
@@ -460,6 +460,7 @@ namespace Microsoft.Docs.Build
                         _uidReferenceCountList.Add((
                             new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
                             propertyPath,
+                            rootSchema,
                             schema.MinReferenceCount,
                             schema.MaxReferenceCount));
                     }

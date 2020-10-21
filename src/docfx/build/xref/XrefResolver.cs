@@ -47,6 +47,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
                     () => new InternalXrefMapBuilder(
+                                config,
                                 errorLog,
                                 templateEngine,
                                 documentProvider,
@@ -222,7 +223,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateUIDGlobalUnique()
+        private void ValidateUidGlobalUnique()
         {
             var globalXrefSpecs = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First());
 
@@ -230,7 +231,8 @@ namespace Microsoft.Docs.Build
             {
                 if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(xrefSpec.Uid, out var spec))
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath));
+                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
+                        .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
                 }
             }
         }
@@ -246,7 +248,8 @@ namespace Microsoft.Docs.Build
                 if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(
-                        xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType));
+                        xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType)
+                        .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
                 }
             }
         }
@@ -300,7 +303,7 @@ namespace Microsoft.Docs.Build
             if (Interlocked.Exchange(ref _internalXrefMapValidated, 1) == 0)
             {
                 ValidateInternalXrefProperties();
-                ValidateUIDGlobalUnique();
+                ValidateUidGlobalUnique();
                 ValidateExternalXref();
             }
 
