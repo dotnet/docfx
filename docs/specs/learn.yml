@@ -699,7 +699,7 @@ outputs:
     {"message_severity":"suggestion","code":"alt-text-bad-length","message":"Alt text 'Diagram' is out of range at 7 characters. Alt text must be between 41 and 60 characters.","file":"includes/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../media/05-aks-clusterip.png'.","file":"includes/b.md","line":2,"column":1}
 ---
-# Test: duplicate-uid, duplicate-uid-global, path-uid-missing
+# Test: duplicate-uid, path-uid-missing
 # same as: duplicate-uid, duplicate-uid-global of module and unit, module-uid-missing
 # SDP validation to implement Learn Validation 
 repos:
@@ -717,32 +717,20 @@ repos:
             }
           }]
         }
-      docfx.yml: |
-        xref:
-        - 1.xrefmap.json
-      1.xrefmap.json: |
-        {
-          "repository_url": "a_repo",
-          "references":[{
-              "uid": "path-c"
-          }]
-        }      
+      docfx.yml:      
       path-a.yml: |
         ### YamlMime:LearningPath
         uid: path-a
       path-b.yml: |
         ### YamlMime:LearningPath
         uid: path-a
-      path-c.yml: |
-        ### YamlMime:LearningPath
-        uid: path-c
       path-d.yml: |
         ### YamlMime:LearningPath
       _themes/ContentTemplate/schemas/LearningPath.schema.json: |
         {
           "required": ["uid"],
           "properties": {
-            "uid": { "contentType": "uid", "uidGlobalUnique": true }
+            "uid": { "contentType": "uid"}
           }
         }
 outputs:
@@ -750,7 +738,6 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"duplicate-uid","message":"UID 'path-a' is duplicated in 'path-a.yml(2,6)', 'path-b.yml(2,6)'.","file":"path-a.yml","line":2}
     {"message_severity":"error","code":"duplicate-uid","message":"UID 'path-a' is duplicated in 'path-a.yml(2,6)', 'path-b.yml(2,6)'.","file":"path-b.yml","line":2}
-    {"message_severity":"error","code":"duplicate-uid-global","message":"UID 'path-c' is duplicated globally in repository 'a_repo'.","file":"path-c.yml","line":2}
     {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","line":0}
 ---
 # Test: path-modules-missing, path-child-not-found, path-child-not-module
