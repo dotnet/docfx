@@ -1050,12 +1050,12 @@ repos:
                     "type": "object",
                     "properties": {
                       "choices": { 
-                        "type": "array", 
-                          "items": { 
+                        "type": "array",
+                        "minItemsWhen": [{"value": 1, "condition": {"properties": {"isCorrect": {"const": true}}}}],
+                        "maxItemsWhen": [{"value": 1, "condition": {"properties": {"isCorrect": {"const": true}}}}],
+                        "items": { 
                           "type": "object", 
-                          "properties": { "isCorrect": { "type": "boolean" }}},
-                          "minItemsWhen": [{"value": 1, "condition": {"properties": {"isCorrect": {"const": true}}}}],
-                          "maxItemsWhen": [{"value": 1, "condition": {"properties": {"isCorrect": {"const": true}}}}]
+                          "properties": { "isCorrect": { "type": "boolean" }}}
                         }
                     }
                   }
