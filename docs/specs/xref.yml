@@ -1836,7 +1836,7 @@ outputs:
   docs/c.json:
   .errors.log: |
     {"message_severity":"warning","code":"max-reference-count-invalid","message":"UID 'a' reference count should not be more than 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
-    {"message_severity":"warning","code":"min-reference-count-invalid","message":"UID 'a' reference count should be leaset 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
+    {"message_severity":"warning","code":"min-reference-count-invalid","message":"UID 'a' reference count should be least 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
 ---
 # support SDP validation validateExternalXrefs
 repos:
