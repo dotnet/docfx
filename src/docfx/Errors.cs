@@ -395,8 +395,8 @@ namespace Microsoft.Docs.Build
             public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
                => new Error(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
 
-            public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaTpye)
-                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaTpye}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
+            public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaType)
+                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
 
             /// <summary>
             /// The same uid of the same version is defined in multiple places
@@ -644,7 +644,7 @@ namespace Microsoft.Docs.Build
                     name);
 
             public static Error MinReferenceCountInvalid(SourceInfo<string>? source, int? minReferenceCount, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
-                => new Error(ErrorLevel.Warning, "min-reference-count-invalid", $"UID '{source}' reference count should be leaset {minReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
+                => new Error(ErrorLevel.Warning, "min-reference-count-invalid", $"UID '{source}' reference count should be least {minReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
 
             public static Error MaxReferenceCountInvalid(SourceInfo<string>? source, int? maxReferenceCount, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
                 => new Error(ErrorLevel.Warning, "max-reference-count-invalid", $"UID '{source}' reference count should not be more than {maxReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
