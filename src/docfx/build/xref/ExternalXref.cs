@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 
         public int Count { get; set; }
 
+        public string? SchemaType { get; set; }
+
         [JsonIgnore]
         public string? ReferencedRepositoryUrl { get; set; }
     }

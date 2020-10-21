@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefMapBuilder
     {
+        private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly TemplateEngine _templateEngine;
         private readonly DocumentProvider _documentProvider;
@@ -21,6 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaTransformer _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
+            Config config,
             ErrorBuilder errors,
             TemplateEngine templateEngine,
             DocumentProvider documentProvider,
@@ -30,6 +32,7 @@ namespace Microsoft.Docs.Build
             BuildScope buildScope,
             JsonSchemaTransformer jsonSchemaTransformer)
         {
+            _config = config;
             _errors = errors;
             _templateEngine = templateEngine;
             _documentProvider = documentProvider;
@@ -146,7 +149,8 @@ namespace Microsoft.Docs.Build
                     foreach (var spec in specsWithSameMonikerList)
                     {
                         duplicateSpecs.Add(spec);
-                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource));
+                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath)
+                            .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
                     }
                 }
             }
