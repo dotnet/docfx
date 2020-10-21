@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
-                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls(errors);
+                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls(errors, file);
             }
             catch (JsonReaderException ex)
             {
@@ -341,7 +341,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Report warnings for null values inside arrays and remove nulls inside arrays.
         /// </summary>
-        public static JToken RemoveNulls(this JToken root, ErrorBuilder errors)
+        public static JToken RemoveNulls(this JToken root, ErrorBuilder errors, FilePath? file)
         {
             var nullArrayNodes = new List<(JToken, string)>();
 
@@ -354,7 +354,14 @@ namespace Microsoft.Docs.Build
             }
 
             // treat null JToken as empty JObject since it is from user input
-            return IsNullOrUndefined(root) ? new JObject() : root;
+            if (IsNullOrUndefined(root))
+            {
+                var result = new JObject();
+                SetSourceInfo(result, file is null ? null : new SourceInfo(file));
+                return result;
+            }
+
+            return root;
 
             void RemoveNullsCore(JToken token, string? name)
             {

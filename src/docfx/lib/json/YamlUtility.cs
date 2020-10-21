@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static JToken Parse(ErrorBuilder errors, TextReader input, FilePath? file)
         {
-            return ParseCore(errors, input, file).RemoveNulls(errors);
+            return ParseCore(errors, input, file).RemoveNulls(errors, file);
         }
 
         private static string? ReadDocumentType(TextReader reader)
