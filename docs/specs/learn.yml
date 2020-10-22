@@ -734,11 +734,10 @@ repos:
           }
         }
 outputs:
-  path-d.json:
   .errors.log: |
     {"message_severity":"error","code":"duplicate-uid","message":"UID 'path-a' is duplicated in 'path-a.yml(2,6)', 'path-b.yml(2,6)'.","file":"path-a.yml","line":2}
     {"message_severity":"error","code":"duplicate-uid","message":"UID 'path-a' is duplicated in 'path-a.yml(2,6)', 'path-b.yml(2,6)'.","file":"path-b.yml","line":2}
-    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","line":0}
+    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","file":"path-d.yml","line":0}
 ---
 # Test: path-modules-missing, path-child-not-found, path-child-not-module
 # same as: module-units-missing, module-child-not-found, module-child-not-unit
@@ -802,14 +801,13 @@ repos:
           "properties": {"uid": {"contentType": "uid"}}
         }
 outputs:
-  path-a.json:
   unit-a.json:
   .errors.log: |
     {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module-nofound' can't be found.","file":"path-c.yml","line":2}
     {"message_severity":"error","code":"path-child-not-module","message":"Invalid child Uid(s): 'external-path-a'. A learning path can only have module as children.","file":"path-d.yml","line":2}
     {"message_severity":"error","code":"path-child-not-module","message":"Invalid child Uid(s): 'unit-a'. A learning path can only have module as children.","file":"path-d.yml","line":2}
     {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"path-b.yml","line":2}
-    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","line":0}
+    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"path-a.yml","line":0}
 ---
 # Test: path-trophy-missing, path-achievement-not-found, path-achievement-not-trophy
 # same as: module-badge-missing, module-achievement-not-found, module-achievement-not-badge
@@ -879,14 +877,13 @@ repos:
           }
         }
 outputs:
-  path-a.json:
   path-b.json:
   path-c.json:
   achieve-a.json:
   .errors.log: |
     {"message_severity":"error","code":"path-achievement-not-found","message":"Achievement Uid 'trophy-nofound' can't be found.","file":"path-e.yml","line":2}
     {"message_severity":"error","code":"path-achievement-not-trophy","message":"Uid 'badge-a' is not a trophy. A learning path can only have trophy as achievement.","file":"path-d.yml","line":2}
-    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","line":0}
+    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"path-a.yml","line":0}
 ---
 # Test: unit-duration-missing, unit-multiple-parents, unit-no-module-parent, uid-not-found
 # SDP validation to implement Learn Validation 
