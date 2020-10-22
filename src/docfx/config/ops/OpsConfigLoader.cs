@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ECMA2Yaml;
@@ -38,14 +39,16 @@ namespace Microsoft.Docs.Build
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder);
+            return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder, docsetPath, errors);
         }
 
         private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
-            string? branch, OpsConfig opsConfig, PathString buildSourceFolder)
+            string? branch, OpsConfig opsConfig, PathString buildSourceFolder, string docsetPath, ErrorBuilder errors)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
+
+            var splitTOCOutOfDocsetsToPublish = opsConfig.SplitTOC;
 
             result["urlType"] = "docs";
             result["dependencies"] = new JObject(
@@ -82,7 +85,36 @@ namespace Microsoft.Docs.Build
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
 
-                result["splitTOC"] = JArray.FromObject(docsetConfig.SplitTOC);
+                var splitTOCSet = docsetConfig.SplitTOC ?? new HashSet<PathString>();
+
+                if (string.IsNullOrEmpty(buildSourceFolder)
+                    || buildSourceFolder.Equals(".")
+                    || buildSourceFolder.Equals("./")
+                    || buildSourceFolder.Equals(".\\"))
+                {
+                    splitTOCSet.AddRange(splitTOCOutOfDocsetsToPublish);
+                }
+                else
+                {
+                    foreach (var item in splitTOCOutOfDocsetsToPublish)
+                    {
+                        if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
+                        {
+                            splitTOCSet.Add(splitTOCRelativeToDocset);
+                        }
+                    }
+                }
+
+                foreach (var item in splitTOCSet)
+                {
+                    var itemFullPath = Path.GetFullPath(Path.Combine(docsetPath, item));
+                    if (!File.Exists(itemFullPath))
+                    {
+                        errors.Add(Errors.Config.FileNotFound(item));
+                    }
+                }
+
+                result["splitTOC"] = JArray.FromObject(splitTOCSet);
             }
 
             var joinTOCPluginConfig = docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>();
