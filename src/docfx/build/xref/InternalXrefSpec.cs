@@ -27,6 +27,9 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public bool UidGlobalUnique { get; }
 
+        [JsonIgnore]
+        public string? PropertyPath { get; }
+
         // TODO: change to use xrefSpec type to express what kind of xref spec it is: e.g. achievement, module
         [JsonIgnore]
         internal string? DeclaringPropertyPath { get; }
@@ -37,6 +40,7 @@ namespace Microsoft.Docs.Build
             FilePath declaringFile,
             MonikerList monikerList,
             string? declaringPropertyPath = null,
+            string? propertyPath = null,
             bool uidGlobalUnique = false,
             string? schemaType = null)
         {
@@ -45,6 +49,7 @@ namespace Microsoft.Docs.Build
             DeclaringFile = declaringFile;
             Monikers = monikerList;
             DeclaringPropertyPath = declaringPropertyPath;
+            PropertyPath = propertyPath;
             UidGlobalUnique = uidGlobalUnique;
             SchemaType = schemaType;
         }

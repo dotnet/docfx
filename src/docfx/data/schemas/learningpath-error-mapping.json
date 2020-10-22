@@ -1,15 +1,10 @@
 {
   "rules": {
     "uid": {
-      "duplicate-uid": {
-        "severity": "error",
-        "code": "duplicate-uids",
-        "message": "UID '{0}' is already defined in repo '{1}'."
-      },
       "missing-attribute": {
         "severity": "error",
         "code": "path-uid-missing",
-        "message": "Missing attribute: UID. A valid UID is required for each learning path."
+        "message": "Missing attribute: Uid. A valid Uid is required for each learning path."
       }
     },
     "modules": {
@@ -18,10 +13,20 @@
         "code": "path-modules-missing",
         "message": "Missing attribute: modules. At least one valid module is required for each learning path."
       },
+      "array-length-invalid": {
+        "severity": "error",
+        "code": "path-modules-missing",
+        "message": "Missing attribute: modules. At least one valid module is required for each learning path."
+      },
       "xref-not-found": {
         "severity": "error",
         "code": "path-child-not-found",
-        "message": "Child UID(s): '{0}' can't be found."
+        "message": "Child Uid(s): '{0}' can't be found."
+      },
+      "xref-type-invalid": {
+        "severity": "error",
+        "code": "path-child-not-module",
+        "message": "Invalid child Uid(s): '{0}'. A learning path can only have module as children."
       }
     },
     "trophy": {
@@ -31,11 +36,16 @@
         "message": "Missing attribute: trophy. A valid trophy is required for each learning path."
       }
     },
-    "parent_property.child_property": {
-      "missing-attribute": {
+    "achievement": {
+      "xref-not-found": {
         "severity": "error",
-        "code": "jsonpath-test",
-        "message": "jsonpath-test, missing attribute: parent_property.child_property, which is required."
+        "code": "path-achievement-not-found",
+        "message": "Achievement Uid '{0}' can't be found."
+      },
+      "xref-type-invalid": {
+        "severity": "error",
+        "code": "path-achievement-not-trophy",
+        "message": "Uid '{0}' is not a trophy. A learning path can only have trophy as achievement."
       }
     }
   }

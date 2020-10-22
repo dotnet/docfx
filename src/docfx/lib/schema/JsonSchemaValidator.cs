@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateMaxItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
+        private void ValidateMaxItemsWhen(JsonSchema schema, string propertyPath, JArray array, List<Error> errors)
         {
             foreach (var check in schema.MaxItemsWhen)
             {
@@ -279,15 +279,12 @@ namespace Microsoft.Docs.Build
 
                 if (count > check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
-                        JsonUtility.GetSourceInfo(array),
-                        name,
-                        $"The array must not have more than {check.Value} matched item(s)."));
+                    errors.Add(Errors.JsonSchema.ArrayMaxCheckInvalid(JsonUtility.GetSourceInfo(array), propertyPath, check.Value));
                 }
             }
         }
 
-        private void ValidateMinItemsWhen(JsonSchema schema, string name, JArray array, List<Error> errors)
+        private void ValidateMinItemsWhen(JsonSchema schema, string propertyPath, JArray array, List<Error> errors)
         {
             foreach (var check in schema.MinItemsWhen)
             {
@@ -302,10 +299,7 @@ namespace Microsoft.Docs.Build
 
                 if (count < check.Value)
                 {
-                    errors.Add(Errors.JsonSchema.ArrayCheckInvalid(
-                        JsonUtility.GetSourceInfo(array),
-                        name,
-                        $"The array must have least {check.Value} matched item(s)."));
+                    errors.Add(Errors.JsonSchema.ArrayMinCheckInvalid(JsonUtility.GetSourceInfo(array), propertyPath, check.Value));
                 }
             }
         }
