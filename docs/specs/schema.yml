@@ -829,3 +829,14 @@ outputs:
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_e'. Expected type 'b_type' but got 'e_type'.","file":"docs/a.yml","line":3}
+---
+# Report file path for empty YAML files
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestPage
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    { "required": ["authors"] }
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":0,"column":0}
