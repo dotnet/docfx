@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
 
-                var splitTOCSet = docsetConfig.SplitTOC ?? new HashSet<PathString>();
+                var splitTOCSet = new HashSet<PathString>(docsetConfig.SplitTOC);
 
                 foreach (var item in opsConfig.SplitTOC)
                 {

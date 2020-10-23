@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty(nameof(SplitTOC))]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
+        public PathString[] SplitTOC { get; private set; } = Array.Empty<PathString>();
 
         [JsonProperty(nameof(ECMA2Yaml))]
         [JsonConverter(typeof(OneOrManyConverter))]
