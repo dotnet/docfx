@@ -129,6 +129,10 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("no-dry-sync", ref options.NoDrySync, "Do not run dry sync for learn validation.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
                     syntax.DefineOption("no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
+                    syntax.DefineOption(
+                        "template-base-path",
+                        ref options.TemplateBasePath,
+                        "The base path used for referencing the template resource file when applying liquid.");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 

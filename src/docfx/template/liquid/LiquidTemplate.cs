@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Package _package;
         private readonly PackageFileSystem _fileSystem;
+        private readonly string? _templateBasePath;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
 
         private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new ConcurrentDictionary<PathString, Lazy<Template?>>();
@@ -31,10 +32,11 @@ namespace Microsoft.Docs.Build
             Template.RegisterTag<LocalizeTag>("loc");
         }
 
-        public LiquidTemplate(Package package, JObject? global = null)
+        public LiquidTemplate(Package package, string? templateBasePath = null, JObject? global = null)
         {
             _package = package;
             _fileSystem = new PackageFileSystem(LoadTemplate);
+            _templateBasePath = templateBasePath;
             _localizedStrings = global is null
                 ? new Dictionary<string, string>()
                 : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
@@ -49,6 +51,7 @@ namespace Microsoft.Docs.Build
             {
                 ["file_system"] = _fileSystem,
                 ["localized_strings"] = _localizedStrings,
+                ["template_base_path"] = _templateBasePath,
             };
 
             var environments = new List<Hash>
@@ -79,9 +82,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string? GetThemeRelativePath(string resourcePath)
+        public static string? GetThemeRelativePath(string? templateBasePath, string resourcePath)
         {
-            return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
+            if (string.IsNullOrEmpty(templateBasePath))
+            {
+                return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
+            }
+            else
+            {
+                return new PathString(templateBasePath).Concat(new PathString(resourcePath));
+            }
         }
 
         private Template? LoadTemplate(PathString path)

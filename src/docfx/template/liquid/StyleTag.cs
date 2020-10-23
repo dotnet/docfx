@@ -10,7 +10,8 @@ namespace Microsoft.Docs.Build
     {
         public override void Render(DotLiquid.Context context, TextWriter result)
         {
-            result.Write($@"<link rel=""stylesheet"" href=""{LiquidTemplate.GetThemeRelativePath(Markup)}"">");
+            var templateBasePath = (string?)context.Registers["template_base_path"];
+            result.Write($@"<link rel=""stylesheet"" href=""{LiquidTemplate.GetThemeRelativePath(templateBasePath, Markup)}"">");
         }
     }
 }

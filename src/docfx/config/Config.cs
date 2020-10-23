@@ -229,6 +229,12 @@ namespace Microsoft.Docs.Build
         public PackagePath Template { get; private set; } = new PackagePath();
 
         /// <summary>
+        /// Get the template base path used for referencing the template resource file when apply liquid.
+        /// If not provided, referencing to template resource file will be resolved to physical absolute path.
+        /// </summary>
+        public string? TemplateBasePath { get; private set; }
+
+        /// <summary>
         /// Gets the search index type like [lunr](https://lunrjs.com/)
         /// </summary>
         public SearchEngineType SearchEngine { get; private set; }
