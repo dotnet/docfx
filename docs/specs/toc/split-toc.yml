@@ -324,6 +324,4 @@ repos:
           items:
           - name: 1-1
 outputs:
-  a/toc.json: 
-  .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Can't find the specified SplitTOC file: 'a/TOC.yml'. If the 'SplitTOC' is placed in the 'docsets_to_publish' section, the path should be relative to 'build_source-folder'. And if the 'SplitTOC' is placed out of the 'docsets_to_publish' section, the 'SplitTOC' path should be relative to the repository root."}
+  a/toc.json:

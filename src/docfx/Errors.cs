@@ -225,12 +225,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ✔️
             public static Error CommittishNotFound(string repo, string committish)
                 => new Error(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
-
-            /// <summary>
-            /// SplitTOC file config incorrectly.
-            /// </summary>
-            public static Error FileNotFound(string path)
-                => new Error(ErrorLevel.Warning, "file-not-found", $"Can't find the specified SplitTOC file: '{path}'. If the 'SplitTOC' is placed in the 'docsets_to_publish' section, the path should be relative to 'build_source-folder'. And if the 'SplitTOC' is placed out of the 'docsets_to_publish' section, the 'SplitTOC' path should be relative to the repository root.");
         }
 
         public static class Link

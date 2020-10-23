@@ -39,11 +39,11 @@ namespace Microsoft.Docs.Build
             }
 
             var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
-            return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder, docsetPath, errors);
+            return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder);
         }
 
         private static (string? xrefEndpoint, string[]? xrefQueryTags, JObject config) ToDocfxConfig(
-            string? branch, OpsConfig opsConfig, PathString buildSourceFolder, string docsetPath, ErrorBuilder errors)
+            string? branch, OpsConfig opsConfig, PathString buildSourceFolder)
         {
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
@@ -86,30 +86,12 @@ namespace Microsoft.Docs.Build
                 };
 
                 var splitTOCSet = docsetConfig.SplitTOC ?? new HashSet<PathString>();
-                if (string.IsNullOrEmpty(buildSourceFolder)
-                    || buildSourceFolder.Equals(".")
-                    || buildSourceFolder.Equals("./")
-                    || buildSourceFolder.Equals(".\\"))
-                {
-                    splitTOCSet.AddRange(splitTOCOutOfDocsetsToPublish);
-                }
-                else
-                {
-                    foreach (var item in splitTOCOutOfDocsetsToPublish)
-                    {
-                        if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
-                        {
-                            splitTOCSet.Add(splitTOCRelativeToDocset);
-                        }
-                    }
-                }
 
-                foreach (var item in splitTOCSet)
+                foreach (var item in splitTOCOutOfDocsetsToPublish)
                 {
-                    var itemFullPath = Path.GetFullPath(Path.Combine(docsetPath, item));
-                    if (!File.Exists(itemFullPath))
+                    if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
                     {
-                        errors.Add(Errors.Config.FileNotFound(item));
+                        splitTOCSet.Add(splitTOCRelativeToDocset);
                     }
                 }
 
