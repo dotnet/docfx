@@ -86,7 +86,6 @@ namespace Microsoft.Docs.Build
                 };
 
                 var splitTOCSet = docsetConfig.SplitTOC ?? new HashSet<PathString>();
-
                 if (string.IsNullOrEmpty(buildSourceFolder)
                     || buildSourceFolder.Equals(".")
                     || buildSourceFolder.Equals("./")
