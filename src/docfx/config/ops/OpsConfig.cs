@@ -28,7 +28,8 @@ namespace Microsoft.Docs.Build
         public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
 
         [JsonProperty(nameof(SplitTOC))]
-        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public PathString[] SplitTOC { get; private set; } = Array.Empty<PathString>();
 
         [JsonProperty(nameof(ECMA2Yaml))]
         [JsonConverter(typeof(OneOrManyConverter))]
