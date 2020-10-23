@@ -223,6 +223,7 @@ namespace Microsoft.Docs.Build
                 toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
                 toc.Href = toc.Href.With(null);
                 toc.Uid = toc.Uid.With(null);
+                toc.Expanded = null;
             }
         }
 
