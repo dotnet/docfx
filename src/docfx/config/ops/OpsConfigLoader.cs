@@ -48,8 +48,6 @@ namespace Microsoft.Docs.Build
             var result = new JObject();
             var dependencies = GetDependencies(opsConfig, branch, buildSourceFolder);
 
-            var splitTOCOutOfDocsetsToPublish = opsConfig.SplitTOC;
-
             result["urlType"] = "docs";
             result["dependencies"] = new JObject(
                 from dep in dependencies
@@ -87,7 +85,7 @@ namespace Microsoft.Docs.Build
 
                 var splitTOCSet = docsetConfig.SplitTOC ?? new HashSet<PathString>();
 
-                foreach (var item in splitTOCOutOfDocsetsToPublish)
+                foreach (var item in opsConfig.SplitTOC)
                 {
                     if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
                     {
