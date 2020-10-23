@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ECMA2Yaml;
@@ -82,7 +83,17 @@ namespace Microsoft.Docs.Build
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
 
-                result["splitTOC"] = JArray.FromObject(docsetConfig.SplitTOC);
+                var splitTOCSet = docsetConfig.SplitTOC ?? new HashSet<PathString>();
+
+                foreach (var item in opsConfig.SplitTOC)
+                {
+                    if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
+                    {
+                        splitTOCSet.Add(splitTOCRelativeToDocset);
+                    }
+                }
+
+                result["splitTOC"] = JArray.FromObject(splitTOCSet);
             }
 
             var joinTOCPluginConfig = docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>();
