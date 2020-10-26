@@ -397,7 +397,10 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
+
+                    // Output absolute URL starting from Architecture
+                    var absoluteUrl = _documentProvider.GetMime(file) == "Architecture";
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file, absoluteUrl);
                     errors.AddIfNotNull(error);
                     return link;
 
