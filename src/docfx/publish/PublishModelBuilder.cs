@@ -14,8 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
-        private readonly PublishUrlMap _publishUrlMapBuilder;
-        private readonly DocumentProvider _documentProvider;
+        private readonly PublishUrlMap _publishUrlMap;
         private readonly SourceMap _sourceMap;
 
         private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
@@ -26,16 +25,14 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
-            PublishUrlMap publishUrlMapBuilder,
-            DocumentProvider documentProvider,
+            PublishUrlMap publishUrlMap,
             SourceMap sourceMap)
         {
             _config = config;
             _errors = errors;
             _monikerProvider = monikerProvider;
             _locale = buildOptions.Locale;
-            _publishUrlMapBuilder = publishUrlMapBuilder;
-            _documentProvider = documentProvider;
+            _publishUrlMap = publishUrlMap;
             _sourceMap = sourceMap;
         }
 
@@ -47,7 +44,7 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            foreach (var (url, sourcePath, monikers) in _publishUrlMapBuilder.GetPublishOutput())
+            foreach (var (url, sourcePath, monikers) in _publishUrlMap.GetPublishOutput())
             {
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
                 var publishItem = new PublishItem(

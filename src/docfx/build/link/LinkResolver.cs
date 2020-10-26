@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -19,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly MetadataProvider _metadataProvider;
+        private readonly HashSet<FilePath> _additionalResources = new HashSet<FilePath>();
 
         public LinkResolver(
             Config config,
@@ -107,6 +109,8 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
+        public IReadOnlyCollection<FilePath> GetAdditionalResources() => _additionalResources;
+
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
             SourceInfo<string> href, FilePath hrefRelativeTo)
         {
@@ -147,6 +151,11 @@ namespace Microsoft.Docs.Build
 
             if (error is null && _buildScope.OutOfScope(file))
             {
+                if (file.Origin == FileOrigin.Dependency && _buildScope.GetContentType(file) == ContentType.Resource)
+                {
+                    _additionalResources.Add(file);
+                    return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
+                }
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 

@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
 
         private readonly HashSet<FilePath> _files;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
+        private readonly ConcurrentDictionary<FilePath, PublishUrlMapItem> _additionalResourceMap = new ConcurrentDictionary<FilePath, PublishUrlMapItem>();
         private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
 
         public PublishUrlMap(
@@ -62,8 +63,13 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
-            return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
+            return _publishUrlMap.Values.SelectMany(x => x)
+                .Concat(_additionalResourceMap.Values)
+                .Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
+
+        public void AddAdditionalResource(FilePath file)
+            => _additionalResourceMap.GetOrAdd(file, GeneratePublishUrlMapItem);
 
         private string? GetCanonicalVersionCore(string url)
         {
@@ -150,11 +156,13 @@ namespace Microsoft.Docs.Build
         }
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
-        {
-            var siteUrl = _documentProvider.GetSiteUrl(path);
-            var outputPath = _documentProvider.GetOutputPath(path);
-            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
-            outputMapping.Add(new PublishUrlMapItem(siteUrl, outputPath, monikers, path));
-        }
+            => outputMapping.Add(GeneratePublishUrlMapItem(path));
+
+        private PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
+            => new PublishUrlMapItem(
+                _documentProvider.GetSiteUrl(path),
+                _documentProvider.GetOutputPath(path),
+                _monikerProvider.GetFileLevelMonikers(_errors, path),
+                path);
     }
 }
