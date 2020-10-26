@@ -424,26 +424,6 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"directory-not-found"}
 ---
-# By default build referenced resource in CRR dependency package
-repos:
-  https://docs.com/content/a:
-  - files:
-      docfx.yml: |
-        dependencies:
-          crr: 
-            url: https://docs.com/crr-content
-            branch: main
-      docs/a.md: |
-        [!include[dep](~/crr/dep.md)]
-  https://docs.com/crr-content#main:
-  - files:
-      dep.md: '![img](a.png)'
-      a.png:
-outputs:
-  docs/a.json: |
-    {"conceptual": "<p><img src=\"../crr/a.png\" alt=\"img\" data-linktype=\"relative-path\"/></p>"}
-  crr/a.png:
----
 # Dependency repositories should be correctly restored no matter the default branch is main or master - reference with main
 repos:
   https://docs.com/content/a:

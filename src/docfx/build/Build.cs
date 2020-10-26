@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
                 ParallelUtility.ForEach(
                     context.ErrorBuilder,
                     context.LinkResolver.GetAdditionalResources(),
-                    resource => BuildResource.Build(context, resource, true));
+                    resource => BuildResource.Build(context, resource));
             }
 
             Parallel.Invoke(

@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal class BuildResource
     {
-        internal static void Build(Context context, FilePath file, bool isAdditionalResource = false)
+        internal static void Build(Context context, FilePath file)
         {
             var outputPath = context.DocumentProvider.GetOutputPath(file);
 
@@ -22,10 +22,6 @@ namespace Microsoft.Docs.Build
             }
 
             context.PublishModelBuilder.SetPublishItem(file, metadata: null, outputPath);
-            if (isAdditionalResource)
-            {
-                context.PublishUrlMap.AddAdditionalResource(file);
-            }
         }
     }
 }

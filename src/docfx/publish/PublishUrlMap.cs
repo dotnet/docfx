@@ -18,10 +18,10 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TableOfContentsMap _tocMap;
+        private readonly LinkResolver _linkResolver;
 
         private readonly HashSet<FilePath> _files;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
-        private readonly ConcurrentDictionary<FilePath, PublishUrlMapItem> _additionalResourceMap = new ConcurrentDictionary<FilePath, PublishUrlMapItem>();
         private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
 
         public PublishUrlMap(
@@ -31,7 +31,8 @@ namespace Microsoft.Docs.Build
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            TableOfContentsMap tocMap)
+            TableOfContentsMap tocMap,
+            LinkResolver linkResolver)
         {
             _config = config;
             _errors = errors;
@@ -40,6 +41,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _tocMap = tocMap;
+            _linkResolver = linkResolver;
             _publishUrlMap = Initialize();
             _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
@@ -63,13 +65,11 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
+            var additionalResourceMap = _linkResolver.GetAdditionalResources().Select(GeneratePublishUrlMapItem);
             return _publishUrlMap.Values.SelectMany(x => x)
-                .Concat(_additionalResourceMap.Values)
+                .Concat(additionalResourceMap)
                 .Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
-
-        public void AddAdditionalResource(FilePath file)
-            => _additionalResourceMap.GetOrAdd(file, GeneratePublishUrlMapItem);
 
         private string? GetCanonicalVersionCore(string url)
         {
