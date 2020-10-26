@@ -277,3 +277,51 @@ outputs:
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
   test/a/_splitted/b/toc.json: |
     {"metadata": {"universal_conceptual_toc": "dotnet-test/learn/toc.json"}}
+---
+# SplitTOC out of docsets_to_publish
+repos:
+  https://github.com/ops/split-toc-not-in-docsets-to-publish-respect-ops-config:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "SplitTOC": ["a/TOC.yml"],
+          "docsets_to_publish": [
+            {
+              "build_source_folder": "a"
+            }
+          ]
+        }
+      a/docfx.yml: |
+        fileMetadata:
+          key:
+            _splitted/**/TOC.yml: value
+      a/TOC.yml: |
+        items:
+        - name: 1
+          items:
+          - name: 1-1
+outputs:
+  a/toc.json:
+  a/_splitted/1/toc.json:
+---
+# SplitTOC in docsets_to_publish with incorrect path
+repos:
+  https://github.com/ops/split-toc-in-docsets-to-publish-respect-ops-config:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            {
+              "build_source_folder": "a",
+              "SplitTOC": ["a/TOC.yml"]
+            }
+          ]
+        }
+      a/docfx.yml:
+      a/TOC.yml: |
+        items:
+        - name: 1
+          items:
+          - name: 1-1
+outputs:
+  a/toc.json:
