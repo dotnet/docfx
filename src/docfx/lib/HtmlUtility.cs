@@ -325,6 +325,9 @@ namespace Microsoft.Docs.Build
                 uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
                 suppressXrefNotFound);
 
+            var defaultDisplay = !string.IsNullOrEmpty(display) ? HttpUtility.HtmlEncode(display) :
+                (href != null ? HttpUtility.HtmlEncode(UrlUtility.SplitUrl(href).path) : HttpUtility.HtmlEncode(uid));
+
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
                 ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
                 : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
@@ -332,7 +335,7 @@ namespace Microsoft.Docs.Build
             token = new HtmlToken(resolvedNode);
 
             string GetDefaultResolvedNode()
-                => $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>";
+                => $"<span class=\"xref\">{defaultDisplay}</span>";
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)

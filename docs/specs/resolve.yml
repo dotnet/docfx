@@ -473,3 +473,52 @@ inputs:
 outputs:
   a.json: |
     { "conceptual": "<p><a href=\"http://V%20minul%C3%A9m%20d%C3%ADle%20jsme%20nainstalovali%20SQL%20Server,%20kter%C3%BD%20je%20nutn%C3%BD%20pro%20b%C4%9Bh%20Configuration%20Manageru.%20Dnes%20n%C3%A1s%20%C4%8Dek%C3%A1%20instalace%20WSUS,%20co%C5%BE%20je%20produkt,%20je%C5%BE%20je%20mo%C5%BEn%C3%A9%20pou%C5%BE%C3%ADvat%20i%20jako%20samostatnou%20funkci%20ve%20Windows%20Serveru,%20kter%C3%BD%20se%20star%C3%A1%20o%20sta%C5%BEen%C3%AD%20a%20instalaci%20aktualizac%C3%AD%20z%20Microsoft%20Update%20na%20klientsk%C3%A9%20po%C4%8D%C3%ADta%C4%8De.%20Stejn%C4%9B%20jako%20v%20p%C5%99edchoz%C3%ADch%20d%C3%ADlech,%20tak%20i%20v%20tomto%20si%20uk%C3%A1%C5%BEeme%20ob%C4%9B%20varianty%20instalace%20%E2%80%93%20a%20to%20jak%20instalaci%20z%20PowerShellu,%20tak%20instalaci%20pomoc%C3%AD%20GUI.%3E\"></a></p>" }
+---
+# Use the text when both uid and href are empty
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/JavaMember.schema.json: |
+    {
+      "type": "object",
+      "required": ["members"],
+      "renderType": "content",
+      "properties": {
+        "members": {
+          "items": {
+            "required": ["name"],
+            "properties": {
+              "name": {"type": "string"},
+              "parameters": {
+                "items": {
+                  "properties": {
+                    "description": {"contentType": "markdown", "type": "string"},
+                    "type": {"contentType": "markdown","tags": ["localizable"],"type": "string"},
+                    "name": {"type": "string"}
+                  },"type": "object"
+                }
+              }
+            },"type": "object"
+          },"type": "array"
+        }
+      }
+    }
+  method.yml: |
+    ### YamlMime:JavaMember
+    members:
+    - name: test
+      parameters:
+      - description: <p>the <xref href="ServiceFuture&lt;String&gt;" data-throw-if-not-resolved="False"/> object </p>
+        type: <xref href="Observable%3CVoid%3E?alt=Observable<Void>&text=Observable%3CVoid%3E" data-throw-if-not-resolved="False"/>
+outputs:
+  method.json: |
+    {
+      "members": [
+        {
+          "name": "test",
+          "parameters": [{
+            "description": "<p>the <span class=\"xref\">ServiceFuture&lt;String&gt;</span> object </p>\n",
+            "type": "<span class=\"xref\">Observable&lt;Void&gt;</span>\n"
+            }]
+        }
+      ]
+    }
