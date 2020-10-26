@@ -21,7 +21,6 @@ namespace Microsoft.Docs.Build
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
         private const string AllowlistsApi = "https://ops/allowlists/";
-        private const string DisallowlistsApi = "https://ops/disallowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
@@ -41,7 +40,6 @@ namespace Microsoft.Docs.Build
                 (MetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url))),
                 (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
                 (AllowlistsApi, url => _opsAccessor.GetAllowlists(GetValidationServiceParameters(url))),
-                (DisallowlistsApi, url => _opsAccessor.GetDisallowlists(GetValidationServiceParameters(url))),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
                 (RegressionAllMetadataSchemaApi, _ => _opsAccessor.GetRegressionAllMetadataSchema()),
             };
@@ -112,7 +110,6 @@ namespace Microsoft.Docs.Build
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
-                disallowlists = DisallowlistsApi,
                 xref = xrefMaps,
             });
         }

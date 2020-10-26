@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text.RegularExpressions;
-
 namespace Microsoft.Docs.Build
 {
     internal class Repository
@@ -18,7 +16,7 @@ namespace Microsoft.Docs.Build
         private Repository(string url, string? branch, string commit, PathString path)
         {
             // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
-            Url = Regex.Replace(url, @"^((http|https):\/\/)?([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
+            Url = GitUtility.NormalizeGitUrl(url);
             Branch = branch;
             Commit = commit;
             Path = path;

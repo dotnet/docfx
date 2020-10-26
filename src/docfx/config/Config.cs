@@ -213,11 +213,6 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> Allowlists { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
-        /// Get the file path of disallow lists
-        /// </summary>
-        public SourceInfo<string> Disallowlists { get; private set; } = new SourceInfo<string>("");
-
-        /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -342,7 +337,6 @@ namespace Microsoft.Docs.Build
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
             yield return Allowlists;
-            yield return Disallowlists;
 
             foreach (var metadataSchema in MetadataSchema)
             {

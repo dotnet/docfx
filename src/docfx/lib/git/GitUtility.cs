@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-
+using System.Text.RegularExpressions;
 using static Microsoft.Docs.Build.LibGit2;
 
 namespace Microsoft.Docs.Build
@@ -215,6 +215,12 @@ namespace Microsoft.Docs.Build
             git_repository_free(repo);
 
             return result;
+        }
+
+        public static string NormalizeGitUrl(string url)
+        {
+            // remove user name, token and .git from url like https://xxxxx@dev.azure.com/xxxx.git
+            return Regex.Replace(url, @"^((http|https):\/\/)([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
         }
 
         private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[]? secrets = null)

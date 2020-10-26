@@ -40,8 +40,7 @@ namespace Microsoft.Docs.Build
 
             _validator = new Validator(
                 fileResolver.ResolveFilePath(config.MarkdownValidationRules),
-                fileResolver.ResolveFilePath(config.Allowlists),
-                fileResolver.ResolveFilePath(config.Disallowlists));
+                fileResolver.ResolveFilePath(config.Allowlists));
         }
 
         public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)

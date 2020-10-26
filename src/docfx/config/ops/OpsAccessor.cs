@@ -80,11 +80,6 @@ namespace Microsoft.Docs.Build
             return await FetchValidationRules($"/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
         }
 
-        public async Task<string> GetDisallowlists((string repositoryUrl, string branch) tuple)
-        {
-            return await FetchValidationRules($"/route/validationmgt/validation/disallowlists", tuple.repositoryUrl, tuple.branch);
-        }
-
         public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
         {
             var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
