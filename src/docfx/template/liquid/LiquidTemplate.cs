@@ -82,8 +82,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string? GetThemeRelativePath(string? templateBasePath, string resourcePath)
+        public static string? GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
         {
+            var templateBasePath = (string?)context.Registers["template_base_path"];
             if (string.IsNullOrEmpty(templateBasePath))
             {
                 return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
