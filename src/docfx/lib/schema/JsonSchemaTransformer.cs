@@ -27,10 +27,11 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<(FilePath, string), (IXrefSpec? spec, JObject? specObj)> _mustacheXrefSpec =
             new ConcurrentDictionary<(FilePath, string), (IXrefSpec?, JObject?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, int? minReferenceCount, int? maxReferenceCount)> _uidReferenceCountList =
-            new ConcurrentBag<(SourceInfo<string>, string?, int?, int?)>();
+        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema schema, int? minReferenceCount, int? maxReferenceCount)>
+            _uidReferenceCountList = new ConcurrentBag<(SourceInfo<string>, string?, JsonSchema, int?, int?)>();
 
-        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName)> _xrefList = new ConcurrentBag<(SourceInfo<string>, string?)>();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList =
+            new ConcurrentBag<(SourceInfo<string>, string?, string?)>();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
                           = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
@@ -53,18 +54,18 @@ namespace Microsoft.Docs.Build
 
         public void PostValidate()
         {
-            foreach (var (uid, propertyPath, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
+            foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
             {
                 var references = _xrefList.Where(item => item.xref.Value.Equals(uid.Value)).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
-                    _errors.Add(Errors.JsonSchema.ReferenceCountInvalid(uid, $">= {minReferenceCount}", references, propertyPath));
+                    _errors.WithCustomRule(schema).Add(Errors.JsonSchema.MinReferenceCountInvalid(uid, minReferenceCount, references, propertyPath));
                 }
 
                 if (maxReferenceCount != null && references.Length > maxReferenceCount)
                 {
-                    _errors.Add(Errors.JsonSchema.ReferenceCountInvalid(uid, $"<= {maxReferenceCount}", references, propertyPath));
+                    _errors.WithCustomRule(schema).Add(Errors.JsonSchema.MaxReferenceCountInvalid(uid, maxReferenceCount, references, propertyPath));
                 }
             }
         }
@@ -73,7 +74,8 @@ namespace Microsoft.Docs.Build
         {
             return _xrefList.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
             {
-                return new ExternalXref { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName };
+                return new ExternalXref
+                    { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName, SchemaType = xrefGroup.First().schemaType };
             }).OrderBy(externalXref => externalXref.Uid).ToArray();
         }
 
@@ -194,7 +196,8 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var schemaType = GetSchemaType(rootSchema, schema, uidSchema, obj, file);
 
-            var xref = new InternalXrefSpec(uid, href, file, monikers, obj.Parent?.Path, uidSchema.UidGlobalUnique, schemaType);
+            var xref = new InternalXrefSpec(
+                uid, href, file, monikers, obj.Parent?.Path, JsonUtility.AddToPropertyPath(propertyPath, "uid"), uidSchema.UidGlobalUnique, schemaType);
 
             foreach (var xrefProperty in schema.XrefProperties)
             {
@@ -394,7 +397,10 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
+
+                    // Output absolute URL starting from Architecture
+                    var absoluteUrl = _documentProvider.GetMime(file) == "Architecture";
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file, absoluteUrl);
                     errors.AddIfNotNull(error);
                     return link;
 
@@ -457,6 +463,7 @@ namespace Microsoft.Docs.Build
                         _uidReferenceCountList.Add((
                             new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
                             propertyPath,
+                            rootSchema,
                             schema.MinReferenceCount,
                             schema.MaxReferenceCount));
                     }
@@ -464,7 +471,8 @@ namespace Microsoft.Docs.Build
                     {
                         _xrefList.Add((
                             new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
-                            (spec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null));
+                            (spec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null,
+                            spec?.SchemaType));
                     }
                     return value;
             }

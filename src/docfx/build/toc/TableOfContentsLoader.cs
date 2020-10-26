@@ -219,6 +219,7 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
             {
                 var overview = new TableOfContentsNode(toc);
+                overview.Expanded = false;
                 overview.Name = overview.Name.With("Overview");
                 toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
                 toc.Href = toc.Href.With(null);

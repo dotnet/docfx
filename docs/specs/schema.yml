@@ -510,7 +510,7 @@ outputs:
     }
   docs/b.json:
 ---
-# Disable content fallback for loc page of ModuleUnit
+# Disable content fallback for loc page
 locale: zh-cn
 repos:
   https://docs.com/page-fallback#master:
@@ -522,16 +522,16 @@ repos:
     - files:
         docfx.yml:
         unit.yml: |
-          ### YamlMime:ModuleUnit
+          ### YamlMime:TestData
           content: '[!include[](includes/b.md)]'
-        _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
             "contentFallback": false,
             "properties": { 
               "content": {"type":"string","contentType": "markdown"}
               }
           }
-        _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+        _themes/ContentTemplate/TestData.html.primary.tmpl:
 outputs:
   .errors.log: |
     { "message_severity":"error","code":"include-not-found","message":"Invalid include link: 'includes/b.md'.","file":"unit.yml"}
@@ -612,8 +612,9 @@ inputs:
   _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
 outputs:
   .errors.log: | 
-   { "message_severity":"error","code":"array-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml", "line":5,"column":3}
-   { "message_severity":"error","code":"array-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml", "line":15,"column":3}
+    {"message_severity":"error","code":"array-max-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml","line":15}
+    {"message_severity":"error","code":"array-min-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml","line":5}
+
 ---
 # export schemaType to xrefmap.json
 inputs:
@@ -828,3 +829,14 @@ outputs:
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_e'. Expected type 'b_type' but got 'e_type'.","file":"docs/a.yml","line":3}
+---
+# Report file path for empty YAML files
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestPage
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    { "required": ["authors"] }
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":0,"column":0}
