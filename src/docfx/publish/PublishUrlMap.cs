@@ -65,13 +65,6 @@ namespace Microsoft.Docs.Build
             return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
 
-        public PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
-            => new PublishUrlMapItem(
-                _documentProvider.GetSiteUrl(path),
-                _documentProvider.GetOutputPath(path),
-                _monikerProvider.GetFileLevelMonikers(_errors, path),
-                path);
-
         private string? GetCanonicalVersionCore(string url)
         {
             if (_publishUrlMap.TryGetValue(url, out var item))
@@ -158,5 +151,12 @@ namespace Microsoft.Docs.Build
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
             => outputMapping.Add(GeneratePublishUrlMapItem(path));
+
+        private PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
+            => new PublishUrlMapItem(
+                _documentProvider.GetSiteUrl(path),
+                _documentProvider.GetOutputPath(path),
+                _monikerProvider.GetFileLevelMonikers(_errors, path),
+                path);
     }
 }

@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly string _locale;
         private readonly PublishUrlMap _publishUrlMap;
         private readonly SourceMap _sourceMap;
+        private readonly DocumentProvider _documentProvider;
         private readonly LinkResolver _linkResolver;
 
         private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
@@ -28,6 +29,7 @@ namespace Microsoft.Docs.Build
             BuildOptions buildOptions,
             PublishUrlMap publishUrlMap,
             SourceMap sourceMap,
+            DocumentProvider documentProvider,
             LinkResolver linkResolver)
         {
             _config = config;
@@ -36,6 +38,7 @@ namespace Microsoft.Docs.Build
             _locale = buildOptions.Locale;
             _publishUrlMap = publishUrlMap;
             _sourceMap = sourceMap;
+            _documentProvider = documentProvider;
             _linkResolver = linkResolver;
         }
 
@@ -47,9 +50,9 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            var additionalResource = _linkResolver.GetAdditionalResources().Select(_publishUrlMap.GeneratePublishUrlMapItem);
-            foreach (var (url, sourcePath, monikers) in
-                _publishUrlMap.GetPublishOutput().Concat(additionalResource.Select(x => (x.Url, x.SourcePath, x.Monikers))))
+            var additionalResource = _linkResolver.GetAdditionalResources().Select(file =>
+                (_documentProvider.GetSiteUrl(file), file, _monikerProvider.GetFileLevelMonikers(_errors, file)));
+            foreach (var (url, sourcePath, monikers) in _publishUrlMap.GetPublishOutput().Concat(additionalResource))
             {
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
                 var publishItem = new PublishItem(

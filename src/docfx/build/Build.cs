@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Docs.Validation;
 
@@ -84,13 +85,8 @@ namespace Microsoft.Docs.Build
             {
                 ParallelUtility.ForEach(
                     context.ErrorBuilder,
-                    context.PublishUrlMap.GetAllFiles(),
+                    context.PublishUrlMap.GetAllFiles().Concat(context.LinkResolver.GetAdditionalResources()),
                     file => BuildFile(context, file));
-
-                ParallelUtility.ForEach(
-                    context.ErrorBuilder,
-                    context.LinkResolver.GetAdditionalResources(),
-                    resource => BuildResource.Build(context, resource));
             }
 
             Parallel.Invoke(
