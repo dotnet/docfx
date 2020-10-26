@@ -1,5 +1,7 @@
 param ([switch]$noTest = $false)
 
+Write-Error "oops!!!!"
+
 function exec([string] $cmd) {
     Write-Host $cmd -ForegroundColor Green
     & ([scriptblock]::Create($cmd))
