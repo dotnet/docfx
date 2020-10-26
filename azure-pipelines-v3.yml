@@ -131,6 +131,7 @@ jobs:
   # Build Binaries
   - powershell: ./build.ps1
     displayName: Build Binaries
+    failOnStderr: true
 
   # Build RegressionTest into Artifact 
   - powershell: |
