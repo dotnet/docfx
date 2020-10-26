@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                     new ContentValidationContext(
                         fileResolver.ResolveFilePath(config.MarkdownValidationRules),
                         fileResolver.ResolveFilePath(config.Allowlists),
-                        fileResolver.ResolveFilePath(config.Disallowlists)),
+                        ""),
                     new ContentValidationLogger(_markdownContext));
             }
 

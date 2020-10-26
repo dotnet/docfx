@@ -213,11 +213,6 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> Allowlists { get; private set; } = new SourceInfo<string>("");
 
         /// <summary>
-        /// Get the file path of disallow lists
-        /// </summary>
-        public SourceInfo<string> Disallowlists { get; private set; } = new SourceInfo<string>("");
-
-        /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -227,6 +222,12 @@ namespace Microsoft.Docs.Build
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
         public PackagePath Template { get; private set; } = new PackagePath();
+
+        /// <summary>
+        /// Get the template base path used for referencing the template resource file when apply liquid.
+        /// If not provided, referencing to template resource file will be resolved to physical absolute path.
+        /// </summary>
+        public string? TemplateBasePath { get; private set; }
 
         /// <summary>
         /// Gets the search index type like [lunr](https://lunrjs.com/)
@@ -336,7 +337,6 @@ namespace Microsoft.Docs.Build
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
             yield return Allowlists;
-            yield return Disallowlists;
 
             foreach (var metadataSchema in MetadataSchema)
             {
