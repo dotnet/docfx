@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
             return (error, file);
         }
 
-        public (Error? error, string link, FilePath? file) ResolveLink(SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
+        public (Error? error, string link, FilePath? file) ResolveLink(SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl = false)
         {
             if (href.Value.StartsWith("xref:"))
             {
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
-            if (file != null)
+            if (file != null && !absoluteUrl)
             {
                 link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }
