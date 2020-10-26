@@ -37,9 +37,7 @@ function publishBinaryPackages() {
 
 try {
     pushd $PSScriptRoot
-    if ($env:BUILD_REASON -ne "PullRequest") {
-        publish
-    }
+    publish
 } finally {
     popd
 }
