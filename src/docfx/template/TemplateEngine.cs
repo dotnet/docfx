@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
 
             _global = LoadGlobalTokens(errors);
 
-            _liquid = new LiquidTemplate(_package, _global);
+            _liquid = new LiquidTemplate(_package, config.TemplateBasePath, _global);
             _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new MustacheTemplate(_package, "ContentTemplate", _global, jsonSchemaTransformer);
         }

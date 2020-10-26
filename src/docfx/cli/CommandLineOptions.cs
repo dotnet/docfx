@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         public bool NoCache;
         public bool NoRestore;
         public string? Template;
+        public string? TemplateBasePath;
 
         public JObject? StdinConfig;
 
@@ -44,6 +45,11 @@ namespace Microsoft.Docs.Build
             if (Template != null)
             {
                 config["template"] = Template;
+            }
+
+            if (TemplateBasePath != null)
+            {
+                config["templateBasePath"] = TemplateBasePath;
             }
 
             return config;
