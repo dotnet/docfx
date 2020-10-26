@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TableOfContentsMap _tocMap;
-        private readonly LinkResolver _linkResolver;
 
         private readonly HashSet<FilePath> _files;
         private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
@@ -31,8 +30,7 @@ namespace Microsoft.Docs.Build
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            TableOfContentsMap tocMap,
-            LinkResolver linkResolver)
+            TableOfContentsMap tocMap)
         {
             _config = config;
             _errors = errors;
@@ -41,7 +39,6 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _tocMap = tocMap;
-            _linkResolver = linkResolver;
             _publishUrlMap = Initialize();
             _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
         }
@@ -65,11 +62,16 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
-            var additionalResourceMap = _linkResolver.GetAdditionalResources().Select(GeneratePublishUrlMapItem);
             return _publishUrlMap.Values.SelectMany(x => x)
-                .Concat(additionalResourceMap)
                 .Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
+
+        public PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
+            => new PublishUrlMapItem(
+                _documentProvider.GetSiteUrl(path),
+                _documentProvider.GetOutputPath(path),
+                _monikerProvider.GetFileLevelMonikers(_errors, path),
+                path);
 
         private string? GetCanonicalVersionCore(string url)
         {
@@ -157,12 +159,5 @@ namespace Microsoft.Docs.Build
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
             => outputMapping.Add(GeneratePublishUrlMapItem(path));
-
-        private PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
-            => new PublishUrlMapItem(
-                _documentProvider.GetSiteUrl(path),
-                _documentProvider.GetOutputPath(path),
-                _monikerProvider.GetFileLevelMonikers(_errors, path),
-                path);
     }
 }
