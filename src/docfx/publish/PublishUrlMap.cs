@@ -150,13 +150,11 @@ namespace Microsoft.Docs.Build
         }
 
         private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
-            => outputMapping.Add(GeneratePublishUrlMapItem(path));
-
-        private PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
-            => new PublishUrlMapItem(
-                _documentProvider.GetSiteUrl(path),
-                _documentProvider.GetOutputPath(path),
-                _monikerProvider.GetFileLevelMonikers(_errors, path),
-                path);
+        {
+            var siteUrl = _documentProvider.GetSiteUrl(path);
+            var outputPath = _documentProvider.GetOutputPath(path);
+            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
+            outputMapping.Add(new PublishUrlMapItem(siteUrl, outputPath, monikers, path));
+        }
     }
 }

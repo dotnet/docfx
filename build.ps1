@@ -11,7 +11,7 @@ function exec([string] $cmd) {
 function publish() {
     Remove-Item ./drop -Force -Recurse -ErrorAction Ignore
     exec "dotnet pack -c Release -o $PSScriptRoot\drop"
-    publishBinaryPackages
+    #publishBinaryPackages
 }
 
 function publishBinaryPackages() {
