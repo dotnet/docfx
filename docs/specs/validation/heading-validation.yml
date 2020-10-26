@@ -1151,6 +1151,7 @@ inputs:
             "message": "Heading '{0}' matches the text of a disallowed Docs template heading.",
             "code": "disallowed-heading",
             "severity": "SUGGESTION",
+            "disallowed": ["Feedback", "Is this page helpful?"],
             "exclusions": [
               "includes",
               "landingpage",
@@ -1160,18 +1161,6 @@ inputs:
           }
         ]
       }
-    }
-  disallowed.json: |
-    {
-     "list:header": {
-            "id": "list:header",
-            "dependent": null,
-            "desc": "Values for header",
-            "values": {
-                "Feedback": null,
-                "Is this page helpful?": null,
-            }
-     }
     }
   a.md: |
     # Feedback
