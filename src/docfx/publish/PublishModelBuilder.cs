@@ -47,9 +47,9 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            var additionalResourceMap = _linkResolver.GetAdditionalResources().Select(_publishUrlMap.GeneratePublishUrlMapItem);
+            var additionalResource = _linkResolver.GetAdditionalResources().Select(_publishUrlMap.GeneratePublishUrlMapItem);
             foreach (var (url, sourcePath, monikers) in
-                _publishUrlMap.GetPublishOutput().Concat(additionalResourceMap.Select(x => (x.Url, x.SourcePath, x.Monikers))))
+                _publishUrlMap.GetPublishOutput().Concat(additionalResource.Select(x => (x.Url, x.SourcePath, x.Monikers))))
             {
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
                 var publishItem = new PublishItem(

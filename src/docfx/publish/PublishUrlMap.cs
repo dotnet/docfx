@@ -62,8 +62,7 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
         {
-            return _publishUrlMap.Values.SelectMany(x => x)
-                .Select(x => (x.Url, x.SourcePath, x.Monikers));
+            return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
         }
 
         public PublishUrlMapItem GeneratePublishUrlMapItem(FilePath path)
