@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("https://xxxxx@dev.azure.com/test-repo.git", "https://@dev.azure.com/test-repo")]
+        [InlineData("https://xxxxx@dev.azure.com/test-repo.git", "https://dev.azure.com/test-repo")]
         [InlineData("git@github.com/test-repo.git", "git@github.com/test-repo.git")]
         public static void NormalizeGitUrlTest(string url, string expected)
         {
