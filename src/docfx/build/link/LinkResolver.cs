@@ -68,7 +68,8 @@ namespace Microsoft.Docs.Build
             return (error, file);
         }
 
-        public (Error? error, string link, FilePath? file) ResolveLink(SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl = false)
+        public (Error? error, string link, FilePath? file) ResolveLink(
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl = false)
         {
             if (href.Value.StartsWith("xref:"))
             {
