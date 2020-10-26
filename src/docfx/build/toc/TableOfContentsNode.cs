@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
         public static bool ShouldSerializeLandingPageType() => false;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool? Expanded { get; set; }
+        public bool Expanded { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
