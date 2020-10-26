@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             foreach (var template in Directory.GetDirectories(s_templatePath))
             {
                 var name = Path.GetFileName(template);
-                var description = File.ReadAllText(Path.Combine(template, ".description")).Trim();
+                var description = File.ReadAllText(Path.Combine(template, "__description")).Trim();
 
                 Console.WriteLine(name.PadRight(width, ' ') + description);
                 Console.WriteLine();
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var file in Directory.GetFiles(Path.Combine(s_templatePath, type)))
             {
-                if (Path.GetFileName(file).StartsWith("."))
+                if (Path.GetFileName(file).StartsWith("__"))
                 {
                     continue;
                 }
