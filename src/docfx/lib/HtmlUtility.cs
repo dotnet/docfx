@@ -326,13 +326,15 @@ namespace Microsoft.Docs.Build
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
-                ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
+                ? HttpUtility.HtmlEncode(rawHtml) ?? HttpUtility.HtmlEncode(rawSource) ?? GetDefaultResolvedNode()
                 : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
 
             token = new HtmlToken(resolvedNode);
 
             string GetDefaultResolvedNode()
-                => $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>";
+                => $"<span class=\"xref\">" +
+                $"{HttpUtility.HtmlEncode(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}" +
+                $"</span>";
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
