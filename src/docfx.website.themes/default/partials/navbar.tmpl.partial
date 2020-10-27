@@ -14,7 +14,7 @@
     <div class="collapse navbar-collapse" id="navbar">
       <form class="navbar-form navbar-right" role="search" id="search">
         <div class="form-group">
-          <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+          <input type="text" class="form-control" id="search-query" placeholder="{{__global.search}}" autocomplete="off">
         </div>
       </form>
     </div>
