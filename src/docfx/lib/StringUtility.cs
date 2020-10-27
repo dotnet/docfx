@@ -6,11 +6,18 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Web;
 
 namespace Microsoft.Docs.Build
 {
     internal static class StringUtility
     {
+        public static string Html(FormattableString htmlFormat)
+        {
+            var encodedArgs = Array.ConvertAll(htmlFormat.GetArguments(), arg => arg?.ToString() is string str ? HttpUtility.HtmlEncode(str) : null);
+            return string.Format(htmlFormat.Format, encodedArgs);
+        }
+
         public static string ToCamelCase(char wordSeparator, string value)
         {
             var sb = new StringBuilder();
