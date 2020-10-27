@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            child = new ServicePageItem(childName, null, childUid);
+                            child = new ServicePageItem(childName, null, childUid ?? GetSubTocFirstUid(item));
                         }
                     }
 
@@ -167,6 +167,28 @@ namespace Microsoft.Docs.Build
             }
 
             return childHref;
+        }
+
+        private string? GetSubTocFirstUid(TableOfContentsNode node)
+        {
+            if (!string.IsNullOrEmpty(node.Uid))
+            {
+                return node.Uid.Value;
+            }
+
+            foreach (var item in node.Items)
+            {
+                if (!string.IsNullOrEmpty(item.Value.Uid))
+                {
+                    return item.Value.Uid;
+                }
+                else
+                {
+                    return GetSubTocFirstUid(item);
+                }
+            }
+
+            return null;
         }
     }
 }
