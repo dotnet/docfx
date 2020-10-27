@@ -298,11 +298,11 @@ namespace Microsoft.Docs.Build
             {
                 if (attribute.NameIs("data-raw-html"))
                 {
-                    rawHtml = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                    rawHtml = attribute.Value.ToString();
                 }
                 else if (attribute.NameIs("data-raw-source"))
                 {
-                    rawSource = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                    rawSource = attribute.Value.ToString();
                 }
                 else if (attribute.NameIs("href"))
                 {
@@ -326,15 +326,16 @@ namespace Microsoft.Docs.Build
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
-                ? HttpUtility.HtmlEncode(rawHtml) ?? HttpUtility.HtmlEncode(rawSource) ?? GetDefaultResolvedNode()
-                : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
+                ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
+                : StringUtility.Html($"<a href='{resolvedHref}'>{display}</a>");
 
             token = new HtmlToken(resolvedNode);
 
             string GetDefaultResolvedNode()
-                => $"<span class=\"xref\">" +
-                $"{HttpUtility.HtmlEncode(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}" +
-                $"</span>";
+            {
+                var content = !string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
+                return StringUtility.Html($"<span class=\"xref\">{content}</span>");
+            }
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
