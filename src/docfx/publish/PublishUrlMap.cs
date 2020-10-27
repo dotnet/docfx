@@ -60,11 +60,6 @@ namespace Microsoft.Docs.Build
 
         public HashSet<FilePath> GetAllFiles() => _files;
 
-        public IEnumerable<(string url, FilePath sourcePath, MonikerList monikers)> GetPublishOutput()
-        {
-            return _publishUrlMap.Values.SelectMany(x => x).Select(x => (x.Url, x.SourcePath, x.Monikers));
-        }
-
         private string? GetCanonicalVersionCore(string url)
         {
             if (_publishUrlMap.TryGetValue(url, out var item))

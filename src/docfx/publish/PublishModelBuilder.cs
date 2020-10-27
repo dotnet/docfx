@@ -50,16 +50,16 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            foreach (var (url, sourcePath, monikers) in _publishUrlMap.GetAllFiles().Concat(_linkResolver.GetAdditionalResources())
-                .Select(file => (_documentProvider.GetSiteUrl(file), file, _monikerProvider.GetFileLevelMonikers(_errors, file))))
+            foreach (var sourcePath in _publishUrlMap.GetAllFiles().Concat(_linkResolver.GetAdditionalResources()))
             {
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
+
                 var publishItem = new PublishItem(
-                    url,
+                    _documentProvider.GetSiteUrl(sourcePath),
                     buildOutput ? result.outputPath : null,
                     _sourceMap.GetOriginalFilePath(sourcePath)?.Path ?? sourcePath.Path,
                     _locale,
-                    monikers,
+                    _monikerProvider.GetFileLevelMonikers(_errors, sourcePath),
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);
