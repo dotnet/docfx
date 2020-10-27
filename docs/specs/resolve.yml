@@ -295,7 +295,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p>b</p>"}
 ---
-# Show warning if link to a file in dependency repo
+# By default build referenced resource in CRR dependency package
 repos:
   https://github.com/dep-file/root:
     - files:
@@ -309,10 +309,9 @@ repos:
 outputs:
   docs/a.json: |
     {"conceptual":"<p>Link to <a href=\"../dep/logo.svg\">dep</a></p>"}
-  .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'dep/logo.svg [dep]' referenced by link '../dep/logo.svg' will not be built because it is not included in build scope.","file":"docs/a.md","line":1,"column":9}
+  dep/logo.svg:
 ---
-# Show warning if link from a token in dependency repo to a file in dependency repo
+# Allow link from a token in dependency repo to a file in dependency repo
 repos:
   https://github.com/dep-token/root:
     - files:
@@ -326,9 +325,8 @@ repos:
         logo.svg:
 outputs:
   a.json: |
-    {"conceptual":"<p><a href=\"logo.svg\"></a></p>"}
-  .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'dep/logo.svg [dep]' referenced by link 'logo.svg' will not be built because it is not included in build scope.","file":"dep/b.md","line":1,"column":1}
+    {"conceptual":"<p><a href=\"dep/logo.svg\"></a></p>"}
+  dep/logo.svg:
 ---
 # Cannot include entry docset file from dependency
 repos:

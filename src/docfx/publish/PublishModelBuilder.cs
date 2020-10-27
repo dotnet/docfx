@@ -14,9 +14,10 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
-        private readonly PublishUrlMap _publishUrlMapBuilder;
-        private readonly DocumentProvider _documentProvider;
+        private readonly PublishUrlMap _publishUrlMap;
         private readonly SourceMap _sourceMap;
+        private readonly DocumentProvider _documentProvider;
+        private readonly LinkResolver _linkResolver;
 
         private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
                      new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
@@ -26,17 +27,19 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
-            PublishUrlMap publishUrlMapBuilder,
+            PublishUrlMap publishUrlMap,
+            SourceMap sourceMap,
             DocumentProvider documentProvider,
-            SourceMap sourceMap)
+            LinkResolver linkResolver)
         {
             _config = config;
             _errors = errors;
             _monikerProvider = monikerProvider;
             _locale = buildOptions.Locale;
-            _publishUrlMapBuilder = publishUrlMapBuilder;
-            _documentProvider = documentProvider;
+            _publishUrlMap = publishUrlMap;
             _sourceMap = sourceMap;
+            _documentProvider = documentProvider;
+            _linkResolver = linkResolver;
         }
 
         public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath)
@@ -47,15 +50,16 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            foreach (var (url, sourcePath, monikers) in _publishUrlMapBuilder.GetPublishOutput())
+            foreach (var sourcePath in _publishUrlMap.GetAllFiles().Concat(_linkResolver.GetAdditionalResources()))
             {
                 var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
+
                 var publishItem = new PublishItem(
-                    url,
+                    _documentProvider.GetSiteUrl(sourcePath),
                     buildOutput ? result.outputPath : null,
                     _sourceMap.GetOriginalFilePath(sourcePath)?.Path ?? sourcePath.Path,
                     _locale,
-                    monikers,
+                    _monikerProvider.GetFileLevelMonikers(_errors, sourcePath),
                     _monikerProvider.GetConfigMonikerRange(sourcePath),
                     _errors.FileHasError(sourcePath),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);

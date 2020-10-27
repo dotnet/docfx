@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
                 Config, ErrorBuilder, BuildScope, RedirectionProvider, DocumentProvider, MonikerProvider, TocMap);
 
             PublishModelBuilder = new PublishModelBuilder(
-                config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, DocumentProvider, SourceMap);
+                config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
 
             var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, validatorExtension);
