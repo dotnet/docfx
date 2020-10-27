@@ -85,8 +85,13 @@ namespace Microsoft.Docs.Build
             {
                 ParallelUtility.ForEach(
                     context.ErrorBuilder,
-                    context.PublishUrlMap.GetAllFiles().Concat(context.LinkResolver.GetAdditionalResources()),
+                    context.PublishUrlMap.GetAllFiles(),
                     file => BuildFile(context, file));
+
+                ParallelUtility.ForEach(
+                    context.ErrorBuilder,
+                    context.LinkResolver.GetAdditionalResources(),
+                    file => BuildResource.Build(context, file));
             }
 
             Parallel.Invoke(
