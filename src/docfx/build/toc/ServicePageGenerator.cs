@@ -177,10 +177,18 @@ namespace Microsoft.Docs.Build
                 return node.Uid.Value;
             }
 
-            if (node.Items != null)
+            foreach (var item in node.Items)
             {
-                return node.Items.Select(item => GetSubTocFirstUid(item)).FirstOrDefault(uid => !string.IsNullOrEmpty(uid));
+                if (!string.IsNullOrEmpty(item.Value.Uid))
+                {
+                    return item.Value.Uid;
+                }
+                else
+                {
+                    return GetSubTocFirstUid(item);
+                }
             }
+
             return null;
         }
     }
