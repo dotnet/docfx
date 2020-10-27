@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public IReadOnlyCollection<FilePath> GetAdditionalResources() => _additionalResources.ToHashSet();
+        public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources;
 
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
             SourceInfo<string> href, FilePath hrefRelativeTo)
