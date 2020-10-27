@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Microsoft.Docs.Build
@@ -136,7 +137,7 @@ namespace Microsoft.Docs.Build
                         }
                         else
                         {
-                            child = new ServicePageItem(childName, null, childUid);
+                            child = new ServicePageItem(childName, null, childUid ?? GetSubTocFirstUid(item));
                         }
                     }
 
@@ -167,6 +168,20 @@ namespace Microsoft.Docs.Build
             }
 
             return childHref;
+        }
+
+        private string? GetSubTocFirstUid(TableOfContentsNode node)
+        {
+            if (!string.IsNullOrEmpty(node.Uid))
+            {
+                return node.Uid.Value;
+            }
+
+            if (node.Items != null)
+            {
+                return node.Items.Select(item => GetSubTocFirstUid(item)).FirstOrDefault(uid => !string.IsNullOrEmpty(uid));
+            }
+            return null;
         }
     }
 }
