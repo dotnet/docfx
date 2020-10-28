@@ -18,23 +18,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
         {
-            var validationResult = true;
-            foreach (var item in Items)
-            {
-                var itemValid = true;
-                var achievement = item as AchievementValidateModel;
-                var result = achievement.ValidateMetadata();
-                if (!string.IsNullOrEmpty(result))
-                {
-                    itemValid = false;
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Achievement_MetadataError, file: item.SourceRelativePath, result);
-                }
-
-                item.IsValid = itemValid;
-                validationResult &= itemValid;
-            }
-
-            return validationResult;
+            return true;
         }
 
         protected override void ExtractItems()
@@ -59,11 +43,5 @@ namespace Microsoft.Docs.LearnValidation
                 return achievements;
             }).Cast<IValidateModel>().ToList();
         }
-
-        /// <summary>
-        /// won't be called
-        /// </summary>
-        protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
-            => null;
     }
 }

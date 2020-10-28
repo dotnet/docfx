@@ -14,12 +14,10 @@ namespace Microsoft.Docs.LearnValidation
     {
         private readonly LegacyManifest _manifest;
         private readonly string _outputBasePath;
-        private readonly LearnValidationHelper _learnValidationHelper;
         private readonly LearnValidationLogger _logger;
 
-        public Validator(LearnValidationHelper learnValidationHelper, string manifestFilePath, LearnValidationLogger logger)
+        public Validator(string manifestFilePath, LearnValidationLogger logger)
         {
-            _learnValidationHelper = learnValidationHelper;
             _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath));
             _outputBasePath = Path.GetDirectoryName(manifestFilePath);
             _logger = logger;
@@ -36,9 +34,9 @@ namespace Microsoft.Docs.LearnValidation
             var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath, _logger);
             var unitValidator = new UnitValidator(unitFiles, _outputBasePath, _logger);
             var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath, _logger);
-            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _learnValidationHelper, _logger);
+            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _logger);
 
-            // Add badge and trophy to achievements
+            // Add badge and trophy (defined in path or module) to achievements
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(pathValidator.Items, false));
 
@@ -53,26 +51,7 @@ namespace Microsoft.Docs.LearnValidation
 
             var isValid = true;
             hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).ToList();
-
-            var duplicateFiles = hierarchyItems.GroupBy(i => i.Uid).Where(g => g.Count() > 1).SelectMany(g =>
-            {
-                var files = string.Join(",", g.Select(i => i.SourceRelativePath));
-                foreach (var item in g)
-                {
-                    _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_DuplicatedUid, file: item.SourceRelativePath, item.Uid, files);
-                }
-                isValid = false;
-                return g.Select(gu => gu.SourceRelativePath);
-            }).ToArray();
-
-            foreach (var validator in validators)
-            {
-                if (validator.Items != null)
-                {
-                    validator.Items.RemoveAll(i => duplicateFiles.Contains(i.SourceRelativePath));
-                    validator.Items.ForEach(i => itemDict.Add(i.Uid, i));
-                }
-            }
+            itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
 
             validators.ForEach(v => isValid &= v.Validate(itemDict));
             return (isValid, hierarchyItems);
