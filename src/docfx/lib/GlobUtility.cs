@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
                 // Handle path starts: includes/**
                 if (_startsWithFolder != null)
                 {
-                    if (!path.StartsWith(_startsWithFolder))
+                    if (!path.StartsWith(_startsWithFolder, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
