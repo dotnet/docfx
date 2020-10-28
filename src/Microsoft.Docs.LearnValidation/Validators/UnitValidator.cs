@@ -4,10 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Quiz;
-using Microsoft.TripleCrown.Hierarchy.DataContract.TaskValidation;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation

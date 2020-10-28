@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
@@ -18,6 +17,11 @@ namespace Microsoft.Docs.LearnValidation
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
         {
+            foreach (var item in Items)
+            {
+                item.IsValid = true;
+            }
+
             return true;
         }
 
