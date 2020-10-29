@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
@@ -10,9 +11,12 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class PathValidator : ValidatorBase
     {
-        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
+        private readonly Func<string, string, bool> _externalXrefsCheck;
+
+        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger, Func<string, string, bool> externalXrefsCheck)
             : base(manifestItems, basePath, logger)
         {
+            _externalXrefsCheck = externalXrefsCheck;
         }
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
@@ -29,8 +33,8 @@ namespace Microsoft.Docs.LearnValidation
                     itemValid = false;
                 }
 
-                // path has child module, but that module has error when SDP validating
-                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m)).ToList();
+                // path has child module, but that module has error when SDP validating, except the shared module
+                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !_externalXrefsCheck(m, "Module")).ToList();
                 if (childrenCantFind.Any())
                 {
                     itemValid = false;

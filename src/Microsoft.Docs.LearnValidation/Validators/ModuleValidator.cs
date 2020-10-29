@@ -29,17 +29,16 @@ namespace Microsoft.Docs.LearnValidation
                     itemValid = false;
                 }
 
+                // module has child unit, but that unit has error when SDP validating
                 var childrenCantFind = module.Units.Where(u => !fullItemsDict.ContainsKey(u));
+                if (childrenCantFind.Any())
+                {
+                    itemValid = false;
+                }
 
                 foreach (var unit in module.Units.Except(childrenCantFind))
                 {
                     fullItemsDict[unit].Parent = module;
-                }
-
-                // module has child unit, but that unit has error when SDP validating
-                if (childrenCantFind.Any())
-                {
-                    itemValid = false;
                 }
 
                 item.IsValid = itemValid;

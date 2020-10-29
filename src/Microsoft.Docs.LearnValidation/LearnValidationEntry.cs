@@ -5,11 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Microsoft.Docs.LearnValidation.Models;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
@@ -32,6 +29,7 @@ namespace Microsoft.Docs.LearnValidation
             bool noDrySync,
             Action<LearnLogItem> writeLog,
             ILearnServiceAccessor learnServiceAccessor,
+            Func<string, string, bool> externalXrefsCheck,
             string fallbackDocsetPath = null)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -55,16 +53,16 @@ namespace Microsoft.Docs.LearnValidation
                 Formatting.Indented);
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
-            ValidateHierarchy(config, logger, learnServiceAccessor);
+            ValidateHierarchy(config, logger, learnServiceAccessor, externalXrefsCheck);
         }
 
-        private static bool ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor)
+        private static bool ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor, Func<string, string, bool> externalXrefsCheck)
         {
             var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var learnValidationHelper = new LearnValidationHelper(config.RepoBranch, learnServiceAccessor);
-            var validator = new Validator(manifestFilePath: config.ManifestFilePath, logger);
+            var validator = new Validator(manifestFilePath: config.ManifestFilePath, logger, externalXrefsCheck);
             var (isValid, hierarchyItems) = validator.Validate();
 
             Console.WriteLine($"[{PluginName}] local validation done in {sw.ElapsedMilliseconds / 1000}s");

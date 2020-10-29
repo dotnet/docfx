@@ -15,12 +15,14 @@ namespace Microsoft.Docs.LearnValidation
         private readonly LegacyManifest _manifest;
         private readonly string _outputBasePath;
         private readonly LearnValidationLogger _logger;
+        private readonly Func<string, string, bool> _externalXrefsCheck;
 
-        public Validator(string manifestFilePath, LearnValidationLogger logger)
+        public Validator(string manifestFilePath, LearnValidationLogger logger, Func<string, string, bool> externalXrefsCheck)
         {
             _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath));
             _outputBasePath = Path.GetDirectoryName(manifestFilePath);
             _logger = logger;
+            _externalXrefsCheck = externalXrefsCheck;
         }
 
         public (bool, List<IValidateModel>) Validate()
@@ -34,7 +36,7 @@ namespace Microsoft.Docs.LearnValidation
             var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath, _logger);
             var unitValidator = new UnitValidator(unitFiles, _outputBasePath, _logger);
             var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath, _logger);
-            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _logger);
+            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _logger, _externalXrefsCheck);
 
             // Add badge and trophy (defined in path or module) to achievements
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
+using System.Linq;
 using Microsoft.Docs.LearnValidation;
 
 namespace Microsoft.Docs.Build
@@ -14,17 +15,20 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
         private readonly ILearnServiceAccessor _learnServiceAccessor;
+        private readonly ExternalXref[] _externalXrefs;
 
         public OpsPostProcessor(
             Config config,
             ErrorBuilder errors,
             BuildOptions buildOptions,
-            ILearnServiceAccessor learnServiceAccessor)
+            ILearnServiceAccessor learnServiceAccessor,
+            ExternalXref[] externalXrefs)
         {
             _config = config;
             _errors = errors;
             _buildOptions = buildOptions;
             _learnServiceAccessor = learnServiceAccessor;
+            _externalXrefs = externalXrefs;
         }
 
         public void Run()
@@ -57,6 +61,7 @@ namespace Microsoft.Docs.Build
                         writeLog: LogError,
                         fallbackDocsetPath: _buildOptions.FallbackDocsetPath,
                         noDrySync: _config.NoDrySync,
+                        externalXrefsCheck: ExternalXrefsCheck,
                         learnServiceAccessor: _learnServiceAccessor);
                 }
             }
@@ -73,6 +78,11 @@ namespace Microsoft.Docs.Build
                 LearnErrorLevel.Warning => ErrorLevel.Warning,
                 _ => ErrorLevel.Off,
             };
+        }
+
+        private bool ExternalXrefsCheck(string uid, string schemaType)
+        {
+            return _externalXrefs.Any(xref => xref.Uid.Equals(uid) && schemaType.Equals(xref.SchemaType));
         }
     }
 }
