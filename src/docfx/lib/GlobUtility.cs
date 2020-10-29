@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             private readonly string? _subFolder;
             private readonly bool _allowTrailingFolders;
 
-            public KnownGlob(string? extension, string? startsWithFolder, string? subFolder, bool allowTrailingFolders)
+            private KnownGlob(string? extension, string? startsWithFolder, string? subFolder, bool allowTrailingFolders)
             {
                 _extension = extension;
                 _startsWithFolder = startsWithFolder;
@@ -114,29 +114,29 @@ namespace Microsoft.Docs.Build
             public static KnownGlob? TryCreate(string pattern)
             {
                 var match = Regex.Match(pattern.Replace('\\', '/'), @"^(\*\*)?([\w-._/]+\/)?(\*\*\/?)?(\*\.\w+)?$");
-                if (match.Success)
+                if (!match.Success)
                 {
-                    var allowLeadingFolders = match.Groups[1].Success;
-                    var folder = match.Groups[2].Success ? match.Groups[2].Value : null;
-                    var allowTrailingFolders = match.Groups[3].Success;
-                    var extension = match.Groups[4].Success ? match.Groups[4].Value.TrimStart('*') : null;
-                    var startsWithFolder = !allowLeadingFolders ? folder : null;
-                    var subFolder = allowLeadingFolders ? folder?.TrimStart('/') : null;
-
-                    if (extension is null && folder is null)
-                    {
-                        return null;
-                    }
-
-                    if (allowLeadingFolders && folder is null)
-                    {
-                        allowTrailingFolders = true;
-                    }
-
-                    return new KnownGlob(extension, startsWithFolder, subFolder, allowTrailingFolders);
+                    return null;
                 }
 
-                return null;
+                var allowLeadingFolders = match.Groups[1].Success;
+                var folder = match.Groups[2].Success ? match.Groups[2].Value : null;
+                var allowTrailingFolders = match.Groups[3].Success;
+                var extension = match.Groups[4].Success ? match.Groups[4].Value.TrimStart('*') : null;
+                var startsWithFolder = !allowLeadingFolders ? folder : null;
+                var subFolder = allowLeadingFolders ? folder?.TrimStart('/') : null;
+
+                if (extension is null && folder is null)
+                {
+                    return null;
+                }
+
+                if (allowLeadingFolders && folder is null)
+                {
+                    allowTrailingFolders = true;
+                }
+
+                return new KnownGlob(extension, startsWithFolder, subFolder, allowTrailingFolders);
             }
 
             public bool IsMatch(string path)
