@@ -100,14 +100,14 @@ namespace Microsoft.Docs.Build
         {
             private readonly string? _extension;
             private readonly string? _startsWithFolder;
-            private readonly string? _containsFolder;
+            private readonly string? _subFolder;
             private readonly bool _allowTrailingFolders;
 
-            public KnownGlob(string? extension, string? startsWithFolder, string? containsFolder, bool allowTrailingFolders)
+            public KnownGlob(string? extension, string? startsWithFolder, string? subFolder, bool allowTrailingFolders)
             {
                 _extension = extension;
                 _startsWithFolder = startsWithFolder;
-                _containsFolder = containsFolder;
+                _subFolder = subFolder;
                 _allowTrailingFolders = allowTrailingFolders;
             }
 
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
                     var allowTrailingFolders = match.Groups[3].Success;
                     var extension = match.Groups[4].Success ? match.Groups[4].Value.TrimStart('*') : null;
                     var startsWithFolder = !allowLeadingFolders ? folder : null;
-                    var containsFolder = allowLeadingFolders ? folder?.TrimStart('/') : null;
+                    var subFolder = allowLeadingFolders ? folder?.TrimStart('/') : null;
 
                     if (extension is null && folder is null)
                     {
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                         allowTrailingFolders = true;
                     }
 
-                    return new KnownGlob(extension, startsWithFolder, containsFolder, allowTrailingFolders);
+                    return new KnownGlob(extension, startsWithFolder, subFolder, allowTrailingFolders);
                 }
 
                 return null;
@@ -163,14 +163,15 @@ namespace Microsoft.Docs.Build
                 }
 
                 // Handle path in the middle: **/includes/**
-                if (_containsFolder != null)
+                if (_subFolder != null)
                 {
-                    var index = path.LastIndexOf(_containsFolder, StringComparison.OrdinalIgnoreCase);
-                    if (index < 0 || (index > 0 && path[index - 1] != '/'))
+                    var index = MatchSubFolder(path, _subFolder);
+                    if (index < 0)
                     {
                         return false;
                     }
-                    trailingFolderStartIndex = index + _containsFolder.Length;
+
+                    trailingFolderStartIndex = index + _subFolder.Length;
                 }
 
                 // Handle /**/ before extension
@@ -180,6 +181,23 @@ namespace Microsoft.Docs.Build
                 }
 
                 return true;
+            }
+
+            private static int MatchSubFolder(string path, string subFolder)
+            {
+                var searchStartIndex = path.Length;
+
+                while (true)
+                {
+                    var index = path.LastIndexOf(subFolder, searchStartIndex, StringComparison.OrdinalIgnoreCase);
+                    if (index > 0 && path[index - 1] != '/')
+                    {
+                        searchStartIndex = index;
+                        continue;
+                    }
+
+                    return index;
+                }
             }
         }
     }

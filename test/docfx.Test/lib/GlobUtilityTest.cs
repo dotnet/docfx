@@ -79,6 +79,7 @@ namespace Microsoft.Docs.Build
         [InlineData("**/a/*.md", "a/b/c.md, a/b/c", false)]
         [InlineData("**/a/**/*.md", "a/b.md, a/b/c.md, x/a/b.md, x/a/b/c.md", true)]
         [InlineData("**/a/**/*.md", "a/b/c", false)]
+        [InlineData("**/sample/**", "aspnetcore/security/anti-request-forgery/sample/MvcSample/wwwroot/lib/bootstrap/grunt/sauce_browsers.yml", true)]
 
         // For backward compatibility with v2
         [InlineData("****", "a.md, a/b.md", true)]
