@@ -188,6 +188,21 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
          = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
 
+        /// <summary>
+        /// The given data must be valid against any (one or more) of the given subschemas.
+        /// </summary>
+        public JsonSchema[] AnyOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// The given data must be valid against exactly all of the given subschemas.
+        /// </summary>
+        public JsonSchema[] AllOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// The given data must be valid against exactly one of the given subschemas.
+        /// </summary>
+        public JsonSchema[] OneOf { get; set; } = Array.Empty<JsonSchema>();
+
         // JSON schema custom validation extensions
         //-------------------------------------------
 

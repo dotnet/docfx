@@ -567,6 +567,13 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}.", source, propName);
 
             /// <summary>
+            /// Data does not match exactly one subschema
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error OneOfFailed(SourceInfo? source, string propName)
+                => new Error(ErrorLevel.Warning, "one-of-failed", $"Property '{propName}' must exactly match one subschema.", source, propName);
+
+            /// <summary>
             /// A required attribute is missing.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
