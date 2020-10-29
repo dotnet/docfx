@@ -103,6 +103,8 @@ namespace Microsoft.Docs.Build
             ValidateAnyOf(schema, propertyPath, token, errors);
             ValidateAllOf(schema, propertyPath, token, errors);
             ValidateOneOf(schema, propertyPath, token, errors);
+            ValidateIfThenElse(schema, propertyPath, token, errors);
+            ValidateNot(schema, propertyPath, token, errors);
         }
 
         private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -661,6 +663,50 @@ namespace Microsoft.Docs.Build
                     errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath));
                 }
             }
+        }
+
+        private void ValidateIfThenElse(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.If is null)
+            {
+                return;
+            }
+
+            var ifErrors = new List<Error>();
+            Validate(schema.If, propertyPath, token, ifErrors);
+
+            if (ifErrors.Count <= 0)
+            {
+                if (schema.Then != null)
+                {
+                    Validate(schema.Then, propertyPath, token, errors);
+                }
+            }
+            else
+            {
+                if (schema.Else != null)
+                {
+                    Validate(schema.Else, propertyPath, token, errors);
+                }
+            }
+        }
+
+        private void ValidateNot(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.Not is null)
+            {
+                return;
+            }
+
+            var subschemaErrors = new List<Error>();
+            Validate(schema.Not, propertyPath, token, subschemaErrors);
+
+            if (subschemaErrors.Count > 0)
+            {
+                return;
+            }
+
+            errors.Add(Errors.JsonSchema.NotFailed(JsonUtility.GetSourceInfo(token), propertyPath));
         }
 
         private void ValidateDocsetUnique(JsonSchema schema, string propertyPath, JObject map)

@@ -203,6 +203,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public JsonSchema[] OneOf { get; set; } = Array.Empty<JsonSchema>();
 
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? If { get; set; }
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? Then { get; set; }
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? Else { get; set; }
+
+        /// <summary>
+        /// Negates the result of a validation.
+        /// </summary>
+        public JsonSchema? Not { get; set; }
+
         // JSON schema custom validation extensions
         //-------------------------------------------
 

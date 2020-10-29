@@ -16,8 +16,6 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_notSupportedSuites =
         {
             "definitions",
-            "if-then-else",
-            "not",
             "refRemote",
         };
 
