@@ -570,15 +570,15 @@ namespace Microsoft.Docs.Build
             /// Data does not match exactly one subschema
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error OneOfFailed(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "one-of-failed", $"Property '{propName}' must exactly match one subschema.", source, propName);
+            public static Error OneOfFailed(SourceInfo? source, string propName, object value)
+                => new Error(ErrorLevel.Warning, "one-of-failed", $"Invalid value for '{propName}': '{value}'.", source, propName);
 
             /// <summary>
             /// Data matches subschema
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error NotFailed(SourceInfo? source, string propName)
-                => new Error(ErrorLevel.Warning, "not-failed", $"Property '{propName}' must not match subschema.", source, propName);
+            public static Error NotFailed(SourceInfo? source, string propName, object value)
+                => new Error(ErrorLevel.Warning, "not-failed", $"Invalid value for '{propName}': '{value}'.", source, propName);
 
             /// <summary>
             /// A required attribute is missing.

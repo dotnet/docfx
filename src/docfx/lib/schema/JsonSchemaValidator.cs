@@ -660,7 +660,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath));
+                    errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
                 }
             }
         }
@@ -706,7 +706,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            errors.Add(Errors.JsonSchema.NotFailed(JsonUtility.GetSourceInfo(token), propertyPath));
+            errors.Add(Errors.JsonSchema.NotFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
         }
 
         private void ValidateDocsetUnique(JsonSchema schema, string propertyPath, JObject map)
