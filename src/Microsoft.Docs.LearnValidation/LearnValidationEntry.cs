@@ -22,37 +22,29 @@ namespace Microsoft.Docs.LearnValidation
             string repoUrl,
             string repoBranch,
             string docsetName,
-            string docsetPath,
             string docsetOutputPath,
             string publishFilePath,
-            string dependencyFilePath,
             string manifestFilePath,
-            string environment,
             bool isLocalizationBuild,
             bool noDrySync,
             Action<LearnLogItem> writeLog,
             ILearnServiceAccessor learnServiceAccessor,
-            Func<string, string, bool> externalXrefsCheck,
-            string fallbackDocsetPath = null)
+            Func<string, string, bool> externalXrefsCheck)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var config = new LearnValidationConfig(
                 repoUrl: repoUrl,
                 repoBranch: repoBranch,
                 docsetName: docsetName,
-                docsetPath: docsetPath,
                 docsetOutputPath: docsetOutputPath,
                 publishFilePath: publishFilePath,
-                dependencyFilePath: dependencyFilePath,
                 manifestFilePath: manifestFilePath,
-                environment: environment,
-                fallbackDocsetPath: fallbackDocsetPath,
                 isLocalizationBuild: isLocalizationBuild,
                 noDrySync: noDrySync);
             var logger = new LearnValidationLogger(writeLog);
 
             var configStr = JsonConvert.SerializeObject(
-                new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
+                new { repoUrl, repoBranch, docsetName, publishFilePath, manifestFilePath, isLocalizationBuild },
                 Formatting.Indented);
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
