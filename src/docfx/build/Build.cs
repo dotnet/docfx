@@ -63,9 +63,7 @@ namespace Microsoft.Docs.Build
                 new OpsPreProcessor(config, errors, buildOptions, repositoryProvider).Run();
 
                 var sourceMap = new SourceMap(errors, new PathString(buildOptions.DocsetPath), config, fileResolver);
-                var validationRules = GetContentValidationRules(config, fileResolver);
-
-                errors = new ErrorLog(errors, config, sourceMap, validationRules);
+                errors = new ErrorLog(errors, config, sourceMap);
 
                 using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap, repositoryProvider);
                 Run(context);
@@ -155,12 +153,5 @@ namespace Microsoft.Docs.Build
                     break;
             }
         }
-
-        private static Dictionary<string, ValidationRules>? GetContentValidationRules(Config? config, FileResolver fileResolver)
-            => !string.IsNullOrEmpty(config?.MarkdownValidationRules.Value)
-            ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(
-                fileResolver.ReadString(config.MarkdownValidationRules),
-                config.MarkdownValidationRules.Source?.File)
-            : null;
     }
 }

@@ -75,6 +75,11 @@ namespace Microsoft.Docs.Build
             return await FetchValidationRules($"/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
         }
 
+        public async Task<string> GetBuildValidationRules((string repositoryUrl, string branch) tuple)
+        {
+            return await FetchValidationRules($"/route/validationmgt/rulesets/buildrules", tuple.repositoryUrl, tuple.branch);
+        }
+
         public async Task<string> GetAllowlists((string repositoryUrl, string branch) tuple)
         {
             return await FetchValidationRules($"/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);

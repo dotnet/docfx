@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
 
         public string? Message { get; private set; }
 
+        public string? PropertyPath { get; private set; }
+
         public bool CanonicalVersionOnly { get; private set; }
 
         public bool PullRequestOnly { get; private set; }
@@ -34,13 +36,29 @@ namespace Microsoft.Docs.Build
 
         public CustomRule(ErrorLevel? severity) => Severity = severity;
 
-        public CustomRule(ErrorLevel? severity, string? code, string? additionalMessage, bool canonicalVersionOnly, bool pullRequestOnly)
+        public CustomRule(
+            ErrorLevel? severity,
+            string? code,
+            string? message,
+            string? additionalMessage,
+            string? propertyPath,
+            bool canonicalVersionOnly,
+            bool pullRequestOnly,
+            string[]? contentTypes)
         {
             Severity = severity;
             Code = code;
+
+            // this will override value, different with others?
+            //if (!string.IsNullOrEmpty(message))
+            //{
+                Message = message;
+            //}
             AdditionalMessage = additionalMessage;
+            PropertyPath = propertyPath;
             CanonicalVersionOnly = canonicalVersionOnly;
             PullRequestOnly = pullRequestOnly;
+            ContentTypes = contentTypes;
         }
 
         public bool ExcludeMatches(string file)

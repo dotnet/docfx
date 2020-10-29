@@ -206,7 +206,7 @@ namespace Microsoft.Docs.Build
             var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schemaString, new FilePath(schemaFilePath));
 
             // temporary mapping, will retired after we support config it in UI portal
-            jsonSchema = LearnErrorMapping(mime, jsonSchema);
+            // jsonSchema = LearnErrorMapping(mime, jsonSchema);
 
             return new JsonSchemaValidator(jsonSchema, forceError: true);
         }

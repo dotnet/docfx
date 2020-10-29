@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,6 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly SourceMap? _sourceMap;
-        private readonly Dictionary<string, SourceInfo<CustomRule>> _customRules = new Dictionary<string, SourceInfo<CustomRule>>();
 
         private readonly ErrorSink _errorSink = new ErrorSink();
         private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
@@ -25,20 +25,25 @@ namespace Microsoft.Docs.Build
         public ErrorLog(
             ErrorBuilder errors,
             Config config,
-            SourceMap? sourceMap = null,
-            Dictionary<string, ValidationRules>? contentValidationRules = null)
+            SourceMap? sourceMap = null)
         {
             _errors = errors;
             _config = config;
             _sourceMap = sourceMap;
-            _customRules = MergeCustomRules(config, contentValidationRules);
         }
 
         public override void Add(Error error)
         {
-            if (_customRules.TryGetValue(error.Code, out var customRule))
+            /*if (TryGetCustomRule(error, out var customRule))
             {
                 error = error.WithCustomRule(customRule);
+            }*/
+
+            // todo withCustomRules on config rules here
+            // if not match, then
+            if (ValidatorExtension != null)
+            {
+                error = ValidatorExtension.WithCustomRule(error);
             }
 
             if (error.Level == ErrorLevel.Off)
@@ -85,43 +90,6 @@ namespace Microsoft.Docs.Build
                     _errors.Add(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
                     break;
             }
-        }
-
-        private Dictionary<string, SourceInfo<CustomRule>> MergeCustomRules(Config? config, Dictionary<string, ValidationRules>? validationRules)
-        {
-            var customRules = config != null ? new Dictionary<string, SourceInfo<CustomRule>>(_config.Rules) : new Dictionary<string, SourceInfo<CustomRule>>();
-
-            if (validationRules == null)
-            {
-                return customRules;
-            }
-
-            foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => !rule.DocfxOverride))
-            {
-                if (customRules.ContainsKey(validationRule.Code))
-                {
-                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code, customRules[validationRule.Code].Source));
-                    customRules.Remove(validationRule.Code);
-                }
-            }
-            foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly))
-            {
-                if (customRules.TryGetValue(validationRule.Code, out var customRule))
-                {
-                    customRules[validationRule.Code] = new SourceInfo<CustomRule>(
-                        new CustomRule(
-                            customRule.Value.Severity,
-                            customRule.Value.Code,
-                            customRule.Value.AdditionalMessage,
-                            customRule.Value.CanonicalVersionOnly,
-                            validationRule.PullRequestOnly), customRule.Source);
-                }
-                else
-                {
-                    customRules.Add(validationRule.Code, new SourceInfo<CustomRule>(new CustomRule(null, null, null, false, validationRule.PullRequestOnly)));
-                }
-            }
-            return customRules;
         }
     }
 }

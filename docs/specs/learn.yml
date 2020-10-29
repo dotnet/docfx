@@ -501,7 +501,55 @@ outputs:
 ---
 # error mapping for Learn Valdiation based on SDP, LearningPath
 inputs:
-  docfx.yml: 
+  docfx.yml: |
+    buildValidationRules: build.json
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "MissingAttribute",
+            "message": "Missing attribute: Uid. A valid Uid is required for each learning path.",
+            "code": "path-uid-missing",
+            "propertyPath": "uid",
+            "severity": "ERROR",
+            "contentTypes": ["learningpath"]
+          },
+          {
+            "type": "MissingAttribute",
+            "message": "Fake message. This rule is for `module` content.",
+            "code": "path-modules-missing",
+            "propertyPath": "modules",
+            "severity": "ERROR",
+            "contentTypes": ["module"]
+          },
+          {
+            "type": "MissingAttribute",
+            "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+            "code": "path-modules-missing",
+            "propertyPath": "modules",
+            "severity": "ERROR",
+            "contentTypes": ["learningpath"]
+          },
+          {
+            "type": "MissingEitherAttribute",
+            "message": "Missing attribute: trophy. A valid trophy is required for each learning path.",
+            "code": "path-trophy-missing",
+            "propertyPath": "trophy",
+            "severity": "ERROR",
+            "contentTypes": ["learningpath"]
+          },
+          {
+            "type": "XrefNotFound",
+            "message": "Child Uid(s): '{0}' can't be found.",
+            "code": "path-child-not-found",
+            "propertyPath": "modules",
+            "severity": "ERROR",
+            "contentTypes": ["learningpath"]
+          }
+        ]
+      }
+    }
   patha.yml: |
     #YamlMime:LearningPath
     a: a
@@ -554,7 +602,47 @@ outputs:
 ---
 # error mapping for Learn Valdiation based on SDP, Module
 inputs:
-  docfx.yml: 
+  docfx.yml: |
+    buildValidationRules: build.json
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "MissingAttribute",
+            "message": "Missing attribute: Uid. A valid Uid is required for each module.",
+            "code": "module-uid-missing",
+            "propertyPath": "uid",
+            "severity": "ERROR",
+            "contentTypes": ["module"]
+          },
+          {
+            "type": "MissingAttribute",
+            "message": "Missing attribute: units. At least one valid unit is required for each module.",
+            "code": "module-units-missing",
+            "propertyPath": "units",
+            "severity": "ERROR",
+            "contentTypes": ["module"]
+          },
+          {
+            "type": "MissingEitherAttribute",
+            "message": "Missing attribute: badge. A valid badge is required for each module.",
+            "code": "module-badge-missing",
+            "propertyPath": "badge",
+            "severity": "ERROR",
+            "contentTypes": ["module"]
+          },
+          {
+            "type": "XrefNotFound",
+            "message": "Child Uid(s): '{0}' can't be found.",
+            "code": "module-child-not-found",
+            "propertyPath": "units",
+            "severity": "ERROR",
+            "contentTypes": ["module"]
+          }
+        ]
+      }
+    }
   modulea.yml: |
     #YamlMime:Module
     a: a
@@ -607,7 +695,39 @@ outputs:
 ---
 # error mapping for Learn Valdiation based on SDP, ModuleUnit
 inputs:
-  docfx.yml: 
+  docfx.yml: |
+    buildValidationRules: build.json
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "MissingAttribute",
+            "message": "Missing attribute: Uid. A valid Uid is required for each unit.",
+            "code": "unit-uid-missing",
+            "propertyPath": "uid",
+            "severity": "ERROR",
+            "contentTypes": ["moduleunit"]
+          },
+          {
+            "type": "MissingAttribute",
+            "message": "Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.",
+            "code": "unit-duration-missing",
+            "propertyPath": "durationInMinutes",
+            "severity": "ERROR",
+            "contentTypes": ["moduleunit"]
+          },
+          {
+            "type": "PrecludedAttributes",
+            "message": "Unit can't have both quiz and task.",
+            "code": "unit-task-and-quiz",
+            "propertyPath": "quiz",
+            "severity": "ERROR",
+            "contentTypes": ["moduleunit"]
+          }
+        ]
+      }
+    }
   unita.yml: |
     #YamlMime:ModuleUnit
     a: a
@@ -717,7 +837,47 @@ repos:
             }
           }]
         }
-      docfx.yml:      
+      docfx.yml: |
+        buildValidationRules: build.json
+      build.json: |
+        {
+          "system": {
+            "rules": [
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: Uid. A valid Uid is required for each learning path.",
+                "code": "path-uid-missing",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingEitherAttribute",
+                "message": "Missing attribute: trophy. A valid trophy is required for each learning path.",
+                "code": "path-trophy-missing",
+                "propertyPath": "trophy",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Child Uid(s): '{0}' can't be found.",
+                "code": "path-child-not-found",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              }
+            ]
+          }
+        }
       path-a.yml: |
         ### YamlMime:LearningPath
         uid: path-a
@@ -760,6 +920,62 @@ repos:
       docfx.yml: |
         xref:
         - 1.xrefmap.json
+        buildValidationRules: build.json
+      build.json: |
+        {
+          "system": {
+            "rules": [
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: Uid. A valid Uid is required for each learning path.",
+                "code": "path-uid-missing",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingEitherAttribute",
+                "message": "Missing attribute: trophy. A valid trophy is required for each learning path.",
+                "code": "path-trophy-missing",
+                "propertyPath": "trophy",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Child Uid(s): '{0}' can't be found.",
+                "code": "path-child-not-found",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "xref-type-invalid",
+                "message": "Invalid child Uid(s): '{0}'. A learning path can only have module as children.",
+                "code": "path-child-not-module",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "ArrayLengthInvalid",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              }
+            ]
+          }
+        }
       1.xrefmap.json: |
         {
           "repository_url": "a_repo",
@@ -827,7 +1043,71 @@ repos:
             }
           }]
         }
-      docfx.yml: 
+      docfx.yml: |
+        buildValidationRules: build.json
+      build.json: |
+        {
+          "system": {
+            "rules": [
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: Uid. A valid Uid is required for each learning path.",
+                "code": "path-uid-missing",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingEitherAttribute",
+                "message": "Missing attribute: trophy. A valid trophy is required for each learning path.",
+                "code": "path-trophy-missing",
+                "propertyPath": "trophy",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Child Uid(s): '{0}' can't be found.",
+                "code": "path-child-not-found",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Achievement Uid '{0}' can't be found.",
+                "code": "path-achievement-not-found",
+                "propertyPath": "achievement",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "xref-type-invalid",
+                "message": "Uid '{0}' is not a trophy. A learning path can only have trophy as achievement.",
+                "code": "path-achievement-not-trophy",
+                "propertyPath": "achievement",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "ArrayLengthInvalid",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              }
+            ]
+          }
+        }
       path-a.yml: |
         ### YamlMime:LearningPath
       path-b.yml: |
@@ -904,6 +1184,7 @@ repos:
         }
       docfx.yml: |
         name: learn-pr
+        buildValidationRules: build.json
         xref:
         - 1.xrefmap.json
       1.xrefmap.json: |
@@ -916,7 +1197,118 @@ repos:
               "schemaType": "module",
               "count": 1}
           ]
-        }  
+        }
+      build.json: |
+        {
+          "system": {
+            "rules": [
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: Uid. A valid Uid is required for each learning path.",
+                "code": "path-uid-missing",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingEitherAttribute",
+                "message": "Missing attribute: trophy. A valid trophy is required for each learning path.",
+                "code": "path-trophy-missing",
+                "propertyPath": "trophy",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Child Uid(s): '{0}' can't be found.",
+                "code": "path-child-not-found",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Achievement Uid '{0}' can't be found.",
+                "code": "path-achievement-not-found",
+                "propertyPath": "achievement",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "xref-type-invalid",
+                "message": "Uid '{0}' is not a trophy. A learning path can only have trophy as achievement.",
+                "code": "path-achievement-not-trophy",
+                "propertyPath": "achievement",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "ArrayLengthInvalid",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: Uid. A valid Uid is required for each unit.",
+                "code": "unit-uid-missing",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "MissingAttribute",
+                "message": "Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.",
+                "code": "unit-duration-missing",
+                "propertyPath": "durationInMinutes",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "PrecludedAttributes",
+                "message": "Unit can't have both quiz and task.",
+                "code": "unit-task-and-quiz",
+                "propertyPath": "quiz",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "MaxReferenceCountInvalid",
+                "message": "Unit '{0}' can't have two or more parents ({3}).",
+                "code": "unit-multiple-parents",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "MinReferenceCountInvalid",
+                "message": "Unit '{0}' must belong to a valid module.",
+                "code": "unit-no-module-parent",
+                "propertyPath": "uid",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "NumberInvalid",
+                "message": "Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.",
+                "code": "unit-duration-missing",
+                "propertyPath": "durationInMinutes",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              }
+            ]
+          }
+        }
       module-a.yml: |
         ### YamlMime:Module
         units: ["unit-b", "unit-c"]
@@ -984,7 +1376,87 @@ repos:
             }
           }]
         }
-      docfx.yml: 
+      docfx.yml: |
+        buildValidationRules: build.json
+      build.json: |
+        {
+          "system": {
+            "rules": [
+              {
+                "type": "ArrayMaxCheckInvalid",
+                "message": "Question must have one correct answer.",
+                "code": "quiz-multiple-answers",
+                "propertyPath": "quiz.questions.choices",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "ArrayMinCheckInvalid",
+                "message": "Question must have one correct answer.",
+                "code": "quiz-no-answer",
+                "propertyPath": "quiz.questions.choices",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "FormatInvalid",
+                "message": "Task has invalid Azure resource type '{0}'. Type must be formatted as '*/*' when name is specified.",
+                "code": "tasks-format-invalid",
+                "propertyPath": "tasks.azure.resource.type",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "InvalidValue",
+                "message": "Task has invalid Azure resource type: '{1}'.",
+                "code": "task-type-invalid",
+                "propertyPath": "tasks.azure.resource.type",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "PrecludedAttributes",
+                "message": "Unit can't have both quiz and task.",
+                "code": "unit-task-and-quiz",
+                "propertyPath": "quiz",
+                "severity": "ERROR",
+                "contentTypes": ["moduleunit"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Child Uid(s): '{0}' can't be found.",
+                "code": "path-child-not-found",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "XrefNotFound",
+                "message": "Achievement Uid '{0}' can't be found.",
+                "code": "path-achievement-not-found",
+                "propertyPath": "achievement",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "xref-type-invalid",
+                "message": "Uid '{0}' is not a trophy. A learning path can only have trophy as achievement.",
+                "code": "path-achievement-not-trophy",
+                "propertyPath": "achievement",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              },
+              {
+                "type": "ArrayLengthInvalid",
+                "message": "Missing attribute: modules. At least one valid module is required for each learning path.",
+                "code": "path-modules-missing",
+                "propertyPath": "modules",
+                "severity": "ERROR",
+                "contentTypes": ["learningpath"]
+              }
+            ]
+          }
+        }
       unit-a.yml: |
         ### YamlMime:ModuleUnit
       unit-b.yml: |

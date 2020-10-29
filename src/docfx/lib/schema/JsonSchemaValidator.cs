@@ -747,10 +747,14 @@ namespace Microsoft.Docs.Build
             }
 
             if (!string.IsNullOrEmpty(error.PropertyPath) &&
-                schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) &&
+                _ext != null &&
+                schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) && // todo remove?
                 attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
-                return error.WithCustomRule(customRule, t_filePath.Value == null ? null : _ext?.IsEnable(t_filePath.Value, customRule));
+                return JsonSchemaValidatorExtension.WithCustomRule(
+                    error,
+                    customRule,
+                    t_filePath.Value == null ? null : _ext?.IsEnable(t_filePath.Value, customRule));
             }
 
             return error;

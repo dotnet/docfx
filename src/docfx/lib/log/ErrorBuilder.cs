@@ -48,6 +48,8 @@ namespace Microsoft.Docs.Build
             return new DelegatingErrorBuilder(this, convert);
         }
 
+        public JsonSchemaValidatorExtension? ValidatorExtension { get; internal set; }
+
         public ErrorBuilder WithDocsetPath(string workingDirectory, string docsetPath)
         {
             var docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
@@ -71,7 +73,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public ErrorBuilder WithCustomRule(JsonSchema schema)
+        /*public ErrorBuilder WithCustomRule(JsonSchema schema) // todo to be removed
         {
             return With(error =>
             {
@@ -83,7 +85,7 @@ namespace Microsoft.Docs.Build
                 }
                 return error;
             });
-        }
+        }*/
 
         private class NullErrorBuilder : ErrorBuilder
         {

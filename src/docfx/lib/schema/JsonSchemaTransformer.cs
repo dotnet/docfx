@@ -60,12 +60,12 @@ namespace Microsoft.Docs.Build
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
-                    _errors.WithCustomRule(schema).Add(Errors.JsonSchema.MinReferenceCountInvalid(uid, minReferenceCount, references, propertyPath));
+                    _errors.Add(Errors.JsonSchema.MinReferenceCountInvalid(uid, minReferenceCount, references, propertyPath));
                 }
 
                 if (maxReferenceCount != null && references.Length > maxReferenceCount)
                 {
-                    _errors.WithCustomRule(schema).Add(Errors.JsonSchema.MaxReferenceCountInvalid(uid, maxReferenceCount, references, propertyPath));
+                    _errors.Add(Errors.JsonSchema.MaxReferenceCountInvalid(uid, maxReferenceCount, references, propertyPath));
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
             return TransformContentCore(
-                errors.WithCustomRule(schema),
+                errors,
                 definitions,
                 file,
                 schema,
@@ -299,7 +299,7 @@ namespace Microsoft.Docs.Build
             {
                 recursionDetector.Push(uid);
                 return TransformContentCore(
-                    _errors.WithCustomRule(rootSchema),
+                    _errors,
                     definitions,
                     file,
                     rootSchema,
