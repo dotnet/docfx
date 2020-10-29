@@ -3,9 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -34,11 +31,6 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            /*if (TryGetCustomRule(error, out var customRule))
-            {
-                error = error.WithCustomRule(customRule);
-            }*/
-
             // todo withCustomRules on config rules here
             // if not match, then
             if (ValidatorExtension != null)

@@ -142,7 +142,6 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-
         private Dictionary<string, List<SourceInfo<CustomRule>>> MergeCustomRules(
             Config? config,
             Dictionary<string, ValidationRules>? contentValidationRules,

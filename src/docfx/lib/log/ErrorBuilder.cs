@@ -73,20 +73,6 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        /*public ErrorBuilder WithCustomRule(JsonSchema schema) // todo to be removed
-        {
-            return With(error =>
-            {
-                if (!string.IsNullOrEmpty(error.PropertyPath) &&
-                    schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) &&
-                    attributeCustomRules.TryGetValue(error.Code, out var customRule))
-                {
-                    return error.WithCustomRule(customRule);
-                }
-                return error;
-            });
-        }*/
-
         private class NullErrorBuilder : ErrorBuilder
         {
             public override bool HasError => throw new NotSupportedException();
