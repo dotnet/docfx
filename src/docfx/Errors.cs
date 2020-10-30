@@ -467,6 +467,21 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}.", source);
         }
 
+        public static class ZonePivot
+        {
+            public static Error ZonePivotGroupDefinitionNotFound(FilePath file, string publishUrl)
+                => new Error(ErrorLevel.Warning, "zone-pivot-definition-not-found", $"No source file is present for '{publishUrl}'. To use zone pivots, you must first define the zone pivot groups in zone-pivot-groups.yml or specify a file by 'zone_pivot_group_filename' metadata. Cross docset reference to zone pivot groups definition not supported by docfx.", new SourceInfo(file));
+
+            public static Error ZonePivotGroupDefinitionConflict(FilePath file, string publishUrl)
+                => new Error(ErrorLevel.Warning, "zone-pivot-definition-conflict", $"Multiple source files are present for '{publishUrl}'.", new SourceInfo(file));
+
+            public static Error ZonePivotGroupNotFound(SourceInfo? source, string groupId, FilePath? definitionFile)
+                => new Error(ErrorLevel.Warning, "pivot-group-not-found", $"Pivot group '{groupId}' isn't defined in '{definitionFile}'. Make sure every pivot group you reference in your content has been properly defined.", source);
+
+            public static Error ZonePivotGroupNotSpecified(SourceInfo? source)
+                => new Error(ErrorLevel.Suggestion, "zone-pivot-group-missing", $"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.", source);
+        }
+
         public static class Markdown
         {
             public static Error IncludeNotFound(SourceInfo<string?> source)

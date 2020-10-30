@@ -16,12 +16,14 @@ namespace Microsoft.Docs.Build
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
         // Learn content: "learningpath", "module", "moduleunit"
-        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit" };
+        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups" };
 
+        private readonly Config _config;
         private readonly Validator _validator;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
+        private readonly ZonePivotProvider _zonePivotProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
 
@@ -31,16 +33,19 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
+            ZonePivotProvider zonePivotProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
+            _config = config;
             _errors = errors;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
+            _zonePivotProvider = zonePivotProvider;
             _publishUrlMap = publishUrlMap;
 
             _validator = new Validator(
-                fileResolver.ResolveFilePath(config.MarkdownValidationRules),
-                fileResolver.ResolveFilePath(config.Allowlists));
+                fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
+                fileResolver.ResolveFilePath(_config.Allowlists));
         }
 
         public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)
@@ -211,6 +216,43 @@ namespace Microsoft.Docs.Build
                     SourceInfo = new SourceInfo(file),
                 };
                 Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateZonePivotDefinition(FilePath file, ZonePivotGroupDefinition definition)
+        {
+            if (TryCreateValidationContext(file, false, out var validationContext))
+            {
+                Write(_validator.ValidateZonePivot(definition, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateZonePivots(FilePath file, List<SourceInfo<string>> zonePivotUsages)
+        {
+            // Build types other than Docs is not supported
+            if (_config.UrlType != UrlType.Docs)
+            {
+                return;
+            }
+
+            // No need to run validation if pivot not used in this page
+            if (!zonePivotUsages.Any())
+            {
+                return;
+            }
+
+            var zonePivotGroup = _zonePivotProvider.TryGetZonePivotGroups(file);
+            if (zonePivotGroup == null)
+            {
+                // Unable to load definition file or group
+                return;
+            }
+
+            if (TryCreateValidationContext(file, false, out var validationContext))
+            {
+                validationContext.ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups);
+                List<(string, object)> usages = zonePivotUsages.Select(u => (u.Value, (object)u.Source!)).ToList();
+                Write(_validator.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
             }
         }
 
