@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
                         noDrySync: _config.NoDrySync,
-                        externalXrefsCheck: ExternalXrefsCheck,
+                        isSharedItem: IsSharedItem,
                         learnServiceAccessor: _learnServiceAccessor);
                 }
             }
@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private bool ExternalXrefsCheck(string uid, string schemaType)
+        private bool IsSharedItem(string uid, string schemaType)
         {
             return _externalXrefs.Any(xref => xref.Uid.Equals(uid) && schemaType.Equals(xref.SchemaType));
         }

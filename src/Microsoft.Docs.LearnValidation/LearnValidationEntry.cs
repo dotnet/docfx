@@ -29,7 +29,7 @@ namespace Microsoft.Docs.LearnValidation
             bool noDrySync,
             Action<LearnLogItem> writeLog,
             ILearnServiceAccessor learnServiceAccessor,
-            Func<string, string, bool> externalXrefsCheck)
+            Func<string, string, bool> isSharedItem)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var config = new LearnValidationConfig(
@@ -48,16 +48,16 @@ namespace Microsoft.Docs.LearnValidation
                 Formatting.Indented);
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
-            ValidateHierarchy(config, logger, learnServiceAccessor, externalXrefsCheck).GetAwaiter().GetResult();
+            ValidateHierarchy(config, logger, learnServiceAccessor, isSharedItem).GetAwaiter().GetResult();
         }
 
-        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor, Func<string, string, bool> externalXrefsCheck)
+        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor, Func<string, string, bool> isSharedItem)
         {
             var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var learnValidationHelper = new LearnValidationHelper(config.RepoBranch, learnServiceAccessor);
-            var validator = new Validator(manifestFilePath: config.ManifestFilePath, logger, externalXrefsCheck);
+            var validator = new Validator(manifestFilePath: config.ManifestFilePath, logger, isSharedItem);
             var (isValid, hierarchyItems) = validator.Validate();
 
             Console.WriteLine($"[{PluginName}] local validation done in {sw.ElapsedMilliseconds / 1000}s");

@@ -11,12 +11,12 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class PathValidator : ValidatorBase
     {
-        private readonly Func<string, string, bool> _externalXrefsCheck;
+        private readonly Func<string, string, bool> _isSharedItem;
 
-        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger, Func<string, string, bool> externalXrefsCheck)
+        public PathValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger, Func<string, string, bool> isSharedItem)
             : base(manifestItems, basePath, logger)
         {
-            _externalXrefsCheck = externalXrefsCheck;
+            _isSharedItem = isSharedItem;
         }
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.LearnValidation
                 }
 
                 // path has child module, but that module has error when SDP validating, except the shared module
-                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !_externalXrefsCheck(m, "Module")).ToList();
+                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !_isSharedItem(m, "Module")).ToList();
                 if (childrenCantFind.Any())
                 {
                     itemValid = false;
