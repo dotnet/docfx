@@ -49,11 +49,7 @@ namespace Microsoft.Docs.Build
             Severity = severity;
             Code = code;
 
-            // this will override value, different with others?
-            //if (!string.IsNullOrEmpty(message))
-            //{
-                Message = message;
-            //}
+            Message = message;
             AdditionalMessage = additionalMessage;
             PropertyPath = propertyPath;
             CanonicalVersionOnly = canonicalVersionOnly;

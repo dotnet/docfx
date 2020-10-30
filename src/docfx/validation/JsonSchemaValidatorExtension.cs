@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             var contentValidationRules = GetContentValidationRules(config, fileResolver);
             var buildValidationRules = GetBuildValidationRules(config, fileResolver);
-            _customRules = MergeCustomRules(config, contentValidationRules, buildValidationRules);
+            _customRules = MergeCustomRules(contentValidationRules, buildValidationRules);
         }
 
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
@@ -143,11 +143,10 @@ namespace Microsoft.Docs.Build
         }
 
         private Dictionary<string, List<SourceInfo<CustomRule>>> MergeCustomRules(
-            Config? config,
             Dictionary<string, ValidationRules>? contentValidationRules,
             Dictionary<string, ValidationRules>? buildValidationRules)
         {
-            var customRules = config != null ? // todo why _config?
+            var customRules = _config != null ?
                 _config.Rules.ToDictionary(
                     item => item.Key,
                     item => new List<SourceInfo<CustomRule>> { item.Value })
