@@ -31,6 +31,9 @@ namespace Microsoft.Docs.Build
         [Option("regression-markdown-rule")]
         public bool RegressionMarkdownRule { get; set; }
 
+        [Option("regression-build-rule")]
+        public bool RegressionBuildRule { get; set; }
+
         [Option("regression-metadata-schema")]
         public bool RegressionMetadataSchema { get; set; }
 

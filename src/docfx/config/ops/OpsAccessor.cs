@@ -100,6 +100,13 @@ namespace Microsoft.Docs.Build
                 environment: DocsEnvironment.PPE);
         }
 
+        public async Task<string> GetRegressionAllBuildRules()
+        {
+            return await FetchValidationRules(
+                "/route/validationmgt/rulesets/buildrules?name=_regression_all_",
+                environment: DocsEnvironment.PPE);
+        }
+
         public async Task<string> GetRegressionAllMetadataSchema()
         {
             var metadataRules = FetchValidationRules(
