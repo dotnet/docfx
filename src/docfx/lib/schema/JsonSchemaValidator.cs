@@ -99,6 +99,12 @@ namespace Microsoft.Docs.Build
                     ValidateObject(schema, propertyPath, map, errors);
                     break;
             }
+
+            ValidateAnyOf(schema, propertyPath, token, errors);
+            ValidateAllOf(schema, propertyPath, token, errors);
+            ValidateOneOf(schema, propertyPath, token, errors);
+            ValidateIfThenElse(schema, propertyPath, token, errors);
+            ValidateNot(schema, propertyPath, token, errors);
         }
 
         private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -576,6 +582,131 @@ namespace Microsoft.Docs.Build
             {
                 errors.Add(Errors.JsonSchema.AttributeDeprecated(JsonUtility.GetSourceInfo(token), propertyPath, schema.ReplacedBy));
             }
+        }
+
+        private void ValidateAnyOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.AnyOf.Length <= 0)
+            {
+                return;
+            }
+
+            List<Error>? bestErrors = null;
+
+            foreach (var subschema in schema.AnyOf)
+            {
+                var subschemaErrors = new List<Error>();
+                Validate(subschema, propertyPath, token, subschemaErrors);
+
+                if (subschemaErrors.Count <= 0)
+                {
+                    return;
+                }
+
+                // Find the subschema with the least errors
+                if (bestErrors is null || subschemaErrors.Count < bestErrors.Count)
+                {
+                    bestErrors = subschemaErrors;
+                }
+            }
+
+            if (bestErrors != null)
+            {
+                errors.AddRange(bestErrors);
+            }
+        }
+
+        private void ValidateAllOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            foreach (var subschema in schema.AllOf)
+            {
+                Validate(subschema, propertyPath, token, errors);
+            }
+        }
+
+        private void ValidateOneOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.OneOf.Length <= 0)
+            {
+                return;
+            }
+
+            var validCount = 0;
+            List<Error>? bestErrors = null;
+
+            foreach (var subschema in schema.OneOf)
+            {
+                var subschemaErrors = new List<Error>();
+                Validate(subschema, propertyPath, token, subschemaErrors);
+
+                if (subschemaErrors.Count <= 0)
+                {
+                    validCount++;
+                    continue;
+                }
+
+                // Find the subschema with the least errors
+                if (bestErrors is null || subschemaErrors.Count < bestErrors.Count)
+                {
+                    bestErrors = subschemaErrors;
+                }
+            }
+
+            if (validCount != 1)
+            {
+                if (bestErrors != null)
+                {
+                    errors.AddRange(bestErrors);
+                }
+                else
+                {
+                    errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
+                }
+            }
+        }
+
+        private void ValidateIfThenElse(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.If is null)
+            {
+                return;
+            }
+
+            var ifErrors = new List<Error>();
+            Validate(schema.If, propertyPath, token, ifErrors);
+
+            if (ifErrors.Count <= 0)
+            {
+                if (schema.Then != null)
+                {
+                    Validate(schema.Then, propertyPath, token, errors);
+                }
+            }
+            else
+            {
+                if (schema.Else != null)
+                {
+                    Validate(schema.Else, propertyPath, token, errors);
+                }
+            }
+        }
+
+        private void ValidateNot(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.Not is null)
+            {
+                return;
+            }
+
+            var subschemaErrors = new List<Error>();
+            Validate(schema.Not, propertyPath, token, subschemaErrors);
+
+            if (subschemaErrors.Count > 0)
+            {
+                return;
+            }
+
+            errors.Add(Errors.JsonSchema.NotFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
         }
 
         private void ValidateDocsetUnique(JsonSchema schema, string propertyPath, JObject map)
