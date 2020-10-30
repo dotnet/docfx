@@ -111,7 +111,7 @@ namespace Microsoft.Docs.Build
         {
             if (schema.Type != null)
             {
-                if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token.Type)))
+                if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token)))
                 {
                     errors.Add(Errors.JsonSchema.UnexpectedType(
                         JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString(), propertyPath));
@@ -887,27 +887,21 @@ namespace Microsoft.Docs.Build
             return error;
         }
 
-        private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)
+        private static bool TypeMatches(JsonSchemaType schemaType, JToken token)
         {
-            switch (schemaType)
+            var tokenType = token.Type;
+
+            return schemaType switch
             {
-                case JsonSchemaType.Array:
-                    return tokenType == JTokenType.Array;
-                case JsonSchemaType.Boolean:
-                    return tokenType == JTokenType.Boolean;
-                case JsonSchemaType.Integer:
-                    return tokenType == JTokenType.Integer;
-                case JsonSchemaType.Null:
-                    return tokenType == JTokenType.Null;
-                case JsonSchemaType.Number:
-                    return tokenType == JTokenType.Integer || tokenType == JTokenType.Float;
-                case JsonSchemaType.Object:
-                    return tokenType == JTokenType.Object;
-                case JsonSchemaType.String:
-                    return tokenType == JTokenType.String;
-                default:
-                    return true;
-            }
+                JsonSchemaType.Array => tokenType == JTokenType.Array,
+                JsonSchemaType.Boolean => tokenType == JTokenType.Boolean,
+                JsonSchemaType.Integer => tokenType == JTokenType.Integer || (token is JValue value && value.Value is double d && (long)d == d),
+                JsonSchemaType.Null => tokenType == JTokenType.Null,
+                JsonSchemaType.Number => tokenType == JTokenType.Integer || tokenType == JTokenType.Float,
+                JsonSchemaType.Object => tokenType == JTokenType.Object,
+                JsonSchemaType.String => tokenType == JTokenType.String,
+                _ => true,
+            };
         }
     }
 }
