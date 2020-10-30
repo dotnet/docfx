@@ -77,7 +77,11 @@ namespace Microsoft.Docs.Build
 
         public async Task<string> GetAllowlists((string repositoryUrl, string branch) tuple)
         {
-            return await FetchValidationRules($"/route/validationmgt/validation/allowlists", tuple.repositoryUrl, tuple.branch);
+            return await FetchValidationRules(
+                $"/route/taxonomyservice/taxonomies?name=ms.author&name=ms.devlang" +
+                $"&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
+                tuple.repositoryUrl,
+                tuple.branch);
         }
 
         public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)

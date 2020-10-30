@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Docs.MetadataService.Models;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             Log.Write(rulesContent);
             Log.Write(allowlistsContent);
 
-            var rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
+            var rules = JsonConvert.DeserializeObject<Dictionary<string, AttributeRules>>(rulesContent);
             if (rules == null || rules.Count == 0)
             {
                 return "";
@@ -197,9 +197,9 @@ namespace Microsoft.Docs.Build
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
-                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs, out var allowlist))
+                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs.Substring("list:".Length), out var allowlist))
             {
-                return new { allowedDLs = allowlist.Values.Keys.ToList() };
+                return new { allowedDLs = allowlist.Where(a => !string.IsNullOrEmpty(a.Slug)).Select(a => a.Slug).ToList() };
             }
 
             return null;
@@ -291,5 +291,10 @@ namespace Microsoft.Docs.Build
         }
 
         private class EnumDependenciesSchema : Dictionary<string, Dictionary<string, EnumDependenciesSchema?>> { }
+
+        private class AttributeRules
+        {
+            public dynamic[] Rules { get; set; } = Array.Empty<dynamic>();
+        }
     }
 }
