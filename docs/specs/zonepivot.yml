@@ -11,19 +11,19 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotUsed",
@@ -119,10 +119,10 @@ outputs:
   docs/zone-pivot-groups.json:
   docs/zone-pivot-groups-2.json:
   .errors.log: |
-    {"message_severity":"warning","code":"duplicate-pivot-groups","message":"Pivot group id 'test-group' is duplicated in 'docs/zone-pivot-groups.yml'. Only the first group with this ID will be used. Delete or rename the subsequent group.","file":"docs/zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"duplicate-pivot-ids","message":"Pivot id 'test-pivot-2' is duplicated in pivot group 'test-group' in 'docs/zone-pivot-groups.yml'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.","file":"docs/zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"pivot-group-not-found","message":"Pivot group 'not-found-group' isn't defined in 'docs/zone-pivot-groups.yml'. Make sure every pivot group you reference in your content has been properly defined.","file":"docs/b.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"pivot-id-not-found","message":"Pivot ID 'test-pivot-1' is not defined in the 'test-group-2' in 'docs/zone-pivot-groups-2.yml'.","file":"docs/c.md","line":6,"end_line":6,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"duplicate-pivot-groups","message":"Pivot group id 'test-group' is duplicated in 'docs/zone-pivot-groups.yml'. Only the first group with this ID will be used. Delete or rename the subsequent group.","file":"docs/zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"duplicate-pivot-ids","message":"Pivot id 'test-pivot-2' is duplicated in pivot group 'test-group' in 'docs/zone-pivot-groups.yml'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.","file":"docs/zone-pivot-groups.yml","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"pivot-group-not-found","message":"Pivot group 'not-found-group' isn't defined in 'docs/zone-pivot-groups.yml'. Make sure every pivot group you reference in your content has been properly defined.","file":"docs/b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"pivot-id-not-found","message":"Pivot ID 'test-pivot-1' is not defined in the 'test-group-2' in 'docs/zone-pivot-groups-2.yml'.","file":"docs/c.md","line":6,"end_line":6,"column":1,"end_column":1}
     {"message_severity":"suggestion","code":"pivot-id-unused","message":"Pivot ID 'test-pivot-4' is defined in 'test-group-2' group in 'docs/zone-pivot-groups-2.yml', but not used.","file":"docs/c.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"docs/d.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
@@ -148,19 +148,19 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotUsed",
@@ -220,8 +220,8 @@ outputs:
   docs/4667fedf/a.json:
   docs/4667fedf/zone-pivot-groups.json:
   .errors.log: |
-    {"message_severity":"warning","code":"zone-pivot-definition-conflict","message":"Multiple source files are present for '/docs/zone-pivot-groups.json'.","file":"docs/v1/a.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"zone-pivot-definition-conflict","message":"Multiple source files are present for '/docs/zone-pivot-groups.json'.","file":"docs/v2/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"zone-pivot-definition-conflict","message":"Multiple source files are present for '/docs/zone-pivot-groups.json'.","file":"docs/v1/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"zone-pivot-definition-conflict","message":"Multiple source files are present for '/docs/zone-pivot-groups.json'.","file":"docs/v2/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - Definition file not found
 inputs:
@@ -235,19 +235,19 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotUsed",
@@ -269,7 +269,7 @@ inputs:
 outputs:
   docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"zone-pivot-definition-not-found","message":"No source file is present for '/docs/zone-pivot-groups.json'. To use zone pivots, you must first define the zone pivot groups in zone-pivot-groups.yml or specify a file by 'zone_pivot_group_filename' metadata. Cross docset reference to zone pivot groups definition not supported by docfx.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"zone-pivot-definition-not-found","message":"No source file is present for '/docs/zone-pivot-groups.json'. To use zone pivots, you must first define the zone pivot groups in zone-pivot-groups.yml or specify a file by 'zone_pivot_group_filename' metadata. Cross docset reference to zone pivot groups definition not supported by docfx.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - Base path
 inputs:
@@ -284,19 +284,19 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotUsed",
@@ -349,7 +349,7 @@ inputs:
 outputs:
   azure/test/docs/a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"zone-pivot-definition-not-found","message":"No source file is present for '/azure/zone-pivot-groups.json'. To use zone pivots, you must first define the zone pivot groups in zone-pivot-groups.yml or specify a file by 'zone_pivot_group_filename' metadata. Cross docset reference to zone pivot groups definition not supported by docfx.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"zone-pivot-definition-not-found","message":"No source file is present for '/azure/zone-pivot-groups.json'. To use zone pivots, you must first define the zone pivot groups in zone-pivot-groups.yml or specify a file by 'zone_pivot_group_filename' metadata. Cross docset reference to zone pivot groups definition not supported by docfx.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Zone pivots validation - for Azure Mooncake docs
 inputs:
@@ -383,19 +383,19 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "WARNING"
+            "severity": "suggestion"
           },
           {
             "type": "PivotNotUsed",
@@ -467,6 +467,6 @@ outputs:
   docs/a.json:
   docs/zone-pivot-groups.json:
   .errors.log: |
-    {"message_severity":"warning","code":"pivot-id-not-found","message":"Pivot ID 'macos' is not defined in any group of 'platform', 'azure-interface' in 'docs/zone-pivot-groups.yml'.","file":"docs/a.md","line":14,"end_line":14,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"pivot-id-not-found","message":"Pivot ID 'macos' is not defined in any group of 'platform', 'azure-interface' in 'docs/zone-pivot-groups.yml'.","file":"docs/a.md","line":14,"end_line":14,"column":1,"end_column":1}
     {"message_severity":"suggestion","code":"pivot-id-unused","message":"Pivot ID 'ios' is defined in 'platform' group in 'docs/zone-pivot-groups.yml', but not used.","file":"docs/a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
