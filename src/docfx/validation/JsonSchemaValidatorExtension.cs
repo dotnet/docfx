@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class JsonSchemaValidatorExtension // todo rename
     {
         private readonly DocumentProvider _documentProvider;
-        private readonly PublishUrlMap _publishUrlMap;
+        private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
         private readonly ErrorBuilder _errorLog;
         private readonly Config _config;
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             Config config,
             FileResolver fileResolver,
             DocumentProvider documentProvider,
-            PublishUrlMap publishUrlMap,
+            Lazy<PublishUrlMap> publishUrlMap,
             MonikerProvider monikerProvider,
             ErrorBuilder errorLog)
         {
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
-            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
+            var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(filePath);
 
             // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
             // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
@@ -117,13 +117,13 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var rule in customRules)
                 {
-                    // todo need comfirm override order
+                    // todo need confirm override order
                     var r = rule.Value;
                     if (r.PropertyPath != null)
                     {
                         // compare with code + propertyPath + contentType
                         var source = error.Source?.File;
-                        var pageType = _documentProvider.GetPageType(source); // todo null check
+                        var pageType = source != null ? _documentProvider.GetPageType(source) : null;
                         if (r.PropertyPath.Equals(error.PropertyPath) && r.ContentTypes.Contains(pageType))
                         {
                             customRule = rule;
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        customRule = rule; // first one has higher priority
+                        customRule = rule; // system error
                         return true;
                     }
                 }
