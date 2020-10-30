@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
@@ -12,7 +11,6 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly SourceMap? _sourceMap;
-        private readonly Dictionary<string, SourceInfo<CustomRule>> _configCustomRules = new Dictionary<string, SourceInfo<CustomRule>>();
 
         private readonly ErrorSink _errorSink = new ErrorSink();
         private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
@@ -29,11 +27,6 @@ namespace Microsoft.Docs.Build
             _errors = errors;
             _config = config;
             _sourceMap = sourceMap;
-            _configCustomRules =
-                config != null ?
-                new Dictionary<string, SourceInfo<CustomRule>>(_config.Rules)
-                :
-                new Dictionary<string, SourceInfo<CustomRule>>();
         }
 
         public override void Add(Error error)
