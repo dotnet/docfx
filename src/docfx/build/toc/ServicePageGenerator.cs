@@ -72,7 +72,8 @@ namespace Microsoft.Docs.Build
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var referenceTOCRealtiveDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc);
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? referenceTOCRealtiveDir ?? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
                 var pageType = node.LandingPageType.Value;
                 FilePath servicePagePath;
                 if (pageType == LandingPageType.Root)

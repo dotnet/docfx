@@ -154,8 +154,8 @@ repos:
 outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../test/doc"}], "pageType": "root"}
+  a/api/bot/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../../test/doc"}], "pageType": "root"}
 ---
 # item-href in service-page linking to a splitted toc
 # Service Page href fix: TopLevelTOC and ReferenceTOC in different directory hierarchy
@@ -206,7 +206,7 @@ outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
 ---
 # make overview page for service pages
@@ -264,7 +264,7 @@ outputs:
         {
           "name": "API Reference",
           "items": [
-            { "name": "Overview", "href": "../../docs-ref-toc/" },
+            { "name": "Overview", "href": "./" },
             {
               "name": "API Test",
               "items": [
@@ -277,7 +277,7 @@ outputs:
       ]
     }
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
 ---
 # service-page: when childHref is empty, set it to null
@@ -324,7 +324,7 @@ repos:
           - 'MS.ServicePage*'
 outputs:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": undefined}], "pageType": "root"}
 ---
 # remove uid when href exists
@@ -383,7 +383,7 @@ outputs:
         {
           "name": "API Reference",
           "items": [
-            { "name": "Overview", "href": "../../docs-ref-toc/", "uid": undefined},
+            { "name": "Overview", "href": "./", "uid": undefined},
             {
               "name": "API Test",
               "items": [
@@ -396,7 +396,7 @@ outputs:
       ]
     }
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
 ---
 # use first SubTocUid for service-page when href and uid are both empty
@@ -450,5 +450,5 @@ repos:
 outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "uid": "test"}], "pageType": "root"}
