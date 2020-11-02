@@ -37,6 +37,8 @@ namespace Microsoft.Docs.Build
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
 
+                var zonePivotUsages = new List<SourceInfo<string>>();
+
                 document.Visit(node =>
                 {
                     // Skip leaf triple colon nodes
@@ -46,6 +48,9 @@ namespace Microsoft.Docs.Build
                         {
                             return true;
                         }
+
+                        // Build zones for validation
+                        BuildZonePivotUsages(tripleColon, zonePivotUsages);
                     }
 
                     var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, node.GetZoneLevelMonikers());
@@ -58,6 +63,7 @@ namespace Microsoft.Docs.Build
                 });
 
                 contentValidator.ValidateHeadings(currentFile, documentNodes);
+                contentValidator.ValidateZonePivots(currentFile, zonePivotUsages);
 
                 foreach (var (_, codeBlockItem) in codeBlockNodes)
                 {
@@ -135,6 +141,14 @@ namespace Microsoft.Docs.Build
             if (codeBlockItem != null)
             {
                 codeBlockItemList.Add((node.IsInclude(), codeBlockItem));
+            }
+        }
+
+        private static void BuildZonePivotUsages(TripleColonBlock tripleColon, List<SourceInfo<string>> usages)
+        {
+            if (tripleColon.Extension is ZoneExtension && tripleColon.Attributes.TryGetValue("pivot", out var pivotId))
+            {
+                usages.AddRange(pivotId.Split(",").Select(p => new SourceInfo<string>(p.Trim(), tripleColon.GetSourceInfo())));
             }
         }
 

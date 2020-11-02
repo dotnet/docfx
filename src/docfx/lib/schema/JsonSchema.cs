@@ -188,6 +188,41 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
          = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
 
+        /// <summary>
+        /// The given data must be valid against any (one or more) of the given subschemas.
+        /// </summary>
+        public JsonSchema[] AnyOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// The given data must be valid against exactly all of the given subschemas.
+        /// </summary>
+        public JsonSchema[] AllOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// The given data must be valid against exactly one of the given subschemas.
+        /// </summary>
+        public JsonSchema[] OneOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? If { get; set; }
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? Then { get; set; }
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? Else { get; set; }
+
+        /// <summary>
+        /// Negates the result of a validation.
+        /// </summary>
+        public JsonSchema? Not { get; set; }
+
         // JSON schema custom validation extensions
         //-------------------------------------------
 

@@ -63,6 +63,24 @@ namespace Microsoft.Docs.Build
         [InlineData("a.b**.md", "a.b.c.md, a.b.c.a.md", true)]
         [InlineData("a.b**.md", "a.e.md, a.c.a.md", false)]
 
+        // Known glob
+        [InlineData("**", "a, a.md, a/b, a/b/c", true)]
+        [InlineData("**/*.md", "a.md, a/b.md", true)]
+        [InlineData("**/*.md", "a, a/b", false)]
+        [InlineData("a/**", "a/b, a/b/c", true)]
+        [InlineData("a/**", "a, b/c, x/a/b", false)]
+        [InlineData("a/*.md", "a/b.md", true)]
+        [InlineData("a/*.md", "a/b/c.md, a/b/c, x/a/b.md", false)]
+        [InlineData("a/**/*.md", "a/b.md, a/b/c.md", true)]
+        [InlineData("a/**/*.md", "a/b/c, x/a/b.md, x/a/b/c.md", false)]
+        [InlineData("**/a/**", "a/b, a/b/c, x/a/b, x/a/b/c", true)]
+        [InlineData("**/a/**", "a, b/c", false)]
+        [InlineData("**/a/*.md", "a/b.md, x/a/b.md", true)]
+        [InlineData("**/a/*.md", "a/b/c.md, a/b/c", false)]
+        [InlineData("**/a/**/*.md", "a/b.md, a/b/c.md, x/a/b.md, x/a/b/c.md", true)]
+        [InlineData("**/a/**/*.md", "a/b/c", false)]
+        [InlineData("**/sample/**", "aspnetcore/security/anti-request-forgery/sample/MvcSample/wwwroot/lib/bootstrap/grunt/sauce_browsers.yml", true)]
+
         // For backward compatibility with v2
         [InlineData("****", "a.md, a/b.md", true)]
         [InlineData("**.*", "a.md, a/b.md", true)]

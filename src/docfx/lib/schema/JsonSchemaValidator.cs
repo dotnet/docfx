@@ -99,13 +99,19 @@ namespace Microsoft.Docs.Build
                     ValidateObject(schema, propertyPath, map, errors);
                     break;
             }
+
+            ValidateAnyOf(schema, propertyPath, token, errors);
+            ValidateAllOf(schema, propertyPath, token, errors);
+            ValidateOneOf(schema, propertyPath, token, errors);
+            ValidateIfThenElse(schema, propertyPath, token, errors);
+            ValidateNot(schema, propertyPath, token, errors);
         }
 
         private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
         {
             if (schema.Type != null)
             {
-                if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token.Type)))
+                if (!schema.Type.Any(schemaType => TypeMatches(schemaType, token)))
                 {
                     errors.Add(Errors.JsonSchema.UnexpectedType(
                         JsonUtility.GetSourceInfo(token), string.Join(", ", schema.Type), token.Type.ToString(), propertyPath));
@@ -578,6 +584,131 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void ValidateAnyOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.AnyOf.Length <= 0)
+            {
+                return;
+            }
+
+            List<Error>? bestErrors = null;
+
+            foreach (var subschema in schema.AnyOf)
+            {
+                var subschemaErrors = new List<Error>();
+                Validate(subschema, propertyPath, token, subschemaErrors);
+
+                if (subschemaErrors.Count <= 0)
+                {
+                    return;
+                }
+
+                // Find the subschema with the least errors
+                if (bestErrors is null || subschemaErrors.Count < bestErrors.Count)
+                {
+                    bestErrors = subschemaErrors;
+                }
+            }
+
+            if (bestErrors != null)
+            {
+                errors.AddRange(bestErrors);
+            }
+        }
+
+        private void ValidateAllOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            foreach (var subschema in schema.AllOf)
+            {
+                Validate(subschema, propertyPath, token, errors);
+            }
+        }
+
+        private void ValidateOneOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.OneOf.Length <= 0)
+            {
+                return;
+            }
+
+            var validCount = 0;
+            List<Error>? bestErrors = null;
+
+            foreach (var subschema in schema.OneOf)
+            {
+                var subschemaErrors = new List<Error>();
+                Validate(subschema, propertyPath, token, subschemaErrors);
+
+                if (subschemaErrors.Count <= 0)
+                {
+                    validCount++;
+                    continue;
+                }
+
+                // Find the subschema with the least errors
+                if (bestErrors is null || subschemaErrors.Count < bestErrors.Count)
+                {
+                    bestErrors = subschemaErrors;
+                }
+            }
+
+            if (validCount != 1)
+            {
+                if (bestErrors != null)
+                {
+                    errors.AddRange(bestErrors);
+                }
+                else
+                {
+                    errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
+                }
+            }
+        }
+
+        private void ValidateIfThenElse(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.If is null)
+            {
+                return;
+            }
+
+            var ifErrors = new List<Error>();
+            Validate(schema.If, propertyPath, token, ifErrors);
+
+            if (ifErrors.Count <= 0)
+            {
+                if (schema.Then != null)
+                {
+                    Validate(schema.Then, propertyPath, token, errors);
+                }
+            }
+            else
+            {
+                if (schema.Else != null)
+                {
+                    Validate(schema.Else, propertyPath, token, errors);
+                }
+            }
+        }
+
+        private void ValidateNot(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        {
+            if (schema.Not is null)
+            {
+                return;
+            }
+
+            var subschemaErrors = new List<Error>();
+            Validate(schema.Not, propertyPath, token, subschemaErrors);
+
+            if (subschemaErrors.Count > 0)
+            {
+                return;
+            }
+
+            errors.Add(Errors.JsonSchema.NotFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
+        }
+
         private void ValidateDocsetUnique(JsonSchema schema, string propertyPath, JObject map)
         {
             var monikers = _monikerProvider?.GetFileLevelMonikers(ErrorBuilder.Null, t_filePath.Value!).ToList();
@@ -756,27 +887,21 @@ namespace Microsoft.Docs.Build
             return error;
         }
 
-        private static bool TypeMatches(JsonSchemaType schemaType, JTokenType tokenType)
+        private static bool TypeMatches(JsonSchemaType schemaType, JToken token)
         {
-            switch (schemaType)
+            var tokenType = token.Type;
+
+            return schemaType switch
             {
-                case JsonSchemaType.Array:
-                    return tokenType == JTokenType.Array;
-                case JsonSchemaType.Boolean:
-                    return tokenType == JTokenType.Boolean;
-                case JsonSchemaType.Integer:
-                    return tokenType == JTokenType.Integer;
-                case JsonSchemaType.Null:
-                    return tokenType == JTokenType.Null;
-                case JsonSchemaType.Number:
-                    return tokenType == JTokenType.Integer || tokenType == JTokenType.Float;
-                case JsonSchemaType.Object:
-                    return tokenType == JTokenType.Object;
-                case JsonSchemaType.String:
-                    return tokenType == JTokenType.String;
-                default:
-                    return true;
-            }
+                JsonSchemaType.Array => tokenType == JTokenType.Array,
+                JsonSchemaType.Boolean => tokenType == JTokenType.Boolean,
+                JsonSchemaType.Integer => tokenType == JTokenType.Integer || (token is JValue value && value.Value is double d && (long)d == d),
+                JsonSchemaType.Null => tokenType == JTokenType.Null,
+                JsonSchemaType.Number => tokenType == JTokenType.Integer || tokenType == JTokenType.Float,
+                JsonSchemaType.Object => tokenType == JTokenType.Object,
+                JsonSchemaType.String => tokenType == JTokenType.String,
+                _ => true,
+            };
         }
     }
 }

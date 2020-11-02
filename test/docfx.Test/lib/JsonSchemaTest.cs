@@ -15,12 +15,7 @@ namespace Microsoft.Docs.Build
         // Test against a subset of JSON schema test suite: https://github.com/json-schema-org/JSON-Schema-Test-Suite
         private static readonly string[] s_notSupportedSuites =
         {
-            "allOf",
-            "anyOf",
             "definitions",
-            "if-then-else",
-            "not",
-            "oneOf",
             "refRemote",
         };
 
