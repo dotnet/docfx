@@ -85,14 +85,14 @@ namespace Microsoft.Docs.Build
                 case FileFormat.Yaml:
                     {
                         var token = _input.ReadYaml(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
+                        var specs = _jsonSchemaTransformer.LoadXrefSpecs(errors, file, token);
                         xrefs.AddRange(specs);
                         break;
                     }
                 case FileFormat.Json:
                     {
                         var token = _input.ReadJson(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
+                        var specs = _jsonSchemaTransformer.LoadXrefSpecs(errors, file, token);
                         xrefs.AddRange(specs);
                         break;
                     }
@@ -112,13 +112,6 @@ namespace Microsoft.Docs.Build
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
             return xref;
-        }
-
-        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
-        {
-            var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
-
-            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
         private InternalXrefSpec[] AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)

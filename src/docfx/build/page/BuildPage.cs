@@ -233,34 +233,28 @@ namespace Microsoft.Docs.Build
 
         private static JObject LoadSchemaDocument(ErrorBuilder errors, Context context, JToken token, FilePath file)
         {
-            if (!(token is JObject obj))
-            {
-                throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, token.Type).ToException();
-            }
+            var pageModel = new JObject();
 
-            // validate via json schema
-            var mime = context.DocumentProvider.GetMime(file);
-            var schemaValidator = context.TemplateEngine.GetSchemaValidator(mime);
-            var schemaValidationErrors = schemaValidator.Validate(obj, file);
-            errors.AddRange(schemaValidationErrors);
-
-            var validatedObj = new JObject();
-            JsonUtility.Merge(validatedObj, obj);
-
-            // transform model via json schema
+            // Validate and transform metadata using JSON schema
             if (context.DocumentProvider.GetRenderType(file) == RenderType.Content)
             {
-                // transform metadata via json schema
                 var userMetadata = context.MetadataProvider.GetMetadata(errors, file);
-                JsonUtility.Merge(validatedObj, new JObject { ["metadata"] = userMetadata.RawJObject });
 
                 context.MetadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
                 context.SearchIndexBuilder.SetTitle(file, userMetadata.Title);
+
+                JsonUtility.Merge(pageModel, new JObject { ["metadata"] = userMetadata.RawJObject });
             }
 
-            var schema = context.TemplateEngine.GetSchema(mime);
-            var pageModel = (JObject)context.JsonSchemaTransformer.TransformContent(errors, schema, file, validatedObj);
+            // Validate and transform model using JSON schema
+            var content = context.JsonSchemaTransformer.TransformContent(errors, file, token);
+            if (!(content is JObject transformedContent))
+            {
+                throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();
+            }
+            JsonUtility.Merge(pageModel, transformedContent);
 
+            var mime = context.DocumentProvider.GetMime(file);
             if (TemplateEngine.IsLandingData(mime))
             {
                 var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
