@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly Input _input;
 
-        private readonly MemoryCache<FilePath, (JToken, JsonSchema)> _schemaDocumentsCache = new MemoryCache<FilePath, (JToken, JsonSchema)>();
+        private readonly MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)> _schemaDocumentsCache
+                   = new MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)>();
 
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), (IXrefSpec? spec, JObject? specObj)> _mustacheXrefSpec =
@@ -97,7 +98,7 @@ namespace Microsoft.Docs.Build
 
         public JToken TransformContent(ErrorBuilder errors, FilePath file)
         {
-            var (token, schema) = ValidateContent(errors, file);
+            var (token, schema, schemaMap) = ValidateContent(errors, file);
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
             return TransformContentCore(
@@ -113,7 +114,7 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)
         {
-            var (token, schema) = ValidateContent(errors, file);
+            var (token, schema, schemaMap) = ValidateContent(errors, file);
             var xrefSpecs = new List<InternalXrefSpec>();
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
@@ -121,12 +122,12 @@ namespace Microsoft.Docs.Build
             return xrefSpecs;
         }
 
-        private (JToken token, JsonSchema schema) ValidateContent(ErrorBuilder errors, FilePath file)
+        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap) ValidateContent(ErrorBuilder errors, FilePath file)
         {
             return _schemaDocumentsCache.GetOrAdd(file, file => ValidateContentCore(errors, file));
         }
 
-        private (JToken token, JsonSchema schema) ValidateContentCore(ErrorBuilder errors, FilePath file)
+        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap) ValidateContentCore(ErrorBuilder errors, FilePath file)
         {
             var token = file.Format switch
             {
@@ -136,9 +137,15 @@ namespace Microsoft.Docs.Build
             };
             var mime = _documentProvider.GetMime(file);
             var schemaValidator = _templateEngine.GetSchemaValidator(mime);
-            var schemaErrors = schemaValidator.Validate(token, file);
+            var schemaMap = new JsonSchemaMap(IsContentTransform);
+            var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
             errors.AddRange(schemaErrors);
-            return (token, schemaValidator.Schema);
+            return (token, schemaValidator.Schema, schemaMap);
+        }
+
+        private static bool IsContentTransform(JsonSchema schema)
+        {
+            return true;
         }
 
         private void LoadXrefSpecsCore(
