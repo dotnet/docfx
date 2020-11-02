@@ -179,7 +179,10 @@ namespace Microsoft.Docs.Build
                 LinkResolver,
                 XrefResolver,
                 errorLog,
-                MonikerProvider);
+                MonikerProvider,
+                TemplateEngine,
+                Input);
+
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
                 BuildOptions.DocsetPath,
