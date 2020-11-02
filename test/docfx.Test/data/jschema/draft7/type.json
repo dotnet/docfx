@@ -9,6 +9,11 @@
                 "valid": true
             },
             {
+                "description": "a float with zero fractional part is an integer",
+                "data": 1.0,
+                "valid": true
+            },
+            {
                 "description": "a float is not an integer",
                 "data": 1.1,
                 "valid": false
@@ -52,6 +57,11 @@
             {
                 "description": "an integer is a number",
                 "data": 1,
+                "valid": true
+            },
+            {
+                "description": "a float with zero fractional part is a number (and an integer)",
+                "data": 1.0,
                 "valid": true
             },
             {

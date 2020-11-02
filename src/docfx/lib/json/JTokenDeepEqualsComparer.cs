@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
                     return b is null;
 
                 case JValue valueA when b is JValue valueB:
-                    return Equals(valueA.Value, valueB.Value);
+                    return Equals(TryConvertDoubleToLong(valueA.Value), TryConvertDoubleToLong(valueB.Value));
 
                 case JArray arrayA when b is JArray arrayB:
                     if (arrayA.Count != arrayB.Count)
@@ -62,5 +62,14 @@ namespace Microsoft.Docs.Build
             JObject obj => obj.Count,
             _ => 0,
         };
+
+        private static object? TryConvertDoubleToLong(object? value)
+        {
+            if (value is double d && (long)d == d)
+            {
+                return (long)d;
+            }
+            return value;
+        }
     }
 }
