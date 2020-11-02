@@ -833,3 +833,80 @@ inputs:
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":0,"column":0}
+---
+# Schema based transform supports oneOf
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    oneOf:
+    - _markdown_
+    - inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "oneOf": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string", "maxlength": 10, "contentType": "markdown" },
+              { "type": "string", "minlength": 11, "contentType": "inlineMarkdown" },
+            ]
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "oneOf": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+---
+# Schema based transform supports anyOf
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    anyOf:
+    - _markdown_
+    - inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "type": "string", "maxlength": 10, "contentType": "markdown" },
+              { "type": "string", "minlength": 11, "contentType": "inlineMarkdown" },
+            ]
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "anyOf": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+---
+# Schema based transform supports if-then-else
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    ifThenElse:
+    - _markdown_
+    - inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "ifThenElse": {
+          "type": "array",
+          "items": {
+            "if": { "type": "string", "maxlength": 10 },
+            "then": { "contentType": "markdown" },
+            "else": { "contentType": "inlineMarkdown" }
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "ifThenElse": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }

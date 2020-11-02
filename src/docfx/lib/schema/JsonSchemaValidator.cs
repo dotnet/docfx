@@ -75,8 +75,6 @@ namespace Microsoft.Docs.Build
         private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             schema = _definitions.GetDefinition(schema);
-            schemaMap?.Add(token, schema);
-
             if (!ValidateType(schema, propertyPath, token, errors))
             {
                 return;
@@ -107,6 +105,8 @@ namespace Microsoft.Docs.Build
             ValidateOneOf(schema, propertyPath, token, errors, schemaMap);
             ValidateIfThenElse(schema, propertyPath, token, errors, schemaMap);
             ValidateNot(schema, propertyPath, token, errors);
+
+            schemaMap?.Add(token, schema);
         }
 
         private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
