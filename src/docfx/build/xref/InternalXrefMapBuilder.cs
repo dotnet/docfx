@@ -73,29 +73,19 @@ namespace Microsoft.Docs.Build
             switch (file.Format)
             {
                 case FileFormat.Markdown:
+                    var fileMetadata = _metadataProvider.GetMetadata(errors, file);
+                    var spec = LoadMarkdown(errors, fileMetadata, file);
+                    if (spec != null)
                     {
-                        var fileMetadata = _metadataProvider.GetMetadata(errors, file);
-                        var spec = LoadMarkdown(errors, fileMetadata, file);
-                        if (spec != null)
-                        {
-                            xrefs.Add(spec);
-                        }
-                        break;
+                        xrefs.Add(spec);
                     }
+                    break;
+
                 case FileFormat.Yaml:
-                    {
-                        var token = _input.ReadYaml(errors, file);
-                        var specs = _jsonSchemaTransformer.LoadXrefSpecs(errors, file, token);
-                        xrefs.AddRange(specs);
-                        break;
-                    }
                 case FileFormat.Json:
-                    {
-                        var token = _input.ReadJson(errors, file);
-                        var specs = _jsonSchemaTransformer.LoadXrefSpecs(errors, file, token);
-                        xrefs.AddRange(specs);
-                        break;
-                    }
+                    var specs = _jsonSchemaTransformer.LoadXrefSpecs(errors, file);
+                    xrefs.AddRange(specs);
+                    break;
             }
         }
 

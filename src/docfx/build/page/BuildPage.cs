@@ -193,9 +193,7 @@ namespace Microsoft.Docs.Build
             return file.Format switch
             {
                 FileFormat.Markdown => LoadMarkdown(errors, context, file),
-                FileFormat.Yaml => LoadYaml(errors, context, file),
-                FileFormat.Json => LoadJson(errors, context, file),
-                _ => throw new InvalidOperationException(),
+                _ => LoadSchemaDocument(errors, context, file),
             };
         }
 
@@ -221,17 +219,7 @@ namespace Microsoft.Docs.Build
             return context.Config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
         }
 
-        private static JObject LoadYaml(ErrorBuilder errors, Context context, FilePath file)
-        {
-            return LoadSchemaDocument(errors, context, context.Input.ReadYaml(errors, file), file);
-        }
-
-        private static JObject LoadJson(ErrorBuilder errors, Context context, FilePath file)
-        {
-            return LoadSchemaDocument(errors, context, context.Input.ReadJson(errors, file), file);
-        }
-
-        private static JObject LoadSchemaDocument(ErrorBuilder errors, Context context, JToken token, FilePath file)
+        private static JObject LoadSchemaDocument(ErrorBuilder errors, Context context, FilePath file)
         {
             var pageModel = new JObject();
 
@@ -247,7 +235,7 @@ namespace Microsoft.Docs.Build
             }
 
             // Validate and transform model using JSON schema
-            var content = context.JsonSchemaTransformer.TransformContent(errors, file, token);
+            var content = context.JsonSchemaTransformer.TransformContent(errors, file);
             if (!(content is JObject transformedContent))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();

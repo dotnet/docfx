@@ -180,7 +180,8 @@ namespace Microsoft.Docs.Build
                 XrefResolver,
                 errorLog,
                 MonikerProvider,
-                TemplateEngine);
+                TemplateEngine,
+                Input);
 
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
