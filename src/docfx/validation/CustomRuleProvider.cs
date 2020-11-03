@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Docs.Validation;
 
@@ -15,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ErrorBuilder _errorLog;
         private readonly Config _config;
-        private readonly Dictionary<string, List<SourceInfo<CustomRule>>> _customRules = new Dictionary<string, List<SourceInfo<CustomRule>>>();
+        private readonly Dictionary<string, List<CustomRule>> _customRules = new Dictionary<string, List<CustomRule>>();
 
         public CustomRuleProvider(
             Config config,
@@ -110,21 +111,19 @@ namespace Microsoft.Docs.Build
 
         private bool TryGetCustomRule(
             Error error,
-            Dictionary<string, List<SourceInfo<CustomRule>>> allCustomRules,
-            out SourceInfo<CustomRule>? customRule)
+            Dictionary<string, List<CustomRule>> allCustomRules,
+            [MaybeNullWhen(false)] out CustomRule customRule)
         {
             if (allCustomRules.TryGetValue(error.Code, out var customRules))
             {
                 foreach (var rule in customRules)
                 {
-                    // todo need confirm override order
-                    var r = rule.Value;
-                    if (r.PropertyPath != null)
+                    if (rule.PropertyPath != null)
                     {
                         // compare with code + propertyPath + contentType
                         var source = error.Source?.File;
                         var pageType = source != null ? _documentProvider.GetPageType(source) : null;
-                        if (r.PropertyPath.Equals(error.PropertyPath) && r.ContentTypes.Contains(pageType))
+                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) && rule.ContentTypes.Contains(pageType))
                         {
                             customRule = rule;
                             return true;
@@ -142,16 +141,16 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private Dictionary<string, List<SourceInfo<CustomRule>>> MergeCustomRules(
+        private Dictionary<string, List<CustomRule>> MergeCustomRules(
             Dictionary<string, ValidationRules>? contentValidationRules,
             Dictionary<string, ValidationRules>? buildValidationRules)
         {
             var customRules = _config != null ?
                 _config.Rules.ToDictionary(
                     item => item.Key,
-                    item => new List<SourceInfo<CustomRule>> { item.Value })
+                    item => new List<CustomRule> { item.Value })
                 :
-                new Dictionary<string, List<SourceInfo<CustomRule>>>();
+                new Dictionary<string, List<CustomRule>>();
 
             if (contentValidationRules != null)
             {
@@ -159,7 +158,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (customRules.ContainsKey(validationRule.Code))
                     {
-                        _errorLog.Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code, customRules[validationRule.Code].First().Source));
+                        _errorLog.Add(
+                            Errors.Logging.RuleOverrideInvalid(validationRule.Code, new SourceInfo<CustomRule>(customRules[validationRule.Code].First())));
                         customRules.Remove(validationRule.Code);
                     }
                 }
@@ -167,24 +167,23 @@ namespace Microsoft.Docs.Build
                 {
                     if (customRules.TryGetValue(validationRule.Code, out var customRule))
                     {
-                        var list = new List<SourceInfo<CustomRule>>();
-                        list.Add(new SourceInfo<CustomRule>(
+                        var list = new List<CustomRule>();
+                        list.Add(
                             new CustomRule(
-                                customRule.First().Value.Severity,
-                                customRule.First().Value.Code,
+                                customRule.First().Severity,
+                                customRule.First().Code,
                                 null,
-                                customRule.First().Value.AdditionalMessage,
+                                customRule.First().AdditionalMessage,
                                 null,
-                                customRule.First().Value.CanonicalVersionOnly,
+                                customRule.First().CanonicalVersionOnly,
                                 validationRule.PullRequestOnly,
-                                null),
-                            customRule.First().Source));
+                                null));
                         customRules[validationRule.Code] = list;
                     }
                     else
                     {
-                        var list = new List<SourceInfo<CustomRule>>();
-                        list.Add(new SourceInfo<CustomRule>(new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null)));
+                        var list = new List<CustomRule>();
+                        list.Add(new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null));
                         customRules.Add(
                             validationRule.Code,
                             list);
@@ -197,7 +196,7 @@ namespace Microsoft.Docs.Build
                 foreach (var validationRule in buildValidationRules.SelectMany(rules => rules.Value.Rules))
                 {
                     var oldCode = ConvertTypeToCode(validationRule.Type);
-                    var newRule = new SourceInfo<CustomRule>(new CustomRule(
+                    var newRule = new CustomRule(
                                 ConvertSeverity(validationRule.Severity),
                                 validationRule.Code,
                                 validationRule.Message,
@@ -205,12 +204,12 @@ namespace Microsoft.Docs.Build
                                 validationRule.PropertyPath,
                                 validationRule.CanonicalVersionOnly,
                                 validationRule.PullRequestOnly,
-                                validationRule.ContentTypes));
+                                validationRule.ContentTypes);
 
                     // won't override docfx custom rules
                     if (!customRules.ContainsKey(oldCode))
                     {
-                        var list = new List<SourceInfo<CustomRule>> { newRule };
+                        var list = new List<CustomRule> { newRule };
                         customRules.Add(oldCode, list);
                     }
                     else
