@@ -194,7 +194,8 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 ContentValidator,
                 config,
-                errorLog);
+                errorLog,
+                BuildScope);
             TocMap = new TableOfContentsMap(
                 Config, ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(
