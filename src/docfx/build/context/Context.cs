@@ -194,7 +194,8 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 ContentValidator,
                 config,
-                errorLog);
+                errorLog,
+                BuildScope);
             var customRuleProvider = new CustomRuleProvider(
                 config, fileResolver, DocumentProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap), MonikerProvider, errorLog);
             errorLog.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
