@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,6 +34,8 @@ namespace Microsoft.Docs.Build
         public MetadataProvider MetadataProvider { get; }
 
         public MonikerProvider MonikerProvider { get; }
+
+        public ZonePivotProvider ZonePivotProvider { get; }
 
         public RepositoryProvider RepositoryProvider { get; }
 
@@ -74,6 +77,7 @@ namespace Microsoft.Docs.Build
 
         public SearchIndexBuilder SearchIndexBuilder { get; }
 
+        [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Suppress MEN003 for Context")]
         public Context(
             ErrorBuilder errorLog,
             Config config,
@@ -103,6 +107,14 @@ namespace Microsoft.Docs.Build
             MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
+            ZonePivotProvider = new ZonePivotProvider(
+                Config,
+                ErrorBuilder,
+                DocumentProvider,
+                MetadataProvider,
+                Input,
+                new Lazy<PublishUrlMap>(() => PublishUrlMap),
+                new Lazy<ContentValidator>(() => ContentValidator));
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
@@ -114,7 +126,7 @@ namespace Microsoft.Docs.Build
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             ContentValidator = new ContentValidator(
-                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, ZonePivotProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
@@ -167,7 +179,10 @@ namespace Microsoft.Docs.Build
                 LinkResolver,
                 XrefResolver,
                 errorLog,
-                MonikerProvider);
+                MonikerProvider,
+                TemplateEngine,
+                Input);
+
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
                 BuildOptions.DocsetPath,

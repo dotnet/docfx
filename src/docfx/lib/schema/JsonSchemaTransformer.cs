@@ -22,6 +22,10 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
+        private readonly TemplateEngine _templateEngine;
+        private readonly Input _input;
+
+        private readonly MemoryCache<FilePath, (JToken, JsonSchema)> _schemaDocumentsCache = new MemoryCache<FilePath, (JToken, JsonSchema)>();
 
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), (IXrefSpec? spec, JObject? specObj)> _mustacheXrefSpec =
@@ -42,7 +46,9 @@ namespace Microsoft.Docs.Build
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             ErrorBuilder errors,
-            MonikerProvider monikerProvider)
+            MonikerProvider monikerProvider,
+            TemplateEngine templateEngine,
+            Input input)
         {
             _documentProvider = documentProvider;
             _markdownEngine = markdownEngine;
@@ -50,6 +56,8 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _errors = errors;
             _monikerProvider = monikerProvider;
+            _templateEngine = templateEngine;
+            _input = input;
         }
 
         public void PostValidate()
@@ -87,8 +95,9 @@ namespace Microsoft.Docs.Build
             return specObj ?? new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
         }
 
-        public JToken TransformContent(ErrorBuilder errors, JsonSchema schema, FilePath file, JToken token)
+        public JToken TransformContent(ErrorBuilder errors, FilePath file)
         {
+            var (token, schema) = ValidateContent(errors, file);
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
             return TransformContentCore(
@@ -102,17 +111,34 @@ namespace Microsoft.Docs.Build
                 "");
         }
 
-        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(
-            ErrorBuilder errors,
-            JsonSchema schema,
-            FilePath file,
-            JToken token)
+        public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)
         {
+            var (token, schema) = ValidateContent(errors, file);
             var xrefSpecs = new List<InternalXrefSpec>();
             var definitions = new JsonSchemaDefinition(schema);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
             LoadXrefSpecsCore(errors, file, schema, schema, definitions, token, xrefSpecs, uidCount);
             return xrefSpecs;
+        }
+
+        private (JToken token, JsonSchema schema) ValidateContent(ErrorBuilder errors, FilePath file)
+        {
+            return _schemaDocumentsCache.GetOrAdd(file, file => ValidateContentCore(errors, file));
+        }
+
+        private (JToken token, JsonSchema schema) ValidateContentCore(ErrorBuilder errors, FilePath file)
+        {
+            var token = file.Format switch
+            {
+                FileFormat.Json => _input.ReadJson(errors, file),
+                FileFormat.Yaml => _input.ReadYaml(errors, file),
+                _ => throw new NotSupportedException(),
+            };
+            var mime = _documentProvider.GetMime(file);
+            var schemaValidator = _templateEngine.GetSchemaValidator(mime);
+            var schemaErrors = schemaValidator.Validate(token, file);
+            errors.AddRange(schemaErrors);
+            return (token, schemaValidator.Schema);
         }
 
         private void LoadXrefSpecsCore(

@@ -154,8 +154,8 @@ repos:
 outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../test/doc"}], "pageType": "root"}
+  a/api/bot/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../../test/doc"}], "pageType": "root"}
 ---
 # item-href in service-page linking to a splitted toc
 # Service Page href fix: TopLevelTOC and ReferenceTOC in different directory hierarchy
@@ -206,7 +206,7 @@ outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
 ---
 # make overview page for service pages
@@ -264,7 +264,7 @@ outputs:
         {
           "name": "API Reference",
           "items": [
-            { "name": "Overview", "href": "../../docs-ref-toc/" },
+            { "name": "Overview", "href": "./" },
             {
               "name": "API Test",
               "items": [
@@ -277,7 +277,7 @@ outputs:
       ]
     }
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
 ---
 # service-page: when childHref is empty, set it to null
@@ -324,7 +324,7 @@ repos:
           - 'MS.ServicePage*'
 outputs:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": undefined}], "pageType": "root"}
 ---
 # remove uid when href exists
@@ -383,7 +383,7 @@ outputs:
         {
           "name": "API Reference",
           "items": [
-            { "name": "Overview", "href": "../../docs-ref-toc/", "uid": undefined},
+            { "name": "Overview", "href": "./", "uid": undefined},
             {
               "name": "API Test",
               "items": [
@@ -396,5 +396,59 @@ outputs:
       ]
     }
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
+---
+# use first SubTocUid for service-page when href and uid are both empty
+repos:
+  https://github.com/ops/service-page-use-subtocuid:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/doc.md: |
+        ---
+        name: a
+        uid: test
+        ---
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+          items:
+          - name: MS.test
+            uid: test
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          children:
+          - '*'
+outputs:
+  a/test/doc.json:
+  a/api/bot/toc.json:
+  a/api/bot/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "uid": "test"}], "pageType": "root"}
