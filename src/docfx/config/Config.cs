@@ -341,7 +341,7 @@ namespace Microsoft.Docs.Build
             }
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
-            yield return BuildValidationRules; // otherwise throw error `schema-not-found`
+            yield return BuildValidationRules;
             yield return Allowlists;
 
             foreach (var metadataSchema in MetadataSchema)

@@ -58,9 +58,9 @@ namespace Microsoft.Docs.Build
             return customRule.ContentTypes is null || customRule.ContentTypes.Contains(pageType);
         }
 
-        public Error WithCustomRule(Error error)
+        public Error ApplyCustomRule(Error error)
         {
-            if (TryGetCustomRule(error, _customRules, out var customRule))
+            if (TryGetCustomRule(error, out var customRule))
             {
                 error = WithCustomRule(error, customRule);
             }
@@ -111,10 +111,9 @@ namespace Microsoft.Docs.Build
 
         private bool TryGetCustomRule(
             Error error,
-            Dictionary<string, List<CustomRule>> allCustomRules,
             [MaybeNullWhen(false)] out CustomRule customRule)
         {
-            if (allCustomRules.TryGetValue(error.Code, out var customRules))
+            if (_customRules.TryGetValue(error.Code, out var customRules))
             {
                 foreach (var rule in customRules)
                 {

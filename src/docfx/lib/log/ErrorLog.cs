@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         {
             if (CustomRuleProvider != null)
             {
-                error = CustomRuleProvider.WithCustomRule(error);
+                error = CustomRuleProvider.ApplyCustomRule(error);
             }
 
             if (error.Level == ErrorLevel.Off)
