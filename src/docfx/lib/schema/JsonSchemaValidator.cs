@@ -878,7 +878,6 @@ namespace Microsoft.Docs.Build
             }
 
             if (!string.IsNullOrEmpty(error.PropertyPath) &&
-                _ext != null &&
                 schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) && // todo remove?
                 attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {

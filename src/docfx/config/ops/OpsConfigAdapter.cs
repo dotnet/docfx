@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
         private const string AllowlistsApi = "https://ops/allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
+        private const string RegressionAllBuildRulesApi = "https://ops/regressionallbuildrules/";
 
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
         private readonly OpsAccessor _opsAccessor;
@@ -43,6 +44,7 @@ namespace Microsoft.Docs.Build
                 (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
                 (AllowlistsApi, url => _opsAccessor.GetAllowlists(GetValidationServiceParameters(url))),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
+                (RegressionAllBuildRulesApi, _ => _opsAccessor.GetRegressionAllBuildRules()),
                 (RegressionAllMetadataSchemaApi, _ => _opsAccessor.GetRegressionAllMetadataSchema()),
             };
         }

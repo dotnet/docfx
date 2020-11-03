@@ -520,6 +520,7 @@ Idx
 igrouping
 contentrules
 metadatarules
+buildrules
 fnv
 MEMORYSTATUSEX
 sizeof

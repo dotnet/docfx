@@ -195,6 +195,10 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 config,
                 errorLog);
+            var validatorExtension = new JsonSchemaValidatorExtension(
+                config, fileResolver, DocumentProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap), MonikerProvider, errorLog);
+            errorLog.ValidatorExtension = validatorExtension; // TODO use better way to inject
+
             TocMap = new TableOfContentsMap(
                 Config, ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(
@@ -202,9 +206,6 @@ namespace Microsoft.Docs.Build
 
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
-
-            var validatorExtension = new JsonSchemaValidatorExtension(config, fileResolver, DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
-            errorLog.ValidatorExtension = validatorExtension; // TODO has better way?
             MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, validatorExtension);
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }

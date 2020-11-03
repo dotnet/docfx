@@ -31,8 +31,6 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            // todo withCustomRules on config rules here
-            // if not match, then
             if (ValidatorExtension != null)
             {
                 error = ValidatorExtension.WithCustomRule(error);
