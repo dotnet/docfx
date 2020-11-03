@@ -166,11 +166,6 @@ namespace Microsoft.Docs.Build
 
                     foreach (var (key, value) in obj)
                     {
-                        if (value.ToString() == "This member is obsolete. Use WithAccessorStatement instead.")
-                        {
-
-                        }
-
                         if (value != null)
                         {
                             LoadXrefSpecsCore(
@@ -242,17 +237,6 @@ namespace Microsoft.Docs.Build
                     if (!obj.TryGetValue(xrefProperty, out var value))
                     {
                         xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
-                        continue;
-                    }
-
-                    if (value.ToString() == "This member is obsolete. Use WithAccessorStatement instead.")
-                    {
-
-                    }
-
-                    if (!schemaMap.TryGetSchema(value, out var propertySchema))
-                    {
-                        xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => value);
                         continue;
                     }
 
@@ -359,11 +343,6 @@ namespace Microsoft.Docs.Build
             int uidCount,
             string? propertyPath)
         {
-            if (token.ToString() == "This member is obsolete. Use WithAccessorStatement instead.")
-            {
-
-            }
-
             switch (token)
             {
                 // transform array and object is not supported yet

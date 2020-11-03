@@ -910,3 +910,32 @@ inputs:
 outputs:
   a.json: |
     { "ifThenElse": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+---
+# Schema based transform on nested xref property
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    uid: a
+    foo:
+      bar:
+        _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "xrefProperties": ["foo"],
+      "properties": {
+        "uid": {
+          "contentType": "uid"
+        },
+        "foo": {
+          "properties": {
+            "bar": { "type": "string", "contentType": "markdown" }
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "uid": "a", "foo": { "bar": "<p><em>markdown</em></p>" } }
+  .xrefmap.json: |
+    { "references": [{ "uid": "a", "foo": { "bar": "<p><em>markdown</em></p>" } }] }
