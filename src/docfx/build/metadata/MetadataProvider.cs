@@ -23,15 +23,13 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
 
-        public MetadataProvider(Config config, Input input, FileResolver fileResolver, BuildScope buildScope)
+        public MetadataProvider(Config config, Input input, BuildScope buildScope, JsonSchemaLoader jsonSchemaLoader)
         {
             _input = input;
             _globalMetadata = config.GlobalMetadata.ExtensionData;
             _buildScope = buildScope;
 
-            var metadataSchemas = Array.ConvertAll(
-                config.MetadataSchema,
-                schema => JsonUtility.DeserializeData<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
+            var metadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
 
             HtmlMetaHidden = metadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
 
