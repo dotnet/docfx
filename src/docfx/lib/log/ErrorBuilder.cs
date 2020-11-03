@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             return new DelegatingErrorBuilder(this, convert);
         }
 
-        public JsonSchemaValidatorExtension? ValidatorExtension { get; internal set; }
+        public CustomRuleProvider? CustomRuleProvider { get; internal set; }
 
         public ErrorBuilder WithDocsetPath(string workingDirectory, string docsetPath)
         {

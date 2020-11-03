@@ -8,7 +8,7 @@ using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JsonSchemaValidatorExtension // todo rename
+    internal class CustomRuleProvider
     {
         private readonly DocumentProvider _documentProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly Dictionary<string, List<SourceInfo<CustomRule>>> _customRules = new Dictionary<string, List<SourceInfo<CustomRule>>>();
 
-        public JsonSchemaValidatorExtension(
+        public CustomRuleProvider(
             Config config,
             FileResolver fileResolver,
             DocumentProvider documentProvider,

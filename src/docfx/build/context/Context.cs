@@ -195,9 +195,9 @@ namespace Microsoft.Docs.Build
                 ContentValidator,
                 config,
                 errorLog);
-            var validatorExtension = new JsonSchemaValidatorExtension(
+            var customRuleProvider = new CustomRuleProvider(
                 config, fileResolver, DocumentProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap), MonikerProvider, errorLog);
-            errorLog.ValidatorExtension = validatorExtension; // TODO use better way to inject
+            errorLog.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
 
             TocMap = new TableOfContentsMap(
                 Config, ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
@@ -206,7 +206,7 @@ namespace Microsoft.Docs.Build
 
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
-            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, validatorExtension);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, customRuleProvider);
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 

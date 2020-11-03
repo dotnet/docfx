@@ -31,9 +31,9 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            if (ValidatorExtension != null)
+            if (CustomRuleProvider != null)
             {
-                error = ValidatorExtension.WithCustomRule(error);
+                error = CustomRuleProvider.WithCustomRule(error);
             }
 
             if (error.Level == ErrorLevel.Off)
