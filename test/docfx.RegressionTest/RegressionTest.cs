@@ -116,18 +116,10 @@ namespace Microsoft.Docs.Build
                     docfxConfig["selfContained"] = false;
                 }
 
-                if (opts.RegressionMarkdownRule)
+                if (opts.RegressionRules)
                 {
                     docfxConfig["markdownValidationRules"] = "https://ops/regressionallcontentrules/";
-                }
-
-                if (opts.RegressionBuildRule)
-                {
                     docfxConfig["buildValidationRules"] = "https://ops/regressionallbuildrules/";
-                }
-
-                if (opts.RegressionMetadataSchema)
-                {
                     docfxConfig["metadataSchema"] = new JArray()
                     {
                         Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
