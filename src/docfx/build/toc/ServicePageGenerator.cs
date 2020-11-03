@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                     servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
                 }
 
-                if (_buildScope.MapPath(servicePagePath.Path).mapping == null)
+                if (!_buildScope.Glob(servicePagePath.Path))
                 {
                     return;
                 }
