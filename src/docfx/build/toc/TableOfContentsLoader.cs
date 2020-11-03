@@ -25,6 +25,7 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
         private readonly ErrorBuilder _errors;
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
+        private readonly BuildScope _buildScope;
 
         private readonly MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)> _cache =
                      new MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)>();
@@ -45,7 +46,8 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             ContentValidator contentValidator,
             Config config,
-            ErrorBuilder errors)
+            ErrorBuilder errors,
+            BuildScope buildScope)
         {
             _docsetPath = docsetPath;
             _input = input;
@@ -56,6 +58,7 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _errors = errors;
+            _buildScope = buildScope;
             _joinTOCConfigs = config.JoinTOC.Where(x => x.ReferenceToc != null).ToDictionary(x => PathUtility.Normalize(x.ReferenceToc!));
         }
 
@@ -179,7 +182,7 @@ namespace Microsoft.Docs.Build
                         node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
 
                         // Generate Service Page.
-                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig);
+                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _buildScope);
 
                         foreach (var item in node.Items)
                         {
