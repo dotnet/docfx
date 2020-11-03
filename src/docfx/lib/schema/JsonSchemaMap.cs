@@ -10,10 +10,10 @@ namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaMap
     {
-        private readonly Func<JToken, JsonSchema, bool> _predicate;
+        private readonly Func<JsonSchema, bool> _predicate;
         private readonly Dictionary<JToken, JsonSchema> _map = new Dictionary<JToken, JsonSchema>(ReferenceEqualsComparer.Default);
 
-        public JsonSchemaMap(Func<JToken, JsonSchema, bool> predicate) => _predicate = predicate;
+        public JsonSchemaMap(Func<JsonSchema, bool> predicate) => _predicate = predicate;
 
         public JsonSchemaMap(JsonSchemaMap map) => _predicate = map._predicate;
 
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public void Add(JToken token, JsonSchema schema)
         {
-            if (_predicate(token, schema))
+            if (_predicate(schema))
             {
                 _map.TryAdd(token, schema);
             }

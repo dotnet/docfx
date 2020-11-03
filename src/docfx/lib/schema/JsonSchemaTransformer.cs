@@ -140,9 +140,9 @@ namespace Microsoft.Docs.Build
             return (token, schemaValidator.Schema, schemaMap);
         }
 
-        private static bool IsContentTransform(JToken token, JsonSchema schema)
+        private static bool IsContentTransform(JsonSchema schema)
         {
-            return schema.ContentType != null || (token is JObject obj && obj.ContainsKey("uid"));
+            return schema.ContentType != null || schema.XrefProperties.Count > 0 || schema.SchemaTypeProperty != null;
         }
 
         private void LoadXrefSpecsCore(
@@ -158,14 +158,19 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schemaMap, out var uid, out var schema, out var uidSchema))
+                    if (IsXrefSpec(obj, schemaMap, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, schemaMap, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
+                            errors, schemaMap, file, rootSchema, uidSchema, uid, obj, uidCount, propertyPath));
                     }
 
                     foreach (var (key, value) in obj)
                     {
+                        if (value.ToString() == "This member is obsolete. Use WithAccessorStatement instead.")
+                        {
+
+                        }
+
                         if (value != null)
                         {
                             LoadXrefSpecsCore(
@@ -189,17 +194,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private string? GetSchemaType(JsonSchema rootSchema, JsonSchema schema, JsonSchema uidSchema, JObject obj, FilePath file)
+        private string? GetSchemaType(string? schemaType, string? schemaPropertyType, string? propertyPath, JObject obj, FilePath file)
         {
-            var schemaType = uidSchema.SchemaType;
             if (schemaType is null)
             {
-                if (schema.SchemaTypeProperty != null)
+                if (schemaPropertyType != null)
                 {
-                    schemaType = obj.TryGetValue(schema.SchemaTypeProperty, out var type) && type is JValue typeValue && typeValue.Value is string typeString ?
-                        typeString : null;
+                    return obj.TryGetValue(schemaPropertyType, out var type) && type is JValue typeValue && typeValue.Value is string typeString
+                        ? typeString : null;
                 }
-                else if (schema == rootSchema)
+                else if (string.IsNullOrEmpty(propertyPath))
                 {
                     schemaType = _documentProvider.GetMime(file);
                 }
@@ -212,45 +216,52 @@ namespace Microsoft.Docs.Build
             JsonSchemaMap schemaMap,
             FilePath file,
             JsonSchema rootSchema,
-            JsonSchema schema,
             JsonSchema uidSchema,
             SourceInfo<string> uid,
             JObject obj,
             int uidCount,
             string? propertyPath)
         {
+            schemaMap.TryGetSchema(obj, out var schema);
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
-            var schemaType = GetSchemaType(rootSchema, schema, uidSchema, obj, file);
+            var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
 
             var xref = new InternalXrefSpec(
                 uid, href, file, monikers, obj.Parent?.Path, JsonUtility.AddToPropertyPath(propertyPath, "uid"), uidSchema.UidGlobalUnique, schemaType);
 
-            foreach (var xrefProperty in schema.XrefProperties)
+            if (schema != null)
             {
-                if (xrefProperty == "uid")
+                foreach (var xrefProperty in schema.XrefProperties)
                 {
-                    continue;
-                }
+                    if (xrefProperty == "uid")
+                    {
+                        continue;
+                    }
 
-                if (!obj.TryGetValue(xrefProperty, out var value))
-                {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
-                    continue;
-                }
+                    if (!obj.TryGetValue(xrefProperty, out var value))
+                    {
+                        xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
+                        continue;
+                    }
 
-                if (!schemaMap.TryGetSchema(value, out var propertySchema))
-                {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => value);
-                    continue;
-                }
+                    if (value.ToString() == "This member is obsolete. Use WithAccessorStatement instead.")
+                    {
 
-                xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(
-                        schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
-                    LazyThreadSafetyMode.PublicationOnly);
+                    }
+
+                    if (!schemaMap.TryGetSchema(value, out var propertySchema))
+                    {
+                        xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => value);
+                        continue;
+                    }
+
+                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
+                        () => LoadXrefProperty(
+                            schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                        LazyThreadSafetyMode.PublicationOnly);
+                }
             }
-
             return xref;
         }
 
@@ -260,7 +271,7 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schemaMap, out _, out _, out _))
+                    if (IsXrefSpec(obj, schemaMap, out _, out _))
                     {
                         count++;
                     }
@@ -284,23 +295,18 @@ namespace Microsoft.Docs.Build
         }
 
         private static bool IsXrefSpec(
-            JObject obj,
-            JsonSchemaMap schemaMap,
-            out SourceInfo<string> uid,
-            [MaybeNullWhen(false)] out JsonSchema schema,
-            [MaybeNullWhen(false)] out JsonSchema uidSchema)
+            JObject obj, JsonSchemaMap schemaMap, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema uidSchema)
         {
             // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
             if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
-                schemaMap.TryGetSchema(uidValue, out uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid &&
-                schemaMap.TryGetSchema(obj, out schema))
+                schemaMap.TryGetSchema(uidValue, out uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
             {
                 uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
                 return true;
             }
 
             uid = default;
-            uidSchema = schema = default;
+            uidSchema = default;
             return false;
         }
 
@@ -353,6 +359,11 @@ namespace Microsoft.Docs.Build
             int uidCount,
             string? propertyPath)
         {
+            if (token.ToString() == "This member is obsolete. Use WithAccessorStatement instead.")
+            {
+
+            }
+
             switch (token)
             {
                 // transform array and object is not supported yet
