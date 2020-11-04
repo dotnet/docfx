@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly BuildOptions _buildOptions;
+        private readonly JsonSchemaLoader _jsonSchemaLoader;
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
@@ -40,11 +41,13 @@ namespace Microsoft.Docs.Build
             Output output,
             PackageResolver packageResolver,
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer,
-            BuildOptions buildOptions)
+            BuildOptions buildOptions,
+            JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
             _output = output;
             _buildOptions = buildOptions;
+            _jsonSchemaLoader = jsonSchemaLoader;
 
             var template = config.Template;
             if (template.Type == PackageType.None)
@@ -200,17 +203,14 @@ namespace Microsoft.Docs.Build
 
         private JsonSchemaValidator? GetSchemaCore(string mime)
         {
-            var schemaFilePath = new PathString($"ContentTemplate/schemas/{mime}.schema.json");
-            var schemaString = IsLandingData(mime)
-                ? File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json"))
-                : _package.TryReadString(schemaFilePath);
+            var jsonSchema = IsLandingData(mime)
+                ? _jsonSchemaLoader.LoadSchema(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")))
+                : _jsonSchemaLoader.TryLoadSchema(_package, new PathString($"ContentTemplate/schemas/{mime}.schema.json"));
 
-            if (schemaString is null)
+            if (jsonSchema is null)
             {
                 return null;
             }
-
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schemaString, new FilePath(schemaFilePath));
 
             // temporary mapping, will retired after we support config it in UI portal
             jsonSchema = LearnErrorMapping(mime, jsonSchema);
