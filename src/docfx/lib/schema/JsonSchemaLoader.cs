@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -35,6 +36,7 @@ namespace Microsoft.Docs.Build
             return LoadSchema(_fileResolver.ReadString(url));
         }
 
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Needed to resolve remote ref")]
         public JsonSchema LoadSchema(string json)
         {
             if (string.IsNullOrEmpty(json))
