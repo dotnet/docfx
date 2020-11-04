@@ -74,7 +74,8 @@ namespace Microsoft.Docs.Build
         {
             return "Hub".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
                    "Landing".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
-                   "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
+                   "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
+                   "Architecture".Equals(mime, StringComparison.OrdinalIgnoreCase);
         }
 
         public JsonSchema GetSchema(SourceInfo<string?> mime)
