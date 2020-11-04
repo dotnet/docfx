@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Docs.MetadataService.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -38,7 +39,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var allowlists = JsonConvert.DeserializeObject<Allowlists>(allowlistsContent);
+            var allowlists = JsonConvert.DeserializeObject<AllowLists>(allowlistsContent);
 
             var schema = new
             {
@@ -77,7 +78,7 @@ namespace Microsoft.Docs.Build
 
                 var propertyJson =
                     JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                if (!string.Equals("{}", propertyJson))
+                if (!string.Equals("{}", propertyJson, StringComparison.OrdinalIgnoreCase))
                 {
                     schema.properties.Add(attribute, property);
                 }
@@ -114,7 +115,7 @@ namespace Microsoft.Docs.Build
 
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
-                    TryGetAllowlist(attribute, listRuleInfo.List, allowlists, 0, out var allowlist))
+                    TryGetAllowlist(attribute, listRuleInfo.List, allowlists, out var allowlist))
                 {
                     schema.enumDependencies.Add($"{attribute}[0]", allowlist);
 
@@ -161,45 +162,75 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetAllowlist(
-            string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
+        private static bool TryGetAllowlist(string attribute, string? listId, AllowLists allowlists, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
             allowList = new Dictionary<string, EnumDependenciesSchema?>();
 
-            if (!string.IsNullOrEmpty(listId) && allowlists.TryGetValue(listId, out var mainAllowlist))
+            if (!string.IsNullOrEmpty(listId) && allowlists.TryGetValue(listId.Substring("list:".Length), out var subAllowlist))
             {
-                if (string.IsNullOrEmpty(mainAllowlist.DependentAttribute))
+                if (string.IsNullOrEmpty(subAllowlist.NestedValue))
                 {
-                    allowList = mainAllowlist.Values.Keys.ToDictionary(validValue => validValue, validValue => (EnumDependenciesSchema?)null);
-                    return true;
-                }
-
-                if (string.Equals(parentName, mainAllowlist.DependentAttribute))
-                {
-                    index++;
-                }
-
-                foreach (var (validValue, subListId) in mainAllowlist.Values)
-                {
-                    if (TryGetAllowlist(mainAllowlist.DependentAttribute, subListId, allowlists, index, out var subAllowList))
+                    if (subAllowlist.NestedTaxonomy is JArray jArray)
                     {
-                        allowList.Add(validValue, new EnumDependenciesSchema() { { $"{mainAllowlist.DependentAttribute}[{index}]", subAllowList } });
+                        allowList = jArray.ToObject<List<string>>().ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
+                        return true;
                     }
                 }
+                else if (subAllowlist.NestedTaxonomy is JObject jObject)
+                {
+                    var nestedValue = subAllowlist.NestedValue;
+                    var index = 0;
 
-                return true;
+                    if (string.Equals("slug", subAllowlist.NestedValue, StringComparison.OrdinalIgnoreCase))
+                    {
+                        index = 1;
+                        nestedValue = attribute;
+                    }
+
+                    // msService => ms.service, msSubService => ms.subservice
+                    var first = true;
+                    nestedValue = string.Concat(nestedValue.Select(
+                        (x, i) =>
+                        {
+                            if (i > 0 && char.IsUpper(x) && first)
+                            {
+                                first = false;
+                                return "." + x.ToString();
+                            }
+                            return x.ToString();
+                        })).ToLowerInvariant();
+
+                    var dic = jObject.ToObject<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
+                    foreach (var (key, taxonomy) in dic)
+                    {
+                        // replace "(empty)" by ""
+                        var clearTaxonomy = taxonomy.ToDictionary(
+                            x =>
+                            {
+                                if (string.Equals("(empty)", x, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    return string.Empty;
+                                }
+                                return x;
+                            }, x => (EnumDependenciesSchema?)null);
+
+                        allowList.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
+                    }
+                    return true;
+                }
             }
 
             return false;
         }
 
-        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Allowlists allowlists)
+        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, AllowLists allowlists)
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
-                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs, out var allowlist))
+                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs.Substring("list:".Length), out var allowlist) &&
+                allowlist.NestedTaxonomy is JArray jArray)
             {
-                return new { allowedDLs = allowlist.Values.Keys.ToList() };
+                return new { allowedDLs = jArray.ToObject<List<string>>() };
             }
 
             return null;
@@ -288,6 +319,15 @@ namespace Microsoft.Docs.Build
             }
 
             return null;
+        }
+
+        internal class AllowLists : Dictionary<string, AllowList> { }
+
+        internal class AllowList
+        {
+            public string? NestedValue { get; set; } = string.Empty;
+
+            public dynamic? NestedTaxonomy { get; set; }
         }
 
         private class EnumDependenciesSchema : Dictionary<string, Dictionary<string, EnumDependenciesSchema?>> { }

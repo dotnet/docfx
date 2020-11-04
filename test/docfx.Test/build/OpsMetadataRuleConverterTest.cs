@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public void TestGenerateJsonSchema()
         {
             var rules = File.ReadAllText("data/validation/rulesets.json");
-            var allowlists = File.ReadAllText("data/validation/allowlists.json");
+            var allowlists = File.ReadAllText("data/validation/taxonomy-allowlists.json");
             var expectedSchema = File.ReadAllText("data/validation/schema.json");
             var actualSchema = OpsMetadataRuleConverter.GenerateJsonSchema(rules, allowlists);
 
