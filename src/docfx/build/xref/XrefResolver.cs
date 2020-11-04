@@ -33,11 +33,9 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder,
             ErrorBuilder errorLog,
-            TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
-            Input input,
             BuildScope buildScope,
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
         {
@@ -49,11 +47,9 @@ namespace Microsoft.Docs.Build
                     () => new InternalXrefMapBuilder(
                                 config,
                                 errorLog,
-                                templateEngine,
                                 documentProvider,
                                 metadataProvider,
                                 monikerProvider,
-                                input,
                                 buildScope,
                                 jsonSchemaTransformer.Value).Build());
 

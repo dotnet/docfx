@@ -156,6 +156,12 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Prod => "rd.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },
+                "Startups" => OpsAccessor.DocsEnvironment switch
+                {
+                    DocsEnvironment.Prod => "startups.microsoft.com",
+                    DocsEnvironment.PPE => "ppe.startups.microsoft.com",
+                    _ => throw new NotSupportedException(),
+                },
                 _ => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",

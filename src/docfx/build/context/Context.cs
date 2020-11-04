@@ -139,11 +139,9 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 FileLinkMapBuilder,
                 ErrorBuilder,
-                TemplateEngine,
                 DocumentProvider,
                 MetadataProvider,
                 MonikerProvider,
-                Input,
                 BuildScope,
                 new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
 
