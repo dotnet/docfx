@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Docs.MetadataService.Models;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -170,13 +170,10 @@ namespace Microsoft.Docs.Build
             {
                 if (string.IsNullOrEmpty(subAllowlist.NestedValue))
                 {
-                    if (subAllowlist.NestedTaxonomy is JArray jArray)
-                    {
-                        allowList = jArray.ToObject<List<string>>().ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
-                        return true;
-                    }
+                    allowList = subAllowlist.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
+                    return true;
                 }
-                else if (subAllowlist.NestedTaxonomy is JObject jObject)
+                else
                 {
                     var nestedValue = subAllowlist.NestedValue;
                     var index = 0;
@@ -200,8 +197,7 @@ namespace Microsoft.Docs.Build
                             return x.ToString();
                         })).ToLowerInvariant();
 
-                    var dic = jObject.ToObject<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
-                    foreach (var (key, taxonomy) in dic)
+                    foreach (var (key, taxonomy) in subAllowlist.NestedTaxonomy.dic)
                     {
                         // replace "(empty)" by ""
                         var clearTaxonomy = taxonomy.ToDictionary(
@@ -228,9 +224,9 @@ namespace Microsoft.Docs.Build
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
                 allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs.Substring("list:".Length), out var allowlist) &&
-                allowlist.NestedTaxonomy is JArray jArray)
+                string.IsNullOrEmpty(allowlist.NestedValue))
             {
-                return new { allowedDLs = jArray.ToObject<List<string>>() };
+                return new { allowedDLs = allowlist.NestedTaxonomy.list };
             }
 
             return null;
@@ -319,15 +315,6 @@ namespace Microsoft.Docs.Build
             }
 
             return null;
-        }
-
-        internal class AllowLists : Dictionary<string, AllowList> { }
-
-        internal class AllowList
-        {
-            public string? NestedValue { get; set; } = string.Empty;
-
-            public dynamic? NestedTaxonomy { get; set; }
         }
 
         private class EnumDependenciesSchema : Dictionary<string, Dictionary<string, EnumDependenciesSchema?>> { }

@@ -274,16 +274,14 @@ inputs:
     }
   allowlist.json: |
     {
-      "list:devlang": {
-        "id": "list:devlang",
-        "dependent": null,
-        "desc": "Values for codeblock language",
-        "values": {
-            "C#": null,
-            "csharp beta-2.0": null,
-            "csharp": null
+        "devlang": {
+            "nestedValue": "",
+            "nestedTaxonomy": [
+                "C#",
+                "csharp beta-2.0",
+                "csharp"
+            ]
         }
-      }
     }
   a.md: |
     ```csharp beta-1.0
