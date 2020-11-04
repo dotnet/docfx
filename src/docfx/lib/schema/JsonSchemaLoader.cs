@@ -39,6 +39,11 @@ namespace Microsoft.Docs.Build
 
         public JsonSchema LoadSchema(string json)
         {
+            if (string.IsNullOrEmpty(json))
+            {
+                return new JsonSchema();
+            }
+
             var token = JToken.Parse(json);
             var schemaMap = new Dictionary<JToken, JsonSchema>(ReferenceEqualsComparer.Default);
             var schema = Deserialize(token, schemaMap);
