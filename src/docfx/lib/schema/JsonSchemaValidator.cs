@@ -72,7 +72,10 @@ namespace Microsoft.Docs.Build
 
         private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
-            schema = _schema.ReferenceResolver.ResolveSchema(schema);
+            if (!string.IsNullOrEmpty(schema.Ref))
+            {
+                schema = _schema.ReferenceResolver.ResolveSchema(schema.Ref) ?? schema;
+            }
 
             if (!ValidateType(schema, propertyPath, token, errors))
             {

@@ -30,11 +30,6 @@ namespace Microsoft.Docs.Build
         //-------------------------------------------
 
         /// <summary>
-        /// Json schema definitions
-        /// </summary>
-        public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
         /// Json schema $ref pointer
         /// </summary>
         [JsonProperty("$ref")]
