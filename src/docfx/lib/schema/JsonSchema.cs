@@ -21,6 +21,11 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static readonly JsonSchema FalseSchema = new JsonSchema();
 
+        /// <summary>
+        /// Gets the JsonSchemaResolver to resolve $ref.
+        /// </summary>
+        public JsonSchemaReferenceResolver ReferenceResolver { get; internal set; } = JsonSchemaReferenceResolver.Null;
+
         // A core subset of JSON schema
         //-------------------------------------------
 
