@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-        private const string AllowlistsApi = "https://ops/allowlists/";
+        private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
 
