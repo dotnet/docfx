@@ -13,32 +13,26 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
-        private readonly TemplateEngine _templateEngine;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly JsonSchemaTransformer _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
             Config config,
             ErrorBuilder errors,
-            TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
-            Input input,
             BuildScope buildScope,
             JsonSchemaTransformer jsonSchemaTransformer)
         {
             _config = config;
             _errors = errors;
-            _templateEngine = templateEngine;
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
-            _input = input;
             _buildScope = buildScope;
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
