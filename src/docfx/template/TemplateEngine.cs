@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,14 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Architecture",
+                "Hub",
+                "Landing",
+                "LandingData",
+            };
 
         public TemplateEngine(
             ErrorBuilder errors,
@@ -72,9 +81,7 @@ namespace Microsoft.Docs.Build
 
         public static bool IsMigratedFromMarkdown(string? mime)
         {
-            return "Hub".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
-                   "Landing".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
-                   "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
+            return mime != null && s_yamlMimesMigratedFromMarkdown.Contains(mime);
         }
 
         public JsonSchema GetSchema(SourceInfo<string?> mime)
