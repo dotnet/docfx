@@ -197,7 +197,7 @@ namespace Microsoft.Docs.Build
         private JsonSchemaValidator? GetSchemaCore(string mime)
         {
             var jsonSchema = IsLandingData(mime)
-                ? _jsonSchemaLoader.LoadSchema(new LocalPackage(AppContext.BaseDirectory), new PathString("data/schemas/LandingData.json"))
+                ? _jsonSchemaLoader.LoadSchema(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")))
                 : _jsonSchemaLoader.TryLoadSchema(_package, new PathString($"ContentTemplate/schemas/{mime}.schema.json"));
 
             if (jsonSchema is null)

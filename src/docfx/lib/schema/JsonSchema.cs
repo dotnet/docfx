@@ -35,10 +35,16 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// Json schema ref pointer
+        /// Json schema $ref pointer
         /// </summary>
         [JsonProperty("$ref")]
         public string? Ref { get; set; }
+
+        /// <summary>
+        /// Json schema $id
+        /// </summary>
+        [JsonProperty("$id")]
+        public string? Id { get; set; }
 
         /// <summary>
         /// Type of the current value.
