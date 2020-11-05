@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetAllowlists((string repositoryUrl, string branch) tuple)
         {
             return await FetchValidationRules(
-                   $"/route/taxonomyservice/taxonomies/simplified?" +
+                   $"/taxonomies/simplified?" +
                    $"name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
                    tuple.repositoryUrl,
                    tuple.branch);
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
         {
             var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
             var allowlists = FetchValidationRules(
-                $"/route/taxonomyservice/taxonomies/simplified?" +
+                $"/taxonomies/simplified?" +
                 $"name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
                 tuple.repositoryUrl,
                 tuple.branch);
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 "/route/validationmgt/rulesets/metadatarules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
             var allowlists = FetchValidationRules(
-                $"/route/taxonomyservice/taxonomies/simplified?" +
+                $"/taxonomies/simplified?" +
                 $"name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
                 environment: DocsEnvironment.PPE);
 
