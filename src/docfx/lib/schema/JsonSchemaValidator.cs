@@ -16,11 +16,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly bool _forceError;
         private readonly JsonSchema _schema;
-        private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly MonikerProvider? _monikerProvider;
         private readonly JsonSchemaValidatorExtension? _ext;
         private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder;
+
         private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
 
         public JsonSchema Schema => _schema;
@@ -34,14 +34,13 @@ namespace Microsoft.Docs.Build
         {
             _schema = schema;
             _forceError = forceError;
-            _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
             _monikerProvider = monikerProvider;
             _ext = ext;
             _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>();
         }
 
-        public List<Error> Validate(JToken token, FilePath filePath)
+        public List<Error> Validate(JToken token, FilePath filePath, JsonSchemaMap? schemaMap = null)
         {
             try
             {
@@ -49,7 +48,7 @@ namespace Microsoft.Docs.Build
                 {
                     t_filePath.Value = filePath;
                 }
-                return Validate(_schema, token);
+                return Validate(_schema, token, schemaMap);
             }
             finally
             {
@@ -64,16 +63,19 @@ namespace Microsoft.Docs.Build
             return errors.Select(e => GetError(_schema, e)).ToList();
         }
 
-        private List<Error> Validate(JsonSchema schema, JToken token)
+        private List<Error> Validate(JsonSchema schema, JToken token, JsonSchemaMap? schemaMap)
         {
             var errors = new List<Error>();
-            Validate(schema, "", token, errors);
+            Validate(schema, "", token, errors, schemaMap);
             return errors.Select(error => GetError(_schema, error)).ToList();
         }
 
-        private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
-            schema = _definitions.GetDefinition(schema);
+            if (!string.IsNullOrEmpty(schema.Ref))
+            {
+                schema = _schema.ReferenceResolver.ResolveSchema(schema.Ref) ?? schema;
+            }
 
             if (!ValidateType(schema, propertyPath, token, errors))
             {
@@ -92,19 +94,21 @@ namespace Microsoft.Docs.Build
                     break;
 
                 case JArray array:
-                    ValidateArray(schema, propertyPath, array, errors);
+                    ValidateArray(schema, propertyPath, array, errors, schemaMap);
                     break;
 
                 case JObject map:
-                    ValidateObject(schema, propertyPath, map, errors);
+                    ValidateObject(schema, propertyPath, map, errors, schemaMap);
                     break;
             }
 
-            ValidateAnyOf(schema, propertyPath, token, errors);
-            ValidateAllOf(schema, propertyPath, token, errors);
-            ValidateOneOf(schema, propertyPath, token, errors);
-            ValidateIfThenElse(schema, propertyPath, token, errors);
+            ValidateAnyOf(schema, propertyPath, token, errors, schemaMap);
+            ValidateAllOf(schema, propertyPath, token, errors, schemaMap);
+            ValidateOneOf(schema, propertyPath, token, errors, schemaMap);
+            ValidateIfThenElse(schema, propertyPath, token, errors, schemaMap);
             ValidateNot(schema, propertyPath, token, errors);
+
+            schemaMap?.Add(token, schema);
         }
 
         private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -137,7 +141,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateArray(JsonSchema schema, string propertyPath, JArray array, List<Error> errors)
+        private void ValidateArray(JsonSchema schema, string propertyPath, JArray array, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             if (schema.MaxItems.HasValue && array.Count > schema.MaxItems.Value)
             {
@@ -149,7 +153,7 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.JsonSchema.ArrayLengthInvalid(JsonUtility.GetSourceInfo(array), propertyPath, $">= {schema.MinItems}"));
             }
 
-            ValidateItems(schema, propertyPath, array, errors);
+            ValidateItems(schema, propertyPath, array, errors, schemaMap);
             ValidateMinItemsWhen(schema, propertyPath, array, errors);
             ValidateMaxItemsWhen(schema, propertyPath, array, errors);
 
@@ -158,13 +162,13 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.JsonSchema.ArrayNotUnique(JsonUtility.GetSourceInfo(array), propertyPath));
             }
 
-            if (schema.Contains != null && !array.Any(item => Validate(schema.Contains, item).Count == 0))
+            if (schema.Contains != null && !array.Any(item => SchemaMatches(schema.Contains, item)))
             {
                 errors.Add(Errors.JsonSchema.ArrayContainsFailed(JsonUtility.GetSourceInfo(array), propertyPath));
             }
         }
 
-        private void ValidateItems(JsonSchema schema, string propertyPath, JArray array, List<Error> errors)
+        private void ValidateItems(JsonSchema schema, string propertyPath, JArray array, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             var (items, eachItem) = schema.Items;
 
@@ -172,7 +176,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in array)
                 {
-                    Validate(items, propertyPath, item, errors);
+                    Validate(items, propertyPath, item, errors, schemaMap);
                 }
             }
             else if (eachItem != null)
@@ -181,7 +185,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (i < eachItem.Length)
                     {
-                        Validate(eachItem[i], propertyPath, array[i], errors);
+                        Validate(eachItem[i], propertyPath, array[i], errors, schemaMap);
                     }
                     else if (schema.AdditionalItems == JsonSchema.FalseSchema)
                     {
@@ -190,25 +194,25 @@ namespace Microsoft.Docs.Build
                     }
                     else if (schema.AdditionalItems != null && schema.AdditionalItems != JsonSchema.FalseSchema)
                     {
-                        Validate(schema.AdditionalItems, propertyPath, array[i], errors);
+                        Validate(schema.AdditionalItems, propertyPath, array[i], errors, schemaMap);
                     }
                 }
             }
         }
 
-        private void ValidateObject(JsonSchema schema, string propertyPath, JObject map, List<Error> errors)
+        private void ValidateObject(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             ValidateRequired(schema, propertyPath, map, errors);
             ValidateStrictRequired(schema, propertyPath, map, errors);
-            ValidateDependencies(schema, propertyPath, map, errors);
+            ValidateDependencies(schema, propertyPath, map, errors, schemaMap);
             ValidateEither(schema, propertyPath, map, errors);
             ValidatePrecludes(schema, propertyPath, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, propertyPath, "", "", null, null, map, errors);
             ValidateDocsetUnique(schema, propertyPath, map);
-            ValidateProperties(schema, propertyPath, map, errors);
+            ValidateProperties(schema, propertyPath, map, errors, schemaMap);
         }
 
-        private void ValidateProperties(JsonSchema schema, string propertyPath, JObject map, List<Error> errors)
+        private void ValidateProperties(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             if (schema.MaxProperties.HasValue && map.Count > schema.MaxProperties.Value)
             {
@@ -233,7 +237,7 @@ namespace Microsoft.Docs.Build
                 {
                     var propertyName = new JValue(key);
                     JsonUtility.SetSourceInfo(propertyName, JsonUtility.GetKeySourceInfo(value));
-                    Validate(schema.PropertyNames, currentPropertyPath, propertyName, errors);
+                    Validate(schema.PropertyNames, currentPropertyPath, propertyName, errors, schemaMap);
                 }
 
                 var isAdditionalProperty = true;
@@ -241,7 +245,7 @@ namespace Microsoft.Docs.Build
                 // properties
                 if (schema.Properties.TryGetValue(key, out var propertySchema))
                 {
-                    Validate(propertySchema, currentPropertyPath, value, errors);
+                    Validate(propertySchema, currentPropertyPath, value, errors, schemaMap);
                     isAdditionalProperty = false;
                 }
 
@@ -250,7 +254,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (Regex.IsMatch(key, pattern))
                     {
-                        Validate(patternPropertySchema, currentPropertyPath, value, errors);
+                        Validate(patternPropertySchema, currentPropertyPath, value, errors, schemaMap);
                         isAdditionalProperty = false;
                     }
                 }
@@ -264,7 +268,7 @@ namespace Microsoft.Docs.Build
                     }
                     else if (schema.AdditionalProperties != JsonSchema.TrueSchema)
                     {
-                        Validate(schema.AdditionalProperties, propertyPath, value, errors);
+                        Validate(schema.AdditionalProperties, propertyPath, value, errors, schemaMap);
                     }
                 }
             }
@@ -312,7 +316,7 @@ namespace Microsoft.Docs.Build
 
         private bool SchemaMatches(JsonSchema schema, JToken map)
         {
-            return Validate(schema, map).Count <= 0;
+            return Validate(schema, map, schemaMap: null).Count <= 0;
         }
 
         private static void ValidateBooleanSchema(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -423,7 +427,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDependencies(JsonSchema schema, string propertyPath, JObject map, List<Error> errors)
+        private void ValidateDependencies(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
             {
@@ -444,7 +448,7 @@ namespace Microsoft.Docs.Build
                     }
                     else if (subschema != null)
                     {
-                        Validate(subschema, propertyPath, map, errors);
+                        Validate(subschema, propertyPath, map, errors, schemaMap);
                     }
                 }
             }
@@ -584,7 +588,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateAnyOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        private void ValidateAnyOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             if (schema.AnyOf.Length <= 0)
             {
@@ -596,10 +600,15 @@ namespace Microsoft.Docs.Build
             foreach (var subschema in schema.AnyOf)
             {
                 var subschemaErrors = new List<Error>();
-                Validate(subschema, propertyPath, token, subschemaErrors);
+                var subschemaMap = schemaMap is null ? null : new JsonSchemaMap(schemaMap);
+                Validate(subschema, propertyPath, token, subschemaErrors, subschemaMap);
 
                 if (subschemaErrors.Count <= 0)
                 {
+                    if (subschemaMap != null)
+                    {
+                        schemaMap?.Add(subschemaMap);
+                    }
                     return;
                 }
 
@@ -616,15 +625,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateAllOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        private void ValidateAllOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             foreach (var subschema in schema.AllOf)
             {
-                Validate(subschema, propertyPath, token, errors);
+                Validate(subschema, propertyPath, token, errors, schemaMap);
             }
         }
 
-        private void ValidateOneOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        private void ValidateOneOf(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             if (schema.OneOf.Length <= 0)
             {
@@ -632,15 +641,18 @@ namespace Microsoft.Docs.Build
             }
 
             var validCount = 0;
+            JsonSchemaMap? bestSchemaMap = null;
             List<Error>? bestErrors = null;
 
             foreach (var subschema in schema.OneOf)
             {
                 var subschemaErrors = new List<Error>();
-                Validate(subschema, propertyPath, token, subschemaErrors);
+                var subschemaMap = schemaMap is null ? null : new JsonSchemaMap(schemaMap);
+                Validate(subschema, propertyPath, token, subschemaErrors, subschemaMap);
 
                 if (subschemaErrors.Count <= 0)
                 {
+                    bestSchemaMap = subschemaMap;
                     validCount++;
                     continue;
                 }
@@ -663,9 +675,13 @@ namespace Microsoft.Docs.Build
                     errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
                 }
             }
+            else if (bestSchemaMap != null)
+            {
+                schemaMap?.Add(bestSchemaMap);
+            }
         }
 
-        private void ValidateIfThenElse(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
+        private void ValidateIfThenElse(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
             if (schema.If is null)
             {
@@ -673,20 +689,20 @@ namespace Microsoft.Docs.Build
             }
 
             var ifErrors = new List<Error>();
-            Validate(schema.If, propertyPath, token, ifErrors);
+            Validate(schema.If, propertyPath, token, ifErrors, schemaMap: null);
 
             if (ifErrors.Count <= 0)
             {
                 if (schema.Then != null)
                 {
-                    Validate(schema.Then, propertyPath, token, errors);
+                    Validate(schema.Then, propertyPath, token, errors, schemaMap);
                 }
             }
             else
             {
                 if (schema.Else != null)
                 {
-                    Validate(schema.Else, propertyPath, token, errors);
+                    Validate(schema.Else, propertyPath, token, errors, schemaMap);
                 }
             }
         }
@@ -699,7 +715,7 @@ namespace Microsoft.Docs.Build
             }
 
             var subschemaErrors = new List<Error>();
-            Validate(schema.Not, propertyPath, token, subschemaErrors);
+            Validate(schema.Not, propertyPath, token, subschemaErrors, schemaMap: null);
 
             if (subschemaErrors.Count > 0)
             {

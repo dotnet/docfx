@@ -15,15 +15,18 @@ namespace Microsoft.Docs.Build
         private readonly PathString _docsetPath;
         private readonly Input _input;
         private readonly JoinTOCConfig _joinTOCConfig;
+        private readonly BuildScope _buildScope;
 
         public ServicePageGenerator(
             PathString docsetPath,
             Input input,
-            JoinTOCConfig joinTOCConfig)
+            JoinTOCConfig joinTOCConfig,
+            BuildScope buildScope)
         {
             _docsetPath = docsetPath;
             _input = input;
             _joinTOCConfig = joinTOCConfig;
+            _buildScope = buildScope;
         }
 
         public void GenerateServicePageFromTopLevelTOC(TableOfContentsNode node, List<FilePath> results, string directoryName = "")
@@ -72,7 +75,8 @@ namespace Microsoft.Docs.Build
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc);
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? referenceTOCRelativeDir ?? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
                 var pageType = node.LandingPageType.Value;
                 FilePath servicePagePath;
                 if (pageType == LandingPageType.Root)
@@ -82,6 +86,11 @@ namespace Microsoft.Docs.Build
                 else
                 {
                     servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
+                }
+
+                if (!_buildScope.Glob(servicePagePath.Path))
+                {
+                    return;
                 }
 
                 if (string.IsNullOrEmpty(node.Href.Value))

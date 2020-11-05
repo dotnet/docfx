@@ -21,19 +21,25 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static readonly JsonSchema FalseSchema = new JsonSchema();
 
+        /// <summary>
+        /// Gets the JsonSchemaResolver to resolve $ref.
+        /// </summary>
+        public JsonSchemaReferenceResolver ReferenceResolver { get; internal set; } = JsonSchemaReferenceResolver.Null;
+
         // A core subset of JSON schema
         //-------------------------------------------
 
         /// <summary>
-        /// Json schema definitions
-        /// </summary>
-        public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// Json schema ref pointer
+        /// Json schema $ref pointer
         /// </summary>
         [JsonProperty("$ref")]
         public string? Ref { get; set; }
+
+        /// <summary>
+        /// Json schema $id
+        /// </summary>
+        [JsonProperty("$id")]
+        public string? Id { get; set; }
 
         /// <summary>
         /// Type of the current value.

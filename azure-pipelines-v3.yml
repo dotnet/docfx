@@ -124,6 +124,7 @@ jobs:
   # Upload code coverage to codecov.io
   - bash: |
       bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+    condition: false # temporary disable for running failures
     displayName: 'Upload to codecov.io'
     env:
       CODECOV_TOKEN: $(CODECOV_TOKEN)

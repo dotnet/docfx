@@ -25,7 +25,8 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly Input _input;
 
-        private readonly MemoryCache<FilePath, (JToken, JsonSchema)> _schemaDocumentsCache = new MemoryCache<FilePath, (JToken, JsonSchema)>();
+        private readonly MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)> _schemaDocumentsCache
+                   = new MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)>();
 
         private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
         private readonly ConcurrentDictionary<(FilePath, string), (IXrefSpec? spec, JObject? specObj)> _mustacheXrefSpec =
@@ -97,14 +98,12 @@ namespace Microsoft.Docs.Build
 
         public JToken TransformContent(ErrorBuilder errors, FilePath file)
         {
-            var (token, schema) = ValidateContent(errors, file);
-            var definitions = new JsonSchemaDefinition(schema);
-            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
+            var (token, schema, schemaMap) = ValidateContent(errors, file);
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(schemaMap, token));
             return TransformContentCore(
                 errors.WithCustomRule(schema),
-                definitions,
+                schemaMap,
                 file,
-                schema,
                 schema,
                 token,
                 uidCount,
@@ -113,20 +112,19 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)
         {
-            var (token, schema) = ValidateContent(errors, file);
+            var (token, schema, schemaMap) = ValidateContent(errors, file);
             var xrefSpecs = new List<InternalXrefSpec>();
-            var definitions = new JsonSchemaDefinition(schema);
-            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(definitions, schema, token));
-            LoadXrefSpecsCore(errors, file, schema, schema, definitions, token, xrefSpecs, uidCount);
+            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(schemaMap, token));
+            LoadXrefSpecsCore(errors, file, schema, schemaMap, token, xrefSpecs, uidCount);
             return xrefSpecs;
         }
 
-        private (JToken token, JsonSchema schema) ValidateContent(ErrorBuilder errors, FilePath file)
+        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap) ValidateContent(ErrorBuilder errors, FilePath file)
         {
             return _schemaDocumentsCache.GetOrAdd(file, file => ValidateContentCore(errors, file));
         }
 
-        private (JToken token, JsonSchema schema) ValidateContentCore(ErrorBuilder errors, FilePath file)
+        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap) ValidateContentCore(ErrorBuilder errors, FilePath file)
         {
             var token = file.Format switch
             {
@@ -136,42 +134,45 @@ namespace Microsoft.Docs.Build
             };
             var mime = _documentProvider.GetMime(file);
             var schemaValidator = _templateEngine.GetSchemaValidator(mime);
-            var schemaErrors = schemaValidator.Validate(token, file);
+            var schemaMap = new JsonSchemaMap(IsContentTransform);
+            var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
             errors.AddRange(schemaErrors);
-            return (token, schemaValidator.Schema);
+            return (token, schemaValidator.Schema, schemaMap);
+        }
+
+        private static bool IsContentTransform(JsonSchema schema)
+        {
+            return schema.ContentType != null || schema.XrefProperties.Count > 0 || schema.SchemaTypeProperty != null;
         }
 
         private void LoadXrefSpecsCore(
             ErrorBuilder errors,
             FilePath file,
             JsonSchema rootSchema,
-            JsonSchema schema,
-            JsonSchemaDefinition definitions,
+            JsonSchemaMap schemaMap,
             JToken node,
             List<InternalXrefSpec> xrefSpecs,
             int uidCount,
             string? propertyPath = null)
         {
-            schema = definitions.GetDefinition(schema);
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out var uid, out var uidSchema))
+                    if (IsXrefSpec(obj, schemaMap, out var uid, out var uidSchema))
                     {
                         xrefSpecs.Add(LoadXrefSpec(
-                            errors, definitions, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
+                            errors, schemaMap, file, rootSchema, uidSchema, uid, obj, uidCount, propertyPath));
                     }
 
                     foreach (var (key, value) in obj)
                     {
-                        if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
+                        if (value != null)
                         {
                             LoadXrefSpecsCore(
                                 errors,
                                 file,
                                 rootSchema,
-                                propertySchema,
-                                definitions,
+                                schemaMap,
                                 value,
                                 xrefSpecs,
                                 uidCount,
@@ -179,26 +180,25 @@ namespace Microsoft.Docs.Build
                         }
                     }
                     break;
-                case JArray array when schema.Items.schema != null:
+                case JArray array:
                     foreach (var item in array)
                     {
-                        LoadXrefSpecsCore(errors, file, rootSchema, schema.Items.schema, definitions, item, xrefSpecs, uidCount, propertyPath);
+                        LoadXrefSpecsCore(errors, file, rootSchema, schemaMap, item, xrefSpecs, uidCount, propertyPath);
                     }
                     break;
             }
         }
 
-        private string? GetSchemaType(JsonSchema rootSchema, JsonSchema schema, JsonSchema uidSchema, JObject obj, FilePath file)
+        private string? GetSchemaType(string? schemaType, string? schemaPropertyType, string? propertyPath, JObject obj, FilePath file)
         {
-            var schemaType = uidSchema.SchemaType;
             if (schemaType is null)
             {
-                if (schema.SchemaTypeProperty != null)
+                if (schemaPropertyType != null)
                 {
-                    schemaType = obj.TryGetValue(schema.SchemaTypeProperty, out var type) && type is JValue typeValue && typeValue.Value is string typeString ?
-                        typeString : null;
+                    return obj.TryGetValue(schemaPropertyType, out var type) && type is JValue typeValue && typeValue.Value is string typeString
+                        ? typeString : null;
                 }
-                else if (schema == rootSchema)
+                else if (string.IsNullOrEmpty(propertyPath))
                 {
                     schemaType = _documentProvider.GetMime(file);
                 }
@@ -208,94 +208,89 @@ namespace Microsoft.Docs.Build
 
         private InternalXrefSpec LoadXrefSpec(
             ErrorBuilder errors,
-            JsonSchemaDefinition definitions,
+            JsonSchemaMap schemaMap,
             FilePath file,
             JsonSchema rootSchema,
-            JsonSchema schema,
             JsonSchema uidSchema,
             SourceInfo<string> uid,
             JObject obj,
             int uidCount,
             string? propertyPath)
         {
+            schemaMap.TryGetSchema(obj, out var schema);
             var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
-            var schemaType = GetSchemaType(rootSchema, schema, uidSchema, obj, file);
+            var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
 
             var xref = new InternalXrefSpec(
                 uid, href, file, monikers, obj.Parent?.Path, JsonUtility.AddToPropertyPath(propertyPath, "uid"), uidSchema.UidGlobalUnique, schemaType);
 
-            foreach (var xrefProperty in schema.XrefProperties)
+            if (schema != null)
             {
-                if (xrefProperty == "uid")
+                foreach (var xrefProperty in schema.XrefProperties)
                 {
-                    continue;
-                }
+                    if (xrefProperty == "uid")
+                    {
+                        continue;
+                    }
 
-                if (!obj.TryGetValue(xrefProperty, out var value))
-                {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
-                    continue;
-                }
+                    if (!obj.TryGetValue(xrefProperty, out var value))
+                    {
+                        xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
+                        continue;
+                    }
 
-                if (!schema.Properties.TryGetValue(xrefProperty, out var propertySchema))
-                {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => value);
-                    continue;
+                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
+                        () => LoadXrefProperty(
+                            schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                        LazyThreadSafetyMode.PublicationOnly);
                 }
-
-                xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(
-                        definitions, file, uid, value, rootSchema, propertySchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
-                    LazyThreadSafetyMode.PublicationOnly);
             }
-
             return xref;
         }
 
-        private int GetFileUidCount(JsonSchemaDefinition definitions, JsonSchema schema, JToken node)
+        private int GetFileUidCount(JsonSchemaMap schemaMap, JToken node)
         {
-            schema = definitions.GetDefinition(schema);
             var count = 0;
             switch (node)
             {
                 case JObject obj:
-                    if (IsXrefSpec(obj, schema, out _, out _))
+                    if (IsXrefSpec(obj, schemaMap, out _, out _))
                     {
                         count++;
                     }
 
                     foreach (var (key, value) in obj)
                     {
-                        if (value != null && schema.Properties.TryGetValue(key, out var propertySchema))
+                        if (value != null)
                         {
-                            count += GetFileUidCount(definitions, propertySchema, value);
+                            count += GetFileUidCount(schemaMap, value);
                         }
                     }
                     break;
-                case JArray array when schema.Items.schema != null:
+                case JArray array:
                     foreach (var item in array)
                     {
-                        count += GetFileUidCount(definitions, schema.Items.schema, item);
+                        count += GetFileUidCount(schemaMap, item);
                     }
                     break;
             }
             return count;
         }
 
-        private static bool IsXrefSpec(JObject obj, JsonSchema schema, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema outSchema)
+        private static bool IsXrefSpec(
+            JObject obj, JsonSchemaMap schemaMap, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema uidSchema)
         {
-            uid = default;
-            outSchema = default;
-
             // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
             if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
-                schema.Properties.TryGetValue("uid", out var uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+                schemaMap.TryGetSchema(uidValue, out uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
             {
-                outSchema = uidSchema;
                 uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
                 return true;
             }
+
+            uid = default;
+            uidSchema = default;
             return false;
         }
 
@@ -306,12 +301,11 @@ namespace Microsoft.Docs.Build
         }
 
         private JToken LoadXrefProperty(
-            JsonSchemaDefinition definitions,
+            JsonSchemaMap schemaMap,
             FilePath file,
             SourceInfo<string> uid,
             JToken value,
             JsonSchema rootSchema,
-            JsonSchema schema,
             int uidCount,
             string propertyPath)
         {
@@ -326,10 +320,9 @@ namespace Microsoft.Docs.Build
                 recursionDetector.Push(uid);
                 return TransformContentCore(
                     _errors.WithCustomRule(rootSchema),
-                    definitions,
+                    schemaMap,
                     file,
                     rootSchema,
-                    schema,
                     value,
                     uidCount,
                     propertyPath);
@@ -343,28 +336,21 @@ namespace Microsoft.Docs.Build
 
         private JToken TransformContentCore(
             ErrorBuilder errors,
-            JsonSchemaDefinition definitions,
+            JsonSchemaMap schemaMap,
             FilePath file,
             JsonSchema rootSchema,
-            JsonSchema schema,
             JToken token,
             int uidCount,
             string? propertyPath)
         {
-            schema = definitions.GetDefinition(schema);
             switch (token)
             {
                 // transform array and object is not supported yet
                 case JArray array:
-                    if (schema.Items.schema is null)
-                    {
-                        return array;
-                    }
-
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        newArray.Add(TransformContentCore(errors, definitions, file, rootSchema, schema.Items.schema, item, uidCount, propertyPath));
+                        newArray.Add(TransformContentCore(errors, schemaMap, file, rootSchema, item, uidCount, propertyPath));
                     }
 
                     return newArray;
@@ -377,27 +363,25 @@ namespace Microsoft.Docs.Build
                         {
                             continue;
                         }
-                        else if (schema.Properties.TryGetValue(key, out var propertySchema))
+                        else
                         {
                             newObject[key] = TransformContentCore(
                                 errors,
-                                definitions,
+                                schemaMap,
                                 file,
                                 rootSchema,
-                                propertySchema,
                                 value,
                                 uidCount,
                                 JsonUtility.AddToPropertyPath(propertyPath, key));
                         }
-                        else
-                        {
-                            newObject[key] = value;
-                        }
                     }
                     return newObject;
 
-                case JValue value:
+                case JValue value when schemaMap.TryGetSchema(token, out var schema):
                     return TransformScalar(errors.With(e => e.WithPropertyPath(propertyPath)), rootSchema, schema, file, value, propertyPath);
+
+                case JValue value:
+                    return value;
 
                 default:
                     throw new NotSupportedException();
