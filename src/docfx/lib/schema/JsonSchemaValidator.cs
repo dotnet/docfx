@@ -16,7 +16,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly bool _forceError;
         private readonly JsonSchema _schema;
-        private readonly JsonSchemaDefinition _definitions;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly MonikerProvider? _monikerProvider;
         private readonly CustomRuleProvider? _customRuleProvider;
@@ -35,7 +34,6 @@ namespace Microsoft.Docs.Build
         {
             _schema = schema;
             _forceError = forceError;
-            _definitions = new JsonSchemaDefinition(schema);
             _microsoftGraphAccessor = microsoftGraphAccessor;
             _monikerProvider = monikerProvider;
             _customRuleProvider = ext;
@@ -74,7 +72,11 @@ namespace Microsoft.Docs.Build
 
         private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
         {
-            schema = _definitions.GetDefinition(schema);
+            if (!string.IsNullOrEmpty(schema.Ref))
+            {
+                schema = _schema.ReferenceResolver.ResolveSchema(schema.Ref) ?? schema;
+            }
+
             if (!ValidateType(schema, propertyPath, token, errors))
             {
                 return;

@@ -21,14 +21,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly string[] s_notSupportedTests =
         {
-             // ref
-            "relative pointer ref to object",
-            "relative pointer ref to array",
-            "escaped pointer ref",
-            "remote ref, containing refs itself",
-            "Recursive references between schemas",
-            "refs with quote",
-            "Location-independent identifier",
+            "remote ref",
         };
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
@@ -61,12 +54,12 @@ namespace Microsoft.Docs.Build
 
         [Theory]
         [MemberData(nameof(GetJsonSchemaTestSuite))]
-        public void TestJsonSchemaConformance(string description, string schemaText, string testText)
+        public void TestJsonSchemaConformance(string description, string schema, string testText)
         {
-            var filePath = new FilePath("");
-            var schema = JsonUtility.DeserializeData<JsonSchema>(schemaText, filePath);
+            var jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."));
+            var jsonSchema = jsonSchemaLoader.LoadSchema(schema);
             var test = JObject.Parse(testText);
-            var errors = new JsonSchemaValidator(schema).Validate(test["data"], filePath);
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(test["data"], new FilePath("file"));
 
             Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
@@ -425,10 +418,10 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var propertiesToCompare = new[] { "message_severity", "code", "message", "line", "column" };
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
-            var filePath = new FilePath("file");
+            var jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."));
+            var jsonSchema = jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
             var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, filePath);
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, new FilePath("file"));
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join(
                 '\n',
@@ -455,7 +448,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'docsetUnique': ['key11']}}}", new[] { "{'key1': {'key11': 'a'}}", "{'key1': {'key11': 'a'}, 'key11': 'a'}" }, 2)]
         public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schema.Replace('\'', '"'), null);
+            var jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."));
+            var jsonSchema = jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
             var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 

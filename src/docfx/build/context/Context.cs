@@ -100,11 +100,15 @@ namespace Microsoft.Docs.Build
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider, sourceMap);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
+
+            var jsonSchemaLoader = new JsonSchemaLoader(fileResolver);
+
             TemplateEngine = new TemplateEngine(
-                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer), buildOptions);
+                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer), buildOptions, jsonSchemaLoader);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
-            MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
+
+            MetadataProvider = new MetadataProvider(Config, Input, BuildScope, jsonSchemaLoader);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
             ZonePivotProvider = new ZonePivotProvider(
