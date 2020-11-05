@@ -45,17 +45,15 @@ namespace Microsoft.Docs.Build
             _credentialProvider = credentialProvider;
         }
 
-        public bool TryReadString(SourceInfo<string> file, out string? content)
+        public string? TryReadString(SourceInfo<string> file)
         {
             try
             {
-                content = ReadString(file);
-                return true;
+                return ReadString(file);
             }
             catch (DocfxException)
             {
-                content = null;
-                return false;
+                return null;
             }
         }
 

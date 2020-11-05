@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         {
             if (!string.IsNullOrEmpty(schema.Ref))
             {
-                schema = _schema.ReferenceResolver.ResolveSchema(schema.Ref) ?? schema;
+                schema = schema.SchemaResolver.ResolveSchema(schema.Ref) ?? schema;
             }
 
             if (!ValidateType(schema, propertyPath, token, errors))
