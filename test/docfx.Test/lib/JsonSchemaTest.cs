@@ -12,17 +12,7 @@ namespace Microsoft.Docs.Build
 {
     public class JsonSchemaTest
     {
-        // Test against a subset of JSON schema test suite: https://github.com/json-schema-org/JSON-Schema-Test-Suite
-        private static readonly string[] s_notSupportedSuites =
-        {
-            "definitions",
-            "refRemote",
-        };
-
-        private static readonly string[] s_notSupportedTests =
-        {
-            "remote ref",
-        };
+        private static readonly JsonSchemaLoader s_jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."), FetchRemoteSchema);
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
         {
@@ -30,21 +20,12 @@ namespace Microsoft.Docs.Build
             foreach (var file in Directory.GetFiles("data/jschema/draft7", "*.json", SearchOption.AllDirectories))
             {
                 var suite = Path.GetFileNameWithoutExtension(file);
-                if (s_notSupportedSuites.Contains(suite))
-                {
-                    continue;
-                }
-
                 foreach (var schema in JArray.Parse(File.ReadAllText(file)))
                 {
                     var schemaText = schema["schema"].ToString(Formatting.None);
                     foreach (var test in schema["tests"])
                     {
                         var description = $"{schema["description"]}/{test["description"]}";
-                        if (s_notSupportedTests.Any(text => description.Contains(text)))
-                        {
-                            continue;
-                        }
                         result.Add($"{suite}/{description}", schemaText, test.ToString());
                     }
                 }
@@ -56,8 +37,7 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(GetJsonSchemaTestSuite))]
         public void TestJsonSchemaConformance(string description, string schema, string testText)
         {
-            var jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."));
-            var jsonSchema = jsonSchemaLoader.LoadSchema(schema);
+            var jsonSchema = s_jsonSchemaLoader.LoadSchema(schema);
             var test = JObject.Parse(testText);
             var errors = new JsonSchemaValidator(jsonSchema).Validate(test["data"], new FilePath("file"));
 
@@ -418,8 +398,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaValidation(string schema, string json, string expectedErrors)
         {
             var propertiesToCompare = new[] { "message_severity", "code", "message", "line", "column" };
-            var jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."));
-            var jsonSchema = jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
+            var jsonSchema = s_jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
             var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
             var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, new FilePath("file"));
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
@@ -448,8 +427,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'docsetUnique': ['key11']}}}", new[] { "{'key1': {'key11': 'a'}}", "{'key1': {'key11': 'a'}, 'key11': 'a'}" }, 2)]
         public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
-            var jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."));
-            var jsonSchema = jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
+            var jsonSchema = s_jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
             var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
@@ -460,6 +438,15 @@ namespace Microsoft.Docs.Build
 
             var errors = jsonSchemaValidator.PostValidate();
             Assert.Equal(errorCount, errors.Count);
+        }
+
+        private static string FetchRemoteSchema(Uri baseUrl, Uri refUrl)
+        {
+            if (refUrl.GetLeftPart(UriPartial.Authority) == "http://localhost:1234")
+            {
+                return File.ReadAllText(Path.Combine("data/jschema/remotes", refUrl.LocalPath.TrimStart('/')));
+            }
+            return null;
         }
     }
 }

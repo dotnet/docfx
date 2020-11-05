@@ -209,7 +209,9 @@ namespace Microsoft.Docs.Build
 
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
-            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, customRuleProvider);
+
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, jsonSchemaLoader, MonikerProvider, customRuleProvider);
+
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 
