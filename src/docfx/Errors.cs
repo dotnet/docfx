@@ -785,7 +785,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error LiquidNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
+                => new Error(ErrorLevel.Info, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
 
             /// <summary>
             /// Mustache is not found for current mime type.
