@@ -96,6 +96,7 @@ devmsft
 devops
 devsandbox
 dfm
+dic
 dirname
 disallowlist
 dlang
@@ -409,6 +410,7 @@ stylesheet
 stylewith
 subfolder
 submittext
+subservice
 superyyrrzz
 svg
 tabgroup
@@ -417,6 +419,7 @@ tableofcontent
 tablist
 tabpanel
 tagname
+taxonomyservice
 tbl
 tblock
 tbody
