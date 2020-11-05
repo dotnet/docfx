@@ -42,10 +42,13 @@ namespace Microsoft.Docs.Build
                 : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
         }
 
-        public string Render(string templateName, SourceInfo<string?> mime, JObject model)
+        public string Render(string templateName, JObject model)
         {
-            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"))
-                ?? throw Errors.Template.LiquidNotFound(mime).ToException(isError: false);
+            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"));
+            if (template is null)
+            {
+                return "";
+            }
 
             var registers = new Hash
             {

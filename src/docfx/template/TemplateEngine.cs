@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 ["metadata"] = model.PageMetadata,
             };
 
-            return _liquid.Render(layout, mime, liquidModel);
+            return _liquid.Render(layout, liquidModel);
         }
 
         public string RunMustache(string templateName, JToken pageModel, FilePath file)
