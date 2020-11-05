@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -9,10 +10,12 @@ namespace Microsoft.Docs.Build
     internal class JsonSchemaLoader
     {
         private readonly FileResolver _fileResolver;
+        private readonly Func<Uri, Uri, string?>? _resolveRef;
 
-        public JsonSchemaLoader(FileResolver fileResolver)
+        public JsonSchemaLoader(FileResolver fileResolver, Func<Uri, Uri, string?>? resolveRef = null)
         {
             _fileResolver = fileResolver;
+            _resolveRef = resolveRef;
         }
 
         public JsonSchema? TryLoadSchema(Package package, PathString path)
@@ -23,12 +26,19 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return LoadSchema(json);
-        }
+            return LoadSchema(json, ResolvePackageRef);
 
-        public JsonSchema? LoadSchema(Package package, PathString path)
-        {
-            return LoadSchema(package.ReadString(path));
+            string? ResolvePackageRef(Uri baseUrl, Uri refUrl)
+            {
+                var relativeUrl = baseUrl.MakeRelativeUri(new Uri(refUrl.GetLeftPart(UriPartial.Path)));
+                if (relativeUrl.IsAbsoluteUri)
+                {
+                    return null;
+                }
+
+                var resolvedPath = Path.Combine(Path.GetDirectoryName(path) ?? "", relativeUrl.ToString());
+                return package.TryReadString(new PathString(resolvedPath));
+            }
         }
 
         public JsonSchema LoadSchema(SourceInfo<string> url)
@@ -36,8 +46,7 @@ namespace Microsoft.Docs.Build
             return LoadSchema(_fileResolver.ReadString(url));
         }
 
-        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Needed to resolve remote ref")]
-        public JsonSchema LoadSchema(string json)
+        public JsonSchema LoadSchema(string json, Func<Uri, Uri, string?>? resolveRef = null)
         {
             if (string.IsNullOrEmpty(json))
             {
@@ -45,9 +54,18 @@ namespace Microsoft.Docs.Build
             }
 
             var token = JToken.Parse(json);
-            var schema = JsonUtility.ToObject<JsonSchema>(ErrorBuilder.Null, token);
-            schema.ReferenceResolver = new JsonSchemaReferenceResolver(token, schema.Id);
-            return schema;
+            var schemaResolver = new JsonSchemaResolver(token, ResolveExternalSchema);
+
+            return schemaResolver.ResolveSchema("") ?? throw new InvalidOperationException();
+
+            JsonSchema? ResolveExternalSchema(Uri baseUrl, Uri refUrl)
+            {
+                var json = resolveRef?.Invoke(baseUrl, refUrl) ??
+                    _resolveRef?.Invoke(baseUrl, refUrl) ??
+                    _fileResolver.TryReadString(new SourceInfo<string>(refUrl.GetLeftPart(UriPartial.Path)));
+
+                return json is null ? null : LoadSchema(json);
+            }
         }
     }
 }

@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             return new JsonSchemaValidator(jsonSchema, forceError: true);
         }
 
-        private static JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
+        private JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
         {
             var mappingPath = mime switch
             {
@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
                     return jsonSchema;
                 }
 
-                var mapping = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(absoluteMappingPath), null);
+                var mapping = _jsonSchemaLoader.LoadSchema(File.ReadAllText(absoluteMappingPath));
                 foreach (var (propName, customRule) in mapping.Rules)
                 {
                     jsonSchema.Rules.TryAdd(propName, customRule);

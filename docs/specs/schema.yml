@@ -939,3 +939,26 @@ outputs:
     { "uid": "a", "foo": { "bar": "<p><em>markdown</em></p>" } }
   .xrefmap.json: |
     { "references": [{ "uid": "a", "foo": { "bar": "<p><em>markdown</em></p>" } }] }
+---
+# JSON schemas $ref supports local file or HTTP
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    foo: _markdown_
+    bar: inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "foo": { "$ref": "foo.json" },
+        "bar": { "$ref": "https://raw.githubusercontent.com/docascode/docfx-test-dependencies/schema/schema.json#/baz" }
+      }
+    }
+  _themes/ContentTemplate/schemas/foo.json: |
+    { "contentType": "markdown" }
+outputs:
+  a.json: |
+    {
+      "foo": "<p><em>markdown</em></p>",
+      "bar": "inline <em>markdown</em>"
+    }

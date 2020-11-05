@@ -24,7 +24,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the JsonSchemaResolver to resolve $ref.
         /// </summary>
-        public JsonSchemaReferenceResolver ReferenceResolver { get; internal set; } = JsonSchemaReferenceResolver.Null;
+        [JsonIgnore]
+        public JsonSchemaResolver SchemaResolver { get; internal set; } = JsonSchemaResolver.Null;
 
         // A core subset of JSON schema
         //-------------------------------------------

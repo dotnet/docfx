@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
 
             var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
-            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, validatorExtension);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, jsonSchemaLoader, MonikerProvider, validatorExtension);
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 
