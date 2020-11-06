@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
                        .ExecuteAsync(async () =>
                        {
                            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-                           request.Headers.TryAddWithoutValidation("User-Agent", "Docfx App Call");
+                           request.Headers.TryAddWithoutValidation("User-Agent", "Docfx v3");
                            var response = await _http.SendAsync(request);
                            return response;
                        });
