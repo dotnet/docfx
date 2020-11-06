@@ -21,19 +21,26 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static readonly JsonSchema FalseSchema = new JsonSchema();
 
+        /// <summary>
+        /// Gets the JsonSchemaResolver to resolve $ref.
+        /// </summary>
+        [JsonIgnore]
+        public JsonSchemaResolver SchemaResolver { get; internal set; } = JsonSchemaResolver.Null;
+
         // A core subset of JSON schema
         //-------------------------------------------
 
         /// <summary>
-        /// Json schema definitions
-        /// </summary>
-        public Dictionary<string, JsonSchema> Definitions { get; } = new Dictionary<string, JsonSchema>(StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// Json schema ref pointer
+        /// Json schema $ref pointer
         /// </summary>
         [JsonProperty("$ref")]
         public string? Ref { get; set; }
+
+        /// <summary>
+        /// Json schema $id
+        /// </summary>
+        [JsonProperty("$id")]
+        public string? Id { get; set; }
 
         /// <summary>
         /// Type of the current value.
@@ -187,6 +194,41 @@ namespace Microsoft.Docs.Build
         [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
         public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
          = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
+
+        /// <summary>
+        /// The given data must be valid against any (one or more) of the given subschemas.
+        /// </summary>
+        public JsonSchema[] AnyOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// The given data must be valid against exactly all of the given subschemas.
+        /// </summary>
+        public JsonSchema[] AllOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// The given data must be valid against exactly one of the given subschemas.
+        /// </summary>
+        public JsonSchema[] OneOf { get; set; } = Array.Empty<JsonSchema>();
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? If { get; set; }
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? Then { get; set; }
+
+        /// <summary>
+        /// Allows validation based on outcome of another schema using if/then/else construct.
+        /// </summary>
+        public JsonSchema? Else { get; set; }
+
+        /// <summary>
+        /// Negates the result of a validation.
+        /// </summary>
+        public JsonSchema? Not { get; set; }
 
         // JSON schema custom validation extensions
         //-------------------------------------------

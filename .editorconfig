@@ -95,6 +95,9 @@ dotnet_diagnostic.ca1308.severity = none
 # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.ca1303.severity = none
 
+# CA1310: Specify StringComparison for correctness
+dotnet_diagnostic.ca1310.severity = none
+
 # CA1724: Type names should not match namespaces
 dotnet_diagnostic.ca1724.severity = none
 

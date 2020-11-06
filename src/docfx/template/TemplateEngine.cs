@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +22,18 @@ namespace Microsoft.Docs.Build
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly BuildOptions _buildOptions;
+        private readonly JsonSchemaLoader _jsonSchemaLoader;
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Architecture",
+                "Hub",
+                "Landing",
+                "LandingData",
+            };
 
         public TemplateEngine(
             ErrorBuilder errors,
@@ -31,11 +41,13 @@ namespace Microsoft.Docs.Build
             Output output,
             PackageResolver packageResolver,
             Lazy<JsonSchemaTransformer> jsonSchemaTransformer,
-            BuildOptions buildOptions)
+            BuildOptions buildOptions,
+            JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
             _output = output;
             _buildOptions = buildOptions;
+            _jsonSchemaLoader = jsonSchemaLoader;
 
             var template = config.Template;
             if (template.Type == PackageType.None)
@@ -72,9 +84,7 @@ namespace Microsoft.Docs.Build
 
         public static bool IsMigratedFromMarkdown(string? mime)
         {
-            return "Hub".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
-                   "Landing".Equals(mime, StringComparison.OrdinalIgnoreCase) ||
-                   "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
+            return mime != null && s_yamlMimesMigratedFromMarkdown.Contains(mime);
         }
 
         public JsonSchema GetSchema(SourceInfo<string?> mime)
@@ -100,7 +110,7 @@ namespace Microsoft.Docs.Build
                 ["metadata"] = model.PageMetadata,
             };
 
-            return _liquid.Render(layout, mime, liquidModel);
+            return _liquid.Render(layout, liquidModel);
         }
 
         public string RunMustache(string templateName, JToken pageModel, FilePath file)
@@ -193,17 +203,14 @@ namespace Microsoft.Docs.Build
 
         private JsonSchemaValidator? GetSchemaCore(string mime)
         {
-            var schemaFilePath = new PathString($"ContentTemplate/schemas/{mime}.schema.json");
-            var schemaString = IsLandingData(mime)
-                ? File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json"))
-                : _package.TryReadString(schemaFilePath);
+            var jsonSchema = IsLandingData(mime)
+                ? _jsonSchemaLoader.LoadSchema(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")))
+                : _jsonSchemaLoader.TryLoadSchema(_package, new PathString($"ContentTemplate/schemas/{mime}.schema.json"));
 
-            if (schemaString is null)
+            if (jsonSchema is null)
             {
                 return null;
             }
-
-            var jsonSchema = JsonUtility.DeserializeData<JsonSchema>(schemaString, new FilePath(schemaFilePath));
 
             // temporary mapping, will retired after we support config it in UI portal
             jsonSchema = LearnErrorMapping(mime, jsonSchema);
@@ -211,7 +218,7 @@ namespace Microsoft.Docs.Build
             return new JsonSchemaValidator(jsonSchema, forceError: true);
         }
 
-        private static JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
+        private JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
         {
             var mappingPath = mime switch
             {
@@ -230,7 +237,7 @@ namespace Microsoft.Docs.Build
                     return jsonSchema;
                 }
 
-                var mapping = JsonUtility.DeserializeData<JsonSchema>(File.ReadAllText(absoluteMappingPath), null);
+                var mapping = _jsonSchemaLoader.LoadSchema(File.ReadAllText(absoluteMappingPath));
                 foreach (var (propName, customRule) in mapping.Rules)
                 {
                     jsonSchema.Rules.TryAdd(propName, customRule);

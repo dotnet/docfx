@@ -16,7 +16,8 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(sourceMap))
                 {
-                    if (!fileResolver.TryReadString(sourceMap, out var content))
+                    var content = fileResolver.TryReadString(sourceMap);
+                    if (content is null)
                     {
                         continue;
                     }

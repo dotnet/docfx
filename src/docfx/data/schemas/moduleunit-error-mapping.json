@@ -70,8 +70,8 @@
     "content": {
       "include-not-found": {
         "severity": "error",
-        "code": "token-not-found",
-        "message": "Token ({0}) can't be found in current repository."
+        "code": "include-not-found",
+        "message": "The included file ({0}) can't be found in current repository."
       }
     }
   }

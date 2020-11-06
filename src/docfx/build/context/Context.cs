@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,6 +34,8 @@ namespace Microsoft.Docs.Build
         public MetadataProvider MetadataProvider { get; }
 
         public MonikerProvider MonikerProvider { get; }
+
+        public ZonePivotProvider ZonePivotProvider { get; }
 
         public RepositoryProvider RepositoryProvider { get; }
 
@@ -74,6 +77,7 @@ namespace Microsoft.Docs.Build
 
         public SearchIndexBuilder SearchIndexBuilder { get; }
 
+        [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Suppress MEN003 for Context")]
         public Context(
             ErrorBuilder errorLog,
             Config config,
@@ -96,13 +100,25 @@ namespace Microsoft.Docs.Build
             Input = new Input(buildOptions, config, packageResolver, RepositoryProvider, sourceMap);
             Output = new Output(buildOptions.OutputPath, Input, Config.DryRun);
             MicrosoftGraphAccessor = new MicrosoftGraphAccessor(Config);
+
+            var jsonSchemaLoader = new JsonSchemaLoader(fileResolver);
+
             TemplateEngine = new TemplateEngine(
-                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer), buildOptions);
+                errorLog, config, Output, PackageResolver, new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer), buildOptions, jsonSchemaLoader);
 
             BuildScope = new BuildScope(Config, Input, buildOptions);
-            MetadataProvider = new MetadataProvider(Config, Input, FileResolver, BuildScope);
+
+            MetadataProvider = new MetadataProvider(Config, Input, BuildScope, jsonSchemaLoader);
             MonikerProvider = new MonikerProvider(Config, BuildScope, MetadataProvider, FileResolver);
             DocumentProvider = new DocumentProvider(Input, errorLog, config, buildOptions, BuildScope, TemplateEngine, MonikerProvider, MetadataProvider);
+            ZonePivotProvider = new ZonePivotProvider(
+                Config,
+                ErrorBuilder,
+                DocumentProvider,
+                MetadataProvider,
+                Input,
+                new Lazy<PublishUrlMap>(() => PublishUrlMap),
+                new Lazy<ContentValidator>(() => ContentValidator));
             RedirectionProvider = new RedirectionProvider(
                 buildOptions.DocsetPath,
                 Config.HostName,
@@ -114,7 +130,7 @@ namespace Microsoft.Docs.Build
                 new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             ContentValidator = new ContentValidator(
-                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
+                config, FileResolver, errorLog, DocumentProvider, MonikerProvider, ZonePivotProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap));
 
             GitHubAccessor = new GitHubAccessor(Config);
             BookmarkValidator = new BookmarkValidator(errorLog);
@@ -127,11 +143,9 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 FileLinkMapBuilder,
                 ErrorBuilder,
-                TemplateEngine,
                 DocumentProvider,
                 MetadataProvider,
                 MonikerProvider,
-                Input,
                 BuildScope,
                 new Lazy<JsonSchemaTransformer>(() => JsonSchemaTransformer));
 
@@ -167,7 +181,10 @@ namespace Microsoft.Docs.Build
                 LinkResolver,
                 XrefResolver,
                 errorLog,
-                MonikerProvider);
+                MonikerProvider,
+                TemplateEngine,
+                Input);
+
             var tocParser = new TableOfContentsParser(Input, MarkdownEngine, DocumentProvider);
             TableOfContentsLoader = new TableOfContentsLoader(
                 BuildOptions.DocsetPath,
@@ -179,7 +196,8 @@ namespace Microsoft.Docs.Build
                 DependencyMapBuilder,
                 ContentValidator,
                 config,
-                errorLog);
+                errorLog,
+                BuildScope);
             TocMap = new TableOfContentsMap(
                 Config, ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(
@@ -189,7 +207,7 @@ namespace Microsoft.Docs.Build
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
 
             var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
-            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, FileResolver, MonikerProvider, validatorExtension);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, jsonSchemaLoader, MonikerProvider, validatorExtension);
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 
