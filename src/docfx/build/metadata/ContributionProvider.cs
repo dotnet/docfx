@@ -33,18 +33,18 @@ namespace Microsoft.Docs.Build
             _repositoryProvider = repositoryProvider;
         }
 
-        public ContributionInfo? GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName, bool includeAuthor = false)
+        public (ContributionInfo?, string?[]?) GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
         {
             var fullPath = _input.TryGetOriginalPhysicalPath(file);
             if (fullPath is null)
             {
-                return null;
+                return (null, null);
             }
 
             var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath.Value);
             if (repo is null)
             {
-                return null;
+                return (null, null);
             }
 
             var updatedDateTime = GetUpdatedAt(file, repo, commits);
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             if (!_config.ResolveGithubUsers)
             {
-                return contributionInfo;
+                return (contributionInfo, contributionInfo.Contributors?.Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray());
             }
 
             var contributionCommits = commits;
@@ -88,6 +88,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var gitContributorInformation = contributors.Distinct().Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray();
+
             var author = contributors.Count > 0 ? contributors[^1] : null;
             if (!string.IsNullOrEmpty(authorName))
             {
@@ -97,7 +99,7 @@ namespace Microsoft.Docs.Build
                 author = githubUser?.ToContributor();
             }
 
-            if (author != null && !includeAuthor)
+            if (author != null)
             {
                 contributors.RemoveAll(item => item.Equals(author));
             }
@@ -105,15 +107,7 @@ namespace Microsoft.Docs.Build
             contributionInfo.Author = author;
             contributionInfo.Contributors = contributors.Distinct().ToArray();
 
-            return contributionInfo;
-        }
-
-        public string?[]? GitContributorInformation(ErrorBuilder errors, FilePath file)
-        {
-            return GetContributionInfo(errors, file, new SourceInfo<string>(""), true)?.Contributors?.
-                Select(e => e.Name).
-                Where(e => !string.IsNullOrEmpty(e))
-                .ToArray();
+            return (contributionInfo, gitContributorInformation);
         }
 
         public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
