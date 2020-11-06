@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                 (OpsMetadataApi, _ => GetOpsMetadata()),
                 (MetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url))),
                 (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
-                (AllowlistsApi, url => _opsAccessor.GetAllowlists(GetValidationServiceParameters(url))),
+                (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
                 (RegressionAllMetadataSchemaApi, _ => _opsAccessor.GetRegressionAllMetadataSchema()),
             };

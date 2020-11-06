@@ -21,6 +21,12 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsAccessor : IDisposable, ILearnServiceAccessor
     {
+        private const string TaxonomyServiceProdPath = "https://taxonomyapi-prod-wus.azurewebsites.net/taxonomies/simplified?" +
+            "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
+
+        private const string TaxonomyServicePPEPath = "https://taxonomyapi-ppe.azurewebsites.net/taxonomies/simplified?" +
+            "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
+
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         // TODO: use Azure front door endpoint when it is stable
@@ -75,23 +81,15 @@ namespace Microsoft.Docs.Build
             return await FetchValidationRules($"/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
         }
 
-        public async Task<string> GetAllowlists((string repositoryUrl, string branch) tuple)
+        public async Task<string> GetAllowlists()
         {
-            return await FetchValidationRules(
-                   $"/taxonomies/simplified?" +
-                   $"name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
-                   tuple.repositoryUrl,
-                   tuple.branch);
+            return await FetchTaxonomies();
         }
 
         public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
         {
             var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
-            var allowlists = FetchValidationRules(
-                $"/taxonomies/simplified?" +
-                $"name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
-                tuple.repositoryUrl,
-                tuple.branch);
+            var allowlists = FetchTaxonomies();
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
@@ -108,10 +106,8 @@ namespace Microsoft.Docs.Build
             var metadataRules = FetchValidationRules(
                 "/route/validationmgt/rulesets/metadatarules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
-            var allowlists = FetchValidationRules(
-                $"/taxonomies/simplified?" +
-                $"name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product",
-                environment: DocsEnvironment.PPE);
+
+            var allowlists = FetchTaxonomies(DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
         }
@@ -214,6 +210,39 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private async Task<string> FetchTaxonomies(DocsEnvironment? environment = null)
+        {
+            try
+            {
+                var url = TaxonomyServicePath(environment);
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                {
+                    using var response = await HttpPolicyExtensions
+                       .HandleTransientHttpError()
+                       .Or<OperationCanceledException>()
+                       .Or<IOException>()
+                       .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                       .ExecuteAsync(async () =>
+                       {
+                           using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                           request.Headers.TryAddWithoutValidation("User-Agent", "Docfx App Call");
+                           var response = await _http.SendAsync(request);
+                           return response;
+                       });
+
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Getting taxonomies failure should not block build proceeding,
+                // catch and log the exception without rethrow.
+                Log.Write(ex);
+                _errors.Add(Errors.System.ValidationIncomplete());
+                return "{}";
+            }
+        }
+
         private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, DocsEnvironment? environment = null)
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
@@ -237,6 +266,18 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.PPE => DocsPPEServiceEndpoint,
                 DocsEnvironment.Internal => DocsInternalServiceEndpoint,
                 DocsEnvironment.Perf => DocsPerfServiceEndpoint,
+                _ => throw new NotSupportedException(),
+            };
+        }
+
+        private static string TaxonomyServicePath(DocsEnvironment? environment = null)
+        {
+            return (environment ?? DocsEnvironment) switch
+            {
+                DocsEnvironment.Prod => TaxonomyServiceProdPath,
+                DocsEnvironment.PPE => TaxonomyServicePPEPath,
+                DocsEnvironment.Internal => TaxonomyServicePPEPath,
+                DocsEnvironment.Perf => TaxonomyServicePPEPath,
                 _ => throw new NotSupportedException(),
             };
         }
