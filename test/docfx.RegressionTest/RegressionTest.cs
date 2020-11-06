@@ -130,6 +130,11 @@ namespace Microsoft.Docs.Build
                     };
                 }
 
+                if (opts.RegressionAllowlist)
+                {
+                    docfxConfig["allowlists"] = "https://ops/regressionalltaxonomy-allowlists/";
+                }
+
                 return JsonConvert.SerializeObject(docfxConfig);
             }
 

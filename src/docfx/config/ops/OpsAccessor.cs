@@ -86,6 +86,11 @@ namespace Microsoft.Docs.Build
             return await FetchTaxonomies();
         }
 
+        public async Task<string> GetRegressionAllAllowlists()
+        {
+            return await FetchTaxonomies(DocsEnvironment.PPE);
+        }
+
         public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
         {
             var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
