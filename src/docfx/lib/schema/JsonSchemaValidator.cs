@@ -30,13 +30,13 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphAccessor? microsoftGraphAccessor = null,
             MonikerProvider? monikerProvider = null,
             bool forceError = false,
-            CustomRuleProvider? ext = null)
+            CustomRuleProvider? customRuleProvider = null)
         {
             _schema = schema;
             _forceError = forceError;
             _microsoftGraphAccessor = microsoftGraphAccessor;
             _monikerProvider = monikerProvider;
-            _customRuleProvider = ext;
+            _customRuleProvider = customRuleProvider;
             _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>();
         }
 
