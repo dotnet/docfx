@@ -5,27 +5,38 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class JsonSchemaReferenceResolver
+    internal class JsonSchemaResolver
     {
+        private static readonly ThreadLocal<JsonSchemaResolver?> t_current = new ThreadLocal<JsonSchemaResolver?>();
+
         private readonly JToken _schema;
-        private readonly Uri _baseUrl;
+        private readonly Uri _baseUrl = new Uri("https://me");
         private readonly Dictionary<string, JToken> _schemasById = new Dictionary<string, JToken>();
+        private readonly Func<Uri, Uri, JsonSchema?> _resolveExternalSchema;
 
         private readonly ConcurrentDictionary<string, JsonSchema?> _references = new ConcurrentDictionary<string, JsonSchema?>();
 
-        public static readonly JsonSchemaReferenceResolver Null = new JsonSchemaReferenceResolver(new JObject());
+        public static readonly JsonSchemaResolver Null = new JsonSchemaResolver(new JObject(), (a, b) => null);
 
-        public JsonSchemaReferenceResolver(JToken schema, string? id = null)
+        internal static JsonSchemaResolver Current => t_current.Value ?? throw new InvalidOperationException("Use JsonSchemaLoader to load JSON schema");
+
+        internal JsonSchemaResolver(JToken schema, Func<Uri, Uri, JsonSchema?> resolveExternalSchema)
         {
             _schema = schema;
-            _baseUrl = new Uri(new Uri("https://me"), id);
+            _resolveExternalSchema = resolveExternalSchema;
 
-            LoadSchemasById(_baseUrl, schema, _schemasById);
+            if (schema is JObject obj && obj.TryGetValue<JValue>("$id", out var id) && id.Value is string schemaId)
+            {
+                _baseUrl = new Uri(_baseUrl, schemaId);
+            }
+
+            ExpandSchemaIdAndRef(_baseUrl, _schema, _schemasById);
         }
 
         public JsonSchema? ResolveSchema(string schemaRef)
@@ -35,23 +46,45 @@ namespace Microsoft.Docs.Build
 
         private JsonSchema? ResolveSchemaCore(string schemaRef, HashSet<string> recursions)
         {
-            var thisUrl = new Uri(_baseUrl, schemaRef);
-            var url = thisUrl.ToString().TrimEnd('/', '#');
-            if (!recursions.Add(url))
+            if (!recursions.Add(schemaRef))
             {
                 return JsonSchema.FalseSchema;
             }
 
-            // Lookup by id then by JSON pointer
-            if (_schemasById.TryGetValue(url, out var token) || LookupJsonPointer(thisUrl.Fragment, out token))
+            // Lookup by id
+            if (_schemasById.TryGetValue(schemaRef, out var token))
             {
+                return DeserializeSchema(recursions, token);
+            }
+
+            // Lookup by JSON pointer if it is within the same document
+            var schemaRefUrl = new Uri(_baseUrl, schemaRef);
+            if (schemaRefUrl == _baseUrl)
+            {
+                return LookupJsonPointer(schemaRefUrl.Fragment, out token) ? DeserializeSchema(recursions, token) : null;
+            }
+
+            // Lookup other documents
+            var externalSchema = _resolveExternalSchema(_baseUrl, schemaRefUrl);
+
+            return externalSchema?.SchemaResolver?.ResolveSchema(schemaRefUrl.Fragment);
+        }
+
+        private JsonSchema DeserializeSchema(HashSet<string> recursions, JToken token)
+        {
+            try
+            {
+                t_current.Value = this;
+
                 var resolvedSchema = JsonUtility.ToObject<JsonSchema>(ErrorBuilder.Null, token);
                 return string.IsNullOrEmpty(resolvedSchema.Ref)
                     ? resolvedSchema
                     : ResolveSchemaCore(resolvedSchema.Ref, recursions) ?? resolvedSchema;
             }
-
-            return null;
+            finally
+            {
+                t_current.Value = null;
+            }
         }
 
         private bool LookupJsonPointer(string fragment, [NotNullWhen(true)] out JToken? token)
@@ -82,14 +115,14 @@ namespace Microsoft.Docs.Build
             return token != null;
         }
 
-        private void LoadSchemasById(Uri baseUrl, JToken token, Dictionary<string, JToken> schemasById)
+        private void ExpandSchemaIdAndRef(Uri baseUrl, JToken token, Dictionary<string, JToken> schemasById)
         {
             switch (token)
             {
                 case JArray array:
                     for (var i = 0; i < array.Count; i++)
                     {
-                        LoadSchemasById(baseUrl, array[i], schemasById);
+                        ExpandSchemaIdAndRef(baseUrl, array[i], schemasById);
                     }
                     break;
 
@@ -100,11 +133,16 @@ namespace Microsoft.Docs.Build
                         schemasById.TryAdd(baseUrl.ToString().TrimEnd('/', '#'), obj);
                     }
 
+                    if (obj.TryGetValue<JValue>("$ref", out var @ref) && @ref.Value is string schemaRef)
+                    {
+                        obj["$ref"] = new Uri(baseUrl, schemaRef).ToString().TrimEnd('/', '#');
+                    }
+
                     foreach (var (_, value) in obj)
                     {
                         if (value != null)
                         {
-                            LoadSchemasById(baseUrl, value, schemasById);
+                            ExpandSchemaIdAndRef(baseUrl, value, schemasById);
                         }
                     }
                     break;
