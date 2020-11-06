@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             if (!_config.ResolveGithubUsers)
             {
-                return (contributionInfo, contributionInfo.Contributors?.Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray());
+                return (contributionInfo, null);
             }
 
             var contributionCommits = commits;
