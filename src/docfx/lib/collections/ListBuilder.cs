@@ -28,6 +28,10 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public IReadOnlyList<T> AsList() => _array;
+        public IReadOnlyList<T> AsList()
+        {
+            _array.TrimExcess();
+            return _array;
+        }
     }
 }
