@@ -754,3 +754,107 @@ outputs:
       "original_content_git_url": "https://github.com/user-assigned/original/blob/original/index.md",
       "gitcommit": "https://github.com/testowner/testrepo/blob/450790f8a588ed8d96f4cb931c744d3855b7a809/index.md",
     }
+---
+# Put contributor list to .publish.json (Expose Contributor Information)
+repos:
+  https://github.com/expose-contributor/testrepo#master-file-cache:
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Charlie updates this. Bob updates this. Charlie becomes author.
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Charlie updates this. Bob updates this.
+    - author: Charlie 
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Charlie updates this.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml:
+cache:
+  github-users.json: |
+      { "items": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation":
+      {
+        "author":
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      }
+    }
+  .publish.json: |
+    {
+      "files": [{
+        "path": "docs/index.json",
+        "git_contributor_information": ["charlie", "bob", "alice"]
+      }]
+    }
+---
+# Author should NOT exist in git_contribor_information if the author haven't committed anything (Expose Condtributor Information)
+repos:
+  https://github.com/expose-contributor-without-author/testrepo#master-author:
+    - author: Bob 
+      email: bob@contoso.com
+      files:
+        docs/index.md: |
+          ---
+          author: charlie
+          ---
+          Alice creates this. Bob updates this, and thinks Charlie should be the author.
+    - author: Alice 
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml:
+cache:
+  github-users.json: |
+      { "items": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation":
+      {
+        "author": 
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
+          { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
+        ]
+      }
+    }
+  .publish.json: |
+    {
+      "files": [{
+        "path": "docs/index.json",
+        "git_contributor_information": ["bob", "alice"]
+      }]
+    }
