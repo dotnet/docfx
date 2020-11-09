@@ -290,7 +290,7 @@ namespace Microsoft.Docs.Build
             };
 
             // resolve monikers
-            newNode.Monikers = GetMonikers(newNode);
+            newNode.Monikers = GetMonikers(newNode, filePath, rootPath);
 
             if (newNode.Document == null && filePath.Path.Value.Contains("_splitted/"))
             {
@@ -306,9 +306,14 @@ namespace Microsoft.Docs.Build
             return new SourceInfo<TableOfContentsNode>(newNode, node);
         }
 
-        private MonikerList GetMonikers(TableOfContentsNode currentItem)
+        private MonikerList GetMonikers(TableOfContentsNode currentItem, FilePath filePath, FilePath rootPath)
         {
             var monikers = MonikerList.Union(GetMonikerLists(currentItem));
+
+            if (filePath.Path.Value.Contains("_splitted/"))
+            {
+                monikers = new MonikerList(monikers.Union(_monikerProvider.GetFileLevelMonikers(_errors, rootPath)));
+            }
 
             foreach (var item in currentItem.Items)
             {
