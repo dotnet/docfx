@@ -325,3 +325,39 @@ repos:
           - name: 1-1
 outputs:
   a/toc.json:
+---
+# add monikers for the root node of split-toc
+repos:
+  https://github.com/ops/add-monikers-for-the-root-node-of-splitToc:
+  - files:
+      .openpublishing.publish.config.json: |
+          {"docsets_to_publish": [{"build_source_folder": ".", "SplitTOC": ["TOC.yml"]}]}
+      docfx.yml: |
+        monikerRange:
+          '**/*': '>= v-1.1'
+        monikerDefinition: 'monikerDefinition.json'
+      a.md:
+      TOC.yml: |
+        items:
+          - name: 1
+            href: ./a.md
+            items:
+            - name: 1-1
+              href: ./a.md
+      monikerDefinition.json: |
+        {"monikers": [{ "moniker_name": "v-1.1", "product_name": "test"}]}
+outputs:
+  66ff1b75/a.json:
+  66ff1b75/toc.json: |
+    {"items": [{ "name": "1", "href": "a", "monikers": ["v-1.1"] }]}
+  66ff1b75/_splitted/1/toc.json: |
+    {
+      "items": [
+        {
+          "name": "1",
+          "href": "../../a",
+          "monikers": ["v-1.1"],
+          "items": [{ "name": "1-1", "href": "../../a" }]
+        }
+      ]
+    }
