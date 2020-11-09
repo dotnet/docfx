@@ -292,11 +292,6 @@ namespace Microsoft.Docs.Build
             // resolve monikers
             newNode.Monikers = GetMonikers(newNode, filePath, rootPath);
 
-            if (newNode.Document == null && filePath.Path.Value.Contains("_splitted/"))
-            {
-                newNode.Monikers = new MonikerList(newNode.Monikers.Union(_monikerProvider.GetFileLevelMonikers(_errors, rootPath)));
-            }
-
             // validate
             if (string.IsNullOrEmpty(newNode.Name))
             {
