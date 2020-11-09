@@ -195,17 +195,6 @@ namespace Microsoft.Docs.Build
                 // Resolve
                 node.Items = LoadTocNodes(node.Items, file, rootPath, referencedFiles, referencedTocs);
 
-                if (file.Path.Value.Contains("_splitted/"))
-                {
-                    foreach (var item in node.Items)
-                    {
-                        if (item.Value != null)
-                        {
-                            item.Value.Monikers = _monikerProvider.GetFileLevelMonikers(_errors, item.Value?.Document ?? file);
-                        }
-                    }
-                }
-
                 if (file == rootPath)
                 {
                     _contentValidator.ValidateTocEntryDuplicated(file, referencedFiles);
@@ -302,6 +291,11 @@ namespace Microsoft.Docs.Build
 
             // resolve monikers
             newNode.Monikers = GetMonikers(newNode);
+
+            if (newNode.Document == null)
+            {
+                newNode.Monikers = new MonikerList(newNode.Monikers.Union(_monikerProvider.GetFileLevelMonikers(_errors, rootPath)));
+            }
 
             // validate
             if (string.IsNullOrEmpty(newNode.Name))
