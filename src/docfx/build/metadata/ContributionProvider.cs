@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            var gitContributorInformation = contributors.Distinct().Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray();
+            var gitContributors = contributors.Distinct().Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray();
 
             var author = contributors.Count > 0 ? contributors[^1] : null;
             if (!string.IsNullOrEmpty(authorName))
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             contributionInfo.Author = author;
             contributionInfo.Contributors = contributors.Distinct().ToArray();
 
-            return (contributionInfo, gitContributorInformation);
+            return (contributionInfo, gitContributors);
         }
 
         public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)

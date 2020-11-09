@@ -808,7 +808,7 @@ outputs:
     {
       "files": [{
         "path": "docs/index.json",
-        "git_contributor_information": ["charlie", "bob", "alice"]
+        "git_contributors": ["charlie", "bob", "alice"]
       }]
     }
 ---
@@ -855,6 +855,6 @@ outputs:
     {
       "files": [{
         "path": "docs/index.json",
-        "git_contributor_information": ["bob", "alice"]
+        "git_contributors": ["bob", "alice"]
       }]
     }
