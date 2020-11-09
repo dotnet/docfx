@@ -292,7 +292,7 @@ namespace Microsoft.Docs.Build
             // resolve monikers
             newNode.Monikers = GetMonikers(newNode);
 
-            if (newNode.Document == null)
+            if (newNode.Document == null && filePath.Path.Value.Contains("_splitted/"))
             {
                 newNode.Monikers = new MonikerList(newNode.Monikers.Union(_monikerProvider.GetFileLevelMonikers(_errors, rootPath)));
             }
