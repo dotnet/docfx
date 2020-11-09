@@ -31,7 +31,6 @@ namespace Microsoft.Docs.LearnValidation
                 if (unit.Parent == null)
                 {
                     itemValid = false;
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_NoModuleParent, file: item.SourceRelativePath, unit.UId);
                 }
 
                 item.IsValid = itemValid;

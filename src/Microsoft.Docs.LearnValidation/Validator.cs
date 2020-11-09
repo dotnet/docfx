@@ -42,9 +42,6 @@ namespace Microsoft.Docs.LearnValidation
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(pathValidator.Items, false));
 
-            // no duplicated uids
-            var itemDict = new Dictionary<string, IValidateModel>();
-
             var validators = new List<ValidatorBase>();
             validators.Add(pathValidator);
             validators.Add(moduleValidator);
@@ -53,6 +50,9 @@ namespace Microsoft.Docs.LearnValidation
 
             var isValid = true;
             hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).ToList();
+
+            // no duplicated uids
+            var itemDict = new Dictionary<string, IValidateModel>();
             itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
 
             validators.ForEach(v => isValid &= v.Validate(itemDict));
