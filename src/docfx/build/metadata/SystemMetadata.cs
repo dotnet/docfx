@@ -31,6 +31,8 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_op_gitContributorInformation")]
         public ContributionInfo? ContributionInfo { get; set; }
 
+        public string?[]? GitContributorInformation { get; set; }
+
         public string? UpdatedAt { get; set; }
 
         public string? ContentGitUrl { get; set; }

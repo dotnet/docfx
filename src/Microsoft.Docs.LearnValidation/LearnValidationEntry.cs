@@ -22,49 +22,42 @@ namespace Microsoft.Docs.LearnValidation
             string repoUrl,
             string repoBranch,
             string docsetName,
-            string docsetPath,
             string docsetOutputPath,
             string publishFilePath,
-            string dependencyFilePath,
             string manifestFilePath,
-            string environment,
             bool isLocalizationBuild,
             bool noDrySync,
             Action<LearnLogItem> writeLog,
             ILearnServiceAccessor learnServiceAccessor,
-            string fallbackDocsetPath = null)
+            Func<string, string, bool> isSharedItem)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var config = new LearnValidationConfig(
                 repoUrl: repoUrl,
                 repoBranch: repoBranch,
                 docsetName: docsetName,
-                docsetPath: docsetPath,
                 docsetOutputPath: docsetOutputPath,
                 publishFilePath: publishFilePath,
-                dependencyFilePath: dependencyFilePath,
                 manifestFilePath: manifestFilePath,
-                environment: environment,
-                fallbackDocsetPath: fallbackDocsetPath,
                 isLocalizationBuild: isLocalizationBuild,
                 noDrySync: noDrySync);
             var logger = new LearnValidationLogger(writeLog);
 
             var configStr = JsonConvert.SerializeObject(
-                new { repoUrl, repoBranch, docsetName, docsetPath, publishFilePath, dependencyFilePath, manifestFilePath, isLocalizationBuild, environment, fallbackDocsetPath },
+                new { repoUrl, repoBranch, docsetName, publishFilePath, manifestFilePath, isLocalizationBuild },
                 Formatting.Indented);
 
             Console.WriteLine($"[{PluginName}] config:\n{configStr}");
-            ValidateHierarchy(config, logger, learnServiceAccessor).GetAwaiter().GetResult();
+            ValidateHierarchy(config, logger, learnServiceAccessor, isSharedItem).GetAwaiter().GetResult();
         }
 
-        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor)
+        private static async Task<bool> ValidateHierarchy(LearnValidationConfig config, LearnValidationLogger logger, ILearnServiceAccessor learnServiceAccessor, Func<string, string, bool> isSharedItem)
         {
             var sw = Stopwatch.StartNew();
             Console.WriteLine($"[{PluginName}] start to do local validation.");
 
             var learnValidationHelper = new LearnValidationHelper(config.RepoBranch, learnServiceAccessor);
-            var validator = new Validator(learnValidationHelper, manifestFilePath: config.ManifestFilePath, logger);
+            var validator = new Validator(manifestFilePath: config.ManifestFilePath, logger, isSharedItem);
             var (isValid, hierarchyItems) = validator.Validate();
 
             Console.WriteLine($"[{PluginName}] local validation done in {sw.ElapsedMilliseconds / 1000}s");
@@ -123,8 +116,6 @@ namespace Microsoft.Docs.LearnValidation
             LearnValidationHelper learnValidationHelper,
             LearnValidationLogger logger)
         {
-            var tokenValidator = new TokenValidator(config.DependencyFilePath, hierarchyItems, config.DocsetPath, config.FallbackDocsetPath, logger);
-            isValid = isValid && tokenValidator.Validate();
             var partialPublishProcessor = new InvalidFilesProvider(hierarchyItems, learnValidationHelper, logger);
             var filesToDelete = partialPublishProcessor.GetFilesToDelete();
             HierarchyGenerator.GenerateHierarchy(hierarchyItems, config.DocsetOutputPath);
