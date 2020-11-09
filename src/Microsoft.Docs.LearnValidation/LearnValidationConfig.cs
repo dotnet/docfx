@@ -11,19 +11,11 @@ namespace Microsoft.Docs.LearnValidation
 
         public string DocsetName { get; }
 
-        public string DocsetPath { get; }
-
         public string DocsetOutputPath { get; }
 
         public string PublishFilePath { get; }
 
-        public string DependencyFilePath { get; }
-
         public string ManifestFilePath { get; }
-
-        public string Environment { get; }
-
-        public string FallbackDocsetPath { get; }
 
         public bool IsLocalizationBuild { get; }
 
@@ -33,26 +25,18 @@ namespace Microsoft.Docs.LearnValidation
             string repoUrl,
             string repoBranch,
             string docsetName,
-            string docsetPath,
             string docsetOutputPath,
             string publishFilePath,
-            string dependencyFilePath,
             string manifestFilePath,
-            string environment,
-            string fallbackDocsetPath,
             bool isLocalizationBuild,
             bool noDrySync)
         {
             RepoUrl = repoUrl;
             RepoBranch = repoBranch;
             DocsetName = docsetName;
-            DocsetPath = docsetPath;
             DocsetOutputPath = docsetOutputPath;
             PublishFilePath = publishFilePath;
-            DependencyFilePath = dependencyFilePath;
             ManifestFilePath = manifestFilePath;
-            Environment = environment;
-            FallbackDocsetPath = fallbackDocsetPath;
             IsLocalizationBuild = isLocalizationBuild;
             NoDrySync = noDrySync;
         }

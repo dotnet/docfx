@@ -35,15 +35,12 @@ namespace Microsoft.Docs.LearnValidation
                     if (module.IsValid)
                     {
                         module.IsValid = false;
-                        var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, file: module.SourceRelativePath, string.Join(",", invalidUnits));
                     }
 
                     foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, file: unit.SourceRelativePath, module.Uid);
                     }
                 }
 
