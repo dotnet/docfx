@@ -241,7 +241,7 @@
         "moniker_type",
         "is_significant_update",
         "serviceData",
-        "git_contributors",
+        "github_contributors",
         "is_hidden"
     ]
 }

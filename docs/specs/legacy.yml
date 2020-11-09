@@ -28,7 +28,7 @@ repos:
           "properties": {
             "api_name": { "htmlMetaName": "APIName" }
           },
-          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url", "git_contributors"]
+          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url", "github_contributors"]
         }
   https://docs.com/theme:
   - files:
@@ -70,7 +70,7 @@ outputs:
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/1d747c80e6e3193fdec617ea1c3a715e4d170b14/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/3a174518dadf39d8ec448a4090a8105e2bdf6336/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
