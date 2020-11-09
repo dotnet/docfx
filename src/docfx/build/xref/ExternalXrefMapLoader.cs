@@ -2,12 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,10 +24,10 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Loading external xref map"))
             {
-                var externalXrefMap = new Dictionary<string, Lazy<ExternalXrefSpec>>();
-                var externalXref = new List<ExternalXref>();
+                var externalXrefMap = new DictionaryBuilder<string, Lazy<ExternalXrefSpec>>();
+                var externalXref = new ListBuilder<ExternalXref>();
 
-                foreach (var url in config.Xref)
+                Parallel.ForEach(config.Xref, url =>
                 {
                     var path = new FilePath(url);
                     var physicalPath = fileResolver.ResolveFilePath(url);
@@ -48,26 +49,23 @@ namespace Microsoft.Docs.Build
                     }
                     else
                     {
-                        var externalXrefSpecAndExternalXref = LoadJsonFile(physicalPath);
+                        var (xrefSpecs, xrefs) = LoadJsonFile(physicalPath);
 
                         // Fast pass for JSON xref files
-                        foreach (var (uid, spec) in externalXrefSpecAndExternalXref.externalXrefSpec)
+                        foreach (var (uid, spec) in xrefSpecs)
                         {
                             // for same uid with multiple specs, we should respect the order of the list
                             externalXrefMap.TryAdd(uid, spec);
                         }
-                        externalXref = externalXrefSpecAndExternalXref.externalXref;
+                        externalXref.AddRange(xrefs);
                     }
-                }
+                });
 
-                externalXrefMap.TrimExcess();
-                externalXref.TrimExcess();
-
-                return new ExternalXrefMap(externalXrefMap, externalXref);
+                return new ExternalXrefMap(externalXrefMap.AsDictionary(), externalXref.AsList());
             }
         }
 
-        public static (List<(string, Lazy<ExternalXrefSpec>)> externalXrefSpec, List<ExternalXref> externalXref) LoadJsonFile(string filePath)
+        internal static (List<(string, Lazy<ExternalXrefSpec>)> externalXrefSpec, List<ExternalXref> externalXref) LoadJsonFile(string filePath)
         {
             var externalXrefSpec = new List<(string, Lazy<ExternalXrefSpec>)>();
             var externalXref = new List<ExternalXref>();
@@ -102,8 +100,8 @@ namespace Microsoft.Docs.Build
         }
 
         private static void LoadZipFile(
-            Dictionary<string, Lazy<ExternalXrefSpec>> externalXrefMap,
-            List<ExternalXref> externalXref,
+            DictionaryBuilder<string, Lazy<ExternalXrefSpec>> externalXrefMap,
+            ListBuilder<ExternalXref> externalXref,
             FilePath path,
             string physicalPath,
             ErrorBuilder errors)
