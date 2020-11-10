@@ -32,10 +32,13 @@ Open `docfx.sln` with Visual Studio. Add `Debug arguments` for `docfx` project t
 build "your repo on local disk"
 ```
 
+> **Note:**
+>
+> Currently, docfx v3 supports 2 enviroment variables, that is, `DocsEnvironment.Prod`(**default**) and `DocsEnvironment.PPE`. Please config a proper enviroment variable before building.
+
 ### Step 3: Debug
 
 Now you can set breakpoints and debug with your specified repo.
-
 
 ### More Build Options:
 
@@ -49,6 +52,28 @@ Now you can set breakpoints and debug with your specified repo.
 |no-cache|Do not use cache dependencies in build, always fetch latest dependencies.|
 |template-base-path|The base path used for referencing the template resource file when applying liquid.|
 
+There are some common scenarios for reference. And you can combine these options in need.
+
+- Build a static Html website.
+    ```shell
+    docfx build {docset-path}
+    ```
+- Faster way to see validation results without producing build outputs.
+    ```shell
+    docfx build --dry-run {docset-path}
+    ```
+- Debug [https://docs.microsoft.com](https://docs.microsoft.com) internal publishing build output format:
+    ```shell
+    docfx build --output-type pagejson {docset-path}
+    ```
+- See verbose console output.
+    ```shell
+    docfx build -v {docset-path}
+    ```
+- Update all dependencies (dependent repositories, validation rules, etc.) to the latest version.
+    ```shell
+    docfx restore {docset-path}
+    ```
 
 ## Release Process
 
