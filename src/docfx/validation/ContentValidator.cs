@@ -133,6 +133,11 @@ namespace Microsoft.Docs.Build
 
         public void ValidateSensitiveLanguage(FilePath file, string content)
         {
+            if (file.Path.Value.Contains("mathjax.md"))
+            {
+
+            }
+
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
                 var textItem = new TextItem()
