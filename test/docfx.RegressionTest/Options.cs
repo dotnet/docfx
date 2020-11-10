@@ -34,6 +34,9 @@ namespace Microsoft.Docs.Build
         [Option("regression-metadata-schema")]
         public bool RegressionMetadataSchema { get; set; }
 
+        [Option("regression-allowlist")]
+        public bool RegressionAllowlist { get; set; }
+
         [Option("error-level")]
         public ErrorLevel ErrorLevel { get; set; }
     }
