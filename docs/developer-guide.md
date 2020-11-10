@@ -47,6 +47,7 @@ Now you can set breakpoints and debug with your specified repo.
 |no-dry-sync|Do not run dry sync for learn validation.|
 |no-restore|Do not restore dependencies before build.|
 |no-cache|Do not use cache dependencies in build, always fetch latest dependencies.|
+|template-base-path|The base path used for referencing the template resource file when applying liquid.|
 
 
 You can find more options in [Docfx.cs](https://github.com/dotnet/docfx/blob/v3/src/docfx/cli/Docfx.cs).
