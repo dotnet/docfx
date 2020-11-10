@@ -34,7 +34,7 @@ build "your repo on local disk"
 
 > **Note:**
 >
-> Currently, docfx v3 supports 2 enviroment variables, that is, `DocsEnvironment.Prod`(**default**) and `DocsEnvironment.PPE`. Please config a proper enviroment variable before building.
+> Currently, docfx v3 supports 2 environment variables, that is, `DocsEnvironment.Prod`(**default**) and `DocsEnvironment.PPE`. Please config a proper environment variable before building.
 
 ### Step 3: Debug
 
