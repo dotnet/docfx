@@ -50,9 +50,6 @@ Now you can set breakpoints and debug with your specified repo.
 |template-base-path|The base path used for referencing the template resource file when applying liquid.|
 
 
-You can find more options in [Docfx.cs](https://github.com/dotnet/docfx/blob/v3/src/docfx/cli/Docfx.cs).
-
-
 ## Release Process
 
 We continuously deploy `v3` branch to [Production Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-prod/nuget/v3/index.json). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
