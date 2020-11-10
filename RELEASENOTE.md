@@ -1,7 +1,7 @@
 Version Notes (Current Version: v2.56.5)
 =======================================
 
-2.56.5
+v2.56.5
 -----------
 1. Support more localized strings in theme. Thanks @alaincroisetiere (#6698)
 2. Upgrade JQuery to 3.5.1, Bootstrap to 3.4.1 to fix vulnerabilities. Thanks @alaincroisetiere (#6717)
