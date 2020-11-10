@@ -662,12 +662,10 @@ namespace Microsoft.Docs.Build
             /// The attribute value is duplicated within docset
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public const string DuplicateAttributeCode = "duplicate-attribute";
-
             public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
                 => new Error(
                     ErrorLevel.Suggestion,
-                    DuplicateAttributeCode,
+                    "duplicate-attribute",
                     $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
