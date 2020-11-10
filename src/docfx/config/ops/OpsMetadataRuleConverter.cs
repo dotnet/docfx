@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Docs.MetadataService.Models;
 using Microsoft.Docs.Validation;
 using Newtonsoft.Json;
@@ -78,7 +79,7 @@ namespace Microsoft.Docs.Build
 
                 var propertyJson =
                     JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                if (!string.Equals("{}", propertyJson, StringComparison.OrdinalIgnoreCase))
+                if (propertyJson != "{}")
                 {
                     schema.properties.Add(attribute, property);
                 }
@@ -164,59 +165,51 @@ namespace Microsoft.Docs.Build
 
         private static bool TryGetAllowlist(string attribute, string? listId, AllowLists allowlists, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
-            allowList = new Dictionary<string, EnumDependenciesSchema?>();
-
-            if (!string.IsNullOrEmpty(listId) && allowlists.TryGetValue(listId.Substring("list:".Length), out var subAllowlist))
+            if (string.IsNullOrEmpty(listId) || !allowlists.TryGetValue(listId.Substring("list:".Length), out var subAllowlist))
             {
-                if (string.IsNullOrEmpty(subAllowlist.NestedValue))
-                {
-                    allowList = subAllowlist.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
-                    return true;
-                }
-                else
-                {
-                    var nestedValue = subAllowlist.NestedValue;
-                    var index = 0;
-
-                    if (string.Equals("slug", subAllowlist.NestedValue, StringComparison.OrdinalIgnoreCase))
-                    {
-                        index = 1;
-                        nestedValue = attribute;
-                    }
-
-                    // msService => ms.service, msSubService => ms.subservice
-                    var first = true;
-                    nestedValue = string.Concat(nestedValue.Select(
-                        (x, i) =>
-                        {
-                            if (i > 0 && char.IsUpper(x) && first)
-                            {
-                                first = false;
-                                return "." + x.ToString();
-                            }
-                            return x.ToString();
-                        })).ToLowerInvariant();
-
-                    foreach (var (key, taxonomy) in subAllowlist.NestedTaxonomy.dic)
-                    {
-                        // replace "(empty)" by ""
-                        var clearTaxonomy = taxonomy.ToDictionary(
-                            x =>
-                            {
-                                if (string.Equals("(empty)", x, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    return string.Empty;
-                                }
-                                return x;
-                            }, x => (EnumDependenciesSchema?)null);
-
-                        allowList.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
-                    }
-                    return true;
-                }
+                allowList = new Dictionary<string, EnumDependenciesSchema?>();
+                return false;
             }
 
-            return false;
+            if (string.IsNullOrEmpty(subAllowlist.NestedValue))
+            {
+                allowList = subAllowlist.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
+                return true;
+            }
+
+            var nestedValue = subAllowlist.NestedValue;
+            var index = 0;
+
+            if (string.Equals("slug", nestedValue, StringComparison.OrdinalIgnoreCase))
+            {
+                index = 1;
+                nestedValue = attribute;
+            }
+
+            // msService => ms.service, msSubService => ms.subservice
+            var strBuilder = new StringBuilder();
+            var strIdx = 0;
+            for (; strIdx < nestedValue.Length; strIdx++)
+            {
+                if (char.IsUpper(nestedValue[strIdx]))
+                {
+                    strBuilder.Append('.');
+                    break;
+                }
+                strBuilder.Append(nestedValue[strIdx]);
+            }
+            nestedValue = strBuilder.Append(nestedValue.Substring(strIdx)).ToString().ToLowerInvariant();
+
+            allowList = new Dictionary<string, EnumDependenciesSchema?>();
+            foreach (var (key, taxonomy) in subAllowlist.NestedTaxonomy.dic)
+            {
+                // replace "(empty)" by ""
+                var clearTaxonomy = taxonomy.ToDictionary(
+                    x => string.Equals("(empty)", x, StringComparison.OrdinalIgnoreCase) ? string.Empty : x, x => (EnumDependenciesSchema?)null);
+
+                allowList.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
+            }
+            return true;
         }
 
         private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, AllowLists allowlists)
