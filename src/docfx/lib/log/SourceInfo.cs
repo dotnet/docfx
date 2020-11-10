@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo WithOffset(int line, int column)
         {
-            if (line == 0 && column == 0)
+            if (line <= 1 && column <= 1)
             {
                 return this;
             }
