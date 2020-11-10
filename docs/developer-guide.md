@@ -11,6 +11,47 @@ Build and test this project by running `build.ps1` on Windows, or by running `bu
 
 You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) with [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) to develop the project.
 
+## Local Debug Tutorial for Docfx v3
+
+> **For Microsoft Internal Users:**
+>
+> Make sure you have the permissions to run this repo locally. Contact [docfxvnext@microsoft.com](docfxvnext@microsoft.com) to add read permission, please.
+
+### Step 1: Clone Repo
+Clone the repo and check out to v3 branch.
+
+```shell
+git clone https://github.com/dotnet/docfx
+git checkout v3
+```
+### Step 2: Open the Repo with Visual Studio
+
+Open `docfx.sln` with Visual Studio. Add `Debug arguments` for `docfx` project to specify the repo you want to debug, build arguments for example: `build "C:\workspace\test-repo"`
+
+```shell
+build "your repo on local disk"
+```
+
+### Step 3: Debug
+
+Now you can set breakpoints and debug with your specified repo.
+
+
+### More Build Options:
+
+|option|Description|
+|---|---|
+|o\|output|Output directory in which to place built artifacts.|
+|output-type|Specify the output type.|
+|dry-run|Do not produce build artifact and only produce validation result.|
+|no-dry-sync|Do not run dry sync for learn validation.|
+|no-restore|Do not restore dependencies before build.|
+|no-cache|Do not use cache dependencies in build, always fetch latest dependencies.|
+
+
+You can find more options in [Docfx.cs](https://github.com/dotnet/docfx/blob/v3/src/docfx/cli/Docfx.cs).
+
+
 ## Release Process
 
 We continuously deploy `v3` branch to [Production Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-prod/nuget/v3/index.json). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
