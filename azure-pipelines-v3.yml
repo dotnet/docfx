@@ -17,10 +17,10 @@ jobs:
   pool:
     vmImage: 'windows-latest'
   steps:
-
+  - checkout: none
   # Build RegressionTest into Artifact 
   - powershell: |
       dotnet tool update -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-public-packages/nuget/v3/index.json
-      git clone https://github.com/MicrosoftDocs/test
-      docfx build test -v
+      git clone https://github.com/MicrosoftDocs/test asdf
+      docfx build asdf -v
     displayName: Test
