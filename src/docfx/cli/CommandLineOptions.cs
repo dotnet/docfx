@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -34,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             if (Output != null)
             {
-                config["outputPath"] = Output;
+                config["outputPath"] = Path.GetFullPath(Output);
             }
 
             if (OutputType != null)
@@ -44,7 +45,7 @@ namespace Microsoft.Docs.Build
 
             if (Template != null)
             {
-                config["template"] = Template;
+                config["template"] = Path.GetFullPath(Template);
             }
 
             if (TemplateBasePath != null)
