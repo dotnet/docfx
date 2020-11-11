@@ -558,3 +558,6 @@ ILearn
 Formattable
 Memberwise
 zonepivotgroups
+docfxvnext
+pagejson
+sln
