@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
                 result = ResolveFilePath(file);
                 return true;
             }
-            catch (DocfxException ex) when (ex.Error.Code == "file-not-found" || ex.Error.Code == "download-failed")
+            catch (DocfxException ex) when (ex.Error.Code == "file-not-found" || ex.Error.Code == "toc-not-found" || ex.Error.Code == "download-failed")
             {
                 result = default;
                 return false;
