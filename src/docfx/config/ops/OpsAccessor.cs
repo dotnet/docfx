@@ -319,27 +319,19 @@ namespace Microsoft.Docs.Build
         {
             // don't access key vault for osx since azure-cli will crash in osx
             // https://github.com/Azure/azure-cli/issues/7519
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-                && url.StartsWith(BuildServiceEndpoint(environment))
-                && !request.Headers.Contains("X-OP-BuildUserToken"))
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
+                url.StartsWith(BuildServiceEndpoint(environment)) &&
+                !request.Headers.Contains("X-OP-BuildUserToken"))
             {
                 // For development usage
-                try
+                var token = (environment ?? DocsEnvironment) switch
                 {
-                    var token = (environment ?? DocsEnvironment) switch
-                    {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
-                        _ => throw new InvalidOperationException(),
-                    };
+                    DocsEnvironment.Prod => s_opsTokenProd,
+                    DocsEnvironment.PPE => s_opsTokenSandbox,
+                    _ => throw new InvalidOperationException(),
+                };
 
-                    request.Headers.Add("X-OP-BuildUserToken", await token.Value);
-                }
-                catch (Exception ex)
-                {
-                    Log.Write(
-                        $"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
-                }
+                request.Headers.Add("X-OP-BuildUserToken", await token.Value);
             }
         }
     }
