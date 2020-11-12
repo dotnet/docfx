@@ -257,7 +257,7 @@ namespace Microsoft.Docs.Build
             public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector, Func<T, string?>? display = null)
             {
                 display ??= obj => obj?.ToString();
-                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{display(file)}'"));
+                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Append(current).Select(file => $"'{display(file)}'"));
                 return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}.", source);
             }
 
