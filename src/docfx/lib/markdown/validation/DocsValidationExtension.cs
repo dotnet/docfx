@@ -189,6 +189,7 @@ namespace Microsoft.Docs.Build
                 ParentSourceInfoList = markdownNode.GetInclusionStack(),
                 Zone = markdownNode.GetZone(),
                 Monikers = markdownNode.GetZoneLevelMonikers().ToList(),
+                ZonePivots = markdownNode.GetZonePivots(),
                 SourceInfo = markdownNode.GetSourceInfo(),
             };
         }

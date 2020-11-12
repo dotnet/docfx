@@ -286,6 +286,64 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"b.md","line":6,"end_line":6,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"c.md","line":4,"end_line":4,"column":1,"end_column":1}
 ---
+# Content Validation - Skip Level with zones
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SkipLevel",
+            "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
+            "code": "heading-skipped",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ## h2 heading
+
+    ::: zone target="docs"
+    #### h4 heading
+    ::: zone-end
+  b.md: |
+    ## h2 heading
+
+    ::: zone pivot="netcore-2" target="chromeless"
+    #### h4 heading
+    ::: zone-end
+  c.md: |
+    ::: zone pivot="netcore-1"
+    ## h2 heading
+    ::: zone-end
+
+    ::: zone pivot="netcore-2"
+    #### h4 heading
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"c.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
 # Content validation - h1 in inclusion
 inputs:
   docfx.yml: |
@@ -566,7 +624,7 @@ outputs:
   h.json:
   j.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or pivot must be specified.","file":"i.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"i.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"c.md","line":8,"end_line":8,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"h1-not-first","message":"Markdown content is not allowed before H1 'Tutorial: Copy data to Azure Data Box via SMB'.","file":"d.md","line":4,"end_line":4,"column":1,"end_column":1}
@@ -728,7 +786,7 @@ outputs:
   c.json:
   e.json:
   .errors.log: |
-    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or privot must be specified.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"error","log_item_type":"user","code":"invalid-zone","message":"Either target or pivot must be specified.","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"c.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-missing","message":"H1 is required. Use a single hash (#) followed by a space to create your top-level heading","file":"e.md","line":0,"end_line":0,"column":0,"end_column":0}
@@ -803,7 +861,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":6,"end_line":6,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pdf'. H1 is only allowed in Docs zones.","file":"a.md","line":10,"end_line":10,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'pivot'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'test'. H1 is only allowed in Docs zones.","file":"a.md","line":14,"end_line":14,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 in zone 'chromeless'. H1 is only allowed in Docs zones.","file":"a.md","line":33,"end_line":33,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
@@ -900,10 +958,12 @@ outputs:
   i.json:
   j.json:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","log_item_type":"user","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"j.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"e.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"d.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"g.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"multiple-h1s","message":"Multiple H1s are not allowed. You can only have one top-level heading","file":"j.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"j.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Canonial Version Only H1 Unique Check
 inputs:

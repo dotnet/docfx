@@ -27,6 +27,7 @@ inputs:
     }
   pig1.jpg:
   pig2.jpg:
+  pig3.jpg:
   a.md: |
     :::image type="content" source="pig1.jpg" alt-text="test alt text":::
 
@@ -47,19 +48,36 @@ inputs:
 
     <img src="pig1.jpg" alt="test alt text3"></img>
     <img src="pig2.jpg" alt="test alt text3"></img>
+  b.md: |
+    ::: zone pivot="netcore-1"
+    ![alt text](pig1.jpg)
+    ![alt text 2](pig2.jpg)
+    ::: zone-end
+    ::: zone pivot="netcore-2"
+    ![alt text](pig2.jpg)
+    ![alt text 3](pig3.jpg)
+    ::: zone-end
+    ::: zone pivot="netcore-1,netcore-3"
+    ![alt text](pig3.jpg)
+    ::: zone-end
 outputs:
   a.json:
+  b.json:
   pig1.jpg:
   pig2.jpg:
+  pig3.jpg:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":15,"end_line":15,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":16,"end_line":16,"column":1,"end_column":1}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":18,"end_line":18,"column":11,"end_column":19}
-    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":19,"end_line":19,"column":11,"end_column":19}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":15,"end_line":15,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":16,"end_line":16,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":18,"end_line":18,"column":11,"end_column":19}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":19,"end_line":19,"column":11,"end_column":19}
+    {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":10,"end_line":10,"column":1,"end_column":1}
 ---
 # Content Validation - image altText duplicated in includes
 inputs:

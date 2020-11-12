@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
                         return null;
                     }
 
-                    return properties.FirstOrDefault(p => p.Key == "data-target").Value ??
-                          (properties.Any(p => p.Key == "data-pivot") ? "pivot" : null);
+                    return properties.FirstOrDefault(p => p.Key == "data-target").Value;
                 }
             }
 
@@ -45,6 +44,20 @@ namespace Microsoft.Docs.Build
                 if (item is MonikerRangeBlock block)
                 {
                     return block.ParsedMonikers is MonikerList list ? list : default;
+                }
+            }
+
+            return default;
+        }
+
+        public static IReadOnlyCollection<string>? GetZonePivots(this MarkdownObject obj)
+        {
+            foreach (var item in obj.GetPathToRootInclusive())
+            {
+                if (item is TripleColonBlock block && block.Extension is ZoneExtension zone && block.Attributes.TryGetValue("pivot", out var pivot) &&
+                    (!block.Attributes.TryGetValue("target", out var target) || string.Equals(target, "docs", StringComparison.OrdinalIgnoreCase)))
+                {
+                    return pivot.Split(",").Select(x => x.Trim()).ToList();
                 }
             }
 
