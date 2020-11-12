@@ -71,6 +71,12 @@ namespace Microsoft.Docs.Build
         {
             var level = customRule.Severity ?? error.Level;
 
+            // only filter for build rule since metadata & content rules will not generate error when disabled
+            if (customRule.Disabled)
+            {
+                level = ErrorLevel.Off;
+            }
+
             if (level != ErrorLevel.Off && customRule.ExcludeMatches(error.OriginalPath ?? error.Source?.File?.Path ?? ""))
             {
                 level = ErrorLevel.Off;
@@ -176,13 +182,14 @@ namespace Microsoft.Docs.Build
                                 null,
                                 customRule.First().CanonicalVersionOnly,
                                 validationRule.PullRequestOnly,
-                                null));
+                                null,
+                                false));
                         customRules[validationRule.Code] = list;
                     }
                     else
                     {
                         var list = new List<CustomRule>();
-                        list.Add(new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null));
+                        list.Add(new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null, false));
                         customRules.Add(
                             validationRule.Code,
                             list);
@@ -203,7 +210,8 @@ namespace Microsoft.Docs.Build
                                 validationRule.PropertyPath,
                                 validationRule.CanonicalVersionOnly,
                                 validationRule.PullRequestOnly,
-                                validationRule.ContentTypes);
+                                validationRule.ContentTypes,
+                                validationRule.Disabled);
 
                     // won't override docfx custom rules
                     if (!customRules.ContainsKey(oldCode))
