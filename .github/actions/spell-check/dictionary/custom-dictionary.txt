@@ -339,7 +339,6 @@ powershell
 ppe
 pragma
 preload
-privot
 progressbar
 proj
 projitems

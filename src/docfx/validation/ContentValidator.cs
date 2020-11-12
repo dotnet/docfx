@@ -66,6 +66,7 @@ namespace Microsoft.Docs.Build
                         SourceInfo = link.Source,
                         ParentSourceInfoList = origin.GetInclusionStack(),
                         Monikers = origin.GetZoneLevelMonikers(),
+                        ZonePivots = origin.GetZonePivots(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }

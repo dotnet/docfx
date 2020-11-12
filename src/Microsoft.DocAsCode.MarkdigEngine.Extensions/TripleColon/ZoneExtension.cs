@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (string.IsNullOrEmpty(target) && string.IsNullOrEmpty(pivot))
             {
-                logError("Either target or privot must be specified.");
+                logError("Either target or pivot must be specified.");
                 return false;
             }
             if (target == "pdf" && !string.IsNullOrEmpty(pivot))
