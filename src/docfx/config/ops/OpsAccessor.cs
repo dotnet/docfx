@@ -81,6 +81,11 @@ namespace Microsoft.Docs.Build
             return await FetchValidationRules($"/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
         }
 
+        public async Task<string> GetBuildValidationRules((string repositoryUrl, string branch) tuple)
+        {
+            return await FetchValidationRules($"/route/validationmgt/rulesets/buildrules", tuple.repositoryUrl, tuple.branch);
+        }
+
         public async Task<string> GetAllowlists()
         {
             return await FetchTaxonomies();
@@ -115,6 +120,13 @@ namespace Microsoft.Docs.Build
             var allowlists = FetchTaxonomies(DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+        }
+
+        public async Task<string> GetRegressionAllBuildRules()
+        {
+            return await FetchValidationRules(
+                "/route/validationmgt/rulesets/buildrules?name=_regression_all_",
+                environment: DocsEnvironment.PPE);
         }
 
         public async Task<string> HierarchyDrySync(string body)

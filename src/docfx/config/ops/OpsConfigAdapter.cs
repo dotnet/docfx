@@ -20,10 +20,12 @@ namespace Microsoft.Docs.Build
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
+        private const string BuildValidationRulesApi = "https://ops/buildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
+        private const string RegressionAllBuildRulesApi = "https://ops/regressionallbuildrules/";
 
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
         private readonly OpsAccessor _opsAccessor;
@@ -40,9 +42,11 @@ namespace Microsoft.Docs.Build
                 (OpsMetadataApi, _ => GetOpsMetadata()),
                 (MetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url))),
                 (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
+                (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetRegressionAllAllowlists()),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
+                (RegressionAllBuildRulesApi, _ => _opsAccessor.GetRegressionAllBuildRules()),
                 (RegressionAllMetadataSchemaApi, _ => _opsAccessor.GetRegressionAllMetadataSchema()),
             };
         }
@@ -106,6 +110,7 @@ namespace Microsoft.Docs.Build
                 xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
                     OpsMetadataApi,

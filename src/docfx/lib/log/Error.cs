@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             PropertyPath = propertyPath;
         }
 
-        private Error(
+        public Error(
             ErrorLevel level,
             string code,
             string message,
@@ -54,48 +54,6 @@ namespace Microsoft.Docs.Build
             PropertyPath = propertyPath;
             OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
-        }
-
-        public Error WithCustomRule(CustomRule customRule, bool? enabled = null)
-        {
-            var level = customRule.Severity ?? Level;
-
-            if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? ""))
-            {
-                level = ErrorLevel.Off;
-            }
-
-            if (enabled != null && !enabled.Value)
-            {
-                level = ErrorLevel.Off;
-            }
-
-            var message = Message;
-
-            if (!string.IsNullOrEmpty(customRule.Message))
-            {
-                try
-                {
-                    message = string.Format(customRule.Message, MessageArguments);
-                }
-                catch (FormatException)
-                {
-                    message += "ERROR: custom message format is invalid, e.g., too many parameters {n}.";
-                }
-            }
-
-            message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
-                message : $"{message}{(message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
-
-            return new Error(
-                level,
-                string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
-                message,
-                MessageArguments,
-                Source,
-                PropertyPath,
-                OriginalPath,
-                customRule.PullRequestOnly);
         }
 
         public Error WithLevel(ErrorLevel level)

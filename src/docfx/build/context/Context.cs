@@ -198,6 +198,10 @@ namespace Microsoft.Docs.Build
                 config,
                 errorLog,
                 BuildScope);
+            var customRuleProvider = new CustomRuleProvider(
+                config, fileResolver, DocumentProvider, new Lazy<PublishUrlMap>(() => PublishUrlMap), MonikerProvider, errorLog);
+            errorLog.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
+
             TocMap = new TableOfContentsMap(
                 Config, ErrorBuilder, Input, BuildScope, DependencyMapBuilder, tocParser, TableOfContentsLoader, DocumentProvider, ContentValidator);
             PublishUrlMap = new PublishUrlMap(
@@ -206,8 +210,8 @@ namespace Microsoft.Docs.Build
             PublishModelBuilder = new PublishModelBuilder(
                 config, errorLog, MonikerProvider, buildOptions, PublishUrlMap, SourceMap, DocumentProvider, LinkResolver);
 
-            var validatorExtension = new JsonSchemaValidatorExtension(DocumentProvider, PublishUrlMap, MonikerProvider, errorLog);
-            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, jsonSchemaLoader, MonikerProvider, validatorExtension);
+            MetadataValidator = new MetadataValidator(Config, MicrosoftGraphAccessor, jsonSchemaLoader, MonikerProvider, customRuleProvider);
+
             SearchIndexBuilder = new SearchIndexBuilder(Config, ErrorBuilder, DocumentProvider, MetadataProvider);
         }
 

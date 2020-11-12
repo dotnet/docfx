@@ -155,3 +155,85 @@ outputs:
     {"message_severity":"info","code":"exceed-max-file-errors","message":"Info count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
 
 ---
+# override by buildRules - system error
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rule.json
+    buildValidationRules: build.json
+  rule.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "FileNotFound",
+            "message": "Invalid file link: '{0}'. Pls Check.",
+            "code": "new-file-not-found",
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  a.md: |
+    ![pig3](pig3.jpg)
+    
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"new-file-not-found","message":"Invalid file link: 'pig3.jpg'. Pls Check.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# override by buildRules - rule disabled
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rule.json
+    buildValidationRules: build.json
+  rule.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "FileNotFound",
+            "message": "Invalid file link: '{0}'. Pls Check. Just for demo since can't disable ERROR level rule",
+            "code": "new-file-not-found",
+            "disabled": true,
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  a.md: |
+    ![pig3](pig3.jpg)
+    
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+   

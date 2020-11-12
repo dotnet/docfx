@@ -116,22 +116,15 @@ namespace Microsoft.Docs.Build
                     docfxConfig["selfContained"] = false;
                 }
 
-                if (opts.RegressionMarkdownRule)
+                if (opts.RegressionRules)
                 {
                     docfxConfig["markdownValidationRules"] = "https://ops/regressionallcontentrules/";
-                }
-
-                if (opts.RegressionMetadataSchema)
-                {
+                    docfxConfig["buildValidationRules"] = "https://ops/regressionallbuildrules/";
                     docfxConfig["metadataSchema"] = new JArray()
                     {
                         Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                         "https://ops/regressionallmetadataschema/",
                     };
-                }
-
-                if (opts.RegressionAllowlist)
-                {
                     docfxConfig["allowlists"] = "https://ops/regressionalltaxonomy-allowlists/";
                 }
 

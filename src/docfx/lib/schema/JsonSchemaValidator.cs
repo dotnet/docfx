@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchema _schema;
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly MonikerProvider? _monikerProvider;
-        private readonly JsonSchemaValidatorExtension? _ext;
+        private readonly CustomRuleProvider? _customRuleProvider;
         private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder;
 
         private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
@@ -30,13 +30,13 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphAccessor? microsoftGraphAccessor = null,
             MonikerProvider? monikerProvider = null,
             bool forceError = false,
-            JsonSchemaValidatorExtension? ext = null)
+            CustomRuleProvider? customRuleProvider = null)
         {
             _schema = schema;
             _forceError = forceError;
             _microsoftGraphAccessor = microsoftGraphAccessor;
             _monikerProvider = monikerProvider;
-            _ext = ext;
+            _customRuleProvider = customRuleProvider;
             _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>();
         }
 
@@ -742,9 +742,9 @@ namespace Microsoft.Docs.Build
                     {
                         if (_schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
                             customRules.TryGetValue("duplicate-attribute", out var customRule) && // code of Errors.DuplicateAttribute
-                            _ext != null &&
+                            _customRuleProvider != null &&
                             t_filePath.Value != null &&
-                            !_ext.IsEnable(t_filePath.Value, customRule, moniker))
+                            !_customRuleProvider.IsEnable(t_filePath.Value, customRule, moniker))
                         {
                             continue;
                         }
@@ -894,10 +894,13 @@ namespace Microsoft.Docs.Build
             }
 
             if (!string.IsNullOrEmpty(error.PropertyPath) &&
-                schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) &&
+                schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) && // todo remove schema.Rules to CustomRuleProvider
                 attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
-                return error.WithCustomRule(customRule, t_filePath.Value == null ? null : _ext?.IsEnable(t_filePath.Value, customRule));
+                return CustomRuleProvider.WithCustomRule(
+                    error,
+                    customRule,
+                    t_filePath.Value == null ? null : _customRuleProvider?.IsEnable(t_filePath.Value, customRule));
             }
 
             return error;
