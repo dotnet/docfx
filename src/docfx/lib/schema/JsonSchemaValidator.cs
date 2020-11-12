@@ -741,7 +741,7 @@ namespace Microsoft.Docs.Build
                     foreach (var moniker in monikers)
                     {
                         if (_schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
-                            customRules.TryGetValue(Errors.JsonSchema.DuplicateAttributeCode, out var customRule) &&
+                            customRules.TryGetValue("duplicate-attribute", out var customRule) && // code of Errors.DuplicateAttribute
                             _customRuleProvider != null &&
                             t_filePath.Value != null &&
                             !_customRuleProvider.IsEnable(t_filePath.Value, customRule, moniker))

@@ -33,18 +33,18 @@ namespace Microsoft.Docs.Build
             _repositoryProvider = repositoryProvider;
         }
 
-        public ContributionInfo? GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
+        public (ContributionInfo?, string?[]?) GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
         {
             var fullPath = _input.TryGetOriginalPhysicalPath(file);
             if (fullPath is null)
             {
-                return null;
+                return (null, null);
             }
 
             var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath.Value);
             if (repo is null)
             {
-                return null;
+                return (null, null);
             }
 
             var updatedDateTime = GetUpdatedAt(file, repo, commits);
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             if (!_config.ResolveGithubUsers)
             {
-                return contributionInfo;
+                return (contributionInfo, null);
             }
 
             var contributionCommits = commits;
@@ -88,6 +88,8 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            var githubContributors = contributors.Distinct().Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray();
+
             var author = contributors.Count > 0 ? contributors[^1] : null;
             if (!string.IsNullOrEmpty(authorName))
             {
@@ -105,7 +107,7 @@ namespace Microsoft.Docs.Build
             contributionInfo.Author = author;
             contributionInfo.Contributors = contributors.Distinct().ToArray();
 
-            return contributionInfo;
+            return (contributionInfo, githubContributors);
         }
 
         public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)

@@ -125,6 +125,7 @@ namespace Microsoft.Docs.Build
                         Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
                         "https://ops/regressionallmetadataschema/",
                     };
+                    docfxConfig["allowlists"] = "https://ops/regressionalltaxonomy-allowlists/";
                 }
 
                 return JsonConvert.SerializeObject(docfxConfig);

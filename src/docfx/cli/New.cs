@@ -41,7 +41,15 @@ namespace Microsoft.Docs.Build
             Console.WriteLine("usage: docfx new [<template>]");
             Console.WriteLine();
             Console.WriteLine("Template".PadRight(width, ' ') + "Description");
-            Console.WriteLine("".PadRight(Console.BufferWidth - 4, '-'));
+
+            try
+            {
+                Console.WriteLine("".PadRight(Console.BufferWidth - 4, '-'));
+            }
+            catch
+            {
+                // Console.BufferWidth sometimes throw
+            }
 
             foreach (var template in Directory.GetDirectories(s_templatePath))
             {

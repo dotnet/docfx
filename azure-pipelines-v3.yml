@@ -211,7 +211,7 @@ jobs:
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15 --no-dry-sync
       dryrun.azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-rules
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-markdown-rule --regression-metadata-schema --regression-allowlist
       learn-m365-pr:
         params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30 --no-dry-sync
       PowerShell-Docs:

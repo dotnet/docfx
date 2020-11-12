@@ -153,7 +153,8 @@ namespace Microsoft.Docs.Build
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
-            systemMetadata.ContributionInfo = context.ContributionProvider.GetContributionInfo(errors, file, userMetadata.Author);
+            (systemMetadata.ContributionInfo, systemMetadata.GithubContributors) =
+                context.ContributionProvider.GetContributionInfo(errors, file, userMetadata.Author);
 
             systemMetadata.Locale = context.BuildOptions.Locale;
             systemMetadata.CanonicalUrl = userMetadata.PageType != "profile" ? context.DocumentProvider.GetCanonicalUrl(file) : null;

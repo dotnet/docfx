@@ -17,6 +17,10 @@ namespace System.Collections.Concurrent
             }
         }
 
-        public IReadOnlyDictionary<TKey, TValue> AsDictionary() => _dictionary;
+        public IReadOnlyDictionary<TKey, TValue> AsDictionary()
+        {
+            _dictionary.TrimExcess();
+            return _dictionary;
+        }
     }
 }

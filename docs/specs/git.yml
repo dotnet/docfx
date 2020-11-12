@@ -55,6 +55,7 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
+      "github_contributors": ["charlie", "bob", "alice"],
       "updated_at": "2018-10-30 12:00 AM"
     }
 ---
@@ -116,7 +117,8 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
-      }
+      },
+      "github_contributors": ["bob", "alice"]
     }
 ---
 # Author is case-insensitive
@@ -162,7 +164,8 @@ outputs:
         "author": 
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
         "contributors": undefined
-      }
+      },
+      "github_contributors": ["charlie"]
     }
 ---
 # Author can be excluded if it is not specified in YAML header
@@ -213,7 +216,8 @@ outputs:
       {
         "author": 
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
-      }
+      },
+      "github_contributors": ["bob", "alice"]
     }
 ---
 # Author can NOT be excluded if explicitly specified in YAML header, it's case insensitive
@@ -261,6 +265,7 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
+      "github_contributors": ["bob", "alice"]
     }
 ---
 # Author CAN be excluded if implicitly extracted from commit history using contributors_to_exclude global metadata
@@ -485,7 +490,8 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" }
         ]
       },
-      "updated_at": "2018-10-30 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM",
+      "github_contributors": ["charlie", "bob"]
     }
 ---
 # Get contributors by commit email only
@@ -532,7 +538,8 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" }
         ]
       },
-      "updated_at": "2018-10-30 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM",
+      "github_contributors": ["charlie", "bob"]
     }
 ---
 # Do not resolve contributors if repo and editRepositoryUrl are not GitHub repository
@@ -665,6 +672,7 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
+      "github_contributors": ["charlie", "bob", "alice"],
       "content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/test/b.md",

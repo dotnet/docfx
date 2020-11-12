@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
                 using var context = new Context(errors, config, buildOptions, packageResolver, fileResolver, sourceMap, repositoryProvider);
                 Run(context);
 
-                new OpsPostProcessor(config, errors, buildOptions, opsAccessor).Run();
+                new OpsPostProcessor(config, errors, buildOptions, opsAccessor, context.JsonSchemaTransformer.GetValidateExternalXrefs()).Run();
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

@@ -354,8 +354,8 @@ namespace Microsoft.Docs.Build
             /// Toc inclusion with relative folder, no toc.{md,yml} file in corresponding folder.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error FileNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists.", source);
+            public static Error TocNotFound(SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "toc-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists.", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
@@ -662,12 +662,10 @@ namespace Microsoft.Docs.Build
             /// The attribute value is duplicated within docset
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public const string DuplicateAttributeCode = "duplicate-attribute";
-
             public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
                 => new Error(
                     ErrorLevel.Suggestion,
-                    DuplicateAttributeCode,
+                    "duplicate-attribute",
                     $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
@@ -780,13 +778,6 @@ namespace Microsoft.Docs.Build
 
         public static class Template
         {
-            /// <summary>
-            /// Liquid is not found for current mime type.
-            /// </summary>
-            /// Behavior: ❌ Message: ❌
-            public static Error LiquidNotFound(SourceInfo<string?> source)
-                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
-
             /// <summary>
             /// Mustache is not found for current mime type.
             /// </summary>
