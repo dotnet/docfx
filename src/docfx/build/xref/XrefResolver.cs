@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var xrefSpec in globalXrefSpecs)
             {
-                if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(xrefSpec.Uid, out var spec))
+                if (_externalXrefMap.Value.TryGetValue(xrefSpec.Uid, out var spec))
                 {
                     _errorLog.Add(Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
                         .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateExternalXref()
         {
-            var localXrefGroups = _externalXrefMap.Value.GetExternalXref()
+            var localXrefGroups = _externalXrefMap.Value.GetExternalXrefs()
                 .Where(xref => string.Equals(xref.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(xref => xref.Uid);
 
@@ -286,7 +286,7 @@ namespace Microsoft.Docs.Build
 
         private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid, out var spec))
+            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
                 var href = RemoveSharingHost(spec!.Href, _config.HostName);
                 return (spec, href);
