@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Build
+    internal static class DocsetBuilder
     {
         public static bool Run(string workingDirectory, CommandLineOptions options)
         {
@@ -88,7 +86,7 @@ namespace Microsoft.Docs.Build
                 ParallelUtility.ForEach(
                     context.ErrorBuilder,
                     context.LinkResolver.GetAdditionalResources(),
-                    file => BuildResource.Build(context, file));
+                    file => ResourceBuilder.Build(context, file));
             }
 
             Parallel.Invoke(
@@ -140,16 +138,16 @@ namespace Microsoft.Docs.Build
             switch (contentType)
             {
                 case ContentType.TableOfContents:
-                    BuildTableOfContents.Build(context, file);
+                    TableOfContentsBuilder.Build(context, file);
                     break;
                 case ContentType.Resource:
-                    BuildResource.Build(context, file);
+                    ResourceBuilder.Build(context, file);
                     break;
                 case ContentType.Page:
-                    BuildPage.Build(context, file);
+                    PageBuilder.Build(context, file);
                     break;
                 case ContentType.Redirection:
-                    BuildRedirection.Build(context, file);
+                    RedirectionBuilder.Build(context, file);
                     break;
             }
         }
