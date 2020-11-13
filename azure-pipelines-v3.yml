@@ -217,11 +217,11 @@ jobs:
       PowerShell-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
       azure-docs-cli:
-        params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 45
+        params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
       dataprep-dotnet-pr:
-        params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 20
+        params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
       azure-mediaplayer-typescript:
-        params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 20
+        params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
 
   steps:
   # Install .NET Core sdk
