@@ -212,10 +212,16 @@ jobs:
         params: https://github.com/MicrosoftDocs/test --timeout 15 --no-dry-sync
       dryrun.azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-rules
-      learn-m365-pr:
-        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30 --no-dry-sync
+      learn-pr:
+        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync
       PowerShell-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
+      azure-docs-cli:
+        params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
+      dataprep-dotnet-pr:
+        params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
+      azure-mediaplayer-typescript:
+        params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
 
   steps:
   # Install .NET Core sdk
