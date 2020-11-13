@@ -421,9 +421,20 @@ namespace Microsoft.Docs.Build
 
         private static void ValidateEnum(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
         {
-            if (schema.Enum != null && !schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
+            if (schema.Enum != null)
             {
-                errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), propertyPath, token));
+                if (string.Equals("tasks.azure.resource.type", propertyPath, StringComparison.OrdinalIgnoreCase) && token.Type == JTokenType.String)
+                {
+                    if (!schema.Enum.Any(
+                        item => item.Type == JTokenType.String && string.Equals(item.ToString(), token.ToString(), StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), propertyPath, token));
+                    }
+                }
+                else if (!schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
+                {
+                    errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), propertyPath, token));
+                }
             }
         }
 
