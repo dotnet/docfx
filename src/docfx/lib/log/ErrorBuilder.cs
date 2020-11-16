@@ -48,6 +48,8 @@ namespace Microsoft.Docs.Build
             return new DelegatingErrorBuilder(this, convert);
         }
 
+        public CustomRuleProvider? CustomRuleProvider { get; internal set; }
+
         public ErrorBuilder WithDocsetPath(string workingDirectory, string docsetPath)
         {
             var docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
@@ -66,20 +68,6 @@ namespace Microsoft.Docs.Build
                     {
                         error = error.WithOriginalPath(docsetBasePath.Concat(error.OriginalPath.Value));
                     }
-                }
-                return error;
-            });
-        }
-
-        public ErrorBuilder WithCustomRule(JsonSchema schema)
-        {
-            return With(error =>
-            {
-                if (!string.IsNullOrEmpty(error.PropertyPath) &&
-                    schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) &&
-                    attributeCustomRules.TryGetValue(error.Code, out var customRule))
-                {
-                    return error.WithCustomRule(customRule);
                 }
                 return error;
             });

@@ -504,7 +504,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (result == null)
                     {
-                        _errors.Add(Errors.TableOfContents.FileNotFound(href));
+                        _errors.Add(Errors.TableOfContents.TocNotFound(href));
                     }
                     return result;
 

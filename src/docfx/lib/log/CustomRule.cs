@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
 
         public string? Message { get; private set; }
 
+        public string? PropertyPath { get; private set; }
+
         public bool CanonicalVersionOnly { get; private set; }
 
         public bool PullRequestOnly { get; private set; }
@@ -28,19 +30,35 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[]? ContentTypes { get; private set; }
 
+        public bool Disabled { get; set; }
+
         private Func<string, bool>? _globMatcherCache;
 
         public CustomRule() { }
 
         public CustomRule(ErrorLevel? severity) => Severity = severity;
 
-        public CustomRule(ErrorLevel? severity, string? code, string? additionalMessage, bool canonicalVersionOnly, bool pullRequestOnly)
+        public CustomRule(
+            ErrorLevel? severity,
+            string? code,
+            string? message,
+            string? additionalMessage,
+            string? propertyPath,
+            bool canonicalVersionOnly,
+            bool pullRequestOnly,
+            string[]? contentTypes,
+            bool disabled)
         {
             Severity = severity;
             Code = code;
+
+            Message = message;
             AdditionalMessage = additionalMessage;
+            PropertyPath = propertyPath;
             CanonicalVersionOnly = canonicalVersionOnly;
             PullRequestOnly = pullRequestOnly;
+            ContentTypes = contentTypes;
+            Disabled = disabled;
         }
 
         public bool ExcludeMatches(string file)

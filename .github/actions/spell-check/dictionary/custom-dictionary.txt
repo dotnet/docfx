@@ -96,6 +96,7 @@ devmsft
 devops
 devsandbox
 dfm
+dic
 dirname
 disallowlist
 dlang
@@ -338,7 +339,6 @@ powershell
 ppe
 pragma
 preload
-privot
 progressbar
 proj
 projitems
@@ -409,6 +409,7 @@ stylesheet
 stylewith
 subfolder
 submittext
+subservice
 superyyrrzz
 svg
 tabgroup
@@ -417,6 +418,7 @@ tableofcontent
 tablist
 tabpanel
 tagname
+taxonomyservice
 tbl
 tblock
 tbody
@@ -520,6 +522,7 @@ Idx
 igrouping
 contentrules
 metadatarules
+buildrules
 fnv
 MEMORYSTATUSEX
 sizeof
@@ -555,3 +558,6 @@ ILearn
 Formattable
 Memberwise
 zonepivotgroups
+docfxvnext
+pagejson
+sln

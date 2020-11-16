@@ -212,39 +212,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            // temporary mapping, will retired after we support config it in UI portal
-            jsonSchema = LearnErrorMapping(mime, jsonSchema);
-
             return new JsonSchemaValidator(jsonSchema, forceError: true);
-        }
-
-        private JsonSchema LearnErrorMapping(string mime, JsonSchema jsonSchema)
-        {
-            var mappingPath = mime switch
-            {
-                "LearningPath" => "data/schemas/learningpath-error-mapping.json",
-                "Module" => "data/schemas/module-error-mapping.json",
-                "ModuleUnit" => "data/schemas/moduleunit-error-mapping.json",
-                _ => "",
-            };
-
-            if (!string.IsNullOrEmpty(mappingPath))
-            {
-                var absoluteMappingPath = Path.Combine(AppContext.BaseDirectory, mappingPath);
-
-                if (!File.Exists(absoluteMappingPath))
-                {
-                    return jsonSchema;
-                }
-
-                var mapping = _jsonSchemaLoader.LoadSchema(File.ReadAllText(absoluteMappingPath));
-                foreach (var (propName, customRule) in mapping.Rules)
-                {
-                    jsonSchema.Rules.TryAdd(propName, customRule);
-                }
-            }
-
-            return jsonSchema;
         }
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)

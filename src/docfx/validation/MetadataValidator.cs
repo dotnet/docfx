@@ -20,13 +20,13 @@ namespace Microsoft.Docs.Build
             MicrosoftGraphAccessor microsoftGraphAccessor,
             JsonSchemaLoader jsonSchemaLoader,
             MonikerProvider monikerProvider,
-            JsonSchemaValidatorExtension validatorExtension)
+            CustomRuleProvider customRuleProvider)
         {
             MetadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, monikerProvider, false, validatorExtension));
+                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, monikerProvider, false, customRuleProvider));
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))

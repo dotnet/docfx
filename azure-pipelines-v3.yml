@@ -177,17 +177,17 @@ jobs:
       DocsRoot:
         params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 90 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 90 --regression-rules
       sql-docs-pr:
-        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-rules
       docs:
-        params: https://github.com/dotnet/docs --timeout 60 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/dotnet/docs --timeout 60 --regression-rules
       windowsserverdocs-pr:
-        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-rules
       VBA-Docs:
-        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
       azure-devops-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-markdown-rule --regression-metadata-schema
+        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
       vsts-docs-pr:
         params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
       AspNetCore.Docs:
@@ -211,11 +211,17 @@ jobs:
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 15 --no-dry-sync
       dryrun.azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-markdown-rule --regression-metadata-schema
-      learn-m365-pr:
-        params: https://github.com/MicrosoftDocs/learn-m365-pr --timeout 30 --no-dry-sync
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-rules
+      learn-pr:
+        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync
       PowerShell-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
+      azure-docs-cli:
+        params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
+      dataprep-dotnet-pr:
+        params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
+      azure-mediaplayer-typescript:
+        params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
 
   steps:
   # Install .NET Core sdk
