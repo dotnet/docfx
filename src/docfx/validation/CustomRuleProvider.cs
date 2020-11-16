@@ -39,18 +39,21 @@ namespace Microsoft.Docs.Build
 
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
-            var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(filePath);
-
             // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
             // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
             // If content versioning enabled and moniker is not null, just compare canonicalVersion and moniker.
-            var isCanonicalVersion = string.IsNullOrEmpty(canonicalVersion) ? true :
-                string.IsNullOrEmpty(moniker) ? _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
-                canonicalVersion == moniker;
-
-            if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
+            // for test case in toc.yml, publishUrlMap is null
+            if (_publishUrlMap.Value != null)
             {
-                return false;
+                var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(filePath);
+                var isCanonicalVersion = string.IsNullOrEmpty(canonicalVersion) ? true :
+                    string.IsNullOrEmpty(moniker) ? _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
+                    canonicalVersion == moniker;
+
+                if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
+                {
+                    return false;
+                }
             }
 
             var pageType = _documentProvider.GetPageType(filePath);
@@ -119,28 +122,16 @@ namespace Microsoft.Docs.Build
             Error error,
             [MaybeNullWhen(false)] out CustomRule customRule)
         {
-            if (_customRules.TryGetValue(error.Code, out var customRules))
+            if (_customRules.TryGetValue(error.Code, out var rules))
             {
-                foreach (var rule in customRules)
+                var matchedRule = rules.FirstOrDefault(rule =>
                 {
-                    if (rule.PropertyPath != null)
-                    {
-                        // compare with code + propertyPath + contentType
-                        var source = error.Source?.File;
-                        var pageType = source != null ? _documentProvider.GetPageType(source) : null;
-                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) && rule.ContentTypes.Contains(pageType))
-                        {
-                            customRule = rule;
-                            return true;
-                        }
-                        continue;
-                    }
-                    else
-                    {
-                        customRule = rule; // system error
-                        return true;
-                    }
-                }
+                    // if propertyPath is not null, compare with code + propertyPath + contentType
+                    return (rule.PropertyPath == null || rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal))
+                        && IsEnable(error.Source?.File!, rule);
+                });
+                customRule = matchedRule;
+                return matchedRule != null;
             }
             customRule = null;
             return false;
