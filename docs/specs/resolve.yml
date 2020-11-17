@@ -165,6 +165,14 @@ outputs:
   a.json: |
     { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute path</a></p>" }
 ---
+# Should not append locale for absolute path starting with api
+inputs:
+  docfx.yml:
+  a.md: Link to [absolute path](/api/search/rss?search=ASDK%20release%20notes)
+outputs:
+  a.json: |
+    { "conceptual": "<p>Link to <a href=\"/api/search/rss?search=ASDK%20release%20notes\">absolute path</a></p>" }
+---
 # Show warning if the link is missing
 inputs:
   docfx.yml: |
