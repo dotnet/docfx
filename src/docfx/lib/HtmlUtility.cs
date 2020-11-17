@@ -489,6 +489,12 @@ namespace Microsoft.Docs.Build
 
         private static string AddLocaleIfMissingForAbsolutePath(string href, string locale)
         {
+            // should not add locale for api links
+            if (href.StartsWith("/api"))
+            {
+                return href;
+            }
+
             var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
             if (pos >= 1)
             {
@@ -498,8 +504,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // should not add locale for api links
-            return href.StartsWith("/api") ? href : $"/{locale}{href}";
+            return $"/{locale}{href}";
         }
 
         private static bool IsLink(ref HtmlToken token, in HtmlAttribute attribute)
