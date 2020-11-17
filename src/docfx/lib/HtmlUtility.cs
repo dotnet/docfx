@@ -490,7 +490,7 @@ namespace Microsoft.Docs.Build
         private static string AddLocaleIfMissingForAbsolutePath(string href, string locale)
         {
             // should not add locale for api links
-            if (href.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
+            if (href.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
             {
                 return href;
             }
