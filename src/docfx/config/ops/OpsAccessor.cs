@@ -350,7 +350,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     Log.Write(
-                        $"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex.Message}");
+                        $"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access: {ex}");
                 }
             }
         }
