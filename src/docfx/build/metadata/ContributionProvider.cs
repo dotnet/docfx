@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
 
             // Resolve contributors from commits
             var contributors = new List<Contributor>();
-            var githubContributor = new List<string>();
+            var githubContributors = new List<string>();
             if (UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out var repoOwner, out var repoName) ||
                 UrlUtility.TryParseGitHubUrl(repo.Url, out repoOwner, out repoName))
             {
@@ -88,12 +88,10 @@ namespace Microsoft.Docs.Build
                         {
                             contributors.Add(contributor);
                         }
-                        githubContributor.Add(contributor.Name);
+                        githubContributors.Add(contributor.Name);
                     }
                 }
             }
-
-            var githubContributors = githubContributor.Distinct().ToArray();
 
             var author = contributors.Count > 0 ? contributors[^1] : null;
             if (!string.IsNullOrEmpty(authorName))
@@ -112,7 +110,7 @@ namespace Microsoft.Docs.Build
             contributionInfo.Author = author;
             contributionInfo.Contributors = contributors.Distinct().ToArray();
 
-            return (contributionInfo, githubContributors);
+            return (contributionInfo, githubContributors.Distinct().ToArray());
         }
 
         public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
