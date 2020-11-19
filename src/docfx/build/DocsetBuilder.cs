@@ -100,32 +100,8 @@ namespace Microsoft.Docs.Build
 
                 using (Progress.Start("Building files"))
                 {
-                    ParallelUtility.ForEach(errors, publishUrlMap.GetAllFiles(), file => BuildFile(file));
+                    ParallelUtility.ForEach(errors, publishUrlMap.GetAllFiles(), file => BuildFile(file, errors, contentValidator, documentProvider, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
                     ParallelUtility.ForEach(errors, linkResolver.GetAdditionalResources(), file => resourceBuilder.Build(file));
-
-                    void BuildFile(FilePath file)
-                    {
-                        var contentType = documentProvider.GetContentType(file);
-
-                        Telemetry.TrackBuildFileTypeCount(file, contentType, documentProvider.GetMime(file));
-                        contentValidator.ValidateManifest(file);
-
-                        switch (contentType)
-                        {
-                            case ContentType.TableOfContents:
-                                tocBuilder.Build(errors, file);
-                                break;
-                            case ContentType.Resource:
-                                resourceBuilder.Build(file);
-                                break;
-                            case ContentType.Page:
-                                pageBuilder.Build(errors, file);
-                                break;
-                            case ContentType.Redirection:
-                                redirectionBuilder.Build(errors, file);
-                                break;
-                        }
-                    }
                 }
 
                 Parallel.Invoke(
@@ -172,6 +148,38 @@ namespace Microsoft.Docs.Build
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
                 errors.AddRange(dex);
+            }
+        }
+
+        private static void BuildFile(
+            FilePath file,
+            ErrorBuilder errors,
+            ContentValidator contentValidator,
+            DocumentProvider documentProvider,
+            ResourceBuilder resourceBuilder,
+            PageBuilder pageBuilder,
+            TableOfContentsBuilder tocBuilder,
+            RedirectionBuilder redirectionBuilder)
+        {
+            var contentType = documentProvider.GetContentType(file);
+
+            Telemetry.TrackBuildFileTypeCount(file, contentType, documentProvider.GetMime(file));
+            contentValidator.ValidateManifest(file);
+
+            switch (contentType)
+            {
+                case ContentType.TableOfContents:
+                    tocBuilder.Build(errors, file);
+                    break;
+                case ContentType.Resource:
+                    resourceBuilder.Build(file);
+                    break;
+                case ContentType.Page:
+                    pageBuilder.Build(errors, file);
+                    break;
+                case ContentType.Redirection:
+                    redirectionBuilder.Build(errors, file);
+                    break;
             }
         }
     }
