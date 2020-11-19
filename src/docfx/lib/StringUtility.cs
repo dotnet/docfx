@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Quickenshtein;
 
 namespace Microsoft.Docs.Build
 {
@@ -65,7 +66,7 @@ namespace Microsoft.Docs.Build
         {
             bestMatch = candidates != null ?
                     (from candidate in candidates
-                     let levenshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     let levenshteinDistance = Levenshtein.GetDistance(candidate, target)
                      where levenshteinDistance <= threshold
                      orderby levenshteinDistance, candidate
                      select candidate).FirstOrDefault()
