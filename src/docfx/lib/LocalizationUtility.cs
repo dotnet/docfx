@@ -163,16 +163,5 @@ namespace Microsoft.Docs.Build
             locale = null;
             return false;
         }
-
-        private static string AppendLocale(string name, string locale)
-        {
-            var newLocale = $".{locale}";
-            if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
-            {
-                return name;
-            }
-
-            return $"{name}{newLocale}";
-        }
     }
 }

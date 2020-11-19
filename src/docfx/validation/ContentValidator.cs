@@ -135,18 +135,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                using var reader = new StringReader(content);
-                var lineCount = 1;
-                string? line = null;
-                while ((line = reader.ReadLine()) != null)
+                var textItem = new TextItem()
                 {
-                    var item = new TextItem()
-                    {
-                        Content = line,
-                        SourceInfo = new SourceInfo(file, lineCount++, 0),
-                    };
-                    Write(_validator.ValidateText(item, validationContext).GetAwaiter().GetResult());
-                }
+                    Content = content,
+                    SourceInfo = new SourceInfo(file),
+                };
+
+                Write(_validator.ValidateText(textItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -267,16 +262,24 @@ namespace Microsoft.Docs.Build
 
         private void Write(IEnumerable<ValidationError> validationErrors)
         {
-            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, $"{e.Message}", (SourceInfo?)e.SourceInfo)));
+            _errors.AddRange(validationErrors.Select(ToError));
 
-            static ErrorLevel GetLevel(ValidationSeverity severity) =>
-                severity switch
+            static Error ToError(ValidationError e)
+            {
+                var level = e.Severity switch
                 {
                     ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
                     ValidationSeverity.WARNING => ErrorLevel.Warning,
                     ValidationSeverity.ERROR => ErrorLevel.Error,
                     _ => ErrorLevel.Off,
                 };
+
+                var source = e.SourceInfo is SourceInfo sourceInfo
+                    ? e.LineOffset > 0 || e.ColumnOffset > 0 ? sourceInfo.WithOffset(e.LineOffset + 1, e.ColumnOffset + 1) : sourceInfo
+                    : null;
+
+                return new Error(level, e.Code, $"{e.Message}", source);
+            }
         }
 
         private bool TryGetValidationDocumentType(FilePath file, [NotNullWhen(true)] out string? documentType)

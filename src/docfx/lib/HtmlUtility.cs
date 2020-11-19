@@ -475,7 +475,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case LinkType.AbsolutePath:
                         token.SetAttributeValue("data-linktype", "absolute-path");
-                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissing(href, locale));
+                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
                         break;
                     case LinkType.RelativePath:
                         token.SetAttributeValue("data-linktype", "relative-path");
@@ -487,8 +487,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string AddLocaleIfMissing(string href, string locale)
+        private static string AddLocaleIfMissingForAbsolutePath(string href, string locale)
         {
+            // should not add locale for api links
+            if (href.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            {
+                return href;
+            }
+
             var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
             if (pos >= 1)
             {
@@ -497,7 +503,8 @@ namespace Microsoft.Docs.Build
                     return href;
                 }
             }
-            return '/' + locale + href;
+
+            return $"/{locale}{href}";
         }
 
         private static bool IsLink(ref HtmlToken token, in HtmlAttribute attribute)
