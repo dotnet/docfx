@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
 
             // Resolve contributors from commits
             var contributors = new List<Contributor>();
+            var githubContributor = new List<string>();
             if (UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out var repoOwner, out var repoName) ||
                 UrlUtility.TryParseGitHubUrl(repo.Url, out repoOwner, out repoName))
             {
@@ -81,14 +82,18 @@ namespace Microsoft.Docs.Build
                     var (error, githubUser) = _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     var contributor = githubUser?.ToContributor();
-                    if (!string.IsNullOrEmpty(contributor?.Name) && !excludes.Contains(contributor.Name))
+                    if (!string.IsNullOrEmpty(contributor?.Name))
                     {
-                        contributors.Add(contributor);
+                        if (!excludes.Contains(contributor.Name))
+                        {
+                            contributors.Add(contributor);
+                        }
+                        githubContributor.Add(contributor.Name);
                     }
                 }
             }
 
-            var githubContributors = contributors.Distinct().Select(e => e.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray();
+            var githubContributors = githubContributor.Distinct().ToArray();
 
             var author = contributors.Count > 0 ? contributors[^1] : null;
             if (!string.IsNullOrEmpty(authorName))
