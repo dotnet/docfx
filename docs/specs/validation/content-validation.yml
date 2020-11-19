@@ -83,25 +83,22 @@ inputs:
         ]
       }
     }
-  file1.md: There is master in the content, this will error
-  file2.md: There is#whitelist-with-special chars in the content, this will error
-  file3.md: This is no sensitive language in this file, something like masterclass is ok.
-  file4.md: Blacklist at the start, ends with Master
-  file5.md: tree/master is valid
+  file1.md: |
+    There is master in the content, this will error
+    There is#whitelist-with-special chars in the content, this will error
+    This is no sensitive language in this file, something like masterclass is ok.
+    Blacklist at the start, ends with Master
+    tree/master is valid
   a/b/c/file.md: skipped bad language check for master due to exclusion
   n/m/o/file.md: not skipped bad language check for master due to exclusion
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'whitelist' is sensitive and should not be used in content or code.","file":"file2.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'blacklist' is sensitive and should not be used in content or code.","file":"file4.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file4.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'whitelist' is sensitive and should not be used in content or code.","file":"file1.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'blacklist' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
-  file2.json:
-  file3.json:
-  file4.json:
-  file5.json:
   a/b/c/file.json:
   n/m/o/file.json:
 ---
@@ -133,8 +130,8 @@ inputs:
   a/b/c/file.md: skipped bad language check for master due to exclusion
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
   a/b/c/file.json:
