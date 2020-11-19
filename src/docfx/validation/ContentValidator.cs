@@ -274,7 +274,9 @@ namespace Microsoft.Docs.Build
                     _ => ErrorLevel.Off,
                 };
 
-                var source = e.SourceInfo is SourceInfo sourceInfo ? sourceInfo.WithOffset(e.LineOffset, e.ColumnOffset) : null;
+                var source = e.SourceInfo is SourceInfo sourceInfo
+                    ? e.LineOffset > 0 || e.ColumnOffset > 0 ? sourceInfo.WithOffset(e.LineOffset + 1, e.ColumnOffset + 1) : sourceInfo
+                    : null;
 
                 return new Error(level, e.Code, $"{e.Message}", source);
             }

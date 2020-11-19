@@ -84,11 +84,6 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo WithOffset(int line, int column)
         {
-            if (line <= 1 && column <= 1)
-            {
-                return this;
-            }
-
             var start = OffSet(Line, Column, line, column);
 
             return new SourceInfo(File, start.line, start.column, start.line, start.column);
