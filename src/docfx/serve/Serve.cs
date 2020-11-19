@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             using var stdOut = Console.OpenStandardOutput();
             var host = new LanguageServerHost(stdIn, stdOut);
             host.Start().GetAwaiter().GetResult();
-            host.Server.WaitForExit.GetAwaiter().GetResult();
+            host.Server!.WaitForExit.GetAwaiter().GetResult();
             return true;
         }
     }

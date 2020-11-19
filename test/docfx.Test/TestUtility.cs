@@ -136,10 +136,10 @@ namespace Microsoft.Docs.Build
                 ApplyVariables(repo.Value, variables);
             }
 
-            foreach (var lspSepc in spec.LanguageServer)
+            foreach (var lspSpec in spec.LanguageServer)
             {
-                ApplyVariables(lspSepc.Notifications, variables);
-                ApplyVariables(lspSepc.Expect, variables);
+                ApplyVariables(lspSpec.Notifications, variables);
+                ApplyVariables(lspSpec.Expect, variables);
             }
             ApplyVariables(spec.Inputs, variables);
             ApplyVariables(spec.Cache, variables);
