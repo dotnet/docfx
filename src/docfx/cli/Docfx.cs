@@ -81,6 +81,7 @@ namespace Microsoft.Docs.Build
                     "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
                     "build" => Build.Run(workingDirectory, options),
+                    "serve" => Serve.Run(options),
                     _ => false,
                 } ? 1 : 0;
             }
@@ -133,6 +134,11 @@ namespace Microsoft.Docs.Build
                         "template-base-path",
                         ref options.TemplateBasePath,
                         "The base path used for referencing the template resource file when applying liquid.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
+
+                    // serve command
+                    syntax.DefineCommand("serve", ref command, "Serve a repository");
+                    syntax.DefineOption("language-server", ref options.LanguageServer, "Docfx will serve as a language server");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 

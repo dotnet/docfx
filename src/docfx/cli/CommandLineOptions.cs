@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         public bool Force;
         public bool NoCache;
         public bool NoRestore;
+        public bool LanguageServer;
         public string? Template;
         public string? TemplateBasePath;
 

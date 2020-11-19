@@ -33,8 +33,7 @@ namespace Microsoft.Docs.Build
 
         public static void CreateFiles(
             string path,
-            IEnumerable<KeyValuePair<string, string>> files,
-            IEnumerable<KeyValuePair<string, string>> variables = null)
+            IEnumerable<KeyValuePair<string, string>> files)
         {
             foreach (var file in files)
             {
@@ -46,7 +45,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+                    File.WriteAllText(filePath, file.Value?.Replace("\r", "") ?? "");
                 }
             }
         }
@@ -55,8 +54,7 @@ namespace Microsoft.Docs.Build
             string path,
             TestGitCommit[] commits,
             string remote,
-            string branch,
-            IEnumerable<KeyValuePair<string, string>> variables = null)
+            string branch)
         {
             Directory.CreateDirectory(path);
 
@@ -80,7 +78,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var file in commit.Files)
                 {
-                    var content = ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "";
+                    var content = file.Value?.Replace("\r", "") ?? "";
                     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
                     var blob = repo.ObjectDatabase.CreateBlob(stream);
 
@@ -128,6 +126,48 @@ namespace Microsoft.Docs.Build
                     .GetFiles("*", SearchOption.AllDirectories)
                     .Where(file => !file.FullName.Contains(".git"))
                     .ToDictionary(file => file.FullName, file => file.LastWriteTimeUtc);
+            }
+        }
+
+        public static void ApplyVariables(DocfxTestSpec spec, IEnumerable<KeyValuePair<string, string>> variables)
+        {
+            foreach (var repo in spec.Repos)
+            {
+                ApplyVariables(repo.Value, variables);
+            }
+
+            foreach (var lspSepc in spec.LanguageServer)
+            {
+                ApplyVariables(lspSepc.Notifications, variables);
+                ApplyVariables(lspSepc.Expect, variables);
+            }
+            ApplyVariables(spec.Inputs, variables);
+            ApplyVariables(spec.Cache, variables);
+            ApplyVariables(spec.State, variables);
+            ApplyVariables(spec.Outputs, variables);
+        }
+
+        private static void ApplyVariables(TestGitCommit[] commits, IEnumerable<KeyValuePair<string, string>> variables)
+        {
+            foreach (var commit in commits)
+            {
+                ApplyVariables(commit.Files, variables);
+            }
+        }
+
+        private static void ApplyVariables(List<LanguageServerNotification> notifications, IEnumerable<KeyValuePair<string, string>> variables)
+        {
+            foreach (var notification in notifications)
+            {
+                notification.Params = ApplyVariables(notification.Params, variables);
+            }
+        }
+
+        private static void ApplyVariables(IDictionary<string, string> dictionary, IEnumerable<KeyValuePair<string, string>> variables)
+        {
+            foreach (var key in dictionary.Keys.ToList())
+            {
+                dictionary[key] = ApplyVariables(dictionary[key], variables);
             }
         }
 
