@@ -562,3 +562,5 @@ docfxvnext
 pagejson
 sln
 Quickenshtein
+IFunction
+TChange
