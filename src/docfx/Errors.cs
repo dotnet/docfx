@@ -72,6 +72,8 @@ namespace Microsoft.Docs.Build
             /// Behavior: ❌ Message: ✔️
             public static Error GitNotFound()
                 => new Error(ErrorLevel.Error, "git-not-found", $"Git isn't installed on the target machine. Try closing and reopening the PR. If you get this Error again, file an issue.");
+            public static Error GitNotFoundNew()
+                => new Error(ErrorLevel.Error, "git-not-found-new", $"Git isn't installed on the target machine. Try closing and reopening the PR. If you get this Error again, file an issue.");
 
             /// <summary>
             /// Call Microsoft Graph API failed
