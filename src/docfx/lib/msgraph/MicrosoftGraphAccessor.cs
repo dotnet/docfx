@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     Log.Write(ex);
-                    return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
+                    return (Errors.System.MicrosoftGraphApiFailed(ex.Message), null);
                 }
             }
         }
