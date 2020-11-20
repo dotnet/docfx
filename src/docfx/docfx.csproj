@@ -34,7 +34,7 @@
     <PackageReference Include="Stubble.Core" Version="1.9.3" />
     <PackageReference Include="System.CommandLine" Version="0.1.0-preview2-180503-2" />
     <PackageReference Include="Validations.DocFx.Adapter" Version="1.2.29-beta007" />
-    <PackageReference Include="YamlDotNet" Version="8.1.2" />
+    <PackageReference Include="YamlDotNet" Version="9.1.0" />
   </ItemGroup>
 
   <ItemGroup>
