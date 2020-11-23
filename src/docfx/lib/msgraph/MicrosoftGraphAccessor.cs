@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly IGraphServiceClient? _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider? _microsoftGraphAuthenticationProvider;
         private readonly JsonDiskCache<Error, string, MicrosoftGraphUser> _aliasCache;
+        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
 
         public MicrosoftGraphAccessor(Config config)
         {
@@ -57,12 +59,11 @@ namespace Microsoft.Docs.Build
         public void Dispose()
         {
             _microsoftGraphAuthenticationProvider?.Dispose();
+            _syncRoot.Dispose();
         }
 
         private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)
         {
-            using (PerfScope.Start($"Calling Microsoft Graph API: {alias}"))
-            {
                 var options = new List<Option>
                 {
                     new QueryOption("$select", "id,mailNickname"),
@@ -74,7 +75,7 @@ namespace Microsoft.Docs.Build
                     var users = await Policy
                         .Handle<ServiceException>()
                         .RetryAsync(3)
-                        .ExecuteAsync(() => _msGraphClient!.Users.Request(options).GetAsync());
+                        .ExecuteAsync(() => SendRequest(alias, () => _msGraphClient!.Users.Request(options).GetAsync()));
 
                     return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
                 }
@@ -83,6 +84,21 @@ namespace Microsoft.Docs.Build
                     Log.Write(ex);
                     return (Errors.System.MicrosoftGraphApiFailed(ex.Message), null);
                 }
+        }
+
+        private async Task<T> SendRequest<T>(string api, Func<Task<T>> func)
+        {
+            await _syncRoot.WaitAsync();
+            try
+            {
+                using (PerfScope.Start($"Calling Microsoft Graph API: {api}"))
+                {
+                    return await func();
+                }
+            }
+            finally
+            {
+                _syncRoot.Release();
             }
         }
     }
