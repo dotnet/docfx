@@ -64,6 +64,25 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
+        public static string? GetTabbedConceptual(this MarkdownObject obj)
+        {
+            foreach (var parent in obj.GetPathToRootInclusive())
+            {
+                if (parent is TabContentBlock content)
+                {
+                    var group = (TabGroupBlock)content.Parent;
+                    foreach (var item in group.Items)
+                    {
+                        if (item.Content == content)
+                        {
+                            return string.IsNullOrEmpty(item.Condition) ? item.Id : item.Id + "/" + item.Condition;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public static IEnumerable<MarkdownObject> GetPathToRootInclusive(this MarkdownObject obj)
         {
             yield return obj;

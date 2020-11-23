@@ -191,6 +191,7 @@ namespace Microsoft.Docs.Build
                 Monikers = markdownNode.GetZoneLevelMonikers().ToList(),
                 ZonePivots = markdownNode.GetZonePivots(),
                 SourceInfo = markdownNode.GetSourceInfo(),
+                TabbedConceptualHeader = markdownNode.GetTabbedConceptual(),
             };
         }
 
