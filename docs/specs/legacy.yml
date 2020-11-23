@@ -231,7 +231,7 @@ inputs:
   docs/a.md:
 outputs:
   .errors.log: |
-    { "message_severity": "warning", "code": "output-path-conflict" }
+    { "message_severity": "warning", "code": "redirected-file-not-removed" }
 ---
 # Redirection file href shouldn't have extension
 inputs:
