@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             {
                 var result = valueFactory();
 
-                function.Result = result;
+                function.ChangeToken = result;
                 return result;
             }
             finally
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 var changeToken = changeTokenFactory();
                 var result = valueFactory();
 
-                function.Result = changeToken;
+                function.ChangeToken = changeToken;
                 return result;
             }
             finally

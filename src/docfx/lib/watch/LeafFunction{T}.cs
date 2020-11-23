@@ -8,14 +8,14 @@ namespace Microsoft.Docs.Build
 {
     internal class LeafFunction<T> : IFunction
     {
-        private readonly Func<T> _valueFactory;
+        private readonly Func<T> _changeTokenFactory;
 
         [MaybeNull]
-        internal T Result { get; set; }
+        internal T ChangeToken { get; set; }
 
-        public LeafFunction(Func<T> valueFactory) => _valueFactory = valueFactory;
+        public LeafFunction(Func<T> changeTokenFactory) => _changeTokenFactory = changeTokenFactory;
 
-        public bool HasChanged() => !Equals(Result, _valueFactory());
+        public bool HasChanged() => !Equals(ChangeToken, _changeTokenFactory());
 
         public void AddChild(IFunction childFunction) { }
     }
