@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static void Convert(string docsetPath, Context context, Dictionary<FilePath, PublishItem> fileManifests)
+        public static void Convert(string docsetPath, LegacyContext context, Dictionary<FilePath, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         private static void ConvertDocumentToLegacyManifestItem(
             string docsetPath,
-            Context context,
+            LegacyContext context,
             KeyValuePair<FilePath, PublishItem> fileManifest,
             DictionaryBuilder<string, MonikerList> dictionaryBuilder,
             ListBuilder<(LegacyManifestItem manifestItem, FilePath doc, MonikerList monikers)> listBuilder)

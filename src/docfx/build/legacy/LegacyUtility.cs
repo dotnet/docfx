@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyUtility
     {
-        public static string ToLegacyOutputPathRelativeToBasePath(this FilePath doc, Context context, PublishItem manifestItem)
+        public static string ToLegacyOutputPathRelativeToBasePath(this FilePath doc, LegacyContext context, PublishItem manifestItem)
         {
             var outputPath = manifestItem.Path;
             if (outputPath is null || (context.DocumentProvider.GetContentType(doc) == ContentType.Resource && !context.Config.SelfContained))
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             return PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
         }
 
-        public static string ToLegacySiteUrlRelativeToBasePath(this FilePath doc, Context context)
+        public static string ToLegacySiteUrlRelativeToBasePath(this FilePath doc, LegacyContext context)
         {
             var legacySiteUrlRelativeToBasePath = context.DocumentProvider.GetSiteUrl(doc);
             if (legacySiteUrlRelativeToBasePath.StartsWith(context.Config.BasePath.ValueWithLeadingSlash, PathUtility.PathComparison))
