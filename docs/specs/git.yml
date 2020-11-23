@@ -165,7 +165,7 @@ outputs:
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
         "contributors": undefined
       },
-      "github_contributors": ["charlie"]
+      "github_contributors": ["charlie", "bob", "alice"]
     }
 ---
 # Author can be excluded if it is not specified in YAML header
@@ -265,7 +265,7 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
-      "github_contributors": ["bob", "alice"]
+      "github_contributors": ["charlie", "bob", "alice"]
     }
 ---
 # Author CAN be excluded if implicitly extracted from commit history using contributors_to_exclude global metadata

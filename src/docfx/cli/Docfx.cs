@@ -128,7 +128,7 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
                     syntax.DefineOption("no-dry-sync", ref options.NoDrySync, "Do not run dry sync for learn validation.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
-                    syntax.DefineOption("no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
+                    syntax.DefineOption("no-cache", ref options.NoCache, "Always fetch latest dependencies in build.");
                     syntax.DefineOption(
                         "template-base-path",
                         ref options.TemplateBasePath,
