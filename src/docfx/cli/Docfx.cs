@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 {
                     "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
-                    "build" => Build.Run(workingDirectory, options),
+                    "build" => Builder.Run(workingDirectory, options),
                     "serve" => Serve.Run(options),
                     _ => false,
                 } ? 1 : 0;
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                     syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
                     syntax.DefineOption("no-dry-sync", ref options.NoDrySync, "Do not run dry sync for learn validation.");
                     syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
-                    syntax.DefineOption("no-cache", ref options.NoCache, "Do not use cache dependencies in build, always fetch latest dependencies.");
+                    syntax.DefineOption("no-cache", ref options.NoCache, "Always fetch latest dependencies in build.");
                     syntax.DefineOption(
                         "template-base-path",
                         ref options.TemplateBasePath,

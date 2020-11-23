@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class LegacyFileMap
     {
         public static void Convert(
-            Context context,
+            LegacyContext context,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap,
             Dictionary<FilePath, PublishItem> fileManifests)
         {
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void Convert(Context context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
+        public static void Convert(LegacyContext context, IEnumerable<(string path, LegacyFileMapItem fileMapItem)> items)
         {
             var fileMapping = new Dictionary<string, LegacyFileMapItem>();
             foreach (var (path, fileMapItem) in items.OrderBy(item => item.path))
