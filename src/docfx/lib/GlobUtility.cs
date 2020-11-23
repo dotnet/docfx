@@ -66,6 +66,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
+                Log.Write(ex);
                 throw Errors.Config.GlobPatternInvalid(pattern, ex).ToException(ex);
             }
         }

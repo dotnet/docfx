@@ -78,9 +78,10 @@ namespace Microsoft.Docs.Build
 
                     return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
+                    Log.Write(ex);
+                    return (Errors.System.MicrosoftGraphApiFailed(ex.Message), null);
                 }
             }
         }
