@@ -145,30 +145,6 @@ namespace Microsoft.Docs.Build
             return sb.ToString();
         }
 
-        // patch of CodeInlineRenderer, will be fixed in upstream. todo
-        private class NewCodeInlineRenderer : CodeInlineRenderer
-        {
-            protected override void Write(HtmlRenderer renderer, CodeInline obj)
-            {
-                if (renderer.EnableHtmlForInline)
-                {
-                    renderer.Write("<code").WriteAttributes(obj).Write(">");
-                }
-                if (renderer.EnableHtmlEscape)
-                {
-                    renderer.WriteEscape(obj.Content);
-                }
-                else
-                {
-                    renderer.Write(obj.Content);
-                }
-                if (renderer.EnableHtmlForInline)
-                {
-                    renderer.Write("</code>");
-                }
-            }
-        }
-
         public string ToPlainText(MarkdownObject markdownObject)
         {
             var sb = new StringBuilder();
@@ -434,6 +410,30 @@ namespace Microsoft.Docs.Build
                 Errors = errors;
                 Conceptual = conceptual;
                 ContentFallback = contentFallback;
+            }
+        }
+
+        // patch of CodeInlineRenderer, will be fixed in upstream. todo
+        private class NewCodeInlineRenderer : CodeInlineRenderer
+        {
+            protected override void Write(HtmlRenderer renderer, CodeInline obj)
+            {
+                if (renderer.EnableHtmlForInline)
+                {
+                    renderer.Write("<code").WriteAttributes(obj).Write(">");
+                }
+                if (renderer.EnableHtmlEscape)
+                {
+                    renderer.WriteEscape(obj.Content);
+                }
+                else
+                {
+                    renderer.Write(obj.Content);
+                }
+                if (renderer.EnableHtmlForInline)
+                {
+                    renderer.Write("</code>");
+                }
             }
         }
     }
