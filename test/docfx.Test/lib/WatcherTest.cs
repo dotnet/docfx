@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -145,20 +147,88 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static void Watch_Value_Reevaluate_On_Any_Dependency_Change()
+        {
+            var counter = 0;
+            var watch = new Watch<int>(() => GetCounterChange() + GetCounterNoChange());
+
+            int GetCounterNoChange() => Watcher.Watch(() => 0);
+            int GetCounterChange() => Watcher.Watch(() => ++counter);
+
+            Assert.Equal(1, watch.Value);
+            Assert.Equal(1, watch.Value);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(3, watch.Value);
+            Assert.Equal(3, watch.Value);
+        }
+
+        [Fact]
+        public static void Watch_Value_Do_Not_Reevaluate_On_No_Dependency_Change()
+        {
+            var counter = 0;
+            var watch = new Watch<int>(() => ++counter + GetCounterNoChange());
+
+            int GetCounterNoChange() => Watcher.Watch(() => 0);
+
+            Assert.Equal(1, watch.Value);
+            Assert.Equal(1, watch.Value);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(1, watch.Value);
+            Assert.Equal(1, watch.Value);
+        }
+
+        [Fact]
+        public static void Watch_Value_Rebuild_Dependency_Graph_On_Dependency_Change()
+        {
+            var exists = false;
+            var counter = 100;
+            var watch = new Watch<int>(() =>
+            {
+                if (FileExists())
+                {
+                    return ReadFile();
+                }
+                return 0;
+            });
+
+            bool FileExists() => Watcher.Watch(() => exists);
+            int ReadFile() => Watcher.Watch(() => counter);
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(0, watch.Value);
+
+            Watcher.StartActivity();
+            exists = true;
+
+            Assert.Equal(100, watch.Value);
+            Assert.Equal(100, watch.Value);
+
+            Watcher.StartActivity();
+            counter++;
+
+            Assert.Equal(101, watch.Value);
+            Assert.Equal(101, watch.Value);
+        }
+
+        [Fact]
         public static void Watch_Value_Watch_Dependency_In_Parallel()
         {
             var counter = 0;
             var watch = new Watch<int>(() =>
             {
                 var n = 0;
-                for (var i = 0; i < 100; i++)
+                Parallel.For(0, 100, i =>
                 {
-                    n += GetCounter();
-                }
+                    Interlocked.Add(ref n, GetCounter());
+                });
                 return n;
             });
 
-            int GetCounter() => Watcher.Watch(() => ++counter);
+            int GetCounter() => Watcher.Watch(() => Interlocked.Increment(ref counter));
 
             Assert.Equal(5050, watch.Value);
             Assert.Equal(5050, watch.Value);
