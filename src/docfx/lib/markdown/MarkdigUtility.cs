@@ -70,14 +70,8 @@ namespace Microsoft.Docs.Build
             {
                 if (parent is TabContentBlock content)
                 {
-                    var group = (TabGroupBlock)content.Parent;
-                    foreach (var item in group.Items)
-                    {
-                        if (item.Content == content)
-                        {
-                            return string.IsNullOrEmpty(item.Condition) ? item.Id : item.Id + "/" + item.Condition;
-                        }
-                    }
+                    var inLine = (LinkInline)content.TabTitle.Inline;
+                    return inLine.Url.Substring("#tab/".Length);
                 }
             }
             return null;

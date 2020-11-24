@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Line = pair.Item3.Line,
                 Span = pair.Item3.Span,
             };
-            var content = new TabContentBlock(blocks);
+            var content = new TabContentBlock(blocks, title);
 
             return new TabItemBlock(
                 pair.Item1,
