@@ -117,12 +117,17 @@ namespace Microsoft.Docs.Build
                 return conflicts.First();
             }
 
-            _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
-
             // redirection file is preferred than source file
+            var redirection = conflicts.FirstOrDefault(x => x.SourcePath.Origin == FileOrigin.Redirection);
+            if (redirection != null)
+            {
+                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(redirection.SourcePath));
+                return redirection;
+            }
+
             // otherwise, prefer the one based on FilePath
-            return conflicts.OrderBy(x => x.SourcePath.Origin.ToString(), PathUtility.PathComparer)
-                .ThenBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
+            _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+            return conflicts.OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
         }
 
         private PublishUrlMapItem ResolvePublishUrlConflicts(IGrouping<PublishUrlMapItem, PublishUrlMapItem> conflicts)

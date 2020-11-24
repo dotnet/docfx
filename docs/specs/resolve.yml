@@ -274,7 +274,7 @@ inputs:
   docs/redirect.md:
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md [redirection]', 'docs/redirect.md'."}
+    {"message_severity":"warning","code":"redirected-file-not-removed"}
 ---
 # Show warning if link to a page outside build scope
 inputs:
