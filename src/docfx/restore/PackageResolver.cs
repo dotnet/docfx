@@ -3,13 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PackageResolver : IDisposable
+    internal class PackageResolver
     {
         // NOTE: This line assumes each build runs in a new process
         private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories
@@ -20,8 +19,6 @@ namespace Microsoft.Docs.Build
         private readonly FetchOptions _fetchOptions;
         private readonly Repository? _repository;
         private readonly FileResolver _fileResolver;
-
-        private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
 
         public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
         {
@@ -57,15 +54,11 @@ namespace Microsoft.Docs.Build
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
-            switch (package.Type)
+            return package.Type switch
             {
-                case PackageType.Git:
-                    var gitPath = DownloadGitRepository(package, options);
-                    EnterGitReaderLock(gitPath);
-                    return gitPath;
-                default:
-                    return Path.Combine(_docsetPath, package.Path);
-            }
+                PackageType.Git => DownloadGitRepository(package, options),
+                _ => Path.Combine(_docsetPath, package.Path),
+            };
         }
 
         public void DownloadPackage(PackagePath package, PackageFetchOptions options)
@@ -75,17 +68,6 @@ namespace Microsoft.Docs.Build
                 case PackageType.Git:
                     DownloadGitRepository(package, options);
                     break;
-            }
-        }
-
-        public void Dispose()
-        {
-            lock (_gitReaderLocks)
-            {
-                foreach (var item in _gitReaderLocks.Values)
-                {
-                    item.Dispose();
-                }
             }
         }
 
@@ -114,7 +96,7 @@ namespace Microsoft.Docs.Build
                     throw Errors.System.NeedRestore($"{url}#{committish}").ToException();
             }
 
-            using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
+            using (InterProcessMutex.Create(gitPath))
             {
                 DeleteIfExist(gitDocfxHead);
                 using (PerfScope.Start($"Downloading '{url}#{committish}'"))
@@ -234,14 +216,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsPermissionInsufficient(Exception ex)
+        private static bool IsPermissionInsufficient(Exception e)
         {
-            return ex.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains(
-                                "does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
+            return e.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
         }
 
         private static (string? org, string? name) ParseRepoInfo(string url)
@@ -263,17 +244,6 @@ namespace Microsoft.Docs.Build
         private static PathString GetGitRepositoryPath(string url, string branch)
         {
             return new PathString(Path.Combine(AppData.GitRoot, $"{PathUtility.UrlToShortName(url)}-{branch}"));
-        }
-
-        private void EnterGitReaderLock(PathString gitPath)
-        {
-            lock (_gitReaderLocks)
-            {
-                if (!_gitReaderLocks.ContainsKey(gitPath))
-                {
-                    _gitReaderLocks.Add(gitPath, InterProcessReaderWriterLock.CreateReaderLock(gitPath));
-                }
-            }
         }
 
         private static void DeleteIfExist(string path)

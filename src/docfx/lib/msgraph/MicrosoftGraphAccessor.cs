@@ -12,7 +12,7 @@ using Polly;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MicrosoftGraphAccessor : IDisposable
+    internal class MicrosoftGraphAccessor
     {
         private readonly IGraphServiceClient? _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider? _microsoftGraphAuthenticationProvider;
@@ -54,12 +54,6 @@ namespace Microsoft.Docs.Build
         public Error[] Save()
         {
             return _aliasCache.Save();
-        }
-
-        public void Dispose()
-        {
-            _microsoftGraphAuthenticationProvider?.Dispose();
-            _syncRoot.Dispose();
         }
 
         private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)

@@ -27,14 +27,12 @@ namespace Microsoft.Docs.Build
         [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Long constructor list")]
         public void Build(ErrorBuilder errors)
         {
-            using var disposables = new DisposableCollector();
             errors = errors.WithDocsetPath(_workingDirectory, _docsetPath);
 
             try
             {
                 var fetchOptions = _options.NoRestore ? FetchOptions.NoFetch : (_options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
-                var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errors, disposables, _docsetPath, _outputPath, _options, fetchOptions);
+                var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(errors, _docsetPath, _outputPath, _options, fetchOptions);
                 if (errors.HasError)
                 {
                     return;
@@ -49,7 +47,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                using var repositoryProvider = new RepositoryProvider(errors, buildOptions, config);
+                var repositoryProvider = new RepositoryProvider(errors, buildOptions, config);
                 new OpsPreProcessor(config, errors, buildOptions, repositoryProvider).Run();
 
                 var sourceMap = new SourceMap(errors, new PathString(buildOptions.DocsetPath), config, fileResolver);
@@ -62,9 +60,9 @@ namespace Microsoft.Docs.Build
                 var dependencyMapBuilder = new DependencyMapBuilder(sourceMap);
                 var input = new Input(buildOptions, config, packageResolver, repositoryProvider, sourceMap);
                 var output = new Output(buildOptions.OutputPath, input, config.DryRun);
-                using var microsoftGraphAccessor = new MicrosoftGraphAccessor(config);
+                var microsoftGraphAccessor = new MicrosoftGraphAccessor(config);
                 var jsonSchemaLoader = new JsonSchemaLoader(fileResolver);
-                using var templateEngine = new TemplateEngine(errors, config, output, packageResolver, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!), buildOptions, jsonSchemaLoader);
+                var templateEngine = new TemplateEngine(errors, config, output, packageResolver, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!), buildOptions, jsonSchemaLoader);
                 var buildScope = new BuildScope(config, input, buildOptions);
                 var metadataProvider = new MetadataProvider(config, input, buildScope, jsonSchemaLoader);
                 var monikerProvider = new MonikerProvider(config, buildScope, metadataProvider, fileResolver);
@@ -73,7 +71,7 @@ namespace Microsoft.Docs.Build
                 var redirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, config.HostName, errors, buildScope, buildOptions.Repository, documentProvider, monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
                 contentValidator = new ContentValidator(config, fileResolver, errors, documentProvider, monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
-                using var gitHubAccessor = new GitHubAccessor(config);
+                var gitHubAccessor = new GitHubAccessor(config);
                 var bookmarkValidator = new BookmarkValidator(errors);
                 var contributionProvider = new ContributionProvider(config, buildOptions, input, gitHubAccessor, repositoryProvider);
                 var fileLinkMapBuilder = new FileLinkMapBuilder(errors, documentProvider, monikerProvider, contributionProvider);
