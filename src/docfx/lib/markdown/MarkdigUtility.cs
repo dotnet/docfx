@@ -64,14 +64,13 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        public static string? GetTabbedConceptual(this MarkdownObject obj)
+        public static string? GetTabId(this MarkdownObject obj)
         {
             foreach (var parent in obj.GetPathToRootInclusive())
             {
                 if (parent is TabContentBlock content)
                 {
-                    var inLine = (LinkInline)content.TabTitle.Inline;
-                    return inLine.Url.Substring("#tab/".Length);
+                    return content.Id;
                 }
             }
             return null;

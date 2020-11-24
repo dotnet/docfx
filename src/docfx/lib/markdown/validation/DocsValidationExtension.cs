@@ -26,10 +26,6 @@ namespace Microsoft.Docs.Build
             return builder.Use(document =>
             {
                 var currentFile = ((SourceInfo)InclusionContext.File).File;
-                if (currentFile.Format != FileFormat.Markdown)
-                {
-                    return;
-                }
 
                 var documentNodes = new List<ContentNode>();
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockItem codeBlockItem)>();
@@ -191,7 +187,7 @@ namespace Microsoft.Docs.Build
                 Monikers = markdownNode.GetZoneLevelMonikers().ToList(),
                 ZonePivots = markdownNode.GetZonePivots(),
                 SourceInfo = markdownNode.GetSourceInfo(),
-                TabbedConceptualHeader = markdownNode.GetTabbedConceptual(),
+                TabbedConceptualHeader = markdownNode.GetTabId(),
             };
         }
 
