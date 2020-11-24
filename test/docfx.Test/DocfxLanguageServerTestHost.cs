@@ -66,14 +66,16 @@ namespace Microsoft.Docs.Build
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
             using var cts = new CancellationTokenSource(60000);
-            while (true)
+
+            while (await _notificationsChannel.Reader.WaitToReadAsync(cts.Token))
             {
-                var notification = await _notificationsChannel.Reader.ReadAsync(cts.Token).AsTask();
+                var notification = await _notificationsChannel.Reader.ReadAsync();
                 if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
                 {
                     return notification;
                 }
             }
+            return default;
         }
 
         protected override (Stream clientOutput, Stream serverInput) SetupServer()
