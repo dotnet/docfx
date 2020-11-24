@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
+
         private readonly ErrorBuilder _errorLog;
         private readonly Config _config;
         private readonly Dictionary<string, List<CustomRule>> _customRules = new Dictionary<string, List<CustomRule>>();
@@ -24,11 +26,13 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             Lazy<PublishUrlMap> publishUrlMap,
             MonikerProvider monikerProvider,
+            MetadataProvider metaDataProvider,
             ErrorBuilder errorLog)
         {
             _documentProvider = documentProvider;
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
+            _metadataProvider = metaDataProvider;
             _errorLog = errorLog;
             _config = config;
 
@@ -63,6 +67,9 @@ namespace Microsoft.Docs.Build
             if (TryGetCustomRule(error, out var customRule))
             {
                 error = WithCustomRule(error, customRule);
+                var source = error.Source?.File;
+                var userMeta = source != null ? _metadataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
+                error = error.WithMsAuthor(userMeta?.MsAuthor);
             }
             return error;
         }
@@ -112,7 +119,8 @@ namespace Microsoft.Docs.Build
                 error.Source,
                 error.PropertyPath,
                 error.OriginalPath,
-                customRule.PullRequestOnly);
+                customRule.PullRequestOnly,
+                error.MsAuthor);
         }
 
         private bool TryGetCustomRule(
