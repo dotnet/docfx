@@ -96,6 +96,7 @@ steps:
     FolderPath: '$(Build.SourcesDirectory)/target/Release'
     Pattern: |
         **\*.dll
+        **\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.dll
         !**\System.*.dll
         !**\Microsoft.*.dll
         !**\NuGet.*.dll
