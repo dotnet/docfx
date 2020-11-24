@@ -344,6 +344,65 @@ outputs:
     {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"c.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
+# Content Validation - Skip Level with tabbed conceptual
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "SkipLevel",
+            "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
+            "code": "heading-skipped",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ## h2 heading
+
+    # [a](#tab/win)
+    #### h4 heading
+    ---
+  b.md: |
+    # [b](#tab/win)
+    ## h2 heading
+    ---
+
+    # [b2](#tab/azure/win)
+    #### h4 heading
+    ---
+  c.md: |
+    # [c](#tab/win)
+    ## h2 heading
+    ---
+
+    # [c2](#tab/linux)
+    #### h4 heading
+    ---
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"a.md","line":4,"end_line":4}
+    {"message_severity":"suggestion","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"b.md","line":6,"end_line":6}
+---
 # Content validation - h1 in inclusion
 inputs:
   docfx.yml: |
@@ -516,6 +575,53 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H3 'H3-1 -b'(a.md(10,1) -> b.md) contains no content. Add content or remove the unused heading.","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 'H2 -c'(a.md(10,1) -> b.md(5,1) -> c.md(2,1)) contains no content. Add content or remove the unused heading.","file":"c.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H4 'H4 -a' contains no content. Add content or remove the unused heading.","file":"a.md","line":11, "end_line":11,"column":1,"end_column":1}
+---
+# Content validation - no content, consider tabbed conceptual
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "NoContent",
+            "message": "{0} contains no content. Add content or remove the unused heading.",
+            "code": "heading-no-content",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ## H2
+    # [a](#tab/win)
+    ### H3
+    ---
+  b.md: |
+    # [b](#tab/win)
+    ## H2
+    # [b2](#tab/azure/win)
+    ### H3
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"heading-no-content","message":"H3 'H3' contains no content. Add content or remove the unused heading.","file":"a.md","line":3,"end_line":3}
+    {"message_severity":"suggestion","code":"heading-no-content","message":"H3 'H3' contains no content. Add content or remove the unused heading.","file":"b.md","line":4,"end_line":4}
 ---
 #Content validation - h1-not-first in docs zone
 inputs:
@@ -1323,6 +1429,44 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
+# Content validation - duplicated h2
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "DuplicateHeadings",
+            "message": "Duplicate heading: {0}. Each heading in an article must be unique.",
+            "code": "h2-duplicated",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    ## Title 1
+    ## Title 1
+    case of html in h2
+    ## <a name="operator_eq"></a> `CStringT::operator >`
+    ## <a name="operator_eq"></a> `CStringT::operator <`
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"h2-duplicated","message":"Duplicate heading: H2 'Title 1'. Each heading in an article must be unique.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"h2-duplicated","message":"Duplicate heading: H2 'Title 1'. Each heading in an article must be unique.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+---
 # Content validation - H1 unique log limit
 inputs:
   docfx.yml: |
@@ -1378,4 +1522,43 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"e.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md, c.md, d.md, e.md,...'","file":"f.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# Content validation - H2 duplicated, consider tabbed conceptual
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "rules": [
+          {
+            "type": "DuplicateHeadings",
+            "message": "Duplicate heading: {0}.",
+            "code": "h2-duplicated",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes", 
+              "landingpage", 
+              "hubpage", 
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # H1
+    # [a](#tab/win)
+    ## H2_duplicate
+    # [a1](#tab/azure/win)
+    ## H2_duplicate
+    # [a2](#tab/linux)
+    ## H2_duplicate
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":3,"end_line":3}
+    {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":5,"end_line":5}
 ---

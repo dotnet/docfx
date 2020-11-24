@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 {
                     "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
-                    "build" => Build.Run(workingDirectory, options),
+                    "build" => Builder.Run(workingDirectory, options),
                     _ => false,
                 } ? 1 : 0;
             }

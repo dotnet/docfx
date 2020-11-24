@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1307:AccessibleFieldsMustBeginWithUpperCaseLetter", Justification = "other code")]
     internal static class LibGit2
     {
-        private const string LibName = "git2-ef5a385";
+        private const string LibName = "git2-6777db8";
 
         static LibGit2()
         {

@@ -19,7 +19,7 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal class OpsAccessor : IDisposable, ILearnServiceAccessor
+    internal class OpsAccessor : ILearnServiceAccessor
     {
         private const string TaxonomyServiceProdPath = "https://taxonomyapi-prod-wus.azurewebsites.net/taxonomies/simplified?" +
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
@@ -154,11 +154,6 @@ namespace Microsoft.Docs.Build
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.RequestMessage.RequestUri.AbsoluteUri);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
             return response.IsSuccessStatusCode;
-        }
-
-        public void Dispose()
-        {
-            _http.Dispose();
         }
 
         private async Task<string> Fetch(

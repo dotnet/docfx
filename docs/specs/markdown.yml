@@ -259,15 +259,15 @@ inputs:
     ---
     metaKey: metaValue
     ---
-    # This is *a* title using @b &
+    # This is *a* title using @b & `<`
     
     body
 outputs:
   docs/a.json: |
     {
       "conceptual": "<p>body</p>",
-      "title": "This is a title using @b &",
-      "rawTitle": "<h1 id=\"this-is-a-title-using--\">This is <em>a</em> title using @b &amp;</h1>",
+      "title": "This is a title using @b & <",
+      "rawTitle": "<h1 id=\"this-is-a-title-using---\">This is <em>a</em> title using @b &amp; <code>&lt;</code></h1>",
       "metaKey": "metaValue"
     }
 ---
