@@ -64,6 +64,18 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
+        public static string? GetTabId(this MarkdownObject obj)
+        {
+            foreach (var parent in obj.GetPathToRootInclusive())
+            {
+                if (parent is TabContentBlock content)
+                {
+                    return content.Id;
+                }
+            }
+            return null;
+        }
+
         public static IEnumerable<MarkdownObject> GetPathToRootInclusive(this MarkdownObject obj)
         {
             yield return obj;
