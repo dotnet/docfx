@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
             }
 
             // redirection file is preferred than source file
-            var redirection = conflicts.SingleOrDefault(x => x.SourcePath.Origin == FileOrigin.Redirection);
+            var redirection = conflicts.FirstOrDefault(x => x.SourcePath.Origin == FileOrigin.Redirection);
             if (redirection != null)
             {
                 _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(redirection.SourcePath));
