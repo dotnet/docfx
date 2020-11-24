@@ -191,11 +191,16 @@ namespace Microsoft.Docs.Build
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {
                 var lspSpec = spec.LanguageServer[i];
-                lspTestHost.SendNotifications(lspSpec.Notifications);
-
-                var notifications = lspTestHost.GetExpectedNotifications(lspSpec.Expect.Count).GetAwaiter().GetResult();
-
-                s_jsonDiff.Verify(lspSpec.Expect, notifications);
+                if (!string.IsNullOrEmpty(lspSpec.Notification))
+                {
+                    lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
+                }
+                else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
+                {
+                    var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
+                    var actualNotification = lspTestHost.GetExpectedNotification(expectedNotification.Method).GetAwaiter().GetResult();
+                    s_jsonDiff.Verify(expectedNotification, actualNotification);
+                }
             }
         }
 

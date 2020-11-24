@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.JsonRpc.Testing;
@@ -14,22 +13,19 @@ using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 
 namespace Microsoft.Docs.Build
 {
     public class DocfxLanguageServerTestHost : LanguageServerTestBase
     {
-        private readonly ConcurrentBag<LanguageServerNotification> _notifications =
-           new ConcurrentBag<LanguageServerNotification>();
+        private readonly ConcurrentQueue<LanguageServerNotification> _notifications =
+           new ConcurrentQueue<LanguageServerNotification>();
 
-        private LanguageServerHost _host;
         private Task startUpTask;
 
-        protected ILanguageClient Client { get; private set; }
+        private static readonly string[] s_notificationsToListen = { "window/showMessage" };
 
-        protected ILanguageServer Server => _host.Server;
+        protected ILanguageClient Client { get; private set; }
 
         public DocfxLanguageServerTestHost()
             : base(new JsonRpcTestOptions())
@@ -46,35 +42,43 @@ namespace Microsoft.Docs.Build
                     FailureHandling = FailureHandlingKind.Undo,
                 });
 
-                x.OnShowMessage(@params =>
+                foreach (var name in s_notificationsToListen)
                 {
-                    _notifications.Add(new LanguageServerNotification("window/showMessage", JsonUtility.Serialize(@params)));
-                });
+                    x.OnJsonNotification(name, @params =>
+                    {
+                        _notifications.Enqueue(new LanguageServerNotification(name, JsonUtility.Serialize(@params)));
+                    });
+                }
             });
 
             await startUpTask;
         }
 
-        public void SendNotifications(List<LanguageServerNotification> notifications)
+        public void SendNotification(LanguageServerNotification notification)
         {
-            _notifications.Clear();
-            foreach (var item in notifications)
-            {
-                Client.SendNotification(item.Method, JsonUtility.DeserializeData<JObject>(item.Params, null));
-            }
+            Client.SendNotification(notification.Method, JsonUtility.DeserializeData<JObject>(notification.Params, null));
         }
 
-        public async Task<List<LanguageServerNotification>> GetExpectedNotifications(int count)
+        public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
+            LanguageServerNotification expectedNotification = null;
             var waitTask = Task.Run(async () =>
             {
-                if (_notifications.Count < count)
+                while (true)
                 {
+                    while (_notifications.TryDequeue(out var notification))
+                    {
+                        if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
+                        {
+                            expectedNotification = notification;
+                            return;
+                        }
+                    }
                     await Task.Delay(100);
                 }
             });
             await Task.WhenAny(waitTask, Task.Delay(10000));
-            return _notifications.ToList();
+            return expectedNotification;
         }
 
         protected override (Stream clientOutput, Stream serverInput) SetupServer()
@@ -82,8 +86,7 @@ namespace Microsoft.Docs.Build
             var clientPipe = new Pipe(TestOptions.DefaultPipeOptions);
             var serverPipe = new Pipe(TestOptions.DefaultPipeOptions);
 
-            _host = new LanguageServerHost(clientPipe.Reader.AsStream(), serverPipe.Writer.AsStream());
-            startUpTask = _host.Start();
+            startUpTask = LanguageServerHost.StartLanguageServer(clientPipe.Reader.AsStream(), serverPipe.Writer.AsStream());
 
             return (serverPipe.Reader.AsStream(), clientPipe.Writer.AsStream());
         }

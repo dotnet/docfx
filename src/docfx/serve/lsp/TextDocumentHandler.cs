@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
@@ -19,8 +18,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
-        private readonly ILogger<TextDocumentHandler> _logger;
-        private readonly ILanguageServerConfiguration _configuration;
         private readonly ILanguageServer _languageServer;
 
         private readonly DocumentSelector _documentSelector = new DocumentSelector(
@@ -30,12 +27,8 @@ namespace Microsoft.Docs.Build
             });
 
         public TextDocumentHandler(
-            ILogger<TextDocumentHandler> logger,
-            ILanguageServer languageServer,
-            ILanguageServerConfiguration configuration)
+            ILanguageServer languageServer)
         {
-            _logger = logger;
-            _configuration = configuration;
             _languageServer = languageServer;
         }
 
@@ -52,8 +45,7 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
-        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions>.
-            GetRegistrationOptions()
+        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions>.GetRegistrationOptions()
         {
             return new TextDocumentChangeRegistrationOptions()
             {

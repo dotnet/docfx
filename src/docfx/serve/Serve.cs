@@ -12,13 +12,13 @@ namespace Microsoft.Docs.Build
             if (!options.LanguageServer)
             {
                 Console.WriteLine("Docfx only support serving as a language server in 'Serve' mode, please use `--language-server`");
+                return false;
             }
 
             using var stdIn = Console.OpenStandardInput();
             using var stdOut = Console.OpenStandardOutput();
-            var host = new LanguageServerHost(stdIn, stdOut);
-            host.Start().GetAwaiter().GetResult();
-            host.Server!.WaitForExit.GetAwaiter().GetResult();
+            var server = LanguageServerHost.StartLanguageServer(stdIn, stdOut).GetAwaiter().GetResult();
+            server.WaitForExit.GetAwaiter().GetResult();
             return true;
         }
     }

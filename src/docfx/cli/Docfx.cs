@@ -137,8 +137,8 @@ namespace Microsoft.Docs.Build
                     DefineCommonOptions(syntax, ref workingDirectory, options);
 
                     // serve command
-                    syntax.DefineCommand("serve", ref command, "Serve a repository");
-                    syntax.DefineOption("language-server", ref options.LanguageServer, "Docfx will serve as a language server");
+                    syntax.DefineCommand("serve", ref command, "Serves content in a docset.");
+                    syntax.DefineOption("language-server", ref options.LanguageServer, "Starts a language server");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 

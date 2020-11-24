@@ -138,8 +138,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var lspSpec in spec.LanguageServer)
             {
-                ApplyVariables(lspSpec.Notifications, variables);
-                ApplyVariables(lspSpec.Expect, variables);
+                lspSpec.Params = ApplyVariables(lspSpec.Params, variables);
             }
             ApplyVariables(spec.Inputs, variables);
             ApplyVariables(spec.Cache, variables);
@@ -152,14 +151,6 @@ namespace Microsoft.Docs.Build
             foreach (var commit in commits)
             {
                 ApplyVariables(commit.Files, variables);
-            }
-        }
-
-        private static void ApplyVariables(List<LanguageServerNotification> notifications, IEnumerable<KeyValuePair<string, string>> variables)
-        {
-            foreach (var notification in notifications)
-            {
-                notification.Params = ApplyVariables(notification.Params, variables);
             }
         }
 

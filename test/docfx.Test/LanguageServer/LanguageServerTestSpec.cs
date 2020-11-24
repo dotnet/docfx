@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-
 namespace Microsoft.Docs.Build
 {
     public class LanguageServerTestSpec
     {
-        public List<LanguageServerNotification> Notifications { get; set; } = new List<LanguageServerNotification>();
+        public string Notification { get; set; } = string.Empty;
 
-        public List<LanguageServerNotification> Expect { get; set; } = new List<LanguageServerNotification>();
+        public string ExpectNotification { get; set; } = string.Empty;
+
+        public string Params { get; set; } = string.Empty;
     }
 }

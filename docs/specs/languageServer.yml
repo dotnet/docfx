@@ -6,34 +6,30 @@ inputs:
     # Heading
     Content
 languageServer:
-  - notifications: 
-      - method: "textDocument/didOpen"
-        params: |
-          {
-            "textDocument": {
-              "uri": "file:///{DOCSET_PATH}/a.md",
-              "text": "Content"
-            }
-          }
-    expect:
-      - method: "window/showMessage"
-        params: |
-          {
-            "type": 3,
-            "message": "File open detected on file `a.md` with content 'Content'"
-          }
-  - notifications: 
-      - method: "textDocument/didChange"
-        params: |
-          {
-            "textDocument": {
-              "uri": "file:///{DOCSET_PATH}/a.md",
-            },
-            "contentChanges": [
-              { "text": "New Content" }
-            ]
-          }
-    expect:
-      - method: "window/showMessage"
-        params: |
-          { "type": 3, "message": "File change detected on file `a.md` with latest content 'New Conten...'" }
+  - notification: "textDocument/didOpen"
+    params: |
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+          "text": "Content"
+        }
+      }
+  - expectNotification: "window/showMessage"
+    params: |
+      {
+        "type": 3,
+        "message": "File open detected on file `a.md` with content 'Content'"
+      }
+  - notification: "textDocument/didChange"
+    params: |
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+        },
+        "contentChanges": [
+          { "text": "New Content" }
+        ]
+      }
+  - expectNotification: "window/showMessage"
+    params: |
+      { "type": 3, "message": "File change detected on file `a.md` with latest content 'New Conten...'" }
