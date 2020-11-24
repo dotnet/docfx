@@ -60,7 +60,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return typeof(object).FullName;
             }
 
-            return GetDocumentationCommentId(symbol)?.Substring(2);
+            var id = GetDocumentationCommentId(symbol)?.Substring(2);
+
+            if ((id is null) && (symbol is IFunctionPointerTypeSymbol functionPointerTypeSymbol))
+            {
+                // Roslyn doesn't currently support doc comments for function pointer type symbols
+                // This returns just the stringified symbol to ensure the source and target parts
+                // match for reference item merging.
+
+                return functionPointerTypeSymbol.ToString();
+            }
+
+            return id;
         }
 
         private static string GetDocumentationCommentId(ISymbol symbol)

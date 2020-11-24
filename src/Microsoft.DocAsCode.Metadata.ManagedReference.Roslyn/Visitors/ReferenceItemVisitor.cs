@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
+    using System.Reflection.Metadata;
 
     using Microsoft.CodeAnalysis;
 
@@ -133,6 +134,99 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 DisplayName = "*",
                 DisplayNamesWithType = "*",
                 DisplayQualifiedNames = "*",
+            });
+        }
+
+        public override void VisitFunctionPointerType(IFunctionPointerTypeSymbol symbol)
+        {
+            ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+            {
+                DisplayName = "delegate*",
+                DisplayNamesWithType = "delegate*",
+                DisplayQualifiedNames = "delegate*",
+            });
+
+            var signature = symbol.Signature;
+            
+            if (signature.CallingConvention != SignatureCallingConvention.Default)
+            {
+                ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+                {
+                    DisplayName = "unmanaged",
+                    DisplayNamesWithType = "unmanaged",
+                    DisplayQualifiedNames = "unmanaged",
+                });
+
+                if ((signature.CallingConvention != SignatureCallingConvention.Unmanaged) || (signature.UnmanagedCallingConventionTypes.Length != 0))
+                {
+                    ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+                    {
+                        DisplayName = " [",
+                        DisplayNamesWithType = " [",
+                        DisplayQualifiedNames = " [",
+                    });
+
+                    if (signature.UnmanagedCallingConventionTypes.Length != 0)
+                    {
+                        for (int i = 0; i < signature.UnmanagedCallingConventionTypes.Length; i++)
+                        {
+                            if (i > 0)
+                            {
+                                ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+                                {
+                                    DisplayName = ", ",
+                                    DisplayNamesWithType = ", ",
+                                    DisplayQualifiedNames = ", ",
+                                });
+                            }
+                            signature.UnmanagedCallingConventionTypes[i].Accept(this);
+                        }
+                    }
+                    else
+                    {
+                        ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+                        {
+                            DisplayName = signature.CallingConvention.ToString(),
+                            DisplayNamesWithType = signature.CallingConvention.ToString(),
+                            DisplayQualifiedNames = signature.CallingConvention.ToString(),
+                        });
+                    }
+
+                    ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+                    {
+                        DisplayName = "]",
+                        DisplayNamesWithType = "]",
+                        DisplayQualifiedNames = "]",
+                    });
+                }
+            }
+
+            ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+            {
+                DisplayName = "<",
+                DisplayNamesWithType = "<",
+                DisplayQualifiedNames = "<",
+            });
+
+            foreach (var parameter in signature.Parameters)
+            {
+                parameter.Type.Accept(this);
+
+                ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+                {
+                    DisplayName = ", ",
+                    DisplayNamesWithType = ", ",
+                    DisplayQualifiedNames = ", ",
+                });
+            }
+
+            signature.ReturnType.Accept(this);
+
+            ReferenceItem.Parts[SyntaxLanguage.CSharp].Add(new LinkItem
+            {
+                DisplayName = ">",
+                DisplayNamesWithType = ">",
+                DisplayQualifiedNames = ">",
             });
         }
 
@@ -380,6 +474,99 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 DisplayName = "*",
                 DisplayNamesWithType = "*",
                 DisplayQualifiedNames = "*",
+            });
+        }
+
+        public override void VisitFunctionPointerType(IFunctionPointerTypeSymbol symbol)
+        {
+            ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+            {
+                DisplayName = "delegate*",
+                DisplayNamesWithType = "delegate*",
+                DisplayQualifiedNames = "delegate*",
+            });
+
+            var signature = symbol.Signature;
+
+            if (signature.CallingConvention != SignatureCallingConvention.Default)
+            {
+                ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+                {
+                    DisplayName = "unmanaged",
+                    DisplayNamesWithType = "unmanaged",
+                    DisplayQualifiedNames = "unmanaged",
+                });
+
+                if ((signature.CallingConvention != SignatureCallingConvention.Unmanaged) || (signature.UnmanagedCallingConventionTypes.Length != 0))
+                {
+                    ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+                    {
+                        DisplayName = " [",
+                        DisplayNamesWithType = " [",
+                        DisplayQualifiedNames = " [",
+                    });
+
+                    if (signature.UnmanagedCallingConventionTypes.Length != 0)
+                    {
+                        for (int i = 0; i < signature.UnmanagedCallingConventionTypes.Length; i++)
+                        {
+                            if (i > 0)
+                            {
+                                ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+                                {
+                                    DisplayName = ", ",
+                                    DisplayNamesWithType = ", ",
+                                    DisplayQualifiedNames = ", ",
+                                });
+                            }
+                            signature.UnmanagedCallingConventionTypes[i].Accept(this);
+                        }
+                    }
+                    else
+                    {
+                        ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+                        {
+                            DisplayName = signature.CallingConvention.ToString(),
+                            DisplayNamesWithType = signature.CallingConvention.ToString(),
+                            DisplayQualifiedNames = signature.CallingConvention.ToString(),
+                        });
+                    }
+
+                    ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+                    {
+                        DisplayName = "]",
+                        DisplayNamesWithType = "]",
+                        DisplayQualifiedNames = "]",
+                    });
+                }
+            }
+
+            ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+            {
+                DisplayName = "<",
+                DisplayNamesWithType = "<",
+                DisplayQualifiedNames = "<",
+            });
+
+            foreach (var parameter in signature.Parameters)
+            {
+                parameter.Type.Accept(this);
+
+                ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+                {
+                    DisplayName = ", ",
+                    DisplayNamesWithType = ", ",
+                    DisplayQualifiedNames = ", ",
+                });
+            }
+
+            signature.ReturnType.Accept(this);
+
+            ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
+            {
+                DisplayName = ">",
+                DisplayNamesWithType = ">",
+                DisplayQualifiedNames = ">",
             });
         }
 
