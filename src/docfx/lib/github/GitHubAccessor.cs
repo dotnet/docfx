@@ -19,7 +19,7 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class GitHubAccessor : IDisposable
+    internal sealed class GitHubAccessor
     {
         private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
 
@@ -76,12 +76,6 @@ namespace Microsoft.Docs.Build
         public Error[] Save()
         {
             return _userCache.Save();
-        }
-
-        public void Dispose()
-        {
-            _httpClient?.Dispose();
-            _syncRoot.Dispose();
         }
 
         private async Task<(Error?, GitHubUser?)> GetUserByLoginCore(string login)

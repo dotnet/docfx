@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -156,23 +155,6 @@ namespace Microsoft.Docs.Build
             // Default timeout of TelemetryClient.Flush is 100 seconds,
             // but we only want to wait for 2 seconds at most.
             Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(2000));
-        }
-
-        private class PerfScope : IDisposable
-        {
-            private readonly string _name;
-            private readonly Stopwatch _stopwatch;
-
-            public PerfScope(string name)
-            {
-                _name = name;
-                _stopwatch = Stopwatch.StartNew();
-            }
-
-            public void Dispose()
-            {
-                TrackOperationTime(_name, _stopwatch.Elapsed);
-            }
         }
 
         private static void TrackEvent(string name, IReadOnlyDictionary<string, string> properties)

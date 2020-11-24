@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TemplateEngine : IDisposable
+    internal class TemplateEngine
     {
         private readonly Config _config;
         private readonly Output _output;
@@ -163,11 +163,6 @@ namespace Microsoft.Docs.Build
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
-        }
-
-        public void Dispose()
-        {
-            _js.Dispose();
         }
 
         private RenderType GetRenderType(SourceInfo<string?> mime)
