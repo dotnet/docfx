@@ -96,9 +96,8 @@ steps:
     FolderPath: '$(Build.SourcesDirectory)/target/Release'
     Pattern: |
         **\*.dll
-        **\Microsoft.DocAsCode.Metadata.ManagedReference.FSharp.dll
         !**\System.*.dll
-        !**\Microsoft.*.dll
+        !**\Microsoft.!(DocAsCode).*.dll
         !**\NuGet.*.dll
         !**\FSharp.Core.*.dll
     UseMinimatch: true
