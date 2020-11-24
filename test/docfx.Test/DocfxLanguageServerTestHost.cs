@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
-            using var cts = new CancellationTokenSource(10000);
+            using var cts = new CancellationTokenSource(60000);
             while (true)
             {
                 var notification = await _notificationsChannel.Reader.ReadAsync(cts.Token).AsTask();
