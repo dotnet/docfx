@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
@@ -21,15 +22,18 @@ namespace Microsoft.Docs.Build
         private readonly Channel<LanguageServerNotification> _notificationsChannel =
            Channel.CreateUnbounded<LanguageServerNotification>();
 
+        private readonly Dictionary<string, string> _variables;
+
         private Task startUpTask;
 
         private static readonly string[] s_notificationsToListen = { "window/showMessage" };
 
         protected ILanguageClient Client { get; private set; }
 
-        public DocfxLanguageServerTestHost()
+        public DocfxLanguageServerTestHost(Dictionary<string, string> variables)
             : base(new JsonRpcTestOptions())
         {
+            _variables = variables;
         }
 
         public async Task InitializeAsync()
@@ -56,26 +60,19 @@ namespace Microsoft.Docs.Build
 
         public void SendNotification(LanguageServerNotification notification)
         {
-            Client.SendNotification(notification.Method, notification.Params);
+            Client.SendNotification(notification.Method, TestUtility.ApplyVariables(notification.Params, _variables));
         }
 
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
-            try
+            using var cts = new CancellationTokenSource(10000);
+            while (true)
             {
-                using var cts = new CancellationTokenSource(10000);
-                while (true)
+                var notification = await _notificationsChannel.Reader.ReadAsync(cts.Token).AsTask();
+                if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
                 {
-                    var notification = await _notificationsChannel.Reader.ReadAsync(cts.Token).AsTask();
-                    if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return notification;
-                    }
+                    return notification;
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                return default;
             }
         }
 

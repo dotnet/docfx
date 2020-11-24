@@ -19,12 +19,11 @@ namespace Microsoft.Docs.Build
     public static class DocfxTest
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
-        private static readonly JsonDiff s_languageServerNotificationJsonDiff = CreateLanguageServerNotificationJsonDiff();
+        private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
         private static readonly ConcurrentDictionary<string, object> s_locks = new ConcurrentDictionary<string, object>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
-        private static readonly AsyncLocal<Dictionary<string, string>> t_variables = new AsyncLocal<Dictionary<string, string>>();
 
         static DocfxTest()
         {
@@ -72,14 +71,14 @@ namespace Microsoft.Docs.Build
 
             lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
-                var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
+                var (docsetPath, appDataPath, outputPath, repos, variables) = CreateDocset(test, spec);
 
                 try
                 {
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
-                    RunCore(docsetPath, outputPath, test, spec);
+                    RunCore(docsetPath, outputPath, test, spec, variables);
                 }
                 catch (Exception exception)
                 {
@@ -98,7 +97,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos)
+        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
@@ -121,7 +120,7 @@ namespace Microsoft.Docs.Build
 
             var docsetPath = PathUtility.Normalize(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
 
-            t_variables.Value = new Dictionary<string, string>
+            var variables = new Dictionary<string, string>
             {
                 { "APP_BASE_PATH", AppContext.BaseDirectory },
                 { "DOCSET_PATH", docsetPath },
@@ -135,7 +134,7 @@ namespace Microsoft.Docs.Build
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
             };
 
-            var missingVariables = spec.Environments.Where(env => !t_variables.Value.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
+            var missingVariables = spec.Environments.Where(env => !variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
             if (missingVariables.Any())
             {
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
@@ -146,24 +145,24 @@ namespace Microsoft.Docs.Build
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
                     var packageUrl = new PackagePath(url);
-                    TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, t_variables.Value);
+                    TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
-                TestUtility.CreateFiles(docsetPath, spec.Inputs, t_variables.Value);
-                TestUtility.CreateFiles(cachePath, spec.Cache, t_variables.Value);
-                TestUtility.CreateFiles(statePath, spec.State, t_variables.Value);
+                TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
+                TestUtility.CreateFiles(cachePath, spec.Cache, variables);
+                TestUtility.CreateFiles(statePath, spec.State, variables);
 
                 File.WriteAllText(markerPath, "");
             }
 
-            return (docsetPath, appDataPath, outputPath, repos);
+            return (docsetPath, appDataPath, outputPath, repos, variables);
         }
 
-        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec)
+        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables)
         {
             if (spec.LanguageServer != null)
             {
-                RunLanguageServer(spec);
+                RunLanguageServer(spec, variables);
             }
             else if (spec.Locale != null)
             {
@@ -183,9 +182,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunLanguageServer(DocfxTestSpec spec)
+        private static void RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
         {
-            var lspTestHost = new DocfxLanguageServerTestHost();
+            var lspTestHost = new DocfxLanguageServerTestHost(variables);
             lspTestHost.InitializeAsync().GetAwaiter().GetResult();
 
             for (var i = 0; i < spec.LanguageServer.Count; i++)
@@ -199,7 +198,7 @@ namespace Microsoft.Docs.Build
                 {
                     var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
                     var actualNotification = lspTestHost.GetExpectedNotification(expectedNotification.Method).GetAwaiter().GetResult();
-                    s_languageServerNotificationJsonDiff.Verify(expectedNotification, actualNotification);
+                    s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
                 }
             }
         }
@@ -275,18 +274,12 @@ namespace Microsoft.Docs.Build
                 .Build();
         }
 
-        private static JsonDiff CreateLanguageServerNotificationJsonDiff()
+        private static JsonDiff CreateLanguageServerJsonDiff()
         {
-            var fileJsonDiff = new JsonDiffBuilder()
+            return new JsonDiffBuilder()
                 .UseAdditionalProperties()
                 .UseNegate()
                 .UseWildcard()
-                .Build();
-
-            return new JsonDiffBuilder()
-                .UseAdditionalProperties(null, IsRequiredOutput)
-                .UseIgnoreNull()
-                .UseJson(null, fileJsonDiff)
                 .Build();
         }
 

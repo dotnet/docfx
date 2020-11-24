@@ -131,16 +131,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void SendLanguageServerNotification(
-            DocfxLanguageServerTestHost testHost,
-            LanguageServerNotification notification,
-            IEnumerable<KeyValuePair<string, string>> variables = null)
-        {
-            notification.Params = ApplyVariables(notification.Params, variables);
-            testHost.SendNotification(notification);
-        }
-
-        private static JToken ApplyVariables(JToken value, IEnumerable<KeyValuePair<string, string>> variables)
+        public static JToken ApplyVariables(JToken value, IEnumerable<KeyValuePair<string, string>> variables)
         {
             if (variables != null && value != null)
             {
@@ -159,11 +150,12 @@ namespace Microsoft.Docs.Build
                 }
                 else if (value is JObject obj)
                 {
+                    var newObj = new JObject();
                     foreach (var (key, val) in obj)
                     {
-                        obj[key] = ApplyVariables(val, variables);
+                        newObj[key] = ApplyVariables(val, variables);
                     }
-                    return obj;
+                    return newObj;
                 }
             }
             return value;
