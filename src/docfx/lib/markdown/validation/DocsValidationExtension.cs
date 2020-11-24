@@ -26,6 +26,10 @@ namespace Microsoft.Docs.Build
             return builder.Use(document =>
             {
                 var currentFile = ((SourceInfo)InclusionContext.File).File;
+                if (currentFile.Format != FileFormat.Markdown)
+                {
+                    return;
+                }
 
                 var documentNodes = new List<ContentNode>();
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockItem codeBlockItem)>();
