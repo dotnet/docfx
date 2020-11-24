@@ -33,7 +33,8 @@ namespace Microsoft.Docs.Build
 
         public static void CreateFiles(
             string path,
-            IEnumerable<KeyValuePair<string, string>> files)
+            IEnumerable<KeyValuePair<string, string>> files,
+            IEnumerable<KeyValuePair<string, string>> variables = null)
         {
             foreach (var file in files)
             {
@@ -45,7 +46,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    File.WriteAllText(filePath, file.Value?.Replace("\r", "") ?? "");
+                    File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
                 }
             }
         }
@@ -54,7 +55,8 @@ namespace Microsoft.Docs.Build
             string path,
             TestGitCommit[] commits,
             string remote,
-            string branch)
+            string branch,
+            IEnumerable<KeyValuePair<string, string>> variables = null)
         {
             Directory.CreateDirectory(path);
 
@@ -78,7 +80,7 @@ namespace Microsoft.Docs.Build
 
                 foreach (var file in commit.Files)
                 {
-                    var content = file.Value?.Replace("\r", "") ?? "";
+                    var content = ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "";
                     using var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
                     var blob = repo.ObjectDatabase.CreateBlob(stream);
 
@@ -129,37 +131,42 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void ApplyVariables(DocfxTestSpec spec, IEnumerable<KeyValuePair<string, string>> variables)
+        public static void SendLanguageServerNotification(
+            DocfxLanguageServerTestHost testHost,
+            LanguageServerNotification notification,
+            IEnumerable<KeyValuePair<string, string>> variables = null)
         {
-            foreach (var repo in spec.Repos)
-            {
-                ApplyVariables(repo.Value, variables);
-            }
-
-            foreach (var lspSpec in spec.LanguageServer)
-            {
-                lspSpec.Params = ApplyVariables(lspSpec.Params, variables);
-            }
-            ApplyVariables(spec.Inputs, variables);
-            ApplyVariables(spec.Cache, variables);
-            ApplyVariables(spec.State, variables);
-            ApplyVariables(spec.Outputs, variables);
+            notification.Params = ApplyVariables(notification.Params, variables);
+            testHost.SendNotification(notification);
         }
 
-        private static void ApplyVariables(TestGitCommit[] commits, IEnumerable<KeyValuePair<string, string>> variables)
+        private static JToken ApplyVariables(JToken value, IEnumerable<KeyValuePair<string, string>> variables)
         {
-            foreach (var commit in commits)
+            if (variables != null && value != null)
             {
-                ApplyVariables(commit.Files, variables);
+                if (value is JValue && value.Type == JTokenType.String)
+                {
+                    return ApplyVariables((string)value, variables);
+                }
+                else if (value is JArray array)
+                {
+                    var newArray = new JArray();
+                    foreach (var item in array)
+                    {
+                        newArray.Add(ApplyVariables(item, variables));
+                    }
+                    return newArray;
+                }
+                else if (value is JObject obj)
+                {
+                    foreach (var (key, val) in obj)
+                    {
+                        obj[key] = ApplyVariables(val, variables);
+                    }
+                    return obj;
+                }
             }
-        }
-
-        private static void ApplyVariables(IDictionary<string, string> dictionary, IEnumerable<KeyValuePair<string, string>> variables)
-        {
-            foreach (var key in dictionary.Keys.ToList())
-            {
-                dictionary[key] = ApplyVariables(dictionary[key], variables);
-            }
+            return value;
         }
 
         private static string ApplyVariables(string value, IEnumerable<KeyValuePair<string, string>> variables)

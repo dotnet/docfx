@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.Docs.Build
 {
     public class LanguageServerTestSpec
@@ -9,6 +11,6 @@ namespace Microsoft.Docs.Build
 
         public string ExpectNotification { get; set; } = string.Empty;
 
-        public string Params { get; set; } = string.Empty;
+        public JToken Params { get; set; }
     }
 }

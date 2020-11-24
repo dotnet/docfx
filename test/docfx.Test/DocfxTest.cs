@@ -19,10 +19,12 @@ namespace Microsoft.Docs.Build
     public static class DocfxTest
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
+        private static readonly JsonDiff s_languageServerNotificationJsonDiff = CreateLanguageServerNotificationJsonDiff();
         private static readonly ConcurrentDictionary<string, object> s_locks = new ConcurrentDictionary<string, object>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
+        private static readonly AsyncLocal<Dictionary<string, string>> t_variables = new AsyncLocal<Dictionary<string, string>>();
 
         static DocfxTest()
         {
@@ -119,7 +121,7 @@ namespace Microsoft.Docs.Build
 
             var docsetPath = PathUtility.Normalize(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
 
-            var variables = new Dictionary<string, string>
+            t_variables.Value = new Dictionary<string, string>
             {
                 { "APP_BASE_PATH", AppContext.BaseDirectory },
                 { "DOCSET_PATH", docsetPath },
@@ -133,25 +135,23 @@ namespace Microsoft.Docs.Build
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
             };
 
-            var missingVariables = spec.Environments.Where(env => !variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
+            var missingVariables = spec.Environments.Where(env => !t_variables.Value.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
             if (missingVariables.Any())
             {
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
             }
-
-            TestUtility.ApplyVariables(spec, variables);
 
             if (!File.Exists(markerPath))
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
                 {
                     var packageUrl = new PackagePath(url);
-                    TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch);
+                    TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, t_variables.Value);
                 }
 
-                TestUtility.CreateFiles(docsetPath, spec.Inputs);
-                TestUtility.CreateFiles(cachePath, spec.Cache);
-                TestUtility.CreateFiles(statePath, spec.State);
+                TestUtility.CreateFiles(docsetPath, spec.Inputs, t_variables.Value);
+                TestUtility.CreateFiles(cachePath, spec.Cache, t_variables.Value);
+                TestUtility.CreateFiles(statePath, spec.State, t_variables.Value);
 
                 File.WriteAllText(markerPath, "");
             }
@@ -199,7 +199,7 @@ namespace Microsoft.Docs.Build
                 {
                     var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
                     var actualNotification = lspTestHost.GetExpectedNotification(expectedNotification.Method).GetAwaiter().GetResult();
-                    s_jsonDiff.Verify(expectedNotification, actualNotification);
+                    s_languageServerNotificationJsonDiff.Verify(expectedNotification, actualNotification);
                 }
             }
         }
@@ -270,9 +270,23 @@ namespace Microsoft.Docs.Build
                 .UseIgnoreNull()
                 .UseJson(null, fileJsonDiff)
                 .UseLogFile(fileJsonDiff)
-                .UseLanguageServerNotification(fileJsonDiff)
                 .UseHtml(IsHtml)
                 .Use(IsHtml, RemoveDataLinkType)
+                .Build();
+        }
+
+        private static JsonDiff CreateLanguageServerNotificationJsonDiff()
+        {
+            var fileJsonDiff = new JsonDiffBuilder()
+                .UseAdditionalProperties()
+                .UseNegate()
+                .UseWildcard()
+                .Build();
+
+            return new JsonDiffBuilder()
+                .UseAdditionalProperties(null, IsRequiredOutput)
+                .UseIgnoreNull()
+                .UseJson(null, fileJsonDiff)
                 .Build();
         }
 
@@ -351,25 +365,6 @@ namespace Microsoft.Docs.Build
                     }
 
                     return (string.Join('\n', expectedLines), string.Join('\n', actualLines));
-                });
-        }
-
-        private static JsonDiffBuilder UseLanguageServerNotification(this JsonDiffBuilder builder, JsonDiff jsonDiff)
-        {
-            return builder.Use(
-                (expected, actual, name) => string.Equals(name, "params", StringComparison.OrdinalIgnoreCase),
-                (expected, actual, name, _) =>
-                {
-                    if (expected.Type != JTokenType.String || actual.Type != JTokenType.String)
-                    {
-                        return (expected, actual);
-                    }
-
-                    var (e, a) = jsonDiff.Normalize(
-                            JToken.Parse(expected.Value<string>()),
-                            JToken.Parse(actual.Value<string>()));
-
-                    return (e.ToString(Formatting.Indented), a.ToString(Formatting.Indented));
                 });
         }
 

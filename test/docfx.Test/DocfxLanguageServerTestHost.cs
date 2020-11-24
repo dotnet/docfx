@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Pipelines;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.JsonRpc.Testing;
 using OmniSharp.Extensions.LanguageProtocol.Testing;
 using OmniSharp.Extensions.LanguageServer.Client;
@@ -18,8 +18,8 @@ namespace Microsoft.Docs.Build
 {
     public class DocfxLanguageServerTestHost : LanguageServerTestBase
     {
-        private readonly ConcurrentQueue<LanguageServerNotification> _notifications =
-           new ConcurrentQueue<LanguageServerNotification>();
+        private readonly Channel<LanguageServerNotification> _notificationsChannel =
+           Channel.CreateUnbounded<LanguageServerNotification>();
 
         private Task startUpTask;
 
@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 {
                     x.OnJsonNotification(name, @params =>
                     {
-                        _notifications.Enqueue(new LanguageServerNotification(name, JsonUtility.Serialize(@params)));
+                        _notificationsChannel.Writer.TryWrite(new LanguageServerNotification(name, @params));
                     });
                 }
             });
@@ -56,29 +56,27 @@ namespace Microsoft.Docs.Build
 
         public void SendNotification(LanguageServerNotification notification)
         {
-            Client.SendNotification(notification.Method, JsonUtility.DeserializeData<JObject>(notification.Params, null));
+            Client.SendNotification(notification.Method, notification.Params);
         }
 
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
-            LanguageServerNotification expectedNotification = null;
-            var waitTask = Task.Run(async () =>
+            try
             {
+                using var cts = new CancellationTokenSource(10000);
                 while (true)
                 {
-                    while (_notifications.TryDequeue(out var notification))
+                    var notification = await _notificationsChannel.Reader.ReadAsync(cts.Token).AsTask();
+                    if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
-                        {
-                            expectedNotification = notification;
-                            return;
-                        }
+                        return notification;
                     }
-                    await Task.Delay(100);
                 }
-            });
-            await Task.WhenAny(waitTask, Task.Delay(10000));
-            return expectedNotification;
+            }
+            catch (OperationCanceledException)
+            {
+                return default;
+            }
         }
 
         protected override (Stream clientOutput, Stream serverInput) SetupServer()
