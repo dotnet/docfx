@@ -18,11 +18,13 @@ namespace Microsoft.Docs.Build
 
         public bool NoRestore { get; set; }
 
+        public bool NoInputCheck { get; set; }
+
         public bool Temp { get; set; }
 
         public string Locale { get; set; }
 
-        public bool SkipInputCheck { get; set; }
+        public string[] BuildFiles { get; set; } = Array.Empty<string>();
 
         public string[] Environments { get; set; } = Array.Empty<string>();
 
@@ -35,6 +37,8 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, string> State { get; set; } = new Dictionary<string, string>();
 
         public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
+
+        public List<LanguageServerTestSpec> LanguageServer { get; set; } = new List<LanguageServerTestSpec>();
 
         public Dictionary<string, string> Http { get; set; } = new Dictionary<string, string>();
     }

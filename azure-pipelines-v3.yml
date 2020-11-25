@@ -219,6 +219,8 @@ jobs:
         params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
       azure-mediaplayer-typescript:
         params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
+      quantum-docs-pr:
+        params: https://github.com/MicrosoftDocs/quantum-docs-pr --timeout 30 --branch main
 
   steps:
   # Install .NET Core sdk

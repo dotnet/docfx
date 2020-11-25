@@ -19,10 +19,7 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
-        public ErrorLog(
-            ErrorBuilder errors,
-            Config config,
-            SourceMap? sourceMap = null)
+        public ErrorLog(ErrorBuilder errors, Config config, SourceMap? sourceMap = null)
         {
             _errors = errors;
             _config = config;

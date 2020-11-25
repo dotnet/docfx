@@ -1,6 +1,6 @@
 # Support ECMA2Yaml ops config
 os: windows, osx
-skipInputCheck: true
+noInputCheck: true
 repos:
   https://github.com/ops/ecma-yaml:
   - files:
@@ -111,7 +111,7 @@ outputs:
 ---
 # Support ECMA2Yaml fallback
 os: windows, osx
-skipInputCheck: true
+noInputCheck: true
 repos:
   https://github.com/ops/ecma-yaml.zh-cn:
   - files:
@@ -226,7 +226,7 @@ outputs:
 # Support ECMA2Yaml.id to configure toc output path
 # warn on duplciated xml files
 os: windows, osx
-skipInputCheck: true
+noInputCheck: true
 repos:
   https://github.com/ops/ecma-yaml:
   - files:

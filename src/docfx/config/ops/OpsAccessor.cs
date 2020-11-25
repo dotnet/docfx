@@ -21,10 +21,10 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsAccessor : ILearnServiceAccessor
     {
-        private const string TaxonomyServiceProdPath = "https://taxonomyapi-prod-wus.azurewebsites.net/taxonomies/simplified?" +
+        private const string TaxonomyServiceProdPath = "https://taxonomyservice.azurefd.net/taxonomies/simplified?" +
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
 
-        private const string TaxonomyServicePPEPath = "https://taxonomyapi-ppe.azurewebsites.net/taxonomies/simplified?" +
+        private const string TaxonomyServicePPEPath = "https://taxonomyserviceppe.azurefd.net/taxonomies/simplified?" +
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
