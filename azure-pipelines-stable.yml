@@ -9,8 +9,8 @@ steps:
   inputs:
     versionSpec: 8.x
 
-- task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 4.3.0'
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet'
 
 - task: CmdLine@1
   displayName: 'npm install'
