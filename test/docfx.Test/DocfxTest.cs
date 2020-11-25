@@ -210,7 +210,7 @@ namespace Microsoft.Docs.Build
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
 
-            using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.SkipInputCheck))
+            using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.NoInputCheck))
             {
                 var commandLine = new[]
                 {
@@ -220,7 +220,7 @@ namespace Microsoft.Docs.Build
                     dryRun ? "--dry-run" : null,
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
-                };
+                }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray());
             }

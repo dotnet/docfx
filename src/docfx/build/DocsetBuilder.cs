@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, documentProvider);
 
                 var filesToBuild = files.Length > 0
-                    ? files.Select(file => new PathString(file)).Where(_buildScope.Contains).Select(FilePath.Content).ToHashSet()
+                    ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
                     : publishUrlMap.GetAllFiles();
 
                 using (Progress.Start($"Building {filesToBuild.Count} files"))
