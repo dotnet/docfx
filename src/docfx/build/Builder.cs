@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,7 +30,9 @@ namespace Microsoft.Docs.Build
 
             using var errors = new ErrorWriter(options.Log);
 
-            new Builder(errors, workingDirectory, options).Build();
+            var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
+
+            new Builder(errors, workingDirectory, options).Build(files);
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
             Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
@@ -38,13 +41,13 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        public void Build()
+        public void Build(params string[] files)
         {
             try
             {
                 Watcher.StartActivity();
 
-                Parallel.ForEach(_docsets.Value, docset => docset.Build());
+                Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -64,6 +67,11 @@ namespace Microsoft.Docs.Build
                     let item = DocsetBuilder.Create(_errors, _workingDirectory, docset.docsetPath, docset.outputPath, _options)
                     where item != null
                     select item).ToArray();
+        }
+
+        private string GetPathToDocset(DocsetBuilder docset, string file)
+        {
+            return Path.GetRelativePath(docset.BuildOptions.DocsetPath, Path.Combine(_workingDirectory, file));
         }
     }
 }

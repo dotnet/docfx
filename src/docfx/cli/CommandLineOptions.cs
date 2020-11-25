@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Newtonsoft.Json.Linq;
@@ -23,6 +24,7 @@ namespace Microsoft.Docs.Build
         public bool LanguageServer;
         public string? Template;
         public string? TemplateBasePath;
+        public IReadOnlyList<string>? Files;
 
         public JObject? StdinConfig;
 

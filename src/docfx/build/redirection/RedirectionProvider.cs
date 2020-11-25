@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                 var path = item.SourcePath;
                 var redirectUrl = item.RedirectUrl;
 
-                if (!_buildScope.Glob(path))
+                if (!_buildScope.Contains(path))
                 {
                     continue;
                 }
