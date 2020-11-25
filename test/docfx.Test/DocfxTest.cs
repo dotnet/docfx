@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
 
         private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables)
         {
-            if (spec.LanguageServer != null)
+            if (spec.LanguageServer.Count != 0)
             {
                 RunLanguageServer(spec, variables);
             }
