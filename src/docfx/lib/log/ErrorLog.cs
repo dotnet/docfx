@@ -33,7 +33,13 @@ namespace Microsoft.Docs.Build
         {
             if (CustomRuleProvider != null)
             {
-                error = CustomRuleProvider.ApplyCustomRule(error);
+                try
+                {
+                    error = CustomRuleProvider.ApplyCustomRule(error);
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                }
             }
 
             if (error.Level == ErrorLevel.Off)

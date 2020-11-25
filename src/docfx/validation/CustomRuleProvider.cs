@@ -67,10 +67,10 @@ namespace Microsoft.Docs.Build
             if (TryGetCustomRule(error, out var customRule))
             {
                 error = WithCustomRule(error, customRule);
-                var source = error.Source?.File;
-                var userMeta = source != null ? _metadataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
-                error = error.WithMsAuthor(userMeta?.MsAuthor);
             }
+            var source = error.Source?.File;
+            var userMeta = source != null ? _metadataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
+            error = error.WithMsAuthor(userMeta?.MsAuthor);
             return error;
         }
 

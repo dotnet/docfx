@@ -43,6 +43,19 @@ outputs:
   a.json: |
     { "ms.custom-metadata": null }
 ---
+# Add ms.author
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    ms.author: xxx
+    ---
+    [!include[]()]
+    # Heading
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"circular-reference","ms.author":"xxx","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/a.md'.","file":"docs/a.md"}
+---
 # Report error for invalid yaml header value type
 inputs:
   docfx.yml:

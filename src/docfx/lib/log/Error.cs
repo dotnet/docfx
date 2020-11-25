@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -95,28 +96,69 @@ namespace Microsoft.Docs.Build
             var end_line = source?.EndLine ?? 0;
             var column = source?.Column ?? 0;
             var end_column = source?.EndColumn ?? 0;
-            var data = new JObject
+            return JsonUtility.Serialize(new ErrorItem
             {
-                new JProperty("message_severity", Level),
-                new JProperty("Code", Code),
-                new JProperty("message", Message),
-                new JProperty("file", file),
-                new JProperty("ms.author", MsAuthor),
-                new JProperty("line", line),
-                new JProperty("end_line", end_line),
-                new JProperty("column", column),
-                new JProperty("end_column", end_column),
-                new JProperty("log_item_type", "user"),
-                new JProperty("pull_request_only", PullRequestOnly ? (bool?)true : null),
-                new JProperty("property_path", PropertyPath),
-                new JProperty("date_time", DateTime.UtcNow),
-            };
-            return JsonUtility.Serialize(data);
+                MessageSeverity = Level,
+                Code = Code,
+                Message = Message,
+                File = file,
+                Line = line,
+                EndLine = end_line,
+                Column = column,
+                EndColumn = end_column,
+                LogItemType = "user",
+                PullRequestOnly = PullRequestOnly ? (bool?)true : null,
+                PropertyPath = PropertyPath,
+                DateTime = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
+                MsAuthor = MsAuthor,
+            });
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
             return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
+        }
+
+        private class ErrorItem
+        {
+            [JsonProperty("message_severity")]
+            public ErrorLevel MessageSeverity { get; set; }
+
+            [JsonProperty("code")]
+            public string Code { get; set; } = string.Empty;
+
+            [JsonProperty("message")]
+            public string Message { get; set; } = string.Empty;
+
+            [JsonProperty("file")]
+            public PathString? File { get; set; }
+
+            [JsonProperty("line")]
+            public int Line { get; set; }
+
+            [JsonProperty("end_line")]
+            public int EndLine { get; set; }
+
+            [JsonProperty("column")]
+            public int Column { get; set; }
+
+            [JsonProperty("end_column")]
+            public int EndColumn { get; set; }
+
+            [JsonProperty("log_item_type")]
+            public string LogItemType { get; set; } = string.Empty;
+
+            [JsonProperty("pull_request_only")]
+            public bool? PullRequestOnly { get; set; }
+
+            [JsonProperty("property_path")]
+            public string? PropertyPath { get; set; }
+
+            [JsonProperty("date_time")]
+            public DateTime DateTime { get; set; }
+
+            [JsonProperty("ms.author")]
+            public string? MsAuthor { get; set; }
         }
 
         private class EqualityComparer : IEqualityComparer<Error>
