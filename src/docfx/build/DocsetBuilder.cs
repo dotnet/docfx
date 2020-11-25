@@ -2,8 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -25,6 +28,8 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaLoader _jsonSchemaLoader;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
+
+        public BuildOptions BuildOptions => _buildOptions;
 
         private DocsetBuilder(
             ErrorBuilder errors,
@@ -91,7 +96,7 @@ namespace Microsoft.Docs.Build
 
         [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "Long constructor parameter list")]
         [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Long constructor list")]
-        public void Build()
+        public void Build(params string[] files)
         {
             try
             {
@@ -133,9 +138,13 @@ namespace Microsoft.Docs.Build
                 var tocBuilder = new TableOfContentsBuilder(_config, tableOfContentsLoader, contentValidator, _metadataProvider, metadataValidator, documentProvider, _monikerProvider, publishModelBuilder, templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, documentProvider);
 
-                using (Progress.Start("Building files"))
+                var filesToBuild = files.Length > 0
+                    ? files.Select(file => new PathString(file)).Where(_buildScope.Contains).Select(FilePath.Content).ToHashSet()
+                    : publishUrlMap.GetAllFiles();
+
+                using (Progress.Start($"Building {filesToBuild.Count} files"))
                 {
-                    ParallelUtility.ForEach(_errors, publishUrlMap.GetAllFiles(), file => BuildFile(file, _errors, contentValidator, documentProvider, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
+                    ParallelUtility.ForEach(_errors, filesToBuild, file => BuildFile(file, _errors, contentValidator, documentProvider, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
                     ParallelUtility.ForEach(_errors, linkResolver.GetAdditionalResources(), file => resourceBuilder.Build(file));
                 }
 

@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             return ContentType.Page;
         }
 
-        public bool Glob(PathString path)
+        public bool Contains(PathString path)
         {
             return MapPath(path).mapping != null;
         }
@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
 
                 Parallel.ForEach(allFiles, file =>
                 {
-                    if (Glob(file.Path))
+                    if (Contains(file.Path))
                     {
                         files.TryAdd(file, GetContentType(file));
                     }
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
                     {
                         Parallel.ForEach(depFiles, file =>
                         {
-                            if (Glob(file.Path))
+                            if (Contains(file.Path))
                             {
                                 files.TryAdd(file, GetContentType(file));
                             }

@@ -118,6 +118,7 @@ namespace Microsoft.Docs.Build
 
                     // build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
+                    syntax.DefineOptionList("file", ref options.Files, "Build only the specified files.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
 
                     syntax.DefineOption(
