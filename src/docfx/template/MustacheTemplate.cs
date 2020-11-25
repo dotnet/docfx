@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
                 throw Errors.Template.MustacheNotFound($"{templateName}.tmpl").ToException();
 
             var result = new StringBuilder(1024);
-            var xrefmap = model is JObject obj && obj.TryGetValue("xrefmap", out var item) && item is JObject map ? map : null;
+            var xrefmap = model is JObject obj && obj.TryGetValue("_xrefmap", out var item) && item is JObject map ? map : null;
             context.Push(model);
             Render(template, result, context, xrefmap);
             return result.ToString();

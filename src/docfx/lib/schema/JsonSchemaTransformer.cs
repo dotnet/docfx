@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             var result = TransformContentCore(errors, schemaMap, file, schema, token, uidCount, "", xrefmap);
             if (xrefmap.Count > 0)
             {
-                result["xrefmap"] = xrefmap;
+                result["_xrefmap"] = xrefmap;
             }
             return result;
         }
