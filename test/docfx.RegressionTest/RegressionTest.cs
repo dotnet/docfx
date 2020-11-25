@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
         {
             if (s_isPullRequest)
             {
-                SendPullRequestComments().GetAwaiter().GetResult();
+                SendPullRequestComments();
             }
             else
             {
@@ -364,12 +364,12 @@ namespace Microsoft.Docs.Build
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        private static Task SendPullRequestComments(string? crashedMessage = null)
+        private static void SendPullRequestComments(string? crashedMessage = null)
         {
             var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
             if (s_testResult.succeeded && !isTimeout && crashedMessage == null)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             var statusIcon = crashedMessage != null
@@ -389,10 +389,8 @@ namespace Microsoft.Docs.Build
 
             if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_NUMBER") ?? "", out var prNumber))
             {
-                return SendGitHubPullRequestComments(prNumber, body);
+                SendGitHubPullRequestComments(prNumber, body).GetAwaiter().GetResult();
             }
-
-            return Task.CompletedTask;
         }
 
         private static async Task SendGitHubPullRequestComments(int prNumber, string body)

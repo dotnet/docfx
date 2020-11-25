@@ -26,8 +26,7 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(
-            ILanguageServer languageServer)
+        public TextDocumentHandler(ILanguageServer languageServer)
         {
             _languageServer = languageServer;
         }

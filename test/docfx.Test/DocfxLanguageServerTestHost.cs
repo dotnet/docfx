@@ -19,26 +19,17 @@ namespace Microsoft.Docs.Build
 {
     public class DocfxLanguageServerTestHost : LanguageServerTestBase
     {
-        private readonly Channel<LanguageServerNotification> _notificationsChannel =
-           Channel.CreateUnbounded<LanguageServerNotification>();
-
-        private readonly Dictionary<string, string> _variables;
-
-        private Task startUpTask;
-
         private static readonly string[] s_notificationsToListen = { "window/showMessage" };
 
-        protected ILanguageClient Client { get; private set; }
+        private readonly Channel<LanguageServerNotification> _notifications = Channel.CreateUnbounded<LanguageServerNotification>();
+        private readonly Dictionary<string, string> _variables;
+        private readonly Lazy<Task<ILanguageClient>> _client;
 
         public DocfxLanguageServerTestHost(Dictionary<string, string> variables)
             : base(new JsonRpcTestOptions())
         {
             _variables = variables;
-        }
-
-        public async Task InitializeAsync()
-        {
-            Client = await InitializeClient(x =>
+            _client = new Lazy<Task<ILanguageClient>>(() => InitializeClient(x =>
             {
                 x.WithCapability(new WorkspaceEditCapability()
                 {
@@ -50,26 +41,25 @@ namespace Microsoft.Docs.Build
                 {
                     x.OnJsonNotification(name, @params =>
                     {
-                        _notificationsChannel.Writer.TryWrite(new LanguageServerNotification(name, @params));
+                        _notifications.Writer.TryWrite(new LanguageServerNotification(name, @params));
                     });
                 }
-            });
-
-            await startUpTask;
+            }));
         }
 
-        public void SendNotification(LanguageServerNotification notification)
+        public async Task SendNotification(LanguageServerNotification notification)
         {
-            Client.SendNotification(notification.Method, TestUtility.ApplyVariables(notification.Params, _variables));
+            var client = await _client.Value;
+            client.SendNotification(notification.Method, TestUtility.ApplyVariables(notification.Params, _variables));
         }
 
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
             using var cts = new CancellationTokenSource(60000);
 
-            while (await _notificationsChannel.Reader.WaitToReadAsync(cts.Token))
+            while (await _notifications.Reader.WaitToReadAsync(cts.Token))
             {
-                var notification = await _notificationsChannel.Reader.ReadAsync();
+                var notification = await _notifications.Reader.ReadAsync();
                 if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
                 {
                     return notification;
@@ -83,7 +73,7 @@ namespace Microsoft.Docs.Build
             var clientPipe = new Pipe(TestOptions.DefaultPipeOptions);
             var serverPipe = new Pipe(TestOptions.DefaultPipeOptions);
 
-            startUpTask = LanguageServerHost.StartLanguageServer(clientPipe.Reader.AsStream(), serverPipe.Writer.AsStream());
+            LanguageServerHost.StartLanguageServer(clientPipe.Reader.AsStream(), serverPipe.Writer.AsStream()).GetAwaiter().GetResult();
 
             return (serverPipe.Reader.AsStream(), clientPipe.Writer.AsStream());
         }
