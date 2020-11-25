@@ -17,17 +17,15 @@ namespace Microsoft.Docs.Build
 
         private readonly (Func<string, bool> glob, SourceInfo<string?>)[] _rules;
 
-        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _configMonikerRangeCache = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _configMonikerRangeCache
+                   = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
+
         private readonly ConcurrentDictionary<FilePath, Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>> _monikerCache =
                      new ConcurrentDictionary<FilePath, Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>>();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
-        public MonikerProvider(
-            Config config,
-            BuildScope buildScope,
-            MetadataProvider metadataProvider,
-            FileResolver fileResolver)
+        public MonikerProvider(Config config, BuildScope buildScope, MetadataProvider metadataProvider, FileResolver fileResolver)
         {
             _config = config;
             _buildScope = buildScope;
