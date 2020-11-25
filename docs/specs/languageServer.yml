@@ -1,5 +1,6 @@
 ---
 # Basic lsp test
+os: windows
 inputs:
   docfx.yml:
   a.md: |
