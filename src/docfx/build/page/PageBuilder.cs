@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
-        private readonly TableOfContentsMap _tocMap;
+        private readonly TocMap _tocMap;
         private readonly LinkResolver _linkResolver;
         private readonly ContributionProvider _contributionProvider;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
-            TableOfContentsMap tocMap,
+            TocMap tocMap,
             LinkResolver linkResolver,
             ContributionProvider contributionProvider,
             BookmarkValidator bookmarkValidator,

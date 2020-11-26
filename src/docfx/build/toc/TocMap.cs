@@ -13,28 +13,28 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// The mappings between toc and document
     /// </summary>
-    internal class TableOfContentsMap
+    internal class TocMap
     {
         private readonly Config _config;
         private readonly Input _input;
         private readonly ErrorBuilder _errors;
         private readonly BuildScope _buildScope;
-        private readonly TableOfContentsLoader _tocLoader;
-        private readonly TableOfContentsParser _tocParser;
+        private readonly TocLoader _tocLoader;
+        private readonly TocParser _tocParser;
         private readonly DocumentProvider _documentProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
 
         private readonly Lazy<(Dictionary<FilePath, FilePath[]> tocToTocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
-        public TableOfContentsMap(
+        public TocMap(
             Config config,
             ErrorBuilder errors,
             Input input,
             BuildScope buildScope,
             DependencyMapBuilder dependencyMapBuilder,
-            TableOfContentsParser tocParser,
-            TableOfContentsLoader tocLoader,
+            TocParser tocParser,
+            TocLoader tocLoader,
             DocumentProvider documentProvider,
             ContentValidator contentValidator)
         {
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                 var allServicePages = new ConcurrentBag<FilePath>();
 
                 // Parse and split TOC
-                ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.TableOfContents), file =>
+                ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.Toc), file =>
                 {
                     SplitToc(file, _tocParser.Parse(file, _errors), tocs);
                 });
@@ -219,7 +219,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void SplitToc(FilePath file, TableOfContentsNode toc, ConcurrentBag<FilePath> result)
+        private void SplitToc(FilePath file, TocNode toc, ConcurrentBag<FilePath> result)
         {
             if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
             {
@@ -227,7 +227,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var newToc = new TableOfContentsNode(toc);
+            var newToc = new TocNode(toc);
 
             foreach (var item in toc.Items)
             {
@@ -253,12 +253,12 @@ namespace Microsoft.Docs.Build
                 _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
                 result.Add(newNodeFile);
 
-                var newChild = new TableOfContentsNode(child)
+                var newChild = new TocNode(child)
                 {
                     Href = child.Href.With($"_splitted/{name}/"),
                 };
 
-                newToc.Items.Add(new SourceInfo<TableOfContentsNode>(newChild, item.Source));
+                newToc.Items.Add(new SourceInfo<TocNode>(newChild, item.Source));
             }
 
             var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
@@ -267,9 +267,9 @@ namespace Microsoft.Docs.Build
             result.Add(newTocFile);
         }
 
-        private TableOfContentsNode SplitTocNode(TableOfContentsNode node)
+        private TocNode SplitTocNode(TocNode node)
         {
-            var newNode = new TableOfContentsNode(node)
+            var newNode = new TocNode(node)
             {
                 TopicHref = node.TopicHref.With(FixHref(node.TopicHref)),
                 TocHref = node.TopicHref.With(FixHref(node.TocHref)),

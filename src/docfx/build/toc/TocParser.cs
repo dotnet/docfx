@@ -13,20 +13,20 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsParser
+    internal class TocParser
     {
         private readonly Input _input;
         private readonly MarkdownEngine _markdownEngine;
         private readonly DocumentProvider _documentProvider;
 
-        public TableOfContentsParser(Input input, MarkdownEngine markdownEngine, DocumentProvider documentProvider)
+        public TocParser(Input input, MarkdownEngine markdownEngine, DocumentProvider documentProvider)
         {
             _input = input;
             _markdownEngine = markdownEngine;
             _documentProvider = documentProvider;
         }
 
-        public TableOfContentsNode Parse(FilePath file, ErrorBuilder errors)
+        public TocNode Parse(FilePath file, ErrorBuilder errors)
         {
             return file.Format switch
             {
@@ -37,23 +37,23 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static TableOfContentsNode Deserialize(JToken token, ErrorBuilder errors)
+        private static TocNode Deserialize(JToken token, ErrorBuilder errors)
         {
             if (token is JArray tocArray)
             {
                 // toc model
-                return new TableOfContentsNode { Items = JsonUtility.ToObject<List<SourceInfo<TableOfContentsNode>>>(errors, tocArray) };
+                return new TocNode { Items = JsonUtility.ToObject<List<SourceInfo<TocNode>>>(errors, tocArray) };
             }
             else if (token is JObject tocObject)
             {
                 // toc root model
-                return JsonUtility.ToObject<TableOfContentsNode>(errors, tocObject);
+                return JsonUtility.ToObject<TocNode>(errors, tocObject);
             }
 
-            return new TableOfContentsNode();
+            return new TocNode();
         }
 
-        private TableOfContentsNode ParseMarkdown(string content, FilePath file, ErrorBuilder errors)
+        private TocNode ParseMarkdown(string content, FilePath file, ErrorBuilder errors)
         {
             var headingBlocks = new List<HeadingBlock>();
             var ast = _markdownEngine.Parse(errors, content, new SourceInfo(file), MarkdownPipelineType.TocMarkdown);
@@ -69,24 +69,24 @@ namespace Microsoft.Docs.Build
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:
-                        errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.GetSourceInfo()));
+                        errors.Add(Errors.Toc.InvalidTocSyntax(block.GetSourceInfo()));
                         break;
                 }
             }
 
             using var reader = new StringReader(content);
-            return new TableOfContentsNode { Items = BuildTree(errors, headingBlocks) };
+            return new TocNode { Items = BuildTree(errors, headingBlocks) };
         }
 
-        private List<SourceInfo<TableOfContentsNode>> BuildTree(ErrorBuilder errors, List<HeadingBlock> blocks)
+        private List<SourceInfo<TocNode>> BuildTree(ErrorBuilder errors, List<HeadingBlock> blocks)
         {
             if (blocks.Count <= 0)
             {
-                return new List<SourceInfo<TableOfContentsNode>>();
+                return new List<SourceInfo<TocNode>>();
             }
 
-            var result = new TableOfContentsNode();
-            var stack = new Stack<(int level, TableOfContentsNode item)>();
+            var result = new TocNode();
+            var stack = new Stack<(int level, TocNode item)>();
 
             // Level of root node is determined by its first child
             var parent = (level: blocks[0].Level - 1, node: result);
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
                 if (parent.node is null || currentLevel != parent.level + 1)
                 {
-                    errors.Add(Errors.TableOfContents.InvalidTocLevel(block.GetSourceInfo(), parent.level, currentLevel));
+                    errors.Add(Errors.Toc.InvalidTocLevel(block.GetSourceInfo(), parent.level, currentLevel));
                 }
                 else
                 {
@@ -121,19 +121,19 @@ namespace Microsoft.Docs.Build
             return result.Items;
         }
 
-        private SourceInfo<TableOfContentsNode>? GetItem(ErrorBuilder errors, HeadingBlock block)
+        private SourceInfo<TocNode>? GetItem(ErrorBuilder errors, HeadingBlock block)
         {
             var source = block.GetSourceInfo();
-            var currentItem = new TableOfContentsNode();
+            var currentItem = new TocNode();
             if (block.Inline is null || !block.Inline.Any())
             {
                 currentItem.Name = new SourceInfo<string?>(null, source);
-                return new SourceInfo<TableOfContentsNode>(currentItem, source);
+                return new SourceInfo<TocNode>(currentItem, source);
             }
 
             if (block.Inline.Count() > 1 && block.Inline.Any(l => l is XrefInline || l is LinkInline))
             {
-                errors.Add(Errors.TableOfContents.InvalidTocSyntax(block.GetSourceInfo()));
+                errors.Add(Errors.Toc.InvalidTocSyntax(block.GetSourceInfo()));
                 return null;
             }
 
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
             if (xrefLink != null && xrefLink is XrefInline xrefInline && !string.IsNullOrEmpty(xrefInline.Href))
             {
                 currentItem.Uid = new SourceInfo<string?>(xrefInline.Href, xrefInline.GetSourceInfo());
-                return new SourceInfo<TableOfContentsNode>(currentItem, source);
+                return new SourceInfo<TocNode>(currentItem, source);
             }
 
             var link = block.Inline.FirstOrDefault(l => l is LinkInline);
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
                 currentItem.Name = new SourceInfo<string?>(_markdownEngine.ToPlainText(block.Inline), block.Inline.GetSourceInfo());
             }
 
-            return new SourceInfo<TableOfContentsNode>(currentItem, source);
+            return new SourceInfo<TocNode>(currentItem, source);
         }
     }
 }

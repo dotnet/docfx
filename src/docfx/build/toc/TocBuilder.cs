@@ -6,10 +6,10 @@ using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsBuilder
+    internal class TocBuilder
     {
         private readonly Config _config;
-        private readonly TableOfContentsLoader _tableOfContentsLoader;
+        private readonly TocLoader _tocLoader;
         private readonly ContentValidator _contentValidator;
         private readonly MetadataProvider _metadataProvider;
         private readonly MetadataValidator _metadataValidator;
@@ -19,9 +19,9 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly Output _output;
 
-        public TableOfContentsBuilder(
+        public TocBuilder(
             Config config,
-            TableOfContentsLoader tableOfContentsLoader,
+            TocLoader tocLoader,
             ContentValidator contentValidator,
             MetadataProvider metadataProvider,
             MetadataValidator metadataValidator,
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             Output output)
         {
             _config = config;
-            _tableOfContentsLoader = tableOfContentsLoader;
+            _tocLoader = tocLoader;
             _contentValidator = contentValidator;
             _metadataProvider = metadataProvider;
             _metadataValidator = metadataValidator;
@@ -46,18 +46,18 @@ namespace Microsoft.Docs.Build
         public void Build(ErrorBuilder errors, FilePath file)
         {
             // load toc tree
-            var (node, _, _, _) = _tableOfContentsLoader.Load(file);
+            var (node, _, _, _) = _tocLoader.Load(file);
 
             _contentValidator.ValidateTocDeprecated(file);
 
             var metadata = _metadataProvider.GetMetadata(errors, file);
             _metadataValidator.ValidateMetadata(errors, metadata.RawJObject, file);
 
-            var tocMetadata = JsonUtility.ToObject<TableOfContentsMetadata>(errors, metadata.RawJObject);
+            var tocMetadata = JsonUtility.ToObject<TocMetadata>(errors, metadata.RawJObject);
 
             var path = _documentProvider.GetSitePath(file);
 
-            var model = new TableOfContentsModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, path);
+            var model = new TocModel(node.Items.Select(item => item.Value).ToArray(), tocMetadata, path);
 
             var outputPath = _documentProvider.GetOutputPath(file);
 

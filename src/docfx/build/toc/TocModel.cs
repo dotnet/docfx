@@ -5,16 +5,16 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsModel
+    internal class TocModel
     {
-        public TableOfContentsMetadata Metadata { get; }
+        public TocMetadata Metadata { get; }
 
-        public TableOfContentsNode[] Items { get; }
+        public TocNode[] Items { get; }
 
         [JsonProperty("_path")]
         public string Path { get; }
 
-        public TableOfContentsModel(TableOfContentsNode[] items, TableOfContentsMetadata metadata, string path)
+        public TocModel(TocNode[] items, TocMetadata metadata, string path)
         {
             Items = items;
             Metadata = metadata;

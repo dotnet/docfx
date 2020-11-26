@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class TableOfContentsLoader
+    internal class TocLoader
     {
         private readonly PathString _docsetPath;
         private readonly Input _input;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
-        private readonly TableOfContentsParser _parser;
+        private readonly TocParser _parser;
         private readonly MonikerProvider _monikerProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
@@ -27,8 +27,8 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
         private readonly BuildScope _buildScope;
 
-        private readonly MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)> _cache =
-                     new MemoryCache<FilePath, (TableOfContentsNode, List<FilePath>, List<FilePath>, List<FilePath>)>();
+        private readonly MemoryCache<FilePath, (TocNode, List<FilePath>, List<FilePath>, List<FilePath>)> _cache =
+                     new MemoryCache<FilePath, (TocNode, List<FilePath>, List<FilePath>, List<FilePath>)>();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
@@ -36,12 +36,12 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<ImmutableStack<FilePath>> t_recursionDetector =
                             new AsyncLocal<ImmutableStack<FilePath>> { Value = ImmutableStack<FilePath>.Empty };
 
-        public TableOfContentsLoader(
+        public TocLoader(
             PathString docsetPath,
             Input input,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
-            TableOfContentsParser parser,
+            TocParser parser,
             MonikerProvider monikerProvider,
             DependencyMapBuilder dependencyMapBuilder,
             ContentValidator contentValidator,
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             return TocHrefType.RelativeFile;
         }
 
-        public (TableOfContentsNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
+        public (TocNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
             Load(FilePath file)
         {
             return _cache.GetOrAdd(file, _ =>
@@ -99,15 +99,15 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private TableOfContentsNode JoinToc(TableOfContentsNode referenceToc, string topLevelTocFilePath, JoinTOCConfig joinTOCConfig)
+        private TocNode JoinToc(TocNode referenceToc, string topLevelTocFilePath, JoinTOCConfig joinTOCConfig)
         {
             var topLevelToc = _parser.Parse(FilePath.Content(new PathString(topLevelTocFilePath)), _errors);
             TraverseAndConvertHref(topLevelToc, joinTOCConfig);
-            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TableOfContentsNode>());
+            TraverseAndMerge(topLevelToc, referenceToc.Items, new HashSet<TocNode>());
             return topLevelToc;
         }
 
-        private void TraverseAndConvertHref(TableOfContentsNode node, JoinTOCConfig joinTOCConfig)
+        private void TraverseAndConvertHref(TocNode node, JoinTOCConfig joinTOCConfig)
         {
             if (!string.IsNullOrEmpty(node.Href.Value) && !(node.Href.Value.StartsWith("~/") || node.Href.Value.StartsWith("~\\")))
             {
@@ -131,9 +131,9 @@ namespace Microsoft.Docs.Build
         }
 
         private void TraverseAndMerge(
-            TableOfContentsNode node,
-            List<SourceInfo<TableOfContentsNode>> itemsToMatch,
-            HashSet<TableOfContentsNode> matched)
+            TocNode node,
+            List<SourceInfo<TocNode>> itemsToMatch,
+            HashSet<TocNode> matched)
         {
             foreach (var pattern in node.Children)
             {
@@ -153,7 +153,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private (TableOfContentsNode node, List<FilePath> servicePages) LoadTocFile(
+        private (TocNode node, List<FilePath> servicePages) LoadTocFile(
             FilePath file, FilePath rootPath, List<FilePath> referencedFiles, List<FilePath> referencedTocs)
         {
             var servicePages = new List<FilePath>();
@@ -207,7 +207,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void AddOverviewPage(TableOfContentsNode toc)
+        private void AddOverviewPage(TocNode toc)
         {
             if (toc.Items.Count == 0)
             {
@@ -221,23 +221,23 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(toc.Uid) || !string.IsNullOrEmpty(toc.Href))
             {
-                var overview = new TableOfContentsNode(toc);
+                var overview = new TocNode(toc);
                 overview.Expanded = false;
                 overview.Name = overview.Name.With("Overview");
-                toc.Items.Insert(0, new SourceInfo<TableOfContentsNode>(overview));
+                toc.Items.Insert(0, new SourceInfo<TocNode>(overview));
                 toc.Href = toc.Href.With(null);
                 toc.Uid = toc.Uid.With(null);
             }
         }
 
-        private List<SourceInfo<TableOfContentsNode>> LoadTocNodes(
-            List<SourceInfo<TableOfContentsNode>> nodes,
+        private List<SourceInfo<TocNode>> LoadTocNodes(
+            List<SourceInfo<TocNode>> nodes,
             FilePath filePath,
             FilePath rootPath,
             List<FilePath> referencedFiles,
             List<FilePath> referencedTocs)
         {
-            var newNodes = new SourceInfo<TableOfContentsNode>[nodes.Count];
+            var newNodes = new SourceInfo<TocNode>[nodes.Count];
 
             Parallel.For(0, nodes.Count, i =>
             {
@@ -254,8 +254,8 @@ namespace Microsoft.Docs.Build
             return newNodes.ToList();
         }
 
-        private SourceInfo<TableOfContentsNode> LoadTocNode(
-            SourceInfo<TableOfContentsNode> node,
+        private SourceInfo<TocNode> LoadTocNode(
+            SourceInfo<TocNode> node,
             FilePath filePath,
             FilePath rootPath,
             List<FilePath> referencedFiles,
@@ -277,7 +277,7 @@ namespace Microsoft.Docs.Build
             var items = subChildren?.Items ?? LoadTocNodes(node.Value.Items, filePath, rootPath, referencedFiles, referencedTocs);
 
             // set resolved href/document back
-            var newNode = new TableOfContentsNode(node)
+            var newNode = new TocNode(node)
             {
                 Href = resolvedTocHref.Or(resolvedTopicHref).Or(subChildrenFirstItem?.Href),
                 TocHref = default,
@@ -298,10 +298,10 @@ namespace Microsoft.Docs.Build
                 _errors.Add(Errors.JsonSchema.MissingAttribute(newNode.Name.Source ?? node.Source, "name"));
             }
 
-            return new SourceInfo<TableOfContentsNode>(newNode, node);
+            return new SourceInfo<TocNode>(newNode, node);
         }
 
-        private MonikerList GetMonikers(TableOfContentsNode currentItem, FilePath filePath, FilePath rootPath)
+        private MonikerList GetMonikers(TocNode currentItem, FilePath filePath, FilePath rootPath)
         {
             var monikers = MonikerList.Union(GetMonikerLists(currentItem));
 
@@ -320,7 +320,7 @@ namespace Microsoft.Docs.Build
             return monikers;
         }
 
-        private IEnumerable<MonikerList> GetMonikerLists(TableOfContentsNode currentItem)
+        private IEnumerable<MonikerList> GetMonikerLists(TocNode currentItem)
         {
             if (!string.IsNullOrEmpty(currentItem.Href))
             {
@@ -342,7 +342,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private SourceInfo<string?> GetTocHref(TableOfContentsNode tocInputModel)
+        private SourceInfo<string?> GetTocHref(TocNode tocInputModel)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TocHref))
             {
@@ -353,7 +353,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    _errors.AddIfNotNull(Errors.TableOfContents.InvalidTocHref(tocInputModel.TocHref));
+                    _errors.AddIfNotNull(Errors.Toc.InvalidTocHref(tocInputModel.TocHref));
                 }
             }
 
@@ -365,14 +365,14 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private SourceInfo<string?> GetTopicHref(TableOfContentsNode tocInputModel)
+        private SourceInfo<string?> GetTopicHref(TocNode tocInputModel)
         {
             if (!string.IsNullOrEmpty(tocInputModel.TopicHref))
             {
                 var topicHrefType = GetHrefType(tocInputModel.TopicHref);
                 if (IsTocIncludeHref(topicHrefType))
                 {
-                    _errors.Add(Errors.TableOfContents.InvalidTopicHref(tocInputModel.TopicHref));
+                    _errors.Add(Errors.Toc.InvalidTopicHref(tocInputModel.TopicHref));
                 }
                 else
                 {
@@ -388,7 +388,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private (SourceInfo<string?> resolvedTocHref, TableOfContentsNode? subChildren, TableOfContentsNode? subChildrenFirstItem, TocHrefType tocHrefType)
+        private (SourceInfo<string?> resolvedTocHref, TocNode? subChildren, TocNode? subChildrenFirstItem, TocHrefType tocHrefType)
             ProcessTocHref(
                 FilePath filePath,
                 FilePath rootPath,
@@ -504,7 +504,7 @@ namespace Microsoft.Docs.Build
                     }
                     if (result == null)
                     {
-                        _errors.Add(Errors.TableOfContents.TocNotFound(href));
+                        _errors.Add(Errors.Toc.TocNotFound(href));
                     }
                     return result;
 
@@ -521,7 +521,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TableOfContentsNode? GetFirstItem(List<SourceInfo<TableOfContentsNode>> items)
+        private static TocNode? GetFirstItem(List<SourceInfo<TocNode>> items)
         {
             foreach (var item in items)
             {

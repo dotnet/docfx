@@ -340,7 +340,7 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{path}' is still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
         }
 
-        public static class TableOfContents
+        public static class Toc
         {
             /// <summary>
             /// In yaml-format toc, topicHref SHOULD reference an article,
