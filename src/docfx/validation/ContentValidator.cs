@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TableOfContentsNode> node)
+        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TocNode> node)
         {
             if (!string.IsNullOrEmpty(node.Value?.Href)
                 && TryCreateValidationContext(file, false, out var validationContext))

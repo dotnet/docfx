@@ -122,12 +122,12 @@ namespace Microsoft.Docs.Build
                 var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, documentProvider, _metadataProvider, _monikerProvider, templateEngine, contentValidator, new Lazy<PublishUrlMap>(() => publishUrlMap!));
                 jsonSchemaTransformer = new JsonSchemaTransformer(documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, templateEngine, _input);
 
-                var tocParser = new TableOfContentsParser(_input, markdownEngine, documentProvider);
-                var tableOfContentsLoader = new TableOfContentsLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
+                var tocParser = new TocParser(_input, markdownEngine, documentProvider);
+                var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
                 var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, documentProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), _monikerProvider, _metadataProvider, _errors);
                 _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
 
-                var tocMap = new TableOfContentsMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tableOfContentsLoader, documentProvider, contentValidator);
+                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, documentProvider, contentValidator);
                 publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, documentProvider, _monikerProvider, tocMap);
                 var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, publishUrlMap, _sourceMap, documentProvider, linkResolver);
                 var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, customRuleProvider);
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
 
                 var resourceBuilder = new ResourceBuilder(_input, documentProvider, _config, output, publishModelBuilder);
                 var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, documentProvider, _metadataProvider, _monikerProvider, templateEngine, tocMap, linkResolver, contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
-                var tocBuilder = new TableOfContentsBuilder(_config, tableOfContentsLoader, contentValidator, _metadataProvider, metadataValidator, documentProvider, _monikerProvider, publishModelBuilder, templateEngine, output);
+                var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, documentProvider, _monikerProvider, publishModelBuilder, templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, documentProvider);
 
                 var filesToBuild = files.Length > 0
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             ResourceBuilder resourceBuilder,
             PageBuilder pageBuilder,
-            TableOfContentsBuilder tocBuilder,
+            TocBuilder tocBuilder,
             RedirectionBuilder redirectionBuilder)
         {
             var contentType = documentProvider.GetContentType(file);
@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
 
             switch (contentType)
             {
-                case ContentType.TableOfContents:
+                case ContentType.Toc:
                     tocBuilder.Build(errors, file);
                     break;
                 case ContentType.Resource:

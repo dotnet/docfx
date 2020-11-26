@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
         private bool ValidateMoniker(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
-            return contentType == ContentType.TableOfContents || (path.Format == FileFormat.Markdown && contentType == ContentType.Page);
+            return contentType == ContentType.Toc || (path.Format == FileFormat.Markdown && contentType == ContentType.Page);
         }
     }
 }

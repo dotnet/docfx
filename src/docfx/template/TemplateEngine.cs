@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
             {
                 ContentType.Redirection => RenderType.Content,
                 ContentType.Page => GetRenderType(mime),
-                ContentType.TableOfContents => GetTocRenderType(),
+                ContentType.Toc => GetTocRenderType(),
                 _ => RenderType.Component,
             };
         }

@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                     Version = version;
                     Monikers = monikers;
                     break;
-                case ContentType.TableOfContents:
+                case ContentType.Toc:
                     Type = LegacyItemType.Toc;
                     OutputRelativePath = PathUtility.NormalizeFile(legacyOutputFilePathRelativeToBasePath);
                     AssetId = legacySiteUrlRelativeToBasePath;

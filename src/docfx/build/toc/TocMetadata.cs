@@ -8,7 +8,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class TableOfContentsMetadata
+    internal class TocMetadata
     {
         [JsonProperty(PropertyName = "monikerRange")]
         public SourceInfo<string?> MonikerRange { get; private set; }

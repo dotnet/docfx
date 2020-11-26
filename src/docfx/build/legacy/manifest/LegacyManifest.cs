@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 output.ResourceOutput = resourceOutput;
             }
 
-            if (contentType == ContentType.TableOfContents)
+            if (contentType == ContentType.Toc)
             {
                 output.TocOutput = new LegacyManifestOutputItem
                 {
@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
             ContentType.Page => mime ?? "Conceptual",
             ContentType.Redirection => "Conceptual", // todo: support reference redirection
             ContentType.Resource => "Resource",
-            ContentType.TableOfContents => "Toc",
+            ContentType.Toc => "Toc",
             _ => "",
         };
 
@@ -177,7 +177,7 @@ namespace Microsoft.Docs.Build
                     return "Content";
                 case ContentType.Resource:
                     return "Resource";
-                case ContentType.TableOfContents:
+                case ContentType.Toc:
                     return "Toc";
                 default:
                     return "";

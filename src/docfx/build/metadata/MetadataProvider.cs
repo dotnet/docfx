@@ -68,7 +68,7 @@ namespace Microsoft.Docs.Build
 
             // We only care about moniker related metadata for redirections and resources
             var contentType = _buildScope.GetContentType(file);
-            var hasYamlHeader = contentType == ContentType.Page || contentType == ContentType.TableOfContents;
+            var hasYamlHeader = contentType == ContentType.Page || contentType == ContentType.Toc;
             if (hasYamlHeader)
             {
                 JsonUtility.Merge(result, _globalMetadata);
