@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                 var monikerProvider = new MonikerProvider(config, buildScope, metadataProvider, fileResolver);
                 var documentProvider = new DocumentProvider(input, errors, config, buildOptions, buildScope, templateEngine, monikerProvider, metadataProvider);
                 var zonePivotProvider = new ZonePivotProvider(config, errors, documentProvider, metadataProvider, input, new Lazy<PublishUrlMap>(() => publishUrlMap!), new Lazy<ContentValidator>(() => contentValidator!));
-                var redirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, config.HostName, errors, buildScope, buildOptions.Repository, documentProvider, monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                var redirectionProvider = new RedirectionProvider(buildOptions.DocsetPath, config.HostName, errors, buildScope, buildOptions.Repository, documentProvider, monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), config);
                 contentValidator = new ContentValidator(config, fileResolver, errors, documentProvider, monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
                 using var gitHubAccessor = new GitHubAccessor(config);

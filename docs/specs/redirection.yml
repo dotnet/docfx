@@ -734,53 +734,53 @@ repos:
       .openpublishing.redirection.json: |
         { 
           "redirections": [
-            {"source_path": "a.md", "redirect_url": "/a"}, 
-            {"source_path": "b.md", "redirect_url": "/b"}]
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
         }
       .openpublishing.redirection.test.json: |
         {
-          "redirections": [{"source_path": "c.md", "redirect_url": "/c"}]
+          "redirections": [{"source_path": "c.md", "redirect_url": "/cc"}]
         }
       a/docfx.yml:
       a/.openpublishing.redirection.test.json: |
         {
            "redirections": [
-            {"source_path": "a.md", "redirect_url": "/a"}, 
-            {"source_path": "b.md", "redirect_url": "/b"}]
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
         }
       a/b/.openpublishing.redirection.json: |
         {
           "redirections": [
-            {"source_path": "a.md", "redirect_url": "/a"}, 
-            {"source_path": "b.md", "redirect_url": "/b"}]
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
         }
 outputs:
-  .publish.json: |
+  a/.publish.json: |
     {
       "files": [
         {
           "url": "/a",
           "source_path": "a.md",
           "locale": "en-us",
-          "redirect_url": "/a"
+          "redirect_url": "/aa"
         },
         {
           "url": "/b",
           "source_path": "b.md",
           "locale": "en-us",
-          "redirect_url": "/b"
+          "redirect_url": "/bb"
         },
         {
           "url": "/b/a",
           "source_path": "b/a.md",
           "locale": "en-us",
-          "redirect_url": "/a"
+          "redirect_url": "/aa"
         },
         {
           "url": "/b/b",
           "source_path": "b/b.md",
           "locale": "en-us",
-          "redirect_url": "/b"
+          "redirect_url": "/bb"
         }
       ]
     }

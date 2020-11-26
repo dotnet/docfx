@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly Config _config;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
         private readonly HashSet<PathString> _redirectPaths;
@@ -32,16 +34,18 @@ namespace Microsoft.Docs.Build
             Repository? repository,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            Lazy<PublishUrlMap> publishUrlMap)
+            Lazy<PublishUrlMap> publishUrlMap,
+            Config config)
         {
             _errors = errors;
             _buildScope = buildScope;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
+            _config = config;
 
             using (Progress.Start("Loading redirections"))
             {
-                var redirections = LoadRedirectionModel(errors, docsetPath, repository);
+                var redirections = LoadRedirectionModel(errors, docsetPath, repository, config);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
                 _redirectPaths = _redirectUrls.Keys.Select(x => x.Path).ToHashSet();
                 _publishUrlMap = publishUrlMap;
@@ -70,6 +74,12 @@ namespace Microsoft.Docs.Build
             while (_history.Value.redirectionHistory.TryGetValue(redirectionFile, out var item))
             {
                 var (renamedFrom, source) = item;
+                var dir = Path.GetDirectoryName(source?.File.Path);
+                if (source != null && !string.IsNullOrEmpty(dir))
+                {
+                    renamedFrom = renamedFrom.WithPath(new PathString(Path.Combine(dir, renamedFrom.Path)));
+                }
+
                 if (redirectionChain.Contains(redirectionFile))
                 {
                     redirectionChain.Push(redirectionFile);
@@ -149,9 +159,11 @@ namespace Microsoft.Docs.Build
             return redirectUrls;
         }
 
-        private static RedirectionItem[] LoadRedirectionModel(ErrorBuilder errors, string docsetPath, Repository? repository)
+        private static RedirectionItem[] LoadRedirectionModel(ErrorBuilder errors, string docsetPath, Repository? repository, Config config)
         {
-            foreach (var fullPath in ProbeRedirectionFiles(docsetPath, repository))
+            var results = new List<RedirectionItem>();
+
+            foreach (var (fullPath, isSubRedirectionFile) in ProbeRedirectionFiles(docsetPath, repository, config.RedirectionFiles))
             {
                 if (File.Exists(fullPath))
                 {
@@ -178,8 +190,26 @@ namespace Microsoft.Docs.Build
                     // Rebase source_path based on redirection definition file path
                     var basedir = Path.GetDirectoryName(fullPath) ?? "";
 
-                    var results = new List<RedirectionItem>();
-                    foreach (var item in redirections.Concat(renames))
+                    var allRedirections = redirections.Concat(renames);
+
+                    if (isSubRedirectionFile && repository != null)
+                    {
+                        var prefix = Path.GetDirectoryName(Path.GetRelativePath(repository.Path, fullPath));
+
+                        if (!string.IsNullOrEmpty(prefix))
+                        {
+                            allRedirections = allRedirections.Select(x =>
+                            {
+                                if (!x.SourcePath.IsDefault)
+                                {
+                                    x.SourcePath = new PathString(Path.Combine(prefix, x.SourcePath));
+                                }
+                                return x;
+                            }).ToImmutableArray();
+                        }
+                    }
+
+                    foreach (var item in allRedirections)
                     {
                         if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
                         {
@@ -188,7 +218,7 @@ namespace Microsoft.Docs.Build
                             continue;
                         }
 
-                        var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
+                        var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(repository == null ? basedir : repository.Path, item.SourcePath));
 
                         if (!sourcePath.StartsWith("."))
                         {
@@ -201,22 +231,35 @@ namespace Microsoft.Docs.Build
                             });
                         }
                     }
-
-                    return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
                 }
             }
 
-            return Array.Empty<RedirectionItem>();
+            return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
         }
 
-        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath, Repository? repository)
+        private static IEnumerable<(string redirectonFile, bool IsSubRedirectionFile)> ProbeRedirectionFiles(
+            string docsetPath,
+            Repository? repository,
+            HashSet<string> redirectionFiles)
         {
-            yield return Path.Combine(docsetPath, "redirections.yml");
-            yield return Path.Combine(docsetPath, "redirections.json");
+            yield return (Path.Combine(docsetPath, "redirections.yml"), true);
+            yield return (Path.Combine(docsetPath, "redirections.json"), true);
 
             if (repository != null)
             {
-                yield return Path.Combine(repository.Path, ".openpublishing.redirection.json");
+                yield return (Path.Combine(repository.Path, ".openpublishing.redirection.json"), false);
+
+                // redirection files registered in .openpublishing.publish.config.json
+                foreach (var item in redirectionFiles)
+                {
+                    if (item.Equals(".openpublishing.redirection.json")
+                        || item.Equals(Path.GetRelativePath(repository.Path, Path.Combine(docsetPath, "redirections.yml")))
+                        || item.Equals(Path.GetRelativePath(repository.Path, Path.Combine(docsetPath, "redirections.json"))))
+                    {
+                        continue;
+                    }
+                    yield return (Path.Combine(repository.Path, item), true);
+                }
             }
         }
 
