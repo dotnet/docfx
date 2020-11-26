@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _configMonikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
 
-        private readonly ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>> _monikerCache =
-                     new ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>>();
+        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, MonikerList, MonikerList)>> _monikerCache =
+                     new ConcurrentDictionary<FilePath, Watch<(ErrorList, MonikerList, MonikerList)>>();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
         public MonikerList GetZoneLevelMonikers(ErrorBuilder errors, FilePath file, SourceInfo<string?> rangeString)
         {
             var configMonikerRange = GetConfigMonikerRange(file);
-            var (fileLevelMonikers, monikersIgnoreExclude) = GetFileLevelMonikersAndExclude(errors, file);
+            var (fileLevelMonikers, ignoreExclude) = GetFileLevelMonikersAndExclude(errors, file);
 
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
@@ -89,25 +89,30 @@ namespace Microsoft.Docs.Build
 
             var zoneLevelMonikers = _rangeParser.Parse(errors, rangeString);
             var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers);
-            if (!monikersIgnoreExclude.Intersect(zoneLevelMonikers).HasMonikers)
+            if (!ignoreExclude.Intersect(zoneLevelMonikers).HasMonikers)
             {
                 errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
             }
             return monikers;
         }
 
-        private (MonikerList monikers, MonikerList beforeExclude) GetFileLevelMonikersAndExclude(ErrorBuilder errors, FilePath file)
+        private (MonikerList monikers, MonikerList ignoreExclude) GetFileLevelMonikersAndExclude(ErrorBuilder errors, FilePath file)
         {
-            return _monikerCache.GetOrAdd(
-                (errors, file),
-                key => new Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>(() => GetFileLevelMonikersCore(errors, key.Item2))).Value;
+            var (error, monikers, ignoreExclude) = _monikerCache.GetOrAdd(
+                file,
+                key => new Watch<(ErrorList, MonikerList, MonikerList)>(() => GetFileLevelMonikersCore(key))).Value;
+
+            errors.AddRange(error);
+            return (monikers, ignoreExclude);
         }
 
-        private (MonikerList monikers, MonikerList monikersIgnoreExclude) GetFileLevelMonikersCore(ErrorBuilder errors, FilePath file)
+        private (ErrorList errors, MonikerList monikers, MonikerList ignoreExclude) GetFileLevelMonikersCore(FilePath file)
         {
+            var errors = new ErrorList();
+
             if (file.RedirectionMonikers.HasMonikers)
             {
-                return (file.RedirectionMonikers, file.RedirectionMonikers);
+                return (errors, file.RedirectionMonikers, file.RedirectionMonikers);
             }
 
             var metadata = _metadataProvider.GetMetadata(errors, file);
@@ -123,7 +128,7 @@ namespace Microsoft.Docs.Build
                 if (validateMoniker && configMonikerRange.Value is null)
                 {
                     errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
-                    return default;
+                    return (errors, default, default);
                 }
             }
 
@@ -157,7 +162,7 @@ namespace Microsoft.Docs.Build
             }
 
             // construct cache for monikers ignoring exclude_moniker
-            var monikersIgnoreExclude = fileMonikers;
+            var ignoreExclude = fileMonikers;
 
             if (metadata.ExcludeMonikers != null)
             {
@@ -169,7 +174,7 @@ namespace Microsoft.Docs.Build
             // just use file monikers
             if (configMonikerRange.Value is null && !validateMoniker)
             {
-                return (fileMonikers, monikersIgnoreExclude);
+                return (errors, fileMonikers, ignoreExclude);
             }
 
             if (validateMoniker && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
@@ -184,7 +189,7 @@ namespace Microsoft.Docs.Build
                 fileMonikers = intersection;
             }
 
-            return (fileMonikers, monikersIgnoreExclude);
+            return (errors, fileMonikers, ignoreExclude);
         }
 
         private SourceInfo<string?> GetConfigMonikerRangeCore(FilePath file)
