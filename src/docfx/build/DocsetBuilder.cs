@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
-                var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, _contributionProvider);
+                var fileLinkMapBuilder = new FileLinkMapBuilder(_documentProvider, _monikerProvider, _contributionProvider);
                 var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!));
                 var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
                 var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, new Lazy<PublishUrlMap>(() => publishUrlMap!));
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                     () => output.WriteJson(".xrefmap.json", xrefMapModel),
                     () => output.WriteJson(".publish.json", publishModel),
                     () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
-                    () => output.WriteJson(".links.json", fileLinkMapBuilder.Build(publishUrlMap.GetAllFiles())),
+                    () => output.WriteJson(".links.json", fileLinkMapBuilder.Build(publishModel)),
                     () => output.WriteText(".lunr.json", searchIndexBuilder.Build()),
                     () => Legacy.ConvertToLegacyModel(_buildOptions.DocsetPath, legacyContext, fileManifests, dependencyMap));
 

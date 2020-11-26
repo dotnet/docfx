@@ -50,20 +50,21 @@ namespace Microsoft.Docs.Build
         public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            foreach (var sourcePath in _publishUrlMap.GetAllFiles().Concat(_linkResolver.GetAdditionalResources()))
+            foreach (var sourceFile in _publishUrlMap.GetAllFiles().Concat(_linkResolver.GetAdditionalResources()))
             {
-                var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
+                var buildOutput = _buildOutput.TryGetValue(sourceFile, out var result);
 
                 var publishItem = new PublishItem(
-                    _documentProvider.GetSiteUrl(sourcePath),
+                    _documentProvider.GetSiteUrl(sourceFile),
                     buildOutput ? result.outputPath : null,
-                    _sourceMap.GetOriginalFilePath(sourcePath)?.Path ?? sourcePath.Path,
+                    sourceFile,
+                    _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
                     _locale,
-                    _monikerProvider.GetFileLevelMonikers(_errors, sourcePath),
-                    _monikerProvider.GetConfigMonikerRange(sourcePath),
-                    _errors.FileHasError(sourcePath),
+                    _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
+                    _monikerProvider.GetConfigMonikerRange(sourceFile),
+                    _errors.FileHasError(sourceFile),
                     buildOutput ? RemoveComplexValue(result.metadata) : null);
-                publishItems.Add(sourcePath, publishItem);
+                publishItems.Add(sourceFile, publishItem);
             }
 
             var items = (
