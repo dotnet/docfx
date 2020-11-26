@@ -95,23 +95,23 @@ namespace Microsoft.Docs.Build
             var end_line = source?.EndLine ?? 0;
             var column = source?.Column ?? 0;
             var end_column = source?.EndColumn ?? 0;
-            var data = new JObject
+
+            return JsonUtility.Serialize(new
             {
-                ["message_severity"] = Level.ToString().ToLowerInvariant(),
-                ["code"] = Code,
-                ["message"] = Message,
-                ["file"] = file?.ToString(),
-                ["line"] = line,
-                ["end_line"] = end_line,
-                ["column"] = column,
-                ["end_column"] = end_column,
-                ["log_item_type"] = "user",
-                ["pull_request_only"] = PullRequestOnly ? (bool?)true : null,
-                ["property_path"] = PropertyPath,
-                ["ms.author"] = MsAuthor,
-                ["date_time"] = DateTime.UtcNow,
-            };
-            return JsonUtility.Serialize(data);
+                message_severity = Level,
+                Code,
+                message = Message,
+                file,
+                line,
+                end_line,
+                column,
+                end_column,
+                log_item_type = "user",
+                pull_request_only = PullRequestOnly ? (bool?)true : null,
+                property_path = PropertyPath,
+                ms_author = MsAuthor,
+                date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
+            }).Replace("\"ms_author\"", "\"ms.author\"");
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
