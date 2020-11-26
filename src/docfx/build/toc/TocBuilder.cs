@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
                     if (_documentProvider.GetRenderType(file) == RenderType.Content)
                     {
                         var viewModel = _templateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
-                        var html = _templateEngine.RunMustache($"toc.html", viewModel, file);
+                        var html = _templateEngine.RunMustache($"toc.html", viewModel);
                         _output.WriteText(outputPath, html);
                     }
 
