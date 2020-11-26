@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
                     outputPath = Path.ChangeExtension(outputPath, fileExtension);
                     break;
 
-                case ContentType.TableOfContents:
+                case ContentType.Toc:
                     var tocExtension = _config.OutputType switch
                     {
                         OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
@@ -162,7 +162,7 @@ namespace Microsoft.Docs.Build
                 ContentType.Page
                     => s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime.ToLowerInvariant(),
                 ContentType.Redirection => "redirection",
-                ContentType.TableOfContents => "toc",
+                ContentType.Toc => "toc",
                 _ => null,
             };
         }
@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, RenderType renderType)
         {
             var sitePath = ApplyRoutes(filePath.Path).Value;
-            if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
+            if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.Toc)
             {
                 if (contentType == ContentType.Page && renderType == RenderType.Component)
                 {
@@ -283,7 +283,7 @@ namespace Microsoft.Docs.Build
             var url = path.Replace('\\', '/');
 
             if (contentType == ContentType.Redirection
-                || contentType == ContentType.TableOfContents
+                || contentType == ContentType.Toc
                 || (contentType == ContentType.Page && renderType == RenderType.Content))
             {
                 if (urlType != UrlType.Ugly)
@@ -294,7 +294,7 @@ namespace Microsoft.Docs.Build
                         return i >= 0 ? url.Substring(0, i + 1) : "./";
                     }
                 }
-                if (urlType == UrlType.Docs && contentType != ContentType.TableOfContents)
+                if (urlType == UrlType.Docs && contentType != ContentType.Toc)
                 {
                     var i = url.LastIndexOf('.');
                     return i >= 0 ? url.Substring(0, i) : url;

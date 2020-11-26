@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
 
             if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
             {
-                return ContentType.TableOfContents;
+                return ContentType.Toc;
             }
 
             return ContentType.Page;
