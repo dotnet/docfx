@@ -79,6 +79,79 @@ outputs:
     {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":10,"end_line":10,"column":1,"end_column":1}
 ---
+# Content Validation - image altText duplicated, consider tabbed conceptual
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextDuplicated",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
+            "code": "image-alt-text-duplicated",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ],
+            "excludedDocfxVersions": [
+              "v2"
+            ]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  a.md: |
+    # alttext duplicate, null and non-null tabbed conceptual
+    :::image source="pig3.jpg" alt-text="duplicate_alt_text":::
+    # [a2](#tab/win2)
+    :::image source="pig1.jpg" alt-text="duplicate_alt_text":::
+    ![duplicate_alt_text](pig1.jpg)
+    <img src="pig1.jpg" alt="duplicate_alt_text"></img>
+    ---
+
+    # alttext not duplicate
+    # [a](#tab/win)
+    :::image source="pig1.jpg" alt-text="alt_text":::
+    ![alt_text](pig1.jpg)
+    <img src="pig1.jpg" alt="alt_text"></img>
+    # [b](#tab/linux)
+    :::image source="pig2.jpg" alt-text="alt_text":::
+    ![alt_text](pig2.jpg)
+    <img src="pig2.jpg" alt="alt_text"></img>
+    ---
+    
+    # alttext duplicate, parent and child tabbed conceptual
+    # [a3](#tab/win3)
+    :::image source="pig1.jpg" alt-text="duplicate_alt_text_2":::
+    # [ab/a3](#tab/azure/win3)
+    :::image source="pig2.jpg" alt-text="duplicate_alt_text_2":::
+    ![duplicate_alt_text_2](pig2.jpg)
+    <img src="pig2.jpg" alt="duplicate_alt_text_2"></img>
+    ---
+outputs:
+  a.json:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":2,"end_line":2}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":8,"end_line":8}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":9,"end_line":9}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":22,"end_line":22}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":27,"end_line":27}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":28,"end_line":28}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":29,"end_line":29} 
+---
 # Content Validation - image altText duplicated in includes
 inputs:
   docfx.yml: |

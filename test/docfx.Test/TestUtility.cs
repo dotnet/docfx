@@ -131,6 +131,36 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static JToken ApplyVariables(JToken value, IEnumerable<KeyValuePair<string, string>> variables)
+        {
+            if (variables != null && value != null)
+            {
+                if (value is JValue && value.Type == JTokenType.String)
+                {
+                    return ApplyVariables((string)value, variables);
+                }
+                else if (value is JArray array)
+                {
+                    var newArray = new JArray();
+                    foreach (var item in array)
+                    {
+                        newArray.Add(ApplyVariables(item, variables));
+                    }
+                    return newArray;
+                }
+                else if (value is JObject obj)
+                {
+                    var newObj = new JObject();
+                    foreach (var (key, val) in obj)
+                    {
+                        newObj[key] = ApplyVariables(val, variables);
+                    }
+                    return newObj;
+                }
+            }
+            return value;
+        }
+
         private static string ApplyVariables(string value, IEnumerable<KeyValuePair<string, string>> variables)
         {
             if (variables != null && value != null)

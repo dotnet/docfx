@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using Markdig.Syntax;
 using Microsoft.Docs.Validation;
@@ -67,6 +66,7 @@ namespace Microsoft.Docs.Build
                         ParentSourceInfoList = origin.GetInclusionStack(),
                         Monikers = origin.GetZoneLevelMonikers(),
                         ZonePivots = origin.GetZonePivots(),
+                        TabbedConceptualHeader = origin.GetTabId(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }
@@ -186,7 +186,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TableOfContentsNode> node)
+        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TocNode> node)
         {
             if (!string.IsNullOrEmpty(node.Value?.Href)
                 && TryCreateValidationContext(file, false, out var validationContext))

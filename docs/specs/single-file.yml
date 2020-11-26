@@ -1,0 +1,42 @@
+---
+# Support building a subset of files
+buildFiles:
+- a.md
+- b.md
+inputs:
+  docfx.yml:
+  a.md: a
+  b.md: b
+  c.md: c
+outputs:
+  a.json: |
+    { "conceptual": "<p>a</p>" }
+  b.json: |
+    { "conceptual": "<p>b</p>" }
+---
+# Support building a subset of files for multiple docsets
+buildFiles:
+- a/a.md
+- b/b.md
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a.md:
+  a/b.md:
+  b/docfx.yml:
+  b/a.md:
+  b/b.md:
+outputs:
+  a/a.json:
+  b/b.json:
+---
+# Ignore include files and invalid files
+buildFiles:
+- a.md
+- c/b.md
+inputs:
+  docfx.yml: |
+    files: c/**
+  a.md:
+  c/a.md:
+outputs:

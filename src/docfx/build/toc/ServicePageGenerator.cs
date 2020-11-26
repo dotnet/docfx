@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             _buildScope = buildScope;
         }
 
-        public void GenerateServicePageFromTopLevelTOC(TableOfContentsNode node, List<FilePath> results, string directoryName = "")
+        public void GenerateServicePageFromTopLevelTOC(TocNode node, List<FilePath> results, string directoryName = "")
         {
             if (string.IsNullOrEmpty(node.Name))
             {
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
         }
 
         private void TryToGenerateServicePageForItem(
-            TableOfContentsNode node,
+            TocNode node,
             string directoryName,
             string filename,
             string referenceTOCFullPath,
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
                     servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
                 }
 
-                if (!_buildScope.Glob(servicePagePath.Path))
+                if (!_buildScope.Contains(servicePagePath.Path))
                 {
                     return;
                 }
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                     var childName = item.Value.Name.Value;
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
-                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
+                    var childHrefType = TocLoader.GetHrefType(childHref);
                     if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
                     {
                         childHref = null;
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
             return childHref;
         }
 
-        private string? GetSubTocFirstUid(TableOfContentsNode node)
+        private string? GetSubTocFirstUid(TocNode node)
         {
             if (!string.IsNullOrEmpty(node.Uid))
             {

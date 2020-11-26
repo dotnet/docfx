@@ -19,10 +19,7 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
-        public ErrorLog(
-            ErrorBuilder errors,
-            Config config,
-            SourceMap? sourceMap = null)
+        public ErrorLog(ErrorBuilder errors, Config config, SourceMap? sourceMap = null)
         {
             _errors = errors;
             _config = config;
@@ -33,7 +30,14 @@ namespace Microsoft.Docs.Build
         {
             if (CustomRuleProvider != null)
             {
-                error = CustomRuleProvider.ApplyCustomRule(error);
+                try
+                {
+                    error = CustomRuleProvider.ApplyCustomRule(error);
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    Log.Write(ex);
+                }
             }
 
             if (error.Level == ErrorLevel.Off)

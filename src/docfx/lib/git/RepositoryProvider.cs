@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RepositoryProvider : IDisposable
+    internal class RepositoryProvider
     {
         private readonly ErrorBuilder _errors;
 
@@ -63,14 +63,6 @@ namespace Microsoft.Docs.Build
             foreach (var p in _commitLoaders.Values)
             {
                 p.Save();
-            }
-        }
-
-        public void Dispose()
-        {
-            foreach (var provider in _commitLoaders.Values)
-            {
-                provider.Dispose();
             }
         }
 
