@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _publishModelBuilder.SetPublishItem(file, metadata, outputPath);
+            _publishModelBuilder.AddOrUpdate(file, metadata, outputPath);
         }
 
         private (object output, JObject metadata) CreatePageOutput(ErrorBuilder errors, FilePath file, JObject sourceModel)

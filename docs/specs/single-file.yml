@@ -13,6 +13,8 @@ outputs:
     { "conceptual": "<p>a</p>" }
   b.json: |
     { "conceptual": "<p>b</p>" }
+  .publish.json: |
+    { "files": [{ "source_path": "a.md" }, { "source_path": "b.md" }] }
 ---
 # Support building a subset of files for multiple docsets
 buildFiles:
@@ -29,6 +31,10 @@ inputs:
 outputs:
   a/a.json:
   b/b.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+  b/.publish.json: |
+    { "files": [{ "source_path": "b.md" }] }
 ---
 # Ignore include files and invalid files
 buildFiles:
@@ -40,3 +46,5 @@ inputs:
   a.md:
   c/a.md:
 outputs:
+  .publish.json: |
+    { "files": undefined }
