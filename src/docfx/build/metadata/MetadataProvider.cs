@@ -17,8 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool>, string, JToken)>();
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool>, string, JToken)>();
 
-        private readonly ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<UserMetadata>> _metadataCache
-            = new ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<UserMetadata>>();
+        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache
+                   = new ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>>();
 
         public ICollection<string> HtmlMetaHidden { get; }
 
@@ -59,11 +59,14 @@ namespace Microsoft.Docs.Build
 
         public UserMetadata GetMetadata(ErrorBuilder errors, FilePath file)
         {
-            return _metadataCache.GetOrAdd((errors, file), _ => new Watch<UserMetadata>(() => GetMetadataCore(errors, file))).Value;
+            var (error, result) = _metadataCache.GetOrAdd(file, key => new Watch<(ErrorList, UserMetadata)>(() => GetMetadataCore(key))).Value;
+            errors.AddRange(error);
+            return result;
         }
 
-        private UserMetadata GetMetadataCore(ErrorBuilder errors, FilePath file)
+        private (ErrorList, UserMetadata) GetMetadataCore(FilePath file)
         {
+            var errors = new ErrorList();
             var result = new JObject();
             JsonUtility.SetSourceInfo(result, new SourceInfo(file, 1, 1));
 
@@ -103,7 +106,7 @@ namespace Microsoft.Docs.Build
 
             metadata.RawJObject = result;
 
-            return metadata;
+            return (errors, metadata);
         }
 
         private JObject LoadYamlHeader(ErrorBuilder errors, FilePath file)
