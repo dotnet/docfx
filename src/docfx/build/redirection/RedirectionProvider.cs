@@ -237,7 +237,7 @@ namespace Microsoft.Docs.Build
             return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
         }
 
-        private static IEnumerable<(string redirectonFile, bool IsSubRedirectionFile)> ProbeRedirectionFiles(
+        private static IEnumerable<(string redirectionFile, bool IsSubRedirectionFile)> ProbeRedirectionFiles(
             string docsetPath,
             Repository? repository,
             HashSet<string> redirectionFiles)
