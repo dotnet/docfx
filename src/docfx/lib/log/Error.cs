@@ -3,9 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using Microsoft.DocAsCode.Common;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build

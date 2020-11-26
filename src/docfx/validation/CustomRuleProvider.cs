@@ -26,13 +26,13 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             Lazy<PublishUrlMap> publishUrlMap,
             MonikerProvider monikerProvider,
-            MetadataProvider metaDataProvider,
+            MetadataProvider metadataProvider,
             ErrorBuilder errorLog)
         {
             _documentProvider = documentProvider;
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
-            _metaDataProvider = metaDataProvider;
+            _metaDataProvider = metadataProvider;
             _errorLog = errorLog;
             _config = config;
 
@@ -69,8 +69,8 @@ namespace Microsoft.Docs.Build
                 error = WithCustomRule(error, customRule);
             }
             var source = error.Source?.File;
-            var userMetaData = source != null ? _metaDataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
-            error = error.WithMsAuthor(userMetaData?.MsAuthor);
+            var userMetadata = source != null ? _metaDataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
+            error = error.WithMsAuthor(userMetadata?.MsAuthor);
             return error;
         }
 
