@@ -98,7 +98,7 @@ steps:
     Pattern: |
         **\*.dll
         !**\System.*.dll
-        !**\Microsoft.*.dll
+        !**\Microsoft.!(DocAsCode).*.dll
         !**\NuGet.*.dll
         !**\FSharp.Core.*.dll
     UseMinimatch: true
