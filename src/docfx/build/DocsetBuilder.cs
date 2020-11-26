@@ -124,7 +124,8 @@ namespace Microsoft.Docs.Build
 
                 var tocParser = new TocParser(_input, markdownEngine, _documentProvider);
                 var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
-                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), _monikerProvider, _errors);
+                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), _monikerProvider, _metadataProvider, _errors);
+
                 _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
 
                 var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator);

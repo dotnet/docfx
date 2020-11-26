@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Concurrent;
 
 namespace Microsoft.Docs.Build
@@ -29,7 +30,14 @@ namespace Microsoft.Docs.Build
         {
             if (CustomRuleProvider != null)
             {
-                error = CustomRuleProvider.ApplyCustomRule(error);
+                try
+                {
+                    error = CustomRuleProvider.ApplyCustomRule(error);
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    Log.Write(ex);
+                }
             }
 
             if (error.Level == ErrorLevel.Off)
