@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool>, string, JToken)>();
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool>, string, JToken)>();
 
-        private readonly ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<UserMetadata>> _metadataCache = new ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<UserMetadata>>();
+        private readonly ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<UserMetadata>> _metadataCache
+            = new ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<UserMetadata>>();
 
         public ICollection<string> HtmlMetaHidden { get; }
 
