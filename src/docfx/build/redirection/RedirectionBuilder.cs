@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
                 ["canonical_url"] = _documentProvider.GetCanonicalUrl(file),
             };
 
-            _publishModelBuilder.SetPublishItem(file, publishMetadata, outputPath: null);
+            _publishModelBuilder.AddOrUpdate(file, publishMetadata, outputPath: null);
         }
     }
 }

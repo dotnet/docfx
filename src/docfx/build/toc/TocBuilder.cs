@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _publishModelBuilder.SetPublishItem(file, metadata: null, outputPath);
+            _publishModelBuilder.AddOrUpdate(file, metadata: null, outputPath);
         }
     }
 }
