@@ -2,15 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
+    [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Long constructor list")]
+    [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "Long constructor parameter list")]
     internal class DocsetBuilder
     {
         private readonly ErrorBuilder _errors;
@@ -28,6 +28,9 @@ namespace Microsoft.Docs.Build
         private readonly JsonSchemaLoader _jsonSchemaLoader;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
+        private readonly TemplateEngine _templateEngine;
+        private readonly DocumentProvider _documentProvider;
+        private readonly ContributionProvider _contributionProvider;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -55,6 +58,9 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = new JsonSchemaLoader(_fileResolver);
             _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
+            _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
+            _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
+            _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
         }
 
         public static DocsetBuilder? Create(ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options)
@@ -94,8 +100,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "Long constructor parameter list")]
-        [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Long constructor list")]
         public void Build(params string[] files)
         {
             try
@@ -106,37 +110,34 @@ namespace Microsoft.Docs.Build
 
                 var dependencyMapBuilder = new DependencyMapBuilder(_sourceMap);
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
-
-                var templateEngine = new TemplateEngine(_errors, _config, output, _packageResolver, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!), _buildOptions, _jsonSchemaLoader);
-
-                var documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, templateEngine, _monikerProvider, _metadataProvider);
-                var zonePivotProvider = new ZonePivotProvider(_config, _errors, documentProvider, _metadataProvider, _input, new Lazy<PublishUrlMap>(() => publishUrlMap!), new Lazy<ContentValidator>(() => contentValidator!));
-                var redirectionProvider = new RedirectionProvider(_buildOptions.DocsetPath, _config.HostName, _errors, _buildScope, _buildOptions.Repository, documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
-                contentValidator = new ContentValidator(_config, _fileResolver, _errors, documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                var zonePivotProvider = new ZonePivotProvider(_config, _errors, _documentProvider, _metadataProvider, _input, new Lazy<PublishUrlMap>(() => publishUrlMap!), new Lazy<ContentValidator>(() => contentValidator!));
+                var redirectionProvider = new RedirectionProvider(_buildOptions.DocsetPath, _config.HostName, _errors, _buildScope, _buildOptions.Repository, _documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
                 var contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
-                var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, documentProvider, _monikerProvider, contributionProvider);
-                var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, documentProvider, _metadataProvider, _monikerProvider, _buildScope, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!));
-                var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, redirectionProvider, documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, templateEngine, fileLinkMapBuilder, _metadataProvider);
-                var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, documentProvider, _metadataProvider, _monikerProvider, templateEngine, contentValidator, new Lazy<PublishUrlMap>(() => publishUrlMap!));
-                jsonSchemaTransformer = new JsonSchemaTransformer(documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, templateEngine, _input);
+                var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, contributionProvider);
+                var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!));
+                var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
+                var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                jsonSchemaTransformer = new JsonSchemaTransformer(_documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
 
-                var tocParser = new TocParser(_input, markdownEngine, documentProvider);
+                var tocParser = new TocParser(_input, markdownEngine, _documentProvider);
                 var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
-                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, documentProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), _monikerProvider, _metadataProvider, _errors);
+                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), _monikerProvider, _metadataProvider, _errors);
+
                 _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
 
-                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, documentProvider, contentValidator);
-                publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, documentProvider, _monikerProvider, tocMap);
-                var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, publishUrlMap, _sourceMap, documentProvider, linkResolver);
+                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator);
+                publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider, tocMap);
+                var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, publishUrlMap, _sourceMap, _documentProvider, linkResolver);
                 var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, customRuleProvider);
-                var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, documentProvider, _metadataProvider);
+                var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
 
-                var resourceBuilder = new ResourceBuilder(_input, documentProvider, _config, output, publishModelBuilder);
-                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, documentProvider, _metadataProvider, _monikerProvider, templateEngine, tocMap, linkResolver, contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
-                var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, documentProvider, _monikerProvider, publishModelBuilder, templateEngine, output);
-                var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, documentProvider);
+                var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
+                var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
+                var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, _documentProvider);
 
                 var filesToBuild = files.Length > 0
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
@@ -144,7 +145,7 @@ namespace Microsoft.Docs.Build
 
                 using (Progress.Start($"Building {filesToBuild.Count} files"))
                 {
-                    ParallelUtility.ForEach(_errors, filesToBuild, file => BuildFile(file, _errors, contentValidator, documentProvider, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
+                    ParallelUtility.ForEach(_errors, filesToBuild, file => BuildFile(file, contentValidator, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
                     ParallelUtility.ForEach(_errors, linkResolver.GetAdditionalResources(), file => resourceBuilder.Build(file));
                 }
 
@@ -152,7 +153,7 @@ namespace Microsoft.Docs.Build
                     () => bookmarkValidator.Validate(),
                     () => contentValidator.PostValidate(),
                     () => _errors.AddRange(metadataValidator.PostValidate()),
-                    () => contributionProvider.Save(),
+                    () => _contributionProvider.Save(),
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),
                     () => _errors.AddRange(_microsoftGraphAccessor.Save()),
@@ -169,12 +170,12 @@ namespace Microsoft.Docs.Build
 
                 // TODO: decouple files and dependencies from legacy.
                 var dependencyMap = dependencyMapBuilder.Build();
-                var legacyContext = new LegacyContext(_config, _buildOptions, output, _sourceMap, _monikerProvider, documentProvider);
+                var legacyContext = new LegacyContext(_config, _buildOptions, output, _sourceMap, _monikerProvider, _documentProvider);
 
                 MemoryCache.Clear();
 
                 Parallel.Invoke(
-                    () => templateEngine.CopyAssetsToOutput(),
+                    () => _templateEngine.CopyAssetsToOutput(output),
                     () => output.WriteJson(".xrefmap.json", xrefMapModel),
                     () => output.WriteJson(".publish.json", publishModel),
                     () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
@@ -195,34 +196,32 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void BuildFile(
+        private void BuildFile(
             FilePath file,
-            ErrorBuilder errors,
             ContentValidator contentValidator,
-            DocumentProvider documentProvider,
             ResourceBuilder resourceBuilder,
             PageBuilder pageBuilder,
             TocBuilder tocBuilder,
             RedirectionBuilder redirectionBuilder)
         {
-            var contentType = documentProvider.GetContentType(file);
+            var contentType = _documentProvider.GetContentType(file);
 
-            Telemetry.TrackBuildFileTypeCount(file, contentType, documentProvider.GetMime(file));
+            Telemetry.TrackBuildFileTypeCount(file, contentType, _documentProvider.GetMime(file));
             contentValidator.ValidateManifest(file);
 
             switch (contentType)
             {
                 case ContentType.Toc:
-                    tocBuilder.Build(errors, file);
+                    tocBuilder.Build(_errors, file);
                     break;
                 case ContentType.Resource:
                     resourceBuilder.Build(file);
                     break;
                 case ContentType.Page:
-                    pageBuilder.Build(errors, file);
+                    pageBuilder.Build(_errors, file);
                     break;
                 case ContentType.Redirection:
-                    redirectionBuilder.Build(errors, file);
+                    redirectionBuilder.Build(_errors, file);
                     break;
             }
         }
