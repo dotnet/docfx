@@ -20,8 +20,8 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _configMonikerRangeCache
                    = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
 
-        private readonly ConcurrentDictionary<FilePath, Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>> _monikerCache =
-                     new ConcurrentDictionary<FilePath, Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>>();
+        private readonly ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>> _monikerCache =
+                     new ConcurrentDictionary<(ErrorBuilder, FilePath), Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>>();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
@@ -99,8 +99,8 @@ namespace Microsoft.Docs.Build
         private (MonikerList monikers, MonikerList beforeExclude) GetFileLevelMonikersAndExclude(ErrorBuilder errors, FilePath file)
         {
             return _monikerCache.GetOrAdd(
-                file,
-                key => new Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>(() => GetFileLevelMonikersCore(errors, key))).Value;
+                (errors, file),
+                key => new Watch<(MonikerList monikers, MonikerList monikersIgnoreExclude)>(() => GetFileLevelMonikersCore(errors, key.Item2))).Value;
         }
 
         private (MonikerList monikers, MonikerList monikersIgnoreExclude) GetFileLevelMonikersCore(ErrorBuilder errors, FilePath file)

@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
-        private readonly MetadataProvider _metadataProvider;
+        private readonly MetadataProvider _metaDataProvider;
 
         private readonly ErrorBuilder _errorLog;
         private readonly Config _config;
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
-            _metadataProvider = metaDataProvider;
+            _metaDataProvider = metaDataProvider;
             _errorLog = errorLog;
             _config = config;
 
@@ -69,8 +69,8 @@ namespace Microsoft.Docs.Build
                 error = WithCustomRule(error, customRule);
             }
             var source = error.Source?.File;
-            var userMeta = source != null ? _metadataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
-            error = error.WithMsAuthor(userMeta?.MsAuthor);
+            var userMetaData = source != null ? _metaDataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
+            error = error.WithMsAuthor(userMetaData?.MsAuthor);
             return error;
         }
 
