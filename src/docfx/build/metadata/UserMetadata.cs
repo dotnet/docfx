@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> Author { get; private set; } = new SourceInfo<string>("");
 
         [JsonProperty("ms.author")]
-        public SourceInfo<string> MsAuthor { get; private set; } = new SourceInfo<string>("");
+        public SourceInfo<string?> MsAuthor { get; private set; }
 
         public SourceInfo<string> BreadcrumbPath { get; private set; } = new SourceInfo<string>("");
 

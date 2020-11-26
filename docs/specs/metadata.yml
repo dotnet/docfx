@@ -43,7 +43,7 @@ outputs:
   a.json: |
     { "ms.custom-metadata": null }
 ---
-# Add ms.author
+# Add ms.author to error log
 inputs:
   docfx.yml:
   docs/a.md: |

@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using Microsoft.DocAsCode.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -96,69 +98,28 @@ namespace Microsoft.Docs.Build
             var end_line = source?.EndLine ?? 0;
             var column = source?.Column ?? 0;
             var end_column = source?.EndColumn ?? 0;
-            return JsonUtility.Serialize(new ErrorItem
+            var data = new JObject
             {
-                MessageSeverity = Level,
-                Code = Code,
-                Message = Message,
-                File = file,
-                Line = line,
-                EndLine = end_line,
-                Column = column,
-                EndColumn = end_column,
-                LogItemType = "user",
-                PullRequestOnly = PullRequestOnly ? (bool?)true : null,
-                PropertyPath = PropertyPath,
-                DateTime = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
-                MsAuthor = MsAuthor,
-            });
+                ["message_severity"] = Level.ToString().ToLowerInvariant(),
+                ["code"] = Code,
+                ["message"] = Message,
+                ["file"] = file?.ToString(),
+                ["line"] = line,
+                ["end_line"] = end_line,
+                ["column"] = column,
+                ["end_column"] = end_column,
+                ["log_item_type"] = "user",
+                ["pull_request_only"] = PullRequestOnly ? (bool?)true : null,
+                ["property_path"] = PropertyPath,
+                ["ms.author"] = MsAuthor,
+                ["date_time"] = DateTime.UtcNow,
+            };
+            return JsonUtility.Serialize(data);
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
             return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
-        }
-
-        private class ErrorItem
-        {
-            [JsonProperty("message_severity")]
-            public ErrorLevel MessageSeverity { get; set; }
-
-            [JsonProperty("code")]
-            public string Code { get; set; } = string.Empty;
-
-            [JsonProperty("message")]
-            public string Message { get; set; } = string.Empty;
-
-            [JsonProperty("file")]
-            public PathString? File { get; set; }
-
-            [JsonProperty("line")]
-            public int Line { get; set; }
-
-            [JsonProperty("end_line")]
-            public int EndLine { get; set; }
-
-            [JsonProperty("column")]
-            public int Column { get; set; }
-
-            [JsonProperty("end_column")]
-            public int EndColumn { get; set; }
-
-            [JsonProperty("log_item_type")]
-            public string LogItemType { get; set; } = string.Empty;
-
-            [JsonProperty("pull_request_only")]
-            public bool? PullRequestOnly { get; set; }
-
-            [JsonProperty("property_path")]
-            public string? PropertyPath { get; set; }
-
-            [JsonProperty("date_time")]
-            public DateTime DateTime { get; set; }
-
-            [JsonProperty("ms.author")]
-            public string? MsAuthor { get; set; }
         }
 
         private class EqualityComparer : IEqualityComparer<Error>
