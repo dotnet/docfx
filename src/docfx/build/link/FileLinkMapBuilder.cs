@@ -8,13 +8,16 @@ namespace Microsoft.Docs.Build
 {
     internal class FileLinkMapBuilder
     {
+        private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
 
-        public FileLinkMapBuilder(DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
+        public FileLinkMapBuilder(
+            ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
         {
+            _errors = errors;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _contributionProvider = contributionProvider;
@@ -29,7 +32,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var monikers = _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, inclusionRoot);
+            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, inclusionRoot);
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
 
             _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, monikers.MonikerGroup, targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
