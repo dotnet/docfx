@@ -2,19 +2,17 @@
 # Support building a subset of files
 buildFiles:
 - a.md
-- b.md
 inputs:
   docfx.yml:
-  a.md: a
-  b.md: b
-  c.md: c
+  a.md: https://a.com
+  b.md: https://b.com
 outputs:
   a.json: |
-    { "conceptual": "<p>a</p>" }
-  b.json: |
-    { "conceptual": "<p>b</p>" }
+    { "conceptual": "<p><a href='https://a.com'>https://a.com</a></p>" }
   .publish.json: |
-    { "files": [{ "source_path": "a.md" }, { "source_path": "b.md" }] }
+    { "files": [{ "source_path": "a.md" }] }
+  .links.json: |
+    { "links": [{ "target_url": "https://a.com" }] }
 ---
 # Support building a subset of files for multiple docsets
 buildFiles:
