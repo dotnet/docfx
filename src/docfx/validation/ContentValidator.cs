@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
-        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly PublishUrlMap _publishUrlMap;
         private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
 
         public ContentValidator(
@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             ZonePivotProvider zonePivotProvider,
-            Lazy<PublishUrlMap> publishUrlMap)
+            PublishUrlMap publishUrlMap)
         {
             _config = config;
             _errors = errors;
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
-                var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file);
+                var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
                 var isCanonicalVersion = monikers.IsCanonicalVersion(canonicalVersion);
                 var titleItem = new TitleItem
                 {

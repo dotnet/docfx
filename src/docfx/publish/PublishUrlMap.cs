@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,10 +16,9 @@ namespace Microsoft.Docs.Build
         private readonly RedirectionProvider _redirectionProvider;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly TocMap _tocMap;
 
-        private readonly HashSet<FilePath> _files;
-        private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _publishUrlMap;
+        private readonly FilePath[] _files;
+        private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _urlMap;
         private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
 
         public PublishUrlMap(
@@ -29,8 +27,7 @@ namespace Microsoft.Docs.Build
             BuildScope buildScope,
             RedirectionProvider redirectionProvider,
             DocumentProvider documentProvider,
-            MonikerProvider monikerProvider,
-            TocMap tocMap)
+            MonikerProvider monikerProvider)
         {
             _config = config;
             _errors = errors;
@@ -38,9 +35,7 @@ namespace Microsoft.Docs.Build
             _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
-            _tocMap = tocMap;
-            _publishUrlMap = Initialize();
-            _files = _publishUrlMap.Values.SelectMany(x => x).Select(x => x.SourcePath).ToHashSet();
+            (_files, _urlMap) = Initialize();
         }
 
         public string? GetCanonicalVersion(FilePath file)
@@ -51,18 +46,23 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> GetFilesByUrl(string url)
         {
-            if (_publishUrlMap.TryGetValue(url, out var items))
+            if (_urlMap.TryGetValue(url, out var items))
             {
                 return items.Select(x => x.SourcePath);
             }
             return Array.Empty<FilePath>();
         }
 
-        public HashSet<FilePath> GetAllFiles() => _files;
+        public IEnumerable<FilePath> GetFiles() => _files;
+
+        public FilePath[] ResolveUrlConflicts(IEnumerable<FilePath> files)
+        {
+            return CreateUrlMap(files).files;
+        }
 
         private string? GetCanonicalVersionCore(string url)
         {
-            if (_publishUrlMap.TryGetValue(url, out var item))
+            if (_urlMap.TryGetValue(url, out var item))
             {
                 string? canonicalVersion = null;
                 var order = 0;
@@ -80,34 +80,41 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private Dictionary<string, List<PublishUrlMapItem>> Initialize()
+        private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) Initialize()
+        {
+            using (Progress.Start("Building publish url map"))
+            {
+                return CreateUrlMap(
+                    _redirectionProvider.Files.Concat(
+                    _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html)).Concat(
+                    _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback)));
+            }
+        }
+
+        private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) CreateUrlMap(IEnumerable<FilePath> files)
         {
             var builder = new ListBuilder<PublishUrlMapItem>();
 
-            using (Progress.Start("Building publish url map"))
+            ParallelUtility.ForEach(_errors, files, file =>
             {
-                Parallel.Invoke(
-                    () => ParallelUtility.ForEach(
-                        _errors, _redirectionProvider.Files.Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
-                    () => ParallelUtility.ForEach(
-                        _errors,
-                        _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html),
-                        file => AddItem(builder, file)),
-                    () => ParallelUtility.ForEach(
-                        _errors, _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback), file => AddItem(builder, file)),
-                    () => ParallelUtility.ForEach(_errors, _tocMap.GetFiles(), file => AddItem(builder, file)));
-            }
+                var siteUrl = _documentProvider.GetSiteUrl(file);
+                var outputPath = _documentProvider.GetOutputPath(file);
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
+                builder.Add(new PublishUrlMapItem(siteUrl, outputPath, monikers, file));
+            });
 
             // resolve output path conflicts
             var publishMapWithoutOutputPathConflicts =
                 builder.AsList().GroupBy(x => x.OutputPath, PathUtility.PathComparer).Select(g => ResolveOutputPathConflicts(g));
 
             // resolve publish url conflicts
-            return publishMapWithoutOutputPathConflicts
+            var urlMap = publishMapWithoutOutputPathConflicts
                    .GroupBy(x => x)
                    .Select(g => ResolvePublishUrlConflicts(g))
                    .GroupBy(x => x.Url)
                    .ToDictionary(g => g.Key, g => g.ToList());
+
+            return (urlMap.Values.SelectMany(item => item).Select(item => item.SourcePath).ToArray(), urlMap);
         }
 
         private PublishUrlMapItem ResolveOutputPathConflicts(IGrouping<string, PublishUrlMapItem> conflicts)
@@ -147,14 +154,6 @@ namespace Microsoft.Docs.Build
             _errors.Add(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
 
             return conflicts.OrderBy(x => x).Last();
-        }
-
-        private void AddItem(ListBuilder<PublishUrlMapItem> outputMapping, FilePath path)
-        {
-            var siteUrl = _documentProvider.GetSiteUrl(path);
-            var outputPath = _documentProvider.GetOutputPath(path);
-            var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
-            outputMapping.Add(new PublishUrlMapItem(siteUrl, outputPath, monikers, path));
         }
     }
 }

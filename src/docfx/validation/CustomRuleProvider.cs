@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal class CustomRuleProvider
     {
         private readonly DocumentProvider _documentProvider;
-        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly PublishUrlMap _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
         private readonly MetadataProvider _metaDataProvider;
 
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
             Config config,
             FileResolver fileResolver,
             DocumentProvider documentProvider,
-            Lazy<PublishUrlMap> publishUrlMap,
+            PublishUrlMap publishUrlMap,
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider,
             ErrorBuilder errorLog)
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
-            var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(filePath);
+            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
 
             // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
             // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
