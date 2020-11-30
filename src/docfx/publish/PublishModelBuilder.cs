@@ -10,7 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishModelBuilder
     {
-        private readonly IReadOnlyCollection<FilePath> _files;
         private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
@@ -22,7 +21,6 @@ namespace Microsoft.Docs.Build
                      new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
 
         public PublishModelBuilder(
-            IReadOnlyCollection<FilePath> files,
             Config config,
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
@@ -30,7 +28,6 @@ namespace Microsoft.Docs.Build
             SourceMap sourceMap,
             DocumentProvider documentProvider)
         {
-            _files = files;
             _config = config;
             _errors = errors;
             _monikerProvider = monikerProvider;
@@ -44,11 +41,11 @@ namespace Microsoft.Docs.Build
             _buildOutput.TryAdd(file, (metadata, outputPath));
         }
 
-        public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
+        public (PublishModel, Dictionary<FilePath, PublishItem>) Build(IReadOnlyCollection<FilePath> files)
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
 
-            foreach (var sourceFile in _files.Concat(_buildOutput.Keys))
+            foreach (var sourceFile in files.Concat(_buildOutput.Keys))
             {
                 if (!publishItems.ContainsKey(sourceFile))
                 {

@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public static ExternalXrefMap Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
-            using (Progress.Start("Loading external xref map"))
+            using (Progress.Start("Loading xref map"))
             {
                 return new ExternalXrefMap(config.Xref.AsParallel().AsOrdered().Select(url => LoadXrefMap(errors, fileResolver, url)));
             }
