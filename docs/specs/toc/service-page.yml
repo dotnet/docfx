@@ -530,7 +530,7 @@ repos:
             }
           ],
         }
-      a/docfx.yml:
+      a/docfx.yml: 
       a/api/doc.md:
       a/docs-ref-toc/TOC.yml: |
         items:
