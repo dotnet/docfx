@@ -15,14 +15,14 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<ExternalXrefMap> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
-
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
-        private readonly Lazy<JsonSchemaTransformer> _jsonSchemaTransformer;
+        private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
+
+        private readonly Lazy<ExternalXrefMap> _externalXrefMap;
+        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         private int _internalXrefMapValidated;
 
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             BuildScope buildScope,
-            Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
+            Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
             _errorLog = errorLog;
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                                 metadataProvider,
                                 monikerProvider,
                                 buildScope,
-                                jsonSchemaTransformer.Value).Build());
+                                jsonSchemaTransformer()).Build());
 
             _externalXrefMap = new Lazy<ExternalXrefMap>(
                 () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
                     .OrderBy(xref => xref.Uid)
                     .ToArray();
 
-                externalXrefs = _jsonSchemaTransformer.Value.GetValidateExternalXrefs();
+                externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
             }
 
             var model =

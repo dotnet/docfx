@@ -14,28 +14,25 @@ namespace Microsoft.Docs.Build
     {
         private const string DefaultDefinitionFile = "zone-pivot-groups.json";
 
-        private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly Input _input;
         private readonly PublishUrlMap _publishUrlMap;
-        private readonly Lazy<ContentValidator> _contentValidator;
+        private readonly Func<ContentValidator> _contentValidator;
 
         private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
         private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?> _zonePivotDefinitionModelCache =
             new ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?>();
 
         public ZonePivotProvider(
-            Config config,
             ErrorBuilder errors,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             Input input,
             PublishUrlMap publishUrlMap,
-            Lazy<ContentValidator> contentValidator)
+            Func<ContentValidator> contentValidator)
         {
-            _config = config;
             _errors = errors;
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
@@ -100,7 +97,7 @@ namespace Microsoft.Docs.Build
                 var zonePivotGroupDefinition = YamlUtility.DeserializeData<ZonePivotGroupDefinition>(
                     _input.ReadString(zonePivotGroupDefinitionFile),
                     zonePivotGroupDefinitionFile);
-                _contentValidator.Value.ValidateZonePivotDefinition(zonePivotGroupDefinitionFile, zonePivotGroupDefinition);
+                _contentValidator().ValidateZonePivotDefinition(zonePivotGroupDefinitionFile, zonePivotGroupDefinition);
                 return zonePivotGroupDefinition;
             }
             else

@@ -11,12 +11,12 @@ namespace Microsoft.Docs.Build
 {
     internal class RedirectionProvider
     {
+        private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
-        private readonly Lazy<PublishUrlMap> _publishUrlMap;
-        private readonly Config _config;
+        private readonly Func<PublishUrlMap> _publishUrlMap;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
         private readonly HashSet<PathString> _redirectPaths;
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             BuildScope buildScope,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            Lazy<PublishUrlMap> publishUrlMap)
+            Func<PublishUrlMap> publishUrlMap)
         {
             _errors = errors;
             _buildScope = buildScope;
@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 var (trimmedRedirectUrl, redirectQuery) = RemoveTrailingIndex(value);
-                var docs = _publishUrlMap.Value.GetFilesByUrl(trimmedRedirectUrl.ToLowerInvariant());
+                var docs = _publishUrlMap().GetFilesByUrl(trimmedRedirectUrl.ToLowerInvariant());
                 if (!docs.Any())
                 {
                     if (item.RedirectDocumentId)
