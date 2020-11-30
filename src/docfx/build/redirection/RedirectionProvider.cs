@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> Files => _redirectUrls.Keys;
 
         public RedirectionProvider(
+            Config config,
             string docsetPath,
             string hostName,
             ErrorBuilder errors,
@@ -34,8 +35,7 @@ namespace Microsoft.Docs.Build
             Repository? repository,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            Lazy<PublishUrlMap> publishUrlMap,
-            Config config)
+            Lazy<PublishUrlMap> publishUrlMap)
         {
             _errors = errors;
             _buildScope = buildScope;
