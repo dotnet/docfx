@@ -758,29 +758,9 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {
-          "url": "/a",
-          "source_path": "a.md",
-          "locale": "en-us",
-          "redirect_url": "/aa"
-        },
-        {
-          "url": "/b",
-          "source_path": "b.md",
-          "locale": "en-us",
-          "redirect_url": "/bb"
-        },
-        {
-          "url": "/b/a",
-          "source_path": "b/a.md",
-          "locale": "en-us",
-          "redirect_url": "/aa"
-        },
-        {
-          "url": "/b/b",
-          "source_path": "b/b.md",
-          "locale": "en-us",
-          "redirect_url": "/bb"
-        }
+        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "source_path": "b.md", "locale": "en-us", "redirect_url": "/bb"},
+        {"url": "/b/a", "source_path": "b/a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b/b", "source_path": "b/b.md", "locale": "en-us", "redirect_url": "/bb"}
       ]
     }

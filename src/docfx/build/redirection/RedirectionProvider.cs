@@ -28,7 +28,6 @@ namespace Microsoft.Docs.Build
         public RedirectionProvider(
             Config config,
             BuildOptions buildOptions,
-            string hostName,
             ErrorBuilder errors,
             BuildScope buildScope,
             DocumentProvider documentProvider,
@@ -44,7 +43,7 @@ namespace Microsoft.Docs.Build
             using (Progress.Start("Loading redirections"))
             {
                 var redirections = LoadRedirectionModel(errors, buildOptions.DocsetPath, buildOptions.Repository, config);
-                _redirectUrls = GetRedirectUrls(redirections, hostName);
+                _redirectUrls = GetRedirectUrls(redirections, _config.HostName);
                 _redirectPaths = _redirectUrls.Keys.Select(x => x.Path).ToHashSet();
                 _publishUrlMap = publishUrlMap;
                 _history =
@@ -250,9 +249,7 @@ namespace Microsoft.Docs.Build
                 // redirection files registered in .openpublishing.publish.config.json
                 foreach (var item in redirectionFiles)
                 {
-                    if (item.Equals(".openpublishing.redirection.json")
-                        || item.Equals(Path.GetRelativePath(repository.Path, Path.Combine(docsetPath, "redirections.yml")))
-                        || item.Equals(Path.GetRelativePath(repository.Path, Path.Combine(docsetPath, "redirections.json"))))
+                    if (item.Equals(".openpublishing.redirection.json"))
                     {
                         continue;
                     }
