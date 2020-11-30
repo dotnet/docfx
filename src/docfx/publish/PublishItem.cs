@@ -14,6 +14,9 @@ namespace Microsoft.Docs.Build
 
         public string? Path { get; }
 
+        [JsonIgnore]
+        public FilePath? SourceFile { get; }
+
         /// <summary>
         /// File source relative path to docset root
         /// will be used for PR comments
@@ -38,6 +41,7 @@ namespace Microsoft.Docs.Build
         public PublishItem(
             string url,
             string? path,
+            FilePath sourceFile,
             string? sourcePath,
             string locale,
             MonikerList monikers,
@@ -47,6 +51,7 @@ namespace Microsoft.Docs.Build
         {
             Url = url;
             Path = path;
+            SourceFile = sourceFile;
             SourcePath = sourcePath;
             Locale = locale;
             Monikers = monikers;

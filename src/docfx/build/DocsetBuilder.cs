@@ -114,8 +114,7 @@ namespace Microsoft.Docs.Build
                 contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
-                var contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
-                var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, contributionProvider);
+                var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, _contributionProvider);
                 var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!));
                 var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
                 var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, new Lazy<PublishUrlMap>(() => publishUrlMap!));
@@ -129,12 +128,13 @@ namespace Microsoft.Docs.Build
 
                 var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator);
                 publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider, tocMap);
-                var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, publishUrlMap, _sourceMap, _documentProvider, linkResolver);
+
+                var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
                 var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, customRuleProvider);
                 var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
 
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
-                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, _documentProvider);
 
@@ -158,14 +158,14 @@ namespace Microsoft.Docs.Build
                     () => _errors.AddRange(_microsoftGraphAccessor.Save()),
                     () => jsonSchemaTransformer.PostValidate());
 
-                // TODO: explicitly state that ToXrefMapModel produces errors
-                var xrefMapModel = xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
-                var (publishModel, fileManifests) = publishModelBuilder.Build();
-
                 if (_config.DryRun)
                 {
                     return;
                 }
+
+                // TODO: explicitly state that ToXrefMapModel produces errors
+                var xrefMapModel = xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
+                var (publishModel, fileManifests) = publishModelBuilder.Build(filesToBuild);
 
                 // TODO: decouple files and dependencies from legacy.
                 var dependencyMap = dependencyMapBuilder.Build();
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                     () => output.WriteJson(".xrefmap.json", xrefMapModel),
                     () => output.WriteJson(".publish.json", publishModel),
                     () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
-                    () => output.WriteJson(".links.json", fileLinkMapBuilder.Build(publishUrlMap.GetAllFiles())),
+                    () => output.WriteJson(".links.json", fileLinkMapBuilder.Build(publishModel)),
                     () => output.WriteText(".lunr.json", searchIndexBuilder.Build()),
                     () => Legacy.ConvertToLegacyModel(_buildOptions.DocsetPath, legacyContext, fileManifests, dependencyMap));
 

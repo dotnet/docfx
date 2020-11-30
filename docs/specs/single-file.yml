@@ -2,17 +2,17 @@
 # Support building a subset of files
 buildFiles:
 - a.md
-- b.md
 inputs:
   docfx.yml:
-  a.md: a
-  b.md: b
-  c.md: c
+  a.md: https://a.com
+  b.md: https://b.com
 outputs:
   a.json: |
-    { "conceptual": "<p>a</p>" }
-  b.json: |
-    { "conceptual": "<p>b</p>" }
+    { "conceptual": "<p><a href='https://a.com'>https://a.com</a></p>" }
+  .publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+  .links.json: |
+    { "links": [{ "target_url": "https://a.com" }] }
 ---
 # Support building a subset of files for multiple docsets
 buildFiles:
@@ -29,6 +29,10 @@ inputs:
 outputs:
   a/a.json:
   b/b.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+  b/.publish.json: |
+    { "files": [{ "source_path": "b.md" }] }
 ---
 # Ignore include files and invalid files
 buildFiles:
@@ -39,4 +43,22 @@ inputs:
     files: c/**
   a.md:
   c/a.md:
+outputs:
+  .publish.json: |
+    { "files": undefined }
+---
+# Building a simple markdown file in dry run mode does not touch xrefmap
+dryRunOnly: true
+buildFiles:
+- a.md
+inputs:
+  docfx.yml: |
+    xref: xref.json
+  a.md: simple markdown
+  b.md: |
+    ---
+    uid: b
+    ---
+    this [!include[](b.md)] should cause circular reference
+  xref.json: '{ apparently a syntax error'
 outputs:
