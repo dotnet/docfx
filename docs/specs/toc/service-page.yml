@@ -516,3 +516,36 @@ repos:
 outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
+---
+# Only TopLevelTOC in JoinTOC Plugin
+repos:
+  https://github.com/ops/only-TopLevelTOC-service-page:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {
+              "TopLevelTOC": "a/docs-ref-toc/toc.yml"
+            }
+          ],
+        }
+      a/docfx.yml:
+      a/api/doc.md:
+      a/docs-ref-toc/toc.yml: |
+        items:
+        - name: API Reference
+          items:
+          - name: App Service
+            href: ~/api/doc.md
+outputs:
+  a/api/doc.json:
+  a/docs-ref-toc/toc.json: |
+    {
+      "items": [
+        {
+          "name": "API Reference",
+          "items": [{ "name": "App Service", "href": "../api/doc" }]
+        }
+      ]
+    }

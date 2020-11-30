@@ -351,7 +351,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in JoinTOC)
             {
-                if (item.TopLevelToc != null)
+                if (item.TopLevelToc != null && item.ReferenceToc != null)
                 {
                     yield return new SourceInfo<string>(item.TopLevelToc);
                 }
