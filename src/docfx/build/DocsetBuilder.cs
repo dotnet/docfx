@@ -50,7 +50,6 @@ namespace Microsoft.Docs.Build
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
             _sourceMap = new SourceMap(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
-            _errors = new ErrorLog(errors, _config, _sourceMap);
             _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap);
             _buildScope = new BuildScope(_config, _input, _buildOptions);
             _githubAccessor = new GitHubAccessor(_config);
@@ -58,6 +57,7 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = new JsonSchemaLoader(_fileResolver);
             _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
+            _errors = new ErrorLog(errors, _config, _sourceMap, _metadataProvider);
             _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
             _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
@@ -112,6 +112,9 @@ namespace Microsoft.Docs.Build
                 var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, () => Ensure(publishUrlMap));
                 publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider);
 
+                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, publishUrlMap, _monikerProvider, _metadataProvider, _errors);
+                _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
+
                 var zonePivotProvider = new ZonePivotProvider(_errors, _documentProvider, _metadataProvider, _input, publishUrlMap, () => Ensure(contentValidator));
                 contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, publishUrlMap);
 
@@ -124,9 +127,6 @@ namespace Microsoft.Docs.Build
 
                 var tocParser = new TocParser(_input, markdownEngine, _documentProvider);
                 var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
-                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, publishUrlMap, _monikerProvider, _metadataProvider, _errors);
-
-                _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
 
                 var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator, publishUrlMap);
                 var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);

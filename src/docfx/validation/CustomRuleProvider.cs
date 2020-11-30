@@ -64,17 +64,10 @@ namespace Microsoft.Docs.Build
 
         public Error ApplyCustomRule(Error error)
         {
-            if (TryGetCustomRule(error, out var customRule))
-            {
-                error = WithCustomRule(error, customRule);
-            }
-            var source = error.Source?.File;
-            var userMetadata = source != null ? _metaDataProvider.GetMetadata(ErrorBuilder.Null, source) : null;
-            error = error.WithMsAuthor(userMetadata?.MsAuthor);
-            return error;
+            return TryGetCustomRule(error, out var customRule) ? ApplyCustomRule(error, customRule) : error;
         }
 
-        public static Error WithCustomRule(Error error, CustomRule customRule, bool? enabled = null)
+        public static Error ApplyCustomRule(Error error, CustomRule customRule, bool? enabled = null)
         {
             var level = customRule.Severity ?? error.Level;
 
