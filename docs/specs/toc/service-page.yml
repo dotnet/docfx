@@ -526,13 +526,13 @@ repos:
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
             {
-              "TopLevelTOC": "a/docs-ref-toc/toc.yml"
+              "TopLevelTOC": "a/docs-ref-toc/TOC.yml"
             }
           ],
         }
       a/docfx.yml:
       a/api/doc.md:
-      a/docs-ref-toc/toc.yml: |
+      a/docs-ref-toc/TOC.yml: |
         items:
         - name: API Reference
           items:
