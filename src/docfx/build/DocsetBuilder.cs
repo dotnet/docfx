@@ -130,11 +130,7 @@ namespace Microsoft.Docs.Build
                 var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator);
                 publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider, tocMap);
 
-                var filesToBuild = files.Length > 0
-                    ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
-                    : publishUrlMap.GetAllFiles();
-
-                var publishModelBuilder = new PublishModelBuilder(filesToBuild, _config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
+                var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
                 var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, customRuleProvider);
                 var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
 
@@ -142,6 +138,10 @@ namespace Microsoft.Docs.Build
                 var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, _documentProvider);
+
+                var filesToBuild = files.Length > 0
+                    ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
+                    : publishUrlMap.GetAllFiles();
 
                 using (Progress.Start($"Building {filesToBuild.Count} files"))
                 {
@@ -166,7 +166,7 @@ namespace Microsoft.Docs.Build
 
                 // TODO: explicitly state that ToXrefMapModel produces errors
                 var xrefMapModel = xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
-                var (publishModel, fileManifests) = publishModelBuilder.Build();
+                var (publishModel, fileManifests) = publishModelBuilder.Build(filesToBuild);
 
                 // TODO: decouple files and dependencies from legacy.
                 var dependencyMap = dependencyMapBuilder.Build();
