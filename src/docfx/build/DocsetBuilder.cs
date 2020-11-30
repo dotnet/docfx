@@ -159,14 +159,14 @@ namespace Microsoft.Docs.Build
                     () => _errors.AddRange(_microsoftGraphAccessor.Save()),
                     () => jsonSchemaTransformer.PostValidate());
 
-                // TODO: explicitly state that ToXrefMapModel produces errors
-                var xrefMapModel = xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
-                var (publishModel, fileManifests) = publishModelBuilder.Build();
-
                 if (_config.DryRun)
                 {
                     return;
                 }
+
+                // TODO: explicitly state that ToXrefMapModel produces errors
+                var xrefMapModel = xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
+                var (publishModel, fileManifests) = publishModelBuilder.Build();
 
                 // TODO: decouple files and dependencies from legacy.
                 var dependencyMap = dependencyMapBuilder.Build();

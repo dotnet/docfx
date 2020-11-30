@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
         {
             yield return "";
 
-            if (!spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
+            if (!spec.DryRunOnly && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
             {
                 yield return "DryRun";
             }
@@ -160,6 +160,8 @@ namespace Microsoft.Docs.Build
 
         private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables)
         {
+            var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun");
+
             if (spec.LanguageServer.Count != 0)
             {
                 RunLanguageServer(spec, variables);
@@ -173,12 +175,12 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, test, spec);
+                    RunBuild(locDocsetPath, outputPath, dryRun, spec);
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, test, spec);
+                RunBuild(docsetPath, outputPath, dryRun, spec);
             }
         }
 
@@ -203,9 +205,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec)
         {
-            var dryRun = test.Matrix.Contains("DryRun");
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
@@ -226,13 +227,16 @@ namespace Microsoft.Docs.Build
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
-            var outputs = dryRun
-                ? new Dictionary<string, string> { [".errors.log"] = spec.Outputs[".errors.log"] }
+            var outputs = dryRun && spec.Outputs.TryGetValue(".errors.log", out var errors)
+                ? new Dictionary<string, string> { [".errors.log"] = errors }
                 : spec.Outputs;
 
             VerifyOutput(randomOutputPath, outputs);
 
-            Directory.Delete(randomOutputPath, recursive: true);
+            if (Directory.Exists(randomOutputPath))
+            {
+                Directory.Delete(randomOutputPath, recursive: true);
+            }
         }
 
         private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)

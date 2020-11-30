@@ -46,3 +46,19 @@ inputs:
 outputs:
   .publish.json: |
     { "files": undefined }
+---
+# Building a simple markdown file in dry run mode does not touch xrefmap
+dryRunOnly: true
+buildFiles:
+- a.md
+inputs:
+  docfx.yml: |
+    xref: xref.json
+  a.md: simple markdown
+  b.md: |
+    ---
+    uid: b
+    ---
+    this [!include[](b.md)] should cause circular reference
+  xref.json: '{ apparently a syntax error'
+outputs:
