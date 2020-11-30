@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -205,7 +204,7 @@ namespace Microsoft.Docs.Build
                                     x.SourcePath = new PathString(Path.Combine(prefix, x.SourcePath));
                                 }
                                 return x;
-                            }).ToImmutableArray();
+                            }).ToArray();
                         }
                     }
 
