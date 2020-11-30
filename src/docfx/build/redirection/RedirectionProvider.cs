@@ -27,11 +27,10 @@ namespace Microsoft.Docs.Build
 
         public RedirectionProvider(
             Config config,
-            string docsetPath,
+            BuildOptions buildOptions,
             string hostName,
             ErrorBuilder errors,
             BuildScope buildScope,
-            Repository? repository,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             Lazy<PublishUrlMap> publishUrlMap)
@@ -44,7 +43,7 @@ namespace Microsoft.Docs.Build
 
             using (Progress.Start("Loading redirections"))
             {
-                var redirections = LoadRedirectionModel(errors, docsetPath, repository, config);
+                var redirections = LoadRedirectionModel(errors, buildOptions.DocsetPath, buildOptions.Repository, config);
                 _redirectUrls = GetRedirectUrls(redirections, hostName);
                 _redirectPaths = _redirectUrls.Keys.Select(x => x.Path).ToHashSet();
                 _publishUrlMap = publishUrlMap;
