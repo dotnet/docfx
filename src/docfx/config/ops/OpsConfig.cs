@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using ECMA2Yaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -12,6 +13,8 @@ namespace Microsoft.Docs.Build
     internal class OpsConfig
     {
         public OpsDocsetConfig[] DocsetsToPublish { get; private set; } = Array.Empty<OpsDocsetConfig>();
+
+        public HashSet<string> RedirectionFiles { get; private set; } = new HashSet<string>();
 
         public OpsDependencyConfig[] DependentRepositories { get; private set; } = Array.Empty<OpsDependencyConfig>();
 
