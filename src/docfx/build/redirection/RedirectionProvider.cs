@@ -240,7 +240,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var item in redirectionFiles)
                 {
-                    if (item.Equals(".openpublishing.redirection.json"))
+                    if (item.Equals(".openpublishing.redirection.json", PathUtility.PathComparison))
                     {
                         continue;
                     }
