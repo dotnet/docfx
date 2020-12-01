@@ -54,7 +54,7 @@ dotnet_diagnostic.xunit2018.severity = none
 dotnet_diagnostic.men010.severity = none
 
 # Use a single return
-dotnet_diagnostic.mem007.severity = none
+dotnet_diagnostic.men007.severity = none
 
 # CA1001: Types that own disposable fields should be disposable
 dotnet_diagnostic.ca1001.severity = none

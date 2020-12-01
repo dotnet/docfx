@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
         private readonly MarkdownPipeline[] _pipelines;
 
-        private readonly Lazy<PublishUrlMap> _publishUrlMap;
+        private readonly PublishUrlMap _publishUrlMap;
 
         private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
 
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
             ContentValidator contentValidator,
-            Lazy<PublishUrlMap> publishUrlMap)
+            PublishUrlMap publishUrlMap)
         {
             _input = input;
             _linkResolver = linkResolver;
@@ -394,7 +394,7 @@ namespace Microsoft.Docs.Build
 
         private string? GetCanonicalVersion()
         {
-            return _publishUrlMap.Value.GetCanonicalVersion(GetRootFilePath());
+            return _publishUrlMap.GetCanonicalVersion(GetRootFilePath());
         }
 
         private class Status

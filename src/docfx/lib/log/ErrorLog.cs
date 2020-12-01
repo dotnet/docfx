@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly SourceMap? _sourceMap;
+        private readonly MetadataProvider? _metadataProvider;
 
         private readonly ErrorSink _errorSink = new ErrorSink();
         private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
@@ -19,25 +20,31 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
-        public ErrorLog(ErrorBuilder errors, Config config, SourceMap? sourceMap = null)
+        public ErrorLog(ErrorBuilder errors, Config config, SourceMap? sourceMap = null, MetadataProvider? metadataProvider = null)
         {
             _errors = errors;
             _config = config;
             _sourceMap = sourceMap;
+            _metadataProvider = metadataProvider;
         }
 
         public override void Add(Error error)
         {
-            if (CustomRuleProvider != null)
+            try
             {
-                try
+                if (_metadataProvider != null && error.Source?.File is FilePath source)
+                {
+                    error = error.WithMsAuthor(_metadataProvider.GetMetadata(ErrorBuilder.Null, source).MsAuthor);
+                }
+
+                if (CustomRuleProvider != null)
                 {
                     error = CustomRuleProvider.ApplyCustomRule(error);
                 }
-                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-                {
-                    Log.Write(ex);
-                }
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                Log.Write(ex);
             }
 
             if (error.Level == ErrorLevel.Off)
