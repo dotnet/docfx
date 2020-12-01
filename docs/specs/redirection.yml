@@ -716,3 +716,51 @@ repos:
         }
 outputs:
   bdc0b3f1/docs/v1/a.json:
+---
+# Multiple Redirection Files
+repos:
+  https://github.com/redirection/multiple-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            ".openpublishing.redirection.test.json",
+            "a/.openpublishing.redirection.test.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      .openpublishing.redirection.test.json: |
+        {
+          "redirections": [{"source_path": "c.md", "redirect_url": "/cc"}]
+        }
+      a/docfx.yml:
+      a/.openpublishing.redirection.test.json: |
+        {
+           "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/b/.openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+outputs:
+  a/.publish.json: |
+    {
+      "files": [
+        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "source_path": "b.md", "locale": "en-us", "redirect_url": "/bb"},
+        {"url": "/b/a", "source_path": "b/a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b/b", "source_path": "b/b.md", "locale": "en-us", "redirect_url": "/bb"}
+      ]
+    }

@@ -107,11 +107,10 @@ namespace Microsoft.Docs.Build
                 PublishUrlMap? publishUrlMap = null;
                 JsonSchemaTransformer? jsonSchemaTransformer = null;
                 ContentValidator? contentValidator = null;
-
                 var dependencyMapBuilder = new DependencyMapBuilder(_sourceMap);
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
                 var zonePivotProvider = new ZonePivotProvider(_config, _errors, _documentProvider, _metadataProvider, _input, new Lazy<PublishUrlMap>(() => publishUrlMap!), new Lazy<ContentValidator>(() => contentValidator!));
-                var redirectionProvider = new RedirectionProvider(_buildOptions.DocsetPath, _config.HostName, _errors, _buildScope, _buildOptions.Repository, _documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
                 contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
