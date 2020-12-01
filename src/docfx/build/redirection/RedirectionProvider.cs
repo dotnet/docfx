@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
             {
                 if (File.Exists(fullPath))
                 {
-                    GenerateRedirectionRules(errors, docsetPath, fullPath, results);
+                    GenerateRedirectionRules(errors, docsetPath, fullPath, results, repository);
                     break;
                 }
             }
@@ -167,14 +167,19 @@ namespace Microsoft.Docs.Build
             {
                 if (File.Exists(fullPath))
                 {
-                    GenerateRedirectionRules(errors, docsetPath, fullPath, results);
+                    GenerateRedirectionRules(errors, docsetPath, fullPath, results, repository);
                 }
             }
 
             return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
         }
 
-        private static void GenerateRedirectionRules(ErrorBuilder errors, string docsetPath, string fullPath, List<RedirectionItem> results)
+        private static void GenerateRedirectionRules(
+            ErrorBuilder errors,
+            string docsetPath,
+            string fullPath,
+            List<RedirectionItem> results,
+            Repository? repository)
         {
             var content = File.ReadAllText(fullPath);
             var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
@@ -201,14 +206,38 @@ namespace Microsoft.Docs.Build
 
             foreach (var item in redirections.Concat(renames))
             {
-                if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
+                if ((item.SourcePath.IsDefault && item.SourcePathFromRoot.IsDefault) || string.IsNullOrEmpty(item.RedirectUrl))
                 {
                     // Give a missing-attribute warning when source_path or redirect_url not specified
-                    errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path or redirect_url"));
+                    errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "(source_path or source_path_from_root) or redirect_url"));
+                    continue;
+                }
+                else if (!item.SourcePath.IsDefault && !item.SourcePathFromRoot.IsDefault)
+                {
+                    // TODO: "source_path" and "source_path_from_root" exist at the same time.
                     continue;
                 }
 
-                var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
+                string sourcePath;
+
+                if (!item.SourcePath.IsDefault)
+                {
+                    // TODO: syntax check
+                    sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
+                }
+                else
+                {
+                    // TODO: syntax check
+                    var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value.Substring(1);
+                    if (repository != null)
+                    {
+                        sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(repository.Path, sourcePathRelativeToRepoRoot));
+                    }
+                    else
+                    {
+                        sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(docsetPath, sourcePathRelativeToRepoRoot));
+                    }
+                }
 
                 if (!sourcePath.StartsWith("."))
                 {
