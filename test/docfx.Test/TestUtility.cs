@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
                 else if (file.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
                     || file.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase))
                 {
-                    // TODO: handle the valiation rules in MemoryPackage as well
+                    // TODO: handle the validation rules in MemoryPackage as well
                     var filePath = Path.GetFullPath(Path.Combine(docsetPath, file.Key));
                     Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                     File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
