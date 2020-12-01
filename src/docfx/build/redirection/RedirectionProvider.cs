@@ -71,12 +71,6 @@ namespace Microsoft.Docs.Build
             while (_history.Value.redirectionHistory.TryGetValue(redirectionFile, out var item))
             {
                 var (renamedFrom, source) = item;
-                var dir = Path.GetDirectoryName(source?.File.Path);
-                if (source != null && !string.IsNullOrEmpty(dir))
-                {
-                    renamedFrom = renamedFrom.WithPath(new PathString(Path.Combine(dir, renamedFrom.Path)));
-                }
-
                 if (redirectionChain.Contains(redirectionFile))
                 {
                     redirectionChain.Push(redirectionFile);
