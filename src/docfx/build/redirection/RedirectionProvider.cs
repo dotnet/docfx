@@ -2,10 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using OmniSharp.Extensions.JsonRpc.Generation;
 
 namespace Microsoft.Docs.Build
 {
@@ -154,100 +156,97 @@ namespace Microsoft.Docs.Build
         {
             var results = new List<RedirectionItem>();
 
-            foreach (var (fullPath, isSubRedirectionFile) in ProbeRedirectionFiles(docsetPath, repository, config.RedirectionFiles))
+            foreach (var fullPath in ProbeRedirectionFiles(docsetPath, repository))
             {
                 if (File.Exists(fullPath))
                 {
-                    var content = File.ReadAllText(fullPath);
-                    var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
-                    var model = fullPath.EndsWith(".yml")
-                        ? YamlUtility.Deserialize<RedirectionModel>(errors, content, filePath)
-                        : JsonUtility.Deserialize<RedirectionModel>(errors, content, filePath);
+                    GenerateRedirectionRules(errors, docsetPath, fullPath, results);
+                    break;
+                }
+            }
 
-                    // Expand redirect items array or object form
-                    var redirections = model.Redirections.arrayForm
-                        ?? model.Redirections.objectForm?.Select(
-                                pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
-                        ?? Array.Empty<RedirectionItem>();
-
-                    var renames = model.Renames.Select(
-                        pair => new RedirectionItem
-                        {
-                            SourcePath = pair.Key,
-                            RedirectUrl = pair.Value,
-                            RedirectDocumentId = true,
-                        });
-
-                    // Rebase source_path based on redirection definition file path
-                    var basedir = Path.GetDirectoryName(fullPath) ?? "";
-
-                    var allRedirections = redirections.Concat(renames);
-
-                    if (isSubRedirectionFile && repository != null)
-                    {
-                        var prefix = Path.GetDirectoryName(Path.GetRelativePath(repository.Path, fullPath));
-
-                        if (!string.IsNullOrEmpty(prefix))
-                        {
-                            allRedirections = allRedirections.Select(x =>
-                            {
-                                if (!x.SourcePath.IsDefault)
-                                {
-                                    x.SourcePath = new PathString(Path.Combine(prefix, x.SourcePath));
-                                }
-                                return x;
-                            }).ToArray();
-                        }
-                    }
-
-                    foreach (var item in allRedirections)
-                    {
-                        if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
-                        {
-                            // Give a missing-attribute warning when source_path or redirect_url not specified
-                            errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path or redirect_url"));
-                            continue;
-                        }
-
-                        var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(repository == null ? basedir : repository.Path, item.SourcePath));
-
-                        if (!sourcePath.StartsWith("."))
-                        {
-                            results.Add(new RedirectionItem
-                            {
-                                SourcePath = new PathString(sourcePath),
-                                Monikers = item.Monikers,
-                                RedirectUrl = item.RedirectUrl,
-                                RedirectDocumentId = item.RedirectDocumentId,
-                            });
-                        }
-                    }
+            foreach (var fullPath in ProbeSubRedirectionFiles(repository, config.RedirectionFiles))
+            {
+                if (File.Exists(fullPath))
+                {
+                    GenerateRedirectionRules(errors, docsetPath, fullPath, results);
                 }
             }
 
             return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
         }
 
-        private static IEnumerable<(string redirectionFile, bool IsSubRedirectionFile)> ProbeRedirectionFiles(
-            string docsetPath,
-            Repository? repository,
-            HashSet<string> redirectionFiles)
+        private static void GenerateRedirectionRules(ErrorBuilder errors, string docsetPath, string fullPath, List<RedirectionItem> results)
         {
-            yield return (Path.Combine(docsetPath, "redirections.yml"), true);
-            yield return (Path.Combine(docsetPath, "redirections.json"), true);
+            var content = File.ReadAllText(fullPath);
+            var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
+            var model = fullPath.EndsWith(".yml")
+                ? YamlUtility.Deserialize<RedirectionModel>(errors, content, filePath)
+                : JsonUtility.Deserialize<RedirectionModel>(errors, content, filePath);
+
+            // Expand redirect items array or object form
+            var redirections = model.Redirections.arrayForm
+                ?? model.Redirections.objectForm?.Select(
+                        pair => new RedirectionItem { SourcePath = pair.Key, RedirectUrl = pair.Value })
+                ?? Array.Empty<RedirectionItem>();
+
+            var renames = model.Renames.Select(
+                pair => new RedirectionItem
+                {
+                    SourcePath = pair.Key,
+                    RedirectUrl = pair.Value,
+                    RedirectDocumentId = true,
+                });
+
+            // Rebase source_path based on redirection definition file path
+            var basedir = Path.GetDirectoryName(fullPath) ?? "";
+
+            foreach (var item in redirections.Concat(renames))
+            {
+                if (item.SourcePath.IsDefault || string.IsNullOrEmpty(item.RedirectUrl))
+                {
+                    // Give a missing-attribute warning when source_path or redirect_url not specified
+                    errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "source_path or redirect_url"));
+                    continue;
+                }
+
+                var sourcePath = Path.GetRelativePath(docsetPath, Path.Combine(basedir, item.SourcePath));
+
+                if (!sourcePath.StartsWith("."))
+                {
+                    results.Add(new RedirectionItem
+                    {
+                        SourcePath = new PathString(sourcePath),
+                        Monikers = item.Monikers,
+                        RedirectUrl = item.RedirectUrl,
+                        RedirectDocumentId = item.RedirectDocumentId,
+                    });
+                }
+            }
+        }
+
+        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath, Repository? repository)
+        {
+            yield return Path.Combine(docsetPath, "redirections.yml");
+            yield return Path.Combine(docsetPath, "redirections.json");
 
             if (repository != null)
             {
-                yield return (Path.Combine(repository.Path, ".openpublishing.redirection.json"), false);
+                yield return Path.Combine(repository.Path, ".openpublishing.redirection.json");
+            }
+        }
 
-                // redirection files registered in .openpublishing.publish.config.json
+        private static IEnumerable<string> ProbeSubRedirectionFiles(Repository? repository, HashSet<string> redirectionFiles)
+        {
+            if (repository != null)
+            {
                 foreach (var item in redirectionFiles)
                 {
                     if (item.Equals(".openpublishing.redirection.json"))
                     {
                         continue;
                     }
-                    yield return (Path.Combine(repository.Path, item), true);
+                    yield return Path.Combine(repository.Path, item);
                 }
             }
         }

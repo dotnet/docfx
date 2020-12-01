@@ -167,9 +167,6 @@ repos:
           admin/integrate-with-microsoft-teams.md: '../basics/teams-integration'
       ce/basics/teams-integration.md:
 outputs:
-  .errors.log: | 
-    {"message_severity":"error","code":"redirection-conflict","message":"The 'admin/integrate-with-microsoft-teams.md' appears twice or more in the redirection mappings.","file":"ce/redirections.yml","line":2,"end_line":2,"column":44,"end_column":73}
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '../basics/teams-integration' appears twice or more in the redirection mappings.","file":"ce/redirections.yml","line":2,"end_line":2,"column":44,"end_column":73}
   ce/basics/teams-integration.json: |
     { "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48" }
 ---
