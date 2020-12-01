@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,6 +16,17 @@ namespace Microsoft.Docs.Build
         public abstract bool Exists(PathString path);
 
         public abstract PathString? TryGetPhysicalPath(PathString path);
+
+        public abstract PathString? TryGetFullFilePath(PathString path);
+
+        public virtual DateTime GetLastWriteTimeUtc(PathString path)
+        {
+            if (!Exists(path))
+            {
+                return default;
+            }
+            return File.GetLastWriteTimeUtc(TryGetFullFilePath(path)!);
+        }
 
         // TODO: Retire this method after abstracting git read operations in Package.
         public virtual PathString? TryGetGitFilePath(PathString path) => null;

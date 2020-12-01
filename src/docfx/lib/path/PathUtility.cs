@@ -31,20 +31,20 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string directory, string fileNameWithoutExtension) where T : class, new()
+        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string directory, string fileNameWithoutExtension, Package package) where T : class, new()
         {
             var fileName = fileNameWithoutExtension + ".yml";
-            var fullPath = Path.Combine(directory, fileName);
-            if (File.Exists(fullPath))
+            var fullPath = new PathString(Path.Combine(directory, fileName));
+            if (package.Exists(fullPath))
             {
-                return YamlUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
+                return YamlUtility.Deserialize<T>(errors, package.ReadString(fullPath), new FilePath(fileName));
             }
 
             fileName = fileNameWithoutExtension + ".json";
-            fullPath = Path.Combine(directory, fileName);
-            if (File.Exists(fullPath))
+            fullPath = new PathString(Path.Combine(directory, fileName));
+            if (package.Exists(fullPath))
             {
-                return JsonUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
+                return JsonUtility.Deserialize<T>(errors, package.ReadString(fullPath), new FilePath(fileName));
             }
 
             return null;
@@ -53,29 +53,45 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Enumerates files inside a directory, returns path relative to <paramref name="directory"/>.
         /// </summary>
-        public static IEnumerable<PathString> GetFiles(string directory)
+        public static IEnumerable<PathString> GetFilesInDirectory(
+            PathString directory,
+            bool getFullPath = false,
+            Func<string, bool>? fileNamePredicate = null)
         {
-            if (!Directory.Exists(directory))
+            FileSystemEnumerable<PathString>.FindTransform transform;
+            if (getFullPath)
             {
-                throw Errors.Config.DirectoryNotFound(directory).ToException();
+                transform = ToFullPathString;
+            }
+            else
+            {
+                transform = ToRelativePathString;
             }
 
-            return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
+            if (fileNamePredicate == null)
             {
-                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
+                fileNamePredicate = (string fileName) => fileName[0] != '.';
+            }
+
+            return new FileSystemEnumerable<PathString>(
+                directory,
+                transform,
+                s_enumerationOptions)
+            {
+                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && fileNamePredicate.Invoke(entry.FileName.ToString()),
                 ShouldRecursePredicate =
-                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
+                    (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
             };
 
-            static PathString ToPathString(ref FileSystemEntry entry)
-            {
-                Debug.Assert(!entry.IsDirectory);
+            static PathString ToFullPathString(ref FileSystemEntry entry) => new PathString(entry.ToFullPath());
 
-                var path = entry.RootDirectory.Length == entry.Directory.Length
+            static PathString ToRelativePathString(ref FileSystemEntry entry)
+            {
+                var result = entry.RootDirectory.Length == entry.Directory.Length
                     ? entry.FileName.ToString()
                     : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
 
-                return PathString.DangerousCreate(path);
+                return PathString.DangerousCreate(result);
             }
         }
 

@@ -23,6 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
         private readonly RepositoryProvider _repositoryProvider;
         private readonly SourceMap _sourceMap;
+        private readonly DirectoryPackage _docsetPackage;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly JsonSchemaLoader _jsonSchemaLoader;
@@ -41,7 +42,8 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             FileResolver fileResolver,
             OpsAccessor opsAccessor,
-            RepositoryProvider repositoryProvider)
+            RepositoryProvider repositoryProvider,
+            DirectoryPackage docsetPackage)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -49,21 +51,28 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
+            _docsetPackage = docsetPackage;
             _sourceMap = new SourceMap(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
             _errors = new ErrorLog(errors, _config, _sourceMap);
-            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap);
+            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, docsetPackage);
             _buildScope = new BuildScope(_config, _input, _buildOptions);
             _githubAccessor = new GitHubAccessor(_config);
             _microsoftGraphAccessor = new MicrosoftGraphAccessor(_config);
             _jsonSchemaLoader = new JsonSchemaLoader(_fileResolver);
             _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
-            _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
+            _templateEngine = new TemplateEngine(_errors, _config, _docsetPackage, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
             _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
         }
 
-        public static DocsetBuilder? Create(ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options)
+        public static DocsetBuilder? Create(
+            ErrorBuilder errors,
+            string workingDirectory,
+            string docsetPath,
+            string? outputPath,
+            DirectoryPackage package,
+            CommandLineOptions options)
         {
             errors = errors.WithDocsetPath(workingDirectory, docsetPath);
 
@@ -71,7 +80,7 @@ namespace Microsoft.Docs.Build
             {
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errors, docsetPath, outputPath, options, fetchOptions);
+                    errors, docsetPath, outputPath, options, fetchOptions, package);
 
                 if (errors.HasError)
                 {
@@ -91,7 +100,7 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errors, buildOptions, repositoryProvider).Run();
 
-                return new DocsetBuilder(errors, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider);
+                return new DocsetBuilder(errors, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -110,7 +119,7 @@ namespace Microsoft.Docs.Build
                 var dependencyMapBuilder = new DependencyMapBuilder(_sourceMap);
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
                 var zonePivotProvider = new ZonePivotProvider(_config, _errors, _documentProvider, _metadataProvider, _input, new Lazy<PublishUrlMap>(() => publishUrlMap!), new Lazy<ContentValidator>(() => contentValidator!));
-                var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _docsetPackage, _documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
                 contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
 
                 var bookmarkValidator = new BookmarkValidator(_errors);

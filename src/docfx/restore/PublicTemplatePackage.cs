@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 
+        public override PathString? TryGetFullFilePath(PathString path) => throw new NotSupportedException();
+
         public override PathString? TryGetPhysicalPath(PathString path) => throw new NotSupportedException();
 
         private SourceInfo<string> GetPath(PathString path)

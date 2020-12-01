@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly SourceMap _sourceMap;
-        private readonly Package _mainPackage;
+        private readonly DirectoryPackage _mainPackage;
         private readonly Package? _fallbackPackage;
         private readonly Package? _alternativeFallbackPackage;
         private readonly PackageResolver _packageResolver;
@@ -32,13 +32,19 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
                      new ConcurrentDictionary<FilePath, (string?, JToken)>();
 
-        public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider, SourceMap sourceMap)
+        public Input(
+            BuildOptions buildOptions,
+            Config config,
+            PackageResolver packageResolver,
+            RepositoryProvider repositoryProvider,
+            SourceMap sourceMap,
+            DirectoryPackage docsetPackage)
         {
             _config = config;
             _sourceMap = sourceMap;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            _mainPackage = new LocalPackage(buildOptions.DocsetPath);
+            _mainPackage = docsetPackage;
 
             if (buildOptions.FallbackDocsetPath != null)
             {
@@ -99,6 +105,18 @@ namespace Microsoft.Docs.Build
             var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
 
             return package.TryGetPhysicalPath(path);
+        }
+
+        public DateTime GetLastWriteTimeUtc(FilePath file)
+        {
+            if (file.IsGitCommit || file.Origin == FileOrigin.Generated)
+            {
+                return default;
+            }
+
+            var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
+
+            return package.GetLastWriteTimeUtc(path);
         }
 
         /// <summary>
@@ -188,7 +206,7 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var packagePath = _config.Dependencies[dependencyName.Value];
-                    var package = _packageResolver.ResolveAsPackage(packagePath, packagePath.PackageFetchOptions);
+                    var package = _packageResolver.ResolveAsPackage(packagePath, _mainPackage, packagePath.PackageFetchOptions);
 
                     return (
                         from file in package.GetFiles()
@@ -263,7 +281,7 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Dependency:
                     var packagePath = _config.Dependencies[file.DependencyName];
-                    var package = _packageResolver.ResolveAsPackage(packagePath, packagePath.PackageFetchOptions);
+                    var package = _packageResolver.ResolveAsPackage(packagePath, _mainPackage, packagePath.PackageFetchOptions);
                     var pathToPackage = new PathString(Path.GetRelativePath(file.DependencyName, file.Path));
                     Debug.Assert(!pathToPackage.Value.StartsWith('.'));
                     return (package, pathToPackage);

@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildScope _buildScope;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly Config _config;
+        private readonly DirectoryPackage _docsetPackage;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
         private readonly HashSet<PathString> _redirectPaths;
@@ -30,12 +31,14 @@ namespace Microsoft.Docs.Build
             BuildOptions buildOptions,
             ErrorBuilder errors,
             BuildScope buildScope,
+            DirectoryPackage docsetPackage,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             Lazy<PublishUrlMap> publishUrlMap)
         {
             _errors = errors;
             _buildScope = buildScope;
+            _docsetPackage = docsetPackage;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _config = config;
@@ -150,13 +153,13 @@ namespace Microsoft.Docs.Build
             return redirectUrls;
         }
 
-        private static RedirectionItem[] LoadRedirectionModel(ErrorBuilder errors, string docsetPath, Repository? repository, Config config)
+        private RedirectionItem[] LoadRedirectionModel(ErrorBuilder errors, string docsetPath, Repository? repository, Config config)
         {
             var results = new List<RedirectionItem>();
 
             foreach (var fullPath in ProbeRedirectionFiles(docsetPath, repository))
             {
-                if (File.Exists(fullPath))
+                if (_docsetPackage.Exists(fullPath))
                 {
                     GenerateRedirectionRules(errors, docsetPath, fullPath, results);
                     break;
@@ -165,7 +168,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var fullPath in ProbeSubRedirectionFiles(repository, config.RedirectionFiles))
             {
-                if (File.Exists(fullPath))
+                if (_docsetPackage.Exists(fullPath))
                 {
                     GenerateRedirectionRules(errors, docsetPath, fullPath, results);
                 }
@@ -174,11 +177,11 @@ namespace Microsoft.Docs.Build
             return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
         }
 
-        private static void GenerateRedirectionRules(ErrorBuilder errors, string docsetPath, string fullPath, List<RedirectionItem> results)
+        private void GenerateRedirectionRules(ErrorBuilder errors, string docsetPath, PathString fullPath, List<RedirectionItem> results)
         {
-            var content = File.ReadAllText(fullPath);
+            var content = _docsetPackage.ReadString(fullPath);
             var filePath = new FilePath(Path.GetRelativePath(docsetPath, fullPath));
-            var model = fullPath.EndsWith(".yml")
+            var model = fullPath.Value.EndsWith(".yml")
                 ? YamlUtility.Deserialize<RedirectionModel>(errors, content, filePath)
                 : JsonUtility.Deserialize<RedirectionModel>(errors, content, filePath);
 
@@ -223,18 +226,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static IEnumerable<string> ProbeRedirectionFiles(string docsetPath, Repository? repository)
+        private static IEnumerable<PathString> ProbeRedirectionFiles(string docsetPath, Repository? repository)
         {
-            yield return Path.Combine(docsetPath, "redirections.yml");
-            yield return Path.Combine(docsetPath, "redirections.json");
+            yield return new PathString(Path.Combine(docsetPath, "redirections.yml"));
+            yield return new PathString(Path.Combine(docsetPath, "redirections.json"));
 
             if (repository != null)
             {
-                yield return Path.Combine(repository.Path, ".openpublishing.redirection.json");
+                yield return new PathString(Path.Combine(repository.Path, ".openpublishing.redirection.json"));
             }
         }
 
-        private static IEnumerable<string> ProbeSubRedirectionFiles(Repository? repository, HashSet<string> redirectionFiles)
+        private static IEnumerable<PathString> ProbeSubRedirectionFiles(Repository? repository, HashSet<string> redirectionFiles)
         {
             if (repository != null)
             {
@@ -244,7 +247,7 @@ namespace Microsoft.Docs.Build
                     {
                         continue;
                     }
-                    yield return Path.Combine(repository.Path, item);
+                    yield return new PathString(Path.Combine(repository.Path, item));
                 }
             }
         }

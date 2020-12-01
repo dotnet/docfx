@@ -35,7 +35,12 @@ namespace Microsoft.Docs.Build
             };
 
         public TemplateEngine(
-            ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
+            ErrorBuilder errors,
+            Config config,
+            DirectoryPackage docsetPackage,
+            PackageResolver packageResolver,
+            BuildOptions buildOptions,
+            JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -47,7 +52,7 @@ namespace Microsoft.Docs.Build
                 template = new PackagePath("_themes");
             }
 
-            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
+            _package = packageResolver.ResolveAsPackage(template, docsetPackage, PackageFetchOptions.DepthOne);
 
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());

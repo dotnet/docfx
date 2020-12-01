@@ -51,6 +51,38 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static DirectoryPackage CreateInputDirectoryPackage(
+            string docsetPath,
+            IEnumerable<KeyValuePair<string, string>> files,
+            IEnumerable<KeyValuePair<string, string>> variables = null)
+        {
+            Directory.CreateDirectory(docsetPath);
+            var docsetPackage = new MemoryPackage(docsetPath);
+            foreach (var file in files)
+            {
+                if (file.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                {
+                    // TODO: handle the zip file in MemoryPackage as well
+                    var filePath = Path.GetFullPath(Path.Combine(docsetPath, file.Key));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    CreateZipFile(file, filePath);
+                }
+                else if (file.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
+                    || file.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase))
+                {
+                    // TODO: handle the valiation rules in MemoryPackage as well
+                    var filePath = Path.GetFullPath(Path.Combine(docsetPath, file.Key));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+                }
+                else
+                {
+                    docsetPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+                }
+            }
+            return docsetPackage;
+        }
+
         public static void CreateGitRepository(
             string path,
             TestGitCommit[] commits,

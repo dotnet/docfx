@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     public class JsonSchemaTest
     {
-        private static readonly JsonSchemaLoader s_jsonSchemaLoader = new JsonSchemaLoader(new FileResolver("."), FetchRemoteSchema);
+        private static readonly JsonSchemaLoader s_jsonSchemaLoader = new JsonSchemaLoader(new FileResolver(new LocalPackage()), FetchRemoteSchema);
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
         {
