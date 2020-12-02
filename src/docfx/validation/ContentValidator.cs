@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
+                Write(_validator.ValidateContentNodes(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
 
