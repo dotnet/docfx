@@ -41,9 +41,6 @@ inputs:
               "toc",
               "redirection"
             ],
-            "excludedDocfxVersions": [
-              "v2"
-            ],
             "maxLevel": 4
           }
         ]
@@ -112,9 +109,6 @@ inputs:
               "hubpage",
               "toc",
               "redirection"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
