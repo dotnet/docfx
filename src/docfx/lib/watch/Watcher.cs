@@ -12,6 +12,11 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new AsyncLocal<ImmutableStack<IFunction>>();
         private static readonly AsyncLocal<int> t_activityId = new AsyncLocal<int>();
 
+        public static Watch<T> Create<T>(Func<T> valueFactory)
+        {
+            return new Watch<T>(valueFactory);
+        }
+
         public static T Watch<T>(Func<T> valueFactory)
         {
             var function = new LeafFunction<T>(valueFactory);

@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => PathUtility.Normalize(path.Value))
                 .ToHashSet(PathUtility.PathComparer);
 
-            _files = new Watch<(HashSet<FilePath> allFiles, IReadOnlyDictionary<FilePath, ContentType> files)>(GlobFiles);
+            _files = Watcher.Create(GlobFiles);
         }
 
         public IEnumerable<FilePath> GetFiles(ContentType contentType)

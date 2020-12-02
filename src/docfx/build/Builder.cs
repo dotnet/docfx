@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             _workingDirectory = workingDirectory;
             _options = options;
             _errors = errors;
-            _docsets = new Watch<DocsetBuilder[]>(LoadDocsets);
+            _docsets = Watcher.Create(LoadDocsets);
         }
 
         public static bool Run(string workingDirectory, CommandLineOptions options)

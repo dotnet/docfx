@@ -17,9 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
 
-        private readonly FilePath[] _files;
-        private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _urlMap;
-        private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
+        private readonly Watch<(FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> map)> _state;
+        private readonly ConcurrentDictionary<FilePath, Watch<string?>> _canonicalVersionCache = new ConcurrentDictionary<FilePath, Watch<string?>>();
 
         public PublishUrlMap(
             Config config,
@@ -35,34 +34,34 @@ namespace Microsoft.Docs.Build
             _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
-            (_files, _urlMap) = Initialize();
+            _state = Watcher.Create(Initialize);
         }
 
         public string? GetCanonicalVersion(FilePath file)
         {
-            var url = _documentProvider.GetSiteUrl(file);
-            return _canonicalVersionMap.GetOrAdd(url, GetCanonicalVersionCore);
+            return _canonicalVersionCache.GetOrAdd(file, key => Watcher.Create(() => GetCanonicalVersionCore(key))).Value;
         }
 
         public IEnumerable<FilePath> GetFilesByUrl(string url)
         {
-            if (_urlMap.TryGetValue(url, out var items))
+            if (_state.Value.map.TryGetValue(url, out var items))
             {
                 return items.Select(x => x.SourcePath);
             }
             return Array.Empty<FilePath>();
         }
 
-        public IEnumerable<FilePath> GetFiles() => _files;
+        public IEnumerable<FilePath> GetFiles() => _state.Value.files;
 
         public FilePath[] ResolveUrlConflicts(IEnumerable<FilePath> files)
         {
             return CreateUrlMap(files).files;
         }
 
-        private string? GetCanonicalVersionCore(string url)
+        private string? GetCanonicalVersionCore(FilePath file)
         {
-            if (_urlMap.TryGetValue(url, out var item))
+            var url = _documentProvider.GetSiteUrl(file);
+            if (_state.Value.map.TryGetValue(url, out var item))
             {
                 string? canonicalVersion = null;
                 var order = 0;

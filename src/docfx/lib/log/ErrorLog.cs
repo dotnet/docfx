@@ -12,6 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly SourceMap? _sourceMap;
         private readonly MetadataProvider? _metadataProvider;
+        private readonly Func<CustomRuleProvider>? _customRuleProvider;
 
         private readonly ErrorSink _errorSink = new ErrorSink();
         private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
@@ -20,12 +21,18 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
 
-        public ErrorLog(ErrorBuilder errors, Config config, SourceMap? sourceMap = null, MetadataProvider? metadataProvider = null)
+        public ErrorLog(
+            ErrorBuilder errors,
+            Config config,
+            SourceMap? sourceMap = null,
+            MetadataProvider? metadataProvider = null,
+            Func<CustomRuleProvider>? customRuleProvider = null)
         {
             _errors = errors;
             _config = config;
             _sourceMap = sourceMap;
             _metadataProvider = metadataProvider;
+            _customRuleProvider = customRuleProvider;
         }
 
         public override void Add(Error error)
@@ -34,13 +41,10 @@ namespace Microsoft.Docs.Build
             {
                 if (_metadataProvider != null && error.Source?.File is FilePath source)
                 {
-                    error = error.WithMsAuthor(_metadataProvider.GetMetadata(ErrorBuilder.Null, source).MsAuthor);
+                    error = error.WithMsAuthor(_metadataProvider.GetMetadata(Null, source).MsAuthor);
                 }
 
-                if (CustomRuleProvider != null)
-                {
-                    error = CustomRuleProvider.ApplyCustomRule(error);
-                }
+                error = _customRuleProvider?.Invoke().ApplyCustomRule(error) ?? error;
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

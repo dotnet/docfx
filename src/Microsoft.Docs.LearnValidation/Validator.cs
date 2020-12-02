@@ -42,11 +42,13 @@ namespace Microsoft.Docs.LearnValidation
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(pathValidator.Items, false));
 
-            var validators = new List<ValidatorBase>();
-            validators.Add(pathValidator);
-            validators.Add(moduleValidator);
-            validators.Add(unitValidator);
-            validators.Add(achievementValidator);
+            var validators = new List<ValidatorBase>
+            {
+                pathValidator,
+                moduleValidator,
+                unitValidator,
+                achievementValidator
+            };
 
             var isValid = true;
             hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).ToList();
