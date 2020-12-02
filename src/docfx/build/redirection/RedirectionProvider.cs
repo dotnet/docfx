@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly Func<PublishUrlMap> _publishUrlMap;
 
         private readonly Watch<(Dictionary<FilePath, string> urls, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
-        private readonly Watch<(Dictionary<FilePath, FilePath> rename, Dictionary<FilePath, (FilePath, SourceInfo?)> redirect)> _history;
+        private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
 
         public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;
 
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             var redirectionChain = new Stack<FilePath>();
             var redirectionFile = file;
             var redirectUrls = _redirects.Value.urls;
-            while (_history.Value.redirect.TryGetValue(redirectionFile, out var item))
+            while (_history.Value.redirects.TryGetValue(redirectionFile, out var item))
             {
                 var (renamedFrom, source) = item;
                 if (redirectionChain.Contains(redirectionFile))
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         public FilePath GetOriginalFile(FilePath file)
         {
             var renameChain = new HashSet<FilePath>();
-            while (_history.Value.rename.TryGetValue(file, out var renamedFrom))
+            while (_history.Value.renames.TryGetValue(file, out var renamedFrom))
             {
                 if (!renameChain.Add(file))
                 {
