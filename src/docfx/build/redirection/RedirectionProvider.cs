@@ -208,7 +208,6 @@ namespace Microsoft.Docs.Build
             {
                 if ((item.SourcePath.IsDefault && item.SourcePathFromRoot.IsDefault) || string.IsNullOrEmpty(item.RedirectUrl))
                 {
-                    // Give a missing-attribute warning when source_path or redirect_url not specified
                     errors.Add(Errors.JsonSchema.MissingAttribute(item.RedirectUrl, "(source_path or source_path_from_root) or redirect_url"));
                     continue;
                 }
