@@ -107,6 +107,7 @@ outputs:
   bread/toc.json:
 ---
 #TOC validation - toc-missing
+noDryRun: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json

@@ -24,8 +24,9 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly ContentValidator _contentValidator;
+        private readonly PublishUrlMap _publishUrlMap;
 
-        private readonly Lazy<(Dictionary<FilePath, FilePath[]> tocToTocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
+        private readonly Lazy<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
         public TocMap(
             Config config,
@@ -36,7 +37,8 @@ namespace Microsoft.Docs.Build
             TocParser tocParser,
             TocLoader tocLoader,
             DocumentProvider documentProvider,
-            ContentValidator contentValidator)
+            ContentValidator contentValidator,
+            PublishUrlMap publishUrlMap)
         {
             _config = config;
             _errors = errors;
@@ -47,12 +49,13 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
-            _tocs = new Lazy<(Dictionary<FilePath, FilePath[]>, Dictionary<FilePath, FilePath[]>, List<FilePath>)>(BuildTocMap);
+            _publishUrlMap = publishUrlMap;
+            _tocs = new Lazy<(FilePath[], Dictionary<FilePath, FilePath[]>, List<FilePath>)>(BuildTocMap);
         }
 
         public IEnumerable<FilePath> GetFiles()
         {
-            return _tocs.Value.tocToTocs.Keys.Where(ShouldBuildFile).Concat(_tocs.Value.servicePages);
+            return _tocs.Value.tocs.Concat(_tocs.Value.servicePages);
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace Microsoft.Docs.Build
         {
             var result = FindNearestToc(
                 file,
-                _tocs.Value.tocToTocs.Keys,
+                _tocs.Value.tocs,
                 _tocs.Value.docToTocs,
                 file => file.Path);
 
@@ -153,23 +156,7 @@ namespace Microsoft.Docs.Build
             return (subDirectoryCount, parentDirectoryCount);
         }
 
-        private bool ShouldBuildFile(FilePath file)
-        {
-            if (file.Origin != FileOrigin.Fallback)
-            {
-                return true;
-            }
-
-            // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            if (_tocs.Value.tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private (Dictionary<FilePath, FilePath[]> tocToTocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
+        private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
             BuildTocMap()
         {
             using (Progress.Start("Loading TOC"))
@@ -212,10 +199,27 @@ namespace Microsoft.Docs.Build
                     where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental()
                     group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
-                tocToTocs.TrimExcess();
                 docToTocs.TrimExcess();
 
-                return (tocToTocs, docToTocs, allServicePages.ToList());
+                var tocFiles = _publishUrlMap.ResolveUrlConflicts(tocToTocs.Keys.Where(ShouldBuildFile));
+
+                return (tocFiles, docToTocs, allServicePages.ToList());
+
+                bool ShouldBuildFile(FilePath file)
+                {
+                    if (file.Origin != FileOrigin.Fallback)
+                    {
+                        return true;
+                    }
+
+                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                    if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
             }
         }
 

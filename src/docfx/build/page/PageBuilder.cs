@@ -204,12 +204,12 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : _tocMap.FindTocRelativePath(file);
-
             if (_config.DryRun)
             {
                 return systemMetadata;
             }
+
+            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : _tocMap.FindTocRelativePath(file);
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
