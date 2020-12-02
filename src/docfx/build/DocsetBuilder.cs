@@ -50,7 +50,6 @@ namespace Microsoft.Docs.Build
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
             _sourceMap = new SourceMap(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
-            _errors = new ErrorLog(errors, _config, _sourceMap);
             _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap);
             _buildScope = new BuildScope(_config, _input, _buildOptions);
             _githubAccessor = new GitHubAccessor(_config);
@@ -58,6 +57,7 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = new JsonSchemaLoader(_fileResolver);
             _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
+            _errors = new ErrorLog(errors, _config, _sourceMap, _metadataProvider);
             _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
             _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
@@ -109,26 +109,26 @@ namespace Microsoft.Docs.Build
                 ContentValidator? contentValidator = null;
                 var dependencyMapBuilder = new DependencyMapBuilder(_sourceMap);
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
-                var zonePivotProvider = new ZonePivotProvider(_config, _errors, _documentProvider, _metadataProvider, _input, new Lazy<PublishUrlMap>(() => publishUrlMap!), new Lazy<ContentValidator>(() => contentValidator!));
-                var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
-                contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, () => Ensure(publishUrlMap));
+                publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider);
+
+                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, publishUrlMap, _monikerProvider, _metadataProvider, _errors);
+                _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
+
+                var zonePivotProvider = new ZonePivotProvider(_errors, _documentProvider, _metadataProvider, _input, publishUrlMap, () => Ensure(contentValidator));
+                contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, publishUrlMap);
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
                 var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, _contributionProvider);
-                var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, new Lazy<JsonSchemaTransformer>(() => jsonSchemaTransformer!));
+                var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(jsonSchemaTransformer));
                 var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
-                var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, new Lazy<PublishUrlMap>(() => publishUrlMap!));
+                var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, publishUrlMap);
                 jsonSchemaTransformer = new JsonSchemaTransformer(_documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
 
                 var tocParser = new TocParser(_input, markdownEngine, _documentProvider);
                 var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
-                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, new Lazy<PublishUrlMap>(() => publishUrlMap!), _monikerProvider, _metadataProvider, _errors);
 
-                _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
-
-                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator);
-                publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider, tocMap);
-
+                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator, publishUrlMap);
                 var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
                 var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, customRuleProvider);
                 var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
 
                 var filesToBuild = files.Length > 0
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
-                    : publishUrlMap.GetAllFiles();
+                    : publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
 
                 using (Progress.Start($"Building {filesToBuild.Count} files"))
                 {
@@ -193,6 +193,8 @@ namespace Microsoft.Docs.Build
             {
                 _errors.AddRange(dex);
             }
+
+            static T Ensure<T>(T? nullable) where T : class => nullable ?? throw new InvalidOperationException($"Cannot access {typeof(T).Name} in constructor.");
         }
 
         private void BuildFile(

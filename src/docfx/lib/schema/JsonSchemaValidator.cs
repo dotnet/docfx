@@ -908,7 +908,7 @@ namespace Microsoft.Docs.Build
                 schema.Rules.TryGetValue(error.PropertyPath, out var attributeCustomRules) && // todo remove schema.Rules to CustomRuleProvider
                 attributeCustomRules.TryGetValue(error.Code, out var customRule))
             {
-                return CustomRuleProvider.WithCustomRule(
+                return CustomRuleProvider.ApplyCustomRule(
                     error,
                     customRule,
                     t_filePath.Value == null ? null : _customRuleProvider?.IsEnable(t_filePath.Value, customRule));

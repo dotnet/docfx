@@ -14,28 +14,25 @@ namespace Microsoft.Docs.Build
     {
         private const string DefaultDefinitionFile = "zone-pivot-groups.json";
 
-        private readonly Config _config;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly Input _input;
-        private readonly Lazy<PublishUrlMap> _publishUrlMap;
-        private readonly Lazy<ContentValidator> _contentValidator;
+        private readonly PublishUrlMap _publishUrlMap;
+        private readonly Func<ContentValidator> _contentValidator;
 
         private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
         private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?> _zonePivotDefinitionModelCache =
             new ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?>();
 
         public ZonePivotProvider(
-            Config config,
             ErrorBuilder errors,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             Input input,
-            Lazy<PublishUrlMap> publishUrlMap,
-            Lazy<ContentValidator> contentValidator)
+            PublishUrlMap publishUrlMap,
+            Func<ContentValidator> contentValidator)
         {
-            _config = config;
             _errors = errors;
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
@@ -100,7 +97,7 @@ namespace Microsoft.Docs.Build
                 var zonePivotGroupDefinition = YamlUtility.DeserializeData<ZonePivotGroupDefinition>(
                     _input.ReadString(zonePivotGroupDefinitionFile),
                     zonePivotGroupDefinitionFile);
-                _contentValidator.Value.ValidateZonePivotDefinition(zonePivotGroupDefinitionFile, zonePivotGroupDefinition);
+                _contentValidator().ValidateZonePivotDefinition(zonePivotGroupDefinitionFile, zonePivotGroupDefinition);
                 return zonePivotGroupDefinition;
             }
             else
@@ -114,7 +111,7 @@ namespace Microsoft.Docs.Build
             return _zonePivotDefinitionFileCache.GetOrAdd(file, _ =>
                 {
                     var publishUrl = GetZonePivotDefinitionPublishUrl(file, _metadataProvider.GetMetadata(_errors, file).ZonePivotGroupFilename);
-                    var files = _publishUrlMap.Value.GetFilesByUrl(publishUrl).ToList();
+                    var files = _publishUrlMap.GetFilesByUrl(publishUrl).ToList();
                     switch (files.Count)
                     {
                         case 0:
