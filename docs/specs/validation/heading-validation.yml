@@ -85,9 +85,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -155,9 +152,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -248,9 +242,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -307,9 +298,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -365,9 +353,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -426,9 +411,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -470,9 +452,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -533,9 +512,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -597,9 +573,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -643,9 +616,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -758,9 +728,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -818,9 +785,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -859,9 +823,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -918,9 +879,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -992,9 +950,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -1118,9 +1073,6 @@ inputs:
               "hubPage",
               "toc"
             ],
-            "excludedDocfxVersions": [
-              "v2"
-            ],
             "canonicalVersionOnly": true
           }
         ]
@@ -1190,9 +1142,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ],
             "canonicalVersionOnly": true
           }
@@ -1285,9 +1234,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ],
             "canonicalVersionOnly": true
           }
@@ -1407,9 +1353,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -1488,9 +1431,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]

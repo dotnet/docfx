@@ -17,9 +17,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -98,9 +95,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -173,9 +167,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -226,9 +217,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -384,9 +372,6 @@ inputs:
               "landingPage",
               "hubPage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
