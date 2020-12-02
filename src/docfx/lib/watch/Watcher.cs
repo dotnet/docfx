@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             if (stack != null && !stack.IsEmpty)
             {
                 t_callstack.Value = stack = stack.Pop(out var child);
-                if (!stack.IsEmpty)
+                if (!stack.IsEmpty && child.MayChange())
                 {
                     stack.Peek().AddChild(child);
                 }

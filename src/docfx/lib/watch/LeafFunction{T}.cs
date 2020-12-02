@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public LeafFunction(Func<T> changeTokenFactory) => _changeTokenFactory = changeTokenFactory;
 
+        public bool MayChange() => true;
+
         public bool HasChanged() => !Equals(ChangeToken, _changeTokenFactory());
 
         public void AddChild(IFunction childFunction) { }

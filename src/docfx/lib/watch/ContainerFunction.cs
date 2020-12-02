@@ -21,6 +21,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public bool MayChange()
+        {
+            return _children.Count > 0;
+        }
+
         public bool HasChanged()
         {
             var currentActivityId = Watcher.GetActivityId();
