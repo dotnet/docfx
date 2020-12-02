@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
         {
-            using var lspTestHost = new DocfxLanguageServerTestHost(variables);
+            var lspTestHost = new LanguageServerTestHost(variables);
 
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {

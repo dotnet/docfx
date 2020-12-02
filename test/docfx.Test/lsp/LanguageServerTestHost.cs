@@ -8,8 +8,6 @@ using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using OmniSharp.Extensions.JsonRpc.Testing;
-using OmniSharp.Extensions.LanguageProtocol.Testing;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
@@ -17,7 +15,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace Microsoft.Docs.Build
 {
-    public class DocfxLanguageServerTestHost : LanguageServerTestBase
+    public class LanguageServerTestHost
     {
         private static readonly string[] s_notificationsToListen = { "window/showMessage" };
 
@@ -25,26 +23,10 @@ namespace Microsoft.Docs.Build
         private readonly Dictionary<string, string> _variables;
         private readonly Lazy<Task<ILanguageClient>> _client;
 
-        public DocfxLanguageServerTestHost(Dictionary<string, string> variables)
-            : base(new JsonRpcTestOptions())
+        public LanguageServerTestHost(Dictionary<string, string> variables)
         {
             _variables = variables;
-            _client = new Lazy<Task<ILanguageClient>>(() => InitializeClient(x =>
-            {
-                x.WithCapability(new WorkspaceEditCapability()
-                {
-                    DocumentChanges = true,
-                    FailureHandling = FailureHandlingKind.Undo,
-                });
-
-                foreach (var name in s_notificationsToListen)
-                {
-                    x.OnJsonNotification(name, @params =>
-                    {
-                        _notifications.Writer.TryWrite(new LanguageServerNotification(name, @params));
-                    });
-                }
-            }));
+            _client = new Lazy<Task<ILanguageClient>>(InitializeClient);
         }
 
         public async Task SendNotification(LanguageServerNotification notification)
@@ -68,14 +50,36 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        protected override (Stream clientOutput, Stream serverInput) SetupServer()
+        private async Task<ILanguageClient> InitializeClient()
         {
-            var clientPipe = new Pipe(TestOptions.DefaultPipeOptions);
-            var serverPipe = new Pipe(TestOptions.DefaultPipeOptions);
+            var clientPipe = new Pipe();
+            var serverPipe = new Pipe();
 
-            LanguageServerHost.StartLanguageServer(clientPipe.Reader.AsStream(), serverPipe.Writer.AsStream()).GetAwaiter().GetResult();
+            var client = LanguageClient.Create(options =>
+            {
+                options
+                    .WithInput(serverPipe.Reader)
+                    .WithOutput(clientPipe.Writer)
+                    .WithCapability(new WorkspaceEditCapability()
+                    {
+                        DocumentChanges = true,
+                        FailureHandling = FailureHandlingKind.Undo,
+                    });
 
-            return (serverPipe.Reader.AsStream(), clientPipe.Writer.AsStream());
+                foreach (var name in s_notificationsToListen)
+                {
+                    options.OnJsonNotification(name, @params =>
+                    {
+                        _notifications.Writer.TryWrite(new LanguageServerNotification(name, @params));
+                    });
+                }
+            });
+
+            await Task.WhenAll(
+                client.Initialize(default),
+                LanguageServerHost.StartLanguageServer(clientPipe.Reader, serverPipe.Writer));
+
+            return client;
         }
     }
 }

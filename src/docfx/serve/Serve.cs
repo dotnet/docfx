@@ -15,9 +15,7 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            using var stdIn = Console.OpenStandardInput();
-            using var stdOut = Console.OpenStandardOutput();
-            var server = LanguageServerHost.StartLanguageServer(stdIn, stdOut).GetAwaiter().GetResult();
+            var server = LanguageServerHost.StartLanguageServer().GetAwaiter().GetResult();
             server.WaitForExit.GetAwaiter().GetResult();
             return false;
         }

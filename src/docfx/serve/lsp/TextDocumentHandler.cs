@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
-        private readonly ILanguageServer _languageServer;
+        private readonly ILanguageServerFacade _languageServer;
 
         private readonly DocumentSelector _documentSelector = new DocumentSelector(
             new DocumentFilter()
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(ILanguageServer languageServer)
+        public TextDocumentHandler(ILanguageServerFacade languageServer)
         {
             _languageServer = languageServer;
         }
@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
-            _languageServer.ShowMessage(new ShowMessageParams()
+            _languageServer.Window.ShowMessage(new ShowMessageParams()
             {
                 Type = MessageType.Info,
                 Message = $"File change detected on file `{System.IO.Path.GetFileName(notification.TextDocument.Uri.GetFileSystemPath())}` "
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
         {
-            _languageServer.ShowMessage(new ShowMessageParams()
+            _languageServer.Window.ShowMessage(new ShowMessageParams()
             {
                 Type = MessageType.Info,
                 Message = $"File open detected on file `{System.IO.Path.GetFileName(notification.TextDocument.Uri.GetFileSystemPath())}` "
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
 
         public TextDocumentAttributes GetTextDocumentAttributes(DocumentUri uri)
         {
-            throw new NotSupportedException();
+            return new TextDocumentAttributes(uri, "docfx");
         }
 
         private static string TakeSubString(string str, int length)

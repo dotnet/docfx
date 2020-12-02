@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.IO;
+using System;
+using System.IO.Pipelines;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,15 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerHost
     {
-        public static Task<LanguageServer> StartLanguageServer(Stream input, Stream output)
+        public static Task<LanguageServer> StartLanguageServer()
+        {
+            using var stdIn = Console.OpenStandardInput();
+            using var stdOut = Console.OpenStandardOutput();
+
+            return StartLanguageServer(PipeReader.Create(stdIn), PipeWriter.Create(stdOut));
+        }
+
+        public static Task<LanguageServer> StartLanguageServer(PipeReader input, PipeWriter output)
         {
             return LanguageServer.From(options => options
                 .WithInput(input)
