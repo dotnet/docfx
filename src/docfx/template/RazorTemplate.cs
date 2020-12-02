@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             });
 
             using var reader = new StreamReader(httpContext.Response.Body);
-            var body = reader.ReadToEnd();
+            var body = await reader.ReadToEndAsync();
             var statusCode = httpContext.Response.StatusCode;
 
             if (statusCode != 200)

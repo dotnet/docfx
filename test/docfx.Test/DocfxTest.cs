@@ -10,6 +10,7 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Yunit;
@@ -164,7 +165,7 @@ namespace Microsoft.Docs.Build
 
             if (spec.LanguageServer.Count != 0)
             {
-                RunLanguageServer(spec, variables);
+                RunLanguageServer(spec, variables).GetAwaiter().GetResult();
             }
             else if (spec.Locale != null)
             {
@@ -184,22 +185,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
+        private static async Task RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
         {
-            var lspTestHost = new DocfxLanguageServerTestHost(variables);
-            lspTestHost.InitializeAsync().GetAwaiter().GetResult();
+            var lspTestHost = new LanguageServerTestHost(variables);
 
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {
                 var lspSpec = spec.LanguageServer[i];
                 if (!string.IsNullOrEmpty(lspSpec.Notification))
                 {
-                    lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
+                    await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
                     var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
-                    var actualNotification = lspTestHost.GetExpectedNotification(expectedNotification.Method).GetAwaiter().GetResult();
+                    var actualNotification = await lspTestHost.GetExpectedNotification(expectedNotification.Method);
                     s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
                 }
             }
