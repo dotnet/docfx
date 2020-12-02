@@ -32,7 +32,6 @@ namespace Microsoft.Docs.LearnValidation
             var pathFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "LearningPath", StringComparison.OrdinalIgnoreCase)).ToList();
             var achievementFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "Achievements", StringComparison.OrdinalIgnoreCase)).ToList();
 
-            var hierarchyItems = new List<IValidateModel>();
             var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath, _logger);
             var unitValidator = new UnitValidator(unitFiles, _outputBasePath, _logger);
             var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath, _logger);
@@ -42,20 +41,19 @@ namespace Microsoft.Docs.LearnValidation
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
             achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(pathValidator.Items, false));
 
-            var validators = new List<ValidatorBase>();
-            validators.Add(pathValidator);
-            validators.Add(moduleValidator);
-            validators.Add(unitValidator);
-            validators.Add(achievementValidator);
+            var validators = new List<ValidatorBase>
+            {
+                pathValidator,
+                moduleValidator,
+                unitValidator,
+                achievementValidator,
+            };
 
-            var isValid = true;
-            hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).ToList();
+            var hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).ToList();
 
             // no duplicated uids
-            var itemDict = new Dictionary<string, IValidateModel>();
-            itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
-
-            validators.ForEach(v => isValid &= v.Validate(itemDict));
+            var itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
+            var isValid = validators.All(v => v.Validate(itemDict));
             return (isValid, hierarchyItems);
         }
 

@@ -31,6 +31,9 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly DocumentProvider _documentProvider;
         private readonly ContributionProvider _contributionProvider;
+        private readonly RedirectionProvider _redirectionProvider;
+        private readonly PublishUrlMap _publishUrlMap;
+        private readonly CustomRuleProvider _customRuleProvider;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -57,10 +60,13 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = new JsonSchemaLoader(_fileResolver);
             _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
-            _errors = new ErrorLog(errors, _config, _sourceMap, _metadataProvider);
+            _errors = new ErrorLog(errors, _config, _sourceMap, _metadataProvider, () => Ensure(_customRuleProvider));
             _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
             _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
+            _redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
+            _publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
+            _customRuleProvider = new CustomRuleProvider(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
         }
 
         public static DocsetBuilder? Create(ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options)
@@ -104,43 +110,38 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                PublishUrlMap? publishUrlMap = null;
                 JsonSchemaTransformer? jsonSchemaTransformer = null;
                 ContentValidator? contentValidator = null;
+
                 var dependencyMapBuilder = new DependencyMapBuilder(_sourceMap);
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
-                var redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, () => Ensure(publishUrlMap));
-                publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, redirectionProvider, _documentProvider, _monikerProvider);
 
-                var customRuleProvider = new CustomRuleProvider(_config, _fileResolver, _documentProvider, publishUrlMap, _monikerProvider, _metadataProvider, _errors);
-                _errors.CustomRuleProvider = customRuleProvider; // TODO use better way to inject
-
-                var zonePivotProvider = new ZonePivotProvider(_errors, _documentProvider, _metadataProvider, _input, publishUrlMap, () => Ensure(contentValidator));
-                contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, publishUrlMap);
+                var zonePivotProvider = new ZonePivotProvider(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(contentValidator));
+                contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, _publishUrlMap);
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
                 var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, _contributionProvider);
                 var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(jsonSchemaTransformer));
-                var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
-                var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, publishUrlMap);
+                var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
+                var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, _publishUrlMap);
                 jsonSchemaTransformer = new JsonSchemaTransformer(_documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
 
                 var tocParser = new TocParser(_input, markdownEngine, _documentProvider);
                 var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);
 
-                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator, publishUrlMap);
+                var tocMap = new TocMap(_config, _errors, _input, _buildScope, dependencyMapBuilder, tocParser, tocLoader, _documentProvider, contentValidator, _publishUrlMap);
                 var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
-                var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, customRuleProvider);
+                var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
                 var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
 
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
-                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, redirectionProvider, jsonSchemaTransformer);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, _redirectionProvider, jsonSchemaTransformer);
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
-                var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, redirectionProvider, _documentProvider);
+                var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
                 var filesToBuild = files.Length > 0
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
-                    : publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
+                    : _publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
 
                 using (Progress.Start($"Building {filesToBuild.Count} files"))
                 {
@@ -193,8 +194,6 @@ namespace Microsoft.Docs.Build
             {
                 _errors.AddRange(dex);
             }
-
-            static T Ensure<T>(T? nullable) where T : class => nullable ?? throw new InvalidOperationException($"Cannot access {typeof(T).Name} in constructor.");
         }
 
         private void BuildFile(
@@ -226,5 +225,7 @@ namespace Microsoft.Docs.Build
                     break;
             }
         }
+
+        private static T Ensure<T>(T? nullable) where T : class => nullable ?? throw new InvalidOperationException($"Cannot access {typeof(T).Name} in constructor.");
     }
 }
