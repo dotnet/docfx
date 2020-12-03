@@ -8,7 +8,6 @@ namespace Microsoft.Docs.Build
         Markdown,
         MarkdownWithAbsoluteUrl,
         InlineMarkdown,
-        InlineMarkdownWithAbsoluteUrl,
         TocMarkdown,
     }
 }

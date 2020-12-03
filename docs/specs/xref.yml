@@ -1992,13 +1992,13 @@ inputs:
     ---
   docs/a/a/a.json: |
     {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TSType.json",
       "uid": "a",
       "summary": "@c Hello docfx!"
     }
   docs/b/b.md: |
     Link to @a?displayProperty=summary
-  _themes/ContentTemplate/schemas/TestData.schema.json: |
+  _themes/ContentTemplate/schemas/TSType.schema.json: |
     {
       "properties": {
         "summary": { "contentType": "Markdown" },
@@ -2010,11 +2010,11 @@ outputs:
   docs/a/a/a.json:
   docs/c/c.json:
   docs/b/b.json: |
-    {"conceptual": "<p>Link to <a href=\"/en-us/docs/a/a/a\" data-linktype=\"absolute-path\">&lt;a href=&quot;/docs/c/c&quot;&gt;Title from yaml header c&lt;/a&gt; Hello docfx!</a></p>\n"}
+    {"conceptual": "<p>Link to <a href=\"../a/a/a\" data-linktype=\"relative-path\">&lt;p&gt;&lt;a href=&quot;/docs/c/c&quot;&gt;Title from yaml header c&lt;/a&gt; Hello docfx!&lt;/p&gt;\n</a></p>\n"}
   .xrefmap.json: | 
     {
       "references":[
-        {"uid":"a","summary":"<a href=\"/docs/c/c\">Title from yaml header c</a> Hello docfx!"},
+        {"uid":"a","summary":"<p><a href=\"/docs/c/c\">Title from yaml header c</a> Hello docfx!</p>"},
         {"uid": "c", "href": "https://docs.com/docs/c/c?branch=xref-chain", "name": "Title from yaml header c"}
       ]
     }

@@ -314,8 +314,7 @@ namespace Microsoft.Docs.Build
                     value,
                     uidCount,
                     propertyPath,
-                    new JObject(),
-                    fromXrefProperty: true);
+                    new JObject());
             }
             finally
             {
@@ -332,8 +331,7 @@ namespace Microsoft.Docs.Build
             JToken token,
             int uidCount,
             string? propertyPath,
-            JObject xrefmap,
-            bool fromXrefProperty = false)
+            JObject xrefmap)
         {
             switch (token)
             {
@@ -342,7 +340,7 @@ namespace Microsoft.Docs.Build
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        newArray.Add(TransformContentCore(errors, schemaMap, file, rootSchema, item, uidCount, propertyPath, xrefmap, fromXrefProperty));
+                        newArray.Add(TransformContentCore(errors, schemaMap, file, rootSchema, item, uidCount, propertyPath, xrefmap));
                     }
 
                     return newArray;
@@ -364,8 +362,7 @@ namespace Microsoft.Docs.Build
                             value,
                             uidCount,
                             JsonUtility.AddToPropertyPath(propertyPath, key),
-                            xrefmap,
-                            fromXrefProperty);
+                            xrefmap);
                     }
                     return newObject;
 
@@ -377,8 +374,7 @@ namespace Microsoft.Docs.Build
                         file,
                         value,
                         propertyPath,
-                        xrefmap,
-                        fromXrefProperty);
+                        xrefmap);
 
                 case JValue value:
                     return value;
@@ -395,8 +391,7 @@ namespace Microsoft.Docs.Build
             FilePath file,
             JValue value,
             string? propertyPath,
-            JObject xrefmap,
-            bool fromXrefProperty)
+            JObject xrefmap)
         {
             if (value.Type == JTokenType.Null || schema.ContentType is null)
             {
@@ -405,13 +400,15 @@ namespace Microsoft.Docs.Build
 
             var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
+            var mime = _documentProvider.GetMime(file);
+
+            // Output absolute URL starting from Architecture and TSType
+            var absoluteUrl = mime != null && new string[] { "Architecture", "TSType" }.Contains(mime!, StringComparer.OrdinalIgnoreCase);
 
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
 
-                    // Output absolute URL starting from Architecture
-                    var absoluteUrl = _documentProvider.GetMime(file) == "Architecture";
                     var (error, link, _) = _linkResolver.ResolveLink(content, file, file, absoluteUrl);
                     errors.AddIfNotNull(error);
                     return link;
@@ -419,14 +416,14 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Markdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    var pipelineType = fromXrefProperty ? MarkdownPipelineType.MarkdownWithAbsoluteUrl : MarkdownPipelineType.Markdown;
-                    return _markdownEngine.ToHtml(errors, content, sourceInfo, pipelineType, null, rootSchema.ContentFallback);
+                    var pipelineType = absoluteUrl ? MarkdownPipelineType.MarkdownWithAbsoluteUrl : MarkdownPipelineType.Markdown;
+                    var html = _markdownEngine.ToHtml(errors, content, sourceInfo, pipelineType, null, rootSchema.ContentFallback);
+                    return html;
 
                 case JsonSchemaContentType.InlineMarkdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    var inlinePipelineType = fromXrefProperty ? MarkdownPipelineType.InlineMarkdownWithAbsoluteUrl : MarkdownPipelineType.InlineMarkdown;
-                    return _markdownEngine.ToHtml(errors, content, sourceInfo, inlinePipelineType, null, rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
@@ -447,7 +444,7 @@ namespace Microsoft.Docs.Build
 
                     // the content here must be an UID, not href
                     var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                        content, file, file, absoluteUrl: fromXrefProperty, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
+                        content, file, file, absoluteUrl: absoluteUrl, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
 
                     errors.AddIfNotNull(xrefError);
 

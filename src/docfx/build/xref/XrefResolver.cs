@@ -324,7 +324,7 @@ namespace Microsoft.Docs.Build
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
-                var href = absoluteUrl ? UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href) : spec.Href;
+                var href = absoluteUrl ? spec.Href : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
             }
             return default;

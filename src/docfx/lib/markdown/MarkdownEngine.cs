@@ -77,6 +77,7 @@ namespace Microsoft.Docs.Build
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
+                CreateMarkdownAbsoluteUrlPipeline(),
                 CreateInlineMarkdownPipeline(),
                 CreateTocMarkdownPipeline(),
             };
@@ -172,35 +173,22 @@ namespace Microsoft.Docs.Build
 
         private MarkdownPipeline CreateMarkdownAbsoluteUrlPipeline()
         {
-            return CreateMarkdownPipelineBuilder()
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetAbsoluteLink, GetImageLink, GetXref)
-                .Build();
+            return CreateMarkdownPipelineBuilder(GetXrefAbsoluteUrl, GetAbsoluteLink).Build();
         }
 
         private MarkdownPipeline CreateMarkdownPipeline()
         {
-            return CreateMarkdownPipelineBuilder()
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
-                .Build();
-        }
-
-        private MarkdownPipeline CreateInlineMarkdownAbsoluteUrlPipeline()
-        {
-            return CreateMarkdownPipelineBuilder()
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetAbsoluteLink, GetImageLink, GetXref)
-                .UseInlineOnly()
-                .Build();
+            return CreateMarkdownPipelineBuilder(GetXref, GetLink).Build();
         }
 
         private MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            return CreateMarkdownPipelineBuilder()
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
-                .UseInlineOnly()
-                .Build();
+            return CreateMarkdownPipelineBuilder(GetXref, GetLink).UseInlineOnly().Build();
         }
 
-        private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
+        private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder(
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> getXref,
+            Func<SourceInfo<string>, string> getLink)
         {
             return new MarkdownPipelineBuilder()
                 .UseHeadingIdRewriter()
@@ -236,7 +224,8 @@ namespace Microsoft.Docs.Build
                 // Extensions after this line sees an expanded inclusion AST only once.
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
-                .UseXref(GetXref)
+                .UseXref(getXref)
+                .UseHtml(_documentProvider, _metadataProvider, GetErrors, getLink, GetImageLink, getXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 
