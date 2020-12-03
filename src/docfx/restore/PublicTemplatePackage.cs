@@ -23,7 +23,12 @@ namespace Microsoft.Docs.Build
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
         }
 
-        public override IEnumerable<PathString> GetFiles() => throw new NotSupportedException();
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+            => throw new NotSupportedException();
+
+        public override PathString GetFullFilePath(PathString path) => throw new NotSupportedException();
+
+        public override DateTime GetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 

@@ -32,13 +32,19 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
                      new ConcurrentDictionary<FilePath, (string?, JToken)>();
 
-        public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider, SourceMap sourceMap)
+        public Input(
+            BuildOptions buildOptions,
+            Config config,
+            PackageResolver packageResolver,
+            RepositoryProvider repositoryProvider,
+            SourceMap sourceMap,
+            Package docsetPackage)
         {
             _config = config;
             _sourceMap = sourceMap;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            _mainPackage = new LocalPackage(buildOptions.DocsetPath);
+            _mainPackage = docsetPackage;
 
             if (buildOptions.FallbackDocsetPath != null)
             {

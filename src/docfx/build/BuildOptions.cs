@@ -31,15 +31,16 @@ namespace Microsoft.Docs.Build
 
         public bool EnableSideBySide { get; }
 
-        public BuildOptions(string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config)
+        public BuildOptions(
+            string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config, Package docsetPackage)
         {
             Repository = repository;
-            DocsetPath = new PathString(Path.GetFullPath(docsetPath));
+            DocsetPath = docsetPackage.GetFullFilePath(new PathString(docsetPath));
             if (fallbackDocsetPath != null)
             {
-                FallbackDocsetPath = new PathString(Path.GetFullPath(fallbackDocsetPath));
+                FallbackDocsetPath = docsetPackage.GetFullFilePath(new PathString(fallbackDocsetPath));
             }
-            OutputPath = new PathString(Path.GetFullPath(outputPath ?? Path.Combine(docsetPath, config.OutputPath)));
+            OutputPath = docsetPackage.GetFullFilePath(new PathString(outputPath ?? Path.Combine(docsetPath, config.OutputPath)));
             Locale = (LocalizationUtility.GetLocale(repository) ?? config.DefaultLocale).ToLowerInvariant();
             Culture = CreateCultureInfo(Locale);
 

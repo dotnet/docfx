@@ -12,27 +12,27 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, string workingDirectory)
+        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, string workingDirectory, Package package)
         {
-            var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
-            if (!File.Exists(fullPath))
+            var fullPath = new PathString(Path.Combine(workingDirectory, ".openpublishing.publish.config.json"));
+            if (!package.Exists(fullPath))
             {
                 return default;
             }
 
             var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
-            return JsonUtility.Deserialize<OpsConfig>(errors, File.ReadAllText(fullPath), filePath);
+            return JsonUtility.Deserialize<OpsConfig>(errors, package.ReadString(fullPath), filePath);
         }
 
         public static (string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(
-            ErrorBuilder errors, string docsetPath, Repository? repository)
+            ErrorBuilder errors, string docsetPath, Repository? repository, Package package)
         {
             if (repository is null)
             {
                 return (default, default, default);
             }
 
-            var opsConfig = LoadOpsConfig(errors, repository.Path);
+            var opsConfig = LoadOpsConfig(errors, repository.Path, package);
             if (opsConfig is null)
             {
                 return (default, default, default);
