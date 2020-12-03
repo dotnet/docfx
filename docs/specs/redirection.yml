@@ -794,3 +794,91 @@ outputs:
         {"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}
       ]
     }
+---
+# File not found for a registered redirection file.
+repos:
+  https://github.com/redirection/multiple-redirection-files-file-not-found:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      a/docfx.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.json' registered in .openpublishing.publish.json is not found in the repo."}
+---
+# source_path and source_path_from_root exist at the same time
+repos:
+  https://github.com/redirection/two-path-at-the-same-time:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": [{"source_path": "c.md", "source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  a/.publish.json:
+  .errors.log: |
+    {"message_severity":"error","code":"source-path-conflict","message":"A redirection item cannot contain 'source_path' and 'source_path_from_root' at the same time.","file":"a/b/.openpublishing.redirection.json","line":1,"column":99}
+---
+# redirection conflicts for multiple redirection files
+repos:
+  https://github.com/redirection/multiple-redirection-files-redirection-conflict:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [{"source_path": "a/a.md", "redirect_url": "/aa"}]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": 
+          [{"source_path_from_root": "/a/a.md", "redirect_url": "/aa"}]
+        }
+outputs:
+  a/.publish.json:
+  .errors.log: |
+    {"message_severity":"error","code":"redirection-conflict","message":"The 'a.md' appears twice or more in the redirection mappings.","file":"a/b/.openpublishing.redirection.json","line":2,"column":61}
+---
+# redirection syntax check
+repos:
+  https://github.com/redirection/multiple-redirection-files-redirection-syntax-check:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [{"source_path": "/a/a.md", "redirect_url": "/aa"}]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": 
+          [{"source_path_from_root": "a/a.md", "redirect_url": "/aa"}]
+        }
+outputs:
+  a/.publish.json:
+  .errors.log: |
+    {"message_severity":"error","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":".openpublishing.redirection.json","line":2,"column":67}
+    {"message_severity":"error","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":"a/b/.openpublishing.redirection.json","line":2,"end_column":60}
