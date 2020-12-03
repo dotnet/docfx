@@ -354,10 +354,11 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "source-path-conflict", $"A redirection item cannot contain 'source_path' and 'source_path_from_root' at the same time.", source);
 
             /// <summary>
+            /// Check redirection source path syntax.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
-                => new Error(ErrorLevel.Error, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
+                => new Error(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
         }
 
         public static class Toc
