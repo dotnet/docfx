@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         public bool EnableSideBySide { get; }
 
         public BuildOptions(
-            string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config, DirectoryPackage docsetPackage)
+            string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config, Package docsetPackage)
         {
             Repository = repository;
             DocsetPath = docsetPackage.GetFullFilePath(new PathString(docsetPath));

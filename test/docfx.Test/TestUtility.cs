@@ -51,36 +51,30 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static DirectoryPackage CreateInputDirectoryPackage(
+        public static Package CreateInputDirectoryPackage(
             string docsetPath,
-            IEnumerable<KeyValuePair<string, string>> files,
+            DocfxTestSpec spec,
             IEnumerable<KeyValuePair<string, string>> variables = null)
         {
             Directory.CreateDirectory(docsetPath);
-            var docsetPackage = new MemoryPackage(docsetPath);
-            foreach (var file in files)
+            var usePhysicalInput = spec.UsePhysicalInput
+                || spec.Repos.Count != 0
+                || spec.Inputs.Any(entry => entry.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase));
+
+            var localPackage = new LocalPackage(docsetPath);
+            if (usePhysicalInput)
             {
-                if (file.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
-                {
-                    // TODO: handle the zip file in MemoryPackage as well
-                    var filePath = Path.GetFullPath(Path.Combine(docsetPath, file.Key));
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    CreateZipFile(file, filePath);
-                }
-                else if (file.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
-                    || file.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase))
-                {
-                    // TODO: handle the validation rules in MemoryPackage as well
-                    var filePath = Path.GetFullPath(Path.Combine(docsetPath, file.Key));
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
-                }
-                else
-                {
-                    docsetPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
-                }
+                return localPackage;
             }
-            return docsetPackage;
+
+            var memoryPackage = new MemoryPackage(docsetPath);
+            foreach (var file in spec.Inputs)
+            {
+                memoryPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+            }
+            return new CompositePackage(new List<Package>() { memoryPackage, localPackage });
         }
 
         public static void CreateGitRepository(

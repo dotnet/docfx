@@ -7,20 +7,46 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class LocalPackage : DirectoryPackage
+    internal class LocalPackage : Package
     {
+        private readonly PathString _directory;
+
         public LocalPackage(string directory = ".")
-            : base(directory) { }
+        {
+            _directory = new PathString(Path.GetFullPath(directory));
+        }
 
-        public override DirectoryPackage CreateSubPackage(string relativePath) => new LocalPackage(Path.Combine(Directory, relativePath));
+        public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
 
-        public override bool Exists(PathString path) => File.Exists(Directory.Concat(path));
+        public override bool DirectoryExists(string directory = ".") => Directory.Exists(_directory.Concat(new PathString(directory)));
 
-        public override bool DirectoryExists(PathString directory) => System.IO.Directory.Exists(Directory.Concat(directory));
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+        {
+            var directoryPath = _directory.Concat(new PathString(directory));
+            if (!DirectoryExists(directory))
+            {
+                throw Errors.Config.DirectoryNotFound(directoryPath).ToException();
+            }
+            return PathUtility.GetFilesInDirectory(directoryPath, fileNamePredicate);
+        }
 
-        public override Stream ReadStream(PathString path) => File.OpenRead(Directory.Concat(path));
+        public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
 
-        public override IEnumerable<PathString> GetFiles(bool getFullPath = false, Func<string, bool>? fileNamePredicate = null)
-            => PathUtility.GetFilesInDirectory(Directory, getFullPath, fileNamePredicate);
+        public override DateTime GetLastWriteTimeUtc(PathString path)
+            => File.GetLastWriteTimeUtc(_directory.Concat(path));
+
+        public override Stream ReadStream(PathString path) => File.OpenRead(_directory.Concat(path));
+
+        public override PathString? TryGetGitFilePath(PathString path) => _directory.Concat(path);
+
+        public override PathString? TryGetPhysicalPath(PathString path)
+        {
+            var fullPath = _directory.Concat(path);
+            if (File.Exists(fullPath))
+            {
+                return fullPath;
+            }
+            return null;
+        }
     }
 }

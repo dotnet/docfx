@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static int Run(string[] args, DirectoryPackage? package = null)
+        internal static int Run(string[] args, Package? package = null)
         {
             if (args.Length == 1 && args[0] == "--version")
             {

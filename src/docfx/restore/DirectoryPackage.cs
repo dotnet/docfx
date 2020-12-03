@@ -4,62 +4,43 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Enumeration;
 
 namespace Microsoft.Docs.Build
 {
-    internal abstract class DirectoryPackage : Package
+    internal class DirectoryPackage : Package
     {
-        protected PathString Directory { get; }
+        private readonly PathString _directory;
 
-        public DirectoryPackage(string directory = ".") => Directory = new PathString(Path.GetFullPath(directory));
+        private readonly Package _package;
 
-        public abstract DirectoryPackage CreateSubPackage(string relativePath);
-
-        public override bool Exists(PathString path) => throw new NotSupportedException();
-
-        public abstract bool DirectoryExists(PathString directory);
-
-        public override Stream ReadStream(PathString path) => throw new NotSupportedException();
-
-        public override IEnumerable<PathString> GetFiles()
+        public DirectoryPackage(Package package, string directory = ".")
         {
-            if (!DirectoryExists(Directory))
-            {
-                throw Errors.Config.DirectoryNotFound(Directory).ToException();
-            }
-            return GetFiles(false, null);
+            _directory = new PathString(directory);
+            _package = package;
         }
 
-        public abstract IEnumerable<PathString> GetFiles(bool getFullPath = false, Func<string, bool>? fileNameFilter = null);
+        public override Package CreateSubPackage(string relativePath)
+            => _package.CreateSubPackage(_directory.Concat(new PathString(relativePath)));
 
-        public override PathString? TryGetPhysicalPath(PathString path)
-        {
-            var fullPath = Directory.Concat(path);
-            if (File.Exists(fullPath))
-            {
-                return new PathString(fullPath);
-            }
+        public override bool DirectoryExists(string directory = ".") => _package.DirectoryExists(_directory.Concat(new PathString(directory)));
 
-            return null;
-        }
+        public override bool Exists(PathString path) => _package.Exists(_directory.Concat(path));
 
-        public virtual PathString GetFullFilePath(PathString path) => new PathString(Directory.Concat(path));
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+            => _package.GetFiles(ApplyDirectory(directory), fileNamePredicate);
 
-        public override PathString? TryGetFullFilePath(PathString path)
-        {
-            var fullPath = new PathString(Directory.Concat(path));
-            if (Exists(fullPath))
-            {
-                return fullPath;
-            }
+        public override PathString GetFullFilePath(PathString path) => _package.GetFullFilePath(ApplyDirectory(path));
 
-            return null;
-        }
+        public override DateTime GetLastWriteTimeUtc(PathString path) => _package.GetLastWriteTimeUtc(ApplyDirectory(path));
 
-        public override PathString? TryGetGitFilePath(PathString path)
-        {
-            return new PathString(Directory.Concat(path));
-        }
+        public override Stream ReadStream(PathString path) => _package.ReadStream(_directory.Concat(path));
+
+        public override PathString? TryGetPhysicalPath(PathString path) => _package.TryGetPhysicalPath(ApplyDirectory(path));
+
+        public override PathString? TryGetGitFilePath(PathString path) => _package.TryGetGitFilePath(ApplyDirectory(path));
+
+        private PathString ApplyDirectory(PathString path) => _directory.Concat(path);
+
+        private PathString ApplyDirectory(string path) => _directory.Concat(new PathString(path));
     }
 }

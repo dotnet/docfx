@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Config _config;
         private readonly SourceMap _sourceMap;
-        private readonly DirectoryPackage _mainPackage;
+        private readonly Package _mainPackage;
         private readonly Package? _fallbackPackage;
         private readonly Package? _alternativeFallbackPackage;
         private readonly PackageResolver _packageResolver;
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             RepositoryProvider repositoryProvider,
             SourceMap sourceMap,
-            DirectoryPackage docsetPackage)
+            Package docsetPackage)
         {
             _config = config;
             _sourceMap = sourceMap;

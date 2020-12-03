@@ -18,17 +18,22 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
         }
 
+        public override bool DirectoryExists(string directory = ".") => throw new NotSupportedException();
+
         public override bool Exists(PathString path)
         {
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
         }
 
-        public override IEnumerable<PathString> GetFiles() => throw new NotSupportedException();
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+            => throw new NotSupportedException();
+
+        public override PathString GetFullFilePath(PathString path) => throw new NotSupportedException();
+
+        public override DateTime GetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
-
-        public override PathString? TryGetFullFilePath(PathString path) => throw new NotSupportedException();
-
+         
         public override PathString? TryGetPhysicalPath(PathString path) => throw new NotSupportedException();
 
         private SourceInfo<string> GetPath(PathString path)

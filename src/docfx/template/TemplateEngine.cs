@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
         public TemplateEngine(
             ErrorBuilder errors,
             Config config,
-            DirectoryPackage docsetPackage,
+            Package docsetPackage,
             PackageResolver packageResolver,
             BuildOptions buildOptions,
             JsonSchemaLoader jsonSchemaLoader)

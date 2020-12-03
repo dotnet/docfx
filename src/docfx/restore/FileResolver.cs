@@ -29,10 +29,10 @@ namespace Microsoft.Docs.Build
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
-        private readonly DirectoryPackage _docsetPackage;
+        private readonly Package _docsetPackage;
 
         public FileResolver(
-            DirectoryPackage docsetPackage,
+            Package docsetPackage,
             Lazy<string?>? fallbackDocsetPath = null,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,

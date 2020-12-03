@@ -11,93 +11,41 @@ using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MemoryPackage : DirectoryPackage
+    internal class MemoryPackage : Package
     {
+        private readonly PathString _directory;
+
         private static AsyncLocal<ConcurrentDictionary<PathString, (DateTime lastWriteTime, string content)>> s_inMemoryFiles
             = new AsyncLocal<ConcurrentDictionary<PathString, (DateTime, string)>>();
 
         public MemoryPackage(string directory = ".")
-            : base(directory)
         {
+            _directory = new PathString(Path.GetFullPath(directory));
             if (s_inMemoryFiles.Value == null)
             {
                 s_inMemoryFiles.Value = new ConcurrentDictionary<PathString, (DateTime, string)>();
             }
         }
 
-        public MemoryPackage(Dictionary<string, string> files, string directory = ".")
-            : this(directory)
-        {
-            foreach (var (file, content) in files)
-            {
-                var fileFullPath = new PathString(Path.Combine(Directory, file));
-                s_inMemoryFiles.Value!.AddOrUpdate(fileFullPath, (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
-            }
-        }
-
         public void AddOrUpdate(PathString path, string content)
         {
-            var fileFullPath = new PathString(Path.Combine(Directory, path));
-            s_inMemoryFiles.Value!.AddOrUpdate(fileFullPath, (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
+            s_inMemoryFiles.Value!.AddOrUpdate(_directory.Concat(path), (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
         }
 
-        public override DirectoryPackage CreateSubPackage(string relativePath) => new MemoryPackage(Path.Combine(Directory, relativePath));
-
-        public override DateTime GetLastWriteTimeUtc(PathString path)
+        public override bool DirectoryExists(string directory = ".")
         {
-            var fullPath = Directory.Concat(path);
-            if (s_inMemoryFiles.Value!.TryGetValue(fullPath, out var value))
-            {
-                return value.lastWriteTime;
-            }
-            else
-            {
-                return base.GetLastWriteTimeUtc(path);
-            }
+            var directoryFullPath = _directory.Concat(new PathString(directory));
+            return s_inMemoryFiles.Value!.Keys.Any(path => path.StartsWithPath(directoryFullPath, out _));
         }
 
-        public override bool Exists(PathString path)
-        {
-            var fullPath = Directory.Concat(path);
-            if (s_inMemoryFiles.Value!.ContainsKey(fullPath))
-            {
-                return true;
-            }
-            else
-            {
-                return File.Exists(fullPath);
-            }
-        }
+        public override bool Exists(PathString path) => s_inMemoryFiles.Value!.ContainsKey(_directory.Concat(path));
 
-        public override bool DirectoryExists(PathString directory)
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
         {
-            var fullPath = Directory.Concat(directory);
-            if (s_inMemoryFiles.Value!.Keys.Any(path => path.StartsWithPath(fullPath, out _)))
+            var directoryPathString = _directory.Concat(new PathString(directory));
+            var files = s_inMemoryFiles.Value!.Keys.Select((PathString file) =>
             {
-                return true;
-            }
-            return System.IO.Directory.Exists(fullPath);
-        }
-
-        public override Stream ReadStream(PathString path)
-        {
-            var fullPath = new PathString(Path.Combine(Directory, path));
-            if (s_inMemoryFiles.Value!.TryGetValue(fullPath, out var value))
-            {
-                var byteArray = Encoding.UTF8.GetBytes(value.content ?? string.Empty);
-                return new MemoryStream(byteArray);
-            }
-            else
-            {
-                return File.OpenRead(fullPath);
-            }
-        }
-
-        public override IEnumerable<PathString> GetFiles(bool getFullPath = false, Func<string, bool>? fileNamePredicate = null)
-        {
-            var filesInMemory = s_inMemoryFiles.Value!.Keys.Select((PathString file) =>
-            {
-                if (file.StartsWithPath(Directory, out var relativePath))
+                if (file.StartsWithPath(directoryPathString, out var relativePath))
                 {
                     return relativePath;
                 }
@@ -108,19 +56,29 @@ namespace Microsoft.Docs.Build
             }).Where(file => file != default);
             if (fileNamePredicate != null)
             {
-                filesInMemory = filesInMemory.Where((file) => fileNamePredicate.Invoke(Path.GetFileName(file)));
+                files = files.Where((file) => fileNamePredicate.Invoke(Path.GetFileName(file)));
             }
-
-            if (getFullPath)
-            {
-                filesInMemory = filesInMemory.Select(file => Directory.Concat(file));
-            }
-
-            if (System.IO.Directory.Exists(Directory))
-            {
-                return filesInMemory.Union(PathUtility.GetFilesInDirectory(Directory, getFullPath, fileNamePredicate));
-            }
-            return filesInMemory;
+            return files;
         }
+
+        public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
+
+        public override DateTime GetLastWriteTimeUtc(PathString path)
+        {
+            if (s_inMemoryFiles.Value!.TryGetValue(_directory.Concat(path), out var value))
+            {
+                return value.lastWriteTime;
+            }
+            return default;
+        }
+
+        public override Stream ReadStream(PathString path)
+        {
+            var value = s_inMemoryFiles.Value!.GetValueOrDefault(_directory.Concat(path));
+            var byteArray = Encoding.UTF8.GetBytes(value.content ?? string.Empty);
+            return new MemoryStream(byteArray);
+        }
+
+        public override PathString? TryGetPhysicalPath(PathString path) => null;
     }
 }

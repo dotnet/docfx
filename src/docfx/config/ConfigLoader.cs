@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         public static (string docsetPath, string? outputPath)[] FindDocsets(
             ErrorBuilder errors,
             string workingDirectory,
-            DirectoryPackage docsetPackage,
+            Package docsetPackage,
             CommandLineOptions options)
         {
             var glob = FindDocsetsGlob(errors, workingDirectory, docsetPackage);
@@ -25,15 +25,15 @@ namespace Microsoft.Docs.Build
             }
 
             var files = docsetPackage.GetFiles(
-                true,
-                (string fileName) => fileName.Equals("docfx.json", StringComparison.OrdinalIgnoreCase) ||
-                    fileName.Equals("docfx.yml", StringComparison.OrdinalIgnoreCase));
+                fileNamePredicate: (string fileName) => fileName.Equals("docfx.json", StringComparison.OrdinalIgnoreCase)
+                || fileName.Equals("docfx.yml", StringComparison.OrdinalIgnoreCase));
 
             return (
                 from file in files
-                let configPath = Path.GetRelativePath(workingDirectory, file)
+                let fullPath = docsetPackage.GetFullFilePath(file)
+                let configPath = Path.GetRelativePath(workingDirectory, fullPath)
                 where glob(configPath)
-                let docsetPath = Path.GetDirectoryName(file)
+                let docsetPath = Path.GetDirectoryName(fullPath)
                 let docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath)
                 let outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder)
                 select (docsetPath, outputPath)).Distinct().ToArray();
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
-            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, DirectoryPackage docsetPackage)
+            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package docsetPackage)
         {
             // load and trace entry repository
             var repository = Repository.Create(docsetPath);

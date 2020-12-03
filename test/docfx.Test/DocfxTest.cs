@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables, DirectoryPackage DirectoryPackage)
+        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables, Package DirectoryPackage)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
@@ -140,19 +140,8 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
             }
 
-            DirectoryPackage docsetPackage;
-            if (!spec.UsePhysicalInput)
-            {
-                docsetPackage = TestUtility.CreateInputDirectoryPackage(docsetPath, spec.Inputs, variables);
-            }
-            else
-            {
-                if (!File.Exists(markerPath))
-                {
-                    TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
-                }
-                docsetPackage = new LocalPackage(docsetPath);
-            }
+
+            var docsetPackage = TestUtility.CreateInputDirectoryPackage(docsetPath, spec, variables);
 
             if (!File.Exists(markerPath))
             {
@@ -164,6 +153,10 @@ namespace Microsoft.Docs.Build
 
                 TestUtility.CreateFiles(cachePath, spec.Cache, variables);
                 TestUtility.CreateFiles(statePath, spec.State, variables);
+                if (docsetPackage is LocalPackage)
+                {
+                    TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
+                }
 
                 File.WriteAllText(markerPath, "");
             }
@@ -171,7 +164,7 @@ namespace Microsoft.Docs.Build
             return (docsetPath, appDataPath, outputPath, repos, variables, docsetPackage);
         }
 
-        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables, DirectoryPackage docsetPackage)
+        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables, Package docsetPackage)
         {
             var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun");
 
@@ -218,7 +211,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec, DirectoryPackage docsetPackage)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec, Package docsetPackage)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 

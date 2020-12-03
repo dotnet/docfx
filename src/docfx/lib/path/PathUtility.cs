@@ -55,19 +55,8 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static IEnumerable<PathString> GetFilesInDirectory(
             PathString directory,
-            bool getFullPath = false,
             Func<string, bool>? fileNamePredicate = null)
         {
-            FileSystemEnumerable<PathString>.FindTransform transform;
-            if (getFullPath)
-            {
-                transform = ToFullPathString;
-            }
-            else
-            {
-                transform = ToRelativePathString;
-            }
-
             if (fileNamePredicate == null)
             {
                 fileNamePredicate = (string fileName) => fileName[0] != '.';
@@ -75,15 +64,13 @@ namespace Microsoft.Docs.Build
 
             return new FileSystemEnumerable<PathString>(
                 directory,
-                transform,
+                ToRelativePathString,
                 s_enumerationOptions)
             {
                 ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && fileNamePredicate.Invoke(entry.FileName.ToString()),
                 ShouldRecursePredicate =
                     (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
             };
-
-            static PathString ToFullPathString(ref FileSystemEntry entry) => new PathString(entry.ToFullPath());
 
             static PathString ToRelativePathString(ref FileSystemEntry entry)
             {

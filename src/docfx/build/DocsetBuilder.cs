@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAccessor _microsoftGraphAccessor;
         private readonly RepositoryProvider _repositoryProvider;
         private readonly SourceMap _sourceMap;
-        private readonly DirectoryPackage _docsetPackage;
+        private readonly Package _docsetPackage;
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly JsonSchemaLoader _jsonSchemaLoader;
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             OpsAccessor opsAccessor,
             RepositoryProvider repositoryProvider,
-            DirectoryPackage docsetPackage)
+            Package docsetPackage)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             string workingDirectory,
             string docsetPath,
             string? outputPath,
-            DirectoryPackage package,
+            Package package,
             CommandLineOptions options)
         {
             errors = errors.WithDocsetPath(workingDirectory, docsetPath);

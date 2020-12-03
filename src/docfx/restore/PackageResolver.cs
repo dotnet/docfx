@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Package ResolveAsPackage(PackagePath package, DirectoryPackage docsetPackage, PackageFetchOptions options)
+        public Package ResolveAsPackage(PackagePath package, Package docsetPackage, PackageFetchOptions options)
         {
             return package.Type switch
             {

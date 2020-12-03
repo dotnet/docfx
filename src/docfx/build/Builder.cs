@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
         private readonly string _workingDirectory;
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
-        private readonly DirectoryPackage _docsetPackage;
+        private readonly Package _docsetPackage;
 
-        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, DirectoryPackage docsetPackage)
+        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, Package docsetPackage)
         {
             _workingDirectory = workingDirectory;
             _options = options;
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             _docsets = new Watch<DocsetBuilder[]>(LoadDocsets);
         }
 
-        public static bool Run(string workingDirectory, CommandLineOptions options, DirectoryPackage? docsetPackage = null)
+        public static bool Run(string workingDirectory, CommandLineOptions options, Package? docsetPackage = null)
         {
             var stopwatch = Stopwatch.StartNew();
 

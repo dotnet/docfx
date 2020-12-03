@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly BuildScope _buildScope;
         private readonly Lazy<PublishUrlMap> _publishUrlMap;
         private readonly Config _config;
-        private readonly DirectoryPackage _docsetPackage;
+        private readonly Package _docsetPackage;
 
         private readonly IReadOnlyDictionary<FilePath, string> _redirectUrls;
         private readonly HashSet<PathString> _redirectPaths;
@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
             BuildOptions buildOptions,
             ErrorBuilder errors,
             BuildScope buildScope,
-            DirectoryPackage docsetPackage,
+            Package docsetPackage,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             Lazy<PublishUrlMap> publishUrlMap)

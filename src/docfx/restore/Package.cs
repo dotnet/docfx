@@ -9,29 +9,47 @@ namespace Microsoft.Docs.Build
 {
     internal abstract class Package
     {
-        public abstract IEnumerable<PathString> GetFiles();
+        public virtual Package CreateSubPackage(string relativePath) => new DirectoryPackage(this, new PathString(relativePath));
 
-        public abstract Stream ReadStream(PathString path);
+        public abstract bool DirectoryExists(string directory = ".");
 
         public abstract bool Exists(PathString path);
 
-        public abstract PathString? TryGetPhysicalPath(PathString path);
+        public abstract IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null);
 
-        public abstract PathString? TryGetFullFilePath(PathString path);
+        public abstract PathString GetFullFilePath(PathString path);
 
-        public virtual DateTime GetLastWriteTimeUtc(PathString path)
+        public abstract DateTime GetLastWriteTimeUtc(PathString path);
+
+        public abstract Stream ReadStream(PathString path);
+
+        public string ReadString(PathString path)
         {
-            if (!Exists(path))
+            using var reader = ReadText(path);
+            return reader.ReadToEnd();
+        }
+
+        public TextReader ReadText(PathString path)
+        {
+            return new StreamReader(ReadStream(path));
+        }
+
+        public PathString? TryGetFullFilePath(PathString path)
+        {
+            var fullPath = GetFullFilePath(path);
+            if (Exists(fullPath))
             {
-                return default;
+                return fullPath;
             }
-            return File.GetLastWriteTimeUtc(TryGetFullFilePath(path)!);
+            return null;
         }
 
         // TODO: Retire this method after abstracting git read operations in Package.
         public virtual PathString? TryGetGitFilePath(PathString path) => null;
 
-        public virtual string? TryReadString(PathString path)
+        public abstract PathString? TryGetPhysicalPath(PathString path);
+
+        public string? TryReadString(PathString path)
         {
             if (!Exists(path))
             {
@@ -40,17 +58,6 @@ namespace Microsoft.Docs.Build
 
             using var reader = ReadText(path);
             return reader.ReadToEnd();
-        }
-
-        public virtual string ReadString(PathString path)
-        {
-            using var reader = ReadText(path);
-            return reader.ReadToEnd();
-        }
-
-        public virtual TextReader ReadText(PathString path)
-        {
-            return new StreamReader(ReadStream(path));
         }
 
         public T? TryReadYamlOrJson<T>(ErrorBuilder errors, string pathWithoutExtension) where T : class, new()
