@@ -79,7 +79,8 @@ namespace Microsoft.Docs.Build
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
                     new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
                     referencingFile,
-                    inclusionRoot);
+                    inclusionRoot,
+                    absoluteUrl);
 
                 return (xrefError, resolvedHref ?? href, declaringFile);
             }

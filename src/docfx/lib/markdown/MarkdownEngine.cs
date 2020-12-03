@@ -170,14 +170,34 @@ namespace Microsoft.Docs.Build
             return sb.ToString();
         }
 
+        private MarkdownPipeline CreateMarkdownAbsoluteUrlPipeline()
+        {
+            return CreateMarkdownPipelineBuilder()
+                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetAbsoluteLink, GetImageLink, GetXref)
+                .Build();
+        }
+
         private MarkdownPipeline CreateMarkdownPipeline()
         {
-            return CreateMarkdownPipelineBuilder().Build();
+            return CreateMarkdownPipelineBuilder()
+                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
+                .Build();
+        }
+
+        private MarkdownPipeline CreateInlineMarkdownAbsoluteUrlPipeline()
+        {
+            return CreateMarkdownPipelineBuilder()
+                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetAbsoluteLink, GetImageLink, GetXref)
+                .UseInlineOnly()
+                .Build();
         }
 
         private MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            return CreateMarkdownPipelineBuilder().UseInlineOnly().Build();
+            return CreateMarkdownPipelineBuilder()
+                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
+                .UseInlineOnly()
+                .Build();
         }
 
         private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
@@ -217,7 +237,6 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -345,24 +364,38 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
+        private string GetAbsoluteLink(SourceInfo<string> href)
+            => GetLinkCore(href, true);
+
         private string GetLink(SourceInfo<string> href)
+            => GetLinkCore(href, false);
+
+        private string GetLinkCore(SourceInfo<string> href, bool absoluteUrl)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath(), absoluteUrl);
             status.Errors.AddIfNotNull(error);
 
             return link;
         }
 
+        private (string? href, string display) GetXrefAbsoluteUrl(
+            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+            => GetXrefCore(href, uid, suppressXrefNotFound, true);
+
         private (string? href, string display) GetXref(
             SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+            => GetXrefCore(href, uid, suppressXrefNotFound, false);
+
+        private (string? href, string display) GetXrefCore(
+            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound, bool absoluteUrl)
         {
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath())
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath(), absoluteUrl)
                 : uid.HasValue
-                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), GetRootFilePath())
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), GetRootFilePath(), absoluteUrl: absoluteUrl)
                     : default;
 
             if (!suppressXrefNotFound)

@@ -314,7 +314,8 @@ namespace Microsoft.Docs.Build
                     value,
                     uidCount,
                     propertyPath,
-                    new JObject());
+                    new JObject(),
+                    fromXrefProperty: true);
             }
             finally
             {
@@ -331,7 +332,8 @@ namespace Microsoft.Docs.Build
             JToken token,
             int uidCount,
             string? propertyPath,
-            JObject xrefmap)
+            JObject xrefmap,
+            bool fromXrefProperty = false)
         {
             switch (token)
             {
@@ -340,7 +342,7 @@ namespace Microsoft.Docs.Build
                     var newArray = new JArray();
                     foreach (var item in array)
                     {
-                        newArray.Add(TransformContentCore(errors, schemaMap, file, rootSchema, item, uidCount, propertyPath, xrefmap));
+                        newArray.Add(TransformContentCore(errors, schemaMap, file, rootSchema, item, uidCount, propertyPath, xrefmap, fromXrefProperty));
                     }
 
                     return newArray;
@@ -362,12 +364,21 @@ namespace Microsoft.Docs.Build
                             value,
                             uidCount,
                             JsonUtility.AddToPropertyPath(propertyPath, key),
-                            xrefmap);
+                            xrefmap,
+                            fromXrefProperty);
                     }
                     return newObject;
 
                 case JValue value when schemaMap.TryGetSchema(token, out var schema):
-                    return TransformScalar(errors.With(e => e.WithPropertyPath(propertyPath)), rootSchema, schema, file, value, propertyPath, xrefmap);
+                    return TransformScalar(
+                        errors.With(e => e.WithPropertyPath(propertyPath)),
+                        rootSchema,
+                        schema,
+                        file,
+                        value,
+                        propertyPath,
+                        xrefmap,
+                        fromXrefProperty);
 
                 case JValue value:
                     return value;
@@ -384,7 +395,8 @@ namespace Microsoft.Docs.Build
             FilePath file,
             JValue value,
             string? propertyPath,
-            JObject xrefmap)
+            JObject xrefmap,
+            bool fromXrefProperty)
         {
             if (value.Type == JTokenType.Null || schema.ContentType is null)
             {
@@ -407,12 +419,14 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Markdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    var pipelineType = fromXrefProperty ? MarkdownPipelineType.MarkdownWithAbsoluteUrl : MarkdownPipelineType.Markdown;
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, pipelineType, null, rootSchema.ContentFallback);
 
                 case JsonSchemaContentType.InlineMarkdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
+                    var inlinePipelineType = fromXrefProperty ? MarkdownPipelineType.InlineMarkdownWithAbsoluteUrl : MarkdownPipelineType.InlineMarkdown;
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, inlinePipelineType, null, rootSchema.ContentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
@@ -433,7 +447,7 @@ namespace Microsoft.Docs.Build
 
                     // the content here must be an UID, not href
                     var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                        content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
+                        content, file, file, absoluteUrl: fromXrefProperty, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
 
                     errors.AddIfNotNull(xrefError);
 

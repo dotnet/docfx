@@ -1615,7 +1615,6 @@ inputs:
     ### YamlMime:TestPage
       xref: a
   docs/v2/a.yml: |
-  docs/v2/a.yml: |
     ### YamlMime:TestData
     uid: a
     name: name 2.0
@@ -1982,3 +1981,40 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":4,"column":8}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":2,"column":6}
+---
+# Xref property field references to uid
+inputs:
+  docfx.yml: |
+  docs/c/c.md: |
+    ---
+    title: Title from yaml header c
+    uid: c
+    ---
+  docs/a/a/a.json: |
+    {
+      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
+      "uid": "a",
+      "summary": "@c Hello docfx!"
+    }
+  docs/b/b.md: |
+    Link to @a?displayProperty=summary
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "summary": { "contentType": "Markdown" },
+        "uid": { "contentType": "uid" }
+      },
+      "xrefProperties": ["summary"]
+    }
+outputs:
+  docs/a/a/a.json:
+  docs/c/c.json:
+  docs/b/b.json: |
+    {"conceptual": "<p>Link to <a href=\"/en-us/docs/a/a/a\" data-linktype=\"absolute-path\">&lt;a href=&quot;/docs/c/c&quot;&gt;Title from yaml header c&lt;/a&gt; Hello docfx!</a></p>\n"}
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid":"a","summary":"<a href=\"/docs/c/c\">Title from yaml header c</a> Hello docfx!"},
+        {"uid": "c", "href": "https://docs.com/docs/c/c?branch=xref-chain", "name": "Title from yaml header c"}
+      ]
+    }

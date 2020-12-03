@@ -6,7 +6,9 @@ namespace Microsoft.Docs.Build
     public enum MarkdownPipelineType
     {
         Markdown,
+        MarkdownWithAbsoluteUrl,
         InlineMarkdown,
+        InlineMarkdownWithAbsoluteUrl,
         TocMarkdown,
     }
 }
