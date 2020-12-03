@@ -24,8 +24,8 @@ namespace Microsoft.Docs.Build
 
         public override bool Exists(PathString path) => _package.Exists(_directory.Concat(path));
 
-        public override IEnumerable<PathString> GetFiles(Func<string, bool>? fileNamePredicate = null)
-            => _package.GetFiles(fileNamePredicate);
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+            => _package.GetFiles(ApplyDirectory(directory), fileNamePredicate);
 
         public override PathString GetFullFilePath(PathString path) => _package.GetFullFilePath(ApplyDirectory(path));
 
