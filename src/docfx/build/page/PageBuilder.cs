@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
-        private readonly TableOfContentsMap _tocMap;
+        private readonly TocMap _tocMap;
         private readonly LinkResolver _linkResolver;
         private readonly ContributionProvider _contributionProvider;
         private readonly BookmarkValidator _bookmarkValidator;
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
-            TableOfContentsMap tocMap,
+            TocMap tocMap,
             LinkResolver linkResolver,
             ContributionProvider contributionProvider,
             BookmarkValidator bookmarkValidator,
@@ -77,18 +77,19 @@ namespace Microsoft.Docs.Build
 
         public void Build(ErrorBuilder errors, FilePath file)
         {
-            var sourceModel = Load(errors, file);
+            var sourceModel = file.Format switch
+            {
+                FileFormat.Markdown => LoadMarkdown(errors, file),
+                _ => LoadSchemaDocument(errors, file),
+            };
+
             if (errors.FileHasError(file))
             {
                 return;
             }
 
             var isContentRenderType = _documentProvider.GetRenderType(file) == RenderType.Content;
-
-            var (output, metadata) = isContentRenderType
-                ? CreatePageOutput(errors, file, sourceModel)
-                : CreateDataOutput(file, sourceModel);
-
+            var (output, metadata) = isContentRenderType ? CreatePageOutput(errors, file, sourceModel) : CreateDataOutput(file, sourceModel);
             var outputPath = _documentProvider.GetOutputPath(file);
 
             if (!errors.FileHasError(file) && !_config.DryRun)
@@ -109,11 +110,10 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            _publishModelBuilder.SetPublishItem(file, metadata, outputPath);
+            _publishModelBuilder.AddOrUpdate(file, metadata, outputPath);
         }
 
-        private (object output, JObject metadata) CreatePageOutput(
-            ErrorBuilder errors, FilePath file, JObject sourceModel)
+        private (object output, JObject metadata) CreatePageOutput(ErrorBuilder errors, FilePath file, JObject sourceModel)
         {
             var outputMetadata = new JObject();
             var outputModel = new JObject();
@@ -124,8 +124,7 @@ namespace Microsoft.Docs.Build
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The bookmark validation for SDP can be skipped when the public template is used since the mustache is not accessable for public template
-            if (_config.DryRun
-                && (TemplateEngine.IsConceptual(mime) || _config.Template.Type == PackageType.PublicTemplate))
+            if (_config.DryRun && (TemplateEngine.IsConceptual(mime) || _config.Template.Type == PackageType.PublicTemplate))
             {
                 return (new JObject(), new JObject());
             }
@@ -205,12 +204,12 @@ namespace Microsoft.Docs.Build
                 errors.Add(Errors.Content.Custom404Page(file));
             }
 
-            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : _tocMap.FindTocRelativePath(file);
-
             if (_config.DryRun)
             {
                 return systemMetadata;
             }
+
+            systemMetadata.TocRel = !string.IsNullOrEmpty(userMetadata.TocRel) ? userMetadata.TocRel : _tocMap.FindTocRelativePath(file);
 
             // To speed things up for dry runs, ignore metadata that does not produce errors.
             // We also ignore GitHub author validation for dry runs because we are not calling GitHub in local validation anyway.
@@ -248,15 +247,6 @@ namespace Microsoft.Docs.Build
             }
 
             return systemMetadata;
-        }
-
-        private JObject Load(ErrorBuilder errors, FilePath file)
-        {
-            return file.Format switch
-            {
-                FileFormat.Markdown => LoadMarkdown(errors, file),
-                _ => LoadSchemaDocument(errors, file),
-            };
         }
 
         private JObject LoadMarkdown(ErrorBuilder errors, FilePath file)
@@ -368,7 +358,7 @@ namespace Microsoft.Docs.Build
 
             // Generate SDP content
             var model = _templateEngine.RunJavaScript($"{mime}.html.primary.js", pageModel);
-            var content = _templateEngine.RunMustache($"{mime}.html", model, file);
+            var content = _templateEngine.RunMustache($"{mime}.html", model);
 
             return ProcessHtml(file, content);
         }

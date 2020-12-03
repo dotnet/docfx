@@ -3,46 +3,75 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
     internal class Builder
     {
+        private readonly ErrorBuilder _errors;
         private readonly string _workingDirectory;
         private readonly CommandLineOptions _options;
+        private readonly Watch<DocsetBuilder[]> _docsets;
 
-        public Builder(string workingDirectory, CommandLineOptions options)
+        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options)
         {
             _workingDirectory = workingDirectory;
             _options = options;
+            _errors = errors;
+            _docsets = Watcher.Create(LoadDocsets);
         }
 
         public static bool Run(string workingDirectory, CommandLineOptions options)
         {
-            return new Builder(workingDirectory, options).Build();
-        }
-
-        public bool Build()
-        {
             var stopwatch = Stopwatch.StartNew();
-            using var errors = new ErrorWriter(_options.Log);
-            var docsets = ConfigLoader.FindDocsets(errors, _workingDirectory, _options);
-            if (docsets.Length == 0)
-            {
-                errors.Add(Errors.Config.ConfigNotFound(_workingDirectory));
-                return errors.HasError;
-            }
 
-            Parallel.ForEach(docsets, docset =>
-            {
-                new DocsetBuilder(_workingDirectory, docset.docsetPath, docset.outputPath, _options).Build(errors);
-            });
+            using var errors = new ErrorWriter(options.Log);
+
+            var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
+
+            new Builder(errors, workingDirectory, options).Build(files);
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
             Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+
             errors.PrintSummary();
             return errors.HasError;
+        }
+
+        public void Build(params string[] files)
+        {
+            try
+            {
+                Watcher.StartActivity();
+
+                Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+            {
+                _errors.AddRange(dex);
+            }
+        }
+
+        private DocsetBuilder[] LoadDocsets()
+        {
+            var docsets = ConfigLoader.FindDocsets(_errors, _workingDirectory, _options);
+            if (docsets.Length == 0)
+            {
+                _errors.Add(Errors.Config.ConfigNotFound(_workingDirectory));
+            }
+
+            return (from docset in docsets
+                    let item = DocsetBuilder.Create(_errors, _workingDirectory, docset.docsetPath, docset.outputPath, _options)
+                    where item != null
+                    select item).ToArray();
+        }
+
+        private string GetPathToDocset(DocsetBuilder docset, string file)
+        {
+            return Path.GetRelativePath(docset.BuildOptions.DocsetPath, Path.Combine(_workingDirectory, file));
         }
     }
 }

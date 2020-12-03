@@ -14,6 +14,8 @@ namespace Microsoft.Docs.Build
     {
         public OpsDocsetConfig[] DocsetsToPublish { get; private set; } = Array.Empty<OpsDocsetConfig>();
 
+        public HashSet<string> RedirectionFiles { get; private set; } = new HashSet<string>();
+
         public OpsDependencyConfig[] DependentRepositories { get; private set; } = Array.Empty<OpsDependencyConfig>();
 
         public string? GitRepositoryBranchOpenToPublicContributors { get; private set; }

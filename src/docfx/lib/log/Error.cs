@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,6 +16,8 @@ namespace Microsoft.Docs.Build
         public string Code { get; }
 
         public string Message { get; }
+
+        public string? MsAuthor { get; }
 
         public string? PropertyPath { get; }
 
@@ -44,7 +47,8 @@ namespace Microsoft.Docs.Build
             SourceInfo? source,
             string? propertyPath,
             PathString? originalPath,
-            bool pullRequestOnly)
+            bool pullRequestOnly,
+            string? msAuthor)
         {
             Level = level;
             Code = code;
@@ -54,26 +58,33 @@ namespace Microsoft.Docs.Build
             PropertyPath = propertyPath;
             OriginalPath = originalPath;
             PullRequestOnly = pullRequestOnly;
+            MsAuthor = msAuthor;
         }
 
         public Error WithLevel(ErrorLevel level)
         {
-            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly);
+            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly, MsAuthor);
         }
 
         public Error WithOriginalPath(PathString? originalPath)
         {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, originalPath, PullRequestOnly);
+            return originalPath == OriginalPath ?
+                this : new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, originalPath, PullRequestOnly, MsAuthor);
         }
 
         public Error WithSource(SourceInfo? source)
         {
-            return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly, MsAuthor);
+        }
+
+        public Error WithMsAuthor(string? msAuthor)
+        {
+            return new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly, msAuthor);
         }
 
         public Error WithPropertyPath(string? propertyPath)
         {
-            return new Error(Level, Code, Message, MessageArguments, Source, propertyPath, OriginalPath, PullRequestOnly);
+            return new Error(Level, Code, Message, MessageArguments, Source, propertyPath, OriginalPath, PullRequestOnly, MsAuthor);
         }
 
         public override string ToString()
@@ -98,8 +109,9 @@ namespace Microsoft.Docs.Build
                 log_item_type = "user",
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
                 property_path = PropertyPath,
+                ms_author = MsAuthor,
                 date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
-            });
+            }).Replace("\"ms_author\"", "\"ms.author\"");
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)

@@ -328,6 +328,8 @@ namespace Microsoft.Docs.Build
 
         public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
 
+        public HashSet<string> RedirectionFiles { get; private set; } = new HashSet<string>();
+
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
             foreach (var url in Xref)

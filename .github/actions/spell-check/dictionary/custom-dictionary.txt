@@ -564,3 +564,4 @@ sln
 Quickenshtein
 IFunction
 TChange
+vsthrd

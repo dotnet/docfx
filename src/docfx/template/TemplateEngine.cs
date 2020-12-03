@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private readonly Config _config;
-        private readonly Output _output;
         private readonly Package _package;
         private readonly Lazy<TemplateDefinition> _templateDefinition;
         private readonly JObject _global;
@@ -36,16 +35,9 @@ namespace Microsoft.Docs.Build
             };
 
         public TemplateEngine(
-            ErrorBuilder errors,
-            Config config,
-            Output output,
-            PackageResolver packageResolver,
-            Lazy<JsonSchemaTransformer> jsonSchemaTransformer,
-            BuildOptions buildOptions,
-            JsonSchemaLoader jsonSchemaLoader)
+            ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
-            _output = output;
             _buildOptions = buildOptions;
             _jsonSchemaLoader = jsonSchemaLoader;
 
@@ -64,7 +56,7 @@ namespace Microsoft.Docs.Build
 
             _liquid = new LiquidTemplate(_package, config.TemplateBasePath, _global);
             _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_package, _global));
-            _mustacheTemplate = new MustacheTemplate(_package, "ContentTemplate", _global, jsonSchemaTransformer);
+            _mustacheTemplate = new MustacheTemplate(_package, "ContentTemplate", _global);
         }
 
         public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
@@ -73,7 +65,7 @@ namespace Microsoft.Docs.Build
             {
                 ContentType.Redirection => RenderType.Content,
                 ContentType.Page => GetRenderType(mime),
-                ContentType.TableOfContents => GetTocRenderType(),
+                ContentType.Toc => GetTocRenderType(),
                 _ => RenderType.Component,
             };
         }
@@ -113,9 +105,9 @@ namespace Microsoft.Docs.Build
             return _liquid.Render(layout, liquidModel);
         }
 
-        public string RunMustache(string templateName, JToken pageModel, FilePath file)
+        public string RunMustache(string templateName, JToken pageModel)
         {
-            return _mustacheTemplate.Render(templateName, pageModel, file);
+            return _mustacheTemplate.Render(templateName, pageModel);
         }
 
         public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
@@ -142,7 +134,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public void CopyAssetsToOutput()
+        public void CopyAssetsToOutput(Output output)
         {
             if (!_config.SelfContained || _templateDefinition.Value.Assets.Length <= 0)
             {
@@ -155,7 +147,7 @@ namespace Microsoft.Docs.Build
             {
                 if (glob(file))
                 {
-                    _output.Copy(file, _package, file);
+                    output.Copy(file, _package, file);
                 }
             });
         }

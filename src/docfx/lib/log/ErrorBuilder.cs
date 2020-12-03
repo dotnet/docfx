@@ -48,8 +48,6 @@ namespace Microsoft.Docs.Build
             return new DelegatingErrorBuilder(this, convert);
         }
 
-        public CustomRuleProvider? CustomRuleProvider { get; internal set; }
-
         public ErrorBuilder WithDocsetPath(string workingDirectory, string docsetPath)
         {
             var docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));

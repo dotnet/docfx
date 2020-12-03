@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool>, string, JToken)>();
         private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool>, string, JToken)>();
 
-        private readonly ConcurrentDictionary<FilePath, UserMetadata> _metadataCache = new ConcurrentDictionary<FilePath, UserMetadata>();
+        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache
+                   = new ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>>();
 
         public ICollection<string> HtmlMetaHidden { get; }
 
@@ -58,17 +59,20 @@ namespace Microsoft.Docs.Build
 
         public UserMetadata GetMetadata(ErrorBuilder errors, FilePath file)
         {
-            return _metadataCache.GetOrAdd(file, _ => GetMetadataCore(errors, file));
+            var (error, result) = _metadataCache.GetOrAdd(file, key => Watcher.Create(() => GetMetadataCore(key))).Value;
+            errors.AddRange(error);
+            return result;
         }
 
-        private UserMetadata GetMetadataCore(ErrorBuilder errors, FilePath file)
+        private (ErrorList, UserMetadata) GetMetadataCore(FilePath file)
         {
+            var errors = new ErrorList();
             var result = new JObject();
             JsonUtility.SetSourceInfo(result, new SourceInfo(file, 1, 1));
 
             // We only care about moniker related metadata for redirections and resources
             var contentType = _buildScope.GetContentType(file);
-            var hasYamlHeader = contentType == ContentType.Page || contentType == ContentType.TableOfContents;
+            var hasYamlHeader = contentType == ContentType.Page || contentType == ContentType.Toc;
             if (hasYamlHeader)
             {
                 JsonUtility.Merge(result, _globalMetadata);
@@ -102,7 +106,7 @@ namespace Microsoft.Docs.Build
 
             metadata.RawJObject = result;
 
-            return metadata;
+            return (errors, metadata);
         }
 
         private JObject LoadYamlHeader(ErrorBuilder errors, FilePath file)

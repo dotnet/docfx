@@ -19,13 +19,14 @@ namespace Microsoft.Docs.Build
             var result = new TheoryData<string, string, string>();
             foreach (var file in Directory.GetFiles("data/jschema/draft7", "*.json", SearchOption.AllDirectories))
             {
+                var i = 0;
                 var suite = Path.GetFileNameWithoutExtension(file);
                 foreach (var schema in JArray.Parse(File.ReadAllText(file)))
                 {
                     var schemaText = schema["schema"].ToString(Formatting.None);
                     foreach (var test in schema["tests"])
                     {
-                        var description = $"{schema["description"]}/{test["description"]}";
+                        var description = $"[{++i:d2}]{schema["description"]}/{test["description"]}";
                         result.Add($"{suite}/{description}", schemaText, test.ToString());
                     }
                 }

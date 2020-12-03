@@ -81,6 +81,7 @@ namespace Microsoft.Docs.Build
                     "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
                     "build" => Builder.Run(workingDirectory, options),
+                    "serve" => Serve.Run(options),
                     _ => false,
                 } ? 1 : 0;
             }
@@ -117,6 +118,7 @@ namespace Microsoft.Docs.Build
 
                     // build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
+                    syntax.DefineOptionList("file", ref options.Files, "Build only the specified files.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
 
                     syntax.DefineOption(
@@ -133,6 +135,11 @@ namespace Microsoft.Docs.Build
                         "template-base-path",
                         ref options.TemplateBasePath,
                         "The base path used for referencing the template resource file when applying liquid.");
+                    DefineCommonOptions(syntax, ref workingDirectory, options);
+
+                    // serve command
+                    syntax.DefineCommand("serve", ref command, "Serves content in a docset.");
+                    syntax.DefineOption("language-server", ref options.LanguageServer, "Starts a language server");
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 

@@ -10,6 +10,7 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Yunit;
@@ -19,6 +20,7 @@ namespace Microsoft.Docs.Build
     public static class DocfxTest
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
+        private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
         private static readonly ConcurrentDictionary<string, object> s_locks = new ConcurrentDictionary<string, object>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new AsyncLocal<IReadOnlyDictionary<string, string>>();
@@ -53,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             yield return "";
 
-            if (!spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
+            if (!spec.DryRunOnly && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
             {
                 yield return "DryRun";
             }
@@ -70,14 +72,14 @@ namespace Microsoft.Docs.Build
 
             lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
-                var (docsetPath, appDataPath, outputPath, repos) = CreateDocset(test, spec);
+                var (docsetPath, appDataPath, outputPath, repos, variables) = CreateDocset(test, spec);
 
                 try
                 {
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
-                    RunCore(docsetPath, outputPath, test, spec);
+                    RunCore(docsetPath, outputPath, test, spec, variables);
                 }
                 catch (Exception exception)
                 {
@@ -96,20 +98,33 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos)
+        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName));
-            var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs"));
-            var markerPath = Path.Combine(basePath, "marker");
-            var appDataPath = Path.Combine(basePath, "appdata");
-            var cachePath = Path.Combine(appDataPath, "cache");
-            var statePath = Path.Combine(appDataPath, "state");
+            var basePath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
+            var outputPath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(basePath, "outputs")));
+            var markerPath = PathUtility.Normalize(Path.Combine(basePath, "marker"));
+            var appDataPath = PathUtility.Normalize(Path.Combine(basePath, "appdata"));
+            var cachePath = PathUtility.Normalize(Path.Combine(appDataPath, "cache"));
+            var statePath = PathUtility.Normalize(Path.Combine(appDataPath, "state"));
+
+            Directory.CreateDirectory(basePath);
+
+            var repos = spec.Repos
+                .Select(repo => new PackagePath(repo.Key).Url)
+                .Distinct()
+                .Select((remote, index) => (remote, index))
+                .ToDictionary(
+                    remote => remote.remote,
+                    remote => Path.Combine(basePath, "repos", remote.index.ToString()));
+
+            var docsetPath = PathUtility.Normalize(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
 
             var variables = new Dictionary<string, string>
             {
                 { "APP_BASE_PATH", AppContext.BaseDirectory },
+                { "DOCSET_PATH", docsetPath },
                 { "OUTPUT_PATH", outputPath },
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
@@ -126,18 +141,6 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
             }
 
-            Directory.CreateDirectory(basePath);
-
-            var repos = spec.Repos
-                .Select(repo => new PackagePath(repo.Key).Url)
-                .Distinct()
-                .Select((remote, index) => (remote, index))
-                .ToDictionary(
-                    remote => remote.remote,
-                    remote => Path.Combine(basePath, "repos", remote.index.ToString()));
-
-            var docsetPath = repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs");
-
             if (!File.Exists(markerPath))
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
@@ -153,12 +156,18 @@ namespace Microsoft.Docs.Build
                 File.WriteAllText(markerPath, "");
             }
 
-            return (docsetPath, appDataPath, outputPath, repos);
+            return (docsetPath, appDataPath, outputPath, repos, variables);
         }
 
-        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec)
+        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables)
         {
-            if (spec.Locale != null)
+            var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun");
+
+            if (spec.LanguageServer.Count != 0)
+            {
+                RunLanguageServer(spec, variables).GetAwaiter().GetResult();
+            }
+            else if (spec.Locale != null)
             {
                 // always build from localization docset for localization tests
                 // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
@@ -167,23 +176,42 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, test, spec);
+                    RunBuild(locDocsetPath, outputPath, dryRun, spec);
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, test, spec);
+                RunBuild(docsetPath, outputPath, dryRun, spec);
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec)
+        private static async Task RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
         {
-            var dryRun = test.Matrix.Contains("DryRun");
+            var lspTestHost = new LanguageServerTestHost(variables);
+
+            for (var i = 0; i < spec.LanguageServer.Count; i++)
+            {
+                var lspSpec = spec.LanguageServer[i];
+                if (!string.IsNullOrEmpty(lspSpec.Notification))
+                {
+                    await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
+                }
+                else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
+                {
+                    var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
+                    var actualNotification = await lspTestHost.GetExpectedNotification(expectedNotification.Method);
+                    s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
+                }
+            }
+        }
+
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec)
+        {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
 
-            using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.SkipInputCheck))
+            using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.NoInputCheck))
             {
                 var commandLine = new[]
                 {
@@ -193,19 +221,22 @@ namespace Microsoft.Docs.Build
                     dryRun ? "--dry-run" : null,
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
-                };
+                }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray());
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
-            var outputs = dryRun
-                ? new Dictionary<string, string> { [".errors.log"] = spec.Outputs[".errors.log"] }
+            var outputs = dryRun && spec.Outputs.TryGetValue(".errors.log", out var errors)
+                ? new Dictionary<string, string> { [".errors.log"] = errors }
                 : spec.Outputs;
 
             VerifyOutput(randomOutputPath, outputs);
 
-            Directory.Delete(randomOutputPath, recursive: true);
+            if (Directory.Exists(randomOutputPath))
+            {
+                Directory.Delete(randomOutputPath, recursive: true);
+            }
         }
 
         private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)
@@ -244,6 +275,15 @@ namespace Microsoft.Docs.Build
                 .UseLogFile(fileJsonDiff)
                 .UseHtml(IsHtml)
                 .Use(IsHtml, RemoveDataLinkType)
+                .Build();
+        }
+
+        private static JsonDiff CreateLanguageServerJsonDiff()
+        {
+            return new JsonDiffBuilder()
+                .UseAdditionalProperties()
+                .UseNegate()
+                .UseWildcard()
                 .Build();
         }
 

@@ -1,0 +1,54 @@
+# ContentNodes Validation - warning when use tabbed conceptaul
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude: 
+      b.md
+  rules.json: |
+    {
+      "contentnodes": {
+        "name": "ContentNodes",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "UseTabbedConceptual",
+            "message": "The tabbed conceptual syntax is deprecated and should not be added to this repository.",
+            "code": "tabbed-conceptual-not-allowed",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc",
+              "redirection",
+              "inclusion",
+              "conceptual"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # [a](#tab/win)
+    # h1 heading
+    ---
+    # h1 heading-2
+  b.md: |
+    # [a](#tab/linux)
+    # h1 heading
+    ---
+  c.yml: |
+    ### YamlMime:LearningPath
+    content: '[!include[](b.md)]'
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "properties": { 
+        "content": {"type":"string","contentType": "markdown"}
+      }
+    }
+outputs:
+  a.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"tabbed-conceptual-not-allowed","message":"The tabbed conceptual syntax is deprecated and should not be added to this repository.","file":"b.md","line":2}
+    {"message_severity":"suggestion","code":"tabbed-conceptual-not-allowed","message":"The tabbed conceptual syntax is deprecated and should not be added to this repository.","file":"b.md","line":3}

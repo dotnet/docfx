@@ -23,8 +23,7 @@ namespace Microsoft.Docs.Build
         // On a case insensitive system, cannot simply get the actual file casing:
         // https://github.com/dotnet/corefx/issues/1086
         // This lookup table stores a list of actual filenames.
-        private readonly HashSet<FilePath> _allFiles;
-        private readonly IReadOnlyDictionary<FilePath, ContentType> _files;
+        private readonly Watch<(HashSet<FilePath> allFiles, IReadOnlyDictionary<FilePath, ContentType> files)> _files;
 
         private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
                    = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)>();
@@ -32,7 +31,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
         /// </summary>
-        public IEnumerable<FilePath> Files => _files.Keys;
+        public IEnumerable<FilePath> Files => _files.Value.files.Keys;
 
         public BuildScope(Config config, Input input, BuildOptions buildOptions)
         {
@@ -44,17 +43,17 @@ namespace Microsoft.Docs.Build
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => PathUtility.Normalize(path.Value))
                 .ToHashSet(PathUtility.PathComparer);
 
-            (_allFiles, _files) = GlobFiles();
+            _files = Watcher.Create(GlobFiles);
         }
 
         public IEnumerable<FilePath> GetFiles(ContentType contentType)
         {
-            return from pair in _files where pair.Value == contentType select pair.Key;
+            return from pair in _files.Value.files where pair.Value == contentType select pair.Key;
         }
 
         public bool TryGetActualFilePath(FilePath path, [NotNullWhen(true)] out FilePath? actualPath)
         {
-            if (_allFiles.TryGetValue(path, out actualPath))
+            if (_files.Value.allFiles.TryGetValue(path, out actualPath))
             {
                 return true;
             }
@@ -107,13 +106,13 @@ namespace Microsoft.Docs.Build
 
             if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
             {
-                return ContentType.TableOfContents;
+                return ContentType.Toc;
             }
 
             return ContentType.Page;
         }
 
-        public bool Glob(PathString path)
+        public bool Contains(PathString path)
         {
             return MapPath(path).mapping != null;
         }
@@ -141,7 +140,7 @@ namespace Microsoft.Docs.Build
                 FileOrigin.Dependency when !_config.Dependencies[file.DependencyName].IncludeInBuild => true,
 
                 // Pages outside build scope, don't build the file, leave href as is
-                FileOrigin.Main => !_files.ContainsKey(file),
+                FileOrigin.Main => !_files.Value.files.ContainsKey(file),
                 _ => false,
             };
         }
@@ -165,7 +164,7 @@ namespace Microsoft.Docs.Build
 
                 Parallel.ForEach(allFiles, file =>
                 {
-                    if (Glob(file.Path))
+                    if (Contains(file.Path))
                     {
                         files.TryAdd(file, GetContentType(file));
                     }
@@ -183,7 +182,7 @@ namespace Microsoft.Docs.Build
                     {
                         Parallel.ForEach(depFiles, file =>
                         {
-                            if (Glob(file.Path))
+                            if (Contains(file.Path))
                             {
                                 files.TryAdd(file, GetContentType(file));
                             }
@@ -199,9 +198,7 @@ namespace Microsoft.Docs.Build
         {
             if (config.Content.Length == 0 && config.Resource.Length == 0)
             {
-                var glob = GlobUtility.CreateGlobMatcher(
-                    config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
-
+                var glob = GlobUtility.CreateGlobMatcher(config.Files, config.Exclude.Concat(Config.DefaultExclude).ToArray());
                 return new[] { (glob, new FileMappingConfig()) };
             }
 
@@ -215,9 +212,7 @@ namespace Microsoft.Docs.Build
         private static Func<string, bool>[] CreateResourceGlob(Config config)
         {
             return (from mapping in config.Resource
-                    select GlobUtility.CreateGlobMatcher(
-                        mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray()))
-                        .ToArray();
+                    select GlobUtility.CreateGlobMatcher(mapping.Files, mapping.Exclude.Concat(Config.DefaultExclude).ToArray())).ToArray();
         }
     }
 }

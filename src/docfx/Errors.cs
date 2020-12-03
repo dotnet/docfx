@@ -104,8 +104,8 @@ namespace Microsoft.Docs.Build
             /// Validation rule is not overridable in docfx config.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RuleOverrideInvalid(string code, SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.", source);
+            public static Error RuleOverrideInvalid(string code)
+                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.");
         }
 
         public static class Json
@@ -340,7 +340,7 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{path}' is still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
         }
 
-        public static class TableOfContents
+        public static class Toc
         {
             /// <summary>
             /// In yaml-format toc, topicHref SHOULD reference an article,
