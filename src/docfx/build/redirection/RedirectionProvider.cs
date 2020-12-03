@@ -279,15 +279,15 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
 
-                    var fullpath = Path.Combine(_buildOptions.Repository.Path, item);
+                    var fullPath = Path.Combine(_buildOptions.Repository.Path, item);
 
-                    if (!File.Exists(fullpath))
+                    if (!File.Exists(fullPath))
                     {
                         _errors.Add(Errors.Redirection.FileNotFound(item));
                     }
                     else
                     {
-                        yield return fullpath;
+                        yield return fullPath;
                     }
                 }
             }
