@@ -18,14 +18,13 @@ namespace Microsoft.Docs.Build
 
         public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
 
-        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+        public override IEnumerable<PathString> GetFiles(Func<string, bool>? fileNamePredicate = null)
         {
-            var directoryPath = _directory.Concat(new PathString(directory));
-            if (!Directory.Exists(directoryPath))
+            if (!Directory.Exists(_directory))
             {
-                throw Errors.Config.DirectoryNotFound(directoryPath).ToException();
+                throw Errors.Config.DirectoryNotFound(_directory).ToException();
             }
-            return PathUtility.GetFilesInDirectory(directoryPath, fileNamePredicate);
+            return PathUtility.GetFilesInDirectory(_directory, fileNamePredicate);
         }
 
         public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));

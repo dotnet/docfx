@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public abstract bool Exists(PathString path);
 
-        public abstract IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null);
+        public abstract IEnumerable<PathString> GetFiles(Func<string, bool>? fileNamePredicate = null);
 
         public abstract PathString GetFullFilePath(PathString path);
 
