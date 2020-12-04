@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
         }
 
+        public override PathString BasePath => throw new NotSupportedException();
+
         public override bool Exists(PathString path)
         {
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
@@ -28,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         public override PathString GetFullFilePath(PathString path) => throw new NotSupportedException();
 
-        public override DateTime GetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 

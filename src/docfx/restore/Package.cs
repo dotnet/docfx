@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal abstract class Package
     {
+        public abstract PathString BasePath { get; }
+
         public virtual Package CreateSubPackage(string relativePath) => new DirectoryPackage(this, new PathString(relativePath));
 
         public abstract bool Exists(PathString path);
@@ -17,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public abstract PathString GetFullFilePath(PathString path);
 
-        public abstract DateTime GetLastWriteTimeUtc(PathString path);
+        public abstract DateTime? TryGetLastWriteTimeUtc(PathString path);
 
         public abstract Stream ReadStream(PathString path);
 
@@ -30,16 +32,6 @@ namespace Microsoft.Docs.Build
         public TextReader ReadText(PathString path)
         {
             return new StreamReader(ReadStream(path));
-        }
-
-        public PathString? TryGetFullFilePath(PathString path)
-        {
-            var fullPath = GetFullFilePath(path);
-            if (Exists(fullPath))
-            {
-                return fullPath;
-            }
-            return null;
         }
 
         // TODO: Retire this method after abstracting git read operations in Package.

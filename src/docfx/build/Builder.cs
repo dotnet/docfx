@@ -15,14 +15,14 @@ namespace Microsoft.Docs.Build
         private readonly string _workingDirectory;
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
-        private readonly Package _docsetPackage;
+        private readonly Package _package;
 
-        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, Package docsetPackage)
+        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, Package package)
         {
             _workingDirectory = workingDirectory;
             _options = options;
             _errors = errors;
-            _docsetPackage = docsetPackage;
+            _package = package;
             _docsets = Watcher.Create(LoadDocsets);
         }
 
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
 
         private DocsetBuilder[] LoadDocsets()
         {
-            var docsets = ConfigLoader.FindDocsets(_errors, _workingDirectory, _docsetPackage, _options);
+            var docsets = ConfigLoader.FindDocsets(_errors, _package, _options);
             if (docsets.Length == 0)
             {
                 _errors.Add(Errors.Config.ConfigNotFound(_workingDirectory));
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
 
             return (from docset in docsets
                     let item = DocsetBuilder.Create(
-                        _errors, _workingDirectory, docset.docsetPath, docset.outputPath, _docsetPackage.CreateSubPackage(docset.docsetPath), _options)
+                        _errors, _workingDirectory, docset.docsetPath, docset.outputPath, _package.CreateSubPackage(docset.docsetPath), _options)
                     where item != null
                     select item).ToArray();
         }

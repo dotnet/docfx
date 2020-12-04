@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
             _package = package;
         }
 
+        public override PathString BasePath => _package.BasePath.Concat(_directory);
+
         public override Package CreateSubPackage(string relativePath)
             => _package.CreateSubPackage(_directory.Concat(new PathString(relativePath)));
 
@@ -29,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public override PathString GetFullFilePath(PathString path) => _package.GetFullFilePath(ApplyDirectory(path));
 
-        public override DateTime GetLastWriteTimeUtc(PathString path) => _package.GetLastWriteTimeUtc(ApplyDirectory(path));
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path) => _package.TryGetLastWriteTimeUtc(ApplyDirectory(path));
 
         public override Stream ReadStream(PathString path) => _package.ReadStream(_directory.Concat(path));
 

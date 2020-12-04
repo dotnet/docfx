@@ -53,9 +53,9 @@ namespace Microsoft.Docs.Build
 
         public IEnumerable<FilePath> GetFiles() => _state.Value.files;
 
-        public FilePath[] ResolveUrlConflicts(IEnumerable<FilePath> files)
+        public FilePath[] ResolveUrlConflicts(LogScope scope, IEnumerable<FilePath> files)
         {
-            return CreateUrlMap(files).files;
+            return CreateUrlMap(scope, files).files;
         }
 
         private string? GetCanonicalVersionCore(FilePath file)
@@ -81,20 +81,21 @@ namespace Microsoft.Docs.Build
 
         private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) Initialize()
         {
-            using (Progress.Start("Building publish url map"))
+            using (var scope = Progress.Start("Building publish url map"))
             {
                 return CreateUrlMap(
+                    scope,
                     _redirectionProvider.Files.Concat(
                     _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html)).Concat(
                     _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback)));
             }
         }
 
-        private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) CreateUrlMap(IEnumerable<FilePath> files)
+        private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) CreateUrlMap(LogScope scope, IEnumerable<FilePath> files)
         {
             var builder = new ListBuilder<PublishUrlMapItem>();
 
-            ParallelUtility.ForEach(_errors, files, file =>
+            ParallelUtility.ForEach(scope, _errors, files, file =>
             {
                 var siteUrl = _documentProvider.GetSiteUrl(file);
                 var outputPath = _documentProvider.GetOutputPath(file);

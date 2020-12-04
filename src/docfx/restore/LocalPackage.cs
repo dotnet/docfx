@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
             _directory = new PathString(Path.GetFullPath(directory));
         }
 
+        public override PathString BasePath => _directory;
+
         public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
@@ -30,8 +32,8 @@ namespace Microsoft.Docs.Build
 
         public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
 
-        public override DateTime GetLastWriteTimeUtc(PathString path)
-            => File.GetLastWriteTimeUtc(_directory.Concat(path));
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path)
+            => Exists(path) ? File.GetLastWriteTimeUtc(_directory.Concat(path)) : default;
 
         public override Stream ReadStream(PathString path) => File.OpenRead(_directory.Concat(path));
 

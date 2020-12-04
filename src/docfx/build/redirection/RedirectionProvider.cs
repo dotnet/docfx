@@ -173,10 +173,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var fullPath in ProbeSubRedirectionFiles())
             {
-                if (_docsetPackage.Exists(fullPath))
-                {
-                    GenerateRedirectionRules(fullPath, results);
-                }
+                GenerateRedirectionRules(fullPath, results);
             }
 
             return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
@@ -216,7 +213,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (!item.SourcePath.IsDefault && !item.SourcePathFromRoot.IsDefault)
                 {
-                    // TODO: "source_path" and "source_path_from_root" exist at the same time.
+                    _errors.Add(Errors.Redirection.SourcePathConflict(item.RedirectUrl));
                     continue;
                 }
 
@@ -224,12 +221,20 @@ namespace Microsoft.Docs.Build
 
                 if (!item.SourcePath.IsDefault)
                 {
-                    // TODO: syntax check
+                    if (item.SourcePath.Value.StartsWith("/"))
+                    {
+                        _errors.Add(Errors.Redirection.RedirectionPathSyntaxError(item.RedirectUrl));
+                        continue;
+                    }
                     sourcePath = Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(basedir, item.SourcePath));
                 }
                 else
                 {
-                    // TODO: syntax check
+                    if (!item.SourcePathFromRoot.Value.StartsWith("/"))
+                    {
+                        _errors.Add(Errors.Redirection.RedirectionPathSyntaxError(item.RedirectUrl));
+                        continue;
+                    }
                     var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value.Substring(1);
                     if (_buildOptions.Repository != null)
                     {
@@ -275,7 +280,17 @@ namespace Microsoft.Docs.Build
                     {
                         continue;
                     }
-                    yield return new PathString(Path.Combine(_buildOptions.Repository.Path, item));
+
+                    var fullPath = Path.Combine(_buildOptions.Repository.Path, item);
+
+                    if (!File.Exists(fullPath))
+                    {
+                        _errors.Add(Errors.Redirection.RedirectionFileNotFound(item));
+                    }
+                    else
+                    {
+                        yield return new PathString(fullPath);
+                    }
                 }
             }
         }

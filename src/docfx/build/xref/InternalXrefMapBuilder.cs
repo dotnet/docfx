@@ -41,9 +41,9 @@ namespace Microsoft.Docs.Build
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
-            using (Progress.Start("Building xref map"))
+            using (var scope = Progress.Start("Building xref map"))
             {
-                ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.Page), file => Load(_errors, builder, file));
+                ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Page), file => Load(_errors, builder, file));
             }
 
             var xrefmap =
