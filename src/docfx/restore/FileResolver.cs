@@ -25,20 +25,20 @@ namespace Microsoft.Docs.Build
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         });
 
-        private readonly string _docsetPath;
         private readonly Lazy<string?>? _fallbackDocsetPath;
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
+        private readonly Package _docsetPackage;
 
         public FileResolver(
-            string docsetPath,
+            Package docsetPackage,
             Lazy<string?>? fallbackDocsetPath = null,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
-            _docsetPath = docsetPath;
+            _docsetPackage = docsetPackage;
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                     return new MemoryStream(byteArray);
                 }
             }
-            return File.OpenRead(ResolveFilePath(file));
+            return _docsetPackage.ReadStream(new PathString(ResolveFilePath(file)));
         }
 
         public bool TryResolveFilePath(SourceInfo<string> file, out string? result)
@@ -100,14 +100,18 @@ namespace Microsoft.Docs.Build
 
             if (!UrlUtility.IsHttp(file))
             {
-                var localFilePath = Path.Combine(_docsetPath, file);
-                if (File.Exists(localFilePath))
+                var localFilePath = _docsetPackage.TryGetFullFilePath(new PathString(file));
+                if (localFilePath != null)
                 {
                     return localFilePath;
                 }
-                else if (_fallbackDocsetPath?.Value != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath.Value, file)))
+                else if (_fallbackDocsetPath?.Value != null)
                 {
-                    return localFilePath;
+                    localFilePath = _docsetPackage.TryGetFullFilePath(new PathString(Path.Combine(_fallbackDocsetPath.Value, file)));
+                    if (localFilePath != null)
+                    {
+                        return localFilePath;
+                    }
                 }
 
                 throw Errors.Link.FileNotFound(file).ToException();
@@ -140,8 +144,8 @@ namespace Microsoft.Docs.Build
 
             switch (_fetchOptions)
             {
-                case FetchOptions.UseCache when File.Exists(filePath):
-                case FetchOptions.NoFetch when File.Exists(filePath):
+                case FetchOptions.UseCache when _docsetPackage.Exists(filePath):
+                case FetchOptions.NoFetch when _docsetPackage.Exists(filePath):
                     return filePath;
 
                 case FetchOptions.NoFetch:
@@ -151,10 +155,10 @@ namespace Microsoft.Docs.Build
             var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);
 
-            var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
+            var etagContent = _docsetPackage.Exists(etagPath) ? _docsetPackage.ReadString(etagPath) : null;
             if (!string.IsNullOrEmpty(etagContent))
             {
-                existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
+                existingEtag = EntityTagHeaderValue.Parse(_docsetPackage.ReadString(etagPath));
             }
 
             var (tempFile, etag) = DownloadToTempFile(url, existingEtag).GetAwaiter().GetResult();
@@ -178,14 +182,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetRestorePathFromUrl(string url)
+        private static PathString GetRestorePathFromUrl(string url)
         {
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url)));
+            return new PathString(PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url))));
         }
 
-        private static string GetRestoreEtagPath(string url)
+        private static PathString GetRestoreEtagPath(string url)
         {
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag"));
+            return new PathString(PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag")));
         }
 
         private async Task<(string? filename, EntityTagHeaderValue? etag)> DownloadToTempFile(

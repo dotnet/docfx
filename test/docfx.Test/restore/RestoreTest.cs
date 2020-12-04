@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         public static void DownloadFile_Success()
         {
             Assert.NotNull(
-                new FileResolver(".").ReadString(
+                new FileResolver(new LocalPackage()).ReadString(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/README.md")));
         }
 
@@ -49,14 +49,14 @@ namespace Microsoft.Docs.Build
         public static void DownloadFile_NoFetch_Should_Fail()
         {
             Assert.Throws<DocfxException>(() =>
-                new FileResolver(".", fetchOptions: FetchOptions.NoFetch).Download(
+                new FileResolver(new LocalPackage(), fetchOptions: FetchOptions.NoFetch).Download(
                     new SourceInfo<string>("https://raw.githubusercontent.com/docascode/docfx-test-dependencies/master/dep.md")));
         }
 
         [Fact]
         public static void Download_Read_File_In_Parallel_Should_Succeed()
         {
-            var fileResolver = new FileResolver(".", fetchOptions: FetchOptions.Latest);
+            var fileResolver = new FileResolver(new LocalPackage(), fetchOptions: FetchOptions.Latest);
 
             Parallel.For(0, 10, i =>
             {

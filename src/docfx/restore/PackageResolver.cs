@@ -43,12 +43,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options)
+        public Package ResolveAsPackage(PackagePath package, Package docsetPackage, PackageFetchOptions options)
         {
             return package.Type switch
             {
                 PackageType.PublicTemplate => new PublicTemplatePackage(package.Url, _fileResolver),
-                _ => new LocalPackage(ResolvePackage(package, options)),
+                _ => docsetPackage.CreateSubPackage(ResolvePackage(package, options)),
             };
         }
 

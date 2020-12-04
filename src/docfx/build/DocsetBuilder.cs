@@ -62,10 +62,10 @@ namespace Microsoft.Docs.Build
             _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
             _errors = new ErrorLog(errors, _config, _sourceMap, _metadataProvider, () => Ensure(_customRuleProvider));
-            _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
+            _templateEngine = new TemplateEngine(_errors, _config, docsetPackage, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
             _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
-            _redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
+            _redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, docsetPackage, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
             _customRuleProvider = new CustomRuleProvider(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
         }
