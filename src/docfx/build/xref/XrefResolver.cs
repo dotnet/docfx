@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
-            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl)
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
             var (uid, query, fragment) = UrlUtility.SplitUrl(href);
 
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             queries.Remove("displayProperty");
 
             // need to url decode uid from input content
-            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot, absoluteUrl);
+            var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
             if (xrefError != null || xrefSpec is null || string.IsNullOrEmpty(resolvedHref))
             {
                 return (xrefError, null, alt ?? "", null);
@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null, bool absoluteUrl = false)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
             if (string.IsNullOrEmpty(uid))
             {
@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             }
 
             // need to url decode uid from input content
-            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, absoluteUrl, monikers);
+            var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (error != null || xrefSpec == null || href == null)
             {
                 return (error, null, "", null);
@@ -132,9 +132,9 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl, MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
         {
-            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers, absoluteUrl);
+            var (error, xrefSpec, href) = Resolve(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec == null)
             {
                 return (error, null, null);
@@ -268,9 +268,9 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error?, IXrefSpec?, string? href) Resolve(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers, bool absoluteUrl)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
         {
-            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers, absoluteUrl);
+            var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
             {
                 (xrefSpec, href) = ResolveExternalXrefSpec(uid);
@@ -307,7 +307,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
-            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers, bool absoluteUrl)
+            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
         {
             if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
             {
@@ -324,6 +324,9 @@ namespace Microsoft.Docs.Build
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
+                // Output absolute URL starting from Architecture and TSType
+                var mime = _documentProvider.GetMime(inclusionRoot);
+                var absoluteUrl = mime != null && new string[] { "Architecture", "TSType" }.Contains(mime!, StringComparer.OrdinalIgnoreCase);
                 var href = absoluteUrl ? spec.Href : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
             }

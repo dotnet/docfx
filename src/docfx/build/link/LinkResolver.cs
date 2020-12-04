@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -72,15 +73,19 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string link, FilePath? file) ResolveLink(
-            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl = false)
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
+
+            // Output absolute URL starting from Architecture and TSType
+            var mime = _documentProvider.GetMime(inclusionRoot);
+            var absoluteUrl = mime != null && new string[] { "Architecture", "TSType" }.Contains(mime!, StringComparer.OrdinalIgnoreCase);
+
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
                     new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
                     referencingFile,
-                    inclusionRoot,
-                    absoluteUrl);
+                    inclusionRoot);
 
                 return (xrefError, resolvedHref ?? href, declaringFile);
             }

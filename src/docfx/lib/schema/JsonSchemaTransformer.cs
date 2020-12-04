@@ -402,22 +402,18 @@ namespace Microsoft.Docs.Build
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
             var mime = _documentProvider.GetMime(file);
 
-            // Output absolute URL starting from Architecture and TSType
-            var absoluteUrl = mime != null && new string[] { "Architecture", "TSType" }.Contains(mime!, StringComparer.OrdinalIgnoreCase);
-
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
 
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file, absoluteUrl);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
                     return link;
 
                 case JsonSchemaContentType.Markdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    var pipelineType = absoluteUrl ? MarkdownPipelineType.MarkdownWithAbsoluteUrl : MarkdownPipelineType.Markdown;
-                    var html = _markdownEngine.ToHtml(errors, content, sourceInfo, pipelineType, null, rootSchema.ContentFallback);
+                    var html = _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
                     return html;
 
                 case JsonSchemaContentType.InlineMarkdown:
@@ -444,7 +440,7 @@ namespace Microsoft.Docs.Build
 
                     // the content here must be an UID, not href
                     var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                        content, file, file, absoluteUrl: absoluteUrl, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
+                        content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
 
                     errors.AddIfNotNull(xrefError);
 

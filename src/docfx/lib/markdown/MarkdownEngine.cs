@@ -77,7 +77,6 @@ namespace Microsoft.Docs.Build
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
-                CreateMarkdownAbsoluteUrlPipeline(),
                 CreateInlineMarkdownPipeline(),
                 CreateTocMarkdownPipeline(),
             };
@@ -171,24 +170,17 @@ namespace Microsoft.Docs.Build
             return sb.ToString();
         }
 
-        private MarkdownPipeline CreateMarkdownAbsoluteUrlPipeline()
-        {
-            return CreateMarkdownPipelineBuilder(GetXrefAbsoluteUrl, GetAbsoluteLink).Build();
-        }
-
         private MarkdownPipeline CreateMarkdownPipeline()
         {
-            return CreateMarkdownPipelineBuilder(GetXref, GetLink).Build();
+            return CreateMarkdownPipelineBuilder().Build();
         }
 
         private MarkdownPipeline CreateInlineMarkdownPipeline()
         {
-            return CreateMarkdownPipelineBuilder(GetXref, GetLink).UseInlineOnly().Build();
+            return CreateMarkdownPipelineBuilder().UseInlineOnly().Build();
         }
 
-        private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder(
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> getXref,
-            Func<SourceInfo<string>, string> getLink)
+        private MarkdownPipelineBuilder CreateMarkdownPipelineBuilder()
         {
             return new MarkdownPipelineBuilder()
                 .UseHeadingIdRewriter()
@@ -224,8 +216,8 @@ namespace Microsoft.Docs.Build
                 // Extensions after this line sees an expanded inclusion AST only once.
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
-                .UseXref(getXref)
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, getLink, GetImageLink, getXref)
+                .UseXref(GetXref)
+                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -353,38 +345,23 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private string GetAbsoluteLink(SourceInfo<string> href)
-            => GetLinkCore(href, true);
-
         private string GetLink(SourceInfo<string> href)
-            => GetLinkCore(href, false);
-
-        private string GetLinkCore(SourceInfo<string> href, bool absoluteUrl)
         {
             var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath(), absoluteUrl);
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
 
             return link;
         }
 
-        private (string? href, string display) GetXrefAbsoluteUrl(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
-            => GetXrefCore(href, uid, suppressXrefNotFound, true);
-
-        private (string? href, string display) GetXref(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
-            => GetXrefCore(href, uid, suppressXrefNotFound, false);
-
-        private (string? href, string display) GetXrefCore(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound, bool absoluteUrl)
+        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {
             var status = t_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
-                ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath(), absoluteUrl)
+                ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath())
                 : uid.HasValue
-                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), GetRootFilePath(), absoluteUrl: absoluteUrl)
+                    ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), GetRootFilePath())
                     : default;
 
             if (!suppressXrefNotFound)
