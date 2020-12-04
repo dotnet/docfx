@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
-            => Exists(path) ? File.GetLastWriteTimeUtc(_directory.Concat(path)) : null;
+            => Exists(path) ? File.GetLastWriteTimeUtc(_directory.Concat(path)) : default;
 
         public override Stream ReadStream(PathString path) => File.OpenRead(_directory.Concat(path));
 
