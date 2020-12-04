@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
             var stopwatch = Stopwatch.StartNew();
             using var errors = new ErrorWriter(options.Log);
 
-            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, new LocalPackage(workingDirectory), options);
+            var docsets = ConfigLoader.FindDocsets(errors, new LocalPackage(workingDirectory), options);
             if (docsets.Length == 0)
             {
                 errors.Add(Errors.Config.ConfigNotFound(workingDirectory));

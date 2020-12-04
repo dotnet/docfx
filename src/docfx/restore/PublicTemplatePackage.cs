@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
         }
 
+        public override PathString BasePath => throw new NotSupportedException();
+
         public override bool Exists(PathString path)
         {
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
