@@ -5,8 +5,6 @@ namespace Microsoft.Docs.Build
 {
     internal interface IFunction
     {
-        bool MayChange();
-
         bool HasChanged();
 
         void AddChild(IFunction child);

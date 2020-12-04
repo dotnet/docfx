@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 }
                 finally
                 {
-                    Watcher.EndFunctionScope();
+                    Watcher.EndFunctionScope(attachToParent: function.HasChildren);
                 }
             }
         }

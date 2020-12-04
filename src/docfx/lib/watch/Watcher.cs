@@ -65,13 +65,13 @@ namespace Microsoft.Docs.Build
             t_callstack.Value = stack.Push(function);
         }
 
-        internal static void EndFunctionScope()
+        internal static void EndFunctionScope(bool attachToParent = true)
         {
             var stack = t_callstack.Value;
             if (stack != null && !stack.IsEmpty)
             {
                 t_callstack.Value = stack = stack.Pop(out var child);
-                if (!stack.IsEmpty && child.MayChange())
+                if (attachToParent && !stack.IsEmpty)
                 {
                     stack.Peek().AddChild(child);
                 }
