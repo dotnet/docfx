@@ -7,7 +7,8 @@ trigger:
 pr:
 - v3
 variables:
-  dotnetVersion: 5.0.x
+  dotnetSdkVersion: 5.0.x
+  dotnetRuntimeVersion: 3.1.x
   runCodesignValidationInjection: false
 
 jobs:
@@ -18,12 +19,19 @@ jobs:
   condition: eq(variables['Build.Reason'], 'PullRequest')
   steps:
 
-  # Install .NET Core sdk
+  # Install .NET sdk
   - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    displayName: 'Install .NET SDK $(dotnetSdkVersion)'
     inputs:
       packageType: sdk
-      version: $(dotnetVersion)
+      version: $(dotnetSdkVersion)
+
+  # Install .NET runtime
+  - task: UseDotNet@2
+    displayName: 'Install .NET Runtime $(dotnetRuntimeVersion)'
+    inputs:
+      packageType: runtime
+      version: $(dotnetRuntimeVersion)
 
   - script: dotnet --info
 
