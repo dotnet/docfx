@@ -34,16 +34,6 @@ namespace Microsoft.Docs.Build
             return new StreamReader(ReadStream(path));
         }
 
-        public PathString? TryGetFullFilePath(PathString path)
-        {
-            var fullPath = GetFullFilePath(path);
-            if (Exists(fullPath))
-            {
-                return fullPath;
-            }
-            return null;
-        }
-
         // TODO: Retire this method after abstracting git read operations in Package.
         public virtual PathString? TryGetGitFilePath(PathString path) => null;
 
