@@ -47,11 +47,6 @@ namespace Microsoft.Docs.Build
         public string SiteUrl { get; }
 
         /// <summary>
-        /// Gets the output path.
-        /// </summary>
-        public string OutputPath { get; }
-
-        /// <summary>
         /// Gets the canonical URL
         /// </summary>
         public string CanonicalUrl { get; }
@@ -67,7 +62,6 @@ namespace Microsoft.Docs.Build
         public Document(
             string sitePath,
             string siteUrl,
-            string outputPath,
             string canonicalUrl,
             ContentType contentType,
             SourceInfo<string?> mime,
@@ -75,7 +69,6 @@ namespace Microsoft.Docs.Build
         {
             SitePath = sitePath;
             SiteUrl = siteUrl;
-            OutputPath = outputPath;
             CanonicalUrl = canonicalUrl;
             ContentType = contentType;
             Mime = mime;

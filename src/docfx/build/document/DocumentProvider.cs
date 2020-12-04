@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
 
-        private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new ConcurrentDictionary<FilePath, Watch<Document>>();
+        private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
 
         // mime -> page type. TODO get from docs-ui schema
         private static readonly Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
@@ -66,19 +66,75 @@ namespace Microsoft.Docs.Build
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
-        public SourceInfo<string?> GetMime(FilePath path) => GetDocument(path).Mime;
+        public SourceInfo<string?> GetMime(FilePath path)
+        {
+            return GetDocument(path).Mime;
+        }
 
-        public ContentType GetContentType(FilePath path) => GetDocument(path).ContentType;
+        public ContentType GetContentType(FilePath path)
+        {
+            return GetDocument(path).ContentType;
+        }
 
-        public string GetOutputPath(FilePath path) => GetDocument(path).OutputPath;
+        public string GetOutputPath(FilePath path)
+        {
+            var file = GetDocument(path);
+            var outputPath = file.SitePath;
 
-        public string GetSiteUrl(FilePath path) => GetDocument(path).SiteUrl;
+            switch (file.ContentType)
+            {
+                case ContentType.Page:
+                case ContentType.Redirection:
+                    var fileExtension = _config.OutputType switch
+                    {
+                        OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
+                        OutputType.Json => ".json",
+                        OutputType.PageJson => file.RenderType == RenderType.Content ? ".raw.page.json" : ".json",
+                        _ => throw new NotSupportedException(),
+                    };
+                    outputPath = Path.ChangeExtension(outputPath, fileExtension);
+                    break;
 
-        public string GetSitePath(FilePath path) => GetDocument(path).SitePath;
+                case ContentType.Toc:
+                    var tocExtension = _config.OutputType switch
+                    {
+                        OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
+                        OutputType.Json => ".json",
+                        OutputType.PageJson => ".json",
+                        _ => throw new NotSupportedException(),
+                    };
+                    outputPath = Path.ChangeExtension(outputPath, tocExtension);
+                    break;
+            }
 
-        public string GetCanonicalUrl(FilePath path) => GetDocument(path).CanonicalUrl;
+            if (_config.UrlType == UrlType.Docs)
+            {
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
+                outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
+            }
 
-        public RenderType GetRenderType(FilePath path) => GetDocument(path).RenderType;
+            return UrlUtility.Combine(_config.BasePath, outputPath);
+        }
+
+        public string GetSiteUrl(FilePath path)
+        {
+            return GetDocument(path).SiteUrl;
+        }
+
+        public string GetSitePath(FilePath path)
+        {
+            return GetDocument(path).SitePath;
+        }
+
+        public string GetCanonicalUrl(FilePath path)
+        {
+            return GetDocument(path).CanonicalUrl;
+        }
+
+        public RenderType GetRenderType(FilePath path)
+        {
+            return GetDocument(path).RenderType;
+        }
 
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
         public string GetDocsSiteUrl(FilePath path)
@@ -151,7 +207,7 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocument(FilePath path)
         {
-            return _documents.GetOrAdd(path, key => Watcher.Create(() => GetDocumentCore(key))).Value;
+            return _documents.GetOrAdd(path, GetDocumentCore);
         }
 
         private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)
@@ -177,9 +233,8 @@ namespace Microsoft.Docs.Build
             var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, renderType);
-            var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
-            return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
+            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, renderType);
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, RenderType renderType)
@@ -286,45 +341,6 @@ namespace Microsoft.Docs.Build
                 }
             }
             return path;
-        }
-
-        private string GetOutputPath(FilePath path, string sitePath, ContentType contentType, RenderType renderType)
-        {
-            var outputPath = sitePath;
-
-            switch (contentType)
-            {
-                case ContentType.Page:
-                case ContentType.Redirection:
-                    var fileExtension = _config.OutputType switch
-                    {
-                        OutputType.Html => renderType == RenderType.Content ? ".html" : ".json",
-                        OutputType.Json => ".json",
-                        OutputType.PageJson => renderType == RenderType.Content ? ".raw.page.json" : ".json",
-                        _ => throw new NotSupportedException(),
-                    };
-                    outputPath = Path.ChangeExtension(outputPath, fileExtension);
-                    break;
-
-                case ContentType.Toc:
-                    var tocExtension = _config.OutputType switch
-                    {
-                        OutputType.Html => renderType == RenderType.Content ? ".html" : ".json",
-                        OutputType.Json => ".json",
-                        OutputType.PageJson => ".json",
-                        _ => throw new NotSupportedException(),
-                    };
-                    outputPath = Path.ChangeExtension(outputPath, tocExtension);
-                    break;
-            }
-
-            if (_config.UrlType == UrlType.Docs)
-            {
-                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
-                outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
-            }
-
-            return UrlUtility.Combine(_config.BasePath, outputPath);
         }
     }
 }

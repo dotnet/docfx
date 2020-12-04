@@ -8,8 +8,6 @@ namespace Microsoft.Docs.Build
 {
     internal class PublishUrlMapItem : IEquatable<PublishUrlMapItem>, IComparable<PublishUrlMapItem>
     {
-        private readonly int _hashCode;
-
         public string Url { get; }
 
         public string OutputPath { get; }
@@ -24,7 +22,6 @@ namespace Microsoft.Docs.Build
             OutputPath = outputPath;
             Monikers = monikers;
             SourcePath = sourcePath;
-            _hashCode = PathUtility.PathComparer.GetHashCode(Url);
         }
 
         public int CompareTo(PublishUrlMapItem? other)
@@ -56,8 +53,14 @@ namespace Microsoft.Docs.Build
             return PathUtility.PathComparer.Compare(Url, other.Url) == 0 && Monikers.Intersects(other.Monikers);
         }
 
-        public override bool Equals(object? obj) => Equals(obj as PublishUrlMapItem);
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as PublishUrlMapItem);
+        }
 
-        public override int GetHashCode() => _hashCode;
+        public override int GetHashCode()
+        {
+            return PathUtility.PathComparer.GetHashCode(Url);
+        }
     }
 }
