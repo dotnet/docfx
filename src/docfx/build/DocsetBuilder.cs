@@ -44,7 +44,8 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             FileResolver fileResolver,
             OpsAccessor opsAccessor,
-            RepositoryProvider repositoryProvider)
+            RepositoryProvider repositoryProvider,
+            Package docsetPackage)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -53,7 +54,7 @@ namespace Microsoft.Docs.Build
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
             _sourceMap = new SourceMap(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
-            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap);
+            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, docsetPackage);
             _buildScope = new BuildScope(_config, _input, _buildOptions);
             _githubAccessor = new GitHubAccessor(_config);
             _microsoftGraphAccessor = new MicrosoftGraphAccessor(_config);
@@ -69,7 +70,13 @@ namespace Microsoft.Docs.Build
             _customRuleProvider = new CustomRuleProvider(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
         }
 
-        public static DocsetBuilder? Create(ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options)
+        public static DocsetBuilder? Create(
+            ErrorBuilder errors,
+            string workingDirectory,
+            string docsetPath,
+            string? outputPath,
+            Package package,
+            CommandLineOptions options)
         {
             errors = errors.WithDocsetPath(workingDirectory, docsetPath);
 
@@ -77,7 +84,7 @@ namespace Microsoft.Docs.Build
             {
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errors, docsetPath, outputPath, options, fetchOptions);
+                    errors, docsetPath, outputPath, options, fetchOptions, package);
 
                 if (errors.HasError)
                 {
@@ -97,7 +104,7 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errors, buildOptions, repositoryProvider).Run();
 
-                return new DocsetBuilder(errors, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider);
+                return new DocsetBuilder(errors, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

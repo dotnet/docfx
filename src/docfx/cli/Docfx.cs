@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                     options.StdinConfig = JsonUtility.DeserializeData<JObject>(Console.ReadLine(), new FilePath("--stdin"));
                 }
 
-                return (command, workingDirectory, options);
+                return (command, Path.GetFullPath(workingDirectory), options);
             }
             catch (ArgumentSyntaxException ex)
             {
