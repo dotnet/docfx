@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             OpsAccessor opsAccessor,
             RepositoryProvider repositoryProvider,
-            Package docsetPackage)
+            Package package)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
             _sourceMap = new SourceMap(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
-            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, docsetPackage);
+            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
             _buildScope = new BuildScope(_config, _input, _buildOptions);
             _githubAccessor = new GitHubAccessor(_config);
             _microsoftGraphAccessor = new MicrosoftGraphAccessor(_config);

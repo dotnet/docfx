@@ -12,22 +12,22 @@ namespace Microsoft.Docs.Build
 {
     internal static class ConfigLoader
     {
-        public static (string docsetPath, string? outputPath)[] FindDocsets(ErrorBuilder errors, Package docsetPackage, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(ErrorBuilder errors, Package package, CommandLineOptions options)
         {
-            var glob = FindDocsetsGlob(errors, docsetPackage);
+            var glob = FindDocsetsGlob(errors, package);
             if (glob is null)
             {
-                return new[] { (docsetPackage.BasePath.Value, options.Output) };
+                return new[] { (package.BasePath.Value, options.Output) };
             }
 
-            var files = docsetPackage.GetFiles(
+            var files = package.GetFiles(
                 fileNamePredicate: (string fileName) => fileName.Equals("docfx.json", StringComparison.OrdinalIgnoreCase)
                 || fileName.Equals("docfx.yml", StringComparison.OrdinalIgnoreCase));
 
             return (
                 from file in files
                 where glob(file)
-                let fullPath = docsetPackage.GetFullFilePath(file)
+                let fullPath = package.GetFullFilePath(file)
                 let docsetPath = Path.GetDirectoryName(fullPath)
                 let docsetFolder = Path.GetDirectoryName(file)
                 let outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder)
@@ -38,16 +38,16 @@ namespace Microsoft.Docs.Build
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
-            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package docsetPackage)
+            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package package)
         {
             // load and trace entry repository
-            var repository = Repository.Create(docsetPackage.BasePath);
+            var repository = Repository.Create(package.BasePath);
             Telemetry.SetRepository(repository?.Url, repository?.Branch);
 
-            var docfxConfig = LoadConfig(errors, docsetPackage);
+            var docfxConfig = LoadConfig(errors, package);
             if (docfxConfig is null)
             {
-                throw Errors.Config.ConfigNotFound(docsetPackage.BasePath).ToException();
+                throw Errors.Config.ConfigNotFound(package.BasePath).ToException();
             }
 
             var unionProperties = new string[] { "xref" };
@@ -56,9 +56,9 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, docsetPackage);
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, package);
 
-            var globalConfig = LoadConfig(errors, docsetPackage, AppData.Root);
+            var globalConfig = LoadConfig(errors, package, AppData.Root);
 
             // Preload
             var preloadConfigObject = new JObject();
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 
-            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, docsetPackage);
+            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, package);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
 
             // Create full config
