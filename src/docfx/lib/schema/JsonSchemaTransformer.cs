@@ -400,7 +400,6 @@ namespace Microsoft.Docs.Build
 
             var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
             var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
-            var mime = _documentProvider.GetMime(file);
 
             switch (schema.ContentType)
             {
