@@ -71,16 +71,20 @@ namespace Microsoft.Docs.Build
 
         private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)
         {
-            ParallelUtility.ForEach(errors, config.GetFileReferences(), fileResolver.Download);
+            using var scope = Progress.Start("Restoring files");
+            ParallelUtility.ForEach(scope, errors, config.GetFileReferences(), fileResolver.Download);
         }
 
         private static void RestorePackages(ErrorBuilder errors, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
-            ParallelUtility.ForEach(
-                errors,
-                GetPackages(config).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags));
-
+            using (var scope = Progress.Start("Restoring packages"))
+            {
+                ParallelUtility.ForEach(
+                    scope,
+                    errors,
+                    GetPackages(config).Distinct(),
+                    item => packageResolver.DownloadPackage(item.package, item.flags));
+            }
             LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
         }
 
