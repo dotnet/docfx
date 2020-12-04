@@ -107,6 +107,18 @@ namespace Microsoft.Docs.Build
             return package.TryGetPhysicalPath(path);
         }
 
+        public DateTime GetLastWriteTimeUtc(FilePath file)
+        {
+            if (file.IsGitCommit || file.Origin == FileOrigin.Generated)
+            {
+                return default;
+            }
+
+            var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
+
+            return package.TryGetLastWriteTimeUtc(path) ?? default;
+        }
+
         /// <summary>
         /// Reads the specified file as a string.
         /// </summary>

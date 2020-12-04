@@ -2,13 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
-    internal static partial class Progress
+    internal static class Progress
     {
         public const int ProgressDelayMs = 2000;
 

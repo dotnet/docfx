@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public abstract PathString GetFullFilePath(PathString path);
 
-        public abstract DateTime GetLastWriteTimeUtc(PathString path);
+        public abstract DateTime? TryGetLastWriteTimeUtc(PathString path);
 
         public abstract Stream ReadStream(PathString path);
 
