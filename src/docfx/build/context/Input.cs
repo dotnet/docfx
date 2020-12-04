@@ -38,13 +38,13 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             RepositoryProvider repositoryProvider,
             SourceMap sourceMap,
-            Package docsetPackage)
+            Package package)
         {
             _config = config;
             _sourceMap = sourceMap;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            _mainPackage = docsetPackage;
+            _mainPackage = package;
 
             if (buildOptions.FallbackDocsetPath != null)
             {

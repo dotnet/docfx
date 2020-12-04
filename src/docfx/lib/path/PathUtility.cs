@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Finds a yaml or json file under the specified location
         /// </summary>
-        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string directory, string fileNameWithoutExtension, Package package) where T : class, new()
+        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string fileNameWithoutExtension, Package package, string directory = ".") where T : class, new()
         {
             var fileName = fileNameWithoutExtension + ".yml";
             var fullPath = new PathString(Path.Combine(directory, fileName));

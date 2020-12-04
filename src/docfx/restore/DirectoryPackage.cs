@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
             _package = package;
         }
 
+        public override PathString BasePath => _package.BasePath.Concat(_directory);
+
         public override Package CreateSubPackage(string relativePath)
             => _package.CreateSubPackage(_directory.Concat(new PathString(relativePath)));
 

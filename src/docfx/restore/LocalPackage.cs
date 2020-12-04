@@ -16,6 +16,8 @@ namespace Microsoft.Docs.Build
             _directory = new PathString(Path.GetFullPath(directory));
         }
 
+        public override PathString BasePath => _directory;
+
         public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
