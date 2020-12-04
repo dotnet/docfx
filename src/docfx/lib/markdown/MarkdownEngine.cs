@@ -354,8 +354,7 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private (string? href, string display) GetXref(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {
             var status = t_status.Value!.Peek();
 
