@@ -9,23 +9,14 @@ namespace Microsoft.Docs.Build
 {
     internal class LocalPackage : Package
     {
-        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
-        private static int s_v;
-
         private readonly PathString _directory;
 
-        public LocalPackage(string directory = ".") => _directory = new PathString(Path.GetFullPath(directory));
-
-        public override bool Exists(PathString path) => Watcher.Watch(() => File.Exists(Path.Combine(_directory, path)));
-
-        public override Stream ReadStream(PathString path)
+        public LocalPackage(string directory = ".")
         {
-            var fullpath = Path.Combine(_directory, path);
-
-            Watcher.Watch(() => fullpath.EndsWith("troubleshoot-guide.md") ? s_v++ : 0);
-
-            return File.OpenRead(fullpath);
+            _directory = new PathString(Path.GetFullPath(directory));
         }
+
+        public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
         {
@@ -41,6 +32,8 @@ namespace Microsoft.Docs.Build
 
         public override DateTime GetLastWriteTimeUtc(PathString path)
             => File.GetLastWriteTimeUtc(_directory.Concat(path));
+
+        public override Stream ReadStream(PathString path) => File.OpenRead(_directory.Concat(path));
 
         public override PathString? TryGetGitFilePath(PathString path) => _directory.Concat(path);
 
