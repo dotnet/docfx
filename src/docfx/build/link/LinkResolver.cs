@@ -75,11 +75,6 @@ namespace Microsoft.Docs.Build
         public (Error? error, string link, FilePath? file) ResolveLink(
             SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
-
-            // Output absolute URL starting from Architecture and TSType
-            var mime = _documentProvider.GetMime(inclusionRoot);
-            var absoluteUrl = mime != null && new string[] { "Architecture", "TSType" }.Contains(mime!, StringComparer.OrdinalIgnoreCase);
-
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
@@ -109,7 +104,7 @@ namespace Microsoft.Docs.Build
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
-            if (file != null && !absoluteUrl)
+            if (file != null && !TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
             {
                 link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }

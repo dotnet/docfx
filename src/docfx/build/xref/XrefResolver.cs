@@ -325,9 +325,9 @@ namespace Microsoft.Docs.Build
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
                 // Output absolute URL starting from Architecture and TSType
-                var mime = _documentProvider.GetMime(inclusionRoot);
-                var absoluteUrl = mime != null && new string[] { "Architecture", "TSType" }.Contains(mime!, StringComparer.OrdinalIgnoreCase);
-                var href = absoluteUrl ? spec.Href : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
+                var href = TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
+                    ? spec.Href
+                    : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
             }
             return default;
