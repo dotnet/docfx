@@ -75,14 +75,5 @@ namespace Microsoft.Docs.Build
 
             return !string.IsNullOrEmpty(bestMatch);
         }
-
-        public static byte[] ToBytes(this Stream stream)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
     }
 }

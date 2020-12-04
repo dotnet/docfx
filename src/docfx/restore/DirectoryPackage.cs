@@ -33,6 +33,8 @@ namespace Microsoft.Docs.Build
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path) => _package.TryGetLastWriteTimeUtc(ApplyDirectory(path));
 
+        public override byte[] ReadAllBytes(PathString path) => _package.ReadAllBytes(_directory.Concat(path));
+
         public override Stream ReadStream(PathString path) => _package.ReadStream(_directory.Concat(path));
 
         public override PathString? TryGetPhysicalPath(PathString path) => _package.TryGetPhysicalPath(ApplyDirectory(path));

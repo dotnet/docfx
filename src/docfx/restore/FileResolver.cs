@@ -63,6 +63,20 @@ namespace Microsoft.Docs.Build
             return reader.ReadToEnd();
         }
 
+        public byte[] ReadAllBytes(SourceInfo<string> file)
+        {
+            if (UrlUtility.IsHttp(file))
+            {
+                var content = TestQuirks.HttpProxy?.Invoke(file);
+                if (content != null)
+                {
+                    return Encoding.ASCII.GetBytes(content);
+                }
+                return File.ReadAllBytes(ResolveFilePath(file));
+            }
+            return _package.ReadAllBytes(new PathString(ResolveFilePath(file)));
+        }
+
         public Stream ReadStream(SourceInfo<string> file)
         {
             if (UrlUtility.IsHttp(file))

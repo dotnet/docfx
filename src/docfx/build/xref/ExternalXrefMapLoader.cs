@@ -33,11 +33,7 @@ namespace Microsoft.Docs.Build
                     xrefSpecs,
                     externalXrefs,
                     fileResolver.ResolveFilePath(url),
-                    () =>
-                    {
-                        using var fileStream = fileResolver.ReadStream(url);
-                        return fileStream.ToBytes();
-                    },
+                    () => fileResolver.ReadAllBytes(url),
                     () => fileResolver.ReadStream(url));
 
         internal static ExternalXrefMap LoadJsonFile(Dictionary<string, Lazy<ExternalXrefSpec>> xrefSpecs, List<ExternalXref> externalXrefs, string filePath)
