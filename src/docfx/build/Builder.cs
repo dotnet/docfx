@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
 
         private DocsetBuilder[] LoadDocsets()
         {
-            var docsets = ConfigLoader.FindDocsets(_errors, _workingDirectory, _docsetPackage, _options);
+            var docsets = ConfigLoader.FindDocsets(_errors, _docsetPackage, _options);
             if (docsets.Length == 0)
             {
                 _errors.Add(Errors.Config.ConfigNotFound(_workingDirectory));

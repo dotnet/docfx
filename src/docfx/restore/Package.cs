@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal abstract class Package
     {
+        public abstract PathString BasePath { get; }
+
         public virtual Package CreateSubPackage(string relativePath) => new DirectoryPackage(this, new PathString(relativePath));
 
         public abstract bool Exists(PathString path);
