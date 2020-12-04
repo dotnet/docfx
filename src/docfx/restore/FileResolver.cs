@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
                     var byteArray = Encoding.ASCII.GetBytes(content);
                     return new MemoryStream(byteArray);
                 }
+                return File.OpenRead(ResolveFilePath(file));
             }
             return _package.ReadStream(new PathString(ResolveFilePath(file)));
         }
@@ -144,8 +145,8 @@ namespace Microsoft.Docs.Build
 
             switch (_fetchOptions)
             {
-                case FetchOptions.UseCache when _package.Exists(filePath):
-                case FetchOptions.NoFetch when _package.Exists(filePath):
+                case FetchOptions.UseCache when File.Exists(filePath):
+                case FetchOptions.NoFetch when File.Exists(filePath):
                     return filePath;
 
                 case FetchOptions.NoFetch:
@@ -155,10 +156,10 @@ namespace Microsoft.Docs.Build
             var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);
 
-            var etagContent = _package.Exists(etagPath) ? _package.ReadString(etagPath) : null;
+            var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
             if (!string.IsNullOrEmpty(etagContent))
             {
-                existingEtag = EntityTagHeaderValue.Parse(_package.ReadString(etagPath));
+                existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
             }
 
             var (tempFile, etag) = DownloadToTempFile(url, existingEtag).GetAwaiter().GetResult();

@@ -43,12 +43,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Package ResolveAsPackage(PackagePath packagePath, Package package, PackageFetchOptions options)
+        public Package ResolveAsPackage(PackagePath packagePath, PackageFetchOptions options)
         {
+            // TODO: support resolve a non-local package
             return packagePath.Type switch
             {
                 PackageType.PublicTemplate => new PublicTemplatePackage(packagePath.Url, _fileResolver),
-                _ => package.CreateSubPackage(ResolvePackage(packagePath, options)),
+                _ => new LocalPackage(ResolvePackage(packagePath, options)),
             };
         }
 

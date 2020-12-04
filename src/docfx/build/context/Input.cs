@@ -206,7 +206,7 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Dependency when dependencyName != null:
                     var packagePath = _config.Dependencies[dependencyName.Value];
-                    var package = _packageResolver.ResolveAsPackage(packagePath, _mainPackage, packagePath.PackageFetchOptions);
+                    var package = _packageResolver.ResolveAsPackage(packagePath, packagePath.PackageFetchOptions);
 
                     return (
                         from file in package.GetFiles()
@@ -281,7 +281,7 @@ namespace Microsoft.Docs.Build
 
                 case FileOrigin.Dependency:
                     var packagePath = _config.Dependencies[file.DependencyName];
-                    var package = _packageResolver.ResolveAsPackage(packagePath, _mainPackage, packagePath.PackageFetchOptions);
+                    var package = _packageResolver.ResolveAsPackage(packagePath, packagePath.PackageFetchOptions);
                     var pathToPackage = new PathString(Path.GetRelativePath(file.DependencyName, file.Path));
                     Debug.Assert(!pathToPackage.Value.StartsWith('.'));
                     return (package, pathToPackage);
