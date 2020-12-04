@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
 
         private void GenerateRedirectionRules(string fullPath, List<RedirectionItem> results)
         {
-            var content = _docsetPackage.ReadString(fullPath)
+            var content = _docsetPackage.ReadString(new PathString(fullPath));
             var filePath = new FilePath(Path.GetRelativePath(_buildOptions.DocsetPath, fullPath));
             var model = fullPath.EndsWith(".yml")
                 ? YamlUtility.Deserialize<RedirectionModel>(_errors, content, filePath)
