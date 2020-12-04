@@ -809,7 +809,7 @@ repos:
       a/docfx.yml:
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.json' registered in .openpublishing.publish.json is not found in the repo."}
+    {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.json' registered in .openpublishing.publish.json is not found in the repo."}
 ---
 # source_path and source_path_from_root exist at the same time
 repos:

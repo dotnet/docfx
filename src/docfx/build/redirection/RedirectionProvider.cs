@@ -283,7 +283,7 @@ namespace Microsoft.Docs.Build
 
                     if (!File.Exists(fullPath))
                     {
-                        _errors.Add(Errors.Redirection.FileNotFound(item));
+                        _errors.Add(Errors.Redirection.RedirectionFileNotFound(item));
                     }
                     else
                     {
