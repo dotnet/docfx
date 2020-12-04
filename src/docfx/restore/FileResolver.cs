@@ -184,12 +184,12 @@ namespace Microsoft.Docs.Build
 
         private static PathString GetRestorePathFromUrl(string url)
         {
-            return new PathString(PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url))));
+            return new PathString(Path.Combine(AppData.GetFileDownloadPath(url)));
         }
 
         private static PathString GetRestoreEtagPath(string url)
         {
-            return new PathString(PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag")));
+            return new PathString(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag"));
         }
 
         private async Task<(string? filename, EntityTagHeaderValue? etag)> DownloadToTempFile(
