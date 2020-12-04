@@ -29,16 +29,16 @@ namespace Microsoft.Docs.Build
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
-        private readonly Package _docsetPackage;
+        private readonly Package _package;
 
         public FileResolver(
-            Package docsetPackage,
+            Package package,
             Lazy<string?>? fallbackDocsetPath = null,
             Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
-            _docsetPackage = docsetPackage;
+            _package = package;
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                     return new MemoryStream(byteArray);
                 }
             }
-            return _docsetPackage.ReadStream(new PathString(ResolveFilePath(file)));
+            return _package.ReadStream(new PathString(ResolveFilePath(file)));
         }
 
         public bool TryResolveFilePath(SourceInfo<string> file, out string? result)
@@ -100,14 +100,14 @@ namespace Microsoft.Docs.Build
 
             if (!UrlUtility.IsHttp(file))
             {
-                var localFilePath = _docsetPackage.TryGetFullFilePath(new PathString(file));
+                var localFilePath = _package.TryGetFullFilePath(new PathString(file));
                 if (localFilePath != null)
                 {
                     return localFilePath;
                 }
                 else if (_fallbackDocsetPath?.Value != null)
                 {
-                    localFilePath = _docsetPackage.TryGetFullFilePath(new PathString(Path.Combine(_fallbackDocsetPath.Value, file)));
+                    localFilePath = _package.TryGetFullFilePath(new PathString(Path.Combine(_fallbackDocsetPath.Value, file)));
                     if (localFilePath != null)
                     {
                         return localFilePath;
@@ -144,8 +144,8 @@ namespace Microsoft.Docs.Build
 
             switch (_fetchOptions)
             {
-                case FetchOptions.UseCache when _docsetPackage.Exists(filePath):
-                case FetchOptions.NoFetch when _docsetPackage.Exists(filePath):
+                case FetchOptions.UseCache when _package.Exists(filePath):
+                case FetchOptions.NoFetch when _package.Exists(filePath):
                     return filePath;
 
                 case FetchOptions.NoFetch:
@@ -155,10 +155,10 @@ namespace Microsoft.Docs.Build
             var etagPath = GetRestoreEtagPath(url);
             var existingEtag = default(EntityTagHeaderValue);
 
-            var etagContent = _docsetPackage.Exists(etagPath) ? _docsetPackage.ReadString(etagPath) : null;
+            var etagContent = _package.Exists(etagPath) ? _package.ReadString(etagPath) : null;
             if (!string.IsNullOrEmpty(etagContent))
             {
-                existingEtag = EntityTagHeaderValue.Parse(_docsetPackage.ReadString(etagPath));
+                existingEtag = EntityTagHeaderValue.Parse(_package.ReadString(etagPath));
             }
 
             var (tempFile, etag) = DownloadToTempFile(url, existingEtag).GetAwaiter().GetResult();
