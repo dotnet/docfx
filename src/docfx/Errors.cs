@@ -338,6 +338,27 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error RedirectedFileNotRemoved(FilePath path)
                 => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{path}' is still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
+
+            /// <summary>
+            /// A redirection file registered in .openpublishing.publish.json is not found in the repo.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectionFileNotFound(string path)
+                => new Error(ErrorLevel.Error, "redirection-file-not-found", $"Redirection file '{path}' registered in .openpublishing.publish.json is not found in the repo.");
+
+            /// <summary>
+            /// A redirection item cannot contain ‘source_path’ and ‘source_path_from_root’ at the same time.
+            /// </summary>
+            /// /// Behavior: ✔️ Message: ✔️
+            public static Error SourcePathConflict(SourceInfo<string> source)
+                => new Error(ErrorLevel.Error, "source-path-conflict", $"A redirection item cannot contain 'source_path' and 'source_path_from_root' at the same time.", source);
+
+            /// <summary>
+            /// Check redirection source path syntax.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
         }
 
         public static class Toc

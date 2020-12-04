@@ -4,60 +4,49 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Enumeration;
 
 namespace Microsoft.Docs.Build
 {
     internal class LocalPackage : Package
     {
-        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
+        private readonly PathString _directory;
 
-        private readonly string _directory;
-
-        public LocalPackage(string directory = ".") => _directory = Path.GetFullPath(directory);
-
-        public override bool Exists(PathString path) => File.Exists(Path.Combine(_directory, path));
-
-        public override Stream ReadStream(PathString path) => File.OpenRead(Path.Combine(_directory, path));
-
-        public override IEnumerable<PathString> GetFiles()
+        public LocalPackage(string directory = ".")
         {
-            if (!Directory.Exists(_directory))
-            {
-                throw Errors.Config.DirectoryNotFound(_directory).ToException();
-            }
-
-            return new FileSystemEnumerable<PathString>(_directory, ToPathString, s_enumerationOptions)
-            {
-                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
-                ShouldRecursePredicate =
-                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
-            };
-
-            static PathString ToPathString(ref FileSystemEntry entry)
-            {
-                var result = entry.RootDirectory.Length == entry.Directory.Length
-                    ? entry.FileName.ToString()
-                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
-
-                return PathString.DangerousCreate(result);
-            }
+            _directory = new PathString(Path.GetFullPath(directory));
         }
+
+        public override PathString BasePath => _directory;
+
+        public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
+
+        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+        {
+            var directoryPath = _directory.Concat(new PathString(directory));
+            if (!Directory.Exists(directoryPath))
+            {
+                throw Errors.Config.DirectoryNotFound(directoryPath).ToException();
+            }
+            return PathUtility.GetFilesInDirectory(directoryPath, fileNamePredicate);
+        }
+
+        public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
+
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path)
+            => Exists(path) ? File.GetLastWriteTimeUtc(_directory.Concat(path)) : default;
+
+        public override Stream ReadStream(PathString path) => File.OpenRead(_directory.Concat(path));
+
+        public override PathString? TryGetGitFilePath(PathString path) => _directory.Concat(path);
 
         public override PathString? TryGetPhysicalPath(PathString path)
         {
-            var fullPath = Path.Combine(_directory, path);
+            var fullPath = _directory.Concat(path);
             if (File.Exists(fullPath))
             {
-                return new PathString(fullPath);
+                return fullPath;
             }
-
             return null;
-        }
-
-        public override PathString? TryGetGitFilePath(PathString path)
-        {
-            return new PathString(Path.Combine(_directory, path));
         }
     }
 }

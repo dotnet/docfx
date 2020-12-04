@@ -367,7 +367,14 @@ namespace Microsoft.Docs.Build
                     return newObject;
 
                 case JValue value when schemaMap.TryGetSchema(token, out var schema):
-                    return TransformScalar(errors.With(e => e.WithPropertyPath(propertyPath)), rootSchema, schema, file, value, propertyPath, xrefmap);
+                    return TransformScalar(
+                        errors.With(e => e.WithPropertyPath(propertyPath)),
+                        rootSchema,
+                        schema,
+                        file,
+                        value,
+                        propertyPath,
+                        xrefmap);
 
                 case JValue value:
                     return value;
@@ -398,16 +405,15 @@ namespace Microsoft.Docs.Build
             {
                 case JsonSchemaContentType.Href:
 
-                    // Output absolute URL starting from Architecture
-                    var absoluteUrl = _documentProvider.GetMime(file) == "Architecture";
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file, absoluteUrl);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
                     return link;
 
                 case JsonSchemaContentType.Markdown:
 
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    var html = _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    return html;
 
                 case JsonSchemaContentType.InlineMarkdown:
 

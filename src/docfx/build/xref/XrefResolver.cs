@@ -268,7 +268,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error?, IXrefSpec?, string? href) Resolve(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
         {
             var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
@@ -307,7 +307,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
-            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
         {
             if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
             {
@@ -324,7 +324,10 @@ namespace Microsoft.Docs.Build
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
-                var href = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
+                // Output absolute URL starting from Architecture and TSType
+                var href = TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
+                    ? spec.Href
+                    : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
                 return (spec, href);
             }
             return default;

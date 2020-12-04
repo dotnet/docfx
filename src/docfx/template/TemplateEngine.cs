@@ -26,6 +26,12 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
 
+        private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Architecture",
+                "TSType",
+            };
+
         private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "Architecture",
@@ -34,8 +40,7 @@ namespace Microsoft.Docs.Build
                 "LandingData",
             };
 
-        public TemplateEngine(
-            ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
+        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -69,6 +74,8 @@ namespace Microsoft.Docs.Build
                 _ => RenderType.Component,
             };
         }
+
+        public static bool OutputAbsoluteUrl(string? mime) => mime != null && s_outputAbsoluteUrlYamlMime.Contains(mime);
 
         public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
 

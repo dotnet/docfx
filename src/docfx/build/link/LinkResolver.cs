@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -72,7 +73,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string link, FilePath? file) ResolveLink(
-            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, bool absoluteUrl = false)
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
@@ -103,7 +104,7 @@ namespace Microsoft.Docs.Build
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
-            if (file != null && !absoluteUrl)
+            if (file != null && !TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
             {
                 link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }
