@@ -159,13 +159,13 @@ namespace Microsoft.Docs.Build
         private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
             BuildTocMap()
         {
-            using (Progress.Start("Loading TOC"))
+            using (var scope = Progress.Start("Loading TOC"))
             {
                 var tocs = new ConcurrentBag<FilePath>();
                 var allServicePages = new ConcurrentBag<FilePath>();
 
                 // Parse and split TOC
-                ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.Toc), file =>
+                ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Toc), file =>
                 {
                     SplitToc(file, _tocParser.Parse(file, _errors), tocs);
                 });
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
                 var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
 
                 // Load TOC
-                ParallelUtility.ForEach(_errors, tocs, file =>
+                ParallelUtility.ForEach(scope, _errors, tocs, file =>
                 {
                     var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
 
@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
 
                 docToTocs.TrimExcess();
 
-                var tocFiles = _publishUrlMap.ResolveUrlConflicts(tocToTocs.Keys.Where(ShouldBuildFile));
+                var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
                 return (tocFiles, docToTocs, allServicePages.ToList());
 

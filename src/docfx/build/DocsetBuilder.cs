@@ -150,10 +150,10 @@ namespace Microsoft.Docs.Build
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
                     : _publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
 
-                using (Progress.Start($"Building {filesToBuild.Count} files"))
+                using (var scope = Progress.Start($"Building {filesToBuild.Count} files"))
                 {
-                    ParallelUtility.ForEach(_errors, filesToBuild, file => BuildFile(file, contentValidator, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
-                    ParallelUtility.ForEach(_errors, linkResolver.GetAdditionalResources(), file => resourceBuilder.Build(file));
+                    ParallelUtility.ForEach(scope, _errors, filesToBuild, file => BuildFile(file, contentValidator, resourceBuilder, pageBuilder, tocBuilder, redirectionBuilder));
+                    ParallelUtility.ForEach(scope, _errors, linkResolver.GetAdditionalResources(), file => resourceBuilder.Build(file));
                 }
 
                 Parallel.Invoke(
