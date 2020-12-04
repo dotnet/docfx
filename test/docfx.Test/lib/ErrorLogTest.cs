@@ -46,7 +46,10 @@ namespace Microsoft.Docs.Build
                 testErrors.Add(new Error(ErrorLevel.Error, "an-error-code", $"{i}"));
             }
 
-            ParallelUtility.ForEach(errorLog, testErrors, testError => errorLog.Add(testError));
+            using (var scope = Progress.Start("Processing errors"))
+            {
+                ParallelUtility.ForEach(scope, errorLog, testErrors, testError => errorLog.Add(testError));
+            }
 
             Assert.Equal((config.MaxFileErrors * testFiles) + testEmptyFileErrors, errors.ErrorCount);
         }

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             EnsureOrdered = false,
         };
 
-        public static void ForEach<T>(ErrorBuilder errors, IEnumerable<T> source, Action<T> action)
+        public static void ForEach<T>(LogScope scope, ErrorBuilder errors, IEnumerable<T> source, Action<T> action)
         {
             var done = 0;
             var total = source.Count();
@@ -49,11 +49,11 @@ namespace Microsoft.Docs.Build
                     throw;
                 }
 
-                Progress.Update(Interlocked.Increment(ref done), total);
+                Progress.Update(scope, Interlocked.Increment(ref done), total);
             });
         }
 
-        public static async Task ForEach<T>(ErrorLog errorLog, IEnumerable<T> source, Func<T, Task> action)
+        public static async Task ForEach<T>(LogScope scope, ErrorLog errorLog, IEnumerable<T> source, Func<T, Task> action)
         {
             var done = 0;
             var total = 0;
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
                     throw;
                 }
 
-                Progress.Update(Interlocked.Increment(ref done), total);
+                Progress.Update(scope, Interlocked.Increment(ref done), total);
             }
         }
 

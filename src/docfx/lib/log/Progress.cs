@@ -8,17 +8,13 @@ using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
-    internal static class Progress
+    internal static partial class Progress
     {
-        private const int ProgressDelayMs = 2000;
-        private static readonly AsyncLocal<ImmutableStack<LogScope>> t_scope = new AsyncLocal<ImmutableStack<LogScope>>();
+        public const int ProgressDelayMs = 2000;
 
-        public static IDisposable Start(string name)
+        public static LogScope Start(string name)
         {
             var scope = new LogScope(name, Stopwatch.StartNew());
-
-            t_scope.Value = (t_scope.Value ?? ImmutableStack<LogScope>.Empty).Push(scope);
-
             if (Log.Verbose)
             {
                 Console.Write(scope.Name + "...\r");
@@ -27,14 +23,8 @@ namespace Microsoft.Docs.Build
             return scope;
         }
 
-        public static void Update(int done, int total)
+        public static void Update(LogScope scope, int done, int total)
         {
-            var scope = t_scope.Value?.Peek();
-            if (scope is null)
-            {
-                return;
-            }
-
             // Only write progress if it takes longer than 2 seconds
             var elapsedMs = scope.Stopwatch.ElapsedMilliseconds;
             if (elapsedMs < ProgressDelayMs)
@@ -70,32 +60,6 @@ namespace Microsoft.Docs.Build
             }
 
             return Math.Round(value.TotalMilliseconds, digits: 2) + "ms";
-        }
-
-        private class LogScope : IDisposable
-        {
-            public string Name { get; }
-
-            public Stopwatch Stopwatch { get; }
-
-            public long LastElapsedMs { get; set; }
-
-            public LogScope(string name, Stopwatch stopwatch)
-            {
-                Name = name;
-                Stopwatch = stopwatch;
-            }
-
-            public void Dispose()
-            {
-                t_scope.Value = t_scope.Value!.Pop(out _);
-
-                var elapsedMs = Stopwatch.ElapsedMilliseconds;
-                if (Log.Verbose || elapsedMs > ProgressDelayMs)
-                {
-                    Console.WriteLine($"{Name} done in {FormatTimeSpan(Stopwatch.Elapsed)}");
-                }
-            }
         }
     }
 }
