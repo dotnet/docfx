@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public override PathString GetFullFilePath(PathString path) => _package.GetFullFilePath(ApplyDirectory(path));
 
-        public override DateTime GetLastWriteTimeUtc(PathString path) => _package.GetLastWriteTimeUtc(ApplyDirectory(path));
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path) => _package.TryGetLastWriteTimeUtc(ApplyDirectory(path));
 
         public override Stream ReadStream(PathString path) => _package.ReadStream(_directory.Concat(path));
 

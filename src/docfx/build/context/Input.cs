@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
 
             var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
 
-            return package.GetLastWriteTimeUtc(path);
+            return package.TryGetLastWriteTimeUtc(path) ?? default;
         }
 
         /// <summary>

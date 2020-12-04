@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         public override PathString GetFullFilePath(PathString path) => throw new NotSupportedException();
 
-        public override DateTime GetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 

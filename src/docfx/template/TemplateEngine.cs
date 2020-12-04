@@ -40,12 +40,7 @@ namespace Microsoft.Docs.Build
                 "LandingData",
             };
 
-        public TemplateEngine(
-            ErrorBuilder errors,
-            Config config,
-            PackageResolver packageResolver,
-            BuildOptions buildOptions,
-            JsonSchemaLoader jsonSchemaLoader)
+        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
             _buildOptions = buildOptions;
