@@ -1983,29 +1983,31 @@ outputs:
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":2,"column":6}
 ---
 # Xref markdown property output absolute url for TSType mime
-inputs:
-  docfx.yml: |
-  docs/c/c.md: |
-    ---
-    title: Title from yaml header c
-    uid: c
-    ---
-  docs/a/a/a.json: |
-    {
-      "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TSType.json",
-      "uid": "a",
-      "summary": "@c Hello docfx!"
-    }
-  docs/b/b.md: |
-    Link to @a?displayProperty=summary
-  _themes/ContentTemplate/schemas/TSType.schema.json: |
-    {
-      "properties": {
-        "summary": { "contentType": "Markdown" },
-        "uid": { "contentType": "uid" }
-      },
-      "xrefProperties": ["summary"]
-    }
+repos:
+  https://docs.com/test-valdiate-external-xref.zh-cn#live:
+    - files:
+        docfx.yml: |
+        docs/c/c.md: |
+          ---
+          title: Title from yaml header c
+          uid: c
+          ---
+        docs/a/a/a.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TSType.json",
+            "uid": "a",
+            "summary": "@c Hello docfx!"
+          }
+        docs/b/b.md: |
+          Link to @a?displayProperty=summary
+        _themes/ContentTemplate/schemas/TSType.schema.json: |
+          {
+            "properties": {
+              "summary": { "contentType": "Markdown" },
+              "uid": { "contentType": "uid" }
+            },
+            "xrefProperties": ["summary"]
+          }
 outputs:
   docs/a/a/a.json:
   docs/c/c.json:
@@ -2015,6 +2017,6 @@ outputs:
     {
       "references":[
         {"uid":"a","summary":"<p><a href=\"/docs/c/c\">Title from yaml header c</a> Hello docfx!</p>"},
-        {"uid": "c", "href": "https://docs.com/docs/c/c?branch=xref-chain", "name": "Title from yaml header c"}
+        {"uid": "c", "href": "https://docs.com/docs/c/c", "name": "Title from yaml header c"}
       ]
     }
