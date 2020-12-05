@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
         }
 
-        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
+        public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
             => throw new NotSupportedException();
 
         public override PathString GetFullFilePath(PathString path) => throw new NotSupportedException();
