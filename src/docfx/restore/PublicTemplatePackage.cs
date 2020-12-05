@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
 
-        public override byte[] ReadAllBytes(PathString path) => _fileResolver.ReadAllBytes(GetPath(path));
+        public override byte[] ReadBytes(PathString path) => _fileResolver.ReadBytes(GetPath(path));
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 

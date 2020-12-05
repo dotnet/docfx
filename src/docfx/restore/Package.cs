@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
 
         public abstract DateTime? TryGetLastWriteTimeUtc(PathString path);
 
-        public abstract byte[] ReadAllBytes(PathString path);
+        public abstract byte[] ReadBytes(PathString path);
 
         public abstract Stream ReadStream(PathString path);
 

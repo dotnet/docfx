@@ -179,11 +179,11 @@ namespace Microsoft.Docs.Build
             return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
         }
 
-        private void GenerateRedirectionRules(string fullPath, List<RedirectionItem> results)
+        private void GenerateRedirectionRules(PathString fullPath, List<RedirectionItem> results)
         {
-            var content = _docsetPackage.ReadString(new PathString(fullPath));
+            var content = _docsetPackage.ReadString(fullPath);
             var filePath = new FilePath(Path.GetRelativePath(_buildOptions.DocsetPath, fullPath));
-            var model = fullPath.EndsWith(".yml")
+            var model = fullPath.Value.EndsWith(".yml")
                 ? YamlUtility.Deserialize<RedirectionModel>(_errors, content, filePath)
                 : JsonUtility.Deserialize<RedirectionModel>(_errors, content, filePath);
 

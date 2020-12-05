@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
             return reader.ReadToEnd();
         }
 
-        public byte[] ReadAllBytes(SourceInfo<string> file)
+        public byte[] ReadBytes(SourceInfo<string> file)
         {
             if (UrlUtility.IsHttp(file))
             {
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
                 }
                 return File.ReadAllBytes(ResolveFilePath(file));
             }
-            return _package.ReadAllBytes(new PathString(ResolveFilePath(file)));
+            return _package.ReadBytes(new PathString(ResolveFilePath(file)));
         }
 
         public Stream ReadStream(SourceInfo<string> file)
