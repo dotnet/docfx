@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
         internal static ExternalXrefMap LoadJsonFile(
             Dictionary<string, Lazy<ExternalXrefSpec>> xrefSpecs, List<ExternalXref> externalXrefs, FileResolver fileResolver, SourceInfo<string> url)
         {
-            var content = fileResolver.ReadAllBytes(url);
+            var content = fileResolver.ReadBytes(url);
             var filePath = fileResolver.ResolveFilePath(url);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
