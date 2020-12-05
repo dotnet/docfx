@@ -29,29 +29,9 @@ namespace Microsoft.Docs.Build
 
         internal static ExternalXrefMap LoadJsonFile(
             Dictionary<string, Lazy<ExternalXrefSpec>> xrefSpecs, List<ExternalXref> externalXrefs, FileResolver fileResolver, SourceInfo<string> url)
-            => LoadJsonFileCore(
-                    xrefSpecs,
-                    externalXrefs,
-                    fileResolver.ResolveFilePath(url),
-                    () => fileResolver.ReadAllBytes(url),
-                    () => fileResolver.ReadStream(url));
-
-        internal static ExternalXrefMap LoadJsonFile(Dictionary<string, Lazy<ExternalXrefSpec>> xrefSpecs, List<ExternalXref> externalXrefs, string filePath)
-            => LoadJsonFileCore(
-                xrefSpecs,
-                externalXrefs,
-                filePath,
-                () => File.ReadAllBytes(filePath),
-                () => File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read));
-
-        private static ExternalXrefMap LoadJsonFileCore(
-            Dictionary<string, Lazy<ExternalXrefSpec>> xrefSpecs,
-            List<ExternalXref> externalXrefs,
-            string filePath,
-            Func<byte[]> getFileBytes,
-            Func<Stream> getFileReadStream)
         {
-            var content = getFileBytes.Invoke();
+            var content = fileResolver.ReadAllBytes(url);
+            var filePath = fileResolver.ResolveFilePath(url);
 
             // TODO: cache this position mapping if xref map file not updated, reuse it
             var (xrefSpecPositions, xrefPositions, repositoryUrl, docsetName) = GetXrefSpecPosXrefPosAndRepoUrl(content, filePath);
@@ -60,7 +40,7 @@ namespace Microsoft.Docs.Build
             {
                 xrefSpecs.TryAdd(uid, new Lazy<ExternalXrefSpec>(() =>
                 {
-                    using var stream = getFileReadStream.Invoke();
+                    using var stream = fileResolver.ReadStream(url);
                     var spec = JsonUtility.DeserializeData<ExternalXrefSpec>(ReadJsonFragment(stream, start, end), new FilePath(filePath));
                     spec.RepositoryUrl = repositoryUrl;
                     spec.DocsetName = docsetName;
@@ -71,7 +51,7 @@ namespace Microsoft.Docs.Build
             // TODO: for externalXref, where data loading is not so costly, so we will remove the following optimized process in another PR
             foreach (var (start, end) in xrefPositions)
             {
-                using var stream = getFileReadStream.Invoke();
+                using var stream = fileResolver.ReadStream(url);
                 var xref = JsonUtility.DeserializeData<ExternalXref>(ReadJsonFragment(stream, start, end), new FilePath(filePath));
                 xref.ReferencedRepositoryUrl = repositoryUrl;
                 externalXrefs.Add(xref);

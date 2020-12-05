@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
             var filePath = WriteJsonToTempFile(json);
             var xrefSpecs = new Dictionary<string, Lazy<ExternalXrefSpec>>();
             var externalXrefs = new List<ExternalXref>();
-            ExternalXrefMapLoader.LoadJsonFile(xrefSpecs, externalXrefs, filePath);
+            ExternalXrefMapLoader.LoadJsonFile(xrefSpecs, externalXrefs, new FileResolver(new LocalPackage()), new SourceInfo<string>(filePath));
 
             Assert.Equal(uids, xrefSpecs.Keys);
             Assert.Equal(externalUids, externalXrefs.Select(item => item.Uid));
