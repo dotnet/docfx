@@ -29,9 +29,6 @@ namespace Microsoft.Docs.Build
         public static bool ShouldSerializeLandingPageType() => false;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool Expanded { get; set; }
-
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool MaintainContext { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -60,7 +57,6 @@ namespace Microsoft.Docs.Build
             TocHref = item.TocHref;
             Homepage = item.Homepage;
             Uid = item.Uid;
-            Expanded = item.Expanded;
             MaintainContext = item.MaintainContext;
             ExtensionData = item.ExtensionData;
             Document = item.Document;
