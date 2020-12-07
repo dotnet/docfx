@@ -47,14 +47,14 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = jsonSchemaLoader;
 
             var template = config.Template;
-            var ignoreTemplateNonExistedError = false;
+            var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
                 template = new PackagePath("_themes");
-                ignoreTemplateNonExistedError = true;
+                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExisted;
             }
 
-            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne, ignoreTemplateNonExistedError);
+            _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());

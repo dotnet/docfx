@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public void AddOrUpdate(PathString path, string content)
         {
-            _inMemoryFiles!.AddOrUpdate(_directory.Concat(path), (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
+            _inMemoryFiles.AddOrUpdate(_directory.Concat(path), (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
         }
 
         public override bool Exists(PathString path) => _inMemoryFiles.ContainsKey(_directory.Concat(path));

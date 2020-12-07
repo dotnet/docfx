@@ -27,15 +27,7 @@ namespace Microsoft.Docs.Build
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
             => _packages.SelectMany(pkg => pkg.GetFiles(directory, allowedFileNames));
 
-        public override PathString GetFullFilePath(PathString path)
-        {
-            var result = ApplyToFirst((pkg) => true, (pkg) => pkg.GetFullFilePath(path));
-            if (result == default)
-            {
-                throw new FileNotFoundException(path);
-            }
-            return result;
-        }
+        public override PathString GetFullFilePath(PathString path) => _packages.First((pkg) => pkg.Exists(path)).GetFullFilePath(path);
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
         {
@@ -51,25 +43,9 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        public override byte[] ReadBytes(PathString path)
-        {
-            var result = ApplyToFirst((pkg) => pkg.Exists(path), (pkg) => pkg.ReadBytes(path));
-            if (result == default)
-            {
-                throw new FileNotFoundException(path);
-            }
-            return result;
-        }
+        public override byte[] ReadBytes(PathString path) => _packages.First((pkg) => pkg.Exists(path)).ReadBytes(path);
 
-        public override Stream ReadStream(PathString path)
-        {
-            var result = ApplyToFirst((pkg) => pkg.Exists(path), (pkg) => pkg.ReadStream(path));
-            if (result == default)
-            {
-                throw new FileNotFoundException(path);
-            }
-            return result;
-        }
+        public override Stream ReadStream(PathString path) => _packages.First((pkg) => pkg.Exists(path)).ReadStream(path);
 
         public override PathString? TryGetGitFilePath(PathString path)
         {
@@ -98,22 +74,5 @@ namespace Microsoft.Docs.Build
 
             return null;
         }
-
-        // A nullable type parameter must be known to be a value type or non-nullable reference type unless language version '9.0' or greater is used
-#pragma warning disable CS8603 // Possible null reference return.
-        private T ApplyToFirst<T>(Func<Package, bool> predicate, Func<Package, T> func)
-        {
-            for (int i = 0; i < _packages.Count; i++)
-            {
-                var package = _packages[i];
-                if (predicate.Invoke(package))
-                {
-                    return func.Invoke(package);
-                }
-            }
-
-            return default(T);
-        }
-#pragma warning restore CS8603 // Possible null reference return.
     }
 }
