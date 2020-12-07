@@ -61,7 +61,8 @@ namespace Microsoft.Docs.Build
                 || spec.Repos.Count != 0
                 || spec.Inputs.Any(entry => entry.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
                     || entry.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
-                    || entry.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase));
+                    || entry.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.StartsWith("_themes", StringComparison.OrdinalIgnoreCase));
 
             var localPackage = new LocalPackage(docsetPath);
             if (usePhysicalInput)
