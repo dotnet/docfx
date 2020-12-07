@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
-                ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
+                ? rawHtml ?? HttpUtility.HtmlEncode(HttpUtility.HtmlDecode(rawSource)) ?? GetDefaultResolvedNode()
                 : StringUtility.Html($"<a href='{resolvedHref}'>{display}</a>");
 
             token = new HtmlToken(resolvedNode);

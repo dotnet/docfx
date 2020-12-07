@@ -181,3 +181,12 @@ outputs:
     {
       "conceptual": "<p>the <span class=\"xref\">ServiceFuture&lt;String&gt;</span> object\n<span class=\"xref\">Observable&lt;Void&gt;</span></p>\n",
     }
+---
+# use encoded data-raw-source when it isn't empty
+inputs:
+  docfx.yml:
+  a.md: |
+    A: <xref href="ServiceFuture&lt;String&gt;" data-throw-if-not-resolved="False" data-raw-source="&lt;<String>"/> B.
+outputs:
+  a.json: |
+    {"conceptual": "<p>A: &lt;&lt;String&gt; B.</p>"}
