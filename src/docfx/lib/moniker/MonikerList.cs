@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerList Except(MonikerList other)
         {
-            if (other._monikers is null || other._monikers.Length == 0)
+            if (_monikers is null || _monikers.Length == 0 || other._monikers is null || other._monikers.Length == 0)
             {
                 return this;
             }
