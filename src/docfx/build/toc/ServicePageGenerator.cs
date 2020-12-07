@@ -204,14 +204,5 @@ namespace Microsoft.Docs.Build
 
             return null;
         }
-
-        private string? GetSubTocFirstUid(string subTocPath)
-        {
-            /*if ()
-            {
-                return GetSubTocFirstUid(node);
-            }*/
-            return null;
-        }
     }
 }
