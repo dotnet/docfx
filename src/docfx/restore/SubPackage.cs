@@ -7,13 +7,13 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DirectoryPackage : Package
+    internal class SubPackage : Package
     {
         private readonly PathString _directory;
 
         private readonly Package _package;
 
-        public DirectoryPackage(Package package, string directory = ".")
+        public SubPackage(Package package, string directory = ".")
         {
             _directory = new PathString(directory);
             _package = package;
@@ -21,13 +21,10 @@ namespace Microsoft.Docs.Build
 
         public override PathString BasePath => _package.BasePath.Concat(_directory);
 
-        public override Package CreateSubPackage(string relativePath)
-            => _package.CreateSubPackage(_directory.Concat(new PathString(relativePath)));
-
         public override bool Exists(PathString path) => _package.Exists(_directory.Concat(path));
 
-        public override IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null)
-            => _package.GetFiles(ApplyDirectory(directory), fileNamePredicate);
+        public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
+            => _package.GetFiles(ApplyDirectory(directory), allowedFileNames);
 
         public override PathString GetFullFilePath(PathString path) => _package.GetFullFilePath(ApplyDirectory(path));
 
@@ -42,7 +39,5 @@ namespace Microsoft.Docs.Build
         public override PathString? TryGetGitFilePath(PathString path) => _package.TryGetGitFilePath(ApplyDirectory(path));
 
         private PathString ApplyDirectory(PathString path) => _directory.Concat(path);
-
-        private PathString ApplyDirectory(string path) => _directory.Concat(new PathString(path));
     }
 }

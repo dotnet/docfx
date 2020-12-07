@@ -20,9 +20,7 @@ namespace Microsoft.Docs.Build
                 return new[] { (package.BasePath.Value, options.Output) };
             }
 
-            var files = package.GetFiles(
-                fileNamePredicate: (string fileName) => fileName.Equals("docfx.json", StringComparison.OrdinalIgnoreCase)
-                || fileName.Equals("docfx.yml", StringComparison.OrdinalIgnoreCase));
+            var files = package.GetFiles(allowedFileNames: new string[] { "docfx.json", "docfx.yml" });
 
             return (
                 from file in files
@@ -58,7 +56,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, package);
 
-            var globalConfig = LoadConfig(errors, package, AppData.Root);
+            var globalConfig = LoadConfig(errors, package, new PathString(AppData.Root));
 
             // Preload
             var preloadConfigObject = new JObject();
@@ -89,9 +87,9 @@ namespace Microsoft.Docs.Build
             return (config, buildOptions, packageResolver, fileResolver, opsAccessor);
         }
 
-        private static JObject? LoadConfig(ErrorBuilder errors, Package package, string directory = ".")
+        private static JObject? LoadConfig(ErrorBuilder errors, Package package, PathString directory = default)
         {
-            var config = PathUtility.LoadYamlOrJson<JObject>(errors, "docfx", package, directory);
+            var config = package.LoadYamlOrJson<JObject>(errors, "docfx", directory);
             if (config is null)
             {
                 return null;
@@ -162,7 +160,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            var config = PathUtility.LoadYamlOrJson<DocsetsConfig>(errors, "docsets", package);
+            var config = package.LoadYamlOrJson<DocsetsConfig>(errors, "docsets");
             if (config != null)
             {
                 return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
