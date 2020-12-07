@@ -77,5 +77,14 @@ namespace Microsoft.Docs.Build
                 }
             }
         }
+
+        internal static void AttachToParent(IFunction child)
+        {
+            var stack = t_callstack.Value;
+            if (stack != null && !stack.IsEmpty)
+            {
+                stack.Peek().AddChild(child);
+            }
+        }
     }
 }
