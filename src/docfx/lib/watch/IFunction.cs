@@ -5,7 +5,7 @@ namespace Microsoft.Docs.Build
 {
     internal interface IFunction
     {
-        bool HasChanged();
+        bool HasChanged(int activityId);
 
         void AddChild(IFunction child);
     }

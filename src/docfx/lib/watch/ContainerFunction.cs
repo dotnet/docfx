@@ -8,10 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ContainerFunction : IFunction
     {
-        private readonly List<IFunction> _children = new List<IFunction>();
-
-        private volatile int _activityId = Watcher.GetActivityId();
-        private volatile bool _hasChanged;
+        private readonly HashSet<IFunction> _children = new HashSet<IFunction>();
 
         public bool HasChildren => _children.Count > 0;
 
@@ -23,19 +20,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool HasChanged()
-        {
-            var currentActivityId = Watcher.GetActivityId();
-            if (currentActivityId == _activityId)
-            {
-                return _hasChanged;
-            }
-
-            _activityId = currentActivityId;
-            return _hasChanged = HasChangedCore();
-        }
-
-        private bool HasChangedCore()
+        public bool HasChanged(int activityId)
         {
             lock (_children)
             {
@@ -43,7 +28,7 @@ namespace Microsoft.Docs.Build
                 {
                     foreach (var child in _children)
                     {
-                        if (child.HasChanged())
+                        if (child.HasChanged(activityId))
                         {
                             return true;
                         }
@@ -55,7 +40,7 @@ namespace Microsoft.Docs.Build
                     var result = false;
                     Parallel.ForEach(_children, (child, loop) =>
                     {
-                        if (child.HasChanged())
+                        if (child.HasChanged(activityId))
                         {
                             result = true;
                             loop.Break();

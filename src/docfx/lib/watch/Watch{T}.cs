@@ -7,14 +7,18 @@ using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
-    public class Watch<T>
+    public class Watch<T> : IFunction
     {
         private readonly Func<T> _valueFactory;
 
         [MaybeNull]
         private T _value;
+        private int _valueActivityId = -1;
 
-        private volatile ContainerFunction? _function;
+        private bool _hasChanged;
+        private int _hasChangedActivityId = -1;
+
+        private ContainerFunction? _function;
         private object? _syncLock;
 
         public Watch(Func<T> valueFactory) => _valueFactory = valueFactory;
@@ -23,46 +27,73 @@ namespace Microsoft.Docs.Build
 
         public override string? ToString() => _function != null ? _value?.ToString() : base.ToString();
 
+        bool IFunction.HasChanged(int activityId) => HasChanged(activityId);
+
+        void IFunction.AddChild(IFunction child) => throw new InvalidOperationException();
+
         public T Value
         {
             get
             {
-                var function = _function;
-                if (function != null && !function.HasChanged())
+                var activityId = Watcher.GetActivityId();
+                if (activityId == _valueActivityId)
                 {
-                    Watcher.AttachToParent(function);
+                    Watcher.AttachToParent(this);
                     return _value!;
                 }
 
-                function = new ContainerFunction();
-
-                Watcher.BeginFunctionScope(function);
-
-                try
+                if (HasChanged(activityId))
                 {
-                    if (_syncLock != null && Monitor.IsEntered(_syncLock))
-                    {
-                        throw new InvalidOperationException("ValueFactory attempted to access the Value property of this instance.");
-                    }
-
-                    lock (EnsureLock(ref _syncLock))
-                    {
-                        _value = _valueFactory();
-                        _function = function;
-                    }
-
-                    return _value!;
+                    CreateValue();
                 }
-                finally
+
+                Volatile.Write(ref _valueActivityId, activityId);
+                return _value!;
+            }
+        }
+
+        private void CreateValue()
+        {
+            var function = new ContainerFunction();
+
+            Watcher.BeginFunctionScope(function);
+
+            try
+            {
+                if (_syncLock != null && Monitor.IsEntered(_syncLock))
                 {
-                    Watcher.EndFunctionScope(attachToParent: function.HasChildren);
+                    throw new InvalidOperationException("ValueFactory attempted to access the Value property of this instance.");
                 }
+
+                lock (EnsureLock(ref _syncLock))
+                {
+                    _value = _valueFactory();
+                    _function = function;
+                }
+            }
+            finally
+            {
+                Watcher.EndFunctionScope();
+                Watcher.AttachToParent(this);
             }
         }
 
         private static object EnsureLock(ref object? syncLock)
         {
             return syncLock ?? Interlocked.CompareExchange(ref syncLock, new object(), null) ?? syncLock;
+        }
+
+        private bool HasChanged(int activityId)
+        {
+            if (activityId != _hasChangedActivityId)
+            {
+                var hasChanged = _function is null || _function.HasChanged(activityId);
+                _hasChanged = hasChanged;
+
+                Volatile.Write(ref _hasChangedActivityId, activityId);
+            }
+
+            return _hasChanged;
         }
     }
 }

@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
             finally
             {
                 EndFunctionScope();
+                AttachToParent(function);
             }
         }
 
@@ -51,6 +52,7 @@ namespace Microsoft.Docs.Build
             finally
             {
                 EndFunctionScope();
+                AttachToParent(function);
             }
         }
 
@@ -65,16 +67,12 @@ namespace Microsoft.Docs.Build
             t_callstack.Value = stack.Push(function);
         }
 
-        internal static void EndFunctionScope(bool attachToParent = true)
+        internal static void EndFunctionScope()
         {
             var stack = t_callstack.Value;
             if (stack != null && !stack.IsEmpty)
             {
-                t_callstack.Value = stack = stack.Pop(out var child);
-                if (attachToParent && !stack.IsEmpty)
-                {
-                    stack.Peek().AddChild(child);
-                }
+                t_callstack.Value = stack.Pop();
             }
         }
 

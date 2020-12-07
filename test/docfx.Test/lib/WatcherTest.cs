@@ -147,6 +147,47 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static void Watch_Value_With_Two_Parents()
+        {
+            var counter = 0;
+            var childCounter = 0;
+            var parentCounter1 = 0;
+            var parentCounter2 = 0;
+
+            var childWatch = new Watch<int>(() =>
+            {
+                ++childCounter;
+                return Watcher.Watch(() => ++counter);
+            });
+
+            var parent1 = new Watch<int>(() =>
+            {
+                ++parentCounter1;
+                return childWatch.Value;
+            });
+
+            var parent2 = new Watch<int>(() =>
+            {
+                ++parentCounter2;
+                return childWatch.Value;
+            });
+
+            Assert.Equal(1, parent1.Value);
+            Assert.Equal(1, parentCounter1);
+            Assert.Equal(1, parent2.Value);
+            Assert.Equal(1, parentCounter2);
+            Assert.Equal(1, childCounter);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(3, parent1.Value);
+            Assert.Equal(2, parentCounter1);
+            Assert.Equal(3, parent2.Value);
+            Assert.Equal(2, parentCounter2);
+            Assert.Equal(2, childCounter);
+        }
+
+        [Fact]
         public static void Watch_Value_Reevaluate_On_Any_Dependency_Change()
         {
             var counter = 0;
