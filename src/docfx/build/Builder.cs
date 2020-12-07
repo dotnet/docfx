@@ -45,15 +45,21 @@ namespace Microsoft.Docs.Build
 
         public void Build(params string[] files)
         {
-            try
+            for (var i = 0; i < 20; i++)
             {
-                Watcher.StartActivity();
+                using (Progress.Start("single file build"))
+                {
+                    try
+                    {
+                        Watcher.StartActivity();
 
-                Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                _errors.AddRange(dex);
+                        Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
+                    }
+                    catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                    {
+                        _errors.AddRange(dex);
+                    }
+                }
             }
         }
 
