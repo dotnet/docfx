@@ -13,10 +13,8 @@ namespace Microsoft.Docs.Build
 
         [MaybeNull]
         private T _value;
-        private int _valueActivityId = -1;
-
         private bool _hasChanged;
-        private int _hasChangedActivityId = -1;
+        private int _activityId = -1;
 
         private ContainerFunction? _function;
         private object? _syncLock;
@@ -27,28 +25,42 @@ namespace Microsoft.Docs.Build
 
         public override string? ToString() => _function != null ? _value?.ToString() : base.ToString();
 
-        bool IFunction.HasChanged(int activityId) => HasChanged(activityId);
-
-        void IFunction.AddChild(IFunction child) => throw new InvalidOperationException();
-
         public T Value
         {
             get
             {
-                var activityId = Watcher.GetActivityId();
-                if (activityId == _valueActivityId)
-                {
-                    Watcher.AttachToParent(this);
-                    return _value!;
-                }
+                EnsureValue(Watcher.GetActivityId());
+                return _value!;
+            }
+        }
 
-                if (HasChanged(activityId))
+        bool IFunction.HasChanged(int activityId)
+        {
+            EnsureValue(activityId);
+            return _hasChanged;
+        }
+
+        void IFunction.AddChild(IFunction child) => throw new InvalidOperationException();
+
+        private void EnsureValue(int activityId)
+        {
+            if (activityId != _activityId)
+            {
+                if (_function is null || _function.HasChanged(activityId))
                 {
                     CreateValue();
                 }
+                else
+                {
+                    _hasChanged = false;
+                }
 
-                Volatile.Write(ref _valueActivityId, activityId);
-                return _value!;
+                Volatile.Write(ref _activityId, activityId);
+            }
+
+            if (_function != null && _function.HasChildren)
+            {
+                Watcher.AttachToParent(this);
             }
         }
 
@@ -67,33 +79,21 @@ namespace Microsoft.Docs.Build
 
                 lock (EnsureLock(ref _syncLock))
                 {
-                    _value = _valueFactory();
+                    var newValue = _valueFactory();
+                    _hasChanged = !Equals(_value, newValue);
+                    _value = newValue;
                     _function = function;
                 }
             }
             finally
             {
                 Watcher.EndFunctionScope();
-                Watcher.AttachToParent(this);
             }
         }
 
         private static object EnsureLock(ref object? syncLock)
         {
             return syncLock ?? Interlocked.CompareExchange(ref syncLock, new object(), null) ?? syncLock;
-        }
-
-        private bool HasChanged(int activityId)
-        {
-            if (activityId != _hasChangedActivityId)
-            {
-                var hasChanged = _function is null || _function.HasChanged(activityId);
-                _hasChanged = hasChanged;
-
-                Volatile.Write(ref _hasChangedActivityId, activityId);
-            }
-
-            return _hasChanged;
         }
     }
 }

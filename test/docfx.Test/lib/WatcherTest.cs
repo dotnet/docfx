@@ -306,6 +306,45 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static void Watch_Value_Dedup_Dependencies()
+        {
+            var counter = 0;
+            var childWatch = new Watch<int>(() => Watcher.Watch(() => ++counter));
+            var watch = new Watch<int>(() => childWatch.Value + childWatch.Value);
+
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, watch.Value);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(6, watch.Value);
+            Assert.Equal(6, watch.Value);
+        }
+
+        [Fact]
+        public static void Watch_Stop_Change_Propagation_On_Value_Not_Change()
+        {
+            var counter = 0;
+            var watchCounter = 0;
+            var childWatch = new Watch<int>(() => Watcher.Watch(() => 0, () => ++counter));
+            var watch = new Watch<int>(() =>
+            {
+                watchCounter++;
+                return childWatch.Value;
+            });
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, watchCounter);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, watchCounter);
+        }
+
+        [Fact]
         public static void Watch_Value_Watch_Dependency_In_Parallel()
         {
             var counter = 0;
