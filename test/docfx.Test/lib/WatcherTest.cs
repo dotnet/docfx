@@ -274,6 +274,38 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static void Watch_Value_Do_Not_Reevaluate_On_Stale_Dependency_Change()
+        {
+            var useA = true;
+            var valueA = "a";
+            var valueB = "b";
+            var counter = 0;
+
+            var childWatch = new Watch<string>(() => Watcher.Watch(() => useA) ? Watcher.Watch(() => valueA) : Watcher.Watch(() => valueB));
+            var watch = new Watch<string>(() =>
+            {
+                counter++;
+                return childWatch.Value;
+            });
+
+            Assert.Equal("a", watch.Value);
+            Assert.Equal("a", watch.Value);
+            Assert.Equal(1, counter);
+
+            Watcher.StartActivity();
+            useA = false;
+            Assert.Equal("b", watch.Value);
+            Assert.Equal("b", watch.Value);
+            Assert.Equal(2, counter);
+
+            Watcher.StartActivity();
+            valueA = "newValueA";
+            Assert.Equal("b", watch.Value);
+            Assert.Equal("b", watch.Value);
+            Assert.Equal(2, counter);
+        }
+
+        [Fact]
         public static void Watch_Value_Watch_Dependency_In_Parallel()
         {
             var counter = 0;
