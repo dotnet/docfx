@@ -111,13 +111,14 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
                     var childHrefType = TocLoader.GetHrefType(childHref);
-                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
-                    {
-                        childHref = null;
-                    }
 
                     if (item.Value.LandingPageType.Value != null)
                     {
+                        if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
+                        {
+                            childHref = null;
+                        }
+
                         if (!string.IsNullOrEmpty(childHref))
                         {
                             childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
@@ -140,6 +141,10 @@ namespace Microsoft.Docs.Build
                     {
                         if (!string.IsNullOrEmpty(childHref))
                         {
+                            if (childHrefType == TocHrefType.RelativeFolder)
+                            {
+                                childHref = Path.Combine(childHref, "toc.yml");
+                            }
                             childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
                             child = new ServicePageItem(childName, childHref, null);
                         }
@@ -197,6 +202,15 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            return null;
+        }
+
+        private string? GetSubTocFirstUid(string subTocPath)
+        {
+            /*if ()
+            {
+                return GetSubTocFirstUid(node);
+            }*/
             return null;
         }
     }
