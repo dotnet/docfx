@@ -159,9 +159,9 @@ outputs:
 noDryRun: true
 inputs:
   docfx.yml: |
-    markdownValidationRules: rule.json
+    markdownValidationRules: rules.json
     buildValidationRules: build.json
-  rule.json: |
+  rules.json: |
     {
       "images": {
         "rules": [
@@ -200,9 +200,9 @@ outputs:
 noDryRun: true
 inputs:
   docfx.yml: |
-    markdownValidationRules: rule.json
+    markdownValidationRules: rules.json
     buildValidationRules: build.json
-  rule.json: |
+  rules.json: |
     {
       "images": {
         "rules": [

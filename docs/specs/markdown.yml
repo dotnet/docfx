@@ -678,6 +678,7 @@ outputs:
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'b.md/'.","file":"docs/a.md","line":1,"column":1}
 ---
 # resource inclusion with relative path outside docset
+usePhysicalInput: true
 inputs:
   docsets.yml: |
     docsets: new-hope/new-hope/*

@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
         }
 
+        public override bool DirectoryExists(PathString directory = default) => throw new NotSupportedException();
+
         public override PathString BasePath => throw new NotSupportedException();
 
         public override bool Exists(PathString path)

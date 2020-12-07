@@ -72,14 +72,14 @@ namespace Microsoft.Docs.Build
 
             lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
-                var (docsetPath, appDataPath, outputPath, repos, variables) = CreateDocset(test, spec);
+                var (docsetPath, appDataPath, outputPath, repos, variables, package) = CreateDocset(test, spec);
 
                 try
                 {
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
-                    RunCore(docsetPath, outputPath, test, spec, variables);
+                    RunCore(docsetPath, outputPath, test, spec, variables, package);
                 }
                 catch (Exception exception)
                 {
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables)
+        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables, Package package)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
@@ -141,6 +141,8 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
             }
 
+            var package = TestUtility.CreateInputDirectoryPackage(docsetPath, spec, variables);
+
             if (!File.Exists(markerPath))
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
@@ -149,17 +151,20 @@ namespace Microsoft.Docs.Build
                     TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
-                TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
                 TestUtility.CreateFiles(cachePath, spec.Cache, variables);
                 TestUtility.CreateFiles(statePath, spec.State, variables);
+                if (package is LocalPackage)
+                {
+                    TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
+                }
 
                 File.WriteAllText(markerPath, "");
             }
 
-            return (docsetPath, appDataPath, outputPath, repos, variables);
+            return (docsetPath, appDataPath, outputPath, repos, variables, package);
         }
 
-        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables)
+        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables, Package package)
         {
             var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun");
 
@@ -176,12 +181,12 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, dryRun, spec);
+                    RunBuild(locDocsetPath, outputPath, dryRun, spec, package.CreateSubPackage(locDocsetPath));
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, dryRun, spec);
+                RunBuild(docsetPath, outputPath, dryRun, spec, package);
             }
         }
 
@@ -205,7 +210,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec, Package package)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -223,7 +228,7 @@ namespace Microsoft.Docs.Build
                     spec.NoDrySync ? "--no-dry-sync" : null,
                 }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
-                Docfx.Run(commandLine.Where(arg => arg != null).ToArray());
+                Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build

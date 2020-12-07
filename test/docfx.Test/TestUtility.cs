@@ -51,6 +51,33 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static Package CreateInputDirectoryPackage(
+            string docsetPath,
+            DocfxTestSpec spec,
+            IEnumerable<KeyValuePair<string, string>> variables = null)
+        {
+            Directory.CreateDirectory(docsetPath);
+            var usePhysicalInput = spec.UsePhysicalInput
+                || spec.Repos.Count != 0
+                || spec.Inputs.Any(entry => entry.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase));
+
+            var localPackage = new LocalPackage(docsetPath);
+            if (usePhysicalInput)
+            {
+                return localPackage;
+            }
+
+            var memoryPackage = new MemoryPackage(docsetPath);
+            foreach (var file in spec.Inputs)
+            {
+                memoryPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+            }
+
+            return memoryPackage;
+        }
+
         public static void CreateGitRepository(
             string path,
             TestGitCommit[] commits,

@@ -20,13 +20,15 @@ namespace Microsoft.Docs.Build
             _directory = new PathString(Path.GetFullPath(directory));
         }
 
+        public override bool DirectoryExists(PathString directory = default) => Directory.Exists(_directory.Concat(directory));
+
         public override PathString BasePath => _directory;
 
         public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
         {
-            var directoryPath = _directory.Concat(new PathString(directory));
+            var directoryPath = _directory.Concat(directory);
             if (!Directory.Exists(directoryPath))
             {
                 throw Errors.Config.DirectoryNotFound(directoryPath).ToException();
@@ -73,7 +75,13 @@ namespace Microsoft.Docs.Build
         public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
-            => Exists(path) ? File.GetLastWriteTimeUtc(_directory.Concat(path)) : default;
+        {
+            if (Exists(path))
+            {
+                return File.GetLastWriteTimeUtc(_directory.Concat(path));
+            }
+            return null;
+        }
 
         public override byte[] ReadBytes(PathString path) => File.ReadAllBytes(_directory.Concat(path));
 

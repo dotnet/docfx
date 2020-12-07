@@ -21,6 +21,8 @@ namespace Microsoft.Docs.Build
 
         public override PathString BasePath => _package.BasePath.Concat(_directory);
 
+        public override bool DirectoryExists(PathString directory = default) => _package.DirectoryExists(_directory.Concat(directory));
+
         public override bool Exists(PathString path) => _package.Exists(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
