@@ -11,15 +11,36 @@ namespace Microsoft.Docs.Build
     {
         public abstract PathString BasePath { get; }
 
-        public virtual Package CreateSubPackage(string relativePath) => new DirectoryPackage(this, new PathString(relativePath));
+        public Package CreateSubPackage(string relativePath) => new SubPackage(this, new PathString(relativePath));
 
         public abstract bool Exists(PathString path);
 
-        public abstract IEnumerable<PathString> GetFiles(string directory = ".", Func<string, bool>? fileNamePredicate = null);
+        public abstract IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null);
 
         public abstract PathString GetFullFilePath(PathString path);
 
+        public T? LoadYamlOrJson<T>(ErrorBuilder errors, string fileNameWithoutExtension, PathString directory = default) where T : class, new()
+        {
+            var fileName = fileNameWithoutExtension + ".yml";
+            var fullPath = new PathString(Path.Combine(directory, fileName));
+            if (Exists(fullPath))
+            {
+                return YamlUtility.Deserialize<T>(errors, ReadString(fullPath), new FilePath(fileName));
+            }
+
+            fileName = fileNameWithoutExtension + ".json";
+            fullPath = new PathString(Path.Combine(directory, fileName));
+            if (Exists(fullPath))
+            {
+                return JsonUtility.Deserialize<T>(errors, ReadString(fullPath), new FilePath(fileName));
+            }
+
+            return null;
+        }
+
         public abstract DateTime? TryGetLastWriteTimeUtc(PathString path);
+
+        public abstract byte[] ReadBytes(PathString path);
 
         public abstract Stream ReadStream(PathString path);
 
