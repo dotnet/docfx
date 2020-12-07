@@ -43,22 +43,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options)
+        public Package ResolveAsPackage(PackagePath package, PackageFetchOptions options, bool ignoreNonExistedError = false)
         {
             return package.Type switch
             {
                 PackageType.PublicTemplate => new PublicTemplatePackage(package.Url, _fileResolver),
-                _ => new LocalPackage(ResolvePackage(package, options)),
+                _ => new LocalPackage(ResolvePackage(package, options, ignoreNonExistedError)),
             };
         }
 
-        public string ResolvePackage(PackagePath package, PackageFetchOptions options)
+        public string ResolvePackage(PackagePath package, PackageFetchOptions options, bool ignoreNonExistedError = false)
         {
-            return package.Type switch
+            var packagePath = package.Type switch
             {
                 PackageType.Git => DownloadGitRepository(package, options),
                 _ => Path.Combine(_docsetPath, package.Path),
             };
+            if (!Directory.Exists(packagePath) && !ignoreNonExistedError)
+            {
+                throw Errors.Config.DirectoryNotFound(packagePath).ToException();
+            }
+            return packagePath;
         }
 
         public void DownloadPackage(PackagePath package, PackageFetchOptions options)

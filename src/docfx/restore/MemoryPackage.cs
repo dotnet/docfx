@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,47 +14,29 @@ namespace Microsoft.Docs.Build
     {
         private readonly PathString _directory;
 
-        private static AsyncLocal<ConcurrentDictionary<PathString, (DateTime lastWriteTime, string content)>> s_inMemoryFiles
-            = new AsyncLocal<ConcurrentDictionary<PathString, (DateTime, string)>>();
+        private ConcurrentDictionary<PathString, (DateTime lastWriteTime, string content)> _inMemoryFiles
+            = new ConcurrentDictionary<PathString, (DateTime, string)>();
 
         public override PathString BasePath => _directory;
 
         public MemoryPackage(string directory = ".")
         {
             _directory = new PathString(Path.GetFullPath(directory));
-            if (s_inMemoryFiles.Value == null)
-            {
-                s_inMemoryFiles.Value = new ConcurrentDictionary<PathString, (DateTime, string)>();
-            }
         }
 
         public void AddOrUpdate(PathString path, string content)
         {
-            s_inMemoryFiles.Value!.AddOrUpdate(_directory.Concat(path), (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
+            _inMemoryFiles!.AddOrUpdate(_directory.Concat(path), (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
         }
 
-        public override bool DirectoryExists(PathString directory = default)
-        {
-            var directoryFullPath = _directory.Concat(directory);
-            return s_inMemoryFiles.Value!.Keys.Any(path => path.StartsWithPath(directoryFullPath, out _));
-        }
-
-        public override bool Exists(PathString path) => s_inMemoryFiles.Value!.ContainsKey(_directory.Concat(path));
+        public override bool Exists(PathString path) => _inMemoryFiles.ContainsKey(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
         {
             var directoryPathString = _directory.Concat(new PathString(directory));
-            var files = s_inMemoryFiles.Value!.Keys.Select((PathString file) =>
-            {
-                if (file.StartsWithPath(directoryPathString, out var relativePath))
-                {
-                    return relativePath;
-                }
-                else
-                {
-                    return default;
-                }
-            }).Where(file => file != default);
+            var files = _inMemoryFiles.Keys.Select((PathString file)
+                => file.StartsWithPath(directoryPathString, out var relativePath) ? relativePath : default)
+                .Where(file => file != default);
 
             if (allowedFileNames != null)
             {
@@ -72,7 +53,7 @@ namespace Microsoft.Docs.Build
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
         {
-            if (s_inMemoryFiles.Value!.TryGetValue(_directory.Concat(path), out var value))
+            if (_inMemoryFiles.TryGetValue(_directory.Concat(path), out var value))
             {
                 return value.lastWriteTime;
             }
@@ -81,14 +62,14 @@ namespace Microsoft.Docs.Build
 
         public override byte[] ReadBytes(PathString path)
         {
-            var value = s_inMemoryFiles.Value!.GetValueOrDefault(_directory.Concat(path));
+            var value = _inMemoryFiles.GetValueOrDefault(_directory.Concat(path));
             return Encoding.UTF8.GetBytes(value.content ?? string.Empty);
         }
 
         public override Stream ReadStream(PathString path)
         {
-            var value = s_inMemoryFiles.Value!.GetValueOrDefault(_directory.Concat(path));
-            var byteArray = Encoding.UTF8.GetBytes(value.content ?? string.Empty);
+            var value = _inMemoryFiles.GetValueOrDefault(_directory.Concat(path));
+            var byteArray = Encoding.UTF8.GetBytes(value.content);
             return new MemoryStream(byteArray);
         }
 

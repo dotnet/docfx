@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 
         public Package CreateSubPackage(string relativePath) => new SubPackage(this, new PathString(relativePath));
 
-        public abstract bool DirectoryExists(PathString directory = default);
-
         public abstract bool Exists(PathString path);
 
         public abstract IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null);

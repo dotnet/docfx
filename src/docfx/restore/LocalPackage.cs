@@ -20,8 +20,6 @@ namespace Microsoft.Docs.Build
             _directory = new PathString(Path.GetFullPath(directory));
         }
 
-        public override bool DirectoryExists(PathString directory = default) => Directory.Exists(_directory.Concat(directory));
-
         public override PathString BasePath => _directory;
 
         public override bool Exists(PathString path) => File.Exists(_directory.Concat(path));
@@ -31,7 +29,7 @@ namespace Microsoft.Docs.Build
             var directoryPath = _directory.Concat(directory);
             if (!Directory.Exists(directoryPath))
             {
-                throw Errors.Config.DirectoryNotFound(directoryPath).ToException();
+                return new List<PathString>();
             }
 
             return new FileSystemEnumerable<PathString>(

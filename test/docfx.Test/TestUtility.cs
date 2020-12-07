@@ -64,16 +64,15 @@ namespace Microsoft.Docs.Build
                     || entry.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase)
                     || entry.Key.StartsWith("_themes", StringComparison.OrdinalIgnoreCase));
 
-            var localPackage = new LocalPackage(docsetPath);
             if (usePhysicalInput)
             {
-                return localPackage;
+                return new LocalPackage(docsetPath);
             }
 
             var memoryPackage = new MemoryPackage(docsetPath);
             foreach (var file in spec.Inputs)
             {
-                memoryPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
+                memoryPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? string.Empty);
             }
 
             return memoryPackage;

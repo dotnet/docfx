@@ -13,20 +13,19 @@ namespace Microsoft.Docs.Build
     {
         private readonly List<Package> _packages;
 
-        public override PathString BasePath => _packages.FirstOrDefault().BasePath;
+        public override PathString BasePath => _packages.First().BasePath;
 
         public CompositePackage(List<Package> packages)
         {
+            Debug.Assert(packages.Count != 0);
             Debug.Assert(packages.All(pkg => pkg.BasePath == packages[0].BasePath));
             _packages = packages;
         }
 
-        public override bool DirectoryExists(PathString directory = default) => _packages.Any(pkg => pkg.DirectoryExists(directory));
-
         public override bool Exists(PathString path) => _packages.Any(pkg => pkg.Exists(path));
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
-            => _packages.SelectMany(pkg => pkg.DirectoryExists(directory) ? pkg.GetFiles(directory, allowedFileNames) : new List<PathString>());
+            => _packages.SelectMany(pkg => pkg.GetFiles(directory, allowedFileNames));
 
         public override PathString GetFullFilePath(PathString path)
         {
@@ -40,17 +39,21 @@ namespace Microsoft.Docs.Build
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
         {
-            var result = ApplyToFirst((pkg) => pkg.Exists(path), (pkg) => pkg.TryGetLastWriteTimeUtc(path));
-            if (result == null)
+            for (int i = 0; i < _packages.Count; i++)
             {
-                throw new FileNotFoundException(path);
+                var lastWriteTimeUtc = _packages[i].TryGetLastWriteTimeUtc(path);
+                if (lastWriteTimeUtc != null)
+                {
+                    return lastWriteTimeUtc;
+                }
             }
-            return result;
+
+            return null;
         }
 
         public override byte[] ReadBytes(PathString path)
         {
-            var result = ApplyToFirst((pkg) => true, (pkg) => pkg.ReadBytes(path));
+            var result = ApplyToFirst((pkg) => pkg.Exists(path), (pkg) => pkg.ReadBytes(path));
             if (result == default)
             {
                 throw new FileNotFoundException(path);
@@ -72,8 +75,7 @@ namespace Microsoft.Docs.Build
         {
             for (int i = 0; i < _packages.Count; i++)
             {
-                var package = _packages[i];
-                var gitFilePath = package.TryGetGitFilePath(path);
+                var gitFilePath = _packages[i].TryGetGitFilePath(path);
                 if (gitFilePath != null)
                 {
                     return gitFilePath;
@@ -87,8 +89,7 @@ namespace Microsoft.Docs.Build
         {
             for (int i = 0; i < _packages.Count; i++)
             {
-                var package = _packages[i];
-                var physicalPath = package.TryGetPhysicalPath(path);
+                var physicalPath = _packages[i].TryGetPhysicalPath(path);
                 if (physicalPath != null)
                 {
                     return physicalPath;
@@ -100,7 +101,7 @@ namespace Microsoft.Docs.Build
 
         // A nullable type parameter must be known to be a value type or non-nullable reference type unless language version '9.0' or greater is used
 #pragma warning disable CS8603 // Possible null reference return.
-        private T ApplyToFirst<T>(Func<Package, bool> predicate, Func<Package, T> func, T defaultValue = default(T))
+        private T ApplyToFirst<T>(Func<Package, bool> predicate, Func<Package, T> func)
         {
             for (int i = 0; i < _packages.Count; i++)
             {
@@ -111,7 +112,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return defaultValue;
+            return default(T);
         }
 #pragma warning restore CS8603 // Possible null reference return.
     }
