@@ -54,11 +54,16 @@ namespace Microsoft.Docs.Build
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
-            return package.Type switch
+            var packagePath = package.Type switch
             {
                 PackageType.Git => DownloadGitRepository(package, options),
                 _ => Path.Combine(_docsetPath, package.Path),
             };
+            if (!Directory.Exists(packagePath) && !options.HasFlag(PackageFetchOptions.IgnoreDirectoryNonExisted))
+            {
+                throw Errors.Config.DirectoryNotFound(packagePath).ToException();
+            }
+            return packagePath;
         }
 
         public void DownloadPackage(PackagePath package, PackageFetchOptions options)

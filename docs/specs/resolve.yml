@@ -378,6 +378,7 @@ outputs:
     {"conceptual":"<p>DEP</p>"}
 ---
 # Dependency can be a file system folder
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     dependencies:

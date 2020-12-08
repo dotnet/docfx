@@ -42,6 +42,7 @@ outputs:
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
 # Template could be a local folder
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     files: '*'

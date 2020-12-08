@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             _docsets = Watcher.Create(LoadDocsets);
         }
 
-        public static bool Run(string workingDirectory, CommandLineOptions options)
+        public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -34,7 +34,12 @@ namespace Microsoft.Docs.Build
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
 
-            new Builder(errors, workingDirectory, options, new LocalPackage(workingDirectory)).Build(files);
+            if (package == null)
+            {
+                package = new LocalPackage(workingDirectory);
+            }
+
+            new Builder(errors, workingDirectory, options, package).Build(files);
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
             Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
