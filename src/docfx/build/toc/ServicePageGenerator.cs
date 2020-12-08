@@ -143,7 +143,7 @@ namespace Microsoft.Docs.Build
                         {
                             if (childHrefType == TocHrefType.RelativeFolder)
                             {
-                                childHref = Path.Combine(childHref, "toc.yml");
+                                childHref = Path.Combine(childHref, "TOC.yml");
                             }
                             childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
                             child = new ServicePageItem(childName, childHref, null);
