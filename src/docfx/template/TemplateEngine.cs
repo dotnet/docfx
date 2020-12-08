@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             {
                 "Architecture",
                 "TSType",
+                "TSEnum",
             };
 
         private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
