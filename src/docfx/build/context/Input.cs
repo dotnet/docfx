@@ -78,6 +78,22 @@ namespace Microsoft.Docs.Build
             return package.Exists(path);
         }
 
+        public bool ExistInGeneratedContents(string pathString, out FilePath? filePath)
+        {
+            var path = new PathString(pathString);
+            foreach (var (k, _) in _generatedContents)
+            {
+                if (k.Path.Value.Equals(path))
+                {
+                    filePath = k;
+                    return true;
+                }
+            }
+
+            filePath = null;
+            return false;
+        }
+
         /// <summary>
         /// Try get the absolute path of the specified file if it exists physically on disk.
         /// Some file path like content from a bare git repo does not exist physically
@@ -152,7 +168,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents[file].generatedContent;
+               return _generatedContents[file].generatedContent;
             }
 
             return _yamlTokenCache.GetOrAdd(file, path =>

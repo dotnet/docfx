@@ -548,13 +548,17 @@ repos:
             "pageType": { "enum": ["root", "service"], "type": "string" }
           }
         }
-      a/test/doc.md:
+      a/test/doc.md: |
+        ---
+        title: a-content
+        uid: a
+        ---
       a/api/bot/TOC.yml: |
         items:
         - name: MS.ServicePage2.xxx
+          uid: a
           items:
           - name: MS.ServicePage.xxx
-            href: ../../test/doc.md
       a/docs-ref-toc/top_level_toc.yml: |
         items:
         - name: API Reference
@@ -566,4 +570,4 @@ outputs:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
   a/api/bot/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx", "href": "_splitted/ms.servicepage2.xxx/toc.json"}], "pageType": "root"}
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
