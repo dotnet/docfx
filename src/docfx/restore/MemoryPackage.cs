@@ -29,6 +29,8 @@ namespace Microsoft.Docs.Build
             _inMemoryFiles.AddOrUpdate(_directory.Concat(path), (key) => (DateTime.UtcNow, content), (key, oldValue) => (DateTime.UtcNow, content));
         }
 
+        public void RemoveFile(PathString path) => _inMemoryFiles.TryRemove(_directory.Concat(path), out _);
+
         public override bool Exists(PathString path) => _inMemoryFiles.ContainsKey(_directory.Concat(path));
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
