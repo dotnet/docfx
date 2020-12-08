@@ -312,6 +312,7 @@ namespace Microsoft.Docs.Build
             var (error, file) = _linkResolver.ResolveContent(
                 new SourceInfo<string>(path, origin.GetSourceInfo()),
                 origin.GetFilePath(),
+                GetRootFilePath(),
                 status.ContentFallback);
             status.Errors.AddIfNotNull(error);
 
