@@ -35,6 +35,7 @@ outputs:
     }
 ---
 # Publish manifest path is source relative path when selfContained is set to false
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     files: '**'

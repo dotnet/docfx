@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
 
         public bool Temp { get; set; }
 
+        public bool UsePhysicalInput { get; set; }
+
         public string Locale { get; set; }
 
         public string[] BuildFiles { get; set; } = Array.Empty<string>();

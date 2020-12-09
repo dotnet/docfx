@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
                 var function = _function;
                 if (function != null && !function.HasChanged())
                 {
+                    Watcher.AttachToParent(function);
                     return _value!;
                 }
 

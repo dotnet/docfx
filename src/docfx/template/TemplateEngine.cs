@@ -30,6 +30,7 @@ namespace Microsoft.Docs.Build
             {
                 "Architecture",
                 "TSType",
+                "TSEnum",
             };
 
         private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -47,12 +48,14 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = jsonSchemaLoader;
 
             var template = config.Template;
+            var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
                 template = new PackagePath("_themes");
+                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExisted;
             }
 
-            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
+            _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());

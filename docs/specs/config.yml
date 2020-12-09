@@ -395,6 +395,7 @@ outputs:
     {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docfx.yml","line":4,"column":7}
 ---
 # Should not change files out of outputFolder
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     files: '**'

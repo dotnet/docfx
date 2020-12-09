@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static int Run(string[] args)
+        internal static int Run(string[] args, Package? package = null)
         {
             if (args.Length == 1 && args[0] == "--version")
             {
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
                 {
                     "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
-                    "build" => Builder.Run(workingDirectory, options),
+                    "build" => Builder.Run(workingDirectory, options, package),
                     "serve" => Serve.Run(options),
                     _ => false,
                 } ? 1 : 0;

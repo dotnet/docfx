@@ -182,6 +182,24 @@ namespace Microsoft.Docs.Build
         }
 
         [Fact]
+        public static void Watch_Created_Value()
+        {
+            var counter = 0;
+            var childCounter = 0;
+            var parentCounter = 0;
+            var child = new Watch<int>(() => ++childCounter + Watcher.Watch(() => 0, () => ++counter));
+            var parent = new Watch<int>(() => ++parentCounter + child.Value);
+
+            Assert.Equal(1, child.Value);
+            Assert.True(child.IsValueCreated);
+            Assert.Equal(2, parent.Value);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(4, parent.Value);
+        }
+
+        [Fact]
         public static void Watch_Value_Rebuild_Dependency_Graph_On_Dependency_Change()
         {
             var exists = false;
