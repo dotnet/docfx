@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.23" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.768" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.72" Aliases="maml" />
-    <PackageReference Include="Microsoft.Graph" Version="3.20.0" />
+    <PackageReference Include="Microsoft.Graph" Version="3.21.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.24.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
