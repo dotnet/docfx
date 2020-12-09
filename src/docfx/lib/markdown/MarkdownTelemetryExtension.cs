@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             return builder.Use(document =>
             {
                 var file = ((SourceInfo)InclusionContext.File).File;
+                var rootFile = ((SourceInfo)InclusionContext.RootFile).File;
                 var elementCount = new Dictionary<string, int>();
 
                 document.Visit(node =>
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                Telemetry.TrackMarkdownElement(file, documentProvider.GetContentType(file), documentProvider.GetMime(file), elementCount);
+                Telemetry.TrackMarkdownElement(file, documentProvider.GetContentType(rootFile), documentProvider.GetMime(rootFile), elementCount);
             });
         }
 
