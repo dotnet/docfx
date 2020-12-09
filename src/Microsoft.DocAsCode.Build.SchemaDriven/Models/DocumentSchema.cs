@@ -134,12 +134,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             cache[schema] = bs;
 
+            /* Disable these checks temporarily as v3 supports these, but v2 is also reading these schemas in docs
             CheckForNotSupportedKeyword(schema.OneOf, nameof(schema.OneOf));
             CheckForNotSupportedKeyword(schema.AllOf, nameof(schema.AllOf));
             CheckForNotSupportedKeyword(schema.AnyOf, nameof(schema.AnyOf));
             CheckForNotSupportedKeyword(schema.AdditionalItems, nameof(schema.AdditionalItems));
             CheckForNotSupportedKeyword(schema.AdditionalProperties, nameof(schema.AdditionalProperties));
             CheckForNotSupportedKeyword(schema.PatternProperties, nameof(schema.PatternProperties));
+            */
 
             if (schema.Properties != null)
             {
@@ -152,10 +154,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             if (schema.Items != null && schema.Items.Count > 0)
             {
+                /* Disable these checks temporarily as v3 supports these, but v2 is also reading these schemas in docs
                 if (schema.Items.Count > 1)
                 {
                     throw new SchemaFeatureNotSupportedException("Multiple item definition is not supported in current schema driven document processor");
                 }
+                */
 
                 bs.Items = LoadSchema<BaseSchema>(schema.Items[0], cache);
             }
