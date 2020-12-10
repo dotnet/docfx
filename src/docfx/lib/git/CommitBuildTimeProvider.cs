@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)));
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)) ?? ".");
 
                 ProcessUtility.WriteFile(
                     _commitBuildTimePath,

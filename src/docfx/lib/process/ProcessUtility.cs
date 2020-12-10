@@ -29,14 +29,14 @@ namespace Microsoft.Docs.Build
                 var psi = new ProcessStartInfo
                 {
                     FileName = fileName,
-                    WorkingDirectory = cwd,
+                    WorkingDirectory = cwd ?? ".",
                     Arguments = commandLineArgs,
                     UseShellExecute = false,
                     RedirectStandardOutput = stdout,
                     RedirectStandardError = true,
                 };
 
-                using var process = Process.Start(psi);
+                using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
 
                 using var errorStream = new MemoryStream();
                 var readError = Task.Run(() => PipeStream(process.StandardError.BaseStream, Console.OpenStandardOutput(), errorStream));

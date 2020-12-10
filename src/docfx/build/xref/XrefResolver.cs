@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+            return (null, resolvedHref, display, xrefSpec.DeclaringFile);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
