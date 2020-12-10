@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             {
                 result["_xrefmap"] = xrefmap;
             }
-            return result;
+            return token;
         }
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)

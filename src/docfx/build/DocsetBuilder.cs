@@ -142,7 +142,8 @@ namespace Microsoft.Docs.Build
                 var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
 
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
-                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, _redirectionProvider, jsonSchemaTransformer);
+                var learnHierarchyBuilder = new LearnHierarchyBuilder(_errors, contentValidator);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, _redirectionProvider, jsonSchemaTransformer, learnHierarchyBuilder);
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
@@ -164,7 +165,8 @@ namespace Microsoft.Docs.Build
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),
                     () => _errors.AddRange(_microsoftGraphAccessor.Save()),
-                    () => jsonSchemaTransformer.PostValidate());
+                    () => jsonSchemaTransformer.PostValidate(),
+                    () => learnHierarchyBuilder.ValidateHierarchy());
 
                 if (_config.DryRun)
                 {

@@ -305,6 +305,37 @@ items:
             Assert.ThrowsAny<Exception>(() => YamlUtility.DeserializeData<BasicClass>(yaml, null));
         }
 
+        [Fact]
+        public void TestYamlSourceInfo()
+        {
+            var yaml = @"
+a: astr
+b: 1
+c: Good!
+";
+            var errors = new ErrorList();
+
+            var token = YamlUtility.Parse(errors, yaml, new FilePath("file"));
+            var obj = JsonUtility.ToObject<ClassWithSourceInfo>(errors, token);
+
+            Assert.Equal(2, obj.A.Source.Line);
+            Assert.Equal(4, obj.A.Source.Column);
+            Assert.Equal("file", obj.A.Source.File.Path);
+
+            Assert.Equal(3, obj.B.Source.Line);
+            Assert.Equal(4, obj.B.Source.Column);
+            Assert.Equal("file", obj.B.Source.File.Path);
+        }
+
+        internal class ClassWithSourceInfo
+        {
+            public SourceInfo<string> A { get; set; }
+
+            public SourceInfo<string> B { get; set; } = new SourceInfo<string>("b");
+
+            public string C { get; set; }
+        }
+
         /// <summary>
         /// De-serialize a user input string to an object, return error list at the same time
         /// </summary>
