@@ -203,19 +203,20 @@ namespace Microsoft.Docs.Build
         private static TimeSpan Build(string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var templateOption = opts.PublicTemplate ? "--template https://static.docs.com/ui/latest" : "";
             var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {logOption} --verbose --stdin",
+                arguments: $"restore {logOption} {templateOption} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {templateOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
