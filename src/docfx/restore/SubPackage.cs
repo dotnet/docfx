@@ -36,8 +36,6 @@ namespace Microsoft.Docs.Build
 
         public override PathString? TryGetPhysicalPath(PathString path) => _package.TryGetPhysicalPath(ApplyDirectory(path));
 
-        public override PathString? TryGetGitFilePath(PathString path) => _package.TryGetGitFilePath(ApplyDirectory(path));
-
         private PathString ApplyDirectory(PathString path) => _directory.Concat(path);
     }
 }

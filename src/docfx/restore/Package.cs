@@ -65,9 +65,6 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        // TODO: Retire this method after abstracting git read operations in Package.
-        public virtual PathString? TryGetGitFilePath(PathString path) => null;
-
         public abstract PathString? TryGetPhysicalPath(PathString path);
 
         public string? TryReadString(PathString path)

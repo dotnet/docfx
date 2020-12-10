@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
         {
             var (package, path) = ResolveFilePath(file);
 
-            return ReadBytesFromGit(package.TryGetGitFilePath(path));
+            return ReadBytesFromGit(package.GetFullFilePath(path));
         }
 
         private byte[]? ReadBytesFromGit(PathString? physicalPath)

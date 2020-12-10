@@ -31,6 +31,8 @@ namespace Microsoft.Docs.Build
 
         public override bool Exists(PathString path) => _inMemoryFiles.ContainsKey(_directory.Concat(path));
 
+        public IEnumerable<PathString> GetAllFilesInMemory() => _inMemoryFiles.Keys;
+
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
         {
             var directoryPathString = _directory.Concat(new PathString(directory));
@@ -72,6 +74,8 @@ namespace Microsoft.Docs.Build
             var byteArray = Encoding.UTF8.GetBytes(value.content);
             return new MemoryStream(byteArray);
         }
+
+        public void RemoveFile(PathString path) => _inMemoryFiles.TryRemove(_directory.Concat(path), out _);
 
         public override PathString? TryGetPhysicalPath(PathString path) => null;
     }
