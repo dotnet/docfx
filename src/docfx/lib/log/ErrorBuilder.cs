@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
 
         public abstract bool FileHasError(FilePath file);
 
+        public virtual void Clear() { }
+
         public void AddIfNotNull(Error? error)
         {
             if (error != null)
@@ -86,6 +88,12 @@ namespace Microsoft.Docs.Build
             private readonly Func<Error, Error> _convert;
 
             private int _errorCount;
+
+            public override void Clear()
+            {
+                _errors.Clear();
+                _errorCount = 0;
+            }
 
             public override bool HasError => Volatile.Read(ref _errorCount) > 0;
 

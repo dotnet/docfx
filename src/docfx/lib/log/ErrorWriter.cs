@@ -32,6 +32,13 @@ namespace Microsoft.Docs.Build
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
+        public override void Clear()
+        {
+            _errorCount = 0;
+            _warningCount = 0;
+            _suggestionCount = 0;
+        }
+
         public override void Add(Error error)
         {
             var count = error.Level switch

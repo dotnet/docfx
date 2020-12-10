@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
 
             if (spec.LanguageServer.Count != 0)
             {
-                RunLanguageServer(spec, variables).GetAwaiter().GetResult();
+                RunLanguageServer(docsetPath, spec, package, variables).GetAwaiter().GetResult();
             }
             else if (spec.Locale != null)
             {
@@ -190,9 +190,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
+        private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package, Dictionary<string, string> variables)
         {
-            var lspTestHost = new LanguageServerTestHost(variables);
+            var lspTestHost = new LanguageServerTestHost(docsetPath, variables, package);
 
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {
@@ -203,7 +203,10 @@ namespace Microsoft.Docs.Build
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
+                    // The order or mutiple expected notifications should be ignored.
                     var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
+                    expectedNotification.Params = TestUtility.ApplyVariables(lspSpec.Params, variables);
+
                     var actualNotification = await lspTestHost.GetExpectedNotification(expectedNotification.Method);
                     s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
                 }
@@ -289,6 +292,7 @@ namespace Microsoft.Docs.Build
                 .UseAdditionalProperties()
                 .UseNegate()
                 .UseWildcard()
+                .Use(IsFileUri, NormalizeFileUri)
                 .Build();
         }
 
@@ -333,6 +337,27 @@ namespace Microsoft.Docs.Build
                 actualHtml = Regex.Replace(actualHtml, " data-linktype=\".*?\"", "");
             }
             return (expectedHtml, actualHtml);
+        }
+
+        private static bool IsFileUri(JToken expected, JToken actual, string name)
+        {
+            return name.Equals("uri", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static (JToken expected, JToken actual) NormalizeFileUri(JToken expected, JToken actual, string name, JsonDiff diff)
+        {
+            if (PathUtility.IsCaseSensitive)
+            {
+                return (expected, actual);
+            }
+
+            var expectedUri = expected.Value<string>();
+            var actualUri = actual.Value<string>();
+            if (string.IsNullOrEmpty(expectedUri) || string.IsNullOrEmpty(actualUri))
+            {
+                return (expectedUri, actualUri);
+            }
+            return (expectedUri.ToLower(), actualUri.ToLower());
         }
 
         private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder, JsonDiff jsonDiff)
