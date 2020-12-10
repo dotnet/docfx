@@ -1,8 +1,10 @@
-Version Notes (Current Version: v2.57)
+Version Notes (Current Version: v2.56.6)
 =======================================
 
-v2.57(Pre-release)
+v2.56.6
 -----------
+1. Fix invalid table generation in XML documentation comments. Thanks @georgius! (#6864)
+2. Silently downgrade the error for not supported JSON schema key words temporarily. (#6870)
 
 v2.56.5
 -----------
