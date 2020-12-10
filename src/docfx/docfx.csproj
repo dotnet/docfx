@@ -21,7 +21,7 @@
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.312" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.9" />
-    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.23" />
+    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.768" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.72" Aliases="maml" />
     <PackageReference Include="Microsoft.Graph" Version="3.21.0" />
