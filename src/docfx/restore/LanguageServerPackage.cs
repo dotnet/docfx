@@ -18,10 +18,10 @@ namespace Microsoft.Docs.Build
 
         private MemoryPackage MemoryPackage => (_packages[0] as MemoryPackage)!;
 
-        public LanguageServerPackage(MemoryPackage memoryPackage, LocalPackage localPackage)
+        public LanguageServerPackage(MemoryPackage memoryPackage, Package fallbackPackage)
         {
             _packages.Add(memoryPackage);
-            _packages.Add(localPackage);
+            _packages.Add(fallbackPackage);
             Debug.Assert(_packages.All(pkg => pkg.BasePath == _packages[0].BasePath));
 
             _lastPackageFilesUpdateTime = DateTime.UtcNow;
@@ -29,11 +29,9 @@ namespace Microsoft.Docs.Build
 
         public void AddOrUpdate(PathString path, string content) => MemoryPackage.AddOrUpdate(path, content);
 
-        public void RemoveFile(PathString path) => MemoryPackage.RemoveFile(path);
-
-        public void UpdatePackageFilesUpdateTime() => _lastPackageFilesUpdateTime = DateTime.UtcNow;
-
         public override bool Exists(PathString path) => Watcher.Watch(() => _packages.Any(pkg => pkg.Exists(path)));
+
+        public IEnumerable<PathString> GetAllFilesInMemory() => MemoryPackage.GetAllFilesInMemory();
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
             => Watcher.Watch(
@@ -66,6 +64,10 @@ namespace Microsoft.Docs.Build
              => Watcher.Watch(
                 () => _packages.First((pkg) => pkg.Exists(path)).ReadStream(path),
                 () => TryGetLastWriteTimeUtc(path));
+
+        public void RefreshPackageFilesUpdateTime() => _lastPackageFilesUpdateTime = DateTime.UtcNow;
+
+        public void RemoveFile(PathString path) => MemoryPackage.RemoveFile(path);
 
         public override PathString? TryGetPhysicalPath(PathString path)
             => Watcher.Watch(() =>
