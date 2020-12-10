@@ -120,14 +120,16 @@ namespace Microsoft.Docs.Build
 
                     if (item.Value.LandingPageType.Value != null)
                     {
-                        if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
-                        {
-                            childHref = null;
-                        }
-
                         if (!string.IsNullOrEmpty(childHref))
                         {
-                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                            if (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile)
+                            {
+                                childHref = null;
+                            }
+                            else
+                            {
+                                childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                            }
                         }
                         else
                         {
@@ -185,7 +187,8 @@ namespace Microsoft.Docs.Build
             var childHrefFullPath = Path.Combine(referenceTOCFullPath, childHref);
             var childHrefRelativeToDocset = Path.GetRelativePath(_docsetPath, childHrefFullPath);
 
-            if (_input.ExistInGeneratedContents(childHrefRelativeToDocset, out var filePath))
+            var filePath = _input.GetFirstMatchInSplitToc(childHrefRelativeToDocset);
+            if (filePath != null)
             {
                 var node = _tocParser.Parse(filePath!, _errors);
                 return GetSubTocFirstUid(node);

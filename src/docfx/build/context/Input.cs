@@ -78,20 +78,18 @@ namespace Microsoft.Docs.Build
             return package.Exists(path);
         }
 
-        public bool ExistInGeneratedContents(string pathString, out FilePath? filePath)
+        public FilePath? GetFirstMatchInSplitToc(string pathString)
         {
             var path = new PathString(pathString);
             foreach (var (k, _) in _generatedContents)
             {
                 if (k.Path.Value.Equals(path))
                 {
-                    filePath = k;
-                    return true;
+                    return k;
                 }
             }
 
-            filePath = null;
-            return false;
+            return null;
         }
 
         /// <summary>
