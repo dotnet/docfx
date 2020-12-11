@@ -7,12 +7,12 @@ namespace Microsoft.Docs.Build
 {
     internal class JoinTOCConfig
     {
-        public PathString OutputFolder { get; private set; }
+        public PathString OutputFolder { get; init; }
 
-        public JObject? ContainerPageMetadata { get; private set; }
+        public JObject? ContainerPageMetadata { get; init; }
 
-        public string? ReferenceToc { get; private set; }
+        public string? ReferenceToc { get; init; }
 
-        public string? TopLevelToc { get; private set; }
+        public string? TopLevelToc { get; init; }
     }
 }
