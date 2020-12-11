@@ -11,10 +11,10 @@ namespace Microsoft.Docs.Build
     internal class TocMetadata
     {
         [JsonProperty(PropertyName = "monikerRange")]
-        public SourceInfo<string?> MonikerRange { get; private set; }
+        public SourceInfo<string?> MonikerRange { get; init; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string?>[]? Monikers { get; private set; }
+        public SourceInfo<string?>[]? Monikers { get; init; }
 
         public string? PdfAbsolutePath { get; set; }
 

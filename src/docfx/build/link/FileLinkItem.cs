@@ -8,32 +8,10 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class FileLinkItem : IEquatable<FileLinkItem>, IComparable<FileLinkItem>
+    internal record FileLinkItem(
+        [property: JsonIgnore] FilePath InclusionRoot, string SourceUrl, string? SourceMonikerGroup, string TargetUrl, string? SourceGitUrl, int SourceLine)
+        : IComparable<FileLinkItem>
     {
-        [JsonIgnore]
-        public FilePath InclusionRoot { get; }
-
-        public string? SourceGitUrl { get; }
-
-        public int SourceLine { get; }
-
-        public string SourceUrl { get; }
-
-        public string? SourceMonikerGroup { get; }
-
-        public string TargetUrl { get; }
-
-        public FileLinkItem(
-            FilePath inclusionRoot, string sourceUrl, string? sourceMonikerGroup, string targetUrl, string? sourceGitUrl, int sourceLine)
-        {
-            InclusionRoot = inclusionRoot;
-            SourceUrl = sourceUrl;
-            SourceGitUrl = sourceGitUrl;
-            SourceMonikerGroup = sourceMonikerGroup;
-            TargetUrl = targetUrl;
-            SourceLine = sourceLine;
-        }
-
         public int CompareTo(FileLinkItem? other)
         {
             if (other is null)
@@ -56,22 +34,5 @@ namespace Microsoft.Docs.Build
             }
             return result;
         }
-
-        public bool Equals(FileLinkItem? other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return SourceUrl == other.SourceUrl
-                && TargetUrl == other.TargetUrl
-                && SourceMonikerGroup == other.SourceMonikerGroup
-                && SourceLine == other.SourceLine;
-        }
-
-        public override bool Equals(object? obj) => Equals(obj as FileLinkItem);
-
-        public override int GetHashCode() => HashCode.Combine(SourceUrl, TargetUrl, SourceMonikerGroup);
     }
 }

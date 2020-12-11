@@ -25,36 +25,36 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the default site name
         /// </summary>
-        public string SiteName { get; private set; } = "Docs";
+        public string SiteName { get; init; } = "Docs";
 
         /// <summary>
         /// Gets the default product name
         /// </summary>
-        public string Product { get; private set; } = "";
+        public string Product { get; init; } = "";
 
         /// <summary>
         /// Gets the file glob patterns included by the docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Files { get; private set; } = DefaultInclude;
+        public string[] Files { get; init; } = DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from this docset.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Exclude { get; private set; } = Array.Empty<string>();
+        public string[] Exclude { get; init; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets content build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public FileMappingConfig[] Content { get; private set; } = Array.Empty<FileMappingConfig>();
+        public FileMappingConfig[] Content { get; init; } = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets resource build scope config for v2 backward compatibility.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public FileMappingConfig[] Resource { get; private set; } = Array.Empty<FileMappingConfig>();
+        public FileMappingConfig[] Resource { get; init; } = Array.Empty<FileMappingConfig>();
 
         /// <summary>
         /// Gets moniker range group configuration for v2 backward compatibility.
@@ -64,55 +64,55 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets output file type
         /// </summary>
-        public OutputType OutputType { get; private set; } = OutputType.Html;
+        public OutputType OutputType { get; init; } = OutputType.Html;
 
         /// <summary>
         /// For backward compatibility.
         /// Gets whether to generate `_op_pdfUrlPrefixTemplate` property in legacy metadata conversion.
         /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
         /// </summary>
-        public bool OutputPdf { get; private set; }
+        public bool OutputPdf { get; init; }
 
         /// <summary>
         /// Gets Output Url type
         /// </summary>
-        public UrlType UrlType { get; private set; } = UrlType.Pretty;
+        public UrlType UrlType { get; init; } = UrlType.Pretty;
 
         /// <summary>
         /// Gets whether to lowercase all URLs and output file path.
         /// </summary>
-        public bool LowerCaseUrl { get; private set; } = true;
+        public bool LowerCaseUrl { get; init; } = true;
 
         /// <summary>
         /// Gets whether dependencies such as images and template styles
         /// are copied to output so the output folder can be deployed as a self-contained website.
         /// </summary>
-        public bool SelfContained { get; private set; } = true;
+        public bool SelfContained { get; init; } = true;
 
         /// <summary>
         /// Gets the maximum errors of each file to output.
         /// </summary>
-        public int MaxFileErrors { get; private set; } = 100;
+        public int MaxFileErrors { get; init; } = 100;
 
         /// <summary>
         /// Gets the maximum warnings of each file to output.
         /// </summary>
-        public int MaxFileWarnings { get; private set; } = 1000;
+        public int MaxFileWarnings { get; init; } = 1000;
 
         /// <summary>
         /// Gets the maximum suggestions of each file to output.
         /// </summary>
-        public int MaxFileSuggestions { get; private set; } = 1000;
+        public int MaxFileSuggestions { get; init; } = 1000;
 
         /// <summary>
         /// Gets the maximum info of each file to output.
         /// </summary>
-        public int MaxFileInfos { get; private set; } = 20;
+        public int MaxFileInfos { get; init; } = 20;
 
         /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
-        public GlobalMetadata GlobalMetadata { get; private set; } = new GlobalMetadata();
+        public GlobalMetadata GlobalMetadata { get; init; } = new GlobalMetadata();
 
         /// <summary>
         /// Gets the {Schema}://{HostName}
@@ -127,12 +127,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets host name used for generating .xrefmap.json
         /// </summary>
-        public string XrefHostName { get; private set; } = "";
+        public string XrefHostName { get; init; } = "";
 
         /// <summary>
         /// Gets whether we are running in dry run mode
         /// </summary>
-        public bool DryRun { get; private set; }
+        public bool DryRun { get; init; }
 
         /// <summary>
         /// Gets the file metadata added to each document.
@@ -150,12 +150,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Specify the repository url for contribution
         /// </summary>
-        public string? EditRepositoryUrl { get; private set; }
+        public string? EditRepositoryUrl { get; init; }
 
         /// <summary>
         /// Specify the repository branch for contribution
         /// </summary>
-        public string? EditRepositoryBranch { get; private set; }
+        public string? EditRepositoryBranch { get; init; }
 
         /// <summary>
         /// The excluded contributors which you don't want to show
@@ -182,14 +182,14 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets whether warnings should be treated as errors.
         /// </summary>
-        public bool WarningsAsErrors { get; private set; }
+        public bool WarningsAsErrors { get; init; }
 
         /// <summary>
         /// The addresses of xref map files, used for resolving xref.
         /// They should be absolute url or relative path
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string>[] Xref { get; private set; } = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] Xref { get; init; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Gets the moniker range mapping
@@ -200,135 +200,135 @@ namespace Microsoft.Docs.Build
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public SourceInfo<string> MonikerDefinition { get; private set; } = new SourceInfo<string>("");
+        public SourceInfo<string> MonikerDefinition { get; init; } = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
-        public SourceInfo<string> MarkdownValidationRules { get; private set; } = new SourceInfo<string>("");
+        public SourceInfo<string> MarkdownValidationRules { get; init; } = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the file path of build validation rules
         /// </summary>
-        public SourceInfo<string> BuildValidationRules { get; private set; } = new SourceInfo<string>("");
+        public SourceInfo<string> BuildValidationRules { get; init; } = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the file path of allow lists
         /// </summary>
-        public SourceInfo<string> Allowlists { get; private set; } = new SourceInfo<string>("");
+        public SourceInfo<string> Allowlists { get; init; } = new SourceInfo<string>("");
 
         /// <summary>
         /// Get the metadata JSON schema file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string>[] MetadataSchema { get; private set; } = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] MetadataSchema { get; init; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Get the template folder or git repository url (like https://github.com/docs/theme#master)
         /// </summary>
-        public PackagePath Template { get; private set; } = new PackagePath();
+        public PackagePath Template { get; init; } = new PackagePath();
 
         /// <summary>
         /// Get the template base path used for referencing the template resource file when apply liquid.
         /// If not provided, referencing to template resource file will be resolved to physical absolute path.
         /// </summary>
-        public string? TemplateBasePath { get; private set; }
+        public string? TemplateBasePath { get; init; }
 
         /// <summary>
         /// Gets the search index type like [lunr](https://lunrjs.com/)
         /// </summary>
-        public SearchEngineType SearchEngine { get; private set; }
+        public SearchEngineType SearchEngine { get; init; }
 
         /// <summary>
         /// When enabled, updated_at for each document will be the last build time
         /// for the latest commit that touches that document.
         /// </summary>
-        public bool UpdateTimeAsCommitBuildTime { get; private set; }
+        public bool UpdateTimeAsCommitBuildTime { get; init; }
 
         /// <summary>
         /// When enabled, update the state of commit build time for this build.
         /// </summary>
-        public bool UpdateCommitBuildTime { get; private set; } = true;
+        public bool UpdateCommitBuildTime { get; init; } = true;
 
         /// <summary>
         /// Overwrite current <see cref="CommitBuildTimeProvider._buildTime"/>
         /// </summary>
-        public DateTime? BuildTime { get; private set; }
+        public DateTime? BuildTime { get; init; }
 
         /// <summary>
         /// Token that can be used to access the GitHub API.
         /// </summary>
-        public string GithubToken { get; private set; } = "";
+        public string GithubToken { get; init; } = "";
 
         /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
-        public int GithubUserCacheExpirationInHours { get; private set; } = 30 * 24;
+        public int GithubUserCacheExpirationInHours { get; init; } = 30 * 24;
 
         /// <summary>
         /// Determines whether to resolve git commit user and GitHub user.
         /// We only resolve github user when an <see cref="GithubToken"/> is provided.
         /// </summary>
-        public bool ResolveGithubUsers { get; private set; } = true;
+        public bool ResolveGithubUsers { get; init; } = true;
 
         /// <summary>
         /// Determines how long at most an alias remains valid in cache.
         /// </summary>
-        public int MicrosoftGraphCacheExpirationInHours { get; private set; } = 30 * 24;
+        public int MicrosoftGraphCacheExpirationInHours { get; init; } = 30 * 24;
 
         /// <summary>
         /// Tenant id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphTenantId { get; private set; } = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+        public string MicrosoftGraphTenantId { get; init; } = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 
         /// <summary>
         /// Client id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphClientId { get; private set; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
+        public string MicrosoftGraphClientId { get; init; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
 
         /// <summary>
         /// Client secret that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphClientSecret { get; private set; } = "";
+        public string MicrosoftGraphClientSecret { get; init; } = "";
 
         /// <summary>
         /// A file containing a map of file path to the original file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string>[] SourceMap { get; private set; } = Array.Empty<SourceInfo<string>>();
+        public SourceInfo<string>[] SourceMap { get; init; } = Array.Empty<SourceInfo<string>>();
 
         /// <summary>
         /// Determines if remove host name
         /// </summary>
-        public bool RemoveHostName { get; private set; }
+        public bool RemoveHostName { get; init; }
 
         /// <summary>
         /// Determines if run learn-validation as post process
         /// </summary>
-        public bool RunLearnValidation { get; private set; }
+        public bool RunLearnValidation { get; init; }
 
         /// <summary>
         /// Determines if disable dry sync
         /// </summary>
-        public bool NoDrySync { get; private set; }
+        public bool NoDrySync { get; init; }
 
         /// <summary>
         /// Determines and configures build to consume XML files produced from monodoc
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public ECMA2YamlRepoConfig[]? Monodoc { get; private set; }
+        public ECMA2YamlRepoConfig[]? Monodoc { get; init; }
 
         /// <summary>
         /// Determines and configures build to convert MAML markdown files to SDP yaml files as input
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? MAMLMonikerPath { get; private set; }
+        public string[]? MAMLMonikerPath { get; init; }
 
-        public JoinTOCConfig[] JoinTOC { get; private set; } = Array.Empty<JoinTOCConfig>();
+        public JoinTOCConfig[] JoinTOC { get; init; } = Array.Empty<JoinTOCConfig>();
 
-        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
+        public HashSet<PathString> SplitTOC { get; init; } = new HashSet<PathString>();
 
-        public HashSet<string> RedirectionFiles { get; private set; } = new HashSet<string>();
+        public HashSet<string> RedirectionFiles { get; init; } = new HashSet<string>();
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
