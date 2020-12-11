@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             var path = new PathString(pathString);
             foreach (var (k, _) in _generatedContents)
             {
-                if (k.Path.Value.Equals(path))
+                if (k.Path.Value == path)
                 {
                     return k;
                 }

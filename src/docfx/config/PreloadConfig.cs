@@ -63,16 +63,18 @@ namespace Microsoft.Docs.Build
 
             return message =>
             {
-                var url = message.RequestUri.ToString();
-                foreach (var (baseUrl, rule) in rules)
+                if (message.RequestUri?.ToString() is string url)
                 {
-                    if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
+                    foreach (var (baseUrl, rule) in rules)
                     {
-                        foreach (var header in rule.Headers)
+                        if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
                         {
-                            message.Headers.Add(header.Key, header.Value);
+                            foreach (var header in rule.Headers)
+                            {
+                                message.Headers.Add(header.Key, header.Value);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             };

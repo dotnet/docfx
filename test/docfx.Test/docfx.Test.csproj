@@ -4,6 +4,7 @@
     <FodyGenerateXsd>false</FodyGenerateXsd>
     <IsPackable>false</IsPackable>
     <Nullable>disable</Nullable>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <Exclude>[xunit.*]*,[*.Views]*,[*]ChakraHost.Hosting.*</Exclude>
   </PropertyGroup>
 

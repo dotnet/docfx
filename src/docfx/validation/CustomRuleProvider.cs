@@ -116,7 +116,9 @@ namespace Microsoft.Docs.Build
                         // compare with code + propertyPath + contentType
                         var source = error.Source?.File;
                         var pageType = source != null ? _documentProvider.GetPageType(source) : null;
-                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) && rule.ContentTypes.Contains(pageType))
+                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) &&
+                            rule.ContentTypes != null &&
+                            rule.ContentTypes.Contains(pageType))
                         {
                             customRule = rule;
                             return true;

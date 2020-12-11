@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void TrackGitHubRateLimit(string remaining)
+        public static void TrackGitHubRateLimit(string? remaining)
         {
             s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId);
         }
