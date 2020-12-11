@@ -76,12 +76,13 @@ namespace Microsoft.Docs.Build
             // validate link
             if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
             {
+                var parentSourceInfoList = origin != null ? origin.GetInclusionStack() : new List<object?>();
                 Write(_validator.ValidateLink(
                     new Link
                     {
                         UrlLink = link,
                         SourceInfo = link.Source,
-                        ParentSourceInfoList = origin != null ? origin.GetInclusionStack() : new List<object?>(),
+                        ParentSourceInfoList = parentSourceInfoList,
                         Monikers = origin?.GetZoneLevelMonikers(),
                         ZonePivots = origin?.GetZonePivots(),
                         TabbedConceptualHeader = origin?.GetTabId(),
