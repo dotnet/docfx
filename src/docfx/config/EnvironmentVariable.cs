@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
 
+        public static string? OPSBuildUserToken => GetValue("DOCFX_OPS_BUILD_USER_TOKEN");
+
         private static string? GetValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);

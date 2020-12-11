@@ -334,14 +334,20 @@ namespace Microsoft.Docs.Build
                 // For development usage
                 try
                 {
-                    var token = (environment ?? DocsEnvironment) switch
+                    var token = EnvironmentVariable.OPSBuildUserToken;
+                    if (string.IsNullOrEmpty(token))
                     {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
-                        _ => throw new InvalidOperationException(),
-                    };
+#pragma warning disable SA1119 // Statement should not use unnecessary parenthesis
+                        token = await ((environment ?? DocsEnvironment) switch
+                            {
+                                DocsEnvironment.Prod => s_opsTokenProd,
+                                DocsEnvironment.PPE => s_opsTokenSandbox,
+                                _ => throw new InvalidOperationException(),
+                            }).Value;
+#pragma warning restore SA1119 // Statement should not use unnecessary parenthesis
+                    }
 
-                    request.Headers.Add("X-OP-BuildUserToken", await token.Value);
+                    request.Headers.Add("X-OP-BuildUserToken", token);
                 }
                 catch (Exception ex)
                 {
