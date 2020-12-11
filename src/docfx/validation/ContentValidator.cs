@@ -71,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin)
+        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject? origin)
         {
             // validate link
             if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
@@ -81,10 +81,10 @@ namespace Microsoft.Docs.Build
                     {
                         UrlLink = link,
                         SourceInfo = link.Source,
-                        ParentSourceInfoList = origin.GetInclusionStack(),
-                        Monikers = origin.GetZoneLevelMonikers(),
-                        ZonePivots = origin.GetZonePivots(),
-                        TabbedConceptualHeader = origin.GetTabId(),
+                        ParentSourceInfoList = origin != null ? origin.GetInclusionStack() : new List<object?>(),
+                        Monikers = origin?.GetZoneLevelMonikers(),
+                        ZonePivots = origin?.GetZonePivots(),
+                        TabbedConceptualHeader = origin?.GetTabId(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }

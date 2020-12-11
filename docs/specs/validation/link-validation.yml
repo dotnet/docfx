@@ -446,7 +446,9 @@ inputs:
     }
   file1.md: |
     [external link](https://go.microsoft.com/fwlink/p/?LinkId=389595)
+    <a href="https://go.microsoft.com/fwlink/p/?LinkId=666">inline html link</a>
 outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=389595' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=666' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":55}
   file1.json:

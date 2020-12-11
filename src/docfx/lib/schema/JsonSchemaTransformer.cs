@@ -425,7 +425,7 @@ namespace Microsoft.Docs.Build
 
                     return HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                     {
-                        HtmlUtility.TransformLink(ref token, null, href =>
+                        HtmlUtility.TransformLink(ref token, null, (href, _) =>
                         {
                             var source = new SourceInfo<string>(href, content.Source?.WithOffset(href.Source));
                             var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);
