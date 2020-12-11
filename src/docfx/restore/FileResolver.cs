@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
         {
+            CheckCertificateRevocationList = true,
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         });
 
@@ -185,7 +186,7 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)) ?? ".");
 
                 File.Move(tempFile, filePath, overwrite: true);
 

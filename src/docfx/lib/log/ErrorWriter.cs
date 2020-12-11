@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
         {
             var outputFilePath = Path.GetFullPath(outputPath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath) ?? ".");
 
             return File.AppendText(outputFilePath);
         }

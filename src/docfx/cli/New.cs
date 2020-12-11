@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetFullPath));
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetFullPath) ?? ".");
                     File.Copy(file, targetFullPath, overwrite: options.Force);
                 }
             }

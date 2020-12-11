@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Version>2.56.1</Version>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <nullable>disable</nullable>
   </PropertyGroup>
 

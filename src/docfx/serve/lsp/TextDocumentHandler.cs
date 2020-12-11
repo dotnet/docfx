@@ -10,14 +10,12 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
 
 namespace Microsoft.Docs.Build
 {
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
-        private readonly ILanguageServerFacade _languageServer;
         private readonly Channel<FileActionEvent> _channel;
 
         private readonly DocumentSelector _documentSelector = new DocumentSelector(
@@ -26,9 +24,8 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(ILanguageServerFacade languageServer, Channel<FileActionEvent> channel)
+        public TextDocumentHandler(Channel<FileActionEvent> channel)
         {
-            _languageServer = languageServer;
             _channel = channel;
         }
 
@@ -38,7 +35,6 @@ namespace Microsoft.Docs.Build
         {
             _channel.Writer.TryWrite(
                 new FileActionEvent(FileActionType.Updated, notification.TextDocument.Uri.GetFileSystemPath(), notification.ContentChanges.First().Text));
-
             return Unit.Task;
         }
 

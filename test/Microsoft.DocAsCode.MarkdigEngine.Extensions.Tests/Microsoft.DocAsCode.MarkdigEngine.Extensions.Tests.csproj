@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <nullable>disable</nullable>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>

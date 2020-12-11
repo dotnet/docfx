@@ -263,9 +263,10 @@ namespace Microsoft.Docs.Build
             static string GetSecretFromHeader(KeyValuePair<string, string> header)
             {
                 if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
-                    AuthenticationHeaderValue.TryParse(header.Value, out var value))
+                    AuthenticationHeaderValue.TryParse(header.Value, out var value) &&
+                    value.Parameter is string parameter)
                 {
-                    return value.Parameter;
+                    return parameter;
                 }
                 return header.Value;
             }

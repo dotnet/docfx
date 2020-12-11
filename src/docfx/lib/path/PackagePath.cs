@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
 
         public string Branch { get; private set; } = "main";
 
-        public bool IsMainOrMaster => "main".Equals(Branch) || "master".Equals(Branch);
+        public bool IsMainOrMaster => Branch == "main" || Branch == "master";
 
         public PackagePath()
         {
@@ -83,8 +83,8 @@ namespace Microsoft.Docs.Build
 
             return Type == other.Type &&
                    Url == other.Url &&
-                   Branch.Equals(other.Branch) &&
-                   Path.Equals(other.Path);
+                   Branch == other.Branch &&
+                   Path == other.Path;
         }
 
         public override bool Equals(object? obj) => obj is PackagePath path && Equals(path);

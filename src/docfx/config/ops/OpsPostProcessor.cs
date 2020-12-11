@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
 
         private bool IsSharedItem(string uid, string schemaType)
         {
-            return _externalXrefs.Any(xref => xref.Uid.Equals(uid) && schemaType.Equals(xref.SchemaType));
+            return _externalXrefs.Any(xref => xref.Uid == uid && schemaType == xref.SchemaType);
         }
     }
 }
