@@ -334,14 +334,19 @@ namespace Microsoft.Docs.Build
                 // For development usage
                 try
                 {
-                    var token = (environment ?? DocsEnvironment) switch
+                    var token = EnvironmentVariable.DocsOpsToken;
+                    if (string.IsNullOrEmpty(token))
                     {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
-                        _ => throw new InvalidOperationException(),
-                    };
+                        var tokenTask = (environment ?? DocsEnvironment) switch
+                        {
+                            DocsEnvironment.Prod => s_opsTokenProd,
+                            DocsEnvironment.PPE => s_opsTokenSandbox,
+                            _ => throw new InvalidOperationException(),
+                        };
+                        token = await tokenTask.Value;
+                    }
 
-                    request.Headers.Add("X-OP-BuildUserToken", await token.Value);
+                    request.Headers.Add("X-OP-BuildUserToken", token);
                 }
                 catch (Exception ex)
                 {
