@@ -331,14 +331,14 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            _contentValidator.ValidateImageLink(GetRootFilePath(), href, origin, altText, imageIndex);
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, true, altText, imageIndex);
             var link = GetLink(href, origin);
             return link;
         }
 
-        private string GetLink(SourceInfo<string> href, MarkdownObject? origin)
+        private string GetLink(SourceInfo<string> href, MarkdownObject origin)
         {
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin);
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, false, null, -1);
             var status = t_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);

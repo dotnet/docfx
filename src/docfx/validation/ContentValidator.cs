@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 fileResolver.ResolveFilePath(_config.Allowlists));
         }
 
-        public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)
+        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
         {
             // validate image link and altText here
             if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
@@ -60,32 +60,13 @@ namespace Microsoft.Docs.Build
                     {
                         UrlLink = link,
                         AltText = altText,
-                        IsImage = true,
+                        IsImage = isImage,
                         IsInlineImage = origin.IsInlineImage(imageIndex),
                         SourceInfo = link.Source,
                         ParentSourceInfoList = origin.GetInclusionStack(),
                         Monikers = origin.GetZoneLevelMonikers(),
                         ZonePivots = origin.GetZonePivots(),
                         TabbedConceptualHeader = origin.GetTabId(),
-                    }, validationContext).GetAwaiter().GetResult());
-            }
-        }
-
-        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject? origin)
-        {
-            // validate link
-            if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
-            {
-                var parentSourceInfoList = origin != null ? origin.GetInclusionStack() : new List<object?>();
-                Write(_validator.ValidateLink(
-                    new Link
-                    {
-                        UrlLink = link,
-                        SourceInfo = link.Source,
-                        ParentSourceInfoList = parentSourceInfoList,
-                        Monikers = origin?.GetZoneLevelMonikers(),
-                        ZonePivots = origin?.GetZonePivots(),
-                        TabbedConceptualHeader = origin?.GetTabId(),
                     }, validationContext).GetAwaiter().GetResult());
             }
         }
