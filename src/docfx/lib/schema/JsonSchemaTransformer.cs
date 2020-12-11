@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
             {
-                var references = _xrefList.Where(item => item.xref.Value.Equals(uid.Value)).Select(item => item.xref.Source).ToArray();
+                var references = _xrefList.Where(item => item.xref == uid).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {

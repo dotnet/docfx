@@ -143,9 +143,9 @@ namespace Microsoft.Docs.Build
                     DefineCommonOptions(syntax, ref workingDirectory, options);
                 });
 
-                if (options.Stdin)
+                if (options.Stdin && Console.ReadLine() is string stdin)
                 {
-                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(Console.ReadLine(), new FilePath("--stdin"));
+                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
                 }
 
                 return (command, Path.GetFullPath(workingDirectory), options);
@@ -261,14 +261,14 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
             }
         }
 
-        private static string GetDotnetVersion()
+        private static string? GetDotnetVersion()
         {
             try
             {
                 var process = Process.Start(
                     new ProcessStartInfo { FileName = "dotnet", Arguments = "--version", RedirectStandardOutput = true });
-                process.WaitForExit(2000);
-                return process.StandardOutput.ReadToEnd().Trim();
+                process?.WaitForExit(2000);
+                return process?.StandardOutput.ReadToEnd().Trim();
             }
             catch (Exception ex)
             {
@@ -276,14 +276,14 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
             }
         }
 
-        private static string GetGitVersion()
+        private static string? GetGitVersion()
         {
             try
             {
                 var process = Process.Start(
                     new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
-                process.WaitForExit(2000);
-                return process.StandardOutput.ReadToEnd().Trim();
+                process?.WaitForExit(2000);
+                return process?.StandardOutput.ReadToEnd().Trim();
             }
             catch (Exception ex)
             {

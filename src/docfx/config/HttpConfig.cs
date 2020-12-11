@@ -7,6 +7,6 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class HttpConfig
     {
-        public Dictionary<string, string> Headers { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Headers { get; init; } = new Dictionary<string, string>();
     }
 }

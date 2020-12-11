@@ -55,19 +55,19 @@ namespace Microsoft.Docs.Build
             // validate image link and altText here
             if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateLink(
-                    new Link
-                    {
-                        UrlLink = link,
-                        AltText = altText,
-                        IsImage = isImage,
-                        IsInlineImage = origin.IsInlineImage(imageIndex),
-                        SourceInfo = link.Source,
-                        ParentSourceInfoList = origin.GetInclusionStack(),
-                        Monikers = origin.GetZoneLevelMonikers(),
-                        ZonePivots = origin.GetZonePivots(),
-                        TabbedConceptualHeader = origin.GetTabId(),
-                    }, validationContext).GetAwaiter().GetResult());
+                var item = new Link
+                {
+                    UrlLink = link,
+                    AltText = altText,
+                    IsImage = isImage,
+                    IsInlineImage = origin.IsInlineImage(imageIndex),
+                    SourceInfo = link.Source,
+                    ParentSourceInfoList = origin.GetInclusionStack(),
+                    Monikers = origin.GetZoneLevelMonikers(),
+                    ZonePivots = origin.GetZonePivots(),
+                    TabbedConceptualHeader = origin.GetTabId(),
+                };
+                Write(_validator.ValidateLink(item, validationContext).GetAwaiter().GetResult());
             }
         }
 

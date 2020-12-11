@@ -12,33 +12,33 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsConfig
     {
-        public OpsDocsetConfig[] DocsetsToPublish { get; private set; } = Array.Empty<OpsDocsetConfig>();
+        public OpsDocsetConfig[] DocsetsToPublish { get; init; } = Array.Empty<OpsDocsetConfig>();
 
-        public HashSet<string> RedirectionFiles { get; private set; } = new HashSet<string>();
+        public HashSet<string> RedirectionFiles { get; init; } = new HashSet<string>();
 
-        public OpsDependencyConfig[] DependentRepositories { get; private set; } = Array.Empty<OpsDependencyConfig>();
+        public OpsDependencyConfig[] DependentRepositories { get; init; } = Array.Empty<OpsDependencyConfig>();
 
-        public string? GitRepositoryBranchOpenToPublicContributors { get; private set; }
+        public string? GitRepositoryBranchOpenToPublicContributors { get; init; }
 
-        public string? GitRepositoryUrlOpenToPublicContributors { get; private set; }
+        public string? GitRepositoryUrlOpenToPublicContributors { get; init; }
 
-        public bool NeedGeneratePdfUrlTemplate { get; private set; }
+        public bool NeedGeneratePdfUrlTemplate { get; init; }
 
-        public string? XrefEndpoint { get; private set; }
+        public string? XrefEndpoint { get; init; }
 
         [JsonProperty(nameof(JoinTOCPlugin))]
-        public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
+        public OpsJoinTocConfig[]? JoinTOCPlugin { get; init; }
 
         [JsonProperty(nameof(SplitTOC))]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public PathString[] SplitTOC { get; private set; } = Array.Empty<PathString>();
+        public PathString[] SplitTOC { get; init; } = Array.Empty<PathString>();
 
         [JsonProperty(nameof(ECMA2Yaml))]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; private set; }
+        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; init; }
 
         [JsonProperty("monikerPath")]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? MonikerPath { get; set; }
+        public string[]? MonikerPath { get; init; }
     }
 }

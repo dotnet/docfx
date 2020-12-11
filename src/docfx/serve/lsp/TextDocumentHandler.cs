@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             {
                 Type = MessageType.Info,
                 Message = $"File change detected on file `{System.IO.Path.GetFileName(notification.TextDocument.Uri.GetFileSystemPath())}` "
-                        + $"with latest content '{TakeSubString(notification.ContentChanges.FirstOrDefault().Text, 10)}'",
+                        + $"with latest content '{TakeSubString(notification.ContentChanges.First().Text, 10)}'",
             });
             return Unit.Task;
         }

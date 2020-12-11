@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (baseUrl, rule) in _apis)
             {
-                if (request.RequestUri.OriginalString.StartsWith(baseUrl))
+                if (request.RequestUri is Uri uri && uri.ToString().StartsWith(baseUrl))
                 {
                     return new HttpResponseMessage { Content = new StringContent(await rule(request.RequestUri)) };
                 }
@@ -66,12 +66,12 @@ namespace Microsoft.Docs.Build
         private async Task<string> GetBuildConfig(Uri url)
         {
             var queries = HttpUtility.ParseQueryString(url.Query);
-            var name = queries["name"];
-            var repository = queries["repository_url"];
-            var branch = queries["branch"];
-            var locale = queries["locale"];
-            var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
+            var name = queries["name"] ?? "";
+            var repository = queries["repository_url"] ?? "";
+            var branch = queries["branch"] ?? "";
+            var locale = queries["locale"] ?? "";
+            var xrefEndpoint = queries["xref_endpoint"] ?? "";
+            var xrefQueryTags = (queries["xref_query_tags"] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
             var getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, new Lazy<Task<string>>(() => _opsAccessor.GetDocsetInfo(repository)));
             var docsetInfo = await getDocsetInfo.Value;
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
         {
             var queries = HttpUtility.ParseQueryString(url.Query);
 
-            return (queries["repository_url"], queries["branch"]);
+            return (queries["repository_url"] ?? "", queries["branch"] ?? "");
         }
 
         private static string GetHostName(string siteName)

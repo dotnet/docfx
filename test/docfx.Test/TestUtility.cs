@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             foreach (var file in files)
             {
                 var filePath = Path.GetFullPath(Path.Combine(path, file.Key));
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? ".");
                 if (file.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                 {
                     CreateZipFile(file, filePath);
