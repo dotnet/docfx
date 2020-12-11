@@ -34,10 +34,7 @@ namespace Microsoft.Docs.Build
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
 
-            if (package == null)
-            {
-                package = new LocalPackage(workingDirectory);
-            }
+            package ??= new LocalPackage(workingDirectory);
 
             new Builder(errors, workingDirectory, options, package).Build(files);
 

@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
         {
             var stdIn = Console.OpenStandardInput();
             var stdOut = Console.OpenStandardOutput();
+            ResetConsoleOutput();
 
             return StartLanguageServer(workingDirectory, options, PipeReader.Create(stdIn), PipeWriter.Create(stdOut), package);
         }
@@ -28,9 +29,6 @@ namespace Microsoft.Docs.Build
         public static Task<LanguageServer> StartLanguageServer(
             string workingDirectory, CommandLineOptions commandLineOptions, PipeReader input, PipeWriter output, Package? package = null)
         {
-            commandLineOptions.DryRun = true;
-            ResetConsoleOutput();
-
             return LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
@@ -49,11 +47,8 @@ namespace Microsoft.Docs.Build
                 var serviceProvider = server.Services;
                 var eventChannel = serviceProvider.GetService<Channel<FileActionEvent>>();
 
-                if (package == null)
-                {
-                    package = new LocalPackage(workingDirectory);
-                }
-                _ = new LanguageServerBuilder(workingDirectory, commandLineOptions, eventChannel, server, package).StartAsync();
+                package ??= new LocalPackage(workingDirectory);
+                _ = new LanguageServerBuilder(workingDirectory, commandLineOptions, eventChannel!, server, package).StartAsync();
                 return Task.CompletedTask;
             }
         }

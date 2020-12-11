@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Channels;
@@ -36,24 +37,17 @@ namespace Microsoft.Docs.Build
 
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
-            CancellationTokenSource cts = new CancellationTokenSource(60000);
-#if DEBUG
-            cts.Dispose();
-            cts = new CancellationTokenSource();
-#endif
-
-            using (cts)
+            var timeout = Debugger.IsAttached ? int.MaxValue : 60000;
+            using var cts = new CancellationTokenSource(timeout);
+            while (await _notifications.Reader.WaitToReadAsync(cts.Token))
             {
-                while (await _notifications.Reader.WaitToReadAsync(cts.Token))
+                var notification = await _notifications.Reader.ReadAsync();
+                if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
                 {
-                    var notification = await _notifications.Reader.ReadAsync();
-                    if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return notification;
-                    }
+                    return notification;
                 }
-                return default;
             }
+            return default;
         }
 
         private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package)

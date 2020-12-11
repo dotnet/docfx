@@ -25,6 +25,8 @@ namespace Microsoft.Docs.Build
         public LanguageServerBuilder(
             string workingDirectory, CommandLineOptions options, Channel<FileActionEvent> eventChannel, ILanguageServer languageServer, Package package)
         {
+            options.DryRun = true;
+
             _workingDirectory = new PathString(workingDirectory);
             _languageServer = languageServer;
             _errorList = new ErrorList();
@@ -42,9 +44,9 @@ namespace Microsoft.Docs.Build
                 {
                     switch (@event.Type)
                     {
-                        case FileActionType.Opened:
-                        case FileActionType.Updated:
-                            UpdateMemoryPackage(new PathString(@event.FilePath), @event.Content!);
+                        case FileActionType.Opened when @event.Content != null:
+                        case FileActionType.Updated when @event.Content != null:
+                            UpdateMemoryPackage(new PathString(@event.FilePath), @event.Content);
                             needRebuildFiles = true;
                             break;
                     }
@@ -86,10 +88,11 @@ namespace Microsoft.Docs.Build
             {
                 if (file.StartsWithPath(_workingDirectory, out var relativePath))
                 {
-                    var diagnostics = _errorList
-                        .Where(error => error.Source != null
-                            && error.Source.File.Path == relativePath)
-                        .Select(ConvertToDiagnostics);
+                    var diagnostics = from error in _errorList
+                                      let source = error.Source
+                                      where source != null && source.File.Path == relativePath
+                                      select ConvertToDiagnostics(error, source);
+
                     _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
                     {
                         Uri = DocumentUri.File(file),
@@ -99,9 +102,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Diagnostic ConvertToDiagnostics(Error error)
+        private static Diagnostic ConvertToDiagnostics(Error error, SourceInfo source)
         {
-            var source = error.Source!;
             return new Diagnostic
             {
                 Range = new Range(

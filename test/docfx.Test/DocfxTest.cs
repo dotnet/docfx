@@ -102,12 +102,12 @@ namespace Microsoft.Docs.Build
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
-            var outputPath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(basePath, "outputs")));
-            var markerPath = PathUtility.Normalize(Path.Combine(basePath, "marker"));
-            var appDataPath = PathUtility.Normalize(Path.Combine(basePath, "appdata"));
-            var cachePath = PathUtility.Normalize(Path.Combine(appDataPath, "cache"));
-            var statePath = PathUtility.Normalize(Path.Combine(appDataPath, "state"));
+            var basePath = NormalizePath(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
+            var outputPath = NormalizePath(Path.GetFullPath(Path.Combine(basePath, "outputs")));
+            var markerPath = NormalizePath(Path.Combine(basePath, "marker"));
+            var appDataPath = NormalizePath(Path.Combine(basePath, "appdata"));
+            var cachePath = NormalizePath(Path.Combine(appDataPath, "cache"));
+            var statePath = NormalizePath(Path.Combine(appDataPath, "state"));
 
             Directory.CreateDirectory(basePath);
 
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                     remote => remote.remote,
                     remote => Path.Combine(basePath, "repos", remote.index.ToString()));
 
-            var docsetPath = PathUtility.Normalize(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
+            var docsetPath = NormalizePath(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
 
             var variables = new Dictionary<string, string>
             {
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
-                    // The order or mutiple expected notifications should be ignored.
+                    // TODO: The order or multiple expected notifications should be ignored.
                     var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
                     expectedNotification.Params = TestUtility.ApplyVariables(lspSpec.Params, variables);
 
@@ -291,7 +291,6 @@ namespace Microsoft.Docs.Build
                 .UseAdditionalProperties()
                 .UseNegate()
                 .UseWildcard()
-                .Use(IsFileUri, NormalizeFileUri)
                 .Build();
         }
 
@@ -338,27 +337,6 @@ namespace Microsoft.Docs.Build
             return (expectedHtml, actualHtml);
         }
 
-        private static bool IsFileUri(JToken expected, JToken actual, string name)
-        {
-            return name.Equals("uri", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static (JToken expected, JToken actual) NormalizeFileUri(JToken expected, JToken actual, string name, JsonDiff diff)
-        {
-            if (PathUtility.IsCaseSensitive)
-            {
-                return (expected, actual);
-            }
-
-            var expectedUri = expected.Value<string>();
-            var actualUri = actual.Value<string>();
-            if (string.IsNullOrEmpty(expectedUri) || string.IsNullOrEmpty(actualUri))
-            {
-                return (expectedUri, actualUri);
-            }
-            return (expectedUri.ToLower(), actualUri.ToLower());
-        }
-
         private static JsonDiffBuilder UseLogFile(this JsonDiffBuilder builder, JsonDiff jsonDiff)
         {
             return builder.Use(
@@ -399,6 +377,16 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(os) ||
                 os.Split(',').Any(
                     item => RuntimeInformation.IsOSPlatform(OSPlatform.Create(item.Trim().ToUpperInvariant())));
+        }
+
+        private static string NormalizePath(string path)
+        {
+            var normalizedPath = PathUtility.Normalize(path);
+            if (!PathUtility.IsCaseSensitive)
+            {
+                normalizedPath = normalizedPath.ToLower();
+            }
+            return normalizedPath;
         }
     }
 }

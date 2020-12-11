@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class FileActionEvent
+    internal record FileActionEvent
     {
         public FileActionType Type { get; }
 
@@ -16,10 +16,6 @@ namespace Microsoft.Docs.Build
         public string? Content { get; }
 
         public FileActionEvent(FileActionType type, string filePath, string? content)
-        {
-            Type = type;
-            FilePath = filePath;
-            Content = content;
-        }
+            => (Type, FilePath, Content) = (type, filePath, content);
     }
 }
