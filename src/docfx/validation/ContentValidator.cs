@@ -71,6 +71,24 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin)
+        {
+            // validate link
+            if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
+            {
+                Write(_validator.ValidateLink(
+                    new Link
+                    {
+                        UrlLink = link,
+                        SourceInfo = link.Source,
+                        ParentSourceInfoList = origin.GetInclusionStack(),
+                        Monikers = origin.GetZoneLevelMonikers(),
+                        ZonePivots = origin.GetZonePivots(),
+                        TabbedConceptualHeader = origin.GetTabId(),
+                    }, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
         public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem)
         {
             if (TryCreateValidationContext(file, out var validationContext))

@@ -321,6 +321,7 @@ namespace Microsoft.Docs.Build
 
         private string GetLink(string path, MarkdownObject origin)
         {
+            _contentValidator.ValidateLink(GetRootFilePath(), new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
             var status = t_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(
                 new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), GetRootFilePath());
