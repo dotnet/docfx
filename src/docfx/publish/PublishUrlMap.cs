@@ -39,6 +39,14 @@ namespace Microsoft.Docs.Build
 
         public string? GetCanonicalVersion(FilePath file)
         {
+            // If the file does not have versioning configured, assume it does not have canonical version,
+            // this avoids the expensive creation of url map.
+            var monikers = _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file);
+            if (!monikers.HasMonikers)
+            {
+                return default;
+            }
+
             return _canonicalVersionCache.GetOrAdd(file, key => Watcher.Create(() => GetCanonicalVersionCore(key))).Value;
         }
 

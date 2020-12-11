@@ -16,17 +16,23 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly JoinTOCConfig _joinTOCConfig;
         private readonly BuildScope _buildScope;
+        private readonly TocParser _tocParser;
+        private readonly ErrorBuilder _errors;
 
         public ServicePageGenerator(
             PathString docsetPath,
             Input input,
             JoinTOCConfig joinTOCConfig,
-            BuildScope buildScope)
+            BuildScope buildScope,
+            TocParser tocParser,
+            ErrorBuilder errors)
         {
             _docsetPath = docsetPath;
             _input = input;
             _joinTOCConfig = joinTOCConfig;
             _buildScope = buildScope;
+            _tocParser = tocParser;
+            _errors = errors;
         }
 
         public void GenerateServicePageFromTopLevelTOC(TocNode node, List<FilePath> results, string directoryName = "")
@@ -111,16 +117,19 @@ namespace Microsoft.Docs.Build
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
                     var childHrefType = TocLoader.GetHrefType(childHref);
-                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
-                    {
-                        childHref = null;
-                    }
 
                     if (item.Value.LandingPageType.Value != null)
                     {
                         if (!string.IsNullOrEmpty(childHref))
                         {
-                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                            if (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile)
+                            {
+                                childHref = null;
+                            }
+                            else
+                            {
+                                childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                            }
                         }
                         else
                         {
@@ -140,8 +149,15 @@ namespace Microsoft.Docs.Build
                     {
                         if (!string.IsNullOrEmpty(childHref))
                         {
-                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
-                            child = new ServicePageItem(childName, childHref, null);
+                            if (childHrefType == TocHrefType.RelativeFolder)
+                            {
+                                child = new ServicePageItem(childName, null, GetUidFromSplitTOC(childHref, referenceTOCFullPath));
+                            }
+                            else
+                            {
+                                childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                                child = new ServicePageItem(childName, childHref, null);
+                            }
                         }
                         else
                         {
@@ -163,6 +179,22 @@ namespace Microsoft.Docs.Build
                 var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
             }
+        }
+
+        private string? GetUidFromSplitTOC(string childHref, string referenceTOCFullPath)
+        {
+            childHref = Path.Combine(childHref, "TOC.yml");
+            var childHrefFullPath = Path.Combine(referenceTOCFullPath, childHref);
+            var childHrefRelativeToDocset = Path.GetRelativePath(_docsetPath, childHrefFullPath);
+
+            var filePath = _input.GetFirstMatchInSplitToc(childHrefRelativeToDocset);
+            if (filePath != null)
+            {
+                var node = _tocParser.Parse(filePath!, _errors);
+                return GetSubTocFirstUid(node);
+            }
+
+            return null;
         }
 
         private string? GetHrefRelativeToServicePage(string childHref, string referenceTOCFullPath, FilePath servicePagePath)

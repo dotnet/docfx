@@ -182,7 +182,7 @@ namespace Microsoft.Docs.Build
                         node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
 
                         // Generate Service Page.
-                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _buildScope);
+                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _buildScope, _parser, _errors);
 
                         foreach (var item in node.Items)
                         {
