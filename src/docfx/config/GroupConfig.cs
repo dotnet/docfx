@@ -9,6 +9,6 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class GroupConfig
     {
-        public SourceInfo<string?> MonikerRange { get; private set; }
+        public SourceInfo<string?> MonikerRange { get; init; }
     }
 }

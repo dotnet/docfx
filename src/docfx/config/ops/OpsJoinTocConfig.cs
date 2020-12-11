@@ -7,18 +7,18 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsJoinTocConfig
     {
-        public string? ReferenceTOC { get; private set; }
+        public string? ReferenceTOC { get; init; }
 
-        public string? ReferenceTOCUrl { get; private set; }
+        public string? ReferenceTOCUrl { get; init; }
 
-        public string? TopLevelTOC { get; private set; }
+        public string? TopLevelTOC { get; init; }
 
-        public string? ConceptualTOCUrl { get; private set; }
+        public string? ConceptualTOCUrl { get; init; }
 
-        public string? ConceptualTOC { get; private set; }
+        public string? ConceptualTOC { get; init; }
 
-        public string? OutputFolder { get; private set; }
+        public string? OutputFolder { get; init; }
 
-        public JObject? ContainerPageMetadata { get; private set; }
+        public JObject? ContainerPageMetadata { get; init; }
     }
 }

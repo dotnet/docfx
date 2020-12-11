@@ -6,32 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ServicePageModel
+    internal record ServicePageModel(
+        SourceInfo<string?> Name, SourceInfo<string?> FullName, List<ServicePageItem> Children, List<string?>? Langs, LandingPageType? PageType)
     {
-        public SourceInfo<string?> Name { get; private set; }
-
-        public SourceInfo<string?> FullName { get; private set; }
-
-        public List<ServicePageItem> Children { get; private set; } = new List<ServicePageItem>();
-
-        public List<string?>? Langs { get; private set; } = new List<string?>();
-
-        public LandingPageType? PageType { get; private set; }
-
         public JObject Metadata { get; set; } = new JObject();
-
-        public ServicePageModel(
-            SourceInfo<string?> name,
-            SourceInfo<string?> fullName,
-            List<ServicePageItem> children,
-            List<string?>? langs,
-            LandingPageType? pageType)
-        {
-            Name = name;
-            FullName = fullName;
-            Children = children;
-            Langs = langs;
-            PageType = pageType;
-        }
     }
 }

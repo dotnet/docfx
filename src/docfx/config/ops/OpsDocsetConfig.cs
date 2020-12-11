@@ -12,28 +12,28 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsDocsetConfig
     {
-        public string DocsetName { get; private set; } = "";
+        public string DocsetName { get; init; } = "";
 
-        public PathString BuildSourceFolder { get; private set; }
+        public PathString BuildSourceFolder { get; init; }
 
-        public bool OpenToPublicContributors { get; private set; }
+        public bool OpenToPublicContributors { get; init; }
 
-        public string[] XrefQueryTags { get; private set; } = Array.Empty<string>();
+        public string[] XrefQueryTags { get; init; } = Array.Empty<string>();
 
-        public Dictionary<string, string[]>? CustomizedTasks { get; private set; }
+        public Dictionary<string, string[]>? CustomizedTasks { get; init; }
 
         [JsonProperty(nameof(SplitTOC))]
-        public HashSet<PathString> SplitTOC { get; private set; } = new HashSet<PathString>();
+        public HashSet<PathString> SplitTOC { get; init; } = new HashSet<PathString>();
 
         [JsonProperty(nameof(JoinTOCPlugin))]
-        public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
+        public OpsJoinTocConfig[]? JoinTOCPlugin { get; init; }
 
         [JsonProperty(nameof(ECMA2Yaml))]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; private set; }
+        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; init; }
 
-        [JsonProperty("monikerPath")]
+        [JsonProperty(nameof(MonikerPath))]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? MonikerPath { get; set; }
+        public string[]? MonikerPath { get; init; }
     }
 }

@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
     /// The commit-ish can be any tag, sha, or branch. The default commit-ish is master.
     /// </summary>
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class PackagePath : IEquatable<PackagePath>
+    internal record PackagePath
     {
         [JsonIgnore]
         public PackageType Type { get; private set; }
@@ -68,30 +68,6 @@ namespace Microsoft.Docs.Build
             PackageType.Git => $"{Url}#{Branch}",
             _ => $"{Url}, (type: {Type})",
         };
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Type, Url, Branch, Path);
-        }
-
-        public bool Equals(PackagePath? other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return Type == other.Type &&
-                   Url == other.Url &&
-                   Branch == other.Branch &&
-                   Path == other.Path;
-        }
-
-        public override bool Equals(object? obj) => obj is PackagePath path && Equals(path);
-
-        public static bool operator ==(PackagePath? a, PackagePath? b) => Equals(a, b);
-
-        public static bool operator !=(PackagePath? a, PackagePath? b) => !Equals(a, b);
 
         private static (string url, string refspec) SplitGitUrl(string repositoryUrl)
         {
