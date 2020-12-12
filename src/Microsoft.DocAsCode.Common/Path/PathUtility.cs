@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static bool IsPathCaseInsensitive()
         {
-            return Environment.OSVersion.Platform < PlatformID.Unix;
+            return true;
         }
 
         public static string ToValidFilePath(this string input, char replacement = '_')
