@@ -41,6 +41,10 @@ namespace Microsoft.Docs.Build
             }
             if (result == 0)
             {
+                result = string.CompareOrdinal(SourceGitUrl, other.SourceGitUrl);
+            }
+            if (result == 0)
+            {
                 result = SourceLine - other.SourceLine;
             }
             return result;
