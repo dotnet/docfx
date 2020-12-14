@@ -35,19 +35,33 @@ namespace Microsoft.Docs.Build
             client.SendNotification(notification.Method, TestUtility.ApplyVariables(notification.Params, _variables));
         }
 
-        public async Task<LanguageServerNotification> GetExpectedNotification(string method)
+        public async Task<IEnumerable<LanguageServerNotification>> GetExpectedNotification(Func<string, bool> methodPredicate = null, int expectedCount = 1)
         {
-            var timeout = Debugger.IsAttached ? int.MaxValue : 60000;
-            using var cts = new CancellationTokenSource(timeout);
-            while (await _notifications.Reader.WaitToReadAsync(cts.Token))
+            var notifications = new List<LanguageServerNotification>();
+
+            try
             {
-                var notification = await _notifications.Reader.ReadAsync();
-                if (notification.Method.Equals(method, StringComparison.OrdinalIgnoreCase))
+                var timeout = Debugger.IsAttached ? int.MaxValue : 60000;
+                using var cts = new CancellationTokenSource(timeout);
+                while (await _notifications.Reader.WaitToReadAsync(cts.Token))
                 {
-                    return notification;
+                    var notification = await _notifications.Reader.ReadAsync();
+                    if (methodPredicate == null || methodPredicate(notification.Method))
+                    {
+                        notifications.Add(notification);
+                        if (notifications.Count == expectedCount)
+                        {
+                            return notifications;
+                        }
+                    }
                 }
+
+                return notifications;
             }
-            return default;
+            catch (OperationCanceledException)
+            {
+                return notifications;
+            }
         }
 
         private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package)
