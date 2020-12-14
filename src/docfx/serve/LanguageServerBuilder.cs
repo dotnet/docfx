@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
                     _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
                     {
                         Uri = DocumentUri.File(file),
-                        Diagnostics = new Container<Diagnostic>(diagnostics),
+                        Diagnostics = new Container<Diagnostic>(diagnostics.ToList()),
                     });
                 }
             }

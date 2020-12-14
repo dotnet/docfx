@@ -7,7 +7,8 @@ inputs:
     # Heading
     [B](b.md)
 languageServer:
-  - notification: "textDocument/didOpen"
+  - type: notificationFromClient
+    method: "textDocument/didOpen"
     params:
       {
         "textDocument": {
@@ -15,7 +16,8 @@ languageServer:
           "text": "# Heading\nInvalid Link [B](b.md)"
         }
       }
-  - expectNotification: "textDocument/publishDiagnostics"
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
@@ -36,7 +38,8 @@ languageServer:
           "message": "Invalid file link: 'b.md'."
         }]
       }
-  - notification: "textDocument/didChange"
+  - type: notificationFromClient
+    method: "textDocument/didChange"
     params:
       {
         "textDocument": {
@@ -46,7 +49,8 @@ languageServer:
           { "text": "New Content" }
         ]
       }
-  - expectNotification: "textDocument/publishDiagnostics"
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
@@ -64,7 +68,8 @@ inputs:
   b/a.md:
   b/b.md:
 languageServer:
-  - notification: "textDocument/didOpen"
+  - type: notificationFromClient
+    method: "textDocument/didOpen"
     params:
       {
         "textDocument": {
@@ -72,7 +77,8 @@ languageServer:
           "text": "[Test](non-existed.md)"
         }
       }
-  - expectNotification: "textDocument/publishDiagnostics"
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a/a.md",
@@ -80,4 +86,95 @@ languageServer:
           "code": "file-not-found",
           "message": "Invalid file link: 'non-existed.md'."
         }]
+      }
+---
+# All the opened file should be built in a build round
+os: windows
+inputs:
+  docfx.yml:
+  a.md:
+  b.md:
+languageServer:
+  - type: notificationFromClient
+    method: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+          "text": "[Test](non-existed.md)"
+        }
+      }
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }
+  - type: notificationFromClient
+    method: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/b.md",
+          "text": "[Test](non-existed.md)"
+        }
+      }
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/b.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }
+---
+# Events recieved during build round should be merged
+os: windows
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - type: notificationFromClient
+    method: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+          "text": "[Test](non-existed-1.md)"
+        }
+      }
+  - type: notificationFromClient
+    method: "textDocument/didChange"
+    params:
+      {
+        "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md" },
+        "contentChanges": [ { "text": "[Test](non-existed-2.md)" }]
+      }
+  - type: notificationFromClient
+    method: "textDocument/didChange"
+    params:
+      {
+        "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md" },
+        "contentChanges": [ { "text": "[Test](non-existed-3.md)" }]
+      }
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{ "code": "file-not-found", "message": "Invalid file link: 'non-existed-1.md'." }]
+      }
+  - type: notificationFromServer
+    method: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{ "code": "file-not-found", "message": "Invalid file link: 'non-existed-3.md'." }]
       }

@@ -7,9 +7,9 @@ namespace Microsoft.Docs.Build
 {
     public class LanguageServerTestSpec
     {
-        public string Notification { get; set; } = string.Empty;
+        public LanguageServerTestSpecType Type { get; set; }
 
-        public string ExpectNotification { get; set; } = string.Empty;
+        public string Method { get; set; } = string.Empty;
 
         public JToken Params { get; set; }
     }
