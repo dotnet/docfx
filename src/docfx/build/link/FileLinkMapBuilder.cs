@@ -35,7 +35,15 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(_errors, inclusionRoot);
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
 
-            _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, monikers.MonikerGroup, targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
+            _links.TryAdd(new FileLinkItem
+            {
+                InclusionRoot = inclusionRoot,
+                SourceUrl = sourceUrl,
+                SourceMonikerGroup = monikers.MonikerGroup,
+                TargetUrl = targetUrl,
+                SourceGitUrl = sourceGitUrl,
+                SourceLine = source is null ? 1 : source.Line,
+            });
         }
 
         public object Build(PublishModel publishModel)
