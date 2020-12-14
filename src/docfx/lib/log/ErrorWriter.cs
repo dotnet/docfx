@@ -27,6 +27,10 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => throw new NotSupportedException();
 
+        public override void Clear()
+        {
+        }
+
         public ErrorWriter(string? outputPath = null)
         {
             _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));

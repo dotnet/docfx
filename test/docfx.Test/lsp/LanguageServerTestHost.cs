@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Channels;
@@ -15,18 +15,18 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace Microsoft.Docs.Build
 {
-    public class LanguageServerTestHost
+    internal class LanguageServerTestHost
     {
-        private static readonly string[] s_notificationsToListen = { "window/showMessage" };
+        private static readonly string[] s_notificationsToListen = { "window/showMessage", "textDocument/publishDiagnostics" };
 
         private readonly Channel<LanguageServerNotification> _notifications = Channel.CreateUnbounded<LanguageServerNotification>();
         private readonly Dictionary<string, string> _variables;
         private readonly Lazy<Task<ILanguageClient>> _client;
 
-        public LanguageServerTestHost(Dictionary<string, string> variables)
+        public LanguageServerTestHost(string workingDirectory, Dictionary<string, string> variables, Package package)
         {
             _variables = variables;
-            _client = new Lazy<Task<ILanguageClient>>(InitializeClient);
+            _client = new Lazy<Task<ILanguageClient>>(() => InitializeClient(workingDirectory, package));
         }
 
         public async Task SendNotification(LanguageServerNotification notification)
@@ -37,8 +37,8 @@ namespace Microsoft.Docs.Build
 
         public async Task<LanguageServerNotification> GetExpectedNotification(string method)
         {
-            using var cts = new CancellationTokenSource(60000);
-
+            var timeout = Debugger.IsAttached ? int.MaxValue : 60000;
+            using var cts = new CancellationTokenSource(timeout);
             while (await _notifications.Reader.WaitToReadAsync(cts.Token))
             {
                 var notification = await _notifications.Reader.ReadAsync();
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private async Task<ILanguageClient> InitializeClient()
+        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package)
         {
             var clientPipe = new Pipe();
             var serverPipe = new Pipe();
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             await Task.WhenAll(
                 client.Initialize(default),
-                LanguageServerHost.StartLanguageServer(clientPipe.Reader, serverPipe.Writer));
+                LanguageServerHost.StartLanguageServer(workingDirectory, new CommandLineOptions(), clientPipe.Reader, serverPipe.Writer, package));
 
             return client;
         }

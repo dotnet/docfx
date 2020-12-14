@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
                     "new" => New.Run(workingDirectory, options),
                     "restore" => Restore.Run(workingDirectory, options),
                     "build" => Builder.Run(workingDirectory, options, package),
-                    "serve" => Serve.Run(options),
+                    "serve" => Serve.Run(workingDirectory, options, package),
                     _ => false,
                 } ? 1 : 0;
             }
