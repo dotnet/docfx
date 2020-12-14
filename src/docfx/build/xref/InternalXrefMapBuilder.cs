@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                     {
                         duplicateSpecs.Add(spec);
                         _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath)
-                            .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
+                            with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning, });
                     }
                 }
             }
