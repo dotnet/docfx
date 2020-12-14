@@ -196,40 +196,39 @@ namespace Microsoft.Docs.Build
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {
                 var lspSpec = spec.LanguageServer[i];
-                switch (lspSpec.Type)
+                if (!string.IsNullOrEmpty(lspSpec.Notification))
                 {
-                    case LanguageServerTestSpecType.NotificationFromClient:
-                        await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Method, lspSpec.Params));
-                        break;
-                    case LanguageServerTestSpecType.NotificationFromServer:
-                        var expectedNotifications = new List<LanguageServerNotification>();
-                        var expectedMethods = new HashSet<string>();
-                        while (true)
+                    await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
+                }
+                else if (!string.IsNullOrEmpty(lspSpec.ExpectedNotification))
+                {
+                    var expectedNotifications = new List<LanguageServerNotification>();
+                    var expectedMethods = new HashSet<string>();
+                    while (true)
+                    {
+                        lspSpec = spec.LanguageServer[i];
+                        expectedNotifications.Add(new LanguageServerNotification(lspSpec.ExpectedNotification, TestUtility.ApplyVariables(lspSpec.Params, variables)));
+                        expectedMethods.Add(lspSpec.ExpectedNotification);
+
+                        if ((i + 1) >= spec.LanguageServer.Count || string.IsNullOrEmpty(spec.LanguageServer[i + 1].ExpectedNotification))
                         {
-                            lspSpec = spec.LanguageServer[i];
-                            expectedNotifications.Add(new LanguageServerNotification(lspSpec.Method, TestUtility.ApplyVariables(lspSpec.Params, variables)));
-                            expectedMethods.Add(lspSpec.Method);
-
-                            if ((i + 1) >= spec.LanguageServer.Count || spec.LanguageServer[i + 1].Type != LanguageServerTestSpecType.NotificationFromServer)
-                            {
-                                break;
-                            }
-
-                            i++;
+                            break;
                         }
 
-                        var actualNotifications = await lspTestHost.GetExpectedNotification(
-                            (method) => expectedMethods.Contains(method, StringComparer.OrdinalIgnoreCase),
-                            expectedNotifications.Count);
+                        i++;
+                    }
 
-                        if (expectedNotifications.Count > 1)
-                        {
-                            expectedNotifications = expectedNotifications.OrderBy(item => item.Params.ToString()).ToList();
-                            actualNotifications = actualNotifications.OrderBy(item => item.Params.ToString()).ToList();
-                        }
+                    var actualNotifications = await lspTestHost.GetExpectedNotification(
+                        (method) => expectedMethods.Contains(method, StringComparer.OrdinalIgnoreCase),
+                        expectedNotifications.Count);
 
-                        s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
-                        break;
+                    if (expectedNotifications.Count > 1)
+                    {
+                        expectedNotifications = expectedNotifications.OrderBy(item => item.Params.ToString()).ToList();
+                        actualNotifications = actualNotifications.OrderBy(item => item.Params.ToString()).ToList();
+                    }
+
+                    s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
                 }
             }
         }
