@@ -502,7 +502,7 @@ namespace Microsoft.Docs.Build
         private static JToken SetSourceInfo(JToken token, FilePath file, SourceInfo? keySourceInfo = null)
         {
             var lineInfo = (IJsonLineInfo)token;
-            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition, keySourceInfo);
+            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition) { KeySourceInfo = keySourceInfo };
             SetSourceInfo(token, sourceInfo);
 
             switch (token)

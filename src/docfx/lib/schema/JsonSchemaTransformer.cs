@@ -373,7 +373,7 @@ namespace Microsoft.Docs.Build
 
                 case JValue value when schemaMap.TryGetSchema(token, out var schema):
                     return TransformScalar(
-                        errors.With(e => e.WithPropertyPath(propertyPath)),
+                        errors.With(e => e with { PropertyPath = propertyPath }),
                         rootSchema,
                         schema,
                         file,

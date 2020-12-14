@@ -48,7 +48,11 @@ namespace Microsoft.Docs.Build
             {
                 if (_metadataProvider != null && error.Source?.File is FilePath source)
                 {
-                    error = error.WithMsAuthor(_metadataProvider.GetMetadata(Null, source).MsAuthor);
+                    var msAuthor = _metadataProvider.GetMetadata(Null, source).MsAuthor;
+                    if (msAuthor != default)
+                    {
+                        error = error with { MsAuthor = msAuthor };
+                    }
                 }
 
                 error = _customRuleProvider?.Invoke().ApplyCustomRule(error) ?? error;
@@ -65,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             if (_config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
             {
-                error = error.WithLevel(ErrorLevel.Error);
+                error = error with { Level = ErrorLevel.Error };
             }
 
             if (error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
@@ -79,7 +83,7 @@ namespace Microsoft.Docs.Build
 
             if (error.Source != null)
             {
-                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File)?.Path);
+                error = error with { OriginalPath = _sourceMap?.GetOriginalFilePath(error.Source.File)?.Path };
             }
 
             var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());

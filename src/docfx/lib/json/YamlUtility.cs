@@ -184,7 +184,10 @@ namespace Microsoft.Docs.Build
 
         private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file, SourceInfo? keySourceInfo = null)
         {
-            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column, keySourceInfo);
+            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column)
+            {
+                KeySourceInfo = keySourceInfo,
+            };
         }
 
         private static JToken ParseScalar(string value)

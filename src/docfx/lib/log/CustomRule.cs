@@ -8,58 +8,35 @@ using Newtonsoft.Json;
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class CustomRule
+    internal record CustomRule
     {
-        public ErrorLevel? Severity { get; private set; }
+        public ErrorLevel? Severity { get; init; }
 
-        public string? Code { get; private set; }
+        public string? Code { get; init; }
 
-        public string? AdditionalMessage { get; private set; }
+        public string? AdditionalMessage { get; init; }
 
-        public string? Message { get; private set; }
+        public string? Message { get; init; }
 
-        public string? PropertyPath { get; private set; }
+        public string? PropertyPath { get; init; }
 
-        public bool CanonicalVersionOnly { get; private set; }
+        public bool CanonicalVersionOnly { get; init; }
 
-        public bool PullRequestOnly { get; private set; }
-
-        [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Exclude { get; private set; } = Array.Empty<string>();
+        public bool PullRequestOnly { get; init; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? ContentTypes { get; private set; }
+        public string[] Exclude { get; init; } = Array.Empty<string>();
 
-        public bool Disabled { get; set; }
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[]? ContentTypes { get; init; }
+
+        public bool Disabled { get; init; }
 
         private Func<string, bool>? _globMatcherCache;
 
         public CustomRule() { }
 
         public CustomRule(ErrorLevel? severity) => Severity = severity;
-
-        public CustomRule(
-            ErrorLevel? severity,
-            string? code,
-            string? message,
-            string? additionalMessage,
-            string? propertyPath,
-            bool canonicalVersionOnly,
-            bool pullRequestOnly,
-            string[]? contentTypes,
-            bool disabled)
-        {
-            Severity = severity;
-            Code = code;
-
-            Message = message;
-            AdditionalMessage = additionalMessage;
-            PropertyPath = propertyPath;
-            CanonicalVersionOnly = canonicalVersionOnly;
-            PullRequestOnly = pullRequestOnly;
-            ContentTypes = contentTypes;
-            Disabled = disabled;
-        }
 
         public bool ExcludeMatches(string file)
         {

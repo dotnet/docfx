@@ -5,66 +5,42 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class SourceInfo : IEquatable<SourceInfo>, IComparable<SourceInfo>
+    internal record SourceInfo(FilePath File) : IComparable<SourceInfo>
     {
-        /// <summary>
-        /// Path to the source file.
-        /// </summary>
-        public FilePath File { get; }
-
         /// <summary>
         /// A one based start line value, or zero if there is no line info.
         /// </summary>
-        public int Line { get; }
+        public int Line { get; init; }
 
         /// <summary>
         /// A one based start column value, or zero if there is no line info.
         /// </summary>
-        public int Column { get; }
+        public int Column { get; init; }
 
         /// <summary>
         /// A one based end line value, or zero if there is no line info.
         /// </summary>
-        public int EndLine { get; }
+        public int EndLine { get; init; }
 
         /// <summary>
         /// A one based end column value, or zero if there is no line info.
         /// </summary>
-        public int EndColumn { get; }
+        public int EndColumn { get; init; }
 
         /// <summary>
         /// A special storage for source info of the JObject property key
         /// if this is a JObject property value.
         /// </summary>
-        public SourceInfo? KeySourceInfo { get; }
+        public SourceInfo? KeySourceInfo { get; init; }
 
-        public SourceInfo(FilePath file)
-            : this(file, 0, 0, 0, 0)
-        { }
-
-        public SourceInfo(FilePath file, int line, int column, SourceInfo? keySourceInfo = null)
-            : this(file, line, column, line, column, keySourceInfo)
-        { }
-
-        public SourceInfo(
-            FilePath file, int startLine, int startColumn, int endLine, int endColumn, SourceInfo? keySourceInfo = null)
+        public SourceInfo(FilePath file, int startLine, int startColumn, int? endLine = null, int? endColumn = null)
+            : this(file)
         {
             File = file;
             Line = startLine;
             Column = startColumn;
-            EndLine = endLine;
-            EndColumn = endColumn;
-            KeySourceInfo = keySourceInfo;
-        }
-
-        public SourceInfo WithFile(FilePath file)
-        {
-            return file == File ? this : new SourceInfo(file, Line, Column, EndLine, EndColumn, KeySourceInfo);
-        }
-
-        public SourceInfo WithKeySourceInfo(SourceInfo? keySourceInfo)
-        {
-            return new SourceInfo(File, Line, Column, EndLine, EndColumn, keySourceInfo);
+            EndLine = endLine ?? startLine;
+            EndColumn = endColumn ?? startColumn;
         }
 
         public SourceInfo WithOffset(SourceInfo? offset)
@@ -86,7 +62,7 @@ namespace Microsoft.Docs.Build
         {
             var start = OffSet(Line, Column, line, column);
 
-            return new SourceInfo(File, start.line, start.column, start.line, start.column);
+            return this with { Line = start.line, Column = start.column, EndLine = start.line, EndColumn = start.column };
         }
 
         public SourceInfo WithOffset(int line, int column, int endLine, int endColumn)
@@ -94,31 +70,7 @@ namespace Microsoft.Docs.Build
             var start = OffSet(Line, Column, line, column);
             var end = OffSet(Line, Column, endLine, endColumn);
 
-            return new SourceInfo(File, start.line, start.column, end.line, end.column);
-        }
-
-        public static bool operator ==(SourceInfo? a, SourceInfo? b) => Equals(a, b);
-
-        public static bool operator !=(SourceInfo? a, SourceInfo? b) => !Equals(a, b);
-
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as SourceInfo);
-        }
-
-        public bool Equals(SourceInfo? other)
-        {
-            return other != null &&
-                   File.Equals(other.File) &&
-                   Line.Equals(other.Line) &&
-                   Column.Equals(other.Column) &&
-                   EndLine.Equals(other.EndLine) &&
-                   EndColumn.Equals(other.EndColumn);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(File, Line, Column, EndLine, EndColumn);
+            return this with { Line = start.line, Column = start.column, EndLine = end.line, EndColumn = end.column };
         }
 
         public override string ToString()
