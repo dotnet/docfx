@@ -176,7 +176,16 @@ namespace Microsoft.Docs.Build
                 }
 
                 results.Add(servicePagePath);
-                var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
+
+                var servicePageToken = new ServicePageModel
+                {
+                    Name = name,
+                    FullName = fullName,
+                    Children = children,
+                    Langs = langs,
+                    PageType = pageType,
+                };
+
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
             }
         }

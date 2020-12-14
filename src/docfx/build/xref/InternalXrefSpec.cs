@@ -7,16 +7,16 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal record InternalXrefSpec(
-        SourceInfo<string> Uid,
-        string Href,
-        FilePath DeclaringFile,
-        MonikerList Monikers,
-        string? DeclaringPropertyPath = null,
-        string? PropertyPath = null,
-        bool UidGlobalUnique = false,
-        string? SchemaType = null) : IXrefSpec
+    internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath DeclaringFile, MonikerList Monikers) : IXrefSpec
     {
+        public string? DeclaringPropertyPath { get; init; }
+
+        public string? PropertyPath { get; init; }
+
+        public bool UidGlobalUnique { get; init; }
+
+        public string? SchemaType { get; init; }
+
         public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
 
         string IXrefSpec.Uid => Uid.Value;
@@ -33,12 +33,19 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
         {
-            var spec = new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers, SchemaType);
+            var spec = new ExternalXrefSpec
+            {
+                Uid = Uid,
+                Href = overwriteHref ?? Href,
+                Monikers = Monikers,
+                SchemaType = SchemaType,
+            };
 
             foreach (var (key, value) in XrefProperties)
             {
                 spec.ExtensionData[key] = value.Value;
             }
+
             return spec;
         }
     }

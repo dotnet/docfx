@@ -6,9 +6,17 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal record ExternalXrefSpec
-        (string Uid, string Href, [property: JsonIgnore] MonikerList Monikers, string? SchemaType) : IXrefSpec
+    internal record ExternalXrefSpec : IXrefSpec
     {
+        public string Uid { get; init; } = "";
+
+        public string Href { get; init; } = "";
+
+        public string? SchemaType { get; init; }
+
+        [JsonIgnore]
+        public MonikerList Monikers { get; init; }
+
         [JsonIgnore]
         public string? RepositoryUrl { get; set; }
 
@@ -19,9 +27,6 @@ namespace Microsoft.Docs.Build
         public JObject ExtensionData { get; init; } = new JObject();
 
         FilePath? IXrefSpec.DeclaringFile => null;
-
-        public ExternalXrefSpec()
-            : this("", "", default, default) { }
 
         public string? GetXrefPropertyValueAsString(string propertyName)
         {

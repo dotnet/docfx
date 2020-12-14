@@ -8,17 +8,33 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal record PublishItem(
-        string Url,
-        string? Path,
-        [property: JsonIgnore] FilePath? SourceFile,
-        string? SourcePath, // File source relative path to docset root will be used for PR comments
-        string Locale,
-        [property: JsonIgnore] MonikerList Monikers,
-        string? ConfigMonikerRange,
-        [property: JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)] bool HasError,
-        [property: JsonExtensionData] JObject? ExtensionData)
+    internal class PublishItem
     {
+        public string? Url { get; init; }
+
+        public string? Path { get; init; }
+
+        [JsonIgnore]
+        public FilePath? SourceFile { get; init; }
+
+        /// <summary>
+        /// File source relative path to docset root will be used for PR comment
+        /// </summary>
+        public string? SourcePath { get; init; }
+
+        public string? Locale { get; init; }
+
+        [JsonIgnore]
+        public MonikerList Monikers { get; init; }
+
+        public string? ConfigMonikerRange { get; init; }
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public bool HasError { get; init; }
+
+        [JsonExtensionData]
+        public JObject? ExtensionData { get; init; }
+
         public string? MonikerGroup => Monikers.MonikerGroup;
     }
 }

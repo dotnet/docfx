@@ -211,8 +211,13 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
 
-            var xref = new InternalXrefSpec(
-                uid, href, file, monikers, obj.Parent?.Path, JsonUtility.AddToPropertyPath(propertyPath, "uid"), uidSchema.UidGlobalUnique, schemaType);
+            var xref = new InternalXrefSpec(uid, href, file, monikers)
+            {
+                DeclaringPropertyPath = obj.Parent?.Path,
+                PropertyPath = JsonUtility.AddToPropertyPath(propertyPath, "uid"),
+                UidGlobalUnique = uidSchema.UidGlobalUnique,
+                SchemaType = schemaType,
+            };
 
             if (schema != null)
             {
