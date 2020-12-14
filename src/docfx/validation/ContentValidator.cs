@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 fileResolver.ResolveFilePath(_config.Allowlists));
         }
 
-        public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)
+        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
         {
             // validate image link and altText here
             if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 {
                     UrlLink = link,
                     AltText = altText,
-                    IsImage = true,
+                    IsImage = isImage,
                     IsInlineImage = origin.IsInlineImage(imageIndex),
                     SourceInfo = link.Source,
                     ParentSourceInfoList = origin.GetInclusionStack(),
