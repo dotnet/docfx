@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.1" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
-    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.769" />
+    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.770" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.72" Aliases="maml" />
     <PackageReference Include="Microsoft.Graph" Version="3.21.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
