@@ -200,17 +200,17 @@ namespace Microsoft.Docs.Build
                 {
                     await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
                 }
-                else if (!string.IsNullOrEmpty(lspSpec.ExpectedNotification))
+                else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
                     var expectedNotifications = new List<LanguageServerNotification>();
                     var expectedMethods = new HashSet<string>();
                     while (true)
                     {
                         lspSpec = spec.LanguageServer[i];
-                        expectedNotifications.Add(new LanguageServerNotification(lspSpec.ExpectedNotification, TestUtility.ApplyVariables(lspSpec.Params, variables)));
-                        expectedMethods.Add(lspSpec.ExpectedNotification);
+                        expectedNotifications.Add(new LanguageServerNotification(lspSpec.ExpectNotification, TestUtility.ApplyVariables(lspSpec.Params, variables)));
+                        expectedMethods.Add(lspSpec.ExpectNotification);
 
-                        if ((i + 1) >= spec.LanguageServer.Count || string.IsNullOrEmpty(spec.LanguageServer[i + 1].ExpectedNotification))
+                        if ((i + 1) >= spec.LanguageServer.Count || string.IsNullOrEmpty(spec.LanguageServer[i + 1].ExpectNotification))
                         {
                             break;
                         }
@@ -229,6 +229,10 @@ namespace Microsoft.Docs.Build
                     }
 
                     s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
+                }
+                else
+                {
+                    throw new NotSupportedException();
                 }
             }
         }

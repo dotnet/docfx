@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public string Notification { get; set; } = string.Empty;
 
-        public string ExpectedNotification { get; set; } = string.Empty;
+        public string ExpectNotification { get; set; } = string.Empty;
 
         public JToken Params { get; set; }
     }

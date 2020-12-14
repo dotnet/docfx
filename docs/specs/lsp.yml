@@ -7,8 +7,7 @@ inputs:
     # Heading
     [B](b.md)
 languageServer:
-  - type: notificationFromClient
-    method: "textDocument/didOpen"
+  - notification: "textDocument/didOpen"
     params:
       {
         "textDocument": {
@@ -16,8 +15,7 @@ languageServer:
           "text": "# Heading\nInvalid Link [B](b.md)"
         }
       }
-  - type: notificationFromServer
-    method: "textDocument/publishDiagnostics"
+  - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
@@ -38,8 +36,7 @@ languageServer:
           "message": "Invalid file link: 'b.md'."
         }]
       }
-  - type: notificationFromClient
-    method: "textDocument/didChange"
+  - notification: "textDocument/didChange"
     params:
       {
         "textDocument": {
@@ -49,8 +46,7 @@ languageServer:
           { "text": "New Content" }
         ]
       }
-  - type: notificationFromServer
-    method: "textDocument/publishDiagnostics"
+  - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
@@ -68,8 +64,7 @@ inputs:
   b/a.md:
   b/b.md:
 languageServer:
-  - type: notificationFromClient
-    method: "textDocument/didOpen"
+  - notification: "textDocument/didOpen"
     params:
       {
         "textDocument": {
@@ -77,8 +72,7 @@ languageServer:
           "text": "[Test](non-existed.md)"
         }
       }
-  - type: notificationFromServer
-    method: "textDocument/publishDiagnostics"
+  - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a/a.md",
@@ -95,8 +89,7 @@ inputs:
   a.md:
   b.md:
 languageServer:
-  - type: notificationFromClient
-    method: "textDocument/didOpen"
+  - notification: "textDocument/didOpen"
     params:
       {
         "textDocument": {
@@ -104,15 +97,13 @@ languageServer:
           "text": "[Test](non-existed.md)"
         }
       }
-  - type: notificationFromServer
-    method: "textDocument/publishDiagnostics"
+  - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
         "diagnostics": [{ "code": "file-not-found" }]
       }
-  - type: notificationFromClient
-    method: "textDocument/didOpen"
+  - notification: "textDocument/didOpen"
     params:
       {
         "textDocument": {
@@ -120,15 +111,13 @@ languageServer:
           "text": "[Test](non-existed.md)"
         }
       }
-  - type: notificationFromServer
-    method: "textDocument/publishDiagnostics"
+  - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
         "diagnostics": [{ "code": "file-not-found" }]
       }
-  - type: notificationFromServer
-    method: "textDocument/publishDiagnostics"
+  - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/b.md",
