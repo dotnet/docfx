@@ -129,7 +129,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return _input.TryGetOriginalPhysicalPath(file) is PathString physicalPath ? File.GetLastWriteTimeUtc(physicalPath) : default;
+            return _input.TryGetOriginalPhysicalPath(file) is PathString
+                ? _input.GetLastWriteTimeUtc(file)
+                : default;
         }
 
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate)

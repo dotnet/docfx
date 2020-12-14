@@ -17,13 +17,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly MarkdownEngine _markdownEngine;
-        private readonly DocumentProvider _documentProvider;
 
-        public TocParser(Input input, MarkdownEngine markdownEngine, DocumentProvider documentProvider)
+        public TocParser(Input input, MarkdownEngine markdownEngine)
         {
             _input = input;
             _markdownEngine = markdownEngine;
-            _documentProvider = documentProvider;
         }
 
         public TocNode Parse(FilePath file, ErrorBuilder errors)

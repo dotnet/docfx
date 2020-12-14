@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             var templateBasePath = (string?)context.Registers["template_base_path"];
             if (string.IsNullOrEmpty(templateBasePath))
             {
-                return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
+                return t_package?.TryGetFullFilePath(new PathString(resourcePath));
             }
             else
             {

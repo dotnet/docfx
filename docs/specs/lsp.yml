@@ -1,0 +1,83 @@
+---
+# Basic lsp test
+os: windows
+inputs:
+  docfx.yml:
+  a.md: |
+    # Heading
+    [B](b.md)
+languageServer:
+  - notification: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+          "text": "# Heading\nInvalid Link [B](b.md)"
+        }
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{
+          "range": {
+            "start": {
+              "line": 1,
+              "character": 13
+            },
+            "end": {
+              "line": 1,
+              "character": 13
+            }
+          },
+          "severity": 2,
+          "code": "file-not-found",
+          "source": "Docs Validation",
+          "message": "Invalid file link: 'b.md'."
+        }]
+      }
+  - notification: "textDocument/didChange"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+        },
+        "contentChanges": [
+          { "text": "New Content" }
+        ]
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": []
+      }
+---
+# Multiple docsets
+os: windows
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a.md:
+  a/b.md:
+  b/docfx.yml:
+  b/a.md:
+  b/b.md:
+languageServer:
+  - notification: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a/a.md",
+          "text": "[Test](non-existed.md)"
+        }
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a/a.md",
+        "diagnostics": [{
+          "code": "file-not-found",
+          "message": "Invalid file link: 'non-existed.md'."
+        }]
+      }

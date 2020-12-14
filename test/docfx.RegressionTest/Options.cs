@@ -25,6 +25,9 @@ namespace Microsoft.Docs.Build
         [Option("dry-run")]
         public bool DryRun { get; set; }
 
+        [Option("public-template")]
+        public bool PublicTemplate { get; set; }
+
         [Option("no-dry-sync")]
         public bool NoDrySync { get; set; }
 

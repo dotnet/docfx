@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
         private volatile int _activityId = Watcher.GetActivityId();
         private volatile bool _hasChanged;
 
+        public bool HasChildren => _children.Count > 0;
+
         public void AddChild(IFunction childFunction)
         {
             lock (_children)

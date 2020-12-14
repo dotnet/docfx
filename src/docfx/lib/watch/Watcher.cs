@@ -12,6 +12,11 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new AsyncLocal<ImmutableStack<IFunction>>();
         private static readonly AsyncLocal<int> t_activityId = new AsyncLocal<int>();
 
+        public static Watch<T> Create<T>(Func<T> valueFactory)
+        {
+            return new Watch<T>(valueFactory);
+        }
+
         public static T Watch<T>(Func<T> valueFactory)
         {
             var function = new LeafFunction<T>(valueFactory);
@@ -60,16 +65,25 @@ namespace Microsoft.Docs.Build
             t_callstack.Value = stack.Push(function);
         }
 
-        internal static void EndFunctionScope()
+        internal static void EndFunctionScope(bool attachToParent = true)
         {
             var stack = t_callstack.Value;
             if (stack != null && !stack.IsEmpty)
             {
                 t_callstack.Value = stack = stack.Pop(out var child);
-                if (!stack.IsEmpty)
+                if (attachToParent && !stack.IsEmpty)
                 {
                     stack.Peek().AddChild(child);
                 }
+            }
+        }
+
+        internal static void AttachToParent(IFunction child)
+        {
+            var stack = t_callstack.Value;
+            if (stack != null && !stack.IsEmpty)
+            {
+                stack.Peek().AddChild(child);
             }
         }
     }

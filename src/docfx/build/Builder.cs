@@ -15,16 +15,18 @@ namespace Microsoft.Docs.Build
         private readonly string _workingDirectory;
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
+        private readonly Package _package;
 
-        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options)
+        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, Package package)
         {
             _workingDirectory = workingDirectory;
             _options = options;
             _errors = errors;
-            _docsets = new Watch<DocsetBuilder[]>(LoadDocsets);
+            _package = package;
+            _docsets = Watcher.Create(LoadDocsets);
         }
 
-        public static bool Run(string workingDirectory, CommandLineOptions options)
+        public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -32,7 +34,9 @@ namespace Microsoft.Docs.Build
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
 
-            new Builder(errors, workingDirectory, options).Build(files);
+            package ??= new LocalPackage(workingDirectory);
+
+            new Builder(errors, workingDirectory, options, package).Build(files);
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
             Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
@@ -45,6 +49,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                _errors.Clear();
                 Watcher.StartActivity();
 
                 Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
@@ -57,14 +62,15 @@ namespace Microsoft.Docs.Build
 
         private DocsetBuilder[] LoadDocsets()
         {
-            var docsets = ConfigLoader.FindDocsets(_errors, _workingDirectory, _options);
+            var docsets = ConfigLoader.FindDocsets(_errors, _package, _options);
             if (docsets.Length == 0)
             {
                 _errors.Add(Errors.Config.ConfigNotFound(_workingDirectory));
             }
 
             return (from docset in docsets
-                    let item = DocsetBuilder.Create(_errors, _workingDirectory, docset.docsetPath, docset.outputPath, _options)
+                    let item = DocsetBuilder.Create(
+                        _errors, _workingDirectory, docset.docsetPath, docset.outputPath, _package.CreateSubPackage(docset.docsetPath), _options)
                     where item != null
                     select item).ToArray();
         }

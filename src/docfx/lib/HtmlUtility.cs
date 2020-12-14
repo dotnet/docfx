@@ -247,19 +247,21 @@ namespace Microsoft.Docs.Build
         public static void TransformLink(
             ref HtmlToken token,
             MarkdownObject? block,
-            Func<SourceInfo<string>, string> transformLink,
+            Func<SourceInfo<string>, MarkdownObject?, string> transformLink,
             Func<SourceInfo<string>, MarkdownObject?, string?, int, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.GetSourceInfo()?.WithOffset(attribute.ValueRange);
+                    var source = new SourceInfo<string>(
+                        HttpUtility.HtmlDecode(attribute.Value.ToString()),
+                        block?.GetSourceInfo()?.WithOffset(attribute.ValueRange));
                     var link = HttpUtility.HtmlEncode(
                         !IsImage(ref token, attribute) || transformImageLink == null
-                            ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
+                            ? transformLink(source, block)
                             : transformImageLink(
-                                new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
+                                source,
                                 block,
                                 token.GetAttributeValueByName("alt"),
                                 token.Range.Start.Index));

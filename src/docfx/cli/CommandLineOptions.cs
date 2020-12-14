@@ -48,7 +48,11 @@ namespace Microsoft.Docs.Build
 
             if (Template != null)
             {
-                config["template"] = Path.GetFullPath(Template);
+                config["template"] = new PackagePath(Template).Type switch
+                {
+                    PackageType.Folder => Path.GetFullPath(Template),
+                    _ => Template,
+                };
             }
 
             if (TemplateBasePath != null)

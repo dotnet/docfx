@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         {
             var counter = 0;
             var filename = $"jsondiskcache/{Guid.NewGuid()}";
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? ".");
             File.WriteAllText(filename, "{'items':[{'id': 9999, 'snapshot': 1234}]}".Replace('\'', '"'));
 
             var cache = new JsonDiskCache<string, int, TestCacheObject>(filename, TimeSpan.FromHours(1));

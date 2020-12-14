@@ -1017,6 +1017,7 @@ outputs:
     }
 ---
 # Build toc with monikers info - multiple node with same url
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     monikerRange:
@@ -1047,6 +1048,7 @@ outputs:
     }
 ---
 # Build included toc with moniker info
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     exclude: 'docs/v1/folder/TOC.yml'
@@ -1142,6 +1144,7 @@ outputs:
     }
 ---
 # Build folder reference toc with moniker info
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     exclude: 'docs/v1/folder/TOC.yml'
@@ -2118,3 +2121,31 @@ inputs:
       ]
     }
 outputs:
+---
+# Token inclusion with replace_monikers
+inputs:
+  docfx.yml: |
+    content:
+    - src: v1
+      exclude: '**/includes/**'
+      dest: .
+      group: g1
+    groups:
+      g1:
+        moniker_range: netcore-1.0
+    monikerDefinition: monikerDefinition.json
+  v1/a.md: |
+    [!include[B1](includes/token.md)]
+  v1/includes/token.md: |
+      ---
+      replace_monikers: netcore-2.0
+      ---
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+      ]
+    }
+outputs: 
+  136a42ac/a.json:

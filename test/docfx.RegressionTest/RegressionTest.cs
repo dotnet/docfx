@@ -203,19 +203,20 @@ namespace Microsoft.Docs.Build
         private static TimeSpan Build(string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var templateOption = opts.PublicTemplate ? "--template https://static.docs.com/ui/latest" : "";
             var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {logOption} --verbose --stdin",
+                arguments: $"restore {logOption} {templateOption} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
             return Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {templateOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
         }
@@ -243,11 +244,11 @@ namespace Microsoft.Docs.Build
                     Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
-                });
+                }) ?? throw new InvalidOperationException();
 
                 var diffFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.patch");
 
-                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
+                Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
                 var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
                 process.WaitForExit();
 
@@ -274,7 +275,7 @@ namespace Microsoft.Docs.Build
         {
             if (s_isPullRequest)
             {
-                SendPullRequestComments().GetAwaiter().GetResult();
+                SendPullRequestComments();
             }
             else
             {
@@ -299,15 +300,17 @@ namespace Microsoft.Docs.Build
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
             Console.ResetColor();
+
             var process = Process.Start(new ProcessStartInfo
             {
                 FileName = fileName,
                 Arguments = arguments,
-                WorkingDirectory = cwd,
+                WorkingDirectory = cwd ?? ".",
                 UseShellExecute = false,
                 RedirectStandardError = redirectStandardError,
                 RedirectStandardInput = !string.IsNullOrEmpty(stdin),
-            });
+            }) ?? throw new InvalidOperationException();
+
             if (!string.IsNullOrEmpty(stdin))
             {
                 process.StandardInput.Write(stdin);
@@ -364,12 +367,12 @@ namespace Microsoft.Docs.Build
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        private static Task SendPullRequestComments(string? crashedMessage = null)
+        private static void SendPullRequestComments(string? crashedMessage = null)
         {
             var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
             if (s_testResult.succeeded && !isTimeout && crashedMessage == null)
             {
-                return Task.CompletedTask;
+                return;
             }
 
             var statusIcon = crashedMessage != null
@@ -389,10 +392,8 @@ namespace Microsoft.Docs.Build
 
             if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_NUMBER") ?? "", out var prNumber))
             {
-                return SendGitHubPullRequestComments(prNumber, body);
+                SendGitHubPullRequestComments(prNumber, body).GetAwaiter().GetResult();
             }
-
-            return Task.CompletedTask;
         }
 
         private static async Task SendGitHubPullRequestComments(int prNumber, string body)

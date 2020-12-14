@@ -11,55 +11,44 @@ namespace Microsoft.Docs.Build
 {
     internal class CustomRuleProvider
     {
+        private readonly Config _config;
+        private readonly FileResolver _fileResolver;
         private readonly DocumentProvider _documentProvider;
         private readonly PublishUrlMap _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
-        private readonly MetadataProvider _metaDataProvider;
 
-        private readonly ErrorBuilder _errorLog;
-        private readonly Config _config;
-        private readonly Dictionary<string, List<CustomRule>> _customRules = new Dictionary<string, List<CustomRule>>();
+        private readonly Dictionary<string, List<CustomRule>> _customRules;
 
         public CustomRuleProvider(
             Config config,
+            ErrorBuilder errors,
             FileResolver fileResolver,
             DocumentProvider documentProvider,
             PublishUrlMap publishUrlMap,
-            MonikerProvider monikerProvider,
-            MetadataProvider metadataProvider,
-            ErrorBuilder errorLog)
+            MonikerProvider monikerProvider)
         {
+            _config = config;
+            _fileResolver = fileResolver;
             _documentProvider = documentProvider;
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
-            _metaDataProvider = metadataProvider;
-            _errorLog = errorLog;
-            _config = config;
 
-            var contentValidationRules = GetContentValidationRules(config, fileResolver);
-            var buildValidationRules = GetBuildValidationRules(config, fileResolver);
-            _customRules = MergeCustomRules(contentValidationRules, buildValidationRules);
+            _customRules = LoadCustomRules(errors);
         }
 
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
         {
-            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
-
-            // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
-            // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
-            // If content versioning enabled and moniker is not null, just compare canonicalVersion and moniker.
-            var isCanonicalVersion = string.IsNullOrEmpty(canonicalVersion) ? true :
-                string.IsNullOrEmpty(moniker) ? _monikerProvider.GetFileLevelMonikers(_errorLog, filePath).IsCanonicalVersion(canonicalVersion) :
-                canonicalVersion == moniker;
-
-            if (customRule.CanonicalVersionOnly && !isCanonicalVersion)
+            if (customRule.ContentTypes != null && !customRule.ContentTypes.Contains(_documentProvider.GetPageType(filePath)))
             {
                 return false;
             }
 
-            var pageType = _documentProvider.GetPageType(filePath);
+            if (customRule.CanonicalVersionOnly && !IsCanonicalVersion(filePath, moniker))
+            {
+                return false;
+            }
 
-            return customRule.ContentTypes is null || customRule.ContentTypes.Contains(pageType);
+            return true;
         }
 
         public Error ApplyCustomRule(Error error)
@@ -116,9 +105,7 @@ namespace Microsoft.Docs.Build
                 error.MsAuthor);
         }
 
-        private bool TryGetCustomRule(
-            Error error,
-            [MaybeNullWhen(false)] out CustomRule customRule)
+        private bool TryGetCustomRule(Error error, [MaybeNullWhen(false)] out CustomRule customRule)
         {
             if (_customRules.TryGetValue(error.Code, out var customRules))
             {
@@ -129,7 +116,9 @@ namespace Microsoft.Docs.Build
                         // compare with code + propertyPath + contentType
                         var source = error.Source?.File;
                         var pageType = source != null ? _documentProvider.GetPageType(source) : null;
-                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) && rule.ContentTypes.Contains(pageType))
+                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) &&
+                            rule.ContentTypes != null &&
+                            rule.ContentTypes.Contains(pageType))
                         {
                             customRule = rule;
                             return true;
@@ -147,16 +136,33 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private Dictionary<string, List<CustomRule>> MergeCustomRules(
-            Dictionary<string, ValidationRules>? contentValidationRules,
-            Dictionary<string, ValidationRules>? buildValidationRules)
+        private bool IsCanonicalVersion(FilePath filePath, string? moniker)
         {
-            var customRules = _config != null ?
-                _config.Rules.ToDictionary(
-                    item => item.Key,
-                    item => new List<CustomRule> { item.Value })
-                :
-                new Dictionary<string, List<CustomRule>>();
+            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(filePath);
+
+            // If content versioning not enabled for this depot, canonicalVersion will be null, content will always be the canonical version;
+            // If content versioning enabled and moniker is null, we should check file-level monikers to be sure;
+            // If content versioning enabled and moniker is not null, just compare canonicalVersion and moniker.
+            if (string.IsNullOrEmpty(canonicalVersion))
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(moniker))
+            {
+                return _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath).IsCanonicalVersion(canonicalVersion);
+            }
+
+            return canonicalVersion == moniker;
+        }
+
+        private Dictionary<string, List<CustomRule>> LoadCustomRules(ErrorBuilder errors)
+        {
+            var contentValidationRules = GetValidationRules(_config.MarkdownValidationRules);
+            var buildValidationRules = GetValidationRules(_config.BuildValidationRules);
+
+            var customRules = _config.Rules.ToDictionary(item => item.Key, item => new List<CustomRule> { item.Value })
+                ?? new Dictionary<string, List<CustomRule>>();
 
             if (contentValidationRules != null)
             {
@@ -164,8 +170,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (customRules.ContainsKey(validationRule.Code))
                     {
-                        _errorLog.Add(
-                            Errors.Logging.RuleOverrideInvalid(validationRule.Code, new SourceInfo<CustomRule>(customRules[validationRule.Code].First())));
+                        errors.Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code));
                         customRules.Remove(validationRule.Code);
                     }
                 }
@@ -173,8 +178,8 @@ namespace Microsoft.Docs.Build
                 {
                     if (customRules.TryGetValue(validationRule.Code, out var customRule))
                     {
-                        var list = new List<CustomRule>();
-                        list.Add(
+                        customRules[validationRule.Code] = new List<CustomRule>
+                        {
                             new CustomRule(
                                 customRule.First().Severity,
                                 customRule.First().Code,
@@ -184,16 +189,17 @@ namespace Microsoft.Docs.Build
                                 customRule.First().CanonicalVersionOnly,
                                 validationRule.PullRequestOnly,
                                 null,
-                                false));
-                        customRules[validationRule.Code] = list;
+                                false),
+                        };
                     }
                     else
                     {
-                        var list = new List<CustomRule>();
-                        list.Add(new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null, false));
-                        customRules.Add(
-                            validationRule.Code,
-                            list);
+                        var list = new List<CustomRule>
+                        {
+                            new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null, false),
+                        };
+
+                        customRules.Add(validationRule.Code, list);
                     }
                 }
             }
@@ -217,8 +223,7 @@ namespace Microsoft.Docs.Build
                     // won't override docfx custom rules
                     if (!customRules.ContainsKey(oldCode))
                     {
-                        var list = new List<CustomRule> { newRule };
-                        customRules.Add(oldCode, list);
+                        customRules.Add(oldCode, new List<CustomRule> { newRule });
                     }
                     else
                     {
@@ -247,18 +252,11 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static Dictionary<string, ValidationRules>? GetContentValidationRules(Config? config, FileResolver fileResolver)
-            => !string.IsNullOrEmpty(config?.MarkdownValidationRules.Value)
-            ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(
-                fileResolver.ReadString(config.MarkdownValidationRules),
-                config.MarkdownValidationRules.Source?.File)
-            : null;
-
-        private static Dictionary<string, ValidationRules>? GetBuildValidationRules(Config? config, FileResolver fileResolver)
-            => !string.IsNullOrEmpty(config?.BuildValidationRules.Value)
-            ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(
-                fileResolver.ReadString(config.BuildValidationRules),
-                config.BuildValidationRules.Source?.File)
-            : null;
+        private Dictionary<string, ValidationRules>? GetValidationRules(SourceInfo<string> rules)
+        {
+            return !string.IsNullOrEmpty(rules.Value)
+                ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(_fileResolver.ReadString(rules), rules.Source?.File)
+                : null;
+        }
     }
 }

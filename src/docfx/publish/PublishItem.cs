@@ -10,54 +10,31 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class PublishItem
     {
-        public string Url { get; }
+        public string? Url { get; init; }
 
-        public string? Path { get; }
+        public string? Path { get; init; }
 
         [JsonIgnore]
-        public FilePath? SourceFile { get; }
+        public FilePath? SourceFile { get; init; }
 
         /// <summary>
-        /// File source relative path to docset root
-        /// will be used for PR comments
+        /// File source relative path to docset root will be used for PR comment
         /// </summary>
-        public string? SourcePath { get; }
+        public string? SourcePath { get; init; }
+
+        public string? Locale { get; init; }
 
         [JsonIgnore]
-        public MonikerList Monikers { get; }
+        public MonikerList Monikers { get; init; }
 
-        public string? MonikerGroup => Monikers.MonikerGroup;
-
-        public string? ConfigMonikerRange { get; }
-
-        public string Locale { get; }
+        public string? ConfigMonikerRange { get; init; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool HasError { get; }
+        public bool HasError { get; init; }
 
         [JsonExtensionData]
-        public JObject? ExtensionData { get; }
+        public JObject? ExtensionData { get; init; }
 
-        public PublishItem(
-            string url,
-            string? path,
-            FilePath sourceFile,
-            string? sourcePath,
-            string locale,
-            MonikerList monikers,
-            string? configMonikerRange,
-            bool hasError,
-            JObject? extensionData)
-        {
-            Url = url;
-            Path = path;
-            SourceFile = sourceFile;
-            SourcePath = sourcePath;
-            Locale = locale;
-            Monikers = monikers;
-            ConfigMonikerRange = configMonikerRange;
-            HasError = hasError;
-            ExtensionData = extensionData;
-        }
+        public string? MonikerGroup => Monikers.MonikerGroup;
     }
 }

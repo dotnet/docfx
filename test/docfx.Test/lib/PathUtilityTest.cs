@@ -132,7 +132,7 @@ namespace Microsoft.Docs.Build
                 File.Delete(filePath);
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)) ?? ".");
             Assert.Equal(Directory.Exists(Path.GetDirectoryName(filePath)), isDirectoryCreated);
         }
 

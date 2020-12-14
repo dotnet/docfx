@@ -25,59 +25,7 @@ namespace Microsoft.Docs.Build
 
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
-        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
         private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
-
-        /// <summary>
-        /// Finds a yaml or json file under the specified location
-        /// </summary>
-        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string directory, string fileNameWithoutExtension) where T : class, new()
-        {
-            var fileName = fileNameWithoutExtension + ".yml";
-            var fullPath = Path.Combine(directory, fileName);
-            if (File.Exists(fullPath))
-            {
-                return YamlUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
-            }
-
-            fileName = fileNameWithoutExtension + ".json";
-            fullPath = Path.Combine(directory, fileName);
-            if (File.Exists(fullPath))
-            {
-                return JsonUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Enumerates files inside a directory, returns path relative to <paramref name="directory"/>.
-        /// </summary>
-        public static IEnumerable<PathString> GetFiles(string directory)
-        {
-            if (!Directory.Exists(directory))
-            {
-                throw Errors.Config.DirectoryNotFound(directory).ToException();
-            }
-
-            return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
-            {
-                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
-                ShouldRecursePredicate =
-                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
-            };
-
-            static PathString ToPathString(ref FileSystemEntry entry)
-            {
-                Debug.Assert(!entry.IsDirectory);
-
-                var path = entry.RootDirectory.Length == entry.Directory.Length
-                    ? entry.FileName.ToString()
-                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
-
-                return PathString.DangerousCreate(path);
-            }
-        }
 
         /// <summary>
         /// Create a relative path from one path to another file.

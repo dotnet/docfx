@@ -159,67 +159,65 @@ namespace Microsoft.Docs.Build
         private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
             BuildTocMap()
         {
-            using (Progress.Start("Loading TOC"))
+            using var scope = Progress.Start("Loading TOC");
+            var tocs = new ConcurrentBag<FilePath>();
+            var allServicePages = new ConcurrentBag<FilePath>();
+
+            // Parse and split TOC
+            ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Toc), file =>
             {
-                var tocs = new ConcurrentBag<FilePath>();
-                var allServicePages = new ConcurrentBag<FilePath>();
+                SplitToc(file, _tocParser.Parse(file, _errors), tocs);
+            });
 
-                // Parse and split TOC
-                ParallelUtility.ForEach(_errors, _buildScope.GetFiles(ContentType.Toc), file =>
+            var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
+
+            // Load TOC
+            ParallelUtility.ForEach(scope, _errors, tocs, file =>
+            {
+                var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
+
+                tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+
+                foreach (var servicePage in servicePages)
                 {
-                    SplitToc(file, _tocParser.Parse(file, _errors), tocs);
-                });
-
-                var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
-
-                // Load TOC
-                ParallelUtility.ForEach(_errors, tocs, file =>
-                {
-                    var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
-
-                    tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
-
-                    foreach (var servicePage in servicePages)
-                    {
-                        allServicePages.Add(servicePage);
-                    }
-                });
-
-                // Create TOC reference map
-                var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
-
-                var tocToTocs = (
-                    from item in tocReferences
-                    where !includedTocs.Contains(item.Key)
-                    select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
-
-                var docToTocs = (
-                    from item in tocReferences
-                    from doc in item.Value.docs
-                    where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental()
-                    group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
-
-                docToTocs.TrimExcess();
-
-                var tocFiles = _publishUrlMap.ResolveUrlConflicts(tocToTocs.Keys.Where(ShouldBuildFile));
-
-                return (tocFiles, docToTocs, allServicePages.ToList());
-
-                bool ShouldBuildFile(FilePath file)
-                {
-                    if (file.Origin != FileOrigin.Fallback)
-                    {
-                        return true;
-                    }
-
-                    // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                    if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    allServicePages.Add(servicePage);
                 }
+            });
+
+            // Create TOC reference map
+            var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
+
+            var tocToTocs = (
+                from item in tocReferences
+                where !includedTocs.Contains(item.Key)
+                select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
+
+            var docToTocs = (
+                from item in tocReferences
+                from doc in item.Value.docs
+                where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental()
+                group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+
+            docToTocs.TrimExcess();
+
+            var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
+
+            return (tocFiles, docToTocs, allServicePages.ToList());
+
+            bool ShouldBuildFile(FilePath file)
+            {
+                if (file.Origin != FileOrigin.Fallback)
+                {
+                    return true;
+                }
+
+                // if A toc includes B toc and only B toc is localized, then A need to be included and built
+                if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
 

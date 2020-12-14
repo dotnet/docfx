@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace Microsoft.Docs.Build
             var stopwatch = Stopwatch.StartNew();
             using var errors = new ErrorWriter(options.Log);
 
-            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, options);
+            var docsets = ConfigLoader.FindDocsets(errors, new LocalPackage(workingDirectory), options);
             if (docsets.Length == 0)
             {
                 errors.Add(Errors.Config.ConfigNotFound(workingDirectory));
@@ -42,7 +43,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 // load configuration from current entry or fallback repository
-                var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(errors, docsetPath, outputPath, options, fetchOptions);
+                var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
+                    errors, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(workingDirectory, docsetPath)));
 
                 if (errors.HasError)
                 {
@@ -69,16 +71,20 @@ namespace Microsoft.Docs.Build
 
         private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)
         {
-            ParallelUtility.ForEach(errors, config.GetFileReferences(), fileResolver.Download);
+            using var scope = Progress.Start("Restoring files");
+            ParallelUtility.ForEach(scope, errors, config.GetFileReferences(), fileResolver.Download);
         }
 
         private static void RestorePackages(ErrorBuilder errors, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
-            ParallelUtility.ForEach(
-                errors,
-                GetPackages(config).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags));
-
+            using (var scope = Progress.Start("Restoring packages"))
+            {
+                ParallelUtility.ForEach(
+                    scope,
+                    errors,
+                    GetPackages(config).Distinct(),
+                    item => packageResolver.DownloadPackage(item.package, item.flags));
+            }
             LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
         }
 

@@ -17,9 +17,6 @@ inputs:
             "severity": "SUGGESTION",
             "exclusions": [
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -55,9 +52,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -96,9 +90,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -134,9 +125,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ],
             "minCodeBlockLineCount": 5
           }
@@ -188,9 +176,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]
@@ -264,9 +249,6 @@ inputs:
               "includes",
               "landingpage",
               "hubpage"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ]
           }
         ]

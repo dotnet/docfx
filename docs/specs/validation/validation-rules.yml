@@ -229,9 +229,6 @@ inputs:
             "code": "h1-not-first",
             "severity": "SUGGESTION",
             "exclusions": [ "includes", "landingpage", "hubpage" ],
-            "excludedDocfxVersions": [
-              "v2"
-            ] ,
             "pullRequestOnly": false,
             "docfxOverride": true
           },
@@ -241,9 +238,6 @@ inputs:
             "code": "heading-empty",
             "severity": "SUGGESTION",
             "exclusions": [ "landingpage", "hubpage", "toc" ],
-            "excludedDocfxVersions": [
-              "v2"
-            ],
             "pullRequestOnly": true,
             "docfxOverride": true
           },
@@ -257,9 +251,6 @@ inputs:
               "landingpage",
               "hubpage",
               "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
             ],
             "pullRequestOnly": true,
             "docfxOverride": true

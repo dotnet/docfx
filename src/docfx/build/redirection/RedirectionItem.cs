@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build
     {
         public PathString SourcePath { get; set; }
 
+        public PathString SourcePathFromRoot { get; set; }
+
         [JsonConverter(typeof(OneOrManyConverter))]
         public SourceInfo<string>[]? Monikers { get; set; }
 

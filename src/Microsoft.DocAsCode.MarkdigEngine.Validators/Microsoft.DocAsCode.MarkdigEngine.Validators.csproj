@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <Version>2.56.1</Version>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <nullable>disable</nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.22.0" />
+    <PackageReference Include="Markdig" Version="0.22.1" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
   </ItemGroup>
 

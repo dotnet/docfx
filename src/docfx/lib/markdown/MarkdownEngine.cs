@@ -312,20 +312,11 @@ namespace Microsoft.Docs.Build
             var (error, file) = _linkResolver.ResolveContent(
                 new SourceInfo<string>(path, origin.GetSourceInfo()),
                 origin.GetFilePath(),
+                GetRootFilePath(),
                 status.ContentFallback);
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
-        }
-
-        private string GetLink(string path, MarkdownObject origin)
-        {
-            var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(
-                new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), GetRootFilePath());
-            status.Errors.AddIfNotNull(error);
-
-            return link;
         }
 
         private string GetImageLink(string path, MarkdownObject origin, string? altText)
@@ -340,13 +331,14 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            _contentValidator.ValidateImageLink(GetRootFilePath(), href, origin, altText, imageIndex);
-            var link = GetLink(href);
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, true, altText, imageIndex);
+            var link = GetLink(href, origin);
             return link;
         }
 
-        private string GetLink(SourceInfo<string> href)
+        private string GetLink(SourceInfo<string> href, MarkdownObject origin)
         {
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, false, null, -1);
             var status = t_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
@@ -354,8 +346,9 @@ namespace Microsoft.Docs.Build
             return link;
         }
 
-        private (string? href, string display) GetXref(
-            SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+        private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
+
+        private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {
             var status = t_status.Value!.Peek();
 

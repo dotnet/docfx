@@ -10,6 +10,7 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Yunit;
@@ -71,14 +72,14 @@ namespace Microsoft.Docs.Build
 
             lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
-                var (docsetPath, appDataPath, outputPath, repos, variables) = CreateDocset(test, spec);
+                var (docsetPath, appDataPath, outputPath, repos, variables, package) = CreateDocset(test, spec);
 
                 try
                 {
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
-                    RunCore(docsetPath, outputPath, test, spec, variables);
+                    RunCore(docsetPath, outputPath, test, spec, variables, package);
                 }
                 catch (Exception exception)
                 {
@@ -97,16 +98,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables)
+        private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Dictionary<string, string> variables, Package package)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
-            var outputPath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(basePath, "outputs")));
-            var markerPath = PathUtility.Normalize(Path.Combine(basePath, "marker"));
-            var appDataPath = PathUtility.Normalize(Path.Combine(basePath, "appdata"));
-            var cachePath = PathUtility.Normalize(Path.Combine(appDataPath, "cache"));
-            var statePath = PathUtility.Normalize(Path.Combine(appDataPath, "state"));
+            var basePath = NormalizePath(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
+            var outputPath = NormalizePath(Path.GetFullPath(Path.Combine(basePath, "outputs")));
+            var markerPath = NormalizePath(Path.Combine(basePath, "marker"));
+            var appDataPath = NormalizePath(Path.Combine(basePath, "appdata"));
+            var cachePath = NormalizePath(Path.Combine(appDataPath, "cache"));
+            var statePath = NormalizePath(Path.Combine(appDataPath, "state"));
 
             Directory.CreateDirectory(basePath);
 
@@ -118,7 +119,7 @@ namespace Microsoft.Docs.Build
                     remote => remote.remote,
                     remote => Path.Combine(basePath, "repos", remote.index.ToString()));
 
-            var docsetPath = PathUtility.Normalize(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
+            var docsetPath = NormalizePath(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
 
             var variables = new Dictionary<string, string>
             {
@@ -128,7 +129,6 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
-                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
@@ -140,6 +140,8 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
             }
 
+            var package = TestUtility.CreateInputDirectoryPackage(docsetPath, spec, variables);
+
             if (!File.Exists(markerPath))
             {
                 foreach (var (url, commits) in spec.Repos.Reverse())
@@ -148,23 +150,26 @@ namespace Microsoft.Docs.Build
                     TestUtility.CreateGitRepository(repos[packageUrl.Url], commits, packageUrl.Url, packageUrl.Branch, variables);
                 }
 
-                TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
                 TestUtility.CreateFiles(cachePath, spec.Cache, variables);
                 TestUtility.CreateFiles(statePath, spec.State, variables);
+                if (package is LocalPackage)
+                {
+                    TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
+                }
 
                 File.WriteAllText(markerPath, "");
             }
 
-            return (docsetPath, appDataPath, outputPath, repos, variables);
+            return (docsetPath, appDataPath, outputPath, repos, variables, package);
         }
 
-        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables)
+        private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Dictionary<string, string> variables, Package package)
         {
             var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun");
 
             if (spec.LanguageServer.Count != 0)
             {
-                RunLanguageServer(spec, variables);
+                RunLanguageServer(docsetPath, spec, package, variables).GetAwaiter().GetResult();
             }
             else if (spec.Locale != null)
             {
@@ -175,37 +180,39 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, dryRun, spec);
+                    RunBuild(locDocsetPath, outputPath, dryRun, spec, package.CreateSubPackage(locDocsetPath));
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, dryRun, spec);
+                RunBuild(docsetPath, outputPath, dryRun, spec, package);
             }
         }
 
-        private static void RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
+        private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package, Dictionary<string, string> variables)
         {
-            var lspTestHost = new DocfxLanguageServerTestHost(variables);
-            lspTestHost.InitializeAsync().GetAwaiter().GetResult();
+            var lspTestHost = new LanguageServerTestHost(docsetPath, variables, package);
 
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {
                 var lspSpec = spec.LanguageServer[i];
                 if (!string.IsNullOrEmpty(lspSpec.Notification))
                 {
-                    lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
+                    await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
+                    // TODO: The order or multiple expected notifications should be ignored.
                     var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
-                    var actualNotification = lspTestHost.GetExpectedNotification(expectedNotification.Method).GetAwaiter().GetResult();
+                    expectedNotification.Params = TestUtility.ApplyVariables(lspSpec.Params, variables);
+
+                    var actualNotification = await lspTestHost.GetExpectedNotification(expectedNotification.Method);
                     s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
                 }
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec, Package package)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -223,7 +230,7 @@ namespace Microsoft.Docs.Build
                     spec.NoDrySync ? "--no-dry-sync" : null,
                 }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
-                Docfx.Run(commandLine.Where(arg => arg != null).ToArray());
+                Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
@@ -370,6 +377,16 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(os) ||
                 os.Split(',').Any(
                     item => RuntimeInformation.IsOSPlatform(OSPlatform.Create(item.Trim().ToUpperInvariant())));
+        }
+
+        private static string NormalizePath(string path)
+        {
+            var normalizedPath = PathUtility.Normalize(path);
+            if (!PathUtility.IsCaseSensitive)
+            {
+                normalizedPath = normalizedPath.ToLower();
+            }
+            return normalizedPath;
         }
     }
 }

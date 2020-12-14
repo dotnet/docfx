@@ -17,9 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
 
-        private readonly FilePath[] _files;
-        private readonly IReadOnlyDictionary<string, List<PublishUrlMapItem>> _urlMap;
-        private readonly ConcurrentDictionary<string, string?> _canonicalVersionMap = new ConcurrentDictionary<string, string?>();
+        private readonly Watch<(FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> map)> _state;
+        private readonly ConcurrentDictionary<FilePath, Watch<string?>> _canonicalVersionCache = new ConcurrentDictionary<FilePath, Watch<string?>>();
 
         public PublishUrlMap(
             Config config,
@@ -35,34 +34,42 @@ namespace Microsoft.Docs.Build
             _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
-            (_files, _urlMap) = Initialize();
+            _state = Watcher.Create(Initialize);
         }
 
         public string? GetCanonicalVersion(FilePath file)
         {
-            var url = _documentProvider.GetSiteUrl(file);
-            return _canonicalVersionMap.GetOrAdd(url, GetCanonicalVersionCore);
+            // If the file does not have versioning configured, assume it does not have canonical version,
+            // this avoids the expensive creation of url map.
+            var monikers = _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file);
+            if (!monikers.HasMonikers)
+            {
+                return default;
+            }
+
+            return _canonicalVersionCache.GetOrAdd(file, key => Watcher.Create(() => GetCanonicalVersionCore(key))).Value;
         }
 
         public IEnumerable<FilePath> GetFilesByUrl(string url)
         {
-            if (_urlMap.TryGetValue(url, out var items))
+            if (_state.Value.map.TryGetValue(url, out var items))
             {
                 return items.Select(x => x.SourcePath);
             }
             return Array.Empty<FilePath>();
         }
 
-        public IEnumerable<FilePath> GetFiles() => _files;
+        public IEnumerable<FilePath> GetFiles() => _state.Value.files;
 
-        public FilePath[] ResolveUrlConflicts(IEnumerable<FilePath> files)
+        public FilePath[] ResolveUrlConflicts(LogScope scope, IEnumerable<FilePath> files)
         {
-            return CreateUrlMap(files).files;
+            return CreateUrlMap(scope, files).files;
         }
 
-        private string? GetCanonicalVersionCore(string url)
+        private string? GetCanonicalVersionCore(FilePath file)
         {
-            if (_urlMap.TryGetValue(url, out var item))
+            var url = _documentProvider.GetSiteUrl(file);
+            if (_state.Value.map.TryGetValue(url, out var item))
             {
                 string? canonicalVersion = null;
                 var order = 0;
@@ -82,20 +89,21 @@ namespace Microsoft.Docs.Build
 
         private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) Initialize()
         {
-            using (Progress.Start("Building publish url map"))
+            using (var scope = Progress.Start("Building publish url map"))
             {
                 return CreateUrlMap(
+                    scope,
                     _redirectionProvider.Files.Concat(
                     _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html)).Concat(
                     _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback)));
             }
         }
 
-        private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) CreateUrlMap(IEnumerable<FilePath> files)
+        private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) CreateUrlMap(LogScope scope, IEnumerable<FilePath> files)
         {
             var builder = new ListBuilder<PublishUrlMapItem>();
 
-            ParallelUtility.ForEach(_errors, files, file =>
+            ParallelUtility.ForEach(scope, _errors, files, file =>
             {
                 var siteUrl = _documentProvider.GetSiteUrl(file);
                 var outputPath = _documentProvider.GetOutputPath(file);

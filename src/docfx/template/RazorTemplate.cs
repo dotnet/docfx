@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             });
 
             using var reader = new StreamReader(httpContext.Response.Body);
-            var body = reader.ReadToEnd();
+            var body = await reader.ReadToEndAsync();
             var statusCode = httpContext.Response.StatusCode;
 
             if (statusCode != 200)
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         {
             public IActionResult Get()
             {
-                var template = (string)HttpContext.Items["template"];
+                var template = HttpContext.Items["template"] as string;
                 var model = HttpContext.Items["model"];
 
                 return View(template, model);

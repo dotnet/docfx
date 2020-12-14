@@ -65,3 +65,29 @@ inputs:
   TOC.md: |
     # [circular reference](TOC.md)
 outputs:
+---
+# Get canonical version for document without versioning does not touch url map
+dryRunOnly: true
+buildFiles:
+- a.md
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "canonicalVersionOnly" : true,
+            "exclusions": []
+          }
+        ]
+      }
+    }
+  a.md: 'a'
+  b.png.md:
+  b.png:
+outputs:

@@ -26,6 +26,13 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
                    = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
 
+        private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Architecture",
+                "TSType",
+                "TSEnum",
+            };
+
         private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "Architecture",
@@ -34,20 +41,21 @@ namespace Microsoft.Docs.Build
                 "LandingData",
             };
 
-        public TemplateEngine(
-            ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
+        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
         {
             _config = config;
             _buildOptions = buildOptions;
             _jsonSchemaLoader = jsonSchemaLoader;
 
             var template = config.Template;
+            var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
                 template = new PackagePath("_themes");
+                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExisted;
             }
 
-            _package = packageResolver.ResolveAsPackage(template, PackageFetchOptions.DepthOne);
+            _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
             _templateDefinition = new Lazy<TemplateDefinition>(() =>
                 _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
@@ -69,6 +77,8 @@ namespace Microsoft.Docs.Build
                 _ => RenderType.Component,
             };
         }
+
+        public static bool OutputAbsoluteUrl(string? mime) => mime != null && s_outputAbsoluteUrlYamlMime.Contains(mime);
 
         public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
 

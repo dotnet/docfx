@@ -136,7 +136,7 @@ namespace Microsoft.Docs.Build
         {
             return "/" + PathUtility.NormalizeFile(UrlUtility.Combine(
 #pragma warning disable CS0618 // Type or member is obsolete
-                _documentProvider.GetDocsSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
+                _documentProvider.GetDocsSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).First(),
 #pragma warning restore CS0618 // Type or member is obsolete
                 Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json")));
         }

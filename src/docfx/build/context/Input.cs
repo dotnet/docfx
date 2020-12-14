@@ -32,13 +32,19 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
                      new ConcurrentDictionary<FilePath, (string?, JToken)>();
 
-        public Input(BuildOptions buildOptions, Config config, PackageResolver packageResolver, RepositoryProvider repositoryProvider, SourceMap sourceMap)
+        public Input(
+            BuildOptions buildOptions,
+            Config config,
+            PackageResolver packageResolver,
+            RepositoryProvider repositoryProvider,
+            SourceMap sourceMap,
+            Package package)
         {
             _config = config;
             _sourceMap = sourceMap;
             _packageResolver = packageResolver;
             _repositoryProvider = repositoryProvider;
-            _mainPackage = new LocalPackage(buildOptions.DocsetPath);
+            _mainPackage = package;
 
             if (buildOptions.FallbackDocsetPath != null)
             {
@@ -72,6 +78,20 @@ namespace Microsoft.Docs.Build
             return package.Exists(path);
         }
 
+        public FilePath? GetFirstMatchInSplitToc(string pathString)
+        {
+            var path = new PathString(pathString);
+            foreach (var (k, _) in _generatedContents)
+            {
+                if (k.Path.Value == path)
+                {
+                    return k;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Try get the absolute path of the specified file if it exists physically on disk.
         /// Some file path like content from a bare git repo does not exist physically
@@ -99,6 +119,18 @@ namespace Microsoft.Docs.Build
             var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
 
             return package.TryGetPhysicalPath(path);
+        }
+
+        public DateTime GetLastWriteTimeUtc(FilePath file)
+        {
+            if (file.IsGitCommit || file.Origin == FileOrigin.Generated)
+            {
+                return default;
+            }
+
+            var (package, path) = ResolveFilePath(_sourceMap.GetOriginalFilePath(file) ?? file);
+
+            return package.TryGetLastWriteTimeUtc(path) ?? default;
         }
 
         /// <summary>
@@ -134,7 +166,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents[file].generatedContent;
+               return _generatedContents[file].generatedContent;
             }
 
             return _yamlTokenCache.GetOrAdd(file, path =>
@@ -284,7 +316,7 @@ namespace Microsoft.Docs.Build
         {
             var (package, path) = ResolveFilePath(file);
 
-            return ReadBytesFromGit(package.TryGetGitFilePath(path));
+            return ReadBytesFromGit(package.GetFullFilePath(path));
         }
 
         private byte[]? ReadBytesFromGit(PathString? physicalPath)
