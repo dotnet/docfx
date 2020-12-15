@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class BadgeModel
+    internal class Badge
     {
         public SourceInfo<string> Uid { get; set; }
     }

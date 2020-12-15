@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 
         public SourceInfo<string>[]? Modules { get; set; }
 
-        public TrophyModel? Trophy { get; set; }
+        public Trophy? Trophy { get; set; }
 
         public SourceInfo<string> Achievement { get; set; }
 

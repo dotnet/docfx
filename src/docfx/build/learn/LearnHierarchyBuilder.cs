@@ -70,11 +70,11 @@ namespace Microsoft.Docs.Build
         {
             switch (obj)
             {
-                case TrophyModel trophy:
+                case Trophy trophy:
                     achievement = new Achievement { Uid = trophy.Uid, Type = Constants.Trophy };
                     return true;
 
-                case BadgeModel badge:
+                case Badge badge:
                     achievement = new Achievement { Uid = badge.Uid, Type = Constants.Badge };
                     return true;
 

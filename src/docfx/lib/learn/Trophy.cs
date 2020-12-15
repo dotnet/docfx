@@ -3,7 +3,7 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal class TrophyModel
+    internal class Trophy
     {
         public SourceInfo<string> Uid { get; set; }
     }
