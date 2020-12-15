@@ -46,9 +46,8 @@ namespace Microsoft.Docs.Build
             var filename = name.Replace(" ", "");
             var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
             var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
-            var nodeHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, node.Href.Value ?? ""));
 
-            if (string.IsNullOrEmpty(node.Href.Value) || (!node.Href.Value.StartsWith("~") && !File.Exists(nodeHrefFullPath)))
+            if (string.IsNullOrEmpty(node.Href.Value))
             {
                 TryToGenerateServicePageForItem(node, directoryName, filename, referenceTOCFullPath, results);
             }
