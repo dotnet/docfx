@@ -11,8 +11,7 @@ namespace Microsoft.Docs.Build
     internal class PackageResolver
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories
-                          = new ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>>();
+        private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories = new();
 
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;

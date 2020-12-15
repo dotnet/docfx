@@ -25,19 +25,13 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly Input _input;
 
-        private readonly MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)> _schemaDocumentsCache
-                   = new MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)>();
+        private readonly MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)> _schemaDocumentsCache = new();
 
-        private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new ConcurrentDictionary<FilePath, int>(ReferenceEqualsComparer.Default);
+        private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new(ReferenceEqualsComparer.Default);
+        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema, int? min, int? max)> _uidReferenceCountList = new();
+        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList = new();
 
-        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema schema, int? minReferenceCount, int? maxReferenceCount)>
-            _uidReferenceCountList = new ConcurrentBag<(SourceInfo<string>, string?, JsonSchema, int?, int?)>();
-
-        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList =
-            new ConcurrentBag<(SourceInfo<string>, string?, string?)>();
-
-        private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector
-                          = new ThreadLocal<Stack<SourceInfo<string>>>(() => new Stack<SourceInfo<string>>());
+        private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector = new(() => new());
 
         public JsonSchemaTransformer(
             DocumentProvider documentProvider,

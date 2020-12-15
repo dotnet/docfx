@@ -24,10 +24,10 @@ namespace Microsoft.Docs.Build
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
 
-        private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new ConcurrentDictionary<FilePath, Watch<Document>>();
+        private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new();
 
         // mime -> page type. TODO get from docs-ui schema
-        private static readonly Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_pageTypeMapping = new()
         {
             { "NetType", "dotnet" },
             { "NetNamespace", "dotnet" },

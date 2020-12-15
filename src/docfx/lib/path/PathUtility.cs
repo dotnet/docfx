@@ -169,7 +169,7 @@ namespace Microsoft.Docs.Build
             var index = url.IndexOf(':');
             if (index > 0)
             {
-                url = url.Substring(index);
+                url = url[index..];
             }
 
             url = url.TrimStart('/', '\\', '.', ':').Trim();

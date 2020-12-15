@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                     case HeadingBlock headingBlock:
                         headingBlocks.Add(headingBlock);
                         break;
-                    case YamlFrontMatterBlock _:
+                    case YamlFrontMatterBlock:
                     case HtmlBlock htmlBlock when htmlBlock.Type == HtmlBlockType.Comment:
                         break;
                     default:

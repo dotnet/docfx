@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class SourceMap
     {
-        private readonly IDictionary<PathString, PathString> _map = new Dictionary<PathString, PathString>();
+        private readonly Dictionary<PathString, PathString> _map = new();
 
         public SourceMap(ErrorBuilder errors, PathString docsetPath, Config config, FileResolver fileResolver)
         {

@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
-        private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
+        private readonly ConcurrentHashSet<FileLinkItem> _links = new();
 
         public FileLinkMapBuilder(
             ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)

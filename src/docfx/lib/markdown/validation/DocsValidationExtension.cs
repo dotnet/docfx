@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
                     codeBlockItem.LineCount = GetFencedCodeBlockNetLineCount(fencedCodeBlock);
                     break;
 
-                case YamlFrontMatterBlock _:
+                case YamlFrontMatterBlock:
                     break;
 
                 case CodeBlock codeBlock:

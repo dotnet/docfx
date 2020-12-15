@@ -17,12 +17,7 @@ namespace Microsoft.Docs.Build
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
         private readonly Channel<FileActionEvent> _channel;
-
-        private readonly DocumentSelector _documentSelector = new DocumentSelector(
-            new DocumentFilter()
-            {
-                Pattern = "**/*.{md,yml,json}",
-            });
+        private readonly DocumentSelector _documentSelector = new(new DocumentFilter { Pattern = "**/*.{md,yml,json}" });
 
         public TextDocumentHandler(Channel<FileActionEvent> channel)
         {

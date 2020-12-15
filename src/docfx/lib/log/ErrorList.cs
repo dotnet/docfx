@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ErrorList : ErrorBuilder, IReadOnlyList<Error>
     {
-        private readonly List<Error> _items = new List<Error>();
+        private readonly List<Error> _items = new();
 
         public Error this[int index] => _items[index];
 

@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
                 {
                     switch (node)
                     {
-                        case TabTitleBlock _:
+                        case TabTitleBlock:
                             return true;
                         case HtmlBlock block:
                             block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors, scanTags));

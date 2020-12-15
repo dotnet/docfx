@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             switch (markdownObject)
             {
-                case TabTitleBlock _:
+                case TabTitleBlock:
                     break;
 
                 case LinkInline linkInline:
