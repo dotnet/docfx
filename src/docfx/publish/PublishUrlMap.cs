@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
 
         private readonly Watch<(FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> map)> _state;
-        private readonly ConcurrentDictionary<FilePath, Watch<string?>> _canonicalVersionCache = new ConcurrentDictionary<FilePath, Watch<string?>>();
+        private readonly ConcurrentDictionary<FilePath, Watch<string?>> _canonicalVersionCache = new();
 
         public PublishUrlMap(
             Config config,

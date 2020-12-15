@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             path = path.TrimEnd('/', '\\');
             var hasRefSpec = !string.IsNullOrEmpty(fragment) && fragment.Length > 1;
 
-            return (path, hasRefSpec ? fragment.Substring(1) : "main");
+            return (path, hasRefSpec ? fragment[1..] : "main");
         }
 
         [OnDeserialized]

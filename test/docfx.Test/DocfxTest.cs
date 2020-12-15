@@ -21,10 +21,10 @@ namespace Microsoft.Docs.Build
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
-        private static readonly ConcurrentDictionary<string, object> s_locks = new ConcurrentDictionary<string, object>();
-        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new AsyncLocal<IReadOnlyDictionary<string, string>>();
-        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new AsyncLocal<IReadOnlyDictionary<string, string>>();
-        private static readonly AsyncLocal<string> t_appDataPath = new AsyncLocal<string>();
+        private static readonly ConcurrentDictionary<string, object> s_locks = new();
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new();
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new();
+        private static readonly AsyncLocal<string> t_appDataPath = new();
 
         static DocfxTest()
         {

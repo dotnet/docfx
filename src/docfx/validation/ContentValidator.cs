@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
         private readonly PublishUrlMap _publishUrlMap;
-        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
+        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new();
 
         public ContentValidator(
             Config config,

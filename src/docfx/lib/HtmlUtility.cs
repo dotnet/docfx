@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     {
         public delegate void TransformHtmlDelegate(ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token);
 
-        private static readonly HashSet<string> s_globalAllowedAttributes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> s_globalAllowedAttributes = new(StringComparer.OrdinalIgnoreCase)
         {
             "name", "id", "class", "itemid", "itemprop", "itemref", "itemscope", "itemtype", "part", "slot", "spellcheck", "title", "role",
         };

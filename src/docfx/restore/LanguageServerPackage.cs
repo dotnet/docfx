@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public override PathString BasePath => _packages.First().BasePath;
 
-        private readonly List<Package> _packages = new List<Package>();
+        private readonly List<Package> _packages = new();
         private DateTime _lastPackageFilesUpdateTime;
 
         private MemoryPackage MemoryPackage => (_packages[0] as MemoryPackage)!;

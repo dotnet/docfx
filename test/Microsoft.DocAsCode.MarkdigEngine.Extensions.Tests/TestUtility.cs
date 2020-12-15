@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
                 if (path.StartsWith("~/"))
                 {
-                    path = path.Substring(2);
+                    path = path[2..];
                     key = path;
                 }
 

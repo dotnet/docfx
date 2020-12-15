@@ -8,11 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal class ExpressionCreator
     {
-        private static readonly Regex s_orSymbolRegex = new Regex(@"^\s*(?<or>\|\|)", RegexOptions.Compiled);
-        private static readonly Regex s_operatorSymbolRegex = new Regex(@"^\s*(?<operator>\=|[\>\<]\=?)", RegexOptions.Compiled);
-        private static readonly Regex s_monikerSymbolRegex = new Regex(@"^\s*(?<moniker>[\w\-\.]+)", RegexOptions.Compiled);
+        private static readonly Regex s_orSymbolRegex = new(@"^\s*(?<or>\|\|)", RegexOptions.Compiled);
+        private static readonly Regex s_operatorSymbolRegex = new(@"^\s*(?<operator>\=|[\>\<]\=?)", RegexOptions.Compiled);
+        private static readonly Regex s_monikerSymbolRegex = new(@"^\s*(?<moniker>[\w\-\.]+)", RegexOptions.Compiled);
 
-        private static readonly Dictionary<string, ComparatorOperatorType> s_operatorMap = new Dictionary<string, ComparatorOperatorType>
+        private static readonly Dictionary<string, ComparatorOperatorType> s_operatorMap = new()
         {
             { "=", ComparatorOperatorType.EqualTo },
             { ">", ComparatorOperatorType.GreaterThan },
@@ -146,7 +146,7 @@ namespace Microsoft.Docs.Build
             if (match.Length > 0)
             {
                 value = match.Groups[1].Value;
-                rangeString = rangeString.Substring(match.Length);
+                rangeString = rangeString[match.Length..];
                 return true;
             }
 

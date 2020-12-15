@@ -43,24 +43,14 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
-                    () => new InternalXrefMapBuilder(
-                                config,
-                                errorLog,
-                                documentProvider,
-                                metadataProvider,
-                                monikerProvider,
-                                buildScope,
-                                jsonSchemaTransformer()).Build());
-
-            _externalXrefMap = new Lazy<ExternalXrefMap>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
-
             _jsonSchemaTransformer = jsonSchemaTransformer;
-
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+
+            _internalXrefMap = new(() => new InternalXrefMapBuilder(
+                config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, jsonSchemaTransformer()).Build());
+            _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
@@ -257,12 +247,12 @@ namespace Microsoft.Docs.Build
             if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
                         && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring("https://review.docs.microsoft.com".Length);
+                return url["https://review.docs.microsoft.com".Length..];
             }
 
             if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring($"https://{hostName}".Length);
+                return url[$"https://{hostName}".Length..];
             }
 
             return url;

@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsPostProcessor
     {
-        private static readonly object s_lock = new object();
+        private static readonly object s_lock = new();
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;

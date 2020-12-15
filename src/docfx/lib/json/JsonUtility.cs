@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class JsonUtility
     {
-        public static readonly JTokenDeepEqualsComparer DeepEqualsComparer = new JTokenDeepEqualsComparer();
+        public static readonly JTokenDeepEqualsComparer DeepEqualsComparer = new();
 
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonConverter[] s_jsonConverters =
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             new JTokenJsonConverter { },
         };
 
-        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_serializerCheckingAdditional = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_serializerCheckingAdditional = JsonSerializer.Create(new()
         {
             CheckAdditionalContent = true,
             NullValueHandling = NullValueHandling.Ignore,
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new()
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> t_status = new(() => new());
 
         internal static JsonSerializer Serializer => s_serializer;
 

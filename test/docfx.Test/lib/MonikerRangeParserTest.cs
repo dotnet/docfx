@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     public class MonikerRangeParserTest
     {
-        private readonly MonikerDefinitionModel _monikerDefinition = new MonikerDefinitionModel
+        private readonly MonikerDefinitionModel _monikerDefinition = new()
         {
             Monikers =
             {
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerRangeParserTest()
         {
-            _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
+            _monikerRangeParser = new(_monikerDefinition);
         }
 
         [Theory]

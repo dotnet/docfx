@@ -21,9 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly PublishUrlMap _publishUrlMap;
         private readonly Func<ContentValidator> _contentValidator;
 
-        private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
-        private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?> _zonePivotDefinitionModelCache =
-            new ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?>();
+        private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new();
+        private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?> _zonePivotDefinitionModelCache = new();
 
         public ZonePivotProvider(
             ErrorBuilder errors,

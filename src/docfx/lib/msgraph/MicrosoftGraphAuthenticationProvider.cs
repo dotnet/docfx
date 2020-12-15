@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] scopes = { "https://graph.microsoft.com/.default" };
 
         private readonly IConfidentialClientApplication _cca;
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         private AuthenticationResult? _authenticationResult;
 

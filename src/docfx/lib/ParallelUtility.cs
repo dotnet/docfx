@@ -16,12 +16,8 @@ namespace Microsoft.Docs.Build
     {
         private static readonly int s_maxParallelism = Math.Max(8, Environment.ProcessorCount * 2);
 
-        private static readonly ParallelOptions s_parallelOptions = new ParallelOptions
-        {
-            MaxDegreeOfParallelism = s_maxParallelism,
-        };
-
-        private static readonly ExecutionDataflowBlockOptions s_dataflowOptions = new ExecutionDataflowBlockOptions
+        private static readonly ParallelOptions s_parallelOptions = new() { MaxDegreeOfParallelism = s_maxParallelism };
+        private static readonly ExecutionDataflowBlockOptions s_dataflowOptions = new()
         {
             MaxDegreeOfParallelism = s_maxParallelism,
             BoundedCapacity = DataflowBlockOptions.Unbounded,

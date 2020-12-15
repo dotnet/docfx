@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
                         _errors.Add(Errors.Redirection.RedirectionPathSyntaxError(item.RedirectUrl));
                         continue;
                     }
-                    var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value.Substring(1);
+                    var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value[1..];
                     if (_buildOptions.Repository != null)
                     {
                         sourcePath = Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.Repository.Path, sourcePathRelativeToRepoRoot));

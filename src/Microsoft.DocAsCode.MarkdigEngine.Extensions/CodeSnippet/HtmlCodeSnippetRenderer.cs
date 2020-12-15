@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private const string CSSCodeSnippetRegionStartLineTemplate = "/*<{tagname}>*/";
         private const string CSSCodeSnippetRegionEndLineTemplate = "/*</{tagname}>*/";
 
-        private static readonly IReadOnlyDictionary<string, string[]> s_languageAlias = new Dictionary<string, string[]>
+        private static readonly Dictionary<string, string[]> s_languageAlias = new()
         {
             { "actionscript", new string[] { "as" } },
             { "arduino", new string[] { "ino" } },
@@ -115,19 +115,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "vb", new string[] { "vbnet", "vbscript", "bas", "vbs", "vba" } },
         };
 
-        private static readonly Dictionary<string, string> s_languageByFileExtension = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> s_languageByFileExtension = new();
 
         // If we ever come across a language that has not been defined above, we shouldn't break the build.
         // We can at least try it with a default language, "C#" for now, and try and resolve the code snippet.
-        private static readonly HashSet<CodeSnippetExtractor> s_defaultExtractors = new HashSet<CodeSnippetExtractor>();
+        private static readonly HashSet<CodeSnippetExtractor> s_defaultExtractors = new();
 
         // Language names and aliases follow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases,
         // extensions and corresponding comments regexes to docfx build configuration
-        private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors
-                          = new Dictionary<string, HashSet<CodeSnippetExtractor>>();
+        private static readonly Dictionary<string, HashSet<CodeSnippetExtractor>> s_languageExtractors = new();
 
         private readonly MarkdownContext _context;
 
@@ -220,7 +219,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
                 else
                 {
-                    s_languageExtractors[language] = new HashSet<CodeSnippetExtractor> { extractor };
+                    s_languageExtractors[language] = new() { extractor };
                 }
             }
         }
@@ -406,10 +405,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             {
                 if (source[i] != ' ')
                 {
-                    return source.Substring(i);
+                    return source[i..];
                 }
             }
-            return source.Substring(validDedent);
+            return source[validDedent..];
         }
 
         private static bool IsBlankLine(string line)
@@ -476,7 +475,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (codeRanges == null)
                 {
-                    codeRanges = new List<CodeRange>();
+                    codeRanges = new();
                 }
 
                 codeRanges.Add(codeRange);
@@ -527,7 +526,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            return int.TryParse(withL ? lineNumberString.Substring(1) : lineNumberString, out lineNumber);
+            return int.TryParse(withL ? lineNumberString[1..] : lineNumberString, out lineNumber);
         }
     }
 }

@@ -10,20 +10,16 @@ namespace Microsoft.Docs.Build
     {
         private readonly ErrorBuilder _errors;
 
-        private readonly DictionaryBuilder<FilePath, HashSet<string>> _bookmarksByFile = new DictionaryBuilder<FilePath, HashSet<string>>();
-        private readonly ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)> _references
-                   = new ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)>();
+        private readonly DictionaryBuilder<FilePath, HashSet<string>> _bookmarksByFile = new();
+        private readonly ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)> _references = new();
 
-        public BookmarkValidator(ErrorBuilder errors)
-        {
-            _errors = errors;
-        }
+        public BookmarkValidator(ErrorBuilder errors) => _errors = errors;
 
         public void AddBookmarkReference(FilePath file, FilePath reference, string? fragment, bool isSelfBookmark, SourceInfo? source)
         {
             if (!string.IsNullOrEmpty(fragment))
             {
-                var bookmark = fragment.Substring(1).Trim();
+                var bookmark = fragment[1..].Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
                     _references.Add((file, reference, bookmark, isSelfBookmark, source));

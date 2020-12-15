@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     public class MustacheTemplateTest
     {
-        private readonly MustacheTemplate _template = new MustacheTemplate(new LocalPackage("data/mustache"));
+        private readonly MustacheTemplate _template = new(new LocalPackage("data/mustache"));
 
         [Theory]
         [InlineData("section", "{'section':{'value':'value','foo':'foo'}}", "<p>value</p>")]

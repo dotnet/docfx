@@ -13,9 +13,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly bool _dryRun;
-        private readonly ActionBlock<Action> _queue = new ActionBlock<Action>(
-            action => action(),
-            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
+        private readonly ActionBlock<Action> _queue = new(
+            action => action(), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
 
         public string OutputPath { get; }
 

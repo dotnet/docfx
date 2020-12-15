@@ -15,20 +15,20 @@ namespace Microsoft.Docs.Build
 {
     internal class JintJsEngine : JavaScriptEngine
     {
-        private readonly Engine _engine = new Engine();
+        private readonly Engine _engine = new();
         private readonly Package _package;
         private readonly JsValue _global;
-        private readonly Dictionary<PathString, JsValue> _modules = new Dictionary<PathString, JsValue>();
+        private readonly Dictionary<PathString, JsValue> _modules = new();
 
         public JintJsEngine(Package package, JObject? global = null)
         {
             _package = package;
-            _global = ToJsValue(global ?? new JObject());
+            _global = ToJsValue(global ?? new());
         }
 
         public override JToken Run(string scriptPath, string methodName, JToken arg)
         {
-            var exports = Run(new PathString(scriptPath));
+            var exports = Run(new(scriptPath));
             var method = exports.AsObject().Get(methodName);
 
             var jsArg = ToJsValue(arg);
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             JsValue Require(JsValue self, JsValue[] arguments)
             {
-                return Run(new PathString(Path.Combine(dirname, arguments[0].AsString())));
+                return Run(new(Path.Combine(dirname, arguments[0].AsString())));
             }
         }
 

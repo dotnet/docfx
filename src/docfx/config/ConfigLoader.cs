@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
                 let key = entry.Key.ToString()
                 where key.StartsWith("DOCFX_")
-                let configKey = StringUtility.ToCamelCase('_', key.Substring("DOCFX_".Length))
+                let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
                 let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
                 where values != null
                 let configValue = values.Length == 1 ? (object)values[0] : values
