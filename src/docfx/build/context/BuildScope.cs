@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => PathUtility.Normalize(path.Value))
                 .ToHashSet(PathUtility.PathComparer);
 
-            _files = Watcher.Create(GlobFiles);
+            _files = new(GlobFiles);
         }
 
         public IEnumerable<FilePath> GetFiles(ContentType contentType)

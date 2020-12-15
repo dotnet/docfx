@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 
         private T? _value;
 
-        private volatile ContainerFunction? _function;
+        private volatile WatchFunction? _function;
         private object? _syncLock;
 
         public Watch(Func<T> valueFactory) => _valueFactory = valueFactory;
@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     return _value!;
                 }
 
-                function = new ContainerFunction();
+                function = new WatchFunction();
 
                 Watcher.BeginFunctionScope(function);
 

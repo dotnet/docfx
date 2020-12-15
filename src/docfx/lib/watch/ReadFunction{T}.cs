@@ -5,13 +5,13 @@ using System;
 
 namespace Microsoft.Docs.Build
 {
-    internal class LeafFunction<T> : IFunction
+    internal class ReadFunction<T> : IFunction
     {
         private readonly Func<T> _changeTokenFactory;
 
         internal T? ChangeToken { get; set; }
 
-        public LeafFunction(Func<T> changeTokenFactory) => _changeTokenFactory = changeTokenFactory;
+        public ReadFunction(Func<T> changeTokenFactory) => _changeTokenFactory = changeTokenFactory;
 
         public bool HasChanged() => !Equals(ChangeToken, _changeTokenFactory());
 

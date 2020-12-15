@@ -43,8 +43,8 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _publishUrlMap = publishUrlMap;
 
-            _redirects = Watcher.Create(LoadRedirections);
-            _history = Watcher.Create(LoadHistory);
+            _redirects = new(LoadRedirections);
+            _history = new(LoadHistory);
         }
 
         public bool TryGetValue(PathString file, [NotNullWhen(true)] out FilePath? actualPath)
