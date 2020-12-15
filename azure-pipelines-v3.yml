@@ -212,9 +212,9 @@ jobs:
       dryrun.bot-docs-pr:
         params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
       learn-pr:
-        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
-      learn-pr-regression:
         params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync
+      learn-pr-regression:
+        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
       PowerShell-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
       azure-docs-cli:
