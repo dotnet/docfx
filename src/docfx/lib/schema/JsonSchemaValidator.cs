@@ -901,7 +901,7 @@ namespace Microsoft.Docs.Build
         {
             if (_forceError)
             {
-                error = error.WithLevel(ErrorLevel.Error);
+                error = error with { Level = ErrorLevel.Error };
             }
 
             if (!string.IsNullOrEmpty(error.PropertyPath) &&

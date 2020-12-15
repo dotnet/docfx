@@ -61,12 +61,13 @@ namespace Microsoft.Docs.Build
                 {
                     if (error.Source != null)
                     {
-                        error = error.WithSource(error.Source.WithFile(error.Source.File.WithPath(docsetBasePath.Concat(error.Source.File.Path))));
+                        var path = docsetBasePath.Concat(error.Source.File.Path);
+                        error = error with { Source = error.Source with { File = error.Source.File with { Path = path } } };
                     }
 
                     if (error.OriginalPath != null)
                     {
-                        error = error.WithOriginalPath(docsetBasePath.Concat(error.OriginalPath.Value));
+                        error = error with { OriginalPath = docsetBasePath.Concat(error.OriginalPath.Value) };
                     }
                 }
                 return error;

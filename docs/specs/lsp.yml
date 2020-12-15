@@ -81,3 +81,45 @@ languageServer:
           "message": "Invalid file link: 'non-existed.md'."
         }]
       }
+---
+# All the opened file should be built in a build round
+os: windows
+inputs:
+  docfx.yml:
+  a.md:
+  b.md:
+languageServer:
+  - notification: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/a.md",
+          "text": "[Test](non-existed.md)"
+        }
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }
+  - notification: "textDocument/didOpen"
+    params:
+      {
+        "textDocument": {
+          "uri": "file:///{DOCSET_PATH}/b.md",
+          "text": "[Test](non-existed.md)"
+        }
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/a.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/b.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }

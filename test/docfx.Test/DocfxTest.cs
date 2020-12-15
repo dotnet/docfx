@@ -202,12 +202,37 @@ namespace Microsoft.Docs.Build
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
-                    // TODO: The order or multiple expected notifications should be ignored.
-                    var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
-                    expectedNotification.Params = TestUtility.ApplyVariables(lspSpec.Params, variables);
+                    var expectedNotifications = new List<LanguageServerNotification>();
+                    var expectedMethods = new HashSet<string>();
+                    while (true)
+                    {
+                        lspSpec = spec.LanguageServer[i];
+                        expectedNotifications.Add(new LanguageServerNotification(lspSpec.ExpectNotification, TestUtility.ApplyVariables(lspSpec.Params, variables)));
+                        expectedMethods.Add(lspSpec.ExpectNotification);
 
-                    var actualNotification = await lspTestHost.GetExpectedNotification(expectedNotification.Method);
-                    s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
+                        if ((i + 1) >= spec.LanguageServer.Count || string.IsNullOrEmpty(spec.LanguageServer[i + 1].ExpectNotification))
+                        {
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    var actualNotifications = await lspTestHost.GetExpectedNotification(
+                        (method) => expectedMethods.Contains(method, StringComparer.OrdinalIgnoreCase),
+                        expectedNotifications.Count);
+
+                    if (expectedNotifications.Count > 1)
+                    {
+                        expectedNotifications = expectedNotifications.OrderBy(item => item.Params.ToString()).ToList();
+                        actualNotifications = actualNotifications.OrderBy(item => item.Params.ToString()).ToList();
+                    }
+
+                    s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
+                }
+                else
+                {
+                    throw new NotSupportedException();
                 }
             }
         }
