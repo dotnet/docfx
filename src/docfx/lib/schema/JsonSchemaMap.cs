@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
     internal class JsonSchemaMap
     {
         private readonly Func<JsonSchema, bool> _predicate;
-        private readonly Dictionary<JToken, JsonSchema> _map = new Dictionary<JToken, JsonSchema>(ReferenceEqualsComparer.Default);
+        private readonly Dictionary<JToken, JsonSchema> _map = new(ReferenceEqualsComparer.Default);
 
         public JsonSchemaMap(Func<JsonSchema, bool> predicate) => _predicate = predicate;
 

@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
         private readonly PublishUrlMap _publishUrlMap;
-        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
+        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new();
 
         public ContentValidator(
             Config config,
@@ -45,9 +45,7 @@ namespace Microsoft.Docs.Build
             _zonePivotProvider = zonePivotProvider;
             _publishUrlMap = publishUrlMap;
 
-            _validator = new Validator(
-                fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
-                fileResolver.ResolveFilePath(_config.Allowlists));
+            _validator = new(fileResolver.ResolveFilePath(_config.MarkdownValidationRules), fileResolver.ResolveFilePath(_config.Allowlists));
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)

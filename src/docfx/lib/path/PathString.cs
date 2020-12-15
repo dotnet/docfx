@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             if (basePath._value[i - 1] == '/')
             {
                 // a/b starts with a/
-                remainingPath = new PathString { _value = _value.Substring(i) };
+                remainingPath = new PathString { _value = _value[i..] };
                 return true;
             }
 
@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
             if (_value[i] == '/')
             {
                 // a/b starts with a
-                remainingPath = new PathString { _value = _value.Substring(i + 1) };
+                remainingPath = new PathString { _value = _value[(i + 1)..] };
                 return true;
             }
 

@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var query = videoLink.Query;
                 if (query.Length > 1)
                 {
-                    query = query.Substring(1);
+                    query = query[1..];
                 }
 
                 if (host.Equals("channel9.msdn.com", StringComparison.OrdinalIgnoreCase))

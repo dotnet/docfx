@@ -23,14 +23,12 @@ namespace Microsoft.Docs.Build
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
 
-        private readonly MemoryCache<FilePath, JToken> _jsonTokenCache = new MemoryCache<FilePath, JToken>();
-        private readonly MemoryCache<FilePath, JToken> _yamlTokenCache = new MemoryCache<FilePath, JToken>();
-        private readonly MemoryCache<PathString, byte[]?> _gitBlobCache = new MemoryCache<PathString, byte[]?>();
+        private readonly MemoryCache<FilePath, JToken> _jsonTokenCache = new();
+        private readonly MemoryCache<FilePath, JToken> _yamlTokenCache = new();
+        private readonly MemoryCache<PathString, byte[]?> _gitBlobCache = new();
 
-        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
-
-        private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents =
-                     new ConcurrentDictionary<FilePath, (string?, JToken)>();
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache = new();
+        private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents = new();
 
         public Input(
             BuildOptions buildOptions,

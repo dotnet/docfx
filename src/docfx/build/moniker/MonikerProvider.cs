@@ -17,11 +17,8 @@ namespace Microsoft.Docs.Build
 
         private readonly (Func<string, bool> glob, SourceInfo<string?>)[] _rules;
 
-        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _configMonikerRangeCache
-                   = new ConcurrentDictionary<FilePath, SourceInfo<string?>>();
-
-        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, MonikerList, MonikerList)>> _monikerCache =
-                     new ConcurrentDictionary<FilePath, Watch<(ErrorList, MonikerList, MonikerList)>>();
+        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _configMonikerRangeCache = new();
+        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, MonikerList, MonikerList)>> _monikerCache = new();
 
         private readonly IReadOnlyDictionary<string, int> _monikerOrder;
 
@@ -37,7 +34,7 @@ namespace Microsoft.Docs.Build
                 var content = fileResolver.ReadString(_config.MonikerDefinition);
                 monikerDefinition = JsonUtility.DeserializeData<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
             }
-            _rangeParser = new MonikerRangeParser(monikerDefinition);
+            _rangeParser = new(monikerDefinition);
 
             _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
             _monikerOrder = GetMonikerOrder(monikerDefinition);

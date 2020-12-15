@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitCommitLoader : IDisposable
     {
-        private static readonly DictionarySlim<uint, Tree> s_emptyTree = new DictionarySlim<uint, Tree>();
+        private static readonly DictionarySlim<uint, Tree> s_emptyTree = new();
 
         private readonly ErrorBuilder _errors;
         private readonly Repository _repository;
@@ -26,13 +26,12 @@ namespace Microsoft.Docs.Build
 
         // Commit history and a lookup table from commit hash to commit.
         // Use `long` to represent SHA2 git hashes for more efficient lookup and smaller size.
-        private readonly ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>> _commits =
-            new ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>>();
+        private readonly ConcurrentDictionary<string, Lazy<(Commit[], Dictionary<long, Commit>)>> _commits = new();
 
         // A giant memory cache of git tree. Key is the `long` form of SHA2 tree hash, value is a string id to git SHA2 hash.
-        private readonly ConcurrentDictionary<long, Tree> _treeCache = new ConcurrentDictionary<long, Tree>();
+        private readonly ConcurrentDictionary<long, Tree> _treeCache = new();
 
-        private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new ConcurrentDictionary<(string, string?), GitCommit[]>();
+        private readonly ConcurrentDictionary<(string, string?), GitCommit[]> _commitHistoryCache = new();
 
         private readonly IntPtr _repo;
         private int _isDisposed;
@@ -47,12 +46,12 @@ namespace Microsoft.Docs.Build
 
             _errors = errors;
             _repository = repository;
-            _commitCache = new Lazy<GitCommitCache>(() => new GitCommitCache(cacheFilePath));
+            _commitCache = new(() => new GitCommitCache(cacheFilePath));
         }
 
         public void WarmUp()
         {
-            _warmup = Task.Run(() => _commits.GetOrAdd("", key => new Lazy<(Commit[], Dictionary<long, Commit>)>(() => LoadCommits(key))).Value);
+            _warmup = Task.Run(() => _commits.GetOrAdd("", key => new(() => LoadCommits(key))).Value);
         }
 
         public GitCommit[] GetCommitHistory(string file, string? committish = null)
@@ -79,7 +78,7 @@ namespace Microsoft.Docs.Build
 
             var (commits, commitsById) = _commits.GetOrAdd(
                 committish ?? "",
-                key => new Lazy<(Commit[], Dictionary<long, Commit>)>(() => LoadCommits(key))).Value;
+                key => new(() => LoadCommits(key))).Value;
 
             if (commits.Length <= 0)
             {
@@ -211,7 +210,7 @@ namespace Microsoft.Docs.Build
                 // Stop warm up if build completes before warm up finished
                 if (_isDisposed == 1)
                 {
-                    return (Array.Empty<Commit>(), new Dictionary<long, Commit>());
+                    return (Array.Empty<Commit>(), new());
                 }
 
                 // Build commit tree

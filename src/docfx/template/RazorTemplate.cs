@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RazorTemplate
     {
-        private static readonly Lazy<TestServer> s_server = new Lazy<TestServer>(StartServer);
+        private static readonly Lazy<TestServer> s_server = new(StartServer);
 
         public static async Task<string> Render(string? template, object model)
         {

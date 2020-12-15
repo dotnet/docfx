@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
 {
     public static class Watcher
     {
-        private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new AsyncLocal<ImmutableStack<IFunction>>();
-        private static readonly AsyncLocal<int> t_activityId = new AsyncLocal<int>();
+        private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new();
+        private static readonly AsyncLocal<int> t_activityId = new();
 
         public static Watch<T> Create<T>(Func<T> valueFactory)
         {

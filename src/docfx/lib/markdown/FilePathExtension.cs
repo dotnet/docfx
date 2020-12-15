@@ -11,8 +11,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class FilePathExtension
     {
-        private static readonly List<object?> s_emptyInclusionStack = new List<object?>();
-        private static readonly object s_filePathKey = new object();
+        private static readonly List<object?> s_emptyInclusionStack = new();
+        private static readonly object s_filePathKey = new();
 
         public static MarkdownPipelineBuilder UseFilePath(this MarkdownPipelineBuilder builder)
         {

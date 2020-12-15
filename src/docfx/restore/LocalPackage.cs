@@ -11,13 +11,13 @@ namespace Microsoft.Docs.Build
 {
     internal class LocalPackage : Package
     {
-        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
+        private static readonly EnumerationOptions s_enumerationOptions = new() { RecurseSubdirectories = true };
 
         private readonly PathString _directory;
 
         public LocalPackage(string directory = ".")
         {
-            _directory = new PathString(Path.GetFullPath(directory));
+            _directory = new(Path.GetFullPath(directory));
         }
 
         public override PathString BasePath => _directory;
@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             {
                 var result = entry.RootDirectory.Length == entry.Directory.Length
                     ? entry.FileName.ToString()
-                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
+                    : string.Concat(entry.Directory[(entry.RootDirectory.Length + 1)..], "/", entry.FileName);
 
                 return PathString.DangerousCreate(result);
             }

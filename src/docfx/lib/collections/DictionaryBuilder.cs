@@ -7,7 +7,7 @@ namespace System.Collections.Concurrent
 {
     internal class DictionaryBuilder<TKey, TValue> where TKey : notnull
     {
-        private readonly Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
+        private readonly Dictionary<TKey, TValue> _dictionary = new();
 
         public bool TryAdd(TKey key, TValue value)
         {

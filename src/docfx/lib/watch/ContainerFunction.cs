@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ContainerFunction : IFunction
     {
-        private readonly List<IFunction> _children = new List<IFunction>();
+        private readonly List<IFunction> _children = new();
 
         private volatile int _activityId = Watcher.GetActivityId();
         private volatile bool _hasChanged;

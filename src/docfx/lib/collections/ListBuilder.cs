@@ -7,7 +7,7 @@ namespace System.Collections.Concurrent
 {
     internal class ListBuilder<T> where T : notnull
     {
-        private readonly List<T> _array = new List<T>();
+        private readonly List<T> _array = new();
 
         public void Add(T item)
         {

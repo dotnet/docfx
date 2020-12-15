@@ -10,13 +10,13 @@ namespace Microsoft.Docs.Build
 {
     internal class MonikerRangeParser
     {
-        private readonly ConcurrentDictionary<string, MonikerList> _cache = new ConcurrentDictionary<string, MonikerList>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, MonikerList> _cache = new(StringComparer.OrdinalIgnoreCase);
 
         private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
 
         public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
         {
-            _monikersEvaluator = new EvaluatorWithMonikersVisitor(monikerDefinition);
+            _monikersEvaluator = new(monikerDefinition);
         }
 
         public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers)
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
-            return new MonikerList(result);
+            return new(result);
         }
 
         public MonikerList Parse(ErrorBuilder errors, SourceInfo<string?> rangeString)
@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
                 var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator, rangeString);
                 errors.AddRange(evaluateErrors);
 
-                return new MonikerList(monikers.Select(x => x.MonikerName));
+                return new(monikers.Select(x => x.MonikerName));
             });
         }
     }
