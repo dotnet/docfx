@@ -73,8 +73,8 @@ namespace Microsoft.Docs.Build
             {
                 switch (item)
                 {
-                    case InclusionBlock _:
-                    case InclusionInline _:
+                    case InclusionBlock:
+                    case InclusionInline:
                         source = (item.Line + 1, item.Column + 1);
                         break;
                 }

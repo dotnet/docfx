@@ -132,9 +132,9 @@ namespace Microsoft.Docs.Build
                     ValidateString(schema, propertyPath, scalar, str, errors);
                     break;
 
-                case double _:
-                case float _:
-                case long _:
+                case double:
+                case float:
+                case long:
                     ValidateNumber(schema, propertyPath, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
