@@ -292,29 +292,29 @@ namespace Microsoft.Docs.Build
             var mime = _documentProvider.GetMime(file);
 
             // Validate and transform model using JSON schema
-            var content = _jsonSchemaTransformer.TransformContent(errors, file);
+            var (content, token) = _jsonSchemaTransformer.TransformContent(errors, file);
             if (!(content is JObject transformedContent))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();
             }
-            else
+            else if (token is JObject fileContent)
             {
-                switch (mime.Value?.ToLower())
+                switch (mime.Value?.ToLowerInvariant())
                 {
                     case Constants.LearningPath:
-                        _learnHierarchyBuilder.AddLearningPath(transformedContent);
+                        _learnHierarchyBuilder.AddLearningPath(fileContent);
                         break;
 
                     case Constants.Module:
-                        _learnHierarchyBuilder.AddModule(transformedContent);
+                        _learnHierarchyBuilder.AddModule(fileContent);
                         break;
 
                     case Constants.ModuleUnit:
-                        _learnHierarchyBuilder.AddModuleUnit(transformedContent);
+                        _learnHierarchyBuilder.AddModuleUnit(fileContent);
                         break;
 
                     case Constants.Achievements:
-                        _learnHierarchyBuilder.AddAchievements(transformedContent);
+                        _learnHierarchyBuilder.AddAchievements(fileContent);
                         break;
                 }
             }
@@ -454,6 +454,5 @@ namespace Microsoft.Docs.Build
         {
             return Path.GetFileNameWithoutExtension(file.Path).Equals("404", PathUtility.PathComparison);
         }
-
     }
 }

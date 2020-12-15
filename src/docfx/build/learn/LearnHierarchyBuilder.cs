@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private bool GetAchievement(object obj, out Achievement? achievement)
+        private static bool GetAchievement(object obj, out Achievement? achievement)
         {
             switch (obj)
             {
