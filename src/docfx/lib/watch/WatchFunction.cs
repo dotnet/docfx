@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContainerFunction : IFunction
+    internal class WatchFunction : IFunction
     {
         private readonly List<IFunction> _children = new();
 

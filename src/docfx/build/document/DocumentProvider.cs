@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocument(FilePath path)
         {
-            return _documents.GetOrAdd(path, key => Watcher.Create(() => GetDocumentCore(key))).Value;
+            return _documents.GetOrAdd(path, key => new(() => GetDocumentCore(key))).Value;
         }
 
         private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)

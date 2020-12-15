@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
         private (MonikerList monikers, MonikerList ignoreExclude) GetFileLevelMonikersAndExclude(ErrorBuilder errors, FilePath file)
         {
-            var (error, monikers, ignoreExclude) = _monikerCache.GetOrAdd(file, key => Watcher.Create(() => GetFileLevelMonikersCore(key))).Value;
+            var (error, monikers, ignoreExclude) = _monikerCache.GetOrAdd(file, key => new(() => GetFileLevelMonikersCore(key))).Value;
             errors.AddRange(error);
             return (monikers, ignoreExclude);
         }

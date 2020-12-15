@@ -29,19 +29,19 @@ namespace Microsoft.Docs.Build
 
         public void AddOrUpdate(PathString path, string content) => MemoryPackage.AddOrUpdate(path, content);
 
-        public override bool Exists(PathString path) => Watcher.Watch(() => _packages.Any(pkg => pkg.Exists(path)));
+        public override bool Exists(PathString path) => Watcher.Read(() => _packages.Any(pkg => pkg.Exists(path)));
 
         public IEnumerable<PathString> GetAllFilesInMemory() => MemoryPackage.GetAllFilesInMemory();
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
-            => Watcher.Watch(
+            => Watcher.Read(
                 () => _packages.SelectMany(pkg => pkg.GetFiles(directory, allowedFileNames)),
                 () => _lastPackageFilesUpdateTime);
 
         public override PathString GetFullFilePath(PathString path) => _packages.First().GetFullFilePath(path);
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
-            => Watcher.Watch(() =>
+            => Watcher.Read(() =>
             {
                 for (int i = 0; i < _packages.Count; i++)
                 {
@@ -56,12 +56,12 @@ namespace Microsoft.Docs.Build
             });
 
         public override byte[] ReadBytes(PathString path)
-            => Watcher.Watch(
+            => Watcher.Read(
                 () => _packages.First((pkg) => pkg.Exists(path)).ReadBytes(path),
                 () => TryGetLastWriteTimeUtc(path));
 
         public override Stream ReadStream(PathString path)
-             => Watcher.Watch(
+             => Watcher.Read(
                 () => _packages.First((pkg) => pkg.Exists(path)).ReadStream(path),
                 () => TryGetLastWriteTimeUtc(path));
 
@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
         public void RemoveFile(PathString path) => MemoryPackage.RemoveFile(path);
 
         public override PathString? TryGetPhysicalPath(PathString path)
-            => Watcher.Watch(() =>
+            => Watcher.Read(() =>
             {
                 for (int i = 0; i < _packages.Count; i++)
                 {
