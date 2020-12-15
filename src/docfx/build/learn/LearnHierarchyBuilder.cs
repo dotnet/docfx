@@ -2,6 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -24,6 +27,7 @@ namespace Microsoft.Docs.Build
 
         public void ValidateHierarchy()
         {
+            _contentValidator.ValidateHierarchy(GetAllLearnHierarchyModels().ToList());
         }
 
         public void AddLearningPath(JObject content)
@@ -78,6 +82,42 @@ namespace Microsoft.Docs.Build
                     achievement = null;
                     return false;
             }
+        }
+
+        private IEnumerable<HierarchyModel> GetAllLearnHierarchyModels()
+        {
+            var pathModels = _learningPaths.AsList().Select(p => new HierarchyModel
+            {
+                Uid = p.Uid.Value,
+                ChildrenUids = p.Modules?.Select(m => m.Value).ToList(),
+                SourceInfo = p.Uid.Source,
+                SchemaType = Constants.LearningPath,
+            }).ToList();
+
+            var moduleModels = _modules.AsList().Select(p => new HierarchyModel
+            {
+                Uid = p.Uid.Value,
+                ChildrenUids = p.Units?.Select(u => u.Value).ToList(),
+                SourceInfo = p.Uid.Source,
+                SchemaType = Constants.Module,
+            }).ToList();
+
+            var unitModels = _moduleUnits.AsList().Select(p => new HierarchyModel
+            {
+                Uid = p.Uid.Value,
+                UseAzureSandbox = p.AzureSandbox,
+                SourceInfo = p.Uid.Source,
+                SchemaType = Constants.ModuleUnit,
+            }).ToList();
+
+            var achievementModels = _achievements.AsList().Select(p => new HierarchyModel
+            {
+                Uid = p.Uid.Value,
+                SourceInfo = p.Uid.Source,
+                SchemaType = p.Type,
+            }).ToList();
+
+            return pathModels.Concat(moduleModels).Concat(unitModels).Concat(achievementModels);
         }
     }
 }

@@ -5,9 +5,9 @@ namespace Microsoft.Docs.Build
 {
     internal class ModuleUnit
     {
-        public SourceInfo<string?> Uid { get; set; }
+        public SourceInfo<string> Uid { get; set; }
 
-        public bool? AzureSandbox { get; set; }
+        public bool AzureSandbox { get; set; }
 
         public int DurationInMinutes { get; set; }
 

@@ -5,6 +5,6 @@ namespace Microsoft.Docs.Build
 {
     internal class BadgeModel
     {
-        public SourceInfo<string?> Uid { get; set; }
+        public SourceInfo<string> Uid { get; set; }
     }
 }

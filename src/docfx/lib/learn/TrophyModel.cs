@@ -5,6 +5,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TrophyModel
     {
-        public SourceInfo<string?> Uid { get; set; }
+        public SourceInfo<string> Uid { get; set; }
     }
 }

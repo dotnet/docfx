@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
         private const string TaxonomyServicePPEPath = "https://taxonomyserviceppe.azurefd.net/taxonomies/simplified?" +
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
 
+        private const string SandboxEnabledModuleListPath = "https://docs.microsoft.com/api/resources/sandbox/verify";
+
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         // TODO: use Azure front door endpoint when it is stable
@@ -89,6 +91,11 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetAllowlists()
         {
             return await FetchTaxonomies();
+        }
+
+        public async Task<string> GetSandboxEnabledModuleList()
+        {
+            return await FetchGetSandboxEnabledModuleList();
         }
 
         public async Task<string> GetRegressionAllAllowlists()
@@ -227,6 +234,39 @@ namespace Microsoft.Docs.Build
             try
             {
                 var url = TaxonomyServicePath(environment);
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                {
+                    using var response = await HttpPolicyExtensions
+                       .HandleTransientHttpError()
+                       .Or<OperationCanceledException>()
+                       .Or<IOException>()
+                       .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                       .ExecuteAsync(async () =>
+                       {
+                           using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                           request.Headers.TryAddWithoutValidation("User-Agent", "Docfx v3");
+                           var response = await _http.SendAsync(request);
+                           return response;
+                       });
+
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Getting taxonomies failure should not block build proceeding,
+                // catch and log the exception without rethrow.
+                Log.Write(ex);
+                _errors.Add(Errors.System.ValidationIncomplete());
+                return "{}";
+            }
+        }
+
+        private async Task<string> FetchGetSandboxEnabledModuleList()
+        {
+            try
+            {
+                var url = SandboxEnabledModuleListPath;
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
