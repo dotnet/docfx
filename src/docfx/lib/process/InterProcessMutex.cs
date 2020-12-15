@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var stack = t_mutexRecursionStack.Value ??= ImmutableStack<string>.Empty;
             if (stack.Contains(mutexName))
             {
-                throw new ApplicationException($"Nested mutex detected, mutex name: {mutexName}");
+                throw new InvalidOperationException($"Nested mutex detected, mutex name: {mutexName}");
             }
             t_mutexRecursionStack.Value = stack.Push(mutexName);
 

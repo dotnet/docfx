@@ -45,11 +45,7 @@ repos:
               "include_in_build": true
             }]
         }
-      a/docfx.yml: |
-        http:
-          https://op-build-prod.azurewebsites.net:
-            headers:
-              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
+      a/docfx.yml:
       a/a.md:
       articles/docfx.yml: 
       articles/a.yml: '#YamlMime:TestData'

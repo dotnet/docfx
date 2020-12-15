@@ -6,18 +6,16 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ExternalXrefSpec : IXrefSpec
+    internal record ExternalXrefSpec : IXrefSpec
     {
-        public string Uid { get; private set; } = "";
+        public string Uid { get; init; } = "";
 
-        public string? SchemaType { get; private set; }
+        public string Href { get; init; } = "";
 
-        public string Href { get; private set; } = "";
-
-        FilePath? IXrefSpec.DeclaringFile => null;
+        public string? SchemaType { get; init; }
 
         [JsonIgnore]
-        public MonikerList Monikers { get; private set; }
+        public MonikerList Monikers { get; init; }
 
         [JsonIgnore]
         public string? RepositoryUrl { get; set; }
@@ -26,17 +24,9 @@ namespace Microsoft.Docs.Build
         public string? DocsetName { get; set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; private set; } = new JObject();
+        public JObject ExtensionData { get; init; } = new JObject();
 
-        public ExternalXrefSpec() { }
-
-        public ExternalXrefSpec(string uid, string href, MonikerList monikers, string? schemaType)
-        {
-            Uid = uid;
-            Href = href;
-            Monikers = monikers;
-            SchemaType = schemaType;
-        }
+        FilePath? IXrefSpec.DeclaringFile => null;
 
         public string? GetXrefPropertyValueAsString(string propertyName)
         {
@@ -49,10 +39,6 @@ namespace Microsoft.Docs.Build
 
         public string? GetName() => GetXrefPropertyValueAsString("name");
 
-        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) =>
-            new ExternalXrefSpec(Uid, overwriteHref ?? Href, Monikers, SchemaType)
-            {
-                ExtensionData = ExtensionData,
-            };
+        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => overwriteHref is null ? this : this with { Href = overwriteHref };
     }
 }

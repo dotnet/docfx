@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         {
             public IActionResult Get()
             {
-                var template = (string)HttpContext.Items["template"];
+                var template = HttpContext.Items["template"] as string;
                 var model = HttpContext.Items["model"];
 
                 return View(template, model);

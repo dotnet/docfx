@@ -2,32 +2,28 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Error
+    internal record Error
     {
-        public static readonly IEqualityComparer<Error> Comparer = new EqualityComparer();
+        public ErrorLevel Level { get; init; }
 
-        public ErrorLevel Level { get; }
+        public string Code { get; init; }
 
-        public string Code { get; }
+        public string Message { get; init; }
 
-        public string Message { get; }
+        public string? MsAuthor { get; init; }
 
-        public string? MsAuthor { get; }
+        public string? PropertyPath { get; init; }
 
-        public string? PropertyPath { get; }
+        public SourceInfo? Source { get; init; }
 
-        public SourceInfo? Source { get; }
+        public PathString? OriginalPath { get; init; }
 
-        public PathString? OriginalPath { get; }
+        public bool PullRequestOnly { get; init; }
 
-        public bool PullRequestOnly { get; }
-
-        public object?[] MessageArguments { get; }
+        public object?[] MessageArguments { get; init; } = Array.Empty<object?>();
 
         public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null)
         {
@@ -37,54 +33,6 @@ namespace Microsoft.Docs.Build
             MessageArguments = message.GetArguments();
             Source = source;
             PropertyPath = propertyPath;
-        }
-
-        public Error(
-            ErrorLevel level,
-            string code,
-            string message,
-            object?[] messageArguments,
-            SourceInfo? source,
-            string? propertyPath,
-            PathString? originalPath,
-            bool pullRequestOnly,
-            string? msAuthor)
-        {
-            Level = level;
-            Code = code;
-            Message = message;
-            MessageArguments = messageArguments;
-            Source = source;
-            PropertyPath = propertyPath;
-            OriginalPath = originalPath;
-            PullRequestOnly = pullRequestOnly;
-            MsAuthor = msAuthor;
-        }
-
-        public Error WithLevel(ErrorLevel level)
-        {
-            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly, MsAuthor);
-        }
-
-        public Error WithOriginalPath(PathString? originalPath)
-        {
-            return originalPath == OriginalPath ?
-                this : new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, originalPath, PullRequestOnly, MsAuthor);
-        }
-
-        public Error WithSource(SourceInfo? source)
-        {
-            return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly, MsAuthor);
-        }
-
-        public Error WithMsAuthor(string? msAuthor)
-        {
-            return new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly, msAuthor);
-        }
-
-        public Error WithPropertyPath(string? propertyPath)
-        {
-            return new Error(Level, Code, Message, MessageArguments, Source, propertyPath, OriginalPath, PullRequestOnly, MsAuthor);
         }
 
         public override string ToString()
@@ -116,43 +64,8 @@ namespace Microsoft.Docs.Build
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
-            return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
-        }
-
-        private class EqualityComparer : IEqualityComparer<Error>
-        {
-            public bool Equals(Error? x, Error? y)
-            {
-                if (ReferenceEquals(x, y))
-                {
-                    return true;
-                }
-
-                if (x is null || y is null)
-                {
-                    return false;
-                }
-
-                return x.Level == y.Level &&
-                       x.Code == y.Code &&
-                       x.Message == y.Message &&
-                       x.PropertyPath == y.PropertyPath &&
-                       x.Source == y.Source &&
-                       x.OriginalPath == y.OriginalPath &&
-                       x.PullRequestOnly == y.PullRequestOnly;
-            }
-
-            public int GetHashCode(Error obj)
-            {
-                return HashCode.Combine(
-                    obj.Level,
-                    obj.Code,
-                    obj.Message,
-                    obj.PropertyPath,
-                    obj.Source,
-                    obj.OriginalPath,
-                    obj.PullRequestOnly);
-            }
+            var error = isError && Level != ErrorLevel.Error ? this with { Level = ErrorLevel.Error } : this;
+            return new DocfxException(error, innerException);
         }
     }
 }

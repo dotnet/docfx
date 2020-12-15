@@ -117,6 +117,10 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                // TODO: Clear the error before each build round, which has the following two dependencies:
+                // 1. Make all the errorBuilders inside the docsetBuilder stateless.
+                // 2. If there are errors reported from all the Watch{T}, the errors should also be returned as a part of {T}
+                _errors.Clear();
                 JsonSchemaTransformer? jsonSchemaTransformer = null;
                 ContentValidator? contentValidator = null;
 

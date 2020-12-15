@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
             {
-                var references = _xrefList.Where(item => item.xref.Value.Equals(uid.Value)).Select(item => item.xref.Source).ToArray();
+                var references = _xrefList.Where(item => item.xref == uid).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
@@ -211,8 +211,13 @@ namespace Microsoft.Docs.Build
             var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
             var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
 
-            var xref = new InternalXrefSpec(
-                uid, href, file, monikers, obj.Parent?.Path, JsonUtility.AddToPropertyPath(propertyPath, "uid"), uidSchema.UidGlobalUnique, schemaType);
+            var xref = new InternalXrefSpec(uid, href, file, monikers)
+            {
+                DeclaringPropertyPath = obj.Parent?.Path,
+                PropertyPath = JsonUtility.AddToPropertyPath(propertyPath, "uid"),
+                UidGlobalUnique = uidSchema.UidGlobalUnique,
+                SchemaType = schemaType,
+            };
 
             if (schema != null)
             {
@@ -368,7 +373,7 @@ namespace Microsoft.Docs.Build
 
                 case JValue value when schemaMap.TryGetSchema(token, out var schema):
                     return TransformScalar(
-                        errors.With(e => e.WithPropertyPath(propertyPath)),
+                        errors.With(e => e with { PropertyPath = propertyPath }),
                         rootSchema,
                         schema,
                         file,
@@ -425,7 +430,7 @@ namespace Microsoft.Docs.Build
 
                     return HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                     {
-                        HtmlUtility.TransformLink(ref token, null, href =>
+                        HtmlUtility.TransformLink(ref token, null, (href, _) =>
                         {
                             var source = new SourceInfo<string>(href, content.Source?.WithOffset(href.Source));
                             var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);

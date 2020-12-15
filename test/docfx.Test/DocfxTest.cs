@@ -102,12 +102,12 @@ namespace Microsoft.Docs.Build
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
             var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
-            var basePath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
-            var outputPath = PathUtility.Normalize(Path.GetFullPath(Path.Combine(basePath, "outputs")));
-            var markerPath = PathUtility.Normalize(Path.Combine(basePath, "marker"));
-            var appDataPath = PathUtility.Normalize(Path.Combine(basePath, "appdata"));
-            var cachePath = PathUtility.Normalize(Path.Combine(appDataPath, "cache"));
-            var statePath = PathUtility.Normalize(Path.Combine(appDataPath, "state"));
+            var basePath = NormalizePath(Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName)));
+            var outputPath = NormalizePath(Path.GetFullPath(Path.Combine(basePath, "outputs")));
+            var markerPath = NormalizePath(Path.Combine(basePath, "marker"));
+            var appDataPath = NormalizePath(Path.Combine(basePath, "appdata"));
+            var cachePath = NormalizePath(Path.Combine(appDataPath, "cache"));
+            var statePath = NormalizePath(Path.Combine(appDataPath, "state"));
 
             Directory.CreateDirectory(basePath);
 
@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
                     remote => remote.remote,
                     remote => Path.Combine(basePath, "repos", remote.index.ToString()));
 
-            var docsetPath = PathUtility.Normalize(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
+            var docsetPath = NormalizePath(repos.Select(item => item.Value).FirstOrDefault() ?? Path.Combine(basePath, "inputs"));
 
             var variables = new Dictionary<string, string>
             {
@@ -129,7 +129,6 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
-                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
@@ -170,7 +169,7 @@ namespace Microsoft.Docs.Build
 
             if (spec.LanguageServer.Count != 0)
             {
-                RunLanguageServer(spec, variables).GetAwaiter().GetResult();
+                RunLanguageServer(docsetPath, spec, package, variables).GetAwaiter().GetResult();
             }
             else if (spec.Locale != null)
             {
@@ -190,9 +189,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static async Task RunLanguageServer(DocfxTestSpec spec, Dictionary<string, string> variables)
+        private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package, Dictionary<string, string> variables)
         {
-            var lspTestHost = new LanguageServerTestHost(variables);
+            var lspTestHost = new LanguageServerTestHost(docsetPath, variables, package);
 
             for (var i = 0; i < spec.LanguageServer.Count; i++)
             {
@@ -203,9 +202,37 @@ namespace Microsoft.Docs.Build
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
-                    var expectedNotification = new LanguageServerNotification(lspSpec.ExpectNotification, lspSpec.Params);
-                    var actualNotification = await lspTestHost.GetExpectedNotification(expectedNotification.Method);
-                    s_languageServerJsonDiff.Verify(expectedNotification, actualNotification);
+                    var expectedNotifications = new List<LanguageServerNotification>();
+                    var expectedMethods = new HashSet<string>();
+                    while (true)
+                    {
+                        lspSpec = spec.LanguageServer[i];
+                        expectedNotifications.Add(new LanguageServerNotification(lspSpec.ExpectNotification, TestUtility.ApplyVariables(lspSpec.Params, variables)));
+                        expectedMethods.Add(lspSpec.ExpectNotification);
+
+                        if ((i + 1) >= spec.LanguageServer.Count || string.IsNullOrEmpty(spec.LanguageServer[i + 1].ExpectNotification))
+                        {
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    var actualNotifications = await lspTestHost.GetExpectedNotification(
+                        (method) => expectedMethods.Contains(method, StringComparer.OrdinalIgnoreCase),
+                        expectedNotifications.Count);
+
+                    if (expectedNotifications.Count > 1)
+                    {
+                        expectedNotifications = expectedNotifications.OrderBy(item => item.Params.ToString()).ToList();
+                        actualNotifications = actualNotifications.OrderBy(item => item.Params.ToString()).ToList();
+                    }
+
+                    s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
+                }
+                else
+                {
+                    throw new NotSupportedException();
                 }
             }
         }
@@ -375,6 +402,16 @@ namespace Microsoft.Docs.Build
             return string.IsNullOrEmpty(os) ||
                 os.Split(',').Any(
                     item => RuntimeInformation.IsOSPlatform(OSPlatform.Create(item.Trim().ToUpperInvariant())));
+        }
+
+        private static string NormalizePath(string path)
+        {
+            var normalizedPath = PathUtility.Normalize(path);
+            if (!PathUtility.IsCaseSensitive)
+            {
+                normalizedPath = normalizedPath.ToLower();
+            }
+            return normalizedPath;
         }
     }
 }

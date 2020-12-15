@@ -244,11 +244,11 @@ namespace Microsoft.Docs.Build
                     Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
-                });
+                }) ?? throw new InvalidOperationException();
 
                 var diffFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.patch");
 
-                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
+                Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
                 var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
                 process.WaitForExit();
 
@@ -300,15 +300,17 @@ namespace Microsoft.Docs.Build
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
             Console.ResetColor();
+
             var process = Process.Start(new ProcessStartInfo
             {
                 FileName = fileName,
                 Arguments = arguments,
-                WorkingDirectory = cwd,
+                WorkingDirectory = cwd ?? ".",
                 UseShellExecute = false,
                 RedirectStandardError = redirectStandardError,
                 RedirectStandardInput = !string.IsNullOrEmpty(stdin),
-            });
+            }) ?? throw new InvalidOperationException();
+
             if (!string.IsNullOrEmpty(stdin))
             {
                 process.StandardInput.Write(stdin);

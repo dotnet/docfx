@@ -80,16 +80,19 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string? sourceQuery = null, string? sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string? sourceQuery, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
             var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
-            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
-            foreach (var key in sourceQueryParameters.AllKeys)
+            var sourceQueryParameters = sourceQuery is null ? null : HttpUtility.ParseQueryString(sourceQuery);
+            if (sourceQueryParameters != null)
             {
-                targetQueryParameters[key] = sourceQueryParameters[key];
+                foreach (var key in sourceQueryParameters.AllKeys)
+                {
+                    targetQueryParameters[key] = sourceQueryParameters[key];
+                }
             }
 
             var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : "";

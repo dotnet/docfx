@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
 
             var response = await SendRequest(request);
 
-            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.RequestMessage.RequestUri.AbsoluteUri);
+            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
             return response.IsSuccessStatusCode;
         }
@@ -304,7 +304,7 @@ namespace Microsoft.Docs.Build
 
                 _credentialProvider?.Invoke(request);
 
-                await FillOpsToken(request.RequestUri.AbsoluteUri, request, environment);
+                await FillOpsToken(request, environment);
 
                 return await _http.SendAsync(request);
             }
@@ -362,25 +362,31 @@ namespace Microsoft.Docs.Build
                 : DocsEnvironment.Prod;
         }
 
-        private static async Task FillOpsToken(string url, HttpRequestMessage request, DocsEnvironment? environment = null)
+        private static async Task FillOpsToken(HttpRequestMessage request, DocsEnvironment? environment = null)
         {
             // don't access key vault for osx since azure-cli will crash in osx
             // https://github.com/Azure/azure-cli/issues/7519
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-                && url.StartsWith(BuildServiceEndpoint(environment))
-                && !request.Headers.Contains("X-OP-BuildUserToken"))
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
+                request.RequestUri?.ToString() is string url &&
+                url.StartsWith(BuildServiceEndpoint(environment)) &&
+                !request.Headers.Contains("X-OP-BuildUserToken"))
             {
                 // For development usage
                 try
                 {
-                    var token = (environment ?? DocsEnvironment) switch
+                    var token = EnvironmentVariable.DocsOpsToken;
+                    if (string.IsNullOrEmpty(token))
                     {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
-                        _ => throw new InvalidOperationException(),
-                    };
+                        var tokenTask = (environment ?? DocsEnvironment) switch
+                        {
+                            DocsEnvironment.Prod => s_opsTokenProd,
+                            DocsEnvironment.PPE => s_opsTokenSandbox,
+                            _ => throw new InvalidOperationException(),
+                        };
+                        token = await tokenTask.Value;
+                    }
 
-                    request.Headers.Add("X-OP-BuildUserToken", await token.Value);
+                    request.Headers.Add("X-OP-BuildUserToken", token);
                 }
                 catch (Exception ex)
                 {

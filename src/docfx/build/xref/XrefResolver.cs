@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+            return (null, resolvedHref, display, xrefSpec.DeclaringFile);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
@@ -227,8 +227,9 @@ namespace Microsoft.Docs.Build
             {
                 if (_externalXrefMap.Value.TryGetValue(xrefSpec.Uid, out var spec))
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
-                        .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
+                    _errorLog.Add(
+                        Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
+                        with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -245,7 +246,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(
                         xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType)
-                        .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
+                        with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }

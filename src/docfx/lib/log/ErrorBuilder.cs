@@ -18,6 +18,8 @@ namespace Microsoft.Docs.Build
 
         public abstract bool FileHasError(FilePath file);
 
+        public abstract void Clear();
+
         public void AddIfNotNull(Error? error)
         {
             if (error != null)
@@ -59,12 +61,13 @@ namespace Microsoft.Docs.Build
                 {
                     if (error.Source != null)
                     {
-                        error = error.WithSource(error.Source.WithFile(error.Source.File.WithPath(docsetBasePath.Concat(error.Source.File.Path))));
+                        var path = docsetBasePath.Concat(error.Source.File.Path);
+                        error = error with { Source = error.Source with { File = error.Source.File with { Path = path } } };
                     }
 
                     if (error.OriginalPath != null)
                     {
-                        error = error.WithOriginalPath(docsetBasePath.Concat(error.OriginalPath.Value));
+                        error = error with { OriginalPath = docsetBasePath.Concat(error.OriginalPath.Value) };
                     }
                 }
                 return error;
@@ -76,6 +79,8 @@ namespace Microsoft.Docs.Build
             public override bool HasError => throw new NotSupportedException();
 
             public override void Add(Error error) { }
+
+            public override void Clear() => throw new NotSupportedException();
 
             public override bool FileHasError(FilePath file) => throw new NotSupportedException();
         }
@@ -90,6 +95,8 @@ namespace Microsoft.Docs.Build
             public override bool HasError => Volatile.Read(ref _errorCount) > 0;
 
             public override bool FileHasError(FilePath file) => throw new NotSupportedException();
+
+            public override void Clear() => _errorCount = 0;
 
             public DelegatingErrorBuilder(ErrorBuilder errors, Func<Error, Error> convert)
             {

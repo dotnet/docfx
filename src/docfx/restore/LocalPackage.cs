@@ -36,29 +36,29 @@ namespace Microsoft.Docs.Build
                 directoryPath,
                 ToRelativePathString,
                 s_enumerationOptions)
+            {
+                ShouldIncludePredicate = (ref FileSystemEntry entry) =>
                 {
-                    ShouldIncludePredicate = (ref FileSystemEntry entry) =>
+                    if (entry.IsDirectory || entry.FileName[0] == '.')
                     {
-                        if (entry.IsDirectory || entry.FileName[0] == '.')
+                        return false;
+                    }
+                    if (allowedFileNames != null)
+                    {
+                        for (var i = 0; i < allowedFileNames.Length; i++)
                         {
-                            return false;
-                        }
-                        if (allowedFileNames != null)
-                        {
-                            for (var i = 0; i < allowedFileNames.Length; i++)
+                            if (entry.FileName.Equals(allowedFileNames[i], StringComparison.OrdinalIgnoreCase))
                             {
-                                if (entry.FileName.Equals(allowedFileNames[i], StringComparison.OrdinalIgnoreCase))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
-                            return false;
                         }
-                        return true;
-                    },
-                    ShouldRecursePredicate =
+                        return false;
+                    }
+                    return true;
+                },
+                ShouldRecursePredicate =
                         (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
-                };
+            };
 
             static PathString ToRelativePathString(ref FileSystemEntry entry)
             {
@@ -84,8 +84,6 @@ namespace Microsoft.Docs.Build
         public override byte[] ReadBytes(PathString path) => File.ReadAllBytes(_directory.Concat(path));
 
         public override Stream ReadStream(PathString path) => File.OpenRead(_directory.Concat(path));
-
-        public override PathString? TryGetGitFilePath(PathString path) => _directory.Concat(path);
 
         public override PathString? TryGetPhysicalPath(PathString path)
         {
