@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         // Learn content: "learningpath", "module", "moduleunit"
         private static readonly string[] s_supportedPageTypes =
         {
-            "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups",
+            "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups", "post",
         };
 
         private readonly Config _config;
