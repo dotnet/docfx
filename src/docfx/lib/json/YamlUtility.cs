@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             {
                 return null;
             }
-            return header.Substring(YamlMimePrefix.Length).Trim();
+            return header[YamlMimePrefix.Length..].Trim();
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             {
                 if (line.StartsWith("documentType:"))
                 {
-                    return line.Substring("documentType:".Length).Trim();
+                    return line["documentType:".Length..].Trim();
                 }
             }
             return null;

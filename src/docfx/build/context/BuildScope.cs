@@ -25,8 +25,7 @@ namespace Microsoft.Docs.Build
         // This lookup table stores a list of actual filenames.
         private readonly Watch<(HashSet<FilePath> allFiles, IReadOnlyDictionary<FilePath, ContentType> files)> _files;
 
-        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings
-                   = new ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)>();
+        private readonly ConcurrentDictionary<PathString, (PathString, FileMappingConfig?)> _fileMappings = new();
 
         /// <summary>
         /// Gets all the files and fallback files to build, excluding redirections.
@@ -43,7 +42,7 @@ namespace Microsoft.Docs.Build
             _configReferences = config.Extend.Concat(config.GetFileReferences()).Select(path => PathUtility.Normalize(path.Value))
                 .ToHashSet(PathUtility.PathComparer);
 
-            _files = Watcher.Create(GlobFiles);
+            _files = new(GlobFiles);
         }
 
         public IEnumerable<FilePath> GetFiles(ContentType contentType)

@@ -19,9 +19,9 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly MonikerProvider? _monikerProvider;
         private readonly CustomRuleProvider? _customRuleProvider;
-        private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder;
+        private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder = new();
 
-        private static readonly ThreadLocal<FilePath?> t_filePath = new ThreadLocal<FilePath?>();
+        private static readonly ThreadLocal<FilePath?> t_filePath = new();
 
         public JsonSchema Schema => _schema;
 
@@ -37,7 +37,6 @@ namespace Microsoft.Docs.Build
             _microsoftGraphAccessor = microsoftGraphAccessor;
             _monikerProvider = monikerProvider;
             _customRuleProvider = customRuleProvider;
-            _metadataBuilder = new ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>();
         }
 
         public List<Error> Validate(JToken token, FilePath filePath, JsonSchemaMap? schemaMap = null)
@@ -133,9 +132,9 @@ namespace Microsoft.Docs.Build
                     ValidateString(schema, propertyPath, scalar, str, errors);
                     break;
 
-                case double _:
-                case float _:
-                case long _:
+                case double:
+                case float:
+                case long:
                     ValidateNumber(schema, propertyPath, scalar, Convert.ToDouble(scalar.Value), errors);
                     break;
             }
@@ -780,13 +779,12 @@ namespace Microsoft.Docs.Build
 
             foreach (var group in validatedMetadataGroups)
             {
-                IEnumerable<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> items = group;
                 var (metadataValue, (metadataKey, moniker, _)) = group.Key;
 
-                if (items.Count() > 1)
+                if (group.Count() > 1)
                 {
-                    var metadataSources = (from g in items where g.source != null select g.source).ToArray();
-                    foreach (var file in items)
+                    var metadataSources = (from g in @group where g.source != null select g.source).ToArray();
+                    foreach (var file in group)
                     {
                         errors.Add(Errors.JsonSchema.DuplicateAttribute(file.source, metadataKey, metadataValue, metadataSources));
                     }
@@ -887,7 +885,7 @@ namespace Microsoft.Docs.Build
 
                 if (match.Success)
                 {
-                    if (int.TryParse(match.Value.Substring(1, match.Value.Length - 2), out var index))
+                    if (int.TryParse(match.Value[1..^1], out var index))
                     {
                         return (name.Substring(0, name.Length - match.Value.Length), index);
                     }

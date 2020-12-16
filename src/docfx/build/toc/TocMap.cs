@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
-            _tocs = new Lazy<(FilePath[], Dictionary<FilePath, FilePath[]>, List<FilePath>)>(BuildTocMap);
+            _tocs = new(BuildTocMap);
         }
 
         public IEnumerable<FilePath> GetFiles()

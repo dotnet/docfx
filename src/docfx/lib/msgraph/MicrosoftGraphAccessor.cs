@@ -14,27 +14,22 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAccessor
     {
-        private readonly IGraphServiceClient? _msGraphClient;
+        private readonly GraphServiceClient? _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider? _microsoftGraphAuthenticationProvider;
         private readonly JsonDiskCache<Error, string, MicrosoftGraphUser> _aliasCache;
-        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _syncRoot = new(1, 1);
 
         public MicrosoftGraphAccessor(Config config)
         {
-            _aliasCache = new JsonDiskCache<Error, string, MicrosoftGraphUser>(
-                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraphCacheExpirationInHours));
+            _aliasCache = new(AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraphCacheExpirationInHours));
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret) &&
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
-                    config.MicrosoftGraphTenantId,
-                    config.MicrosoftGraphClientId,
-                    config.MicrosoftGraphClientSecret);
-
-                _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+                _microsoftGraphAuthenticationProvider = new(config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, config.MicrosoftGraphClientSecret);
+                _msGraphClient = new(_microsoftGraphAuthenticationProvider);
             }
         }
 
@@ -58,26 +53,26 @@ namespace Microsoft.Docs.Build
 
         private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)
         {
-                var options = new List<Option>
+            var options = new List<Option>
                 {
                     new QueryOption("$select", "id,mailNickname"),
                     new QueryOption("$filter", $"mailNickname eq '{alias}'"),
                 };
 
-                try
-                {
-                    var users = await Policy
-                        .Handle<ServiceException>()
-                        .RetryAsync(3)
-                        .ExecuteAsync(() => SendRequest(alias, () => _msGraphClient!.Users.Request(options).GetAsync()));
+            try
+            {
+                var users = await Policy
+                    .Handle<ServiceException>()
+                    .RetryAsync(3)
+                    .ExecuteAsync(() => SendRequest(alias, () => _msGraphClient!.Users.Request(options).GetAsync()));
 
-                    return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
-                }
-                catch (Exception ex)
-                {
-                    Log.Write(ex);
-                    return (Errors.System.MicrosoftGraphApiFailed(ex.Message), null);
-                }
+                return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return (Errors.System.MicrosoftGraphApiFailed(ex.Message), null);
+            }
         }
 
         private async Task<T> SendRequest<T>(string api, Func<Task<T>> func)

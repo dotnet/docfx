@@ -19,8 +19,8 @@ namespace Microsoft.Docs.Build
 
         public ExternalXrefMap(IEnumerable<ExternalXrefMap> xrefMaps)
         {
-            _externalXrefs = new List<ExternalXref>();
-            _xrefSpecs = new Dictionary<string, Lazy<ExternalXrefSpec>>();
+            _externalXrefs = new();
+            _xrefSpecs = new();
 
             foreach (var xrefMap in xrefMaps)
             {

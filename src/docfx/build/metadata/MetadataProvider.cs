@@ -14,11 +14,10 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly JObject _globalMetadata;
-        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new List<(Func<string, bool>, string, JToken)>();
-        private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new List<(Func<string, bool>, string, JToken)>();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new();
+        private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new();
 
-        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache
-                   = new ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>>();
+        private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache = new();
 
         public ICollection<string> HtmlMetaHidden { get; }
 
@@ -63,7 +62,7 @@ namespace Microsoft.Docs.Build
 
         public UserMetadata GetMetadata(ErrorBuilder errors, FilePath file)
         {
-            var (error, result) = _metadataCache.GetOrAdd(file, key => Watcher.Create(() => GetMetadataCore(key))).Value;
+            var (error, result) = _metadataCache.GetOrAdd(file, key => new(() => GetMetadataCore(key))).Value;
             errors.AddRange(error);
             return result;
         }

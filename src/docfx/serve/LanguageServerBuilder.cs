@@ -30,11 +30,11 @@ namespace Microsoft.Docs.Build
         {
             options.DryRun = true;
 
-            _workingDirectory = new PathString(workingDirectory);
+            _workingDirectory = new(workingDirectory);
             _languageServer = languageServer;
-            _errorList = new ErrorList();
+            _errorList = new();
             _languageServerPackage = languageServerPackage;
-            _builder = new Builder(_errorList, workingDirectory, options, _languageServerPackage);
+            _builder = new(_errorList, workingDirectory, options, _languageServerPackage);
             _buildSemaphore = buildSemaphore;
         }
 

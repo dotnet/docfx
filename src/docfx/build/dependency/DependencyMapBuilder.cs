@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class DependencyMapBuilder
     {
-        private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
+        private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new();
         private readonly SourceMap _sourceMap;
 
         public DependencyMapBuilder(SourceMap sourceMap)

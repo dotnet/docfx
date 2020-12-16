@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     public class JsonSchemaTest
     {
-        private static readonly JsonSchemaLoader s_jsonSchemaLoader = new JsonSchemaLoader(new FileResolver(new LocalPackage()), FetchRemoteSchema);
+        private static readonly JsonSchemaLoader s_jsonSchemaLoader = new(new(new LocalPackage()), FetchRemoteSchema);
 
         public static TheoryData<string, string, string> GetJsonSchemaTestSuite()
         {
@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             var jsonSchema = s_jsonSchemaLoader.LoadSchema(schema);
             var test = JObject.Parse(testText);
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(test["data"], new FilePath("file"));
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(test["data"], new("file"));
 
             Assert.True(test.Value<bool>("valid") == (errors.Count == 0), description);
         }
@@ -400,8 +400,8 @@ namespace Microsoft.Docs.Build
         {
             var propertiesToCompare = new[] { "message_severity", "code", "message", "line", "column" };
             var jsonSchema = s_jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
-            var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new FilePath("file"));
-            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, new FilePath("file"));
+            var payload = JsonUtility.Parse(new ErrorList(), json.Replace('\'', '"'), new("file"));
+            var errors = new JsonSchemaValidator(jsonSchema).Validate(payload, new("file"));
             var expected = string.Join('\n', expectedErrors.Split('\n').Select(err => err.Trim()));
             var actual = string.Join(
                 '\n',
@@ -429,7 +429,7 @@ namespace Microsoft.Docs.Build
         public void TestJsonSchemaPostValidation(string schema, string[] jsons, int errorCount)
         {
             var jsonSchema = s_jsonSchemaLoader.LoadSchema(schema.Replace('\'', '"'));
-            var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new FilePath($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
+            var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
             foreach (var payload in payloads)

@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal struct InterProcessMutex : IDisposable
     {
-        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
+        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new();
 
         private Mutex _mutex;
 

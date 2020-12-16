@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsMetadataRuleConverter
     {
-        private static readonly Dictionary<string, string[]> s_ruleNameConvert = new Dictionary<string, string[]>()
+        private static readonly Dictionary<string, string[]> s_ruleNameConvert = new()
         {
             { "Kind", new string[] { "unexpected-type" } },
             { "Match", new string[] { "invalid-value" } },
@@ -165,7 +165,7 @@ namespace Microsoft.Docs.Build
 
         private static bool TryGetAllowlist(string attribute, string? listId, AllowLists allowlists, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
-            if (string.IsNullOrEmpty(listId) || !allowlists.TryGetValue(listId.Substring("list:".Length), out var subAllowlist))
+            if (string.IsNullOrEmpty(listId) || !allowlists.TryGetValue(listId["list:".Length..], out var subAllowlist))
             {
                 allowList = new Dictionary<string, EnumDependenciesSchema?>();
                 return false;
@@ -198,7 +198,7 @@ namespace Microsoft.Docs.Build
                 }
                 strBuilder.Append(nestedValue[strIdx]);
             }
-            nestedValue = strBuilder.Append(nestedValue.Substring(strIdx)).ToString().ToLowerInvariant();
+            nestedValue = strBuilder.Append(nestedValue[strIdx..]).ToString().ToLowerInvariant();
 
             allowList = new Dictionary<string, EnumDependenciesSchema?>();
             foreach (var (key, taxonomy) in subAllowlist.NestedTaxonomy.dic)
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
-                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs.Substring("list:".Length), out var allowlist) &&
+                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs["list:".Length..], out var allowlist) &&
                 string.IsNullOrEmpty(allowlist.NestedValue))
             {
                 return new { allowedDLs = allowlist.NestedTaxonomy.list };

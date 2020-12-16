@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentDictionary<FilePath, SearchIndexItem> _searchIndex = new ConcurrentDictionary<FilePath, SearchIndexItem>();
+        private readonly ConcurrentDictionary<FilePath, SearchIndexItem> _searchIndex = new();
 
         public SearchIndexBuilder(Config config, ErrorBuilder errors, DocumentProvider documentProvider, MetadataProvider metadataProvider)
         {

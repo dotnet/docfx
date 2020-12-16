@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         private readonly SemaphoreSlim _buildSemaphore;
         private readonly LanguageServerPackage _package;
 
-        private readonly DocumentSelector _documentSelector = new DocumentSelector(
+        private readonly DocumentSelector _documentSelector = new(
             new DocumentFilter()
             {
                 Pattern = "**/*.{md,yml,json}",

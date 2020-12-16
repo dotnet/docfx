@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         public LanguageServerTestHost(string workingDirectory, Dictionary<string, string> variables, Package package)
         {
             _variables = variables;
-            _client = new Lazy<Task<ILanguageClient>>(() => InitializeClient(workingDirectory, package));
+            _client = new(() => InitializeClient(workingDirectory, package));
         }
 
         public async Task SendNotification(LanguageServerNotification notification)
@@ -84,14 +84,14 @@ namespace Microsoft.Docs.Build
                 {
                     options.OnJsonNotification(name, @params =>
                     {
-                        _notifications.Writer.TryWrite(new LanguageServerNotification(name, @params));
+                        _notifications.Writer.TryWrite(new(name, @params));
                     });
                 }
             });
 
             await Task.WhenAll(
                 client.Initialize(default),
-                LanguageServerHost.StartLanguageServer(workingDirectory, new CommandLineOptions(), clientPipe.Reader, serverPipe.Writer, package));
+                LanguageServerHost.StartLanguageServer(workingDirectory, new(), clientPipe.Reader, serverPipe.Writer, package));
 
             return client;
         }

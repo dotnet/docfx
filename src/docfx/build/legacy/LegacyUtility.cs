@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             var legacySiteUrlRelativeToBasePath = context.DocumentProvider.GetSiteUrl(doc);
             if (legacySiteUrlRelativeToBasePath.StartsWith(context.Config.BasePath.ValueWithLeadingSlash, PathUtility.PathComparison))
             {
-                legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath.Substring(1);
+                legacySiteUrlRelativeToBasePath = legacySiteUrlRelativeToBasePath[1..];
                 legacySiteUrlRelativeToBasePath = Path.GetRelativePath(
                     string.IsNullOrEmpty(context.Config.BasePath) ? "." : context.Config.BasePath,
                     string.IsNullOrEmpty(legacySiteUrlRelativeToBasePath) ? "." : legacySiteUrlRelativeToBasePath);

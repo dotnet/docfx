@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     [JsonConverter(typeof(MonikerListJsonConverter))]
     internal readonly struct MonikerList : IEquatable<MonikerList>, IReadOnlyCollection<string>, IComparable<MonikerList>
     {
-        private static readonly ConcurrentDictionary<MonikerList, string> s_monikerGroupCache = new ConcurrentDictionary<MonikerList, string>();
+        private static readonly ConcurrentDictionary<MonikerList, string> s_monikerGroupCache = new();
 
         private readonly string[]? _monikers;
 
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            return new MonikerList(_monikers.Intersect(other._monikers));
+            return new(_monikers.Intersect(other._monikers));
         }
 
         public MonikerList Except(MonikerList other)
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
                 return this;
             }
 
-            return new MonikerList(_monikers.Except(other._monikers));
+            return new(_monikers.Except(other._monikers));
         }
 
         public static MonikerList Union(IEnumerable<MonikerList> monikerLists)
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 monikers.AddRange(monikerList._monikers);
             }
 
-            return new MonikerList(monikers);
+            return new(monikers);
         }
 
         public override int GetHashCode()

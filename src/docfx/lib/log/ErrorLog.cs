@@ -14,8 +14,8 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider? _metadataProvider;
         private readonly Func<CustomRuleProvider>? _customRuleProvider;
 
-        private readonly ErrorSink _errorSink = new ErrorSink();
-        private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
+        private readonly ErrorSink _errorSink = new();
+        private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new();
 
         public override bool HasError => _errors.HasError;
 
