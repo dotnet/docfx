@@ -230,6 +230,11 @@ namespace Microsoft.Docs.Build
 
                     s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
                 }
+                else if (lspSpec.ExpectNoNotification)
+                {
+                    var actualNotifications = await lspTestHost.GetExpectedNotification(expectedCount: 1);
+                    s_languageServerJsonDiff.Verify(new List<LanguageServerNotification>(), actualNotifications);
+                }
                 else
                 {
                     throw new NotSupportedException();

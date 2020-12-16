@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,6 +28,9 @@ namespace Microsoft.Docs.Build
         public static Task<LanguageServer> StartLanguageServer(
             string workingDirectory, CommandLineOptions commandLineOptions, PipeReader input, PipeWriter output, Package? package = null)
         {
+            package ??= new LocalPackage(workingDirectory);
+            var languageServerPackage = new LanguageServerPackage(new MemoryPackage(workingDirectory), package);
+
             return LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
@@ -36,7 +38,8 @@ namespace Microsoft.Docs.Build
                 .WithHandler<TextDocumentHandler>()
                 .WithServices(services =>
                 {
-                    services.AddSingleton(Channel.CreateUnbounded<FileActionEvent>());
+                    services.AddSingleton(new SemaphoreSlim(0));
+                    services.AddSingleton(languageServerPackage);
                 })
                 .WithServices(ConfigureServices)
                 .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
@@ -45,10 +48,8 @@ namespace Microsoft.Docs.Build
             Task Initialize(ILanguageServer server, InitializeParams request, CancellationToken cancellationToken)
             {
                 var serviceProvider = server.Services;
-                var eventChannel = serviceProvider.GetService<Channel<FileActionEvent>>();
-
-                package ??= new LocalPackage(workingDirectory);
-                _ = new LanguageServerBuilder(workingDirectory, commandLineOptions, eventChannel!, server, package).StartAsync();
+                var buildSemaphore = serviceProvider.GetService<SemaphoreSlim>();
+                _ = new LanguageServerBuilder(workingDirectory, commandLineOptions, buildSemaphore!, server, languageServerPackage).StartAsync();
                 return Task.CompletedTask;
             }
         }

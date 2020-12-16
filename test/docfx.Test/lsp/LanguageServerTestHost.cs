@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var timeout = Debugger.IsAttached ? int.MaxValue : 60000;
+                var timeout = Debugger.IsAttached ? int.MaxValue : 20000;
                 using var cts = new CancellationTokenSource(timeout);
                 while (await _notifications.Reader.WaitToReadAsync(cts.Token))
                 {

@@ -2,9 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading.Channels;
+using System.Threading;
 using System.Threading.Tasks;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
@@ -17,69 +16,38 @@ namespace Microsoft.Docs.Build
     {
         private readonly Builder _builder;
         private readonly ErrorList _errorList;
-        private readonly Channel<FileActionEvent> _eventChannel;
+        private readonly SemaphoreSlim _buildSemaphore;
         private readonly ILanguageServer _languageServer;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly PathString _workingDirectory;
 
         public LanguageServerBuilder(
-            string workingDirectory, CommandLineOptions options, Channel<FileActionEvent> eventChannel, ILanguageServer languageServer, Package package)
+            string workingDirectory,
+            CommandLineOptions options,
+            SemaphoreSlim buildSemaphore,
+            ILanguageServer languageServer,
+            LanguageServerPackage languageServerPackage)
         {
             options.DryRun = true;
 
             _workingDirectory = new PathString(workingDirectory);
             _languageServer = languageServer;
             _errorList = new ErrorList();
-            _languageServerPackage = new LanguageServerPackage(new MemoryPackage(workingDirectory), package);
+            _languageServerPackage = languageServerPackage;
             _builder = new Builder(_errorList, workingDirectory, options, _languageServerPackage);
-            _eventChannel = eventChannel;
+            _buildSemaphore = buildSemaphore;
         }
 
         public async Task StartAsync()
         {
-            while (await _eventChannel.Reader.WaitToReadAsync())
+            while (true)
             {
-                var needRebuildFiles = false;
-                while (_eventChannel.Reader.TryRead(out var @event))
-                {
-                    switch (@event.Type)
-                    {
-                        case FileActionType.Opened when @event.Content != null:
-                        case FileActionType.Updated when @event.Content != null:
-                            UpdateMemoryPackage(new PathString(@event.FilePath), @event.Content);
-                            needRebuildFiles = true;
-                            break;
-                    }
-                }
-                if (needRebuildFiles)
-                {
-                    RebuildFiles();
-                }
+                await _buildSemaphore.WaitAsync();
+                var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
+
+                PublishDiagnosticsParams(filesToBuild);
             }
-        }
-
-        private void UpdateMemoryPackage(PathString filePath, string content)
-        {
-            // TODO: ignore config file change
-            _languageServerPackage.AddOrUpdate(filePath, content);
-        }
-
-        private void RemoveDiagnosticsOnFile(PathString filePath)
-        {
-            var fullPath = Path.Combine(_workingDirectory, filePath);
-            _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
-            {
-                Uri = DocumentUri.File(fullPath),
-                Diagnostics = new Container<Diagnostic>(),
-            });
-        }
-
-        private void RebuildFiles()
-        {
-            var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-            _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
-
-            PublishDiagnosticsParams(filesToBuild);
         }
 
         private void PublishDiagnosticsParams(IEnumerable<PathString> files)
