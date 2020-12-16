@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 ".openpublishing.redirection.json",
             };
 
-        private readonly SemaphoreSlim _buildSemaphore;
+        private readonly LanguageServerBuilder _languageServerBuilder;
         private readonly LanguageServerPackage _package;
 
         private readonly DocumentSelector _documentSelector = new(
@@ -38,9 +38,9 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(SemaphoreSlim buildSemaphore, LanguageServerPackage package)
+        public TextDocumentHandler(LanguageServerBuilder languageServerBuilder, LanguageServerPackage package)
         {
-            _buildSemaphore = buildSemaphore;
+            _languageServerBuilder = languageServerBuilder;
             _package = package;
         }
 
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
             {
-                _buildSemaphore.Release();
+                _languageServerBuilder.QueueBuild();
             }
 
             return Unit.Task;
@@ -73,7 +73,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
             {
-                _buildSemaphore.Release();
+                _languageServerBuilder.QueueBuild();
             }
             return Unit.Task;
         }

@@ -5,10 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using OmniSharp.Extensions.LanguageServer.Protocol;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,28 +14,33 @@ namespace Microsoft.Docs.Build
         private readonly Builder _builder;
         private readonly ErrorList _errorList;
         private readonly SemaphoreSlim _buildSemaphore;
-        private readonly ILanguageServer _languageServer;
+        private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly PathString _workingDirectory;
 
         public LanguageServerBuilder(
             string workingDirectory,
             CommandLineOptions options,
-            SemaphoreSlim buildSemaphore,
-            ILanguageServer languageServer,
+            DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage)
         {
             options.DryRun = true;
 
             _workingDirectory = new(workingDirectory);
-            _languageServer = languageServer;
+            _diagnosticPublisher = diagnosticPublisher;
             _errorList = new();
             _languageServerPackage = languageServerPackage;
             _builder = new(_errorList, workingDirectory, options, _languageServerPackage);
-            _buildSemaphore = buildSemaphore;
+            _buildSemaphore = new(0);
+            _ = StartAsync();
         }
 
-        public async Task StartAsync()
+        public void QueueBuild()
+        {
+            _buildSemaphore.Release();
+        }
+
+        private async Task StartAsync()
         {
             while (true)
             {
@@ -61,11 +63,7 @@ namespace Microsoft.Docs.Build
                                       where source != null && source.File.Path == relativePath
                                       select ConvertToDiagnostics(error, source);
 
-                    _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
-                    {
-                        Uri = DocumentUri.File(file),
-                        Diagnostics = new Container<Diagnostic>(diagnostics.ToList()),
-                    });
+                    _diagnosticPublisher.PublishDiagnostic(file, diagnostics.ToList());
                 }
             }
         }

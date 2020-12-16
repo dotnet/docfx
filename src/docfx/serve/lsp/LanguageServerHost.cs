@@ -28,28 +28,34 @@ namespace Microsoft.Docs.Build
         public static Task<LanguageServer> StartLanguageServer(
             string workingDirectory, CommandLineOptions commandLineOptions, PipeReader input, PipeWriter output, Package? package = null)
         {
-            package ??= new LocalPackage(workingDirectory);
-            var languageServerPackage = new LanguageServerPackage(new MemoryPackage(workingDirectory), package);
-
             return LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
-                .WithHandler<TextDocumentHandler>()
                 .WithServices(services =>
                 {
-                    services.AddSingleton(new SemaphoreSlim(0));
-                    services.AddSingleton(languageServerPackage);
+                    services.AddSingleton<DiagnosticPublisher>();
+
+                    services.AddOptions();
+                    services.AddLogging();
                 })
-                .WithServices(ConfigureServices)
                 .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
                 .OnInitialize(Initialize));
 
             Task Initialize(ILanguageServer server, InitializeParams request, CancellationToken cancellationToken)
             {
+                package ??= new LocalPackage(workingDirectory);
+                var languageServerPackage = new LanguageServerPackage(new MemoryPackage(workingDirectory), package);
+
                 var serviceProvider = server.Services;
-                var buildSemaphore = serviceProvider.GetService<SemaphoreSlim>();
-                _ = new LanguageServerBuilder(workingDirectory, commandLineOptions, buildSemaphore!, server, languageServerPackage).StartAsync();
+                var diagnosticPublisher = serviceProvider.GetService<DiagnosticPublisher>();
+
+                var languageServerBuilder = new LanguageServerBuilder(workingDirectory, commandLineOptions, diagnosticPublisher!, languageServerPackage);
+
+                server.Register(r =>
+                {
+                    r.AddHandler(new TextDocumentHandler(languageServerBuilder, languageServerPackage));
+                });
                 return Task.CompletedTask;
             }
         }
@@ -58,12 +64,6 @@ namespace Microsoft.Docs.Build
         {
             // TODO: redirect the console output to client through LSP
             Console.SetOut(StreamWriter.Null);
-        }
-
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            services.AddOptions();
-            services.AddLogging();
         }
     }
 }
