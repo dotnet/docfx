@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
                 if (function != null && !function.HasChanged())
                 {
                     Watcher.AttachToParent(function);
+                    function.Replay();
                     return _value!;
                 }
 

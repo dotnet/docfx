@@ -16,5 +16,7 @@ namespace Microsoft.Docs.Build
         public bool HasChanged() => !Equals(ChangeToken, _changeTokenFactory());
 
         public void AddChild(IFunction childFunction) { }
+
+        public void Replay() { }
     }
 }
