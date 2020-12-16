@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
@@ -9,6 +11,12 @@ namespace Microsoft.Docs.Build
     {
         public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)
         {
+            Debugger.Launch();
+            if (!Debugger.IsAttached)
+            {
+                Task.Delay(1000).GetAwaiter().GetResult();
+            }
+
             if (!options.LanguageServer)
             {
                 Console.WriteLine("Docfx only support serving as a language server in 'Serve' mode, please use `--language-server`");
