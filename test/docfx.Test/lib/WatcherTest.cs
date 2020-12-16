@@ -251,5 +251,78 @@ namespace Microsoft.Docs.Build
             Assert.Equal(5050, watch.Value);
             Assert.Equal(5050, watch.Value);
         }
+
+        [Fact]
+        public static void Watch_Value_Replay_Write_Functions()
+        {
+            var callCount = 0;
+            var writeCount = 0;
+            var watch = new Watch<int>(() =>
+            {
+                Watcher.Write(() => writeCount++);
+                return callCount++;
+            });
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(2, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(2, writeCount);
+        }
+
+        [Fact]
+        public static void Watch_Value_Replay_Write_Functions_With_DependencyChange()
+        {
+            var callCount = 0;
+            var writeCount = 0;
+            var watch = new Watch<int>(() =>
+            {
+                Watcher.Write(() => writeCount++);
+                return Watcher.Read(() => callCount++);
+            });
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+        }
+
+        [Fact]
+        public static void Watch_Value_Replay_Nested_Write_Functions_With_DependencyChange()
+        {
+            var callCount = 0;
+            var writeCount = 0;
+            var childWatch = new Watch<int>(() =>
+            {
+                Watcher.Write(() => writeCount++);
+                return Watcher.Read(() => callCount++);
+            });
+            var watch = new Watch<int>(() => childWatch.Value);
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+        }
     }
 }

@@ -49,6 +49,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static void Write(Action action)
+        {
+            var function = new WriteFunction(action);
+            BeginFunctionScope(function);
+
+            try
+            {
+                action();
+            }
+            finally
+            {
+                EndFunctionScope();
+            }
+        }
+
         public static void StartActivity() => t_activityId.Value++;
 
         internal static int GetActivityId() => t_activityId.Value;
