@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error DocsetNotProvisioned(string name)
-                => new Error(ErrorLevel.Warning, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.");
+                => new Error(ErrorLevel.Error, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.");
 
             /// <summary>
             /// Used invalid glob pattern in configuration.
