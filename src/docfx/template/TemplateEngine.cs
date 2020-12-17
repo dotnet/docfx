@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
             _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
-            _templateDefinition = new(() => _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
+            _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
 
             _global = LoadGlobalTokens(errors);
 
@@ -207,8 +207,8 @@ namespace Microsoft.Docs.Build
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
         {
-            var defaultTokens = _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token");
-            var localeTokens = _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            var defaultTokens = _package.TryLoadYamlOrJson<JObject>(errors, "ContentTemplate/token");
+            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
             if (defaultTokens == null)
             {
                 return localeTokens ?? new JObject();

@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject? LoadConfig(ErrorBuilder errors, Package package, PathString directory = default)
         {
-            var config = package.LoadYamlOrJson<JObject>(errors, "docfx", directory);
+            var config = package.TryLoadYamlOrJson<JObject>(errors, "docfx", directory);
             if (config is null)
             {
                 return null;
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            var config = package.LoadYamlOrJson<DocsetsConfig>(errors, "docsets");
+            var config = package.TryLoadYamlOrJson<DocsetsConfig>(errors, "docsets");
             if (config != null)
             {
                 return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
