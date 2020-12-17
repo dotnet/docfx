@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -25,7 +26,7 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new();
         private static readonly AsyncLocal<string> t_appDataPath = new();
-        private static readonly AsyncLocal<SemaphoreSlim> t_languageServerExit = new();
+        private static readonly AsyncLocal<StrongBox<int>> t_finishedBuildCount = new();
 
         static DocfxTest()
         {
@@ -51,9 +52,10 @@ namespace Microsoft.Docs.Build
                 return null;
             };
 
-            TestQuirks.IsTest = true;
-
-            TestQuirks.SetLanguageServerExit = () => t_languageServerExit.Value.Release();
+            TestQuirks.FinishedBuildCountIncrease = () =>
+            {
+                t_finishedBuildCount.Value.Value++;
+            };
         }
 
         public static IEnumerable<string> ExpandTest(DocfxTestSpec spec)
@@ -84,7 +86,7 @@ namespace Microsoft.Docs.Build
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
-                    t_languageServerExit.Value = new SemaphoreSlim(0);
+                    t_finishedBuildCount.Value = new StrongBox<int>();
                     RunCore(docsetPath, outputPath, test, spec, variables, package);
                 }
                 catch (Exception exception)
@@ -100,7 +102,7 @@ namespace Microsoft.Docs.Build
                     t_repos.Value = null;
                     t_remoteFiles.Value = null;
                     t_appDataPath.Value = null;
-                    t_appDataPath.Value = null;
+                    t_finishedBuildCount.Value = null;
                 }
             }
         }
@@ -237,9 +239,12 @@ namespace Microsoft.Docs.Build
 
                     s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
                 }
-                else if (lspSpec.ExpectNoNotification)
+                else if (lspSpec.ExpectNoNotificationAfterBuildTime != null)
                 {
-                    await t_languageServerExit.Value.WaitAsync();
+                    while (lspSpec.ExpectNoNotificationAfterBuildTime > t_finishedBuildCount.Value.Value)
+                    {
+                        await Task.Delay(1000);
+                    }
                     var actualNotifications = await lspTestHost.GetExpectedNotification(expectedCount: 1, timeout: 100);
                     s_languageServerJsonDiff.Verify(new List<LanguageServerNotification>(), actualNotifications);
                 }

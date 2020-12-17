@@ -152,4 +152,4 @@ languageServer:
           "text": "Invalid change"
         }
       }
-  - expectNoNotification: true
+  - expectNoNotificationAfterBuildTime: 1

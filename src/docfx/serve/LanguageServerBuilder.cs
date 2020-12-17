@@ -42,22 +42,14 @@ namespace Microsoft.Docs.Build
 
         private async Task StartAsync()
         {
-            try
+            while (true)
             {
-                while (true)
-                {
-                    var timeout = TestQuirks.IsTest ? 1000 : int.MaxValue;
-                    using var cts = new CancellationTokenSource(timeout);
-                    await _buildSemaphore.WaitAsync(cts.Token);
-                    var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-                    _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
+                await _buildSemaphore.WaitAsync();
+                var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
-                    PublishDiagnosticsParams(filesToBuild);
-                }
-            }
-            catch (System.OperationCanceledException)
-            {
-                TestQuirks.SetLanguageServerExit?.Invoke();
+                PublishDiagnosticsParams(filesToBuild);
+                TestQuirks.FinishedBuildCountIncrease?.Invoke();
             }
         }
 
