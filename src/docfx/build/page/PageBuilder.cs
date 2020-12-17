@@ -301,7 +301,7 @@ namespace Microsoft.Docs.Build
             {
                 switch (mime.Value?.ToLowerInvariant())
                 {
-                    case "learninpath":
+                    case "learningpath":
                         _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
                         break;
 
