@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var allowlists = JsonConvert.DeserializeObject<AllowLists>(allowlistsContent);
+            var allowlists = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
 
             var schema = new
             {
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetAllowlist(string attribute, string? listId, AllowLists allowlists, out Dictionary<string, EnumDependenciesSchema?> allowList)
+        private static bool TryGetAllowlist(string attribute, string? listId, Taxonomies allowlists, out Dictionary<string, EnumDependenciesSchema?> allowList)
         {
             if (string.IsNullOrEmpty(listId) || !allowlists.TryGetValue(listId["list:".Length..], out var subAllowlist))
             {
@@ -212,7 +212,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, AllowLists allowlists)
+        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Taxonomies allowlists)
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
