@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
                 .WithInput(input)
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
+                .WithHandler<TextDocumentHandler>()
                 .WithServices(services =>
                 {
                     package ??= new LocalPackage(workingDirectory);
