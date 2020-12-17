@@ -5,13 +5,13 @@ namespace Microsoft.Docs.Build
 {
     internal class LearningPath
     {
-        public SourceInfo<string> Uid { get; set; } = new SourceInfo<string>("");
+        public SourceInfo<string> Uid { get; init; } = new SourceInfo<string>("");
 
         public SourceInfo<string>[]? Modules { get; set; }
 
         public Trophy? Trophy { get; set; }
 
-        public SourceInfo<string> Achievement { get; set; } = new SourceInfo<string>("");
+        public SourceInfo<string> Achievement { get; init; } = new SourceInfo<string>("");
 
         public string? Title { get; set; }
 

@@ -5,7 +5,7 @@ namespace Microsoft.Docs.Build
 {
     internal class Achievement
     {
-        public SourceInfo<string> Uid { get; set; } = new SourceInfo<string>("");
+        public SourceInfo<string> Uid { get; init; } = new SourceInfo<string>("");
 
         public AchievementType Type { get; set; }
 
