@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             _options = options;
             _errors = errors;
             _package = package;
-            _docsets = Watcher.Create(LoadDocsets);
+            _docsets = new(LoadDocsets);
         }
 
         public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)
@@ -34,10 +34,7 @@ namespace Microsoft.Docs.Build
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
 
-            if (package == null)
-            {
-                package = new LocalPackage(workingDirectory);
-            }
+            package ??= new LocalPackage(workingDirectory);
 
             new Builder(errors, workingDirectory, options, package).Build(files);
 
@@ -52,6 +49,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                _errors.Clear();
                 Watcher.StartActivity();
 
                 Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));

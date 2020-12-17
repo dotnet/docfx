@@ -30,25 +30,25 @@ namespace Microsoft.Docs.Build
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         // TODO: use Azure front door endpoint when it is stable
-        private static readonly string DocsProdServiceEndpoint =
+        private static readonly string s_docsProdServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
 
-        private static readonly string DocsPPEServiceEndpoint =
+        private static readonly string s_docsPPEServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
 
-        private static readonly string DocsInternalServiceEndpoint =
+        private static readonly string s_docsInternalServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
 
-        private static readonly string DocsPerfServiceEndpoint =
+        private static readonly string s_docsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
-        private static readonly SecretClient s_secretClient = new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential());
-        private static readonly Lazy<Task<string>> s_opsTokenProd = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenProd"));
-        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenSandbox"));
+        private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
+        private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
+        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorBuilder _errors;
-        private readonly HttpClient _http = new HttpClient();
+        private readonly HttpClient _http = new();
 
         public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
         {
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
 
             var response = await SendRequest(request);
 
-            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, response.RequestMessage.RequestUri.AbsoluteUri);
+            Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
             return response.IsSuccessStatusCode;
         }
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
 
                 _credentialProvider?.Invoke(request);
 
-                await FillOpsToken(request.RequestUri.AbsoluteUri, request, environment);
+                await FillOpsToken(request, environment);
 
                 return await _http.SendAsync(request);
             }
@@ -274,10 +274,10 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => DocsProdServiceEndpoint,
-                DocsEnvironment.PPE => DocsPPEServiceEndpoint,
-                DocsEnvironment.Internal => DocsInternalServiceEndpoint,
-                DocsEnvironment.Perf => DocsPerfServiceEndpoint,
+                DocsEnvironment.Prod => s_docsProdServiceEndpoint,
+                DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
+                DocsEnvironment.Internal => s_docsInternalServiceEndpoint,
+                DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
         }
@@ -322,25 +322,31 @@ namespace Microsoft.Docs.Build
                 : DocsEnvironment.Prod;
         }
 
-        private static async Task FillOpsToken(string url, HttpRequestMessage request, DocsEnvironment? environment = null)
+        private static async Task FillOpsToken(HttpRequestMessage request, DocsEnvironment? environment = null)
         {
             // don't access key vault for osx since azure-cli will crash in osx
             // https://github.com/Azure/azure-cli/issues/7519
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-                && url.StartsWith(BuildServiceEndpoint(environment))
-                && !request.Headers.Contains("X-OP-BuildUserToken"))
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
+                request.RequestUri?.ToString() is string url &&
+                url.StartsWith(BuildServiceEndpoint(environment)) &&
+                !request.Headers.Contains("X-OP-BuildUserToken"))
             {
                 // For development usage
                 try
                 {
-                    var token = (environment ?? DocsEnvironment) switch
+                    var token = EnvironmentVariable.DocsOpsToken;
+                    if (string.IsNullOrEmpty(token))
                     {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
-                        _ => throw new InvalidOperationException(),
-                    };
+                        var tokenTask = (environment ?? DocsEnvironment) switch
+                        {
+                            DocsEnvironment.Prod => s_opsTokenProd,
+                            DocsEnvironment.PPE => s_opsTokenSandbox,
+                            _ => throw new InvalidOperationException(),
+                        };
+                        token = await tokenTask.Value;
+                    }
 
-                    request.Headers.Add("X-OP-BuildUserToken", await token.Value);
+                    request.Headers.Add("X-OP-BuildUserToken", token);
                 }
                 catch (Exception ex)
                 {

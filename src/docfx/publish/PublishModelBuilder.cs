@@ -51,16 +51,18 @@ namespace Microsoft.Docs.Build
                 {
                     _buildOutput.TryGetValue(sourceFile, out var buildOutput);
 
-                    var publishItem = new PublishItem(
-                        _documentProvider.GetSiteUrl(sourceFile),
-                        buildOutput.outputPath,
-                        sourceFile,
-                        _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
-                        _locale,
-                        _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
-                        _monikerProvider.GetConfigMonikerRange(sourceFile),
-                        _errors.FileHasError(sourceFile),
-                        RemoveComplexValue(buildOutput.metadata));
+                    var publishItem = new PublishItem
+                    {
+                        Url = _documentProvider.GetSiteUrl(sourceFile),
+                        Path = buildOutput.outputPath,
+                        SourceFile = sourceFile,
+                        SourcePath = _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
+                        Locale = _locale,
+                        Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
+                        ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),
+                        HasError = _errors.FileHasError(sourceFile),
+                        ExtensionData = RemoveComplexValue(buildOutput.metadata),
+                    };
 
                     publishItems.Add(sourceFile, publishItem);
                 }
@@ -79,13 +81,15 @@ namespace Microsoft.Docs.Build
                 group item by monikerGroup into g
                 select new KeyValuePair<string, MonikerList>(g.Key, g.First().Monikers));
 
-            var model = new PublishModel(
-                _config.Name,
-                _config.Product,
-                _config.BasePath.ValueWithLeadingSlash,
-                _config.Template.IsMainOrMaster ? null : _config.Template.Branch,
-                items,
-                monikerGroups);
+            var model = new PublishModel
+            {
+                Name = _config.Name,
+                Product = _config.Product,
+                BasePath = _config.BasePath.ValueWithLeadingSlash,
+                ThemeBranch = _config.Template.IsMainOrMaster ? null : _config.Template.Branch,
+                Files = items,
+                MonikerGroups = monikerGroups,
+            };
 
             var fileManifests = publishItems.ToDictionary(item => item.Key, item => item.Value);
 

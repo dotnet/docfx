@@ -21,18 +21,18 @@ namespace Microsoft.Docs.Build
 {
     internal sealed class GitHubAccessor
     {
-        private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
+        private static readonly Uri s_url = new("https://api.github.com/graphql");
 
         private readonly HttpClient? _httpClient;
-        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
-        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
+        private readonly SemaphoreSlim _syncRoot = new(1, 1);
+        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new();
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
         private volatile Error? _fatalError;
 
         public GitHubAccessor(Config config)
         {
-            _userCache = new JsonDiskCache<Error, string, GitHubUser>(
+            _userCache = new(
                 AppData.GitHubUserCachePath,
                 TimeSpan.FromHours(config.GithubUserCacheExpirationInHours),
                 StringComparer.OrdinalIgnoreCase,

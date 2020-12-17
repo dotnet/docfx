@@ -16,14 +16,14 @@ namespace Microsoft.Docs.Build
 {
     internal class MustacheTemplate
     {
-        private static readonly Tags s_defaultTags = new Tags("{{", "}}");
+        private static readonly Tags s_defaultTags = new("{{", "}}");
 
         private readonly JObject? _global;
         private readonly Package _package;
         private readonly PathString _baseDirectory;
         private readonly ParserPipeline _parserPipeline;
 
-        private readonly ConcurrentDictionary<string, BlockToken?> _templates = new ConcurrentDictionary<string, BlockToken?>();
+        private readonly ConcurrentDictionary<string, BlockToken?> _templates = new();
 
         public MustacheTemplate(Package package, string? baseDirectory = null, JObject? global = null)
         {

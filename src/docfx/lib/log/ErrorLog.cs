@@ -14,8 +14,8 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider? _metadataProvider;
         private readonly Func<CustomRuleProvider>? _customRuleProvider;
 
-        private readonly ErrorSink _errorSink = new ErrorSink();
-        private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
+        private readonly ErrorSink _errorSink = new();
+        private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new();
 
         public override bool HasError => _errors.HasError;
 
@@ -35,13 +35,24 @@ namespace Microsoft.Docs.Build
             _customRuleProvider = customRuleProvider;
         }
 
+        public override void Clear()
+        {
+            _errors.Clear();
+            _errorSink.Clear();
+            _fileSink.Clear();
+        }
+
         public override void Add(Error error)
         {
             try
             {
                 if (_metadataProvider != null && error.Source?.File is FilePath source)
                 {
-                    error = error.WithMsAuthor(_metadataProvider.GetMetadata(Null, source).MsAuthor);
+                    var msAuthor = _metadataProvider.GetMetadata(Null, source).MsAuthor;
+                    if (msAuthor != default)
+                    {
+                        error = error with { MsAuthor = msAuthor };
+                    }
                 }
 
                 error = _customRuleProvider?.Invoke().ApplyCustomRule(error) ?? error;
@@ -58,7 +69,7 @@ namespace Microsoft.Docs.Build
 
             if (_config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
             {
-                error = error.WithLevel(ErrorLevel.Error);
+                error = error with { Level = ErrorLevel.Error };
             }
 
             if (error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
@@ -72,7 +83,7 @@ namespace Microsoft.Docs.Build
 
             if (error.Source != null)
             {
-                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File)?.Path);
+                error = error with { OriginalPath = _sourceMap?.GetOriginalFilePath(error.Source.File)?.Path };
             }
 
             var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());

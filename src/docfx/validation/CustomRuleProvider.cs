@@ -93,16 +93,13 @@ namespace Microsoft.Docs.Build
             message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
                 message : $"{message}{(message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
 
-            return new Error(
-                level,
-                string.IsNullOrEmpty(customRule.Code) ? error.Code : customRule.Code,
-                message,
-                error.MessageArguments,
-                error.Source,
-                error.PropertyPath,
-                error.OriginalPath,
-                customRule.PullRequestOnly,
-                error.MsAuthor);
+            return error with
+            {
+                Level = level,
+                Code = string.IsNullOrEmpty(customRule.Code) ? error.Code : customRule.Code,
+                Message = message,
+                PullRequestOnly = customRule.PullRequestOnly,
+            };
         }
 
         private bool TryGetCustomRule(Error error, [MaybeNullWhen(false)] out CustomRule customRule)
@@ -116,7 +113,9 @@ namespace Microsoft.Docs.Build
                         // compare with code + propertyPath + contentType
                         var source = error.Source?.File;
                         var pageType = source != null ? _documentProvider.GetPageType(source) : null;
-                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) && rule.ContentTypes.Contains(pageType))
+                        if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) &&
+                            rule.ContentTypes != null &&
+                            rule.ContentTypes.Contains(pageType))
                         {
                             customRule = rule;
                             return true;
@@ -178,23 +177,14 @@ namespace Microsoft.Docs.Build
                     {
                         customRules[validationRule.Code] = new List<CustomRule>
                         {
-                            new CustomRule(
-                                customRule.First().Severity,
-                                customRule.First().Code,
-                                null,
-                                customRule.First().AdditionalMessage,
-                                null,
-                                customRule.First().CanonicalVersionOnly,
-                                validationRule.PullRequestOnly,
-                                null,
-                                false),
+                            customRule.First() with { PullRequestOnly = validationRule.PullRequestOnly },
                         };
                     }
                     else
                     {
                         var list = new List<CustomRule>
                         {
-                            new CustomRule(null, null, null, null, null, false, validationRule.PullRequestOnly, null, false),
+                            new CustomRule { PullRequestOnly = validationRule.PullRequestOnly },
                         };
 
                         customRules.Add(validationRule.Code, list);
@@ -207,16 +197,18 @@ namespace Microsoft.Docs.Build
                 foreach (var validationRule in buildValidationRules.SelectMany(rules => rules.Value.Rules))
                 {
                     var oldCode = ConvertTypeToCode(validationRule.Type);
-                    var newRule = new CustomRule(
-                                ConvertSeverity(validationRule.Severity),
-                                validationRule.Code,
-                                validationRule.Message,
-                                validationRule.AdditionalErrorMessage,
-                                validationRule.PropertyPath,
-                                validationRule.CanonicalVersionOnly,
-                                validationRule.PullRequestOnly,
-                                validationRule.ContentTypes,
-                                validationRule.Disabled);
+                    var newRule = new CustomRule
+                    {
+                        Severity = ConvertSeverity(validationRule.Severity),
+                        Code = validationRule.Code,
+                        Message = validationRule.Message,
+                        AdditionalMessage = validationRule.AdditionalErrorMessage,
+                        PropertyPath = validationRule.PropertyPath,
+                        CanonicalVersionOnly = validationRule.CanonicalVersionOnly,
+                        PullRequestOnly = validationRule.PullRequestOnly,
+                        ContentTypes = validationRule.ContentTypes,
+                        Disabled = validationRule.Disabled,
+                    };
 
                     // won't override docfx custom rules
                     if (!customRules.ContainsKey(oldCode))

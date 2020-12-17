@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "Long constructor parameter list")]
     internal class DocsetBuilder
     {
-        private readonly ErrorBuilder _errors;
+        private readonly ErrorLog _errors;
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly PackageResolver _packageResolver;
@@ -53,21 +53,21 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
-            _sourceMap = new SourceMap(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
-            _input = new Input(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
-            _buildScope = new BuildScope(_config, _input, _buildOptions);
-            _githubAccessor = new GitHubAccessor(_config);
-            _microsoftGraphAccessor = new MicrosoftGraphAccessor(_config);
-            _jsonSchemaLoader = new JsonSchemaLoader(_fileResolver);
-            _metadataProvider = new MetadataProvider(_config, _input, _buildScope, _jsonSchemaLoader);
-            _monikerProvider = new MonikerProvider(_config, _buildScope, _metadataProvider, _fileResolver);
-            _errors = new ErrorLog(errors, _config, _sourceMap, _metadataProvider, () => Ensure(_customRuleProvider));
-            _templateEngine = new TemplateEngine(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
-            _documentProvider = new DocumentProvider(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
-            _contributionProvider = new ContributionProvider(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
-            _redirectionProvider = new RedirectionProvider(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
-            _publishUrlMap = new PublishUrlMap(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
-            _customRuleProvider = new CustomRuleProvider(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
+            _sourceMap = new(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
+            _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
+            _buildScope = new(_config, _input, _buildOptions);
+            _githubAccessor = new(_config);
+            _microsoftGraphAccessor = new(_config);
+            _jsonSchemaLoader = new(_fileResolver);
+            _metadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
+            _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
+            _errors = new(errors, _config, _sourceMap, _metadataProvider, () => Ensure(_customRuleProvider));
+            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
+            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
+            _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
+            _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
+            _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
+            _customRuleProvider = new(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
         }
 
         public static DocsetBuilder? Create(
@@ -117,6 +117,10 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                // TODO: Clear the error before each build round, which has the following two dependencies:
+                // 1. Make all the errorBuilders inside the docsetBuilder stateless.
+                // 2. If there are errors reported from all the Watch{T}, the errors should also be returned as a part of {T}
+                _errors.Clear();
                 JsonSchemaTransformer? jsonSchemaTransformer = null;
                 ContentValidator? contentValidator = null;
 
@@ -124,14 +128,14 @@ namespace Microsoft.Docs.Build
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
 
                 var zonePivotProvider = new ZonePivotProvider(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(contentValidator));
-                contentValidator = new ContentValidator(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, _publishUrlMap);
+                contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, _publishUrlMap);
 
                 var bookmarkValidator = new BookmarkValidator(_errors);
                 var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, _contributionProvider);
                 var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(jsonSchemaTransformer));
                 var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
                 var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, _publishUrlMap);
-                jsonSchemaTransformer = new JsonSchemaTransformer(_documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
+                jsonSchemaTransformer = new(_documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
 
                 var tocParser = new TocParser(_input, markdownEngine);
                 var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, linkResolver, xrefResolver, tocParser, _monikerProvider, dependencyMapBuilder, contentValidator, _config, _errors, _buildScope);

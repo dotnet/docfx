@@ -7,7 +7,7 @@ trigger:
 pr:
 - v3
 variables:
-  dotnetVersion: 3.1.401
+  dotnetVersion: 5.0.100
   runCodesignValidationInjection: false
 
 jobs:
@@ -141,17 +141,6 @@ jobs:
   - publish: ./drop/RegressionTest/bin
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
-
-  # Push to azure devops feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish NuGet Packages
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      publishFeedCredentials: docs-public-packages
-      nugetFeedType: external
-      allowPackageConflicts: true
 
   # Publish binary packages to production
   - task: AzureFileCopy@3

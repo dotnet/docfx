@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public CodeExtension(MarkdownContext context)
         {
             _context = context;
-            _codeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
+            _codeSnippetRenderer = new(_context);
         }
 
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)

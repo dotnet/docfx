@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentHashSet<FilePath> _additionalResources = new ConcurrentHashSet<FilePath>();
+        private readonly ConcurrentHashSet<FilePath> _additionalResources = new();
 
         public LinkResolver(
             Config config,
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
-                    new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
+                    new SourceInfo<string>(href.Value["xref:".Length..], href),
                     referencingFile,
                     inclusionRoot);
 
@@ -218,6 +218,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
+                        System.Console.WriteLine($"Link `{href}` cannot be resolved");
                         return (Errors.Link.FileNotFound(
                             new SourceInfo<string>(path, href)), null, query, fragment, linkType);
                     }
@@ -237,7 +238,7 @@ namespace Microsoft.Docs.Build
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
             {
                 var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, referencingFile);
-                pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath.Substring(2).TrimStart('/', '\\')));
+                pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath[2..].TrimStart('/', '\\')));
             }
             else
             {

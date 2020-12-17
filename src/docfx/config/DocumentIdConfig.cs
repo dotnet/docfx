@@ -9,8 +9,8 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal struct DocumentIdConfig
     {
-        public string? DepotName { get; private set; }
+        public string? DepotName { get; init; }
 
-        public PathString? FolderRelativePathInDocset { get; private set; }
+        public PathString? FolderRelativePathInDocset { get; init; }
     }
 }

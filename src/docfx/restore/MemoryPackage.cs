@@ -13,15 +13,13 @@ namespace Microsoft.Docs.Build
     internal class MemoryPackage : Package
     {
         private readonly PathString _directory;
-
-        private ConcurrentDictionary<PathString, (DateTime lastWriteTime, string content)> _inMemoryFiles
-            = new ConcurrentDictionary<PathString, (DateTime, string)>();
+        private readonly ConcurrentDictionary<PathString, (DateTime lastWriteTime, string content)> _inMemoryFiles = new();
 
         public override PathString BasePath => _directory;
 
         public MemoryPackage(string directory = ".")
         {
-            _directory = new PathString(Path.GetFullPath(directory));
+            _directory = new(Path.GetFullPath(directory));
         }
 
         public void AddOrUpdate(PathString path, string content)

@@ -17,11 +17,10 @@ namespace Microsoft.Docs.Build
     internal class FileResolver
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls
-                          = new ConcurrentDictionary<(string, string), Lazy<string>>();
-
-        private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
+        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
+        private static readonly HttpClient s_httpClient = new(new HttpClientHandler
         {
+            CheckCertificateRevocationList = true,
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         });
 
@@ -185,7 +184,7 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)) ?? ".");
 
                 File.Move(tempFile, filePath, overwrite: true);
 

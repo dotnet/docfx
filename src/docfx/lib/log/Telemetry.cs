@@ -20,12 +20,11 @@ namespace Microsoft.Docs.Build
         // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
         private const int MaxEventPropertyLength = 8192;
         private const int MaxChildrenLength = 5;
-        private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
+        private static readonly TelemetryClient s_telemetryClient = new(TelemetryConfiguration.CreateDefault());
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
-        private static readonly MetricConfiguration s_metricConfiguration =
-            new MetricConfiguration(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
+        private static readonly MetricConfiguration s_metricConfiguration = new(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
         private static readonly Metric s_operationTimeMetric =
             s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
@@ -33,12 +32,14 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                s_metricConfiguration);
 
         private static readonly Metric s_fileLogCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                s_metricConfiguration);
 
         private static readonly Metric s_buildFileTypeCountMetric =
             s_telemetryClient.GetMetric(
@@ -119,7 +120,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void TrackGitHubRateLimit(string remaining)
+        public static void TrackGitHubRateLimit(string? remaining)
         {
             s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId);
         }

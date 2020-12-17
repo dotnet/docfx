@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
         private readonly PublishUrlMap _publishUrlMap;
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> t_status = new(() => new());
 
         public MarkdownEngine(
             Config config,
@@ -62,11 +62,11 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
+            _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
 
             if (!string.IsNullOrEmpty(config.MarkdownValidationRules))
             {
-                _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
+                _validatorProvider = new(
                     new ContentValidationContext(
                         fileResolver.ResolveFilePath(config.MarkdownValidationRules),
                         fileResolver.ResolveFilePath(config.Allowlists),
@@ -319,16 +319,6 @@ namespace Microsoft.Docs.Build
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
-        private string GetLink(string path, MarkdownObject origin)
-        {
-            var status = t_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(
-                new SourceInfo<string>(path, origin.GetSourceInfo()), origin.GetFilePath(), GetRootFilePath());
-            status.Errors.AddIfNotNull(error);
-
-            return link;
-        }
-
         private string GetImageLink(string path, MarkdownObject origin, string? altText)
         {
             if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
@@ -341,19 +331,22 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            _contentValidator.ValidateImageLink(GetRootFilePath(), href, origin, altText, imageIndex);
-            var link = GetLink(href);
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, true, altText, imageIndex);
+            var link = GetLink(href, origin);
             return link;
         }
 
-        private string GetLink(SourceInfo<string> href)
+        private string GetLink(SourceInfo<string> href, MarkdownObject origin)
         {
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, false, null, -1);
             var status = t_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
 
             return link;
         }
+
+        private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {

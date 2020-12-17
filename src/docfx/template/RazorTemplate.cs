@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 {
     internal class RazorTemplate
     {
-        private static readonly Lazy<TestServer> s_server = new Lazy<TestServer>(StartServer);
+        private static readonly Lazy<TestServer> s_server = new(StartServer);
 
         public static async Task<string> Render(string? template, object model)
         {
@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
         {
             public IActionResult Get()
             {
-                var template = (string)HttpContext.Items["template"];
+                var template = HttpContext.Items["template"] as string;
                 var model = HttpContext.Items["model"];
 
                 return View(template, model);

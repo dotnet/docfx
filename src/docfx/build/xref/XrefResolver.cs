@@ -43,24 +43,14 @@ namespace Microsoft.Docs.Build
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
-                    () => new InternalXrefMapBuilder(
-                                config,
-                                errorLog,
-                                documentProvider,
-                                metadataProvider,
-                                monikerProvider,
-                                buildScope,
-                                jsonSchemaTransformer()).Build());
-
-            _externalXrefMap = new Lazy<ExternalXrefMap>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
-
             _jsonSchemaTransformer = jsonSchemaTransformer;
-
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+
+            _internalXrefMap = new(() => new InternalXrefMapBuilder(
+                config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, jsonSchemaTransformer()).Build());
+            _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
@@ -110,7 +100,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+            return (null, resolvedHref, display, xrefSpec.DeclaringFile);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
@@ -227,8 +217,9 @@ namespace Microsoft.Docs.Build
             {
                 if (_externalXrefMap.Value.TryGetValue(xrefSpec.Uid, out var spec))
                 {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
-                        .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
+                    _errorLog.Add(
+                        Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
+                        with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -245,7 +236,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(
                         xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType)
-                        .WithLevel(_config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning));
+                        with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -256,12 +247,12 @@ namespace Microsoft.Docs.Build
             if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
                         && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring("https://review.docs.microsoft.com".Length);
+                return url["https://review.docs.microsoft.com".Length..];
             }
 
             if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring($"https://{hostName}".Length);
+                return url[$"https://{hostName}".Length..];
             }
 
             return url;

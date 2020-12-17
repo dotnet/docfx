@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
     {
         public delegate void TransformHtmlDelegate(ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token);
 
-        private static readonly HashSet<string> s_globalAllowedAttributes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> s_globalAllowedAttributes = new(StringComparer.OrdinalIgnoreCase)
         {
             "name", "id", "class", "itemid", "itemprop", "itemref", "itemscope", "itemtype", "part", "slot", "spellcheck", "title", "role",
         };
@@ -247,19 +247,21 @@ namespace Microsoft.Docs.Build
         public static void TransformLink(
             ref HtmlToken token,
             MarkdownObject? block,
-            Func<SourceInfo<string>, string> transformLink,
+            Func<SourceInfo<string>, MarkdownObject?, string> transformLink,
             Func<SourceInfo<string>, MarkdownObject?, string?, int, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.GetSourceInfo()?.WithOffset(attribute.ValueRange);
+                    var source = new SourceInfo<string>(
+                        HttpUtility.HtmlDecode(attribute.Value.ToString()),
+                        block?.GetSourceInfo()?.WithOffset(attribute.ValueRange));
                     var link = HttpUtility.HtmlEncode(
                         !IsImage(ref token, attribute) || transformImageLink == null
-                            ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
+                            ? transformLink(source, block)
                             : transformImageLink(
-                                new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
+                                source,
                                 block,
                                 token.GetAttributeValueByName("alt"),
                                 token.Range.Start.Index));

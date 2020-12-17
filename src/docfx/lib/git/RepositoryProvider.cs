@@ -12,8 +12,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly ErrorBuilder _errors;
 
-        private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<PathString, GitCommitLoader> _commitLoaders = new ConcurrentDictionary<PathString, GitCommitLoader>();
+        private readonly ConcurrentDictionary<string, Repository?> _repositories = new(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<PathString, GitCommitLoader> _commitLoaders = new();
 
         public Repository? Repository { get; }
 

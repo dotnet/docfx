@@ -45,11 +45,7 @@ repos:
               "include_in_build": true
             }]
         }
-      a/docfx.yml: |
-        http:
-          https://op-build-prod.azurewebsites.net:
-            headers:
-              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
+      a/docfx.yml:
       a/a.md:
       articles/docfx.yml: 
       articles/a.yml: '#YamlMime:TestData'
@@ -72,7 +68,7 @@ outputs:
   articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
   .errors.log: |
-    {"message_severity":"warning","code":"docset-not-provisioned"}
+    {"message_severity":"error","code":"docset-not-provisioned"}
 ---
 # Specify editLink repo and branch in .openpublishing.publish.config.json
 repos:

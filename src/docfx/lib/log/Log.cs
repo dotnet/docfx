@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
     internal static class Log
     {
-        private static readonly AsyncLocal<bool> t_verbose = new AsyncLocal<bool>();
+        private static readonly AsyncLocal<bool> t_verbose = new();
 
         public static bool Verbose => TestQuirks.Verbose ?? t_verbose.Value;
 

@@ -37,18 +37,17 @@ namespace Microsoft.Docs.Build
 
         public void GenerateServicePageFromTopLevelTOC(TocNode node, List<FilePath> results, string directoryName = "")
         {
-            if (string.IsNullOrEmpty(node.Name))
+            var name = node.Name.Value;
+            if (string.IsNullOrEmpty(name))
             {
                 return;
             }
 
-            var filename = Regex.Replace(node.Name, @"\s+", "");
-
+            var filename = name.Replace(" ", "");
             var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
             var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
-            var nodeHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, node.Href.Value ?? ""));
 
-            if (string.IsNullOrEmpty(node.Href.Value) || !File.Exists(nodeHrefFullPath))
+            if (string.IsNullOrEmpty(node.Href.Value))
             {
                 TryToGenerateServicePageForItem(node, directoryName, filename, referenceTOCFullPath, results);
             }
@@ -136,11 +135,11 @@ namespace Microsoft.Docs.Build
                             // generate href for it based on service-page path
                             if (pageType == LandingPageType.Root)
                             {
-                                childHref = $"./{Regex.Replace(childName, @"\s+", "")}.yml";
+                                childHref = $"./{childName?.Replace(" ", "")}.yml";
                             }
                             else
                             {
-                                childHref = $"{Regex.Replace(name, @"\s+", "")}/{Regex.Replace(childName, @"\s+", "")}.yml";
+                                childHref = $"{name.Value?.Replace(" ", "")}/{childName?.Replace(" ", "")}.yml";
                             }
                         }
                         child = new ServicePageItem(childName, childHref, null);
@@ -176,7 +175,16 @@ namespace Microsoft.Docs.Build
                 }
 
                 results.Add(servicePagePath);
-                var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
+
+                var servicePageToken = new ServicePageModel
+                {
+                    Name = name,
+                    FullName = fullName,
+                    Children = children,
+                    Langs = langs,
+                    PageType = pageType,
+                };
+
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
             }
         }

@@ -100,11 +100,6 @@ outputs:
   a/api/toc.json:
   a/results/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service", "href": "../api/doc"}], "langs": ["csharp"], "pageType": "root"}
-  a/results/appservice.json: |
-    {
-      "name": "App Service", "fullName": "App Service", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
-      "langs": ["csharp"], "pageType": "service"
-    }
   a/results/appservice/client/client.json: |
     {"name":"Client","fullName":"Client","langs":["csharp"],"pageType":"service"}
 ---
@@ -571,3 +566,57 @@ outputs:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
   a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
+---
+# do not generate service pages when a md file is specified
+repos:
+  https://github.com/ops/service-page-fix-publish-url-conflict:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/test"
+              }]
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/Client.md: |
+        # hello world
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client
+            href: ~/test/Client.md
+            landingPageType: Service
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/test/client.json: |
+    {"title": "hello world"}
+  a/api/bot/toc.json:
+  a/test/index.json:

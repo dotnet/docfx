@@ -106,11 +106,17 @@ dotnet_diagnostic.ca1303.severity = none
 # CA1310: Specify StringComparison for correctness
 dotnet_diagnostic.ca1310.severity = none
 
+# CA1508: Avoid dead conditional code
+dotnet_diagnostic.ca1508.severity = none
+
 # CA1724: Type names should not match namespaces
 dotnet_diagnostic.ca1724.severity = none
 
 # CA1806DoNotIgnoreMethodResults
 dotnet_diagnostic.ca1806.severity = none
+
+# CA1801: Review unused parameters
+dotnet_diagnostic.ca1801.severity = none
 
 # CA1812: Avoid uninstantiated internal classes
 dotnet_diagnostic.ca1812.severity = none
@@ -135,6 +141,12 @@ dotnet_diagnostic.ca5350.severity = none
 
 # CA5351:Do Not Use Broken Cryptographic Algorithms
 dotnet_diagnostic.ca5351.severity = none
+
+# CA5394: Do not use insecure randomness
+dotnet_diagnostic.ca5394.severity = none
+
+# CA5395: Do not use insecure randomness
+dotnet_diagnostic.ca5395.severity = none
 
 # SA0001XmlCommentAnalysisDisabled
 dotnet_diagnostic.sa0001.severity = none

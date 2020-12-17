@@ -15,12 +15,12 @@ namespace Microsoft.Docs.Build
         /// Gets the docset config file glob pattern.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Docsets { get; private set; } = new[] { "**" };
+        public string[] Docsets { get; init; } = new[] { "**" };
 
         /// <summary>
         /// Gets the docset config file glob patterns.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Exclude { get; private set; } = Array.Empty<string>();
+        public string[] Exclude { get; init; } = Array.Empty<string>();
     }
 }

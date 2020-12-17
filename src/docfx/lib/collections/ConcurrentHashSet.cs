@@ -10,12 +10,11 @@ namespace System.Collections.Concurrent
     {
         private readonly ConcurrentDictionary<T, object?> _dictionary;
 
-        public ConcurrentHashSet() => _dictionary = new ConcurrentDictionary<T, object?>();
+        public ConcurrentHashSet() => _dictionary = new();
 
-        public ConcurrentHashSet(IEnumerable<T> source)
-            => _dictionary = new ConcurrentDictionary<T, object?>(source.Select(item => new KeyValuePair<T, object?>(item, default)));
+        public ConcurrentHashSet(IEnumerable<T> source) => _dictionary = new(source.Select(item => new KeyValuePair<T, object?>(item, default)));
 
-        public ConcurrentHashSet(IEqualityComparer<T> comparer) => _dictionary = new ConcurrentDictionary<T, object?>(comparer);
+        public ConcurrentHashSet(IEqualityComparer<T> comparer) => _dictionary = new(comparer);
 
         public bool TryAdd(T value) => _dictionary.TryAdd(value, null);
 

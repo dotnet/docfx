@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_cacheFilePath)));
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_cacheFilePath)) ?? ".");
 
             ProcessUtility.WriteFile(_cacheFilePath, stream =>
             {

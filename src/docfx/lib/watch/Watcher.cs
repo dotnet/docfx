@@ -9,17 +9,12 @@ namespace Microsoft.Docs.Build
 {
     public static class Watcher
     {
-        private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new AsyncLocal<ImmutableStack<IFunction>>();
-        private static readonly AsyncLocal<int> t_activityId = new AsyncLocal<int>();
+        private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new();
+        private static readonly AsyncLocal<int> t_activityId = new();
 
-        public static Watch<T> Create<T>(Func<T> valueFactory)
+        public static T Read<T>(Func<T> valueFactory)
         {
-            return new Watch<T>(valueFactory);
-        }
-
-        public static T Watch<T>(Func<T> valueFactory)
-        {
-            var function = new LeafFunction<T>(valueFactory);
+            var function = new ReadFunction<T>(valueFactory);
             BeginFunctionScope(function);
 
             try
@@ -35,9 +30,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static T Watch<T, TChangeToken>(Func<T> valueFactory, Func<TChangeToken> changeTokenFactory)
+        public static T Read<T, TChangeToken>(Func<T> valueFactory, Func<TChangeToken> changeTokenFactory)
         {
-            var function = new LeafFunction<TChangeToken>(changeTokenFactory);
+            var function = new ReadFunction<TChangeToken>(changeTokenFactory);
             BeginFunctionScope(function);
 
             try
@@ -47,6 +42,21 @@ namespace Microsoft.Docs.Build
 
                 function.ChangeToken = changeToken;
                 return result;
+            }
+            finally
+            {
+                EndFunctionScope();
+            }
+        }
+
+        public static void Write(Action action)
+        {
+            var function = new WriteFunction(action);
+            BeginFunctionScope(function);
+
+            try
+            {
+                action();
             }
             finally
             {

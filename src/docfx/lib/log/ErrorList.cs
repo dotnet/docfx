@@ -10,11 +10,16 @@ namespace Microsoft.Docs.Build
 {
     internal class ErrorList : ErrorBuilder, IReadOnlyList<Error>
     {
-        private readonly List<Error> _items = new List<Error>();
+        private readonly List<Error> _items = new();
 
         public Error this[int index] => _items[index];
 
         public int Count => _items.Count;
+
+        public override void Clear()
+        {
+            _items.Clear();
+        }
 
         public override bool HasError => _items.Any(item => item.Level == ErrorLevel.Error);
 

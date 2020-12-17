@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public PublicTemplatePackage(string baseUrl, FileResolver fileResolver)
         {
-            _baseUrl = new Uri($"{baseUrl.TrimEnd('/')}/");
+            _baseUrl = new($"{baseUrl.TrimEnd('/')}/");
             _fileResolver = fileResolver;
         }
 

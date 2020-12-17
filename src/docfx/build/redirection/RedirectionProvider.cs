@@ -43,8 +43,8 @@ namespace Microsoft.Docs.Build
             _monikerProvider = monikerProvider;
             _publishUrlMap = publishUrlMap;
 
-            _redirects = Watcher.Create(LoadRedirections);
-            _history = Watcher.Create(LoadHistory);
+            _redirects = new(LoadRedirections);
+            _history = new(LoadHistory);
         }
 
         public bool TryGetValue(PathString file, [NotNullWhen(true)] out FilePath? actualPath)
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
                         _errors.Add(Errors.Redirection.RedirectionPathSyntaxError(item.RedirectUrl));
                         continue;
                     }
-                    var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value.Substring(1);
+                    var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value[1..];
                     if (_buildOptions.Repository != null)
                     {
                         sourcePath = Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.Repository.Path, sourcePathRelativeToRepoRoot));

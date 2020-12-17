@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal struct InterProcessMutex : IDisposable
     {
-        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
+        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new();
 
         private Mutex _mutex;
 
@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var stack = t_mutexRecursionStack.Value ??= ImmutableStack<string>.Empty;
             if (stack.Contains(mutexName))
             {
-                throw new ApplicationException($"Nested mutex detected, mutex name: {mutexName}");
+                throw new InvalidOperationException($"Nested mutex detected, mutex name: {mutexName}");
             }
             t_mutexRecursionStack.Value = stack.Push(mutexName);
 

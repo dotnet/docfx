@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 
         public SubPackage(Package package, string directory = ".")
         {
-            _directory = new PathString(directory);
+            _directory = new(directory);
             _package = package;
         }
 

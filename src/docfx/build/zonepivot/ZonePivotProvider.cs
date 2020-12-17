@@ -21,9 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly PublishUrlMap _publishUrlMap;
         private readonly Func<ContentValidator> _contentValidator;
 
-        private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new ConcurrentDictionary<FilePath, FilePath?>();
-        private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?> _zonePivotDefinitionModelCache =
-            new ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?>();
+        private readonly ConcurrentDictionary<FilePath, FilePath?> _zonePivotDefinitionFileCache = new();
+        private readonly ConcurrentDictionary<FilePath, ZonePivotGroupDefinition?> _zonePivotDefinitionModelCache = new();
 
         public ZonePivotProvider(
             ErrorBuilder errors,
@@ -136,7 +135,7 @@ namespace Microsoft.Docs.Build
         {
             return "/" + PathUtility.NormalizeFile(UrlUtility.Combine(
 #pragma warning disable CS0618 // Type or member is obsolete
-                _documentProvider.GetDocsSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(),
+                _documentProvider.GetDocsSiteUrl(file).Split('/', StringSplitOptions.RemoveEmptyEntries).First(),
 #pragma warning restore CS0618 // Type or member is obsolete
                 Path.ChangeExtension(definitionFilename ?? DefaultDefinitionFile, "json")));
         }

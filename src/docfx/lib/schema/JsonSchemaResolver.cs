@@ -13,16 +13,16 @@ namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaResolver
     {
-        private static readonly ThreadLocal<JsonSchemaResolver?> t_current = new ThreadLocal<JsonSchemaResolver?>();
+        private static readonly ThreadLocal<JsonSchemaResolver?> t_current = new();
 
         private readonly JToken _schema;
-        private readonly Uri _baseUrl = new Uri("https://me");
-        private readonly Dictionary<string, JToken> _schemasById = new Dictionary<string, JToken>();
+        private readonly Uri _baseUrl = new("https://me");
+        private readonly Dictionary<string, JToken> _schemasById = new();
         private readonly Func<Uri, Uri, JsonSchema?> _resolveExternalSchema;
 
-        private readonly ConcurrentDictionary<string, JsonSchema?> _references = new ConcurrentDictionary<string, JsonSchema?>();
+        private readonly ConcurrentDictionary<string, JsonSchema?> _references = new();
 
-        public static readonly JsonSchemaResolver Null = new JsonSchemaResolver(new JObject(), (a, b) => null);
+        public static readonly JsonSchemaResolver Null = new(new JObject(), (a, b) => null);
 
         internal static JsonSchemaResolver Current => t_current.Value ?? throw new InvalidOperationException("Use JsonSchemaLoader to load JSON schema");
 
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
             if (schema is JObject obj && obj.TryGetValue<JValue>("$id", out var id) && id.Value is string schemaId)
             {
-                _baseUrl = new Uri(_baseUrl, schemaId);
+                _baseUrl = new(_baseUrl, schemaId);
             }
 
             ExpandSchemaIdAndRef(_baseUrl, _schema, _schemasById);

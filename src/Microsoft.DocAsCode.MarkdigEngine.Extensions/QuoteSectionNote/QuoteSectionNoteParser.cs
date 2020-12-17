@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     public class QuoteSectionNoteParser : BlockParser
     {
-        private readonly List<string> _noteTypes = new List<string> { "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
+        private readonly List<string> _noteTypes = new() { "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
         private readonly MarkdownContext _context;
 
         public QuoteSectionNoteParser(MarkdownContext context)
@@ -160,17 +160,17 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (IsNoteType(infoString))
             {
                 block.QuoteType = QuoteSectionNoteType.DFMNote;
-                block.NoteTypeString = infoString.Substring(2, infoString.Length - 3);
+                block.NoteTypeString = infoString[2..^1];
                 return true;
             }
 
             if (infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase))
             {
                 block.QuoteType = QuoteSectionNoteType.DFMSection;
-                var attribute = infoString.Substring(5, infoString.Length - 6).Trim();
+                var attribute = infoString[5..^1].Trim();
                 if (attribute.Length >= 2 && attribute.First() == '`' && attribute.Last() == '`')
                 {
-                    block.SectionAttributeString = attribute.Substring(1, attribute.Length - 2).Trim();
+                    block.SectionAttributeString = attribute[1..^1].Trim();
                 }
                 if (attribute.Length >= 1 && attribute.First() != '`' && attribute.Last() != '`')
                 {
@@ -181,7 +181,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase))
             {
-                var link = infoString.Substring(7, infoString.Length - 8);
+                var link = infoString[7..^1];
                 if (link.StartsWith(" http://") || link.StartsWith(" https://"))
                 {
                     block.QuoteType = QuoteSectionNoteType.DFMVideo;
