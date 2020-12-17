@@ -19,18 +19,17 @@ namespace Microsoft.Docs.Build
         private readonly PathString _workingDirectory;
 
         public LanguageServerBuilder(
-            string workingDirectory,
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage)
         {
             options.DryRun = true;
 
-            _workingDirectory = new(workingDirectory);
+            _workingDirectory = languageServerPackage.BasePath;
             _diagnosticPublisher = diagnosticPublisher;
             _errorList = new();
             _languageServerPackage = languageServerPackage;
-            _builder = new(_errorList, workingDirectory, options, _languageServerPackage);
+            _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
             _buildSemaphore = new(0);
             _ = StartAsync();
         }
