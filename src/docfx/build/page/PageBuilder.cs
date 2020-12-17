@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
         private readonly SearchIndexBuilder _searchIndexBuilder;
         private readonly RedirectionProvider _redirectionProvider;
         private readonly JsonSchemaTransformer _jsonSchemaTransformer;
+        private readonly LearnHierarchyBuilder _learnHierarchyBuilder;
 
         public PageBuilder(
             Config config,
@@ -52,7 +53,8 @@ namespace Microsoft.Docs.Build
             MarkdownEngine markdownEngine,
             SearchIndexBuilder searchIndexBuilder,
             RedirectionProvider redirectionProvider,
-            JsonSchemaTransformer jsonSchemaTransformer)
+            JsonSchemaTransformer jsonSchemaTransformer,
+            LearnHierarchyBuilder learnHierarchyBuilder)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -73,6 +75,7 @@ namespace Microsoft.Docs.Build
             _searchIndexBuilder = searchIndexBuilder;
             _redirectionProvider = redirectionProvider;
             _jsonSchemaTransformer = jsonSchemaTransformer;
+            _learnHierarchyBuilder = learnHierarchyBuilder;
         }
 
         public void Build(ErrorBuilder errors, FilePath file)
@@ -286,15 +289,38 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(pageModel, new JObject { ["metadata"] = userMetadata.RawJObject });
             }
 
+            var mime = _documentProvider.GetMime(file);
+
             // Validate and transform model using JSON schema
             var content = _jsonSchemaTransformer.TransformContent(errors, file);
             if (!(content is JObject transformedContent))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();
             }
+            else
+            {
+                switch (mime.Value?.ToLowerInvariant())
+                {
+                    case "learningpath":
+                        _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
+                        break;
+
+                    case "module":
+                        _learnHierarchyBuilder.AddModule(JsonUtility.ToObject<Module>(errors, transformedContent));
+                        break;
+
+                    case "moduleunit":
+                        _learnHierarchyBuilder.AddModuleUnit(JsonUtility.ToObject<ModuleUnit>(errors, transformedContent));
+                        break;
+
+                    case "achievements":
+                        _learnHierarchyBuilder.AddAchievements(JsonUtility.ToObject<AchievementArray>(errors, transformedContent));
+                        break;
+                }
+            }
+
             JsonUtility.Merge(pageModel, transformedContent);
 
-            var mime = _documentProvider.GetMime(file);
             if (TemplateEngine.IsLandingData(mime))
             {
                 var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);

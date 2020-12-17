@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
 
         private static JObject? LoadConfig(ErrorBuilder errors, Package package, PathString directory = default)
         {
-            var config = package.LoadYamlOrJson<JObject>(errors, "docfx", directory);
+            var config = package.TryLoadYamlOrJson<JObject>(errors, "docfx", directory);
             if (config is null)
             {
                 return null;
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            var config = package.LoadYamlOrJson<DocsetsConfig>(errors, "docsets");
+            var config = package.TryLoadYamlOrJson<DocsetsConfig>(errors, "docsets");
             if (config != null)
             {
                 return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
                 from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
                 let key = entry.Key.ToString()
                 where key.StartsWith("DOCFX_")
-                let configKey = StringUtility.ToCamelCase('_', key.Substring("DOCFX_".Length))
+                let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
                 let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
                 where values != null
                 let configValue = values.Length == 1 ? (object)values[0] : values

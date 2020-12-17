@@ -1,0 +1,117 @@
+# Hierarchy validation - learn, module not sandbox mapping
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    sandboxEnabledModuleList: mapping.json
+  rules.json: |
+    {
+      "hierarchy": {
+        "rules": [
+          {
+            "type": "SandboxNotMapping",
+            "message": "Module '{0}' is not mapped to the Azure sandbox. To use the sandbox in its child unit, you must first submit an onboarding request.",
+            "code": "sandbox-not-mapping",
+            "severity": "Error",
+            "exclusions": [
+                "includes",
+                "landingpage",
+                "hubpage",
+                "toc",
+                "redirection",
+                "inclusion",
+                "conceptual"
+            ]
+          }
+        ]
+      }
+    }
+  mapping.json: |
+    ["module1", "module3"]
+  path.yml: |
+    ### YamlMime:LearningPath
+    uid: path
+    modules: ['module1', 'module2']
+    achievement: achieve1
+  module1.yml: |
+    ### YamlMime:Module
+    uid: module1
+    units: ['unit1a', 'unit1b']
+    badge: 
+      uid: badge1
+  module2.yml: |
+    ### YamlMime:Module
+    uid: module2
+    units: ['unit2']
+  unit1a.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit1a
+    azureSandbox: true
+  unit1b.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit1b
+  unit2.yml: |
+    ### YamlMime:ModuleUnit
+    uid: unit2
+    azureSandbox: true
+  achievements.yml: |
+    ### YamlMime:Achievements
+    achievements:
+    - uid: achieve1
+      type: trophy
+  _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "modules": {"items": {"contentType": "xref"}},
+        "trophy": {
+          "properties": {
+            "uid": {"contentType": "uid"}
+          }
+        },
+        "achievement": {"contentType": "xref"}
+      }
+    }
+  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Module.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "units": {"items": {"contentType": "xref" }},
+        "badge": {
+          "properties": {
+            "uid": {"contentType": "uid"}
+          }
+        },
+        "achievement": {"contentType": "xref"}
+      }
+    }
+  _themes/ContentTemplate/Module.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Achievements.schema.json: |
+    {
+      "renderType": "component",
+      "properties": {
+        "achievements": {
+          "schemaTypeProperty": "type",
+          "items": { 
+            "properties": {"uid" : {"contentType": "uid"}}
+          }
+        }
+      }
+    }
+outputs:
+  achievements.json:
+  path.json:
+  module1.json:
+  module2.json:
+  unit1a.json:
+  unit1b.json:
+  unit2.json:
+  .errors.log: |
+    {"message_severity":"error","code":"sandbox-not-mapping","message":"Module 'module2' is not mapped to the Azure sandbox. To use the sandbox in its child unit, you must first submit an onboarding request.","line":0}

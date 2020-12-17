@@ -23,13 +23,13 @@ namespace Microsoft.Docs.Build
         private readonly JavaScriptContext _context = CreateContext();
         private readonly JavaScriptValue _global;
         private readonly JavaScriptNativeFunction _requireFunction;
-        private readonly Stack<string> _dirnames = new Stack<string>();
-        private readonly Dictionary<PathString, JavaScriptValue> _modules = new Dictionary<PathString, JavaScriptValue>();
+        private readonly Stack<string> _dirnames = new();
+        private readonly Dictionary<PathString, JavaScriptValue> _modules = new();
 
         public ChakraCoreJsEngine(Package package, JObject? global = null)
         {
             _package = package;
-            _requireFunction = new JavaScriptNativeFunction(Require);
+            _requireFunction = new(Require);
 
             if (global != null)
             {

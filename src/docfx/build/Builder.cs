@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             _options = options;
             _errors = errors;
             _package = package;
-            _docsets = Watcher.Create(LoadDocsets);
+            _docsets = new(LoadDocsets);
         }
 
         public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)

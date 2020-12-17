@@ -209,7 +209,7 @@ namespace Microsoft.Docs.Build
         [StructLayout(LayoutKind.Sequential)]
         public struct git_time
         {
-            private static readonly DateTimeOffset s_epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            private static readonly DateTimeOffset s_epoch = new(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
             public long time;
             public int offset;

@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly Config s_config = JsonUtility.DeserializeData<Config>($@"{{'githubToken': '{s_token}'}}".Replace('\'', '\"'), null);
-        private static readonly GitHubAccessor s_github = new GitHubAccessor(s_config);
+        private static readonly GitHubAccessor s_github = new(s_config);
 
         [Theory]
         [InlineData("OsmondJiang", 19990166, "Osmond Jiang", "OsmondJiang")]
@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         [InlineData("N1o2t3E4x5i6s7t8N9a0m9e", null, null, null)]
         public static void GetUserByLogin(string login, int? expectedId, string expectedName, string expectedLogin)
         {
-            var (error, user) = s_github.GetUserByLogin(new SourceInfo<string>(login));
+            var (error, user) = s_github.GetUserByLogin(new(login));
 
             // skip check if the machine exceeds the GitHub API rate limit
             if (!string.IsNullOrEmpty(s_token))

@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
         private const string BuildValidationRulesApi = "https://ops/buildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
+        private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
@@ -30,7 +31,7 @@ namespace Microsoft.Docs.Build
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
         private readonly OpsAccessor _opsAccessor;
 
-        private static readonly ConcurrentDictionary<string, Lazy<Task<string>>> s_docsetInfoCache = new ConcurrentDictionary<string, Lazy<Task<string>>>();
+        private static readonly ConcurrentDictionary<string, Lazy<Task<string>>> s_docsetInfoCache = new();
 
         public OpsConfigAdapter(OpsAccessor opsAccessor)
         {
@@ -44,6 +45,7 @@ namespace Microsoft.Docs.Build
                 (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
                 (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
+                (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetRegressionAllAllowlists()),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
                 (RegressionAllBuildRulesApi, _ => _opsAccessor.GetRegressionAllBuildRules()),
@@ -83,7 +85,7 @@ namespace Microsoft.Docs.Build
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
             if (docset is null)
             {
-                throw Errors.Config.DocsetNotProvisioned(name).ToException(isError: false);
+                throw Errors.Config.DocsetNotProvisioned(name).ToException();
             }
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
@@ -117,6 +119,7 @@ namespace Microsoft.Docs.Build
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
+                sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
             });
         }

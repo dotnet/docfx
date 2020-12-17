@@ -23,23 +23,17 @@ namespace Microsoft.Docs.Build
         private readonly BuildOptions _buildOptions;
         private readonly JsonSchemaLoader _jsonSchemaLoader;
 
-        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas
-                   = new ConcurrentDictionary<string, JsonSchemaValidator?>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas = new(StringComparer.OrdinalIgnoreCase);
 
-        private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "Architecture",
-                "TSType",
-                "TSEnum",
-            };
+        private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Architecture", "TSType", "TSEnum",
+        };
 
-        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "Architecture",
-                "Hub",
-                "Landing",
-                "LandingData",
-            };
+        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Architecture", "Hub", "Landing", "LandingData",
+        };
 
         public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
         {
@@ -51,20 +45,19 @@ namespace Microsoft.Docs.Build
             var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
-                template = new PackagePath("_themes");
+                template = new("_themes");
                 templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExisted;
             }
 
             _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
-            _templateDefinition = new Lazy<TemplateDefinition>(() =>
-                _package.TryReadYamlOrJson<TemplateDefinition>(errors, "template") ?? new TemplateDefinition());
+            _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
 
             _global = LoadGlobalTokens(errors);
 
-            _liquid = new LiquidTemplate(_package, config.TemplateBasePath, _global);
-            _js = new ThreadLocal<JavaScriptEngine>(() => JavaScriptEngine.Create(_package, _global));
-            _mustacheTemplate = new MustacheTemplate(_package, "ContentTemplate", _global);
+            _liquid = new(_package, config.TemplateBasePath, _global);
+            _js = new(() => JavaScriptEngine.Create(_package, _global));
+            _mustacheTemplate = new(_package, "ContentTemplate", _global);
         }
 
         public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
@@ -214,8 +207,8 @@ namespace Microsoft.Docs.Build
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
         {
-            var defaultTokens = _package.TryReadYamlOrJson<JObject>(errors, "ContentTemplate/token");
-            var localeTokens = _package.TryReadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            var defaultTokens = _package.TryLoadYamlOrJson<JObject>(errors, "ContentTemplate/token");
+            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
             if (defaultTokens == null)
             {
                 return localeTokens ?? new JObject();

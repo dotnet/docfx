@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             return value.Length == 0
                         ? value
-                        : value.First().ToString().ToUpperInvariant() + value.Substring(1).ToLowerInvariant();
+                        : value.First().ToString().ToUpperInvariant() + value[1..].ToLowerInvariant();
         }
 
         public static string Join<T>(IEnumerable<T> source, int take = 5)

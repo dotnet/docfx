@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
         private readonly PublishUrlMap _publishUrlMap;
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> t_status = new(() => new());
 
         public MarkdownEngine(
             Config config,
@@ -62,11 +62,11 @@ namespace Microsoft.Docs.Build
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
 
-            _markdownContext = new MarkdownContext(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
+            _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
 
             if (!string.IsNullOrEmpty(config.MarkdownValidationRules))
             {
-                _validatorProvider = new OnlineServiceMarkdownValidatorProvider(
+                _validatorProvider = new(
                     new ContentValidationContext(
                         fileResolver.ResolveFilePath(config.MarkdownValidationRules),
                         fileResolver.ResolveFilePath(config.Allowlists),

@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private const int MaxRemoveDeduplicationLogCount = 300;
 
-        private readonly HashSet<Error> _errors = new HashSet<Error>();
+        private readonly HashSet<Error> _errors = new();
 
         private bool _exceedMax;
 

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Microsoft.Docs.Build
@@ -11,10 +10,9 @@ namespace Microsoft.Docs.Build
     {
         private readonly Func<T> _valueFactory;
 
-        [MaybeNull]
-        private T _value;
+        private T? _value;
 
-        private volatile ContainerFunction? _function;
+        private volatile WatchFunction? _function;
         private object? _syncLock;
 
         public Watch(Func<T> valueFactory) => _valueFactory = valueFactory;
@@ -31,10 +29,11 @@ namespace Microsoft.Docs.Build
                 if (function != null && !function.HasChanged())
                 {
                     Watcher.AttachToParent(function);
+                    function.Replay();
                     return _value!;
                 }
 
-                function = new ContainerFunction();
+                function = new WatchFunction();
 
                 Watcher.BeginFunctionScope(function);
 

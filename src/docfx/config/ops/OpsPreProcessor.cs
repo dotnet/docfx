@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsPreProcessor
     {
-        private static readonly object s_lock = new object();
+        private static readonly object s_lock = new();
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
                 var file = item.File is null
                     ? null
                     : item.File.StartsWith("_repo.en-us/") || item.File.StartsWith("_repo.en-us\\")
-                        ? FilePath.Fallback(new PathString(item.File.Substring("_repo.en-us/".Length)))
+                        ? FilePath.Fallback(new PathString(item.File["_repo.en-us/".Length..]))
                         : FilePath.Content(new PathString(item.File));
 
                 var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);

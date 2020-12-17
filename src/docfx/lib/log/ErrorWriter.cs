@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ErrorWriter : ErrorBuilder, IDisposable
     {
-        private readonly object _outputLock = new object();
+        private readonly object _outputLock = new();
         private readonly Lazy<TextWriter> _output;
 
         private int _errorCount;
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         public ErrorWriter(string? outputPath = null)
         {
-            _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
+            _output = new(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
         public override void Add(Error error)

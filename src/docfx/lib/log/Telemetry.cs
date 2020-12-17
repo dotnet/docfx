@@ -20,12 +20,11 @@ namespace Microsoft.Docs.Build
         // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
         private const int MaxEventPropertyLength = 8192;
         private const int MaxChildrenLength = 5;
-        private static readonly TelemetryClient s_telemetryClient = new TelemetryClient(TelemetryConfiguration.CreateDefault());
+        private static readonly TelemetryClient s_telemetryClient = new(TelemetryConfiguration.CreateDefault());
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
-        private static readonly MetricConfiguration s_metricConfiguration =
-            new MetricConfiguration(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
+        private static readonly MetricConfiguration s_metricConfiguration = new(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
         private static readonly Metric s_operationTimeMetric =
             s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);

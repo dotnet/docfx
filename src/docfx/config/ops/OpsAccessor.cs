@@ -27,28 +27,30 @@ namespace Microsoft.Docs.Build
         private const string TaxonomyServicePPEPath = "https://taxonomyserviceppe.azurefd.net/taxonomies/simplified?" +
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
 
+        private const string SandboxEnabledModuleListPath = "https://docs.microsoft.com/api/resources/sandbox/verify";
+
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         // TODO: use Azure front door endpoint when it is stable
-        private static readonly string DocsProdServiceEndpoint =
+        private static readonly string s_docsProdServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
 
-        private static readonly string DocsPPEServiceEndpoint =
+        private static readonly string s_docsPPEServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
 
-        private static readonly string DocsInternalServiceEndpoint =
+        private static readonly string s_docsInternalServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
 
-        private static readonly string DocsPerfServiceEndpoint =
+        private static readonly string s_docsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
-        private static readonly SecretClient s_secretClient = new SecretClient(new Uri("https://docfx.vault.azure.net"), new DefaultAzureCredential());
-        private static readonly Lazy<Task<string>> s_opsTokenProd = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenProd"));
-        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new Lazy<Task<string>>(() => GetSecret("OpsBuildTokenSandbox"));
+        private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
+        private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
+        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorBuilder _errors;
-        private readonly HttpClient _http = new HttpClient();
+        private readonly HttpClient _http = new();
 
         public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
         {
@@ -89,6 +91,11 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetAllowlists()
         {
             return await FetchTaxonomies();
+        }
+
+        public async Task<string> GetSandboxEnabledModuleList()
+        {
+            return await FetchGetSandboxEnabledModuleList();
         }
 
         public async Task<string> GetRegressionAllAllowlists()
@@ -255,6 +262,39 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private async Task<string> FetchGetSandboxEnabledModuleList()
+        {
+            try
+            {
+                var url = SandboxEnabledModuleListPath;
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
+                {
+                    using var response = await HttpPolicyExtensions
+                       .HandleTransientHttpError()
+                       .Or<OperationCanceledException>()
+                       .Or<IOException>()
+                       .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                       .ExecuteAsync(async () =>
+                       {
+                           using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                           request.Headers.TryAddWithoutValidation("User-Agent", "Docfx v3");
+                           var response = await _http.SendAsync(request);
+                           return response;
+                       });
+
+                    return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Getting taxonomies failure should not block build proceeding,
+                // catch and log the exception without rethrow.
+                Log.Write(ex);
+                _errors.Add(Errors.System.ValidationIncomplete());
+                return "{}";
+            }
+        }
+
         private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, DocsEnvironment? environment = null)
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
@@ -274,10 +314,10 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => DocsProdServiceEndpoint,
-                DocsEnvironment.PPE => DocsPPEServiceEndpoint,
-                DocsEnvironment.Internal => DocsInternalServiceEndpoint,
-                DocsEnvironment.Perf => DocsPerfServiceEndpoint,
+                DocsEnvironment.Prod => s_docsProdServiceEndpoint,
+                DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
+                DocsEnvironment.Internal => s_docsInternalServiceEndpoint,
+                DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
         }

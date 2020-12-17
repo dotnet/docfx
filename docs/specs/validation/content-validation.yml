@@ -136,3 +136,35 @@ outputs:
   file1.json:
   a/b/c/file.json:
 ---
+# support new `post` page type
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "text": {
+        "rules": [
+          {
+            "type": "SensitiveLanguage",
+            "message": "Term '{0}' is sensitive and should not be used in content or code.",
+            "code": "sensitive-language",
+            "severity": "SUGGESTION",
+            "disallowed": ["master", "blacklist", "whitelist"],
+            "exclusions": ["includes"]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    ---
+    title: 10 Reasons to Give Your Startup the Microsoft Ventures Accelerator Advantage
+    ms.date: 9/28/2018
+    ms.author: startupsblogadmin
+    display-author: Microsoft Startups
+    layout: Post
+    ---
+    There is master in the content, this will error
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":8,"end_line":8,"column":1,"end_column":1}
+  file1.json:

@@ -6,12 +6,20 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContainerFunction : IFunction
+    internal class WatchFunction : IFunction
     {
-        private readonly List<IFunction> _children = new List<IFunction>();
+        private const int MaxSerialProcessingCount = 10;
 
-        private volatile int _activityId = Watcher.GetActivityId();
+        private readonly HashSet<IFunction> _children = new();
+
         private volatile bool _hasChanged;
+        private volatile int _hasChangedActivityId;
+        private volatile int _replayActivityId;
+
+        public WatchFunction()
+        {
+            _hasChangedActivityId = _replayActivityId = Watcher.GetActivityId();
+        }
 
         public bool HasChildren => _children.Count > 0;
 
@@ -25,21 +33,33 @@ namespace Microsoft.Docs.Build
 
         public bool HasChanged()
         {
-            var currentActivityId = Watcher.GetActivityId();
-            if (currentActivityId == _activityId)
+            var activityId = Watcher.GetActivityId();
+            if (activityId == _hasChangedActivityId)
             {
                 return _hasChanged;
             }
 
-            _activityId = currentActivityId;
+            _hasChangedActivityId = activityId;
             return _hasChanged = HasChangedCore();
+        }
+
+        public void Replay()
+        {
+            var activityId = Watcher.GetActivityId();
+            if (activityId == _replayActivityId)
+            {
+                return;
+            }
+
+            _replayActivityId = activityId;
+            ReplayCore();
         }
 
         private bool HasChangedCore()
         {
             lock (_children)
             {
-                if (_children.Count < 10)
+                if (_children.Count < MaxSerialProcessingCount)
                 {
                     foreach (var child in _children)
                     {
@@ -62,6 +82,24 @@ namespace Microsoft.Docs.Build
                         }
                     });
                     return result;
+                }
+            }
+        }
+
+        private void ReplayCore()
+        {
+            lock (_children)
+            {
+                if (_children.Count < MaxSerialProcessingCount)
+                {
+                    foreach (var child in _children)
+                    {
+                        child.Replay();
+                    }
+                }
+                else
+                {
+                    Parallel.ForEach(_children, child => child.Replay());
                 }
             }
         }

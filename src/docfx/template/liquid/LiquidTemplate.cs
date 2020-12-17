@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly string? _templateBasePath;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
 
-        private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new ConcurrentDictionary<PathString, Lazy<Template?>>();
+        private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new();
 
         [ThreadStatic]
         private static Package? t_package;
@@ -35,11 +35,9 @@ namespace Microsoft.Docs.Build
         public LiquidTemplate(Package package, string? templateBasePath = null, JObject? global = null)
         {
             _package = package;
-            _fileSystem = new PackageFileSystem(LoadTemplate);
+            _fileSystem = new(LoadTemplate);
             _templateBasePath = templateBasePath;
-            _localizedStrings = global is null
-                ? new Dictionary<string, string>()
-                : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
+            _localizedStrings = global is null ? new() : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
         }
 
         public string Render(string templateName, JObject model)

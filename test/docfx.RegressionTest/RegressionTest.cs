@@ -120,6 +120,7 @@ namespace Microsoft.Docs.Build
                 {
                     docfxConfig["markdownValidationRules"] = "https://ops/regressionallcontentrules/";
                     docfxConfig["buildValidationRules"] = "https://ops/regressionallbuildrules/";
+                    docfxConfig["sandboxEnabledModuleList"] = "https://ops/sandboxEnabledModuleList/";
                     docfxConfig["metadataSchema"] = new JArray()
                     {
                         Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),

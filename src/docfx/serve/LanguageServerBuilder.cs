@@ -27,11 +27,11 @@ namespace Microsoft.Docs.Build
         {
             options.DryRun = true;
 
-            _workingDirectory = new PathString(workingDirectory);
+            _workingDirectory = new(workingDirectory);
             _languageServer = languageServer;
-            _errorList = new ErrorList();
-            _languageServerPackage = new LanguageServerPackage(new MemoryPackage(workingDirectory), package);
-            _builder = new Builder(_errorList, workingDirectory, options, _languageServerPackage);
+            _errorList = new();
+            _languageServerPackage = new(new MemoryPackage(workingDirectory), package);
+            _builder = new(_errorList, workingDirectory, options, _languageServerPackage);
             _eventChannel = eventChannel;
         }
 

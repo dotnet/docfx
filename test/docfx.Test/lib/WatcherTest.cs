@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             var counter = 0;
             var watch = new Watch<int>(() => GetCounter());
 
-            int GetCounter() => Watcher.Watch(() => ++counter);
+            int GetCounter() => Watcher.Read(() => ++counter);
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             var childWatch = new Watch<int>(() => GetCounter());
             var watch = new Watch<int>(() => childWatch.Value);
 
-            int GetCounter() => Watcher.Watch(() => ++counter);
+            int GetCounter() => Watcher.Read(() => ++counter);
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             var counter = 0;
             var watch = new Watch<int>(() => GetCounter());
 
-            int GetCounter() => Watcher.Watch(() => Watcher.Watch(() => ++counter));
+            int GetCounter() => Watcher.Read(() => Watcher.Read(() => ++counter));
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
             var changeTokenCounter = 0;
             var watch = new Watch<int>(() => GetCounter());
 
-            int GetCounter() => Watcher.Watch(() => ++valueCounter, () => ++changeTokenCounter);
+            int GetCounter() => Watcher.Read(() => ++valueCounter, () => ++changeTokenCounter);
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
@@ -152,8 +152,8 @@ namespace Microsoft.Docs.Build
             var counter = 0;
             var watch = new Watch<int>(() => GetCounterChange() + GetCounterNoChange());
 
-            int GetCounterNoChange() => Watcher.Watch(() => 0);
-            int GetCounterChange() => Watcher.Watch(() => ++counter);
+            int GetCounterNoChange() => Watcher.Read(() => 0);
+            int GetCounterChange() => Watcher.Read(() => ++counter);
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
             var counter = 0;
             var watch = new Watch<int>(() => ++counter + GetCounterNoChange());
 
-            int GetCounterNoChange() => Watcher.Watch(() => 0);
+            int GetCounterNoChange() => Watcher.Read(() => 0);
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
@@ -187,7 +187,7 @@ namespace Microsoft.Docs.Build
             var counter = 0;
             var childCounter = 0;
             var parentCounter = 0;
-            var child = new Watch<int>(() => ++childCounter + Watcher.Watch(() => 0, () => ++counter));
+            var child = new Watch<int>(() => ++childCounter + Watcher.Read(() => 0, () => ++counter));
             var parent = new Watch<int>(() => ++parentCounter + child.Value);
 
             Assert.Equal(1, child.Value);
@@ -213,8 +213,8 @@ namespace Microsoft.Docs.Build
                 return 0;
             });
 
-            bool FileExists() => Watcher.Watch(() => exists);
-            int ReadFile() => Watcher.Watch(() => counter);
+            bool FileExists() => Watcher.Read(() => exists);
+            int ReadFile() => Watcher.Read(() => counter);
 
             Assert.Equal(0, watch.Value);
             Assert.Equal(0, watch.Value);
@@ -246,10 +246,83 @@ namespace Microsoft.Docs.Build
                 return n;
             });
 
-            int GetCounter() => Watcher.Watch(() => Interlocked.Increment(ref counter));
+            int GetCounter() => Watcher.Read(() => Interlocked.Increment(ref counter));
 
             Assert.Equal(5050, watch.Value);
             Assert.Equal(5050, watch.Value);
+        }
+
+        [Fact]
+        public static void Watch_Value_Replay_Write_Functions()
+        {
+            var callCount = 0;
+            var writeCount = 0;
+            var watch = new Watch<int>(() =>
+            {
+                Watcher.Write(() => writeCount++);
+                return callCount++;
+            });
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(2, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(2, writeCount);
+        }
+
+        [Fact]
+        public static void Watch_Value_Replay_Write_Functions_With_DependencyChange()
+        {
+            var callCount = 0;
+            var writeCount = 0;
+            var watch = new Watch<int>(() =>
+            {
+                Watcher.Write(() => writeCount++);
+                return Watcher.Read(() => callCount++);
+            });
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+        }
+
+        [Fact]
+        public static void Watch_Value_Replay_Nested_Write_Functions_With_DependencyChange()
+        {
+            var callCount = 0;
+            var writeCount = 0;
+            var childWatch = new Watch<int>(() =>
+            {
+                Watcher.Write(() => writeCount++);
+                return Watcher.Read(() => callCount++);
+            });
+            var watch = new Watch<int>(() => childWatch.Value);
+
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+            Assert.Equal(0, watch.Value);
+            Assert.Equal(1, writeCount);
+
+            Watcher.StartActivity();
+
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
+            Assert.Equal(2, watch.Value);
+            Assert.Equal(2, writeCount);
         }
     }
 }

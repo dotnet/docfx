@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
 
         private readonly Watch<(FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> map)> _state;
-        private readonly ConcurrentDictionary<FilePath, Watch<string?>> _canonicalVersionCache = new ConcurrentDictionary<FilePath, Watch<string?>>();
+        private readonly ConcurrentDictionary<FilePath, Watch<string?>> _canonicalVersionCache = new();
 
         public PublishUrlMap(
             Config config,
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
             _redirectionProvider = redirectionProvider;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
-            _state = Watcher.Create(Initialize);
+            _state = new(Initialize);
         }
 
         public string? GetCanonicalVersion(FilePath file)
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            return _canonicalVersionCache.GetOrAdd(file, key => Watcher.Create(() => GetCanonicalVersionCore(key))).Value;
+            return _canonicalVersionCache.GetOrAdd(file, key => new(() => GetCanonicalVersionCore(key))).Value;
         }
 
         public IEnumerable<FilePath> GetFilesByUrl(string url)

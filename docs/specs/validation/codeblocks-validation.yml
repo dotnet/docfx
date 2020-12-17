@@ -1,4 +1,3 @@
-
 # Content validation - indented lines within triple-colon syntax is OK for code-block-indented
 inputs:
   docfx.yml: |

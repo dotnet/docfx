@@ -142,17 +142,6 @@ jobs:
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
 
-  # Push to azure devops feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish NuGet Packages
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      publishFeedCredentials: docs-public-packages
-      nugetFeedType: external
-      allowPackageConflicts: true
-
   # Publish binary packages to production
   - task: AzureFileCopy@3
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
@@ -212,7 +201,7 @@ jobs:
       dryrun.bot-docs-pr:
         params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
       learn-pr:
-        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync
+        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
       PowerShell-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
       azure-docs-cli:
