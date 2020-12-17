@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -31,6 +32,7 @@ namespace Microsoft.Docs.Build
 
         private readonly LanguageServerBuilder _languageServerBuilder;
         private readonly LanguageServerPackage _package;
+        private readonly DiagnosticPublisher _diagnosticPublisher;
 
         private readonly DocumentSelector _documentSelector = new(
             new DocumentFilter()
@@ -38,10 +40,11 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(LanguageServerBuilder languageServerBuilder, LanguageServerPackage package)
+        public TextDocumentHandler(LanguageServerBuilder languageServerBuilder, LanguageServerPackage package, DiagnosticPublisher diagnosticPublisher)
         {
             _languageServerBuilder = languageServerBuilder;
             _package = package;
+            _diagnosticPublisher = diagnosticPublisher;
         }
 
         public TextDocumentSyncKind Change { get; } = TextDocumentSyncKind.Full;
@@ -88,6 +91,7 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
         {
+            _diagnosticPublisher.PublishDiagnostic(notification.TextDocument.Uri, new List<Diagnostic>());
             return Unit.Task;
         }
 

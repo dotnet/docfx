@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
                 server.Register(r =>
                 {
-                    r.AddHandler(new TextDocumentHandler(languageServerBuilder, languageServerPackage));
+                    r.AddHandler(new TextDocumentHandler(languageServerBuilder, languageServerPackage, diagnosticPublisher!));
                 });
                 return Task.CompletedTask;
             }

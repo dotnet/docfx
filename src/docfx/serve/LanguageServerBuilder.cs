@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                                       where source != null && source.File.Path == relativePath
                                       select ConvertToDiagnostics(error, source);
 
-                    _diagnosticPublisher.PublishDiagnostic(file, diagnostics.ToList());
+                    _diagnosticPublisher.PublishDiagnostic(file, diagnostics.ToList(), _languageServerPackage.TryGetLastWriteTimeUtc(file));
                 }
             }
         }
