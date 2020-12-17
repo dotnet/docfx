@@ -5,13 +5,13 @@ namespace Microsoft.Docs.Build
 {
     internal class Module
     {
-        public SourceInfo<string> Uid { get; set; }
+        public SourceInfo<string> Uid { get; set; } = new SourceInfo<string>("");
 
         public SourceInfo<string>[]? Units { get; set; }
 
-        public Trophy? Badge { get; set; }
+        public Badge? Badge { get; set; }
 
-        public SourceInfo<string> Achievement { get; set; }
+        public SourceInfo<string> Achievement { get; set; } = new SourceInfo<string>("");
 
         public string? Title { get; set; }
 

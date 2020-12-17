@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             }).OrderBy(externalXref => externalXref.Uid).ToArray();
         }
 
-        public (JToken, JToken) TransformContent(ErrorBuilder errors, FilePath file)
+        public JToken TransformContent(ErrorBuilder errors, FilePath file)
         {
             var (token, schema, schemaMap) = ValidateContent(errors, file);
             var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(schemaMap, token));
@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
             {
                 result["_xrefmap"] = xrefmap;
             }
-            return (result, token);
+            return result;
         }
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)

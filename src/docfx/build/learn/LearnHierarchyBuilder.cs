@@ -30,57 +30,26 @@ namespace Microsoft.Docs.Build
             _contentValidator.ValidateHierarchy(GetAllLearnHierarchyModels().ToList());
         }
 
-        public void AddLearningPath(JObject content)
+        public void AddLearningPath(LearningPath path)
         {
-            var path = JsonUtility.ToObject<LearningPath>(_errors, content);
             _learningPaths.Add(path);
-
-            if (path.Trophy != null && GetAchievement(path.Trophy, out var achievement) && achievement != null)
-            {
-                _achievements.Add(achievement);
-            }
         }
 
-        public void AddModule(JObject content)
+        public void AddModule(Module module)
         {
-            var module = JsonUtility.ToObject<Module>(_errors, content);
             _modules.Add(module);
-
-            if (module.Badge != null && GetAchievement(module.Badge, out var achievement) && achievement != null)
-            {
-                _achievements.Add(achievement);
-            }
         }
 
-        public void AddModuleUnit(JObject content)
+        public void AddModuleUnit(ModuleUnit moduleUnit)
         {
-            _moduleUnits.Add(JsonUtility.ToObject<ModuleUnit>(_errors, content));
+            _moduleUnits.Add(moduleUnit);
         }
 
-        public void AddAchievements(JObject content)
+        public void AddAchievements(AchievementArray achievements)
         {
-            var achievements = JsonUtility.ToObject<AchievementArray>(_errors, content).Achievements;
-            if (achievements?.Length > 0)
+            if (achievements.Achievements?.Length > 0)
             {
-                _achievements.AddRange(achievements);
-            }
-        }
-
-        private static bool GetAchievement(object obj, out Achievement? achievement)
-        {
-            switch (obj)
-            {
-                case Trophy trophy:
-                    achievement = new Achievement { Uid = trophy.Uid, Type = Constants.Trophy };
-                    return true;
-
-                case Badge badge:
-                    achievement = new Achievement { Uid = badge.Uid, Type = Constants.Badge };
-                    return true;
-
-                default:
-                    achievement = null;
-                    return false;
+                _achievements.AddRange(achievements.Achievements);
             }
         }
 
@@ -91,7 +60,7 @@ namespace Microsoft.Docs.Build
                 Uid = p.Uid.Value,
                 ChildrenUids = p.Modules?.Select(m => m.Value).ToList(),
                 SourceInfo = p.Uid.Source,
-                SchemaType = Constants.LearningPath,
+                SchemaType = "learningpath",
             }).ToList();
 
             var moduleModels = _modules.AsList().Select(p => new HierarchyModel
@@ -99,7 +68,7 @@ namespace Microsoft.Docs.Build
                 Uid = p.Uid.Value,
                 ChildrenUids = p.Units?.Select(u => u.Value).ToList(),
                 SourceInfo = p.Uid.Source,
-                SchemaType = Constants.Module,
+                SchemaType = "module",
             }).ToList();
 
             var unitModels = _moduleUnits.AsList().Select(p => new HierarchyModel
@@ -107,17 +76,31 @@ namespace Microsoft.Docs.Build
                 Uid = p.Uid.Value,
                 UseAzureSandbox = p.AzureSandbox,
                 SourceInfo = p.Uid.Source,
-                SchemaType = Constants.ModuleUnit,
+                SchemaType = "moduleunit",
             }).ToList();
 
             var achievementModels = _achievements.AsList().Select(p => new HierarchyModel
             {
                 Uid = p.Uid.Value,
                 SourceInfo = p.Uid.Source,
-                SchemaType = p.Type,
+                SchemaType = p.Type.ToString(),
             }).ToList();
 
-            return pathModels.Concat(moduleModels).Concat(unitModels).Concat(achievementModels);
+            var trophys = _learningPaths.AsList().Where(p => p.Trophy != null).Select(p => new HierarchyModel
+            {
+                Uid = p.Trophy!.Uid.Value,
+                SourceInfo = p.Trophy.Uid.Source,
+                SchemaType = "trophy",
+            }).ToList();
+
+            var badges = _modules.AsList().Where(p => p.Badge != null).Select(p => new HierarchyModel
+            {
+                Uid = p.Badge!.Uid.Value,
+                SourceInfo = p.Badge.Uid.Source,
+                SchemaType = "badge",
+            }).ToList();
+
+            return pathModels.Concat(moduleModels).Concat(unitModels).Concat(achievementModels).Concat(trophys).Concat(badges);
         }
     }
 }

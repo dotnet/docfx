@@ -292,29 +292,29 @@ namespace Microsoft.Docs.Build
             var mime = _documentProvider.GetMime(file);
 
             // Validate and transform model using JSON schema
-            var (content, token) = _jsonSchemaTransformer.TransformContent(errors, file);
+            var content = _jsonSchemaTransformer.TransformContent(errors, file);
             if (!(content is JObject transformedContent))
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();
             }
-            else if (token is JObject fileContent)
+            else
             {
                 switch (mime.Value?.ToLowerInvariant())
                 {
-                    case Constants.LearningPath:
-                        _learnHierarchyBuilder.AddLearningPath(fileContent);
+                    case "learninpath":
+                        _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
                         break;
 
-                    case Constants.Module:
-                        _learnHierarchyBuilder.AddModule(fileContent);
+                    case "module":
+                        _learnHierarchyBuilder.AddModule(JsonUtility.ToObject<Module>(errors, transformedContent));
                         break;
 
-                    case Constants.ModuleUnit:
-                        _learnHierarchyBuilder.AddModuleUnit(fileContent);
+                    case "moduleunit":
+                        _learnHierarchyBuilder.AddModuleUnit(JsonUtility.ToObject<ModuleUnit>(errors, transformedContent));
                         break;
 
-                    case Constants.Achievements:
-                        _learnHierarchyBuilder.AddAchievements(fileContent);
+                    case "achievements":
+                        _learnHierarchyBuilder.AddAchievements(JsonUtility.ToObject<AchievementArray>(errors, transformedContent));
                         break;
                 }
             }
