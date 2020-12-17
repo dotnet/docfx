@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public abstract PathString GetFullFilePath(PathString path);
 
-        public T? LoadYamlOrJson<T>(ErrorBuilder errors, string fileNameWithoutExtension, PathString directory = default) where T : class, new()
+        public T? TryLoadYamlOrJson<T>(ErrorBuilder errors, string fileNameWithoutExtension, PathString directory = default) where T : class, new()
         {
             var fileName = fileNameWithoutExtension + ".yml";
             var fullPath = new PathString(Path.Combine(directory, fileName));
@@ -76,25 +76,6 @@ namespace Microsoft.Docs.Build
 
             using var reader = ReadText(path);
             return reader.ReadToEnd();
-        }
-
-        public T? TryReadYamlOrJson<T>(ErrorBuilder errors, string pathWithoutExtension) where T : class, new()
-        {
-            var path = new PathString(pathWithoutExtension + ".yml");
-            var content = TryReadString(path);
-            if (content != null)
-            {
-                return YamlUtility.Deserialize<T>(errors, content, new FilePath(path));
-            }
-
-            path = new PathString(pathWithoutExtension + ".json");
-            content = TryReadString(path);
-            if (content != null)
-            {
-                return JsonUtility.Deserialize<T>(errors, content, new FilePath(path));
-            }
-
-            return null;
         }
     }
 }

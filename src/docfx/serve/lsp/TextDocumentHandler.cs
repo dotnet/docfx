@@ -18,18 +18,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
-        private static readonly string[] s_configFileNames =
-            {
-                "docfx.json",
-                "docfx.yml",
-                ".openpublishing.publish.config.json",
-                "docsets.json",
-                "docsets.yml",
-                "redirections.yml",
-                "redirections.json",
-                ".openpublishing.redirection.json",
-            };
-
         private readonly LanguageServerBuilder _languageServerBuilder;
         private readonly LanguageServerPackage _package;
         private readonly DiagnosticPublisher _diagnosticPublisher;
@@ -118,12 +106,6 @@ namespace Microsoft.Docs.Build
         {
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
-            {
-                return false;
-            }
-
-            var fileName = Path.GetFileName(filePath);
-            if (s_configFileNames.Contains(fileName, PathUtility.PathComparer))
             {
                 return false;
             }

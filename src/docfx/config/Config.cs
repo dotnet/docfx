@@ -208,6 +208,11 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> MarkdownValidationRules { get; init; } = new SourceInfo<string>("");
 
         /// <summary>
+        /// Get the file path of Azure SandboxEnabledModuleList
+        /// </summary>
+        public SourceInfo<string> SandboxEnabledModuleList { get; private set; } = new SourceInfo<string>("");
+
+        /// <summary>
         /// Get the file path of build validation rules
         /// </summary>
         public SourceInfo<string> BuildValidationRules { get; init; } = new SourceInfo<string>("");
@@ -345,6 +350,7 @@ namespace Microsoft.Docs.Build
             yield return MarkdownValidationRules;
             yield return BuildValidationRules;
             yield return Allowlists;
+            yield return SandboxEnabledModuleList;
 
             foreach (var metadataSchema in MetadataSchema)
             {

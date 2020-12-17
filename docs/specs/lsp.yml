@@ -124,36 +124,6 @@ languageServer:
         "diagnostics": [{ "code": "file-not-found" }]
       }
 ---
-# Config open/change (non-saved) should not trigger build
-os: windows
-inputs:
-  docfx.yml:
-  a.md:
-languageServer:
-  - notification: "textDocument/didOpen"
-    params:
-      {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "[Test](non-existed.md)"
-        }
-      }
-  - expectNotification: "textDocument/publishDiagnostics"
-    params:
-      {
-        "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": [{ "code": "file-not-found" }]
-      }
-  - notification: "textDocument/didOpen"
-    params:
-      {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/docfx.yml",
-          "text": "Invalid change"
-        }
-      }
-  - expectNoNotification: true
----
 # Open/Change of files out of current repo should not trigger build
 os: windows
 inputs:
@@ -182,7 +152,7 @@ languageServer:
           "text": "Invalid change"
         }
       }
-  - expectNoNotification: true
+  - expectNoNotificationAfterBuildTime: 1
 ---
 # Diagnostic should be cleared when the file get closed
 os: windows
@@ -245,4 +215,4 @@ languageServer:
         "uri": "file:///{DOCSET_PATH}/a.md",
         "diagnostics": []
       }
-  - expectNoNotification: true
+  - expectNoNotificationAfterBuildTime: 1
