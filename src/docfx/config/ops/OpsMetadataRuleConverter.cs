@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var allowlists = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
 
             var schema = new
             {
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
                     relativeMaxDate = GetRelativeMaxDate(rulesInfo),
                     relativeMinDate = GetRelativeMinDate(rulesInfo),
                     replacedBy = GetReplacedBy(rulesInfo),
-                    microsoftAlias = GetMicrosoftAlias(rulesInfo, allowlists),
+                    microsoftAlias = GetMicrosoftAlias(rulesInfo, taxonomies),
                     minLength = GetMinLength(rulesInfo),
                     maxLength = GetMaxLength(rulesInfo),
                 };
@@ -116,9 +116,9 @@ namespace Microsoft.Docs.Build
 
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
-                    TryGetAllowlist(attribute, listRuleInfo.List, allowlists, out var allowlist))
+                    TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var taxonomy))
                 {
-                    schema.enumDependencies.Add($"{attribute}[0]", allowlist);
+                    schema.enumDependencies.Add($"{attribute}[0]", taxonomy);
 
                     if (rulesInfo.TryGetValue("Match", out var matchRuleInfo) &&
                         !string.IsNullOrEmpty(matchRuleInfo.Value) &&
@@ -163,21 +163,21 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetAllowlist(string attribute, string? listId, Taxonomies allowlists, out Dictionary<string, EnumDependenciesSchema?> allowList)
+        private static bool TryGetTaxonomy(string attribute, string? listId, Taxonomies taxonomies, out Dictionary<string, EnumDependenciesSchema?> taxonomy)
         {
-            if (string.IsNullOrEmpty(listId) || !allowlists.TryGetValue(listId["list:".Length..], out var subAllowlist))
+            if (string.IsNullOrEmpty(listId) || !taxonomies.TryGetValue(listId["list:".Length..], out var subTaxonomy))
             {
-                allowList = new Dictionary<string, EnumDependenciesSchema?>();
+                taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
                 return false;
             }
 
-            if (string.IsNullOrEmpty(subAllowlist.NestedValue))
+            if (string.IsNullOrEmpty(subTaxonomy.NestedValue))
             {
-                allowList = subAllowlist.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
+                taxonomy = subTaxonomy.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
                 return true;
             }
 
-            var nestedValue = subAllowlist.NestedValue;
+            var nestedValue = subTaxonomy.NestedValue;
             var index = 0;
 
             if (string.Equals("slug", nestedValue, StringComparison.OrdinalIgnoreCase))
@@ -200,26 +200,26 @@ namespace Microsoft.Docs.Build
             }
             nestedValue = strBuilder.Append(nestedValue[strIdx..]).ToString().ToLowerInvariant();
 
-            allowList = new Dictionary<string, EnumDependenciesSchema?>();
-            foreach (var (key, taxonomy) in subAllowlist.NestedTaxonomy.dic)
+            taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+            foreach (var (key, value) in subTaxonomy.NestedTaxonomy.dic)
             {
                 // replace "(empty)" by ""
-                var clearTaxonomy = taxonomy.ToDictionary(
+                var clearTaxonomy = value.ToDictionary(
                     x => string.Equals("(empty)", x, StringComparison.OrdinalIgnoreCase) ? string.Empty : x, x => (EnumDependenciesSchema?)null);
 
-                allowList.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
+                taxonomy.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
             }
             return true;
         }
 
-        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Taxonomies allowlists)
+        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Taxonomies taxonomies)
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
-                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs["list:".Length..], out var allowlist) &&
-                string.IsNullOrEmpty(allowlist.NestedValue))
+                taxonomies.TryGetValue(microsoftAliasRuleInfo.AllowedDLs["list:".Length..], out var taxonomy) &&
+                string.IsNullOrEmpty(taxonomy.NestedValue))
             {
-                return new { allowedDLs = allowlist.NestedTaxonomy.list };
+                return new { allowedDLs = taxonomy.NestedTaxonomy.list };
             }
 
             return null;
