@@ -8,5 +8,7 @@ namespace Microsoft.Docs.Build
         bool HasChanged();
 
         void AddChild(IFunction child);
+
+        void Replay();
     }
 }
