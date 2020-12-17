@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -36,33 +35,22 @@ namespace Microsoft.Docs.Build
                 .WithHandler<TextDocumentHandler>()
                 .WithServices(services =>
                 {
-                    services.AddSingleton(Channel.CreateUnbounded<FileActionEvent>());
+                    package ??= new LocalPackage(workingDirectory);
+                    services.AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package));
+                    services.AddSingleton(commandLineOptions);
+                    services.AddSingleton<DiagnosticPublisher>();
+                    services.AddSingleton<LanguageServerBuilder>();
+
+                    services.AddOptions();
+                    services.AddLogging();
                 })
-                .WithServices(ConfigureServices)
-                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
-                .OnInitialize(Initialize));
-
-            Task Initialize(ILanguageServer server, InitializeParams request, CancellationToken cancellationToken)
-            {
-                var serviceProvider = server.Services;
-                var eventChannel = serviceProvider.GetService<Channel<FileActionEvent>>();
-
-                package ??= new LocalPackage(workingDirectory);
-                _ = new LanguageServerBuilder(workingDirectory, commandLineOptions, eventChannel!, server, package).StartAsync();
-                return Task.CompletedTask;
-            }
+                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace))));
         }
 
         private static void ResetConsoleOutput()
         {
             // TODO: redirect the console output to client through LSP
             Console.SetOut(StreamWriter.Null);
-        }
-
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            services.AddOptions();
-            services.AddLogging();
         }
     }
 }

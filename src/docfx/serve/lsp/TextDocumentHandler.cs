@@ -1,9 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using MediatR;
 using OmniSharp.Extensions.LanguageServer.Protocol;
@@ -16,20 +17,30 @@ namespace Microsoft.Docs.Build
 {
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
-        private readonly Channel<FileActionEvent> _channel;
-        private readonly DocumentSelector _documentSelector = new(new DocumentFilter { Pattern = "**/*.{md,yml,json}" });
+        private readonly LanguageServerBuilder _languageServerBuilder;
+        private readonly LanguageServerPackage _package;
 
-        public TextDocumentHandler(Channel<FileActionEvent> channel)
+        private readonly DocumentSelector _documentSelector = new(
+            new DocumentFilter()
+            {
+                Pattern = "**/*.{md,yml,json}",
+            });
+
+        public TextDocumentHandler(LanguageServerBuilder languageServerBuilder, LanguageServerPackage package)
         {
-            _channel = channel;
+            _languageServerBuilder = languageServerBuilder;
+            _package = package;
         }
 
         public TextDocumentSyncKind Change { get; } = TextDocumentSyncKind.Full;
 
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
-            _channel.Writer.TryWrite(
-                new FileActionEvent(FileActionType.Updated, notification.TextDocument.Uri.GetFileSystemPath(), notification.ContentChanges.First().Text));
+            if (TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
+            {
+                _languageServerBuilder.QueueBuild();
+            }
+
             return Unit.Task;
         }
 
@@ -48,8 +59,10 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
         {
-            _channel.Writer.TryWrite(
-                new FileActionEvent(FileActionType.Opened, notification.TextDocument.Uri.GetFileSystemPath(), notification.TextDocument.Text));
+            if (TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
+            {
+                _languageServerBuilder.QueueBuild();
+            }
             return Unit.Task;
         }
 
@@ -83,6 +96,18 @@ namespace Microsoft.Docs.Build
         public TextDocumentAttributes GetTextDocumentAttributes(DocumentUri uri)
         {
             return new TextDocumentAttributes(uri, "docfx");
+        }
+
+        private bool TryUpdatePackage(DocumentUri file, string content)
+        {
+            var filePath = new PathString(file.GetFileSystemPath());
+            if (!filePath.StartsWithPath(_package.BasePath, out _))
+            {
+                return false;
+            }
+
+            _package.AddOrUpdate(filePath, content);
+            return true;
         }
     }
 }
