@@ -35,14 +35,15 @@ namespace Microsoft.Docs.Build
             client.SendNotification(notification.Method, TestUtility.ApplyVariables(notification.Params, _variables));
         }
 
-        public async Task<IEnumerable<LanguageServerNotification>> GetExpectedNotification(Func<string, bool> methodPredicate = null, int expectedCount = 1)
+        public async Task<IEnumerable<LanguageServerNotification>> GetExpectedNotification(
+            Func<string, bool> methodPredicate = null, int expectedCount = 1, int? timeout = null)
         {
             var notifications = new List<LanguageServerNotification>();
 
             try
             {
-                var timeout = Debugger.IsAttached ? int.MaxValue : 20000;
-                using var cts = new CancellationTokenSource(timeout);
+                timeout ??= Debugger.IsAttached ? int.MaxValue : 20000;
+                using var cts = new CancellationTokenSource((int)timeout);
                 while (await _notifications.Reader.WaitToReadAsync(cts.Token))
                 {
                     var notification = await _notifications.Reader.ReadAsync();

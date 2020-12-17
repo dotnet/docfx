@@ -25,6 +25,7 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new();
         private static readonly AsyncLocal<string> t_appDataPath = new();
+        private static readonly AsyncLocal<SemaphoreSlim> t_languageServerExit = new();
 
         static DocfxTest()
         {
@@ -49,6 +50,10 @@ namespace Microsoft.Docs.Build
                 }
                 return null;
             };
+
+            TestQuirks.IsTest = true;
+
+            TestQuirks.SetLanguageServerExit = () => t_languageServerExit.Value.Release();
         }
 
         public static IEnumerable<string> ExpandTest(DocfxTestSpec spec)
@@ -79,6 +84,7 @@ namespace Microsoft.Docs.Build
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
+                    t_languageServerExit.Value = new SemaphoreSlim(0);
                     RunCore(docsetPath, outputPath, test, spec, variables, package);
                 }
                 catch (Exception exception)
@@ -93,6 +99,7 @@ namespace Microsoft.Docs.Build
                 {
                     t_repos.Value = null;
                     t_remoteFiles.Value = null;
+                    t_appDataPath.Value = null;
                     t_appDataPath.Value = null;
                 }
             }
@@ -232,7 +239,8 @@ namespace Microsoft.Docs.Build
                 }
                 else if (lspSpec.ExpectNoNotification)
                 {
-                    var actualNotifications = await lspTestHost.GetExpectedNotification(expectedCount: 1);
+                    await t_languageServerExit.Value.WaitAsync();
+                    var actualNotifications = await lspTestHost.GetExpectedNotification(expectedCount: 1, timeout: 100);
                     s_languageServerJsonDiff.Verify(new List<LanguageServerNotification>(), actualNotifications);
                 }
                 else

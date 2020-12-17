@@ -14,5 +14,9 @@ namespace Microsoft.Docs.Build
         public static Func<string, string?>? HttpProxy { get; set; }
 
         public static bool? Verbose { get; set; }
+
+        public static bool IsTest { get; set; }
+
+        public static Action? SetLanguageServerExit { get; set; }
     }
 }
