@@ -45,7 +45,10 @@ namespace Microsoft.Docs.Build
             _zonePivotProvider = zonePivotProvider;
             _publishUrlMap = publishUrlMap;
 
-            _validator = new(fileResolver.ResolveFilePath(_config.MarkdownValidationRules), fileResolver.ResolveFilePath(_config.Allowlists));
+            _validator = new Validator(
+                fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
+                fileResolver.ResolveFilePath(_config.Allowlists),
+                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList));
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
@@ -83,6 +86,11 @@ namespace Microsoft.Docs.Build
             {
                 Write(_validator.ValidateContentNodes(nodes, validationContext).GetAwaiter().GetResult());
             }
+        }
+
+        public void ValidateHierarchy(List<HierarchyModel> models)
+        {
+            Write(_validator.ValidateHierarchy(models, new ValidationContext { DocumentType = "learn" }).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
