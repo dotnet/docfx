@@ -43,13 +43,32 @@ namespace Microsoft.Docs.Build
         {
             while (true)
             {
-                await _buildSemaphore.WaitAsync();
+                await WaitToTriggerBuild();
+
                 var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
                 _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
                 PublishDiagnosticsParams(filesToBuild);
                 TestQuirks.FinishedBuildCountIncrease?.Invoke();
             }
+        }
+
+        private async Task WaitToTriggerBuild()
+        {
+            await _buildSemaphore.WaitAsync();
+
+            try
+            {
+                while (true)
+                {
+                    using var cts = new CancellationTokenSource(1000);
+                    await _buildSemaphore.WaitAsync(cts.Token);
+                }
+            }
+            catch (System.OperationCanceledException)
+            {
+            }
+            return;
         }
 
         private void PublishDiagnosticsParams(IEnumerable<PathString> files)
