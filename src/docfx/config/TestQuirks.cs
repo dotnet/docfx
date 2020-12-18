@@ -14,7 +14,5 @@ namespace Microsoft.Docs.Build
         public static Func<string, string?>? HttpProxy { get; set; }
 
         public static bool? Verbose { get; set; }
-
-        public static Action? HandledEventCountIncrease { get; set; }
     }
 }

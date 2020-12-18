@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,31 +14,32 @@ namespace Microsoft.Docs.Build
     internal class LanguageServerBuilder
     {
         private readonly Builder _builder;
-        private readonly ErrorList _errorList;
-        private readonly Channel<bool> _buildChannel;
+        private readonly ErrorList _errorList = new();
+        private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
+        private readonly ILanguageServerNotificationListener _notificationListener;
         private readonly PathString _workingDirectory;
 
         public LanguageServerBuilder(
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
-            LanguageServerPackage languageServerPackage)
+            LanguageServerPackage languageServerPackage,
+            ILanguageServerNotificationListener notificationListener)
         {
             options.DryRun = true;
 
             _workingDirectory = languageServerPackage.BasePath;
             _diagnosticPublisher = diagnosticPublisher;
-            _errorList = new();
             _languageServerPackage = languageServerPackage;
+            _notificationListener = notificationListener;
             _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _buildChannel = Channel.CreateUnbounded<bool>();
             _ = StartAsync();
         }
 
         public void QueueBuild()
         {
-            _buildChannel.Writer.TryWrite(true);
+            _buildChannel.Writer.TryWrite(false);
         }
 
         private async Task StartAsync()
@@ -45,11 +47,12 @@ namespace Microsoft.Docs.Build
             while (true)
             {
                 await WaitToTriggerBuild();
+
                 var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
                 _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
                 PublishDiagnosticsParams(filesToBuild);
-                TestQuirks.HandledEventCountIncrease?.Invoke();
+                _notificationListener.OnNotificationHandled();
             }
         }
 
@@ -63,13 +66,12 @@ namespace Microsoft.Docs.Build
                 {
                     using var cts = new CancellationTokenSource(1000);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
-                    TestQuirks.HandledEventCountIncrease?.Invoke();
+                    _notificationListener.OnNotificationHandled();
                 }
             }
-            catch (System.OperationCanceledException)
+            catch (OperationCanceledException)
             {
             }
-            return;
         }
 
         private void PublishDiagnosticsParams(IEnumerable<PathString> files)
@@ -92,9 +94,9 @@ namespace Microsoft.Docs.Build
         {
             return new Diagnostic
             {
-                Range = new Range(
-                     new Position(ConvertLocation(source.Line), ConvertLocation(source.Column)),
-                     new Position(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
+                Range = new(
+                     new(ConvertLocation(source.Line), ConvertLocation(source.Column)),
+                     new(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
                 Code = error.Code,
                 Source = "Docs Validation",
                 Severity = error.Level switch
