@@ -188,25 +188,20 @@ languageServer:
         "diagnostics": []
       }
 ---
-# Diagnostic should respect the event order
+# All the issues should be reported no matter it is opened or not
 os: windows
 inputs:
   docfx.yml:
-  a.md:
+  a.md: 
+  b.md: |
+    [Test](non-existed.md)
 languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
         "textDocument": {
           "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "[Test](non-existed.md)"
-        }
-      }
-  - notification: "textDocument/didClose"
-    params:
-      {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md"
+          "text": "[!INCLUDE[](b.md)]"
         }
       }
   - expectNotification: "textDocument/publishDiagnostics"
@@ -215,4 +210,9 @@ languageServer:
         "uri": "file:///{DOCSET_PATH}/a.md",
         "diagnostics": []
       }
-  - expectNoNotificationAfterBuildTime: 1
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/b.md",
+        "diagnostics": [{ "code": "file-not-found" }]
+      }

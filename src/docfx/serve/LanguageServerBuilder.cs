@@ -54,17 +54,24 @@ namespace Microsoft.Docs.Build
 
         private void PublishDiagnosticsParams(IEnumerable<PathString> files)
         {
-            foreach (var file in files)
+            List<PathString> filesWithDiagnostics = new();
+            var diagnosticsGroupbyFile = from error in _errorList
+                                         let source = error.Source
+                                         where source != null
+                                         let diagnostic = ConvertToDiagnostics(error, source)
+                                         group diagnostic by source.File;
+            foreach (var diagnostics in diagnosticsGroupbyFile)
             {
-                if (file.StartsWithPath(_workingDirectory, out var relativePath))
-                {
-                    var diagnostics = from error in _errorList
-                                      let source = error.Source
-                                      where source != null && source.File.Path == relativePath
-                                      select ConvertToDiagnostics(error, source);
+                var fullPath = _workingDirectory.Concat(diagnostics.Key.Path);
+                filesWithDiagnostics.Add(fullPath);
+                _diagnosticPublisher.PublishDiagnostic(
+                    fullPath, diagnostics.ToList(), _languageServerPackage.TryGetLastWriteTimeUtc(fullPath));
+            }
 
-                    _diagnosticPublisher.PublishDiagnostic(file, diagnostics.ToList(), _languageServerPackage.TryGetLastWriteTimeUtc(file));
-                }
+            foreach (var fileWithoutDiagnostics in files.Except(filesWithDiagnostics))
+            {
+                _diagnosticPublisher.PublishDiagnostic(
+                    fileWithoutDiagnostics, new List<Diagnostic>(), _languageServerPackage.TryGetLastWriteTimeUtc(fileWithoutDiagnostics));
             }
         }
 
