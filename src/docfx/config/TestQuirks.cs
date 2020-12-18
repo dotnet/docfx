@@ -15,6 +15,6 @@ namespace Microsoft.Docs.Build
 
         public static bool? Verbose { get; set; }
 
-        public static Action? FinishedBuildCountIncrease { get; set; }
+        public static Action? HandledEventCountIncrease { get; set; }
     }
 }

@@ -36,6 +36,10 @@ namespace Microsoft.Docs.Build
 
         public void QueueBuild()
         {
+            if (_buildSemaphore.CurrentCount == 1)
+            {
+                TestQuirks.HandledEventCountIncrease?.Invoke();
+            }
             _buildSemaphore.Release();
         }
 
@@ -48,7 +52,7 @@ namespace Microsoft.Docs.Build
                 _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
                 PublishDiagnosticsParams(filesToBuild);
-                TestQuirks.FinishedBuildCountIncrease?.Invoke();
+                TestQuirks.HandledEventCountIncrease?.Invoke();
             }
         }
 

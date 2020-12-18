@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 
         public string ExpectNotification { get; set; } = string.Empty;
 
-        public int? ExpectNoNotificationAfterBuildTime { get; set; }
+        public bool ExpectNoNotification { get; set; }
 
         public JToken Params { get; set; }
     }

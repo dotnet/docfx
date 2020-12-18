@@ -103,6 +103,7 @@ namespace Microsoft.Docs.Build
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
             {
+                TestQuirks.HandledEventCountIncrease?.Invoke();
                 return false;
             }
 
