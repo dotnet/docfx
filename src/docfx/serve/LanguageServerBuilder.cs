@@ -30,17 +30,18 @@ namespace Microsoft.Docs.Build
             _errorList = new();
             _languageServerPackage = languageServerPackage;
             _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _buildSemaphore = new(0);
+            _buildSemaphore = new(1);
+            _buildSemaphore.Wait();
             _ = StartAsync();
         }
 
         public void QueueBuild()
         {
-            if (_buildSemaphore.CurrentCount == 1)
+            var previousCount = _buildSemaphore.Release();
+            if (previousCount == 0)
             {
                 TestQuirks.HandledEventCountIncrease?.Invoke();
             }
-            _buildSemaphore.Release();
         }
 
         private async Task StartAsync()
