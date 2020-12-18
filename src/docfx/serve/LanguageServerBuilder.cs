@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
@@ -13,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Builder _builder;
         private readonly ErrorList _errorList;
-        private readonly SemaphoreSlim _buildSemaphore;
+        private readonly Channel<bool> _buildChannel;
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly PathString _workingDirectory;
@@ -30,31 +31,45 @@ namespace Microsoft.Docs.Build
             _errorList = new();
             _languageServerPackage = languageServerPackage;
             _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _buildSemaphore = new(1);
-            _buildSemaphore.Wait();
+            _buildChannel = Channel.CreateUnbounded<bool>();
             _ = StartAsync();
         }
 
         public void QueueBuild()
         {
-            var previousCount = _buildSemaphore.Release();
-            if (previousCount == 0)
-            {
-                TestQuirks.HandledEventCountIncrease?.Invoke();
-            }
+            _buildChannel.Writer.TryWrite(true);
         }
 
         private async Task StartAsync()
         {
             while (true)
             {
-                await _buildSemaphore.WaitAsync();
+                await WaitToTriggerBuild();
                 var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
                 _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
                 PublishDiagnosticsParams(filesToBuild);
                 TestQuirks.HandledEventCountIncrease?.Invoke();
             }
+        }
+
+        private async Task WaitToTriggerBuild()
+        {
+            await _buildChannel.Reader.ReadAsync();
+
+            try
+            {
+                while (true)
+                {
+                    using var cts = new CancellationTokenSource(1000);
+                    await _buildChannel.Reader.ReadAsync(cts.Token);
+                    TestQuirks.HandledEventCountIncrease?.Invoke();
+                }
+            }
+            catch (System.OperationCanceledException)
+            {
+            }
+            return;
         }
 
         private void PublishDiagnosticsParams(IEnumerable<PathString> files)
