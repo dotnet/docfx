@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <param name="path">Path to the file being opened.</param>
         /// <param name="origin">The original markdown element that triggered the read request.</param>
         /// <returns>An stream and the opened file, or default if such file does not exists.</returns>
-        public delegate (string content, object file) ReadFileDelegate(string path, MarkdownObject origin);
+        public delegate (string content, object file) ReadFileDelegate(string path, MarkdownObject origin, bool? contentFallback = null);
 
         /// <summary>
         /// Allows late binding of urls.
@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             GetImageLinkDelegate getImageLink = null)
         {
             _getToken = getToken ?? (_ => null);
-            ReadFile = readFile ?? ((a, b) => (a, a));
+            ReadFile = readFile ?? ((a, b, c) => (a, a));
             GetLink = getLink ?? ((a, b) => a);
             GetImageLink = getImageLink ?? ((a, b, c) => a);
             LogInfo = logInfo ?? ((a, b, c, d) => { });
