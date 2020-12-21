@@ -64,7 +64,6 @@ languageServer:
   - expectNoNotification: true
 ---
 # Diagnostic should be cleared when the file get closed
-os: windows
 inputs:
   docfx.yml:
   a.md:
@@ -80,7 +79,6 @@ languageServer:
 ---
 # 1. All the detected issues should be reported no matter it is opened or not
 # 2. They should also be cleared when the caused file gets closed.
-os: windows
 inputs:
   docfx.yml:
   a.md:
@@ -98,7 +96,6 @@ languageServer:
       b.md: []
 ---
 # All the issues should be cleared when there is no opened file
-os: windows
 inputs:
   docfx.yml: "{"
   a.md:
