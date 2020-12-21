@@ -45,23 +45,27 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        public void Build(string[]? files)
+        public void Build(string[]? files = null)
         {
-            try
+            _errors.Clear();
+
+            if (files?.Length == 0)
             {
-                _errors.Clear();
-                Watcher.StartActivity();
-
-                if (files?.Length == 0)
-                {
-                    return;
-                }
-
-                Parallel.ForEach(_docsets.Value, docset => docset.Build(files == null ? null : Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
+                return;
             }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+
+            using (Watcher.BeginScope())
             {
-                _errors.AddRange(dex);
+                try
+                {
+                    Parallel.ForEach(
+                        _docsets.Value,
+                        docset => docset.Build(files is null ? null : Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
+                }
+                catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
+                {
+                    _errors.AddRange(dex);
+                }
             }
         }
 
