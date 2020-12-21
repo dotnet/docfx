@@ -26,7 +26,8 @@ namespace Microsoft.Docs.Build
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new();
         private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new();
         private static readonly AsyncLocal<string> t_appDataPath = new();
-        private static readonly AsyncLocal<StrongBox<int>> t_finishedBuildCount = new();
+        private static readonly AsyncLocal<StrongBox<int>> t_handledEventCount = new();
+        private static readonly AsyncLocal<StrongBox<int>> t_sentEventCount = new();
 
         static DocfxTest()
         {
@@ -52,9 +53,9 @@ namespace Microsoft.Docs.Build
                 return null;
             };
 
-            TestQuirks.FinishedBuildCountIncrease = () =>
+            TestQuirks.HandledEventCountIncrease = () =>
             {
-                t_finishedBuildCount.Value.Value++;
+                t_handledEventCount.Value.Value++;
             };
         }
 
@@ -86,7 +87,8 @@ namespace Microsoft.Docs.Build
                     t_repos.Value = repos;
                     t_remoteFiles.Value = spec.Http;
                     t_appDataPath.Value = appDataPath;
-                    t_finishedBuildCount.Value = new StrongBox<int>();
+                    t_handledEventCount.Value = new StrongBox<int>();
+                    t_sentEventCount.Value = new StrongBox<int>();
                     RunCore(docsetPath, outputPath, test, spec, variables, package);
                 }
                 catch (Exception exception)
@@ -102,7 +104,8 @@ namespace Microsoft.Docs.Build
                     t_repos.Value = null;
                     t_remoteFiles.Value = null;
                     t_appDataPath.Value = null;
-                    t_finishedBuildCount.Value = null;
+                    t_handledEventCount.Value = null;
+                    t_sentEventCount.Value = null;
                 }
             }
         }
@@ -208,6 +211,7 @@ namespace Microsoft.Docs.Build
                 if (!string.IsNullOrEmpty(lspSpec.Notification))
                 {
                     await lspTestHost.SendNotification(new LanguageServerNotification(lspSpec.Notification, lspSpec.Params));
+                    t_sentEventCount.Value.Value++;
                 }
                 else if (!string.IsNullOrEmpty(lspSpec.ExpectNotification))
                 {
@@ -239,9 +243,9 @@ namespace Microsoft.Docs.Build
 
                     s_languageServerJsonDiff.Verify(expectedNotifications, actualNotifications);
                 }
-                else if (lspSpec.ExpectNoNotificationAfterBuildTime != null)
+                else if (lspSpec.ExpectNoNotification)
                 {
-                    while (lspSpec.ExpectNoNotificationAfterBuildTime > t_finishedBuildCount.Value.Value)
+                    while (t_sentEventCount.Value.Value > t_handledEventCount.Value.Value)
                     {
                         await Task.Delay(1000);
                     }

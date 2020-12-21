@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +18,6 @@ namespace Microsoft.Docs.Build
     {
         private readonly LanguageServerBuilder _languageServerBuilder;
         private readonly LanguageServerPackage _package;
-        private readonly DiagnosticPublisher _diagnosticPublisher;
 
         private readonly DocumentSelector _documentSelector = new(
             new DocumentFilter()
@@ -30,16 +29,16 @@ namespace Microsoft.Docs.Build
         {
             _languageServerBuilder = languageServerBuilder;
             _package = package;
-            _diagnosticPublisher = diagnosticPublisher;
         }
 
         public TextDocumentSyncKind Change { get; } = TextDocumentSyncKind.Full;
 
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
+            var eventTimeStamp = DateTime.UtcNow;
             if (TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
             {
-                _languageServerBuilder.QueueBuild();
+                _languageServerBuilder.QueueBuild(eventTimeStamp);
             }
 
             return Unit.Task;
@@ -60,9 +59,10 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
         {
+            var eventTimeStamp = DateTime.UtcNow;
             if (TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
             {
-                _languageServerBuilder.QueueBuild();
+                _languageServerBuilder.QueueBuild(eventTimeStamp);
             }
             return Unit.Task;
         }
@@ -77,7 +77,11 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
         {
-            _diagnosticPublisher.PublishDiagnostic(notification.TextDocument.Uri, new List<Diagnostic>());
+            var eventTimeStamp = DateTime.UtcNow;
+            if (TryRemoveFileFromPackage(notification.TextDocument.Uri))
+            {
+                _languageServerBuilder.QueueBuild(eventTimeStamp);
+            }
             return Unit.Task;
         }
 
@@ -105,10 +109,24 @@ namespace Microsoft.Docs.Build
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
             {
+                TestQuirks.HandledEventCountIncrease?.Invoke();
                 return false;
             }
 
             _package.AddOrUpdate(filePath, content);
+            return true;
+        }
+
+        private bool TryRemoveFileFromPackage(DocumentUri file)
+        {
+            var filePath = new PathString(file.GetFileSystemPath());
+            if (!filePath.StartsWithPath(_package.BasePath, out _))
+            {
+                TestQuirks.HandledEventCountIncrease?.Invoke();
+                return false;
+            }
+
+            _package.RemoveFile(filePath);
             return true;
         }
     }

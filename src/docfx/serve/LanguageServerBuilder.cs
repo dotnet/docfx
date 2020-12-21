@@ -1,9 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
@@ -13,10 +15,11 @@ namespace Microsoft.Docs.Build
     {
         private readonly Builder _builder;
         private readonly ErrorList _errorList;
-        private readonly SemaphoreSlim _buildSemaphore;
+        private readonly Channel<DateTime> _buildChannel;
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly PathString _workingDirectory;
+        private List<PathString> _filesWithDiagnostics = new();
 
         public LanguageServerBuilder(
             CommandLineOptions options,
@@ -30,29 +33,53 @@ namespace Microsoft.Docs.Build
             _errorList = new();
             _languageServerPackage = languageServerPackage;
             _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _buildSemaphore = new(0);
+            _buildChannel = Channel.CreateUnbounded<DateTime>();
             _ = StartAsync();
         }
 
-        public void QueueBuild()
+        public void QueueBuild(DateTime timeStamp)
         {
-            _buildSemaphore.Release();
+            _buildChannel.Writer.TryWrite(timeStamp);
         }
 
         private async Task StartAsync()
         {
             while (true)
             {
-                await _buildSemaphore.WaitAsync();
-                var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
+                var eventTimeStamp = await WaitToTriggerBuild();
+                var filesToBuild = _languageServerPackage.GetAllFilesInMemory().ToList();
 
-                PublishDiagnosticsParams(filesToBuild);
-                TestQuirks.FinishedBuildCountIncrease?.Invoke();
+                _errorList.Clear();
+                if (filesToBuild.Count > 0)
+                {
+                    _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
+                }
+
+                PublishDiagnosticsParams(filesToBuild, eventTimeStamp);
+                TestQuirks.HandledEventCountIncrease?.Invoke();
             }
         }
 
-        private void PublishDiagnosticsParams(IEnumerable<PathString> files)
+        private async Task<DateTime> WaitToTriggerBuild()
+        {
+            var eventTimeStamp = await _buildChannel.Reader.ReadAsync();
+
+            try
+            {
+                while (true)
+                {
+                    using var cts = new CancellationTokenSource(1000);
+                    eventTimeStamp = await _buildChannel.Reader.ReadAsync(cts.Token);
+                    TestQuirks.HandledEventCountIncrease?.Invoke();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            return eventTimeStamp;
+        }
+
+        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild, DateTime eventTimeStamp)
         {
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupbyFile = from error in _errorList
@@ -65,23 +92,24 @@ namespace Microsoft.Docs.Build
                 var fullPath = _workingDirectory.Concat(diagnostics.Key.Path);
                 filesWithDiagnostics.Add(fullPath);
                 _diagnosticPublisher.PublishDiagnostic(
-                    fullPath, diagnostics.ToList(), _languageServerPackage.TryGetLastWriteTimeUtc(fullPath));
+                    fullPath, diagnostics.ToList(), eventTimeStamp);
             }
 
-            foreach (var fileWithoutDiagnostics in files.Except(filesWithDiagnostics))
+            foreach (var fileWithoutDiagnostics in filesToBuild.Union(_filesWithDiagnostics).Except(filesWithDiagnostics))
             {
-                _diagnosticPublisher.PublishDiagnostic(
-                    fileWithoutDiagnostics, new List<Diagnostic>(), _languageServerPackage.TryGetLastWriteTimeUtc(fileWithoutDiagnostics));
+                _diagnosticPublisher.PublishDiagnostic(fileWithoutDiagnostics, new List<Diagnostic>(), eventTimeStamp);
             }
+
+            _filesWithDiagnostics = filesWithDiagnostics;
         }
 
         private static Diagnostic ConvertToDiagnostics(Error error, SourceInfo source)
         {
             return new Diagnostic
             {
-                Range = new Range(
-                     new Position(ConvertLocation(source.Line), ConvertLocation(source.Column)),
-                     new Position(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
+                Range = new(
+                     new(ConvertLocation(source.Line), ConvertLocation(source.Column)),
+                     new(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
                 Code = error.Code,
                 Source = "Docs Validation",
                 Severity = error.Level switch

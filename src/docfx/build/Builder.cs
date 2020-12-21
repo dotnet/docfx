@@ -49,7 +49,6 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                _errors.Clear();
                 Watcher.StartActivity();
 
                 Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));

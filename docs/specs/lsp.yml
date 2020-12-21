@@ -10,48 +10,39 @@ languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "# Heading\nInvalid Link [B](b.md)"
-        }
+        "textDocument":
+          {
+            "uri": "file:///{DOCSET_PATH}/a.md",
+            "text": "# Heading\nInvalid Link [B](b.md)",
+          },
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": [{
-          "range": {
-            "start": {
-              "line": 1,
-              "character": 13
+        "diagnostics":
+          [
+            {
+              "range":
+                {
+                  "start": { "line": 1, "character": 13 },
+                  "end": { "line": 1, "character": 13 },
+                },
+              "severity": 2,
+              "code": "file-not-found",
+              "source": "Docs Validation",
+              "message": "Invalid file link: 'b.md'.",
             },
-            "end": {
-              "line": 1,
-              "character": 13
-            }
-          },
-          "severity": 2,
-          "code": "file-not-found",
-          "source": "Docs Validation",
-          "message": "Invalid file link: 'b.md'."
-        }]
+          ],
       }
   - notification: "textDocument/didChange"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md",
-        },
-        "contentChanges": [
-          { "text": "New Content" }
-        ]
+        "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md" },
+        "contentChanges": [{ "text": "New Content" }],
       }
   - expectNotification: "textDocument/publishDiagnostics"
-    params:
-      {
-        "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": []
-      }
+    params: { "uri": "file:///{DOCSET_PATH}/a.md", "diagnostics": [] }
 ---
 # Multiple docsets
 os: windows
@@ -67,19 +58,46 @@ languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a/a.md",
-          "text": "[Test](non-existed.md)"
-        }
+        "textDocument":
+          {
+            "uri": "file:///{DOCSET_PATH}/a/a.md",
+            "text": "[Test](non-existed.md)",
+          },
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a/a.md",
-        "diagnostics": [{
-          "code": "file-not-found",
-          "message": "Invalid file link: 'non-existed.md'."
-        }]
+        "diagnostics":
+          [
+            {
+              "code": "file-not-found",
+              "message": "Invalid file link: 'non-existed.md'.",
+            },
+          ],
+      }
+---
+---
+# Invalid config file
+os: windows
+inputs:
+  docfx.yml: "{"
+  a.md:
+languageServer:
+  - notification: "textDocument/didOpen"
+    params:
+      {
+        "textDocument":
+          {
+            "uri": "file:///{DOCSET_PATH}/a.md",
+            "text": "",
+          },
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/docfx.yml",
+        "diagnostics": [{ "code": "yaml-syntax-error" }]
       }
 ---
 # All the opened file should be built in a build round
@@ -92,36 +110,38 @@ languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "[Test](non-existed.md)"
-        }
+        "textDocument":
+          {
+            "uri": "file:///{DOCSET_PATH}/a.md",
+            "text": "[Test](non-existed.md)",
+          },
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": [{ "code": "file-not-found" }]
+        "diagnostics": [{ "code": "file-not-found" }],
       }
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/b.md",
-          "text": "[Test](non-existed.md)"
-        }
+        "textDocument":
+          {
+            "uri": "file:///{DOCSET_PATH}/b.md",
+            "text": "[Test](non-existed.md)",
+          },
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": [{ "code": "file-not-found" }]
+        "diagnostics": [{ "code": "file-not-found" }],
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/b.md",
-        "diagnostics": [{ "code": "file-not-found" }]
+        "diagnostics": [{ "code": "file-not-found" }],
       }
 ---
 # Open/Change of files out of current repo should not trigger build
@@ -133,26 +153,25 @@ languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "[Test](non-existed.md)"
-        }
+        "textDocument":
+          {
+            "uri": "file:///{DOCSET_PATH}/a.md",
+            "text": "[Test](non-existed.md)",
+          },
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": [{ "code": "file-not-found" }]
+        "diagnostics": [{ "code": "file-not-found" }],
       }
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/../a.md",
-          "text": "Invalid change"
-        }
+        "textDocument":
+          { "uri": "file:///{DOCSET_PATH}/../a.md", "text": "Invalid change" },
       }
-  - expectNoNotificationAfterBuildTime: 1
+  - expectNoNotification: true
 ---
 # Diagnostic should be cleared when the file get closed
 os: windows
@@ -163,47 +182,74 @@ languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
+        "textDocument":
+        {
           "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "[Test](non-existed.md)"
+          "text": "[Test](non-existed.md)",
         }
       }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
         "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": [{ "code": "file-not-found" }]
+        "diagnostics": [{ "code": "file-not-found" }],
       }
   - notification: "textDocument/didClose"
-    params:
-      {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md"
-        }
-      }
+    params: { "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md" } }
   - expectNotification: "textDocument/publishDiagnostics"
-    params:
-      {
-        "uri": "file:///{DOCSET_PATH}/a.md",
-        "diagnostics": []
-      }
+    params: { "uri": "file:///{DOCSET_PATH}/a.md", "diagnostics": [] }
 ---
-# All the issues should be reported no matter it is opened or not
+# 1. All the detected issues should be reported no matter it is opened or not
+# 2. They should also be cleared when the caused file gets closed.
 os: windows
 inputs:
   docfx.yml:
-  a.md: 
+  a.md:
   b.md: |
     [Test](non-existed.md)
 languageServer:
   - notification: "textDocument/didOpen"
     params:
       {
-        "textDocument": {
-          "uri": "file:///{DOCSET_PATH}/a.md",
-          "text": "[!INCLUDE[](b.md)]"
-        }
+        "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md", "text": "[!INCLUDE[](b.md)]" }
       }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params: { "uri": "file:///{DOCSET_PATH}/a.md", "diagnostics": [] }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/b.md",
+        "diagnostics": [{ "code": "file-not-found" }],
+      }
+  - notification: "textDocument/didClose"
+    params: { "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md" } }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/b.md",
+        "diagnostics": [],
+      }
+---
+# All the issues should be cleared when there is no opened file
+os: windows
+inputs:
+  docfx.yml: "{"
+  a.md:
+languageServer:
+  - notification: "textDocument/didOpen"
+    params:
+      {
+        "textDocument":
+          { "uri": "file:///{DOCSET_PATH}/a.md", "text": "[!INCLUDE[](b.md)]" },
+      }
+  - expectNotification: "textDocument/publishDiagnostics"
+    params:
+      {
+        "uri": "file:///{DOCSET_PATH}/docfx.yml",
+        "diagnostics": [{ "code": "yaml-syntax-error" }]
+      }
+  - notification: "textDocument/didClose"
+    params: { "textDocument": { "uri": "file:///{DOCSET_PATH}/a.md" } }
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
@@ -213,6 +259,6 @@ languageServer:
   - expectNotification: "textDocument/publishDiagnostics"
     params:
       {
-        "uri": "file:///{DOCSET_PATH}/b.md",
-        "diagnostics": [{ "code": "file-not-found" }]
+        "uri": "file:///{DOCSET_PATH}/docfx.yml",
+        "diagnostics": []
       }

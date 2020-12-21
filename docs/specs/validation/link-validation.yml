@@ -426,7 +426,7 @@ inputs:
       "links": {
         "rules": [
           {
-            "type": "RedirectedLink",
+            "type": "DisallowedLink",
             "message": "Redirected link '{0}' will be broken in isolated environments. Replace with a relative link.",
             "code": "redirected-link",
             "severity": "SUGGESTION",
@@ -436,7 +436,7 @@ inputs:
               "hubpage",
               "toc"
             ],
-            "redirectedLinkTypes": [
+            "linkTypes": [
                "aka.ms", 
                "FWLinks"
             ]
