@@ -14,26 +14,27 @@ namespace Microsoft.Docs.Build
     internal class LanguageServerBuilder
     {
         private readonly Builder _builder;
-        private readonly ErrorList _errorList;
-        private readonly Channel<DateTime> _buildChannel;
+        private readonly ErrorList _errorList = new();
+        private readonly Channel<DateTime> _buildChannel = Channel.CreateUnbounded<DateTime>();
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
+        private readonly ILanguageServerNotificationListener _notificationListener;
         private readonly PathString _workingDirectory;
         private List<PathString> _filesWithDiagnostics = new();
 
         public LanguageServerBuilder(
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
-            LanguageServerPackage languageServerPackage)
+            LanguageServerPackage languageServerPackage,
+            ILanguageServerNotificationListener notificationListener)
         {
             options.DryRun = true;
 
             _workingDirectory = languageServerPackage.BasePath;
             _diagnosticPublisher = diagnosticPublisher;
-            _errorList = new();
             _languageServerPackage = languageServerPackage;
+            _notificationListener = notificationListener;
             _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _buildChannel = Channel.CreateUnbounded<DateTime>();
             _ = StartAsync();
         }
 
@@ -56,7 +57,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 PublishDiagnosticsParams(filesToBuild, eventTimeStamp);
-                TestQuirks.HandledEventCountIncrease?.Invoke();
+                _notificationListener.OnNotificationHandled();
             }
         }
 
@@ -70,7 +71,7 @@ namespace Microsoft.Docs.Build
                 {
                     using var cts = new CancellationTokenSource(1000);
                     eventTimeStamp = await _buildChannel.Reader.ReadAsync(cts.Token);
-                    TestQuirks.HandledEventCountIncrease?.Invoke();
+                    _notificationListener.OnNotificationHandled();
                 }
             }
             catch (OperationCanceledException)
@@ -82,12 +83,12 @@ namespace Microsoft.Docs.Build
         private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild, DateTime eventTimeStamp)
         {
             List<PathString> filesWithDiagnostics = new();
-            var diagnosticsGroupbyFile = from error in _errorList
+            var diagnosticsGroupByFile = from error in _errorList
                                          let source = error.Source
                                          where source != null
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
-            foreach (var diagnostics in diagnosticsGroupbyFile)
+            foreach (var diagnostics in diagnosticsGroupByFile)
             {
                 var fullPath = _workingDirectory.Concat(diagnostics.Key.Path);
                 filesWithDiagnostics.Add(fullPath);

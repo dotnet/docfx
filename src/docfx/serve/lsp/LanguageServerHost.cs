@@ -23,24 +23,26 @@ namespace Microsoft.Docs.Build
         }
 
         public static Task<LanguageServer> StartLanguageServer(
-            string workingDirectory, CommandLineOptions commandLineOptions, PipeReader input, PipeWriter output, Package? package = null)
+            string workingDirectory,
+            CommandLineOptions commandLineOptions,
+            PipeReader input,
+            PipeWriter output,
+            Package? package = null,
+            ILanguageServerNotificationListener? notificationListener = null)
         {
             return LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
                 .WithHandler<TextDocumentHandler>()
-                .WithServices(services =>
-                {
-                    package ??= new LocalPackage(workingDirectory);
-                    services.AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package));
-                    services.AddSingleton(commandLineOptions);
-                    services.AddSingleton<DiagnosticPublisher>();
-                    services.AddSingleton<LanguageServerBuilder>();
-
-                    services.AddOptions();
-                    services.AddLogging();
-                })
+                .WithServices(services => services
+                    .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
+                    .AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package ?? new LocalPackage(workingDirectory)))
+                    .AddSingleton(commandLineOptions)
+                    .AddSingleton<DiagnosticPublisher>()
+                    .AddSingleton<LanguageServerBuilder>()
+                    .AddOptions()
+                    .AddLogging())
                 .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace))));
         }
 

@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
         private readonly LanguageServerBuilder _languageServerBuilder;
+        private readonly ILanguageServerNotificationListener _notificationListener;
         private readonly LanguageServerPackage _package;
 
         private readonly DocumentSelector _documentSelector = new(
@@ -25,9 +26,11 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(LanguageServerBuilder languageServerBuilder, LanguageServerPackage package, DiagnosticPublisher diagnosticPublisher)
+        public TextDocumentHandler(
+            LanguageServerBuilder languageServerBuilder, ILanguageServerNotificationListener notificationListener, LanguageServerPackage package)
         {
             _languageServerBuilder = languageServerBuilder;
+            _notificationListener = notificationListener;
             _package = package;
         }
 
@@ -36,11 +39,44 @@ namespace Microsoft.Docs.Build
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
             var eventTimeStamp = DateTime.UtcNow;
-            if (TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
+            if (!TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
             {
-                _languageServerBuilder.QueueBuild(eventTimeStamp);
+                _notificationListener.OnNotificationHandled();
+                return Unit.Task;
             }
 
+            _languageServerBuilder.QueueBuild(eventTimeStamp);
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
+        {
+            var eventTimeStamp = DateTime.UtcNow;
+            if (!TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
+            {
+                _notificationListener.OnNotificationHandled();
+                return Unit.Task;
+            }
+
+            _languageServerBuilder.QueueBuild(eventTimeStamp);
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
+        {
+            var eventTimeStamp = DateTime.UtcNow;
+            if (!TryRemoveFileFromPackage(notification.TextDocument.Uri))
+            {
+                _notificationListener.OnNotificationHandled();
+                return Unit.Task;
+            }
+            _languageServerBuilder.QueueBuild(eventTimeStamp);
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(DidSaveTextDocumentParams notification, CancellationToken token)
+        {
+            _notificationListener.OnNotificationHandled();
             return Unit.Task;
         }
 
@@ -57,37 +93,12 @@ namespace Microsoft.Docs.Build
         {
         }
 
-        public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
-        {
-            var eventTimeStamp = DateTime.UtcNow;
-            if (TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
-            {
-                _languageServerBuilder.QueueBuild(eventTimeStamp);
-            }
-            return Unit.Task;
-        }
-
         TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions()
         {
             return new TextDocumentRegistrationOptions()
             {
                 DocumentSelector = _documentSelector,
             };
-        }
-
-        public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
-        {
-            var eventTimeStamp = DateTime.UtcNow;
-            if (TryRemoveFileFromPackage(notification.TextDocument.Uri))
-            {
-                _languageServerBuilder.QueueBuild(eventTimeStamp);
-            }
-            return Unit.Task;
-        }
-
-        public Task<Unit> Handle(DidSaveTextDocumentParams notification, CancellationToken token)
-        {
-            return Unit.Task;
         }
 
         TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions()
@@ -109,7 +120,6 @@ namespace Microsoft.Docs.Build
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
             {
-                TestQuirks.HandledEventCountIncrease?.Invoke();
                 return false;
             }
 
@@ -122,7 +132,6 @@ namespace Microsoft.Docs.Build
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
             {
-                TestQuirks.HandledEventCountIncrease?.Invoke();
                 return false;
             }
 

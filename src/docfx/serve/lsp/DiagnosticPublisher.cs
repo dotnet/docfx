@@ -15,10 +15,12 @@ namespace Microsoft.Docs.Build
     {
         private readonly ILanguageServerFacade _languageServer;
         private readonly ConcurrentDictionary<DocumentUri, DateTime> _fileDiagnosticLastUpdateTime = new ConcurrentDictionary<DocumentUri, DateTime>();
+        private readonly ILanguageServerNotificationListener _notificationListener;
 
-        public DiagnosticPublisher(ILanguageServerFacade languageServer)
+        public DiagnosticPublisher(ILanguageServerFacade languageServer, ILanguageServerNotificationListener notificationListener)
         {
             _languageServer = languageServer;
+            _notificationListener = notificationListener;
         }
 
         public void PublishDiagnostic(PathString file, List<Diagnostic> diagnostics, DateTime? timeStamp = null)
@@ -37,6 +39,8 @@ namespace Microsoft.Docs.Build
                     Diagnostics = new Container<Diagnostic>(diagnostics),
                 });
             }
+
+            _notificationListener.OnNotificationSent();
         }
     }
 }
