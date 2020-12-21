@@ -32,7 +32,8 @@ namespace Microsoft.Docs.Build
         private int _serverNotificationHandled;
         private int _clientNotificationSent;
         private int _clientNotificationReceived;
-        private volatile TaskCompletionSource _notificationSync = new TaskCompletionSource();
+        private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
+        private TaskCompletionSource _notificationSync = new TaskCompletionSource();
 
         public LanguageServerTestClient(string workingDirectory, Package package)
         {
@@ -48,7 +49,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (file, text) in command.OpenFiles)
                 {
-                    Interlocked.Increment(ref _clientNotificationSent);
+                    BeforeSendNotification();
 
                     client.DidOpenTextDocument(new() { TextDocument = new() { Uri = ToUri(file), Text = text } });
                 }
@@ -57,7 +58,7 @@ namespace Microsoft.Docs.Build
             {
                 foreach (var (file, text) in command.EditFiles)
                 {
-                    Interlocked.Increment(ref _clientNotificationSent);
+                    BeforeSendNotification();
 
                     client.DidChangeTextDocument(new()
                     {
@@ -74,9 +75,8 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectNoNotification)
             {
-                var before = _clientNotificationReceived;
                 await SynchronizeNotifications();
-                Assert.Equal(before, _clientNotificationReceived);
+                Assert.Equal(_clientNotificationReceivedBeforeSync, _clientNotificationReceived);
             }
             else
             {
@@ -98,9 +98,15 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private void BeforeSendNotification()
+        {
+            Interlocked.Increment(ref _clientNotificationSent);
+            _notificationSync = new TaskCompletionSource();
+            _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
+        }
+
         private Task SynchronizeNotifications()
         {
-            _notificationSync = new TaskCompletionSource();
             return _notificationSync.Task;
         }
 
