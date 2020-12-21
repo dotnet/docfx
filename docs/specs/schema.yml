@@ -556,7 +556,10 @@ repos:
           }
         _themes/ContentTemplate/TestData.html.primary.tmpl:
 outputs:
-  unit.json:
+  unit.json: |
+    {
+      "content": "<h1 id=\"demo-code\">demo code</h1>\n<pre><code class=\"lang-demo\">Console.WriteLine(&quot;Hello, world!&quot;);\n</code></pre>"
+    }
 ---
 # Report approximate line number for markdown contents inside YAML
 inputs:
