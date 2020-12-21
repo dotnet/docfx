@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public void QueueBuild()
         {
-            _buildChannel.Writer.TryWrite(false);
+            _buildChannel.Writer.TryWrite(true);
         }
 
         private async Task StartAsync()
