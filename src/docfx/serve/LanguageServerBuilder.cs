@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
     internal class LanguageServerBuilder
     {
         private readonly Builder _builder;
-        private readonly ErrorList _errorList = new();
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
@@ -34,7 +33,7 @@ namespace Microsoft.Docs.Build
             _diagnosticPublisher = diagnosticPublisher;
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
-            _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
+            _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
             _ = StartAsync();
         }
 
@@ -48,10 +47,12 @@ namespace Microsoft.Docs.Build
             while (true)
             {
                 await WaitToTriggerBuild();
-                var filesToBuild = _languageServerPackage.GetAllFilesInMemory().ToList();
-                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
-                PublishDiagnosticsParams(filesToBuild);
+                var errors = new ErrorList();
+                var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+                _builder.Build(errors, filesToBuild.Select(f => f.Value).ToArray());
+
+                PublishDiagnosticsParams(errors, filesToBuild);
                 _notificationListener.OnNotificationHandled();
             }
         }
@@ -74,10 +75,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild)
+        private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
-            var diagnosticsGroupByFile = from error in _errorList
+            var diagnosticsGroupByFile = from error in errors
                                          let source = error.Source
                                          where source != null
                                          let diagnostic = ConvertToDiagnostics(error, source)

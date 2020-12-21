@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         public void DedupErrors()
         {
             using var errors = new ErrorWriter();
-            var errorLog = new ErrorLog(errors, new Config());
+            var errorLog = new ErrorLog(errors, ".", ".");
             errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", $"message 1"));
             errorLog.Add(new Error(ErrorLevel.Error, "an-error-code", $"message 1"));
             errorLog.Add(new Error(ErrorLevel.Warning, "an-error-code", $"message 2"));
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         {
             using var errors = new ErrorWriter();
             var config = new Config();
-            var errorLog = new ErrorLog(errors, config);
+            var errorLog = new ErrorLog(errors, ".", ".") { Config = config };
 
             var testFiles = 100;
             var testErrors = new List<Error>();
