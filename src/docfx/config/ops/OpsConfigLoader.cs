@@ -192,11 +192,6 @@ namespace Microsoft.Docs.Build
                     var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
                     var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
                     conceptualToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ConceptualTOCUrl;
-
-                    if (!string.IsNullOrEmpty(config.ReferenceTOCUrl))
-                    {
-                        refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
-                    }
                     conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
                 }
 
