@@ -13,12 +13,12 @@ namespace Microsoft.Docs.Build
         private readonly HashSet<IFunction> _children = new();
 
         private volatile bool _hasChanged;
-        private volatile int _hasChangedActivityId;
-        private volatile int _replayActivityId;
+        private volatile object _hasChangedScope;
+        private volatile object _replayScope;
 
         public WatchFunction()
         {
-            _hasChangedActivityId = _replayActivityId = Watcher.GetActivityId();
+            _hasChangedScope = _replayScope = Watcher.GetCurrentScope();
         }
 
         public bool HasChildren => _children.Count > 0;
@@ -33,25 +33,25 @@ namespace Microsoft.Docs.Build
 
         public bool HasChanged()
         {
-            var activityId = Watcher.GetActivityId();
-            if (activityId == _hasChangedActivityId)
+            var scope = Watcher.GetCurrentScope();
+            if (scope == _hasChangedScope)
             {
                 return _hasChanged;
             }
 
-            _hasChangedActivityId = activityId;
+            _hasChangedScope = scope;
             return _hasChanged = HasChangedCore();
         }
 
         public void Replay()
         {
-            var activityId = Watcher.GetActivityId();
-            if (activityId == _replayActivityId)
+            var scope = Watcher.GetCurrentScope();
+            if (scope == _replayScope)
             {
                 return;
             }
 
-            _replayActivityId = activityId;
+            _replayScope = scope;
             ReplayCore();
         }
 

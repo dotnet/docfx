@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
         {
             var before = GetFileLastWriteTimes(path);
 
-            return new Disposable(() =>
+            return new DelegatingDisposable(() =>
             {
                 if (!skipInputCheck)
                 {
@@ -222,15 +222,6 @@ namespace Microsoft.Docs.Build
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 memoryStream.CopyTo(fileStream);
             }
-        }
-
-        private class Disposable : IDisposable
-        {
-            private readonly Action _dispose;
-
-            public Disposable(Action dispose) => _dispose = dispose;
-
-            public void Dispose() => _dispose();
         }
     }
 }
