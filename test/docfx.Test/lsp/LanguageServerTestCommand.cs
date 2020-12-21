@@ -12,6 +12,8 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string> EditFiles { get; init; }
 
+        public List<string> CloseFiles { get; init; }
+
         public Dictionary<string, JToken> ExpectDiagnostics { get; init; }
 
         public bool ExpectNoNotification { get; init; }

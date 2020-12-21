@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
 
             using var errors = new ErrorWriter(options.Log);
 
-            var files = options.Files?.Select(Path.GetFullPath).ToArray() ?? Array.Empty<string>();
+            var files = options.Files?.Select(Path.GetFullPath).ToArray();
 
             package ??= new LocalPackage(workingDirectory);
 
@@ -45,14 +45,19 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        public void Build(params string[] files)
+        public void Build(string[]? files)
         {
             try
             {
                 _errors.Clear();
                 Watcher.StartActivity();
 
-                Parallel.ForEach(_docsets.Value, docset => docset.Build(Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
+                if (files?.Length == 0)
+                {
+                    return;
+                }
+
+                Parallel.ForEach(_docsets.Value, docset => docset.Build(files == null ? null : Array.ConvertAll(files, path => GetPathToDocset(docset, path))));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

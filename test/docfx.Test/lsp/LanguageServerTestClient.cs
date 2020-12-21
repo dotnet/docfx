@@ -67,6 +67,18 @@ namespace Microsoft.Docs.Build
                     });
                 }
             }
+            else if (command.CloseFiles != null)
+            {
+                foreach (var file in command.CloseFiles)
+                {
+                    BeforeSendNotification();
+
+                    client.DidCloseTextDocument(new()
+                    {
+                        TextDocument = new(ToUri(file)),
+                    });
+                }
+            }
             else if (command.ExpectDiagnostics != null)
             {
                 await SynchronizeNotifications();

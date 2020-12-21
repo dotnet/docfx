@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
@@ -21,10 +23,13 @@ namespace Microsoft.Docs.Build
         }
 
         public void PublishDiagnostic(PathString file, List<Diagnostic> diagnostics)
+            => PublishDiagnostic(DocumentUri.File(file), diagnostics);
+
+        public void PublishDiagnostic(DocumentUri file, List<Diagnostic> diagnostics)
         {
             _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
             {
-                Uri = DocumentUri.File(file),
+                Uri = file,
                 Diagnostics = new Container<Diagnostic>(diagnostics),
             });
 

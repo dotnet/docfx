@@ -62,3 +62,50 @@ languageServer:
   - openFiles:
       '../a.md': "Invalid change"
   - expectNoNotification: true
+---
+# Diagnostic should be cleared when the file get closed
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[Test](non-existed.md)"
+  - expectDiagnostics: 
+      a.md: [{ "code": "file-not-found" }]
+  - closeFiles:
+    - a.md
+  - expectDiagnostics: 
+      a.md: []
+---
+# 1. All the detected issues should be reported no matter it is opened or not
+# 2. They should also be cleared when the caused file gets closed.
+inputs:
+  docfx.yml:
+  a.md:
+  b.md: |
+    [Test](non-existed.md)
+languageServer:
+  - openFiles:
+      a.md: "[!INCLUDE[](b.md)]"
+  - expectDiagnostics: 
+      a.md: []
+      b.md: [{ "code": "file-not-found" }]
+  - closeFiles:
+    - a.md
+  - expectDiagnostics: 
+      b.md: []
+---
+# All the issues should be cleared when there is no opened file
+inputs:
+  docfx.yml: "{"
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[!INCLUDE[](b.md)]"
+  - expectDiagnostics: 
+      docfx.yml: [{ "code": "yaml-syntax-error" }]
+  - closeFiles:
+    - a.md
+  - expectDiagnostics: 
+      docfx.yml: []
+      a.md: []

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,7 +62,12 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
         {
-            _notificationListener.OnNotificationHandled();
+            if (!TryRemoveFileFromPackage(notification.TextDocument.Uri))
+            {
+                _notificationListener.OnNotificationHandled();
+                return Unit.Task;
+            }
+            _languageServerBuilder.QueueBuild();
             return Unit.Task;
         }
 
@@ -115,6 +121,18 @@ namespace Microsoft.Docs.Build
             }
 
             _package.AddOrUpdate(filePath, content);
+            return true;
+        }
+
+        private bool TryRemoveFileFromPackage(DocumentUri file)
+        {
+            var filePath = new PathString(file.GetFileSystemPath());
+            if (!filePath.StartsWithPath(_package.BasePath, out _))
+            {
+                return false;
+            }
+
+            _package.RemoveFile(filePath);
             return true;
         }
     }

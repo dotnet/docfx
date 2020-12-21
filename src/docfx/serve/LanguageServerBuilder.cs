@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly ILanguageServerNotificationListener _notificationListener;
         private readonly PathString _workingDirectory;
+        private List<PathString> _filesWithDiagnostics = new();
 
         public LanguageServerBuilder(
             CommandLineOptions options,
@@ -47,8 +48,7 @@ namespace Microsoft.Docs.Build
             while (true)
             {
                 await WaitToTriggerBuild();
-
-                var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+                var filesToBuild = _languageServerPackage.GetAllFilesInMemory().ToList();
                 _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
                 PublishDiagnosticsParams(filesToBuild);
@@ -74,20 +74,27 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void PublishDiagnosticsParams(IEnumerable<PathString> files)
+        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild)
         {
-            foreach (var file in files)
+            List<PathString> filesWithDiagnostics = new();
+            var diagnosticsGroupByFile = from error in _errorList
+                                         let source = error.Source
+                                         where source != null
+                                         let diagnostic = ConvertToDiagnostics(error, source)
+                                         group diagnostic by source.File;
+            foreach (var diagnostics in diagnosticsGroupByFile)
             {
-                if (file.StartsWithPath(_workingDirectory, out var relativePath))
-                {
-                    var diagnostics = from error in _errorList
-                                      let source = error.Source
-                                      where source != null && source.File.Path == relativePath
-                                      select ConvertToDiagnostics(error, source);
-
-                    _diagnosticPublisher.PublishDiagnostic(file, diagnostics.ToList());
-                }
+                var fullPath = _workingDirectory.Concat(diagnostics.Key.Path);
+                filesWithDiagnostics.Add(fullPath);
+                _diagnosticPublisher.PublishDiagnostic(fullPath, diagnostics.ToList());
             }
+
+            foreach (var fileWithoutDiagnostics in filesToBuild.Union(_filesWithDiagnostics).Except(filesWithDiagnostics))
+            {
+                _diagnosticPublisher.PublishDiagnostic(fileWithoutDiagnostics, new List<Diagnostic>());
+            }
+
+            _filesWithDiagnostics = filesWithDiagnostics;
         }
 
         private static Diagnostic ConvertToDiagnostics(Error error, SourceInfo source)
