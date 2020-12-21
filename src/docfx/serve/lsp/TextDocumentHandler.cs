@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +16,7 @@ namespace Microsoft.Docs.Build
     internal class TextDocumentHandler : ITextDocumentSyncHandler
     {
         private readonly LanguageServerBuilder _languageServerBuilder;
+        private readonly ILanguageServerNotificationListener _notificationListener;
         private readonly LanguageServerPackage _package;
 
         private readonly DocumentSelector _documentSelector = new(
@@ -26,9 +25,11 @@ namespace Microsoft.Docs.Build
                 Pattern = "**/*.{md,yml,json}",
             });
 
-        public TextDocumentHandler(LanguageServerBuilder languageServerBuilder, LanguageServerPackage package)
+        public TextDocumentHandler(
+            LanguageServerBuilder languageServerBuilder, ILanguageServerNotificationListener notificationListener, LanguageServerPackage package)
         {
             _languageServerBuilder = languageServerBuilder;
+            _notificationListener = notificationListener;
             _package = package;
         }
 
@@ -36,11 +37,37 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
-            if (TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
+            if (!TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
             {
-                _languageServerBuilder.QueueBuild();
+                _notificationListener.OnNotificationHandled();
+                return Unit.Task;
             }
 
+            _languageServerBuilder.QueueBuild();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
+        {
+            if (!TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
+            {
+                _notificationListener.OnNotificationHandled();
+                return Unit.Task;
+            }
+
+            _languageServerBuilder.QueueBuild();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
+        {
+            _notificationListener.OnNotificationHandled();
+            return Unit.Task;
+        }
+
+        public Task<Unit> Handle(DidSaveTextDocumentParams notification, CancellationToken token)
+        {
+            _notificationListener.OnNotificationHandled();
             return Unit.Task;
         }
 
@@ -57,31 +84,12 @@ namespace Microsoft.Docs.Build
         {
         }
 
-        public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
-        {
-            if (TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
-            {
-                _languageServerBuilder.QueueBuild();
-            }
-            return Unit.Task;
-        }
-
         TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions()
         {
             return new TextDocumentRegistrationOptions()
             {
                 DocumentSelector = _documentSelector,
             };
-        }
-
-        public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
-        {
-            return Unit.Task;
-        }
-
-        public Task<Unit> Handle(DidSaveTextDocumentParams notification, CancellationToken token)
-        {
-            return Unit.Task;
         }
 
         TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions()
@@ -103,7 +111,6 @@ namespace Microsoft.Docs.Build
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
             {
-                TestQuirks.HandledEventCountIncrease?.Invoke();
                 return false;
             }
 

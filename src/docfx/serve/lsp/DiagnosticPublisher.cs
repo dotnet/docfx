@@ -12,10 +12,12 @@ namespace Microsoft.Docs.Build
     internal class DiagnosticPublisher
     {
         private readonly ILanguageServerFacade _languageServer;
+        private readonly ILanguageServerNotificationListener _notificationListener;
 
-        public DiagnosticPublisher(ILanguageServerFacade languageServer)
+        public DiagnosticPublisher(ILanguageServerFacade languageServer, ILanguageServerNotificationListener notificationListener)
         {
             _languageServer = languageServer;
+            _notificationListener = notificationListener;
         }
 
         public void PublishDiagnostic(PathString file, List<Diagnostic> diagnostics)
@@ -25,6 +27,8 @@ namespace Microsoft.Docs.Build
                 Uri = DocumentUri.File(file),
                 Diagnostics = new Container<Diagnostic>(diagnostics),
             });
+
+            _notificationListener.OnNotificationSent();
         }
     }
 }
