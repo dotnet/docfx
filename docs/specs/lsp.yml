@@ -1,6 +1,5 @@
 ---
 # Basic lsp test
-os: windows
 inputs:
   docfx.yml:
 languageServer:
@@ -21,7 +20,6 @@ languageServer:
       a.md: []
 ---
 # Multiple docsets
-os: windows
 inputs:
   docsets.yml:
   a/docfx.yml:
@@ -37,7 +35,6 @@ languageServer:
       a/a.md: [{ "code": "file-not-found", "message": "Invalid file link: 'non-existed.md'."}]
 ---
 # All the opened file should be built in a build round
-os: windows
 inputs:
   docfx.yml:
   a.md:
@@ -54,7 +51,6 @@ languageServer:
       b.md: [{ "code": "file-not-found" }]
 ---
 # Open/Change of files out of current repo should not trigger build
-os: windows
 inputs:
   docfx.yml:
   a.md:
