@@ -292,7 +292,7 @@ namespace Microsoft.Docs.Build
             }
 
             // resolve from fallback docset
-            if (_buildOptions.IsLocalizedBuild && contentFallback)
+            if (_buildOptions.IsLocalizedBuild && (contentFallback || !pathToDocset.Value.EndsWith(".md", StringComparison.OrdinalIgnoreCase)))
             {
                 if (_buildScope.TryGetActualFilePath(FilePath.Fallback(pathToDocset), out actualPath))
                 {
