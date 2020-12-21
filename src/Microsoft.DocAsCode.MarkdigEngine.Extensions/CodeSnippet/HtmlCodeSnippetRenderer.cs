@@ -292,7 +292,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, codeSnippet);
+            var (content, codeSnippetPath) = _context.ReadFile(codeSnippet.CodePath, codeSnippet, true);
 
             if (content == null)
             {
