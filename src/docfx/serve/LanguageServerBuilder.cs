@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private readonly Builder _builder;
         private readonly ErrorList _errorList = new();
-        private readonly Channel<DateTime> _buildChannel = Channel.CreateUnbounded<DateTime>();
+        private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly ILanguageServerNotificationListener _notificationListener;
@@ -38,49 +38,43 @@ namespace Microsoft.Docs.Build
             _ = StartAsync();
         }
 
-        public void QueueBuild(DateTime timeStamp)
+        public void QueueBuild()
         {
-            _buildChannel.Writer.TryWrite(timeStamp);
+            _buildChannel.Writer.TryWrite(true);
         }
 
         private async Task StartAsync()
         {
             while (true)
             {
-                var eventTimeStamp = await WaitToTriggerBuild();
+                await WaitToTriggerBuild();
                 var filesToBuild = _languageServerPackage.GetAllFilesInMemory().ToList();
+                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
 
-                _errorList.Clear();
-                if (filesToBuild.Count > 0)
-                {
-                    _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
-                }
-
-                PublishDiagnosticsParams(filesToBuild, eventTimeStamp);
+                PublishDiagnosticsParams(filesToBuild);
                 _notificationListener.OnNotificationHandled();
             }
         }
 
-        private async Task<DateTime> WaitToTriggerBuild()
+        private async Task WaitToTriggerBuild()
         {
-            var eventTimeStamp = await _buildChannel.Reader.ReadAsync();
+            await _buildChannel.Reader.ReadAsync();
 
             try
             {
                 while (true)
                 {
                     using var cts = new CancellationTokenSource(1000);
-                    eventTimeStamp = await _buildChannel.Reader.ReadAsync(cts.Token);
+                    await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();
                 }
             }
             catch (OperationCanceledException)
             {
             }
-            return eventTimeStamp;
         }
 
-        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild, DateTime eventTimeStamp)
+        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupByFile = from error in _errorList
@@ -92,13 +86,12 @@ namespace Microsoft.Docs.Build
             {
                 var fullPath = _workingDirectory.Concat(diagnostics.Key.Path);
                 filesWithDiagnostics.Add(fullPath);
-                _diagnosticPublisher.PublishDiagnostic(
-                    fullPath, diagnostics.ToList(), eventTimeStamp);
+                _diagnosticPublisher.PublishDiagnostic(fullPath, diagnostics.ToList());
             }
 
             foreach (var fileWithoutDiagnostics in filesToBuild.Union(_filesWithDiagnostics).Except(filesWithDiagnostics))
             {
-                _diagnosticPublisher.PublishDiagnostic(fileWithoutDiagnostics, new List<Diagnostic>(), eventTimeStamp);
+                _diagnosticPublisher.PublishDiagnostic(fileWithoutDiagnostics, new List<Diagnostic>());
             }
 
             _filesWithDiagnostics = filesWithDiagnostics;

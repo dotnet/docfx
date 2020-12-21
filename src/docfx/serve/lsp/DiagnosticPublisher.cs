@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
     internal class DiagnosticPublisher
     {
         private readonly ILanguageServerFacade _languageServer;
-        private readonly ConcurrentDictionary<DocumentUri, DateTime> _fileDiagnosticLastUpdateTime = new ConcurrentDictionary<DocumentUri, DateTime>();
         private readonly ILanguageServerNotificationListener _notificationListener;
 
         public DiagnosticPublisher(ILanguageServerFacade languageServer, ILanguageServerNotificationListener notificationListener)
@@ -23,22 +22,16 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
         }
 
-        public void PublishDiagnostic(PathString file, List<Diagnostic> diagnostics, DateTime? timeStamp = null)
-            => PublishDiagnostic(DocumentUri.File(file), diagnostics, timeStamp);
+        public void PublishDiagnostic(PathString file, List<Diagnostic> diagnostics)
+            => PublishDiagnostic(DocumentUri.File(file), diagnostics);
 
-        public void PublishDiagnostic(DocumentUri file, List<Diagnostic> diagnostics, DateTime? timeStamp = null)
+        public void PublishDiagnostic(DocumentUri file, List<Diagnostic> diagnostics)
         {
-            timeStamp ??= DateTime.UtcNow;
-
-            var lastUpdateTime = _fileDiagnosticLastUpdateTime.GetOrAdd(file, (_) => (DateTime)timeStamp);
-            if (timeStamp >= lastUpdateTime)
+            _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
             {
-                _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
-                {
-                    Uri = file,
-                    Diagnostics = new Container<Diagnostic>(diagnostics),
-                });
-            }
+                Uri = file,
+                Diagnostics = new Container<Diagnostic>(diagnostics),
+            });
 
             _notificationListener.OnNotificationSent();
         }

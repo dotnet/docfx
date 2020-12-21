@@ -38,39 +38,36 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
-            var eventTimeStamp = DateTime.UtcNow;
             if (!TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
             {
                 _notificationListener.OnNotificationHandled();
                 return Unit.Task;
             }
 
-            _languageServerBuilder.QueueBuild(eventTimeStamp);
+            _languageServerBuilder.QueueBuild();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
         {
-            var eventTimeStamp = DateTime.UtcNow;
             if (!TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
             {
                 _notificationListener.OnNotificationHandled();
                 return Unit.Task;
             }
 
-            _languageServerBuilder.QueueBuild(eventTimeStamp);
+            _languageServerBuilder.QueueBuild();
             return Unit.Task;
         }
 
         public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
         {
-            var eventTimeStamp = DateTime.UtcNow;
             if (!TryRemoveFileFromPackage(notification.TextDocument.Uri))
             {
                 _notificationListener.OnNotificationHandled();
                 return Unit.Task;
             }
-            _languageServerBuilder.QueueBuild(eventTimeStamp);
+            _languageServerBuilder.QueueBuild();
             return Unit.Task;
         }
 

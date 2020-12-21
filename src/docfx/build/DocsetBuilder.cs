@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void Build(params string[] files)
+        public void Build(string[]? files)
         {
             try
             {
@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
-                var filesToBuild = files.Length > 0
+                var filesToBuild = files != null
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
                     : _publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
 
