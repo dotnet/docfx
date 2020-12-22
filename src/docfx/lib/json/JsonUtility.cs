@@ -64,11 +64,11 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new(() => new());
+        private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
         internal static JsonSerializer Serializer => s_serializer;
 
-        internal static Status? State => t_status.Value!.TryPeek(out var result) ? result : null;
+        internal static Status? State => s_status.Value!.TryPeek(out var result) ? result : null;
 
         static JsonUtility()
         {
@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             {
                 var status = new Status { FilePath = file };
 
-                t_status.Value!.Push(status);
+                s_status.Value!.Push(status);
 
                 return (checkAdditionalContent
                     ? s_serializerCheckingAdditional.Deserialize<T>(reader)
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_status.Value!.Pop();
+                s_status.Value!.Pop();
             }
         }
 
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var status = new Status { Reader = new JTokenReader(token) };
-                t_status.Value!.Push(status);
+                s_status.Value!.Push(status);
 
                 var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
                 errors.AddRange(status.Errors);
@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_status.Value!.Pop();
+                s_status.Value!.Pop();
             }
         }
 
@@ -534,7 +534,7 @@ namespace Microsoft.Docs.Build
             {
                 if (args?.ErrorContext.Error is JsonReaderException || args?.ErrorContext.Error is JsonSerializationException)
                 {
-                    var state = t_status.Value!.Peek();
+                    var state = s_status.Value!.Peek();
                     state.Errors.Add(Errors.Json.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }

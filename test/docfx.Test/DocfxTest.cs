@@ -21,17 +21,17 @@ namespace Microsoft.Docs.Build
     {
         private static readonly JsonDiff s_jsonDiff = CreateJsonDiff();
         private static readonly ConcurrentDictionary<string, object> s_locks = new();
-        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_repos = new();
-        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> t_remoteFiles = new();
-        private static readonly AsyncLocal<string> t_appDataPath = new();
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> s_repos = new();
+        private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> s_remoteFiles = new();
+        private static readonly AsyncLocal<string> s_appDataPath = new();
 
         static DocfxTest()
         {
-            TestQuirks.AppDataPath = () => t_appDataPath.Value;
+            TestQuirks.AppDataPath = () => s_appDataPath.Value;
 
             TestQuirks.GitRemoteProxy = remote =>
             {
-                var mockedRepos = t_repos.Value;
+                var mockedRepos = s_repos.Value;
                 if (mockedRepos != null && mockedRepos.TryGetValue(remote, out var mockedLocation))
                 {
                     return mockedLocation;
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             TestQuirks.HttpProxy = remote =>
             {
-                var mockedRemoteFiles = t_remoteFiles.Value;
+                var mockedRemoteFiles = s_remoteFiles.Value;
                 if (mockedRemoteFiles != null && mockedRemoteFiles.TryGetValue(remote, out var mockedContent))
                 {
                     return mockedContent;
@@ -75,9 +75,9 @@ namespace Microsoft.Docs.Build
 
                 try
                 {
-                    t_repos.Value = repos;
-                    t_remoteFiles.Value = spec.Http;
-                    t_appDataPath.Value = appDataPath;
+                    s_repos.Value = repos;
+                    s_remoteFiles.Value = spec.Http;
+                    s_appDataPath.Value = appDataPath;
                     RunCore(docsetPath, outputPath, test, spec, package);
                 }
                 catch (Exception exception)
@@ -90,9 +90,9 @@ namespace Microsoft.Docs.Build
                 }
                 finally
                 {
-                    t_repos.Value = null;
-                    t_remoteFiles.Value = null;
-                    t_appDataPath.Value = null;
+                    s_repos.Value = null;
+                    s_remoteFiles.Value = null;
+                    s_appDataPath.Value = null;
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
             {
                 // always build from localization docset for localization tests
                 // https://dev.azure.com/ceapex/Engineering/_build/results?buildId=97101&view=logs&j=133bd042-0fac-58b5-e6e7-01018e6dc4d4&t=b907bda6-23f1-5af4-47fe-b951a88dbb9a&l=10898
-                var locDocsetPath = t_repos.Value.FirstOrDefault(
+                var locDocsetPath = s_repos.Value.FirstOrDefault(
                     repo => repo.Key.EndsWith($".{spec.Locale}") || repo.Key.EndsWith(".loc")).Value;
 
                 if (locDocsetPath != null)

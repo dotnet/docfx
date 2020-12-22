@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -524,7 +525,8 @@ namespace Microsoft.Docs.Build
 
             public IReadOnlyCollection<object> F { get; set; } = new List<object>();
 
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "Test")]
+            [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "Test")]
+            [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Test")]
             public Dictionary<string, Dictionary<string, object>> G = new Dictionary<string, Dictionary<string, object>>();
         }
 

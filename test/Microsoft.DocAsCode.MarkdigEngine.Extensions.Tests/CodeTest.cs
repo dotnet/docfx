@@ -1891,8 +1891,8 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         public void CodeTestBlockGeneralCSharp_Error(string source)
         {
             // arrange
-            var filename = "";
-            var content = "";
+            string filename;
+            string content;
             if (source.Contains("source.cs"))
             {
                 filename = "source.cs";
