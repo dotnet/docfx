@@ -72,14 +72,5 @@ namespace Microsoft.Docs.Build
                 return ErrorSinkResult.Ok;
             }
         }
-
-        public void Clear()
-        {
-            ErrorCount = 0;
-            WarningCount = 0;
-            SuggestionCount = 0;
-            InfoCount = 0;
-            _errors.Clear();
-        }
     }
 }

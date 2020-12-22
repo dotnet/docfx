@@ -11,17 +11,16 @@ namespace Microsoft.Docs.Build
 {
     internal class Builder
     {
-        private readonly ErrorBuilder _errors;
+        private readonly ScopedErrorBuilder _errors = new();
         private readonly string _workingDirectory;
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
         private readonly Package _package;
 
-        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, Package package)
+        public Builder(string workingDirectory, CommandLineOptions options, Package package)
         {
             _workingDirectory = workingDirectory;
             _options = options;
-            _errors = errors;
             _package = package;
             _docsets = new(LoadDocsets);
         }
@@ -36,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             package ??= new LocalPackage(workingDirectory);
 
-            new Builder(errors, workingDirectory, options, package).Build(files);
+            new Builder(workingDirectory, options, package).Build(errors, files);
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
             Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
@@ -45,16 +44,15 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        public void Build(string[]? files = null)
+        public void Build(ErrorBuilder errors, string[]? files = null)
         {
-            _errors.Clear();
-
             if (files?.Length == 0)
             {
                 return;
             }
 
             using (Watcher.BeginScope())
+            using (_errors.BeginScope(errors))
             {
                 try
                 {

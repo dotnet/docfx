@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         public BuildOptions BuildOptions => _buildOptions;
 
         private DocsetBuilder(
-            ErrorBuilder errors,
+            ErrorLog errors,
             Config config,
             BuildOptions buildOptions,
             PackageResolver packageResolver,
@@ -48,27 +48,27 @@ namespace Microsoft.Docs.Build
             RepositoryProvider repositoryProvider,
             Package package)
         {
+            _errors = errors;
             _config = config;
             _buildOptions = buildOptions;
             _packageResolver = packageResolver;
             _fileResolver = fileResolver;
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
-            _sourceMap = new(errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
+            _sourceMap = _errors.SourceMap = new(_errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
             _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
             _buildScope = new(_config, _input, _buildOptions);
             _githubAccessor = new(_config);
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
-            _metadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
+            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
-            _errors = new(errors, _config, _sourceMap, _metadataProvider, () => Ensure(_customRuleProvider));
             _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
             _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
             _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
-            _customRuleProvider = new(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
+            _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
             _bookmarkValidator = new(_errors);
         }
 
@@ -80,37 +80,39 @@ namespace Microsoft.Docs.Build
             Package package,
             CommandLineOptions options)
         {
-            errors = errors.WithDocsetPath(workingDirectory, docsetPath);
+            var errorLog = new ErrorLog(errors, workingDirectory, docsetPath);
 
             try
             {
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errors, docsetPath, outputPath, options, fetchOptions, package);
+                    errorLog, docsetPath, outputPath, options, fetchOptions, package);
 
-                if (errors.HasError)
+                if (errorLog.HasError)
                 {
                     return null;
                 }
 
+                errorLog.Config = config;
+
                 if (!options.NoRestore)
                 {
-                    Restore.RestoreDocset(errors, config, buildOptions, packageResolver, fileResolver);
-                    if (errors.HasError)
+                    Restore.RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
+                    if (errorLog.HasError)
                     {
                         return null;
                     }
                 }
 
-                var repositoryProvider = new RepositoryProvider(errors, buildOptions, config);
+                var repositoryProvider = new RepositoryProvider(errorLog, buildOptions, config);
 
-                new OpsPreProcessor(config, errors, buildOptions, repositoryProvider).Run();
+                new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run();
 
-                return new DocsetBuilder(errors, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package);
+                return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errors.AddRange(dex);
+                errorLog.AddRange(dex);
                 return null;
             }
         }
@@ -119,10 +121,6 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                // TODO: Clear the error before each build round, which has the following two dependencies:
-                // 1. Make all the errorBuilders inside the docsetBuilder stateless.
-                // 2. If there are errors reported from all the Watch{T}, the errors should also be returned as a part of {T}
-                _errors.Clear();
                 JsonSchemaTransformer? jsonSchemaTransformer = null;
                 ContentValidator? contentValidator = null;
 

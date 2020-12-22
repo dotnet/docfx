@@ -38,25 +38,25 @@ namespace Microsoft.Docs.Build
         public static void RestoreDocset(
             ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            errors = errors.WithDocsetPath(workingDirectory, docsetPath);
+            var errorLog = new ErrorLog(errors, workingDirectory, docsetPath);
 
             try
             {
                 // load configuration from current entry or fallback repository
                 var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
-                    errors, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(workingDirectory, docsetPath)));
+                    errorLog, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(workingDirectory, docsetPath)));
 
-                if (errors.HasError)
+                if (errorLog.HasError)
                 {
                     return;
                 }
 
-                errors = new ErrorLog(errors, config);
-                RestoreDocset(errors, config, buildOptions, packageResolver, fileResolver);
+                errorLog.Config = config;
+                RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errors.AddRange(dex);
+                errorLog.AddRange(dex);
             }
         }
 
