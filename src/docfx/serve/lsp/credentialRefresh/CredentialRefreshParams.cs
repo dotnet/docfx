@@ -9,14 +9,14 @@ namespace Microsoft.Docs.Build
 {
     [Parallel]
     [Method("docfx/userCredentialRefresh", Direction.ServerToClient)]
-    public record CredentialRefreshParams : IRequest<object>
+    public record CredentialRefreshParams : IRequest<CredentialRefreshResponse>
     {
         public CredentialType Type { get; init; }
     }
 
     public record CredentialRefreshResponse
     {
-        public string? Result { get; init; }
+        public CredentialRefreshResult? Result { get; init; }
 
         public ResponseError? Error { get; init; }
     }

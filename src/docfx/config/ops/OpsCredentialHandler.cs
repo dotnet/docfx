@@ -13,6 +13,8 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsCredentialHandler : DelegatingHandler
     {
+        private const string DocsOPSTokenHeader = "X-OP-BuildUserToken";
+
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
@@ -63,8 +65,11 @@ namespace Microsoft.Docs.Build
                 {
                     using var cts = new CancellationTokenSource(60000);
                     _refreshedToken = await _getRefreshedCredential(cts.Token);
-                    await FillOpsToken(request);
-                    return await base.SendAsync(request, cancellationToken);
+                    if (_refreshedToken != null)
+                    {
+                        await FillOpsToken(request);
+                        return await base.SendAsync(request, cancellationToken);
+                    }
                 }
                 return response;
             }
@@ -116,20 +121,21 @@ namespace Microsoft.Docs.Build
             {
                 if (_refreshedToken != null)
                 {
-                    request.Headers.TryAddWithoutValidation("X-OP-BuildUserToken", _refreshedToken);
+                    UpdateDocsOPSToken(request, _refreshedToken);
                     return;
                 }
 
-                if (!request.Headers.Contains("X-OP-BuildUserToken"))
+                if (!request.Headers.Contains("X-OP-BuildUserToken")
+                    && !string.IsNullOrEmpty(EnvironmentVariable.DocsOpsToken))
                 {
-                    request.Headers.Add("X-OP-BuildUserToken", EnvironmentVariable.DocsOpsToken);
+                    UpdateDocsOPSToken(request, EnvironmentVariable.DocsOpsToken);
                 }
             }
 
             // don't access key vault for osx since azure-cli will crash in osx
             // https://github.com/Azure/azure-cli/issues/7519
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
-                !request.Headers.Contains("X-OP-BuildUserToken"))
+                !request.Headers.Contains(DocsOPSTokenHeader))
             {
                 // For development usage
                 try
@@ -141,7 +147,7 @@ namespace Microsoft.Docs.Build
                         _ => throw new InvalidOperationException(),
                     };
                     var token = await tokenTask.Value;
-                    request.Headers.Add("X-OP-BuildUserToken", token);
+                    UpdateDocsOPSToken(request, token);
                 }
                 catch (Exception ex)
                 {
@@ -174,6 +180,16 @@ namespace Microsoft.Docs.Build
             return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
                 ? docsEnvironment
                 : DocsEnvironment.Prod;
+        }
+
+        private static void UpdateDocsOPSToken(HttpRequestMessage request, string token)
+        {
+            if (request.Headers.Contains(DocsOPSTokenHeader))
+            {
+                request.Headers.Remove(DocsOPSTokenHeader);
+            }
+
+            request.Headers.Add(DocsOPSTokenHeader, token);
         }
     }
 }

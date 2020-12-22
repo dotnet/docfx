@@ -109,6 +109,7 @@ namespace Microsoft.Docs.Build
             var statePath = Path.Combine(appDataPath, "state");
 
             Directory.CreateDirectory(basePath);
+            EnsureCleanCacheFolder();
 
             var repos = spec.Repos
                 .Select(repo => new PackagePath(repo.Key).Url)
@@ -127,6 +128,7 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
+                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
@@ -159,6 +161,14 @@ namespace Microsoft.Docs.Build
             }
 
             return (docsetPath, appDataPath, outputPath, repos, package);
+
+            void EnsureCleanCacheFolder()
+            {
+                if (Directory.Exists(appDataPath))
+                {
+                    Directory.Delete(appDataPath, recursive: true);
+                }
+            }
         }
 
         private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Package package)

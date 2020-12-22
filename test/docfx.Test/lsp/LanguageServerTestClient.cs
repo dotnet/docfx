@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
@@ -35,6 +36,8 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationReceived;
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
         private TaskCompletionSource _notificationSync = new TaskCompletionSource();
+
+        private Func<CredentialRefreshParams, Task<JToken>> _credentialRefreshHandler;
 
         public LanguageServerTestClient(string workingDirectory, Package package)
         {
@@ -91,6 +94,19 @@ namespace Microsoft.Docs.Build
                 await SynchronizeNotifications();
                 Assert.Equal(_clientNotificationReceivedBeforeSync, _clientNotificationReceived);
             }
+            else if (command.ExpectCredentialRefreshRequest != null)
+            {
+                JToken parameters = null;
+
+                _credentialRefreshHandler = (CredentialRefreshParams @params) =>
+                {
+                    parameters = JsonUtility.Parse(new ErrorList(), JsonUtility.Serialize(@params), new FilePath("file"));
+                    return Task.FromResult(ApplyCredentialVariables(command.ExpectCredentialRefreshRequest.Response));
+                };
+
+                await SynchronizeNotifications();
+                s_languageServerJsonDiff.Verify(command.ExpectCredentialRefreshRequest.Params, parameters);
+            }
             else
             {
                 throw new NotSupportedException("Invalid language server test command");
@@ -115,6 +131,16 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
+        }
+
+        private JToken ApplyCredentialVariables(JToken @params)
+        {
+            return TestUtility.ApplyVariables(
+                @params,
+                new Dictionary<string, string>
+                {
+                    { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
+                });
         }
 
         private void BeforeSendNotification()
@@ -168,6 +194,14 @@ namespace Microsoft.Docs.Build
                     {
                         _notificationSync.TrySetException(new InvalidOperationException(message.Message));
                     }
+                })
+                .OnRequest<CredentialRefreshParams, JToken>("docfx/userCredentialRefresh", async (CredentialRefreshParams @params) =>
+                {
+                    if (_credentialRefreshHandler == null)
+                    {
+                        throw new NotSupportedException();
+                    }
+                    return await _credentialRefreshHandler.Invoke(@params);
                 })
                 .OnPublishDiagnostics(item =>
                 {

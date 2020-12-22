@@ -3,6 +3,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Microsoft.Docs.Build
@@ -10,20 +11,26 @@ namespace Microsoft.Docs.Build
     internal class LanguageServerCredentialRefresher
     {
         private readonly ILanguageServerFacade _languageServer;
+        private readonly ILogger _logger;
 
-        public LanguageServerCredentialRefresher(ILanguageServerFacade languageServer)
+        public LanguageServerCredentialRefresher(ILoggerFactory loggerFactory, ILanguageServerFacade languageServer)
         {
             _languageServer = languageServer;
+            _logger = loggerFactory.CreateLogger<LanguageServerCredentialRefresher>();
         }
 
         public async Task<string?> GetRefreshedToken(CancellationToken cancellationToken)
         {
             var credentialRefreshResponse = await _languageServer.SendRequest(
-                new CredentialRefreshParams() { Type = CredentialType.DocsOpsToken }, cancellationToken);
+                new CredentialRefreshParams() { Type = CredentialType.DocsOpsToken },
+                cancellationToken);
+            if (credentialRefreshResponse.Error != null || credentialRefreshResponse.Result?.Token == null)
+            {
+                _logger.LogCritical($"Failed to refresh OP Build User token: {credentialRefreshResponse.Error?.Message}");
+                return default;
+            }
 
-            return "";
-
-            // return credentialRefreshResponse?.Token;
+            return credentialRefreshResponse.Result.Token;
         }
     }
 }

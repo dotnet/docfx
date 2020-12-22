@@ -19,7 +19,8 @@ namespace Microsoft.Docs.Build
         private readonly Package _package;
         private readonly Func<CancellationToken, Task<string?>>? _getRefreshedCredential;
 
-        public Builder(string workingDirectory, CommandLineOptions options, Package package, Func<CancellationToken, Task<string?>>? getRefreshedCredential = null)
+        public Builder(
+            string workingDirectory, CommandLineOptions options, Package package, Func<CancellationToken, Task<string?>>? getRefreshedCredential = null)
         {
             _workingDirectory = workingDirectory;
             _options = options;
