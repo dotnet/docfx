@@ -166,6 +166,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ReportExternalXRefSpec(XRefSpec spec)
         {
+            if (string.IsNullOrWhiteSpace(spec.Uid))
+            {
+                return;
+            }
+
             ExternalXRefSpec.AddOrUpdate(
                 spec.Uid,
                 spec,
@@ -522,6 +527,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (uid == null)
             {
                 throw new ArgumentNullException(nameof(uid));
+            }
+
+            if (string.IsNullOrWhiteSpace(uid))
+            {
+                return null;
             }
 
             if (XRefSpecMap.TryGetValue(uid, out XRefSpec xref))
