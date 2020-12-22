@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.SubCommands
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -26,7 +27,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 if (!controller.TryGetCommandCreator(pair.Key, out ISubCommandCreator command))
                 {
-                    Logger.LogWarning($"{pair.Key} is not a recognized command name, ignored.");
+                    if (!pair.Key.Equals("$schema", StringComparison.Ordinal))
+                    {
+                        Logger.LogWarning($"{pair.Key} is not a recognized command name, ignored.");
+                    }
                 }
                 else
                 {
