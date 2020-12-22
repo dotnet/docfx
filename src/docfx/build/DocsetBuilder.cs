@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -78,7 +79,8 @@ namespace Microsoft.Docs.Build
             string docsetPath,
             string? outputPath,
             Package package,
-            CommandLineOptions options)
+            CommandLineOptions options,
+            Func<CancellationToken, Task<string?>>? getRefreshedCredential)
         {
             var errorLog = new ErrorLog(errors, workingDirectory, docsetPath);
 
@@ -86,7 +88,7 @@ namespace Microsoft.Docs.Build
             {
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errorLog, docsetPath, outputPath, options, fetchOptions, package);
+                    errorLog, docsetPath, outputPath, options, fetchOptions, package, getRefreshedCredential);
 
                 if (errorLog.HasError)
                 {

@@ -28,6 +28,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
+            LanguageServerCredentialRefresher credentialRefresher,
             ILanguageServerNotificationListener notificationListener)
         {
             options.DryRun = true;
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
+            _builder = new(languageServerPackage.BasePath, options, _languageServerPackage, credentialRefresher.GetRefreshedToken);
         }
 
         public void QueueBuild()

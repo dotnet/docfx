@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
                     .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
                     .AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package ?? new LocalPackage(workingDirectory)))
                     .AddSingleton(commandLineOptions)
+                    .AddSingleton<LanguageServerCredentialRefresher>()
                     .AddSingleton<DiagnosticPublisher>()
                     .AddSingleton<LanguageServerBuilder>()
                     .AddOptions()

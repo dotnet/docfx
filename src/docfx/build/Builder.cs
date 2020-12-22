@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -16,12 +17,14 @@ namespace Microsoft.Docs.Build
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
         private readonly Package _package;
+        private readonly Func<CancellationToken, Task<string?>>? _getRefreshedCredential;
 
-        public Builder(string workingDirectory, CommandLineOptions options, Package package)
+        public Builder(string workingDirectory, CommandLineOptions options, Package package, Func<CancellationToken, Task<string?>>? getRefreshedCredential = null)
         {
             _workingDirectory = workingDirectory;
             _options = options;
             _package = package;
+            _getRefreshedCredential = getRefreshedCredential;
             _docsets = new(LoadDocsets);
         }
 
@@ -77,7 +80,13 @@ namespace Microsoft.Docs.Build
 
             return (from docset in docsets
                     let item = DocsetBuilder.Create(
-                        _errors, _workingDirectory, docset.docsetPath, docset.outputPath, _package.CreateSubPackage(docset.docsetPath), _options)
+                        _errors,
+                        _workingDirectory,
+                        docset.docsetPath,
+                        docset.outputPath,
+                        _package.CreateSubPackage(docset.docsetPath),
+                        _options,
+                        _getRefreshedCredential)
                     where item != null
                     select item).ToArray();
         }

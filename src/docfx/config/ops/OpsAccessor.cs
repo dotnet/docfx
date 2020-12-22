@@ -7,11 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
 using Polly;
@@ -29,33 +27,17 @@ namespace Microsoft.Docs.Build
 
         private const string SandboxEnabledModuleListPath = "https://docs.microsoft.com/api/resources/sandbox/verify";
 
-        public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
-
-        // TODO: use Azure front door endpoint when it is stable
-        private static readonly string s_docsProdServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
-
-        private static readonly string s_docsPPEServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
-
-        private static readonly string s_docsInternalServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
-
-        private static readonly string s_docsPerfServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
-
-        private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
-        private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
-        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
-
-        private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorBuilder _errors;
-        private readonly HttpClient _http = new();
+        private readonly HttpClient _httpClient = new();
+        private readonly HttpClient _opsHttpClient;
 
-        public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
+        public OpsAccessor(
+            ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider, Func<CancellationToken, Task<string?>>? getRefreshedCredential = null)
         {
             _errors = errors;
-            _credentialProvider = credentialProvider;
+#pragma warning disable CA2000 // Dispose objects before losing scope
+            _opsHttpClient = new(new OpsCredentialHandler(credentialProvider, getRefreshedCredential, new HttpClientHandler()), true);
+#pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
         public async Task<string> GetDocsetInfo(string repositoryUrl)
@@ -140,23 +122,23 @@ namespace Microsoft.Docs.Build
         {
             using var request = new HttpRequestMessage
             {
-                RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
+                RequestUri = new Uri($"{OpsCredentialHandler.BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
 
-            var response = await SendRequest(request);
+            var response = await _opsHttpClient.SendAsync(request);
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
+            var url = $"{OpsCredentialHandler.BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = await SendRequest(request);
+            var response = await _opsHttpClient.SendAsync(request);
 
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
@@ -170,7 +152,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment? environment = null)
         {
             Debug.Assert(routePath.StartsWith("/"));
-            var url = BuildServiceEndpoint(environment) + routePath;
+            var url = OpsCredentialHandler.BuildServiceEndpoint(environment) + routePath;
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
             {
@@ -179,7 +161,7 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
-            var response = await SendRequest(request, environment);
+            var response = await _opsHttpClient.SendAsync(request);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -193,7 +175,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 Debug.Assert(routePath.StartsWith("/"));
-                var url = BuildServiceEndpoint(environment) + routePath;
+                var url = OpsCredentialHandler.BuildServiceEndpoint(environment) + routePath;
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
@@ -208,7 +190,7 @@ namespace Microsoft.Docs.Build
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
-                           var response = await SendRequest(request, environment);
+                           var response = await _opsHttpClient.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
@@ -245,7 +227,7 @@ namespace Microsoft.Docs.Build
                        {
                            using var request = new HttpRequestMessage(HttpMethod.Get, url);
                            request.Headers.TryAddWithoutValidation("User-Agent", "Docfx v3");
-                           var response = await _http.SendAsync(request);
+                           var response = await _httpClient.SendAsync(request);
                            return response;
                        });
 
@@ -278,7 +260,7 @@ namespace Microsoft.Docs.Build
                        {
                            using var request = new HttpRequestMessage(HttpMethod.Get, url);
                            request.Headers.TryAddWithoutValidation("User-Agent", "Docfx v3");
-                           var response = await _http.SendAsync(request);
+                           var response = await _httpClient.SendAsync(request);
                            return response;
                        });
 
@@ -295,36 +277,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, DocsEnvironment? environment = null)
-        {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
-            {
-                // Default header which allows fallback to public data when credential is not provided.
-                request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
-
-                _credentialProvider?.Invoke(request);
-
-                await FillOpsToken(request, environment);
-
-                return await _http.SendAsync(request);
-            }
-        }
-
-        private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
-        {
-            return (environment ?? DocsEnvironment) switch
-            {
-                DocsEnvironment.Prod => s_docsProdServiceEndpoint,
-                DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
-                DocsEnvironment.Internal => s_docsInternalServiceEndpoint,
-                DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
-                _ => throw new NotSupportedException(),
-            };
-        }
-
         private static string TaxonomyServicePath(DocsEnvironment? environment = null)
         {
-            return (environment ?? DocsEnvironment) switch
+            return (environment ?? OpsCredentialHandler.DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => TaxonomyServiceProdPath,
                 DocsEnvironment.PPE => TaxonomyServicePPEPath,
@@ -341,59 +296,7 @@ namespace Microsoft.Docs.Build
             {
                 return DocsEnvironment.Prod;
             }
-            return DocsEnvironment;
-        }
-
-        private static async Task<string> GetSecret(string secret)
-        {
-            var response = await s_secretClient.GetSecretAsync(secret);
-            if (response.Value is null)
-            {
-                throw new HttpRequestException(response.GetRawResponse().ToString());
-            }
-
-            return response.Value.Value;
-        }
-
-        private static DocsEnvironment GetDocsEnvironment()
-        {
-            return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
-                ? docsEnvironment
-                : DocsEnvironment.Prod;
-        }
-
-        private static async Task FillOpsToken(HttpRequestMessage request, DocsEnvironment? environment = null)
-        {
-            // don't access key vault for osx since azure-cli will crash in osx
-            // https://github.com/Azure/azure-cli/issues/7519
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
-                request.RequestUri?.ToString() is string url &&
-                url.StartsWith(BuildServiceEndpoint(environment)) &&
-                !request.Headers.Contains("X-OP-BuildUserToken"))
-            {
-                // For development usage
-                try
-                {
-                    var token = EnvironmentVariable.DocsOpsToken;
-                    if (string.IsNullOrEmpty(token))
-                    {
-                        var tokenTask = (environment ?? DocsEnvironment) switch
-                        {
-                            DocsEnvironment.Prod => s_opsTokenProd,
-                            DocsEnvironment.PPE => s_opsTokenSandbox,
-                            _ => throw new InvalidOperationException(),
-                        };
-                        token = await tokenTask.Value;
-                    }
-
-                    request.Headers.Add("X-OP-BuildUserToken", token);
-                }
-                catch (Exception ex)
-                {
-                    Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access.");
-                    Log.Write(ex);
-                }
-            }
+            return OpsCredentialHandler.DocsEnvironment;
         }
     }
 }
