@@ -3,5 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal record FileActionEvent(FileActionType Type, string FilePath, string? Content);
+    internal interface ILanguageServerNotificationListener
+    {
+        void OnNotificationHandled();
+
+        void OnNotificationSent();
+    }
 }

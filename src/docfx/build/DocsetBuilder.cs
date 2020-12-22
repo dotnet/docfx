@@ -34,6 +34,7 @@ namespace Microsoft.Docs.Build
         private readonly RedirectionProvider _redirectionProvider;
         private readonly PublishUrlMap _publishUrlMap;
         private readonly CustomRuleProvider _customRuleProvider;
+        private readonly BookmarkValidator _bookmarkValidator;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -68,6 +69,7 @@ namespace Microsoft.Docs.Build
             _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
             _customRuleProvider = new(_config, errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
+            _bookmarkValidator = new(_errors);
         }
 
         public static DocsetBuilder? Create(
@@ -113,7 +115,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void Build(params string[] files)
+        public void Build(string[]? files)
         {
             try
             {
@@ -130,10 +132,9 @@ namespace Microsoft.Docs.Build
                 var zonePivotProvider = new ZonePivotProvider(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(contentValidator));
                 contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, zonePivotProvider, _publishUrlMap);
 
-                var bookmarkValidator = new BookmarkValidator(_errors);
                 var fileLinkMapBuilder = new FileLinkMapBuilder(_errors, _documentProvider, _monikerProvider, _contributionProvider);
                 var xrefResolver = new XrefResolver(_config, _fileResolver, _buildOptions.Repository, dependencyMapBuilder, fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(jsonSchemaTransformer));
-                var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
+                var linkResolver = new LinkResolver(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, dependencyMapBuilder, xrefResolver, _templateEngine, fileLinkMapBuilder, _metadataProvider);
                 var markdownEngine = new MarkdownEngine(_config, _input, _fileResolver, linkResolver, xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, contentValidator, _publishUrlMap);
                 jsonSchemaTransformer = new(_documentProvider, markdownEngine, linkResolver, xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
 
@@ -147,11 +148,11 @@ namespace Microsoft.Docs.Build
 
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
                 var learnHierarchyBuilder = new LearnHierarchyBuilder(_errors, contentValidator);
-                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, _redirectionProvider, jsonSchemaTransformer, learnHierarchyBuilder);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, _redirectionProvider, jsonSchemaTransformer, learnHierarchyBuilder);
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
-                var filesToBuild = files.Length > 0
+                var filesToBuild = files != null
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
                     : _publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
 
@@ -162,7 +163,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 Parallel.Invoke(
-                    () => bookmarkValidator.Validate(),
+                    () => _bookmarkValidator.Validate(),
                     () => contentValidator.PostValidate(),
                     () => _errors.AddRange(metadataValidator.PostValidate()),
                     () => _contributionProvider.Save(),

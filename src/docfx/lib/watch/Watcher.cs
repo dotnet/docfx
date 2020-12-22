@@ -9,8 +9,9 @@ namespace Microsoft.Docs.Build
 {
     public static class Watcher
     {
+        private static readonly object s_defaultScope = new();
         private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new();
-        private static readonly AsyncLocal<int> t_activityId = new();
+        private static readonly AsyncLocal<IDisposable?> t_scope = new();
 
         public static T Read<T>(Func<T> valueFactory)
         {
@@ -64,9 +65,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void StartActivity() => t_activityId.Value++;
+        public static IDisposable BeginScope()
+        {
+            if (t_scope.Value != null)
+            {
+                throw new InvalidOperationException("Cannot start a nested scope.");
+            }
+            return t_scope.Value = new DelegatingDisposable(() => t_scope.Value = null);
+        }
 
-        internal static int GetActivityId() => t_activityId.Value;
+        internal static object GetCurrentScope() => t_scope.Value ?? s_defaultScope;
 
         internal static void BeginFunctionScope(IFunction function)
         {

@@ -306,14 +306,14 @@ namespace Microsoft.Docs.Build
             return _metadataProvider.GetMetadata(GetErrors(), path).Layout;
         }
 
-        private (string? content, object? file) ReadFile(string path, MarkdownObject origin)
+        private (string? content, object? file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
         {
             var status = t_status.Value!.Peek();
             var (error, file) = _linkResolver.ResolveContent(
                 new SourceInfo<string>(path, origin.GetSourceInfo()),
                 origin.GetFilePath(),
                 GetRootFilePath(),
-                status.ContentFallback);
+                contentFallback ?? status.ContentFallback);
             status.Errors.AddIfNotNull(error);
 
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));

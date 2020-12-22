@@ -3,12 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum FileActionType
+    internal class LanguageServerNotificationListener : ILanguageServerNotificationListener
     {
-        Created,
-        Deleted,
-        Updated,
-        Opened,
-        Closed,
+        public void OnNotificationHandled() { }
+
+        public void OnNotificationSent() { }
     }
 }
