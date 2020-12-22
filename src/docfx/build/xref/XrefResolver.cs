@@ -218,8 +218,8 @@ namespace Microsoft.Docs.Build
                 if (_externalXrefMap.Value.TryGetValue(xrefSpec.Uid, out var spec))
                 {
                     _errorLog.Add(
-                        Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath)
-                        with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
+                        Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath) with
+                        { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -235,8 +235,8 @@ namespace Microsoft.Docs.Build
                 if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(
-                        xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType)
-                        with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
+                        xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType) with
+                    { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -302,15 +302,9 @@ namespace Microsoft.Docs.Build
         {
             if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
             {
-                var spec = default(InternalXrefSpec);
-                if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)
-                {
-                    spec = specs[0];
-                }
-                else
-                {
-                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
-                }
+                var spec = specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers
+                    ? specs[0]
+                    : specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
 
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);

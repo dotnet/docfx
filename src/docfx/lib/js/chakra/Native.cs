@@ -80,8 +80,7 @@ namespace ChakraHost.Hosting
 
                     case JavaScriptErrorCode.ScriptException:
                         {
-                            JavaScriptValue errorObject;
-                            var innerError = JsGetAndClearException(out errorObject);
+                            var innerError = JsGetAndClearException(out var errorObject);
 
                             if (innerError != JavaScriptErrorCode.NoError)
                             {
@@ -93,8 +92,7 @@ namespace ChakraHost.Hosting
 
                     case JavaScriptErrorCode.ScriptCompile:
                         {
-                            JavaScriptValue errorObject;
-                            var innerError = JsGetAndClearException(out errorObject);
+                            var innerError = JsGetAndClearException(out var errorObject);
 
                             if (innerError != JavaScriptErrorCode.NoError)
                             {
@@ -119,7 +117,7 @@ namespace ChakraHost.Hosting
             }
         }
 
-        const string DllName = "ChakraCore.dll";
+        private const string DllName = "ChakraCore.dll";
 
         [DllImport(DllName)]
         internal static extern JavaScriptErrorCode JsCreateRuntime(JavaScriptRuntimeAttributes attributes, JavaScriptThreadServiceCallback? threadService, out JavaScriptRuntime runtime);

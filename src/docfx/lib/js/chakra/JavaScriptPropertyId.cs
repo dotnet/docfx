@@ -17,7 +17,7 @@ namespace ChakraHost.Hosting
         /// <summary>
         /// The id.
         /// </summary>
-        private readonly IntPtr id;
+        private readonly IntPtr _id;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptPropertyId"/> struct. 
@@ -25,7 +25,7 @@ namespace ChakraHost.Hosting
         /// <param name="id">The ID.</param>
         internal JavaScriptPropertyId(IntPtr id)
         {
-            this.id = id;
+            _id = id;
         }
 
         /// <summary>
@@ -48,8 +48,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                string name;
-                Native.ThrowIfError(Native.JsGetPropertyNameFromId(this, out name));
+                Native.ThrowIfError(Native.JsGetPropertyNameFromId(this, out var name));
                 return name;
             }
         }
@@ -71,8 +70,7 @@ namespace ChakraHost.Hosting
         /// <returns>The property ID in this runtime for the given name.</returns>
         public static JavaScriptPropertyId FromString(string name)
         {
-            JavaScriptPropertyId id;
-            Native.ThrowIfError(Native.JsGetPropertyIdFromName(name, out id));
+            Native.ThrowIfError(Native.JsGetPropertyIdFromName(name, out var id));
             return id;
         }
 
@@ -105,7 +103,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the two property IDs are the same.</returns>
         public bool Equals(JavaScriptPropertyId other)
         {
-            return id == other.id;
+            return _id == other._id;
         }
 
         /// <summary>
@@ -115,12 +113,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the two property IDs are the same.</returns>
         public override bool Equals(object? obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-
-            return obj is JavaScriptPropertyId && Equals((JavaScriptPropertyId)obj);
+            return obj is JavaScriptPropertyId id && Equals(id);
         }
 
         /// <summary>
@@ -129,7 +122,7 @@ namespace ChakraHost.Hosting
         /// <returns>The hash code of the property ID.</returns>
         public override int GetHashCode()
         {
-            return id.ToInt32();
+            return _id.ToInt32();
         }
 
         /// <summary>

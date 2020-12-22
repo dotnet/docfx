@@ -443,7 +443,7 @@ namespace Microsoft.Docs.Build
             var properties = new SortedList<string, JProperty>();
             foreach (var property in obj.Properties())
             {
-                properties.Add(property.Name, !(property.Value is JObject childObj) ? property : new JProperty(property.Name, SortProperties(childObj)));
+                properties.Add(property.Name, property.Value is not JObject childObj ? property : new JProperty(property.Name, SortProperties(childObj)));
             }
 
             return new JObject(properties.Values);

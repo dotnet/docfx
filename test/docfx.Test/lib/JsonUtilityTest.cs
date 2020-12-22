@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestJsonDeserializeCaseInsensitive()
         {
-            var (errors, value) = DeserializeWithValidation<BasicClass>("{\"B\":1}");
+            var (_, value) = DeserializeWithValidation<BasicClass>("{\"B\":1}");
             Assert.Equal(1, value.B);
         }
 
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
         {
             var json = JsonUtility.Serialize(
                 (from i in Enumerable.Range(0, 10)
-                 select new BasicClass { B = i, C = $"Good{i}!", D = (i % 2 == 0) ? true : false }).ToList());
+                 select new BasicClass { B = i, C = $"Good{i}!", D = i % 2 == 0 }).ToList());
             var (errors, values) = DeserializeWithValidation<List<BasicClass>>(json);
             Assert.Empty(errors);
             Assert.NotNull(values);
@@ -115,7 +115,7 @@ namespace Microsoft.Docs.Build
             {
                 Assert.Equal(i, values[i].B);
                 Assert.Equal($"Good{i}!", values[i].C);
-                Assert.Equal((i % 2 == 0) ? true : false, values[i].D);
+                Assert.Equal(i % 2 == 0, values[i].D);
             }
         }
 
@@ -232,7 +232,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new ErrorList();
             var token = JsonUtility.Parse(errors, json, null);
-            var value = JsonUtility.ToObject(errors, token, type);
+            _ = JsonUtility.ToObject(errors, token, type);
             Assert.Empty(errors);
         }
 

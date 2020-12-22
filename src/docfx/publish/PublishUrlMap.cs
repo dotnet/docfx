@@ -89,14 +89,13 @@ namespace Microsoft.Docs.Build
 
         private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) Initialize()
         {
-            using (var scope = Progress.Start("Building publish url map"))
-            {
-                return CreateUrlMap(
-                    scope,
-                    _redirectionProvider.Files.Concat(
-                    _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html)).Concat(
-                    _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback)));
-            }
+            using var scope = Progress.Start("Building publish url map");
+
+            return CreateUrlMap(
+                scope,
+                _redirectionProvider.Files.Concat(
+                _buildScope.GetFiles(ContentType.Resource).Where(x => x.Origin != FileOrigin.Fallback || _config.OutputType == OutputType.Html)).Concat(
+                _buildScope.GetFiles(ContentType.Page).Where(x => x.Origin != FileOrigin.Fallback)));
         }
 
         private (FilePath[] files, Dictionary<string, List<PublishUrlMapItem>> urlMap) CreateUrlMap(LogScope scope, IEnumerable<FilePath> files)

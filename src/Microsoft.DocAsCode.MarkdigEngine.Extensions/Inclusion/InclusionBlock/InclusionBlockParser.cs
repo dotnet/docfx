@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             // [!include[<title>](<filepath>)]
             var column = processor.Column;
             var line = processor.Line;
-            var command = line.ToString();
+            _ = line.ToString();
 
             if (!ExtensionsHelper.MatchStart(ref line, StartString, false))
             {
