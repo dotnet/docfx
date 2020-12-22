@@ -840,3 +840,34 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}
+---
+# loc repo fallback to en-us
+locale: zh-cn
+repos:
+  https://github.com/user/loc-fallback#main:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{  "build_source_folder": "a"}],
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+          }
+        a/docfx.yml:
+        a/api/bot/TOC.yml: |
+          items:
+          - name: MS.ServicePage2.xxx
+            items:
+            - name: MS.ServicePage.xxx
+        a/docs-ref-toc/top_level_toc.yml: |
+          items:
+          - name: API Reference
+  https://github.com/user/loc-fallback.zh-cn#main:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{  "build_source_folder": "a"}],
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+          }
+        a/docfx.yml:
+        a/TOC.yml:
+outputs:
+  a/toc.json:
