@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Pipelines;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -15,18 +14,20 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using Xunit;
 using Yunit;
 
 namespace Microsoft.Docs.Build
 {
-    internal class LanguageServerTestClient : ILanguageServerNotificationListener
+    internal class LanguageServerTestClient : ILanguageServerNotificationListener, IAsyncDisposable
     {
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
 
         private readonly string _workingDirectory;
-        private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
         private readonly Lazy<Task<ILanguageClient>> _client;
+
+        private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
 
         private int _serverNotificationSent;
         private int _serverNotificationHandled;
@@ -96,6 +97,12 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            var client = await _client.Value;
+            await client.Shutdown();
+        }
+
         void ILanguageServerNotificationListener.OnNotificationSent()
         {
             Interlocked.Increment(ref _serverNotificationSent);
@@ -155,15 +162,22 @@ namespace Microsoft.Docs.Build
                     DocumentChanges = true,
                     FailureHandling = FailureHandlingKind.Undo,
                 })
+                .OnLogMessage(message =>
+                {
+                    if (message.Type == MessageType.Error)
+                    {
+                        _notificationSync.TrySetException(new InvalidOperationException(message.Message));
+                    }
+                })
                 .OnPublishDiagnostics(item =>
                 {
                     _diagnostics[ToFile(item.Uri)] = JToken.FromObject(item.Diagnostics, JsonUtility.Serializer);
                     OnNotification();
                 }));
 
-            await Task.WhenAll(
-                client.Initialize(default),
-                LanguageServerHost.StartLanguageServer(workingDirectory, new(), clientPipe.Reader, serverPipe.Writer, package, this));
+            Task.Run(() => LanguageServerHost.RunLanguageServer(workingDirectory, new(), clientPipe.Reader, serverPipe.Writer, package, this)).GetAwaiter();
+
+            await client.Initialize(default);
 
             return client;
         }

@@ -110,17 +110,3 @@ languageServer:
       docfx.yml: []
       a.md: []
 ---
-# Isolate bookmark validation states between builds
-inputs:
-  docfx.yml:
-languageServer:
-  - openFiles:
-      a.md: "[](b.md#anchor-missing)"
-      b.md: "## anchor"
-  - expectDiagnostics: 
-      a.md: [{ "code": "bookmark-not-found" }]
-  - openFiles:
-      a.md: "[](b.md#anchor)"
-      b.md: "## anchor"
-  - expectDiagnostics: 
-      a.md: []

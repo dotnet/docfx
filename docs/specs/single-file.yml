@@ -91,3 +91,39 @@ inputs:
   b.png.md:
   b.png:
 outputs:
+---
+# Isolate bookmark validation state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      a.md: "[](b.md#anchor-missing)"
+      b.md: "## anchor"
+  - expectDiagnostics: 
+      a.md: [{ "code": "bookmark-not-found" }]
+  - editFiles:
+      a.md: "[](b.md#anchor)"
+  - expectDiagnostics: 
+      a.md: []
+  - editFiles:
+      b.md: "## anchor-1"
+  - expectDiagnostics: 
+      a.md: [{ "code": "bookmark-not-found" }]
+---
+# Isolate metadata state between builds
+languageServer:
+  - openFiles:
+      docfx.yml: |
+        globalMetadata:
+          title: {}
+      a.md:
+  - expectDiagnostics:
+      docfx.yml: [{ "code": "violate-schema" }]
+  - editFiles:
+      docfx.yml:
+      a.md: |
+        ---
+        title: {}
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "violate-schema" }]
+---

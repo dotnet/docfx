@@ -4,25 +4,27 @@
 using System;
 using System.IO;
 using System.IO.Pipelines;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Server;
 
 namespace Microsoft.Docs.Build
 {
     internal class LanguageServerHost
     {
-        public static Task<LanguageServer> StartLanguageServer(string workingDirectory, CommandLineOptions options, Package? package = null)
+        public static Task RunLanguageServer(string workingDirectory, CommandLineOptions options, Package? package = null)
         {
             var stdIn = Console.OpenStandardInput();
             var stdOut = Console.OpenStandardOutput();
             ResetConsoleOutput();
 
-            return StartLanguageServer(workingDirectory, options, PipeReader.Create(stdIn), PipeWriter.Create(stdOut), package);
+            return RunLanguageServer(workingDirectory, options, PipeReader.Create(stdIn), PipeWriter.Create(stdOut), package);
         }
 
-        public static Task<LanguageServer> StartLanguageServer(
+        public static async Task RunLanguageServer(
             string workingDirectory,
             CommandLineOptions commandLineOptions,
             PipeReader input,
@@ -30,7 +32,9 @@ namespace Microsoft.Docs.Build
             Package? package = null,
             ILanguageServerNotificationListener? notificationListener = null)
         {
-            return LanguageServer.From(options => options
+            using var cts = new CancellationTokenSource();
+
+            var server = await LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
@@ -43,7 +47,16 @@ namespace Microsoft.Docs.Build
                     .AddSingleton<LanguageServerBuilder>()
                     .AddOptions()
                     .AddLogging())
-                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace))));
+                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
+                .OnExit(_ =>
+                {
+                    cts.Cancel();
+                    return Task.CompletedTask;
+                }));
+
+            var builder = server.GetRequiredService<LanguageServerBuilder>();
+
+            await Task.WhenAll(server.WaitForExit, Task.Run(() => builder.Run(cts.Token)));
         }
 
         private static void ResetConsoleOutput()

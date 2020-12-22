@@ -189,7 +189,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package)
         {
-            var client = new LanguageServerTestClient(docsetPath, package);
+            await using var client = new LanguageServerTestClient(docsetPath, package);
 
             foreach (var command in spec.LanguageServer)
             {
