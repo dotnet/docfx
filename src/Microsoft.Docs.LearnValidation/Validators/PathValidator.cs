@@ -34,8 +34,8 @@ namespace Microsoft.Docs.LearnValidation
                 }
 
                 // path has child module, but that module has error when SDP validating, except the shared module
-                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !_isSharedItem(m, "Module")).ToList();
-                if (childrenCantFind.Any())
+                var childrenCantFind = path.Modules?.Where(m => !fullItemsDict.ContainsKey(m) && !_isSharedItem(m, "Module")).ToList();
+                if (childrenCantFind != null && childrenCantFind.Any())
                 {
                     itemValid = false;
                 }
