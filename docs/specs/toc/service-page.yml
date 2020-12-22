@@ -620,3 +620,48 @@ outputs:
     {"title": "hello world"}
   a/api/bot/toc.json:
   a/test/index.json:
+---
+# Split toc metadata when no conceptual toc in JoinTocPlugin
+repos:
+  https://github.com/ops/split-toc-metadata:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "ReferenceTOCUrl": "/a/b/toc"}],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage2.xxx
+          items:
+          - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+outputs:
+  a/api/bot/toc.json:
+  a/api/bot/_splitted/ms.servicepage2.xxx/toc.json: |
+    {"metadata": {"universal_ref_toc": "/a/b/toc"}}
