@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
             return new TextDocumentAttributes(uri, "docfx");
         }
 
-        private bool TryUpdatePackage(DocumentUri file, string content)
+        private bool TryUpdatePackage(DocumentUri file, string? content)
         {
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
@@ -120,7 +120,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            _package.AddOrUpdate(filePath, content);
+            _package.AddOrUpdate(filePath, content ?? "");
             return true;
         }
 

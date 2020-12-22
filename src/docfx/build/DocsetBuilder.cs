@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             _fileResolver = fileResolver;
             _opsAccessor = opsAccessor;
             _repositoryProvider = repositoryProvider;
-            _sourceMap = _errors.SourceMap = new(_errors, new PathString(_buildOptions.DocsetPath), _config, _fileResolver);
+            _sourceMap = _errors.SourceMap = new(_errors, new(_buildOptions.DocsetPath), _config, _fileResolver);
             _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
             _buildScope = new(_config, _input, _buildOptions);
             _githubAccessor = new(_config);
