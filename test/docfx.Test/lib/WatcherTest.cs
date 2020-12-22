@@ -67,15 +67,17 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
 
-            Watcher.StartActivity();
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(3, watch.Value);
+                Assert.Equal(3, watch.Value);
+            }
 
-            Assert.Equal(3, watch.Value);
-            Assert.Equal(3, watch.Value);
-
-            Watcher.StartActivity();
-
-            Assert.Equal(5, watch.Value);
-            Assert.Equal(5, watch.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(5, watch.Value);
+                Assert.Equal(5, watch.Value);
+            }
         }
 
         [Fact]
@@ -90,15 +92,17 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
 
-            Watcher.StartActivity();
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(3, watch.Value);
+                Assert.Equal(3, watch.Value);
+            }
 
-            Assert.Equal(3, watch.Value);
-            Assert.Equal(3, watch.Value);
-
-            Watcher.StartActivity();
-
-            Assert.Equal(5, watch.Value);
-            Assert.Equal(5, watch.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(5, watch.Value);
+                Assert.Equal(5, watch.Value);
+            }
         }
 
         [Fact]
@@ -112,15 +116,17 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
 
-            Watcher.StartActivity();
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(3, watch.Value);
+                Assert.Equal(3, watch.Value);
+            }
 
-            Assert.Equal(3, watch.Value);
-            Assert.Equal(3, watch.Value);
-
-            Watcher.StartActivity();
-
-            Assert.Equal(5, watch.Value);
-            Assert.Equal(5, watch.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(5, watch.Value);
+                Assert.Equal(5, watch.Value);
+            }
         }
 
         [Fact]
@@ -135,15 +141,17 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
 
-            Watcher.StartActivity();
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(2, watch.Value);
+                Assert.Equal(2, watch.Value);
+            }
 
-            Assert.Equal(2, watch.Value);
-            Assert.Equal(2, watch.Value);
-
-            Watcher.StartActivity();
-
-            Assert.Equal(3, watch.Value);
-            Assert.Equal(3, watch.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(3, watch.Value);
+                Assert.Equal(3, watch.Value);
+            }
         }
 
         [Fact]
@@ -158,10 +166,11 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
 
-            Watcher.StartActivity();
-
-            Assert.Equal(3, watch.Value);
-            Assert.Equal(3, watch.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(3, watch.Value);
+                Assert.Equal(3, watch.Value);
+            }
         }
 
         [Fact]
@@ -175,10 +184,11 @@ namespace Microsoft.Docs.Build
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);
 
-            Watcher.StartActivity();
-
-            Assert.Equal(1, watch.Value);
-            Assert.Equal(1, watch.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(1, watch.Value);
+                Assert.Equal(1, watch.Value);
+            }
         }
 
         [Fact]
@@ -194,9 +204,10 @@ namespace Microsoft.Docs.Build
             Assert.True(child.IsValueCreated);
             Assert.Equal(2, parent.Value);
 
-            Watcher.StartActivity();
-
-            Assert.Equal(4, parent.Value);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(4, parent.Value);
+            }
         }
 
         [Fact]
@@ -219,17 +230,21 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, watch.Value);
             Assert.Equal(0, watch.Value);
 
-            Watcher.StartActivity();
-            exists = true;
+            using (Watcher.BeginScope())
+            {
+                exists = true;
 
-            Assert.Equal(100, watch.Value);
-            Assert.Equal(100, watch.Value);
+                Assert.Equal(100, watch.Value);
+                Assert.Equal(100, watch.Value);
+            }
 
-            Watcher.StartActivity();
-            counter++;
+            using (Watcher.BeginScope())
+            {
+                counter++;
 
-            Assert.Equal(101, watch.Value);
-            Assert.Equal(101, watch.Value);
+                Assert.Equal(101, watch.Value);
+                Assert.Equal(101, watch.Value);
+            }
         }
 
         [Fact]
@@ -268,12 +283,13 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, watch.Value);
             Assert.Equal(1, writeCount);
 
-            Watcher.StartActivity();
-
-            Assert.Equal(0, watch.Value);
-            Assert.Equal(2, writeCount);
-            Assert.Equal(0, watch.Value);
-            Assert.Equal(2, writeCount);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(0, watch.Value);
+                Assert.Equal(2, writeCount);
+                Assert.Equal(0, watch.Value);
+                Assert.Equal(2, writeCount);
+            }
         }
 
         [Fact]
@@ -292,12 +308,13 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, watch.Value);
             Assert.Equal(1, writeCount);
 
-            Watcher.StartActivity();
-
-            Assert.Equal(2, watch.Value);
-            Assert.Equal(2, writeCount);
-            Assert.Equal(2, watch.Value);
-            Assert.Equal(2, writeCount);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(2, watch.Value);
+                Assert.Equal(2, writeCount);
+                Assert.Equal(2, watch.Value);
+                Assert.Equal(2, writeCount);
+            }
         }
 
         [Fact]
@@ -317,12 +334,13 @@ namespace Microsoft.Docs.Build
             Assert.Equal(0, watch.Value);
             Assert.Equal(1, writeCount);
 
-            Watcher.StartActivity();
-
-            Assert.Equal(2, watch.Value);
-            Assert.Equal(2, writeCount);
-            Assert.Equal(2, watch.Value);
-            Assert.Equal(2, writeCount);
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(2, watch.Value);
+                Assert.Equal(2, writeCount);
+                Assert.Equal(2, watch.Value);
+                Assert.Equal(2, writeCount);
+            }
         }
     }
 }

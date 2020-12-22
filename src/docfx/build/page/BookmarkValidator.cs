@@ -10,33 +10,33 @@ namespace Microsoft.Docs.Build
     {
         private readonly ErrorBuilder _errors;
 
-        private readonly DictionaryBuilder<FilePath, HashSet<string>> _bookmarksByFile = new();
-        private readonly ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool isSelfBookmark, SourceInfo? source)> _references = new();
+        private readonly Scoped<DictionaryBuilder<FilePath, HashSet<string>>> _bookmarksByFile = new();
+        private readonly Scoped<ListBuilder<(FilePath file, FilePath dependency, string bookmark, bool selfBookmark, SourceInfo? source)>> _references = new();
 
         public BookmarkValidator(ErrorBuilder errors) => _errors = errors;
 
-        public void AddBookmarkReference(FilePath file, FilePath reference, string? fragment, bool isSelfBookmark, SourceInfo? source)
+        public void AddBookmarkReference(FilePath file, FilePath reference, string? fragment, bool selfBookmark, SourceInfo? source)
         {
             if (!string.IsNullOrEmpty(fragment))
             {
                 var bookmark = fragment[1..].Trim();
                 if (!string.IsNullOrEmpty(bookmark))
                 {
-                    _references.Add((file, reference, bookmark, isSelfBookmark, source));
+                    Watcher.Write(() => _references.Value.Add((file, reference, bookmark, selfBookmark, source)));
                 }
             }
         }
 
         public void AddBookmarks(FilePath file, HashSet<string> bookmarks)
         {
-            _bookmarksByFile.TryAdd(file, bookmarks);
+            Watcher.Write(() => _bookmarksByFile.Value.TryAdd(file, bookmarks));
         }
 
         public void Validate()
         {
-            var bookmarksByFile = _bookmarksByFile.AsDictionary();
+            var bookmarksByFile = _bookmarksByFile.Value.AsDictionary();
 
-            foreach (var (file, reference, bookmark, isSelfBookmark, source) in _references.AsList())
+            foreach (var (file, reference, bookmark, selfBookmark, source) in _references.Value.AsList())
             {
                 // #top is HTMl predefined URL, which points to the top of the page
                 if (bookmark == "top")
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                     continue;
                 }
 
-                _errors.Add(Errors.Content.BookmarkNotFound(source, isSelfBookmark ? file : reference, bookmark, bookmarks));
+                _errors.Add(Errors.Content.BookmarkNotFound(source, selfBookmark ? file : reference, bookmark, bookmarks));
             }
         }
     }

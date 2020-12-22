@@ -3,5 +3,8 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal record FileActionEvent(FileActionType Type, string FilePath, string? Content);
+    internal class Badge
+    {
+        public SourceInfo<string> Uid { get; init; } = new SourceInfo<string>("");
+    }
 }

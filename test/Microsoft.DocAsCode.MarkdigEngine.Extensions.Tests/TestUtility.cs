@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
                 return (code, message, origin, line) => actualErrors.Add(code);
             }
 
-            (string content, object file) ReadFile(string path, MarkdownObject origin)
+            (string content, object file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
             {
                 var key = Path.Combine(Path.GetDirectoryName(InclusionContext.File.ToString()), path).Replace('\\', '/');
 

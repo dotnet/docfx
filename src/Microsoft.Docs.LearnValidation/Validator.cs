@@ -49,7 +49,7 @@ namespace Microsoft.Docs.LearnValidation
                 achievementValidator,
             };
 
-            var hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).ToList();
+            var hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).Where(i => i.Uid != null).ToList();
 
             // no duplicated uids
             var itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);

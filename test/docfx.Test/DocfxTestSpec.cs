@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Docs.Build
 {
@@ -28,6 +29,7 @@ namespace Microsoft.Docs.Build
 
         public string Locale { get; set; }
 
+        [JsonConverter(typeof(OneOrManyConverter))]
         public string[] BuildFiles { get; set; } = Array.Empty<string>();
 
         public string[] Environments { get; set; } = Array.Empty<string>();
@@ -42,7 +44,7 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string> Outputs { get; set; } = new Dictionary<string, string>();
 
-        public List<LanguageServerTestSpec> LanguageServer { get; set; } = new List<LanguageServerTestSpec>();
+        public List<LanguageServerTestCommand> LanguageServer { get; set; } = new List<LanguageServerTestCommand>();
 
         public Dictionary<string, string> Http { get; set; } = new Dictionary<string, string>();
     }

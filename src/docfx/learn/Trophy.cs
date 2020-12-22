@@ -3,12 +3,8 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum FileActionType
+    internal class Trophy
     {
-        Created,
-        Deleted,
-        Updated,
-        Opened,
-        Closed,
+        public SourceInfo<string> Uid { get; init; } = new SourceInfo<string>("");
     }
 }

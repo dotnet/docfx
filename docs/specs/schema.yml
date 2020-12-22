@@ -503,7 +503,7 @@ outputs:
     }
   docs/b.json:
 ---
-# Disable content fallback for loc page
+# Disable markdown fallback for loc page
 locale: zh-cn
 repos:
   https://docs.com/page-fallback#master:
@@ -528,6 +528,38 @@ repos:
 outputs:
   .errors.log: |
     { "message_severity":"error","code":"include-not-found","message":"Invalid include link: 'includes/b.md'.","file":"unit.yml"}
+---
+# Disable markdown fallback for loc page, but enable for files except markdown
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        docfx.yml:
+        includes/codes/a.cs: |
+          Console.WriteLine("Hello, world!");
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml: |
+          exclude: includes/b.md
+        includes/b.md: |
+          # demo code
+          [!code-demo[](codes/a.cs)]
+        unit.yml: |
+          ### YamlMime:TestData
+          content: '[!include[](includes/b.md)]'
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "contentFallback": false,
+            "properties": { 
+              "content": {"type":"string","contentType": "markdown"}
+              }
+          }
+        _themes/ContentTemplate/TestData.html.primary.tmpl:
+outputs:
+  unit.json: |
+    {
+      "content": "<h1 id=\"demo-code\">demo code</h1>\n<pre><code class=\"lang-demo\">Console.WriteLine(&quot;Hello, world!&quot;);\n</code></pre>"
+    }
 ---
 # Report approximate line number for markdown contents inside YAML
 inputs:
