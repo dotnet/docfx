@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
+            _builder = new(options, _languageServerPackage);
         }
 
         public void QueueBuild()
