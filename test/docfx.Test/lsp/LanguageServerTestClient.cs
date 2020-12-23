@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
                 }));
 
             Task.Run(() => LanguageServerHost.RunLanguageServer(
-                new() { WorkingDirectory = workingDirectory }, clientPipe.Reader, serverPipe.Writer, package, this)).GetAwaiter();
+                new() { WorkingDirectory = workingDirectory }, clientPipe.Reader, serverPipe.Writer, package, notificationListener: this)).GetAwaiter();
 
             await client.Initialize(default);
 
