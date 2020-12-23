@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
             _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
+            _builder = new(options, _languageServerPackage);
         }
 
         public void QueueBuild()
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.Build
                 Message = error.Message,
             };
 
-            int ConvertLocation(int original)
+            static int ConvertLocation(int original)
             {
                 var target = original - 1;
                 return target < 0 ? 0 : target;

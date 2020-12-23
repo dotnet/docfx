@@ -9,30 +9,40 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Server;
 
 namespace Microsoft.Docs.Build
 {
     internal class LanguageServerHost
     {
-        public static Task RunLanguageServer(string workingDirectory, CommandLineOptions options, Package? package = null)
+        public static async Task RunLanguageServer(CommandLineOptions options, Package? package = null)
         {
-            var stdIn = Console.OpenStandardInput();
-            var stdOut = Console.OpenStandardOutput();
-            ResetConsoleOutput();
+            var stdin = Console.OpenStandardInput();
+            var stdout = Console.OpenStandardOutput();
 
-            return RunLanguageServer(workingDirectory, options, PipeReader.Create(stdIn), PipeWriter.Create(stdOut), package);
+            var logPipe = new Pipe();
+            using var logWriter = new StreamWriter(logPipe.Writer.AsStream());
+            using var logReader = new StreamReader(logPipe.Reader.AsStream());
+
+            Console.SetOut(logWriter);
+
+            await RunLanguageServer(options, PipeReader.Create(stdin), PipeWriter.Create(stdout), package, logReader);
         }
 
         public static async Task RunLanguageServer(
-            string workingDirectory,
             CommandLineOptions commandLineOptions,
             PipeReader input,
             PipeWriter output,
             Package? package = null,
+            TextReader? logReader = null,
             ILanguageServerNotificationListener? notificationListener = null)
         {
             using var cts = new CancellationTokenSource();
+
+            var languageServerPackage = new LanguageServerPackage(
+                new(commandLineOptions.WorkingDirectory),
+                package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
 
             var server = await LanguageServer.From(options => options
                 .WithInput(input)
@@ -41,7 +51,7 @@ namespace Microsoft.Docs.Build
                 .WithHandler<TextDocumentHandler>()
                 .WithServices(services => services
                     .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
-                    .AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package ?? new LocalPackage(workingDirectory)))
+                    .AddSingleton(languageServerPackage)
                     .AddSingleton(commandLineOptions)
                     .AddSingleton<DiagnosticPublisher>()
                     .AddSingleton<LanguageServerBuilder>()
@@ -56,13 +66,18 @@ namespace Microsoft.Docs.Build
 
             var builder = server.GetRequiredService<LanguageServerBuilder>();
 
-            await Task.WhenAll(server.WaitForExit, Task.Run(() => builder.Run(cts.Token)));
+            await Task.WhenAll(
+                server.WaitForExit,
+                Task.Run(() => builder.Run(cts.Token)),
+                Task.Run(() => StreamLogs(server, logReader ?? TextReader.Null, cts.Token)));
         }
 
-        private static void ResetConsoleOutput()
+        private static void StreamLogs(LanguageServer server, TextReader reader, CancellationToken cancellationToken)
         {
-            // TODO: redirect the console output to client through LSP
-            Console.SetOut(StreamWriter.Null);
+            while (reader.ReadLine() is string line && !cancellationToken.IsCancellationRequested)
+            {
+                server.Window.Log(line);
+            }
         }
     }
 }

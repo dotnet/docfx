@@ -8,7 +8,8 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1401:FieldsMustBePrivate", Justification = "<Skipping>")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1401:FieldsMustBePrivate", Justification = "Command line options")]
+    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Command line options")]
     internal class CommandLineOptions
     {
         public string? Output;
@@ -25,6 +26,9 @@ namespace Microsoft.Docs.Build
         public string? Template;
         public string? TemplateBasePath;
         public IReadOnlyList<string>? Files;
+
+        public string? TemplateName;
+        public string WorkingDirectory = ".";
 
         public JObject? StdinConfig;
 

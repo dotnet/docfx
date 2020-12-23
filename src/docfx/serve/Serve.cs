@@ -7,7 +7,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class Serve
     {
-        public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)
+        public static bool Run(CommandLineOptions options, Package? package = null)
         {
             if (!options.LanguageServer)
             {
@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            LanguageServerHost.RunLanguageServer(workingDirectory, options, package).GetAwaiter().GetResult();
+            LanguageServerHost.RunLanguageServer(options, package).GetAwaiter().GetResult();
             return false;
         }
     }

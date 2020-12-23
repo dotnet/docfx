@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new();
 
         [ThreadStatic]
-        private static Package? t_package;
+        private static Package? s_package;
 
         static LiquidTemplate()
         {
@@ -74,12 +74,12 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                t_package = _package;
+                s_package = _package;
                 return template.Render(parameters);
             }
             finally
             {
-                t_package = default;
+                s_package = default;
             }
         }
 
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             var templateBasePath = (string?)context.Registers["template_base_path"];
             if (string.IsNullOrEmpty(templateBasePath))
             {
-                return t_package?.TryGetFullFilePath(new PathString(resourcePath));
+                return s_package?.TryGetFullFilePath(new PathString(resourcePath));
             }
             else
             {

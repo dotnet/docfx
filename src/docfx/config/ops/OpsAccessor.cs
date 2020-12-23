@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -47,6 +48,8 @@ namespace Microsoft.Docs.Build
         private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
+
+        private static int s_validationRulesetReported;
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly ErrorBuilder _errors;
@@ -209,7 +212,8 @@ namespace Microsoft.Docs.Build
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
                            var response = await SendRequest(request, environment);
-                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
+                               Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                            }

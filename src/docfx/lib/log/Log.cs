@@ -10,14 +10,14 @@ namespace Microsoft.Docs.Build
     [SuppressMessage("Reliability", "CA2002", Justification = "Lock Console.Out")]
     internal static class Log
     {
-        private static readonly AsyncLocal<bool> t_verbose = new();
+        private static readonly AsyncLocal<bool> s_verbose = new();
 
-        public static bool Verbose => TestQuirks.Verbose ?? t_verbose.Value;
+        public static bool Verbose => TestQuirks.Verbose ?? s_verbose.Value;
 
         public static IDisposable BeginScope(bool verbose)
         {
-            t_verbose.Value = verbose;
-            return new LogScope(() => t_verbose.Value = false);
+            s_verbose.Value = verbose;
+            return new LogScope(() => s_verbose.Value = false);
         }
 
         public static void Important(string message, ConsoleColor color)

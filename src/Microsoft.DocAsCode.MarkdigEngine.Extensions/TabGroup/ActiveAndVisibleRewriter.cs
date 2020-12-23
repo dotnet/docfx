@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
     {
         private readonly MarkdownContext _context;
-        private readonly List<string[]> tabSelectionInfo = new List<string[]>();
+        private readonly List<string[]> _tabSelectionInfo = new List<string[]>();
 
         public ActiveAndVisibleRewriter(MarkdownContext context)
         {
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (markdownObject is TabGroupBlock block)
             {
                 var items = block.Items.ToList();
-                var firstVisibleTab = ApplyTabVisible(tabSelectionInfo, items);
+                var firstVisibleTab = ApplyTabVisible(_tabSelectionInfo, items);
                 var idAndCountList = GetTabIdAndCountList(items).ToList();
                 if (idAndCountList.Any(g => g.Item2 > 1))
                 {
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         $"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.",
                         block);
                 }
-                var active = GetTabActive(block, tabSelectionInfo, items, firstVisibleTab, idAndCountList);
+                var active = GetTabActive(block, _tabSelectionInfo, items, firstVisibleTab, idAndCountList);
                 block.ActiveTabIndex = active;
                 block.Items = items.ToImmutableArray();
 

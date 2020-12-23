@@ -236,14 +236,10 @@ namespace Microsoft.Docs.Build
                         continue;
                     }
                     var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value[1..];
-                    if (_buildOptions.Repository != null)
-                    {
-                        sourcePath = Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.Repository.Path, sourcePathRelativeToRepoRoot));
-                    }
-                    else
-                    {
-                        sourcePath = Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, sourcePathRelativeToRepoRoot));
-                    }
+
+                    sourcePath = _buildOptions.Repository != null
+                        ? Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.Repository.Path, sourcePathRelativeToRepoRoot))
+                        : Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(_buildOptions.DocsetPath, sourcePathRelativeToRepoRoot));
                 }
 
                 if (!sourcePath.StartsWith("."))

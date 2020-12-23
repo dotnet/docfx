@@ -187,13 +187,9 @@ namespace Microsoft.Docs.Build
             var sitePath = ApplyRoutes(filePath.Path).Value;
             if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.Toc)
             {
-                if (contentType == ContentType.Page && renderType == RenderType.Component)
-                {
-                    sitePath = Path.ChangeExtension(sitePath, ".json");
-                }
-                else
-                {
-                    sitePath = urlType switch
+                sitePath = contentType == ContentType.Page && renderType == RenderType.Component
+                    ? Path.ChangeExtension(sitePath, ".json")
+                    : urlType switch
                     {
                         UrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
                         UrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
@@ -202,7 +198,6 @@ namespace Microsoft.Docs.Build
                         UrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
                         _ => throw new NotSupportedException(),
                     };
-                }
             }
 
             if (urlType != UrlType.Docs)
