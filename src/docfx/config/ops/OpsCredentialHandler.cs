@@ -15,9 +15,9 @@ namespace Microsoft.Docs.Build
     {
         private const string DocsOPSTokenHeader = "X-OP-BuildUserToken";
 
-        private static readonly SemaphoreSlim s_credentialRefreshSemaphore = new(1);
-
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
+
+        private static readonly SemaphoreSlim s_credentialRefreshSemaphore = new(1);
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
         private readonly Func<CancellationToken, Task<string?>>? _getRefreshedCredential;
