@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
 
 namespace Microsoft.Docs.Build
@@ -35,48 +33,30 @@ namespace Microsoft.Docs.Build
             ILanguageServerNotificationListener? notificationListener = null)
         {
             using var cts = new CancellationTokenSource();
-            Task? buildTask = null;
 
             var server = await LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
+                .WithHandler<TextDocumentHandler>()
                 .WithServices(services => services
+                    .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
+                    .AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package ?? new LocalPackage(workingDirectory)))
+                    .AddSingleton(commandLineOptions)
+                    .AddSingleton<DiagnosticPublisher>()
+                    .AddSingleton<LanguageServerBuilder>()
                     .AddOptions()
                     .AddLogging())
                 .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
-                .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken cancellationToken) =>
-                {
-                    var loggerFactory = server.GetRequiredService<ILoggerFactory>();
-                    var languageServerPackage = new LanguageServerPackage(new MemoryPackage(workingDirectory), package ?? new LocalPackage(workingDirectory));
-                    notificationListener ??= new LanguageServerNotificationListener();
-                    var languageServerProgressReporterFactory = new LanguageServerProgressReporterFactory(server);
-                    var diagnosticPublisher = new DiagnosticPublisher(server, notificationListener);
-
-                    var languageServerBuilder = new LanguageServerBuilder(
-                        loggerFactory,
-                        commandLineOptions,
-                        diagnosticPublisher,
-                        languageServerPackage,
-                        notificationListener,
-                        languageServerProgressReporterFactory);
-
-                    languageServerBuilder.Run(cts.Token);
-
-                    server.Register(r =>
-                    {
-                        r.AddHandler(new TextDocumentHandler(languageServerBuilder, notificationListener, languageServerPackage));
-                    });
-
-                    return Task.CompletedTask;
-                })
                 .OnExit(_ =>
                 {
                     cts.Cancel();
                     return Task.CompletedTask;
                 }));
 
-            await server.WaitForExit;
+            var builder = server.GetRequiredService<LanguageServerBuilder>();
+
+            await Task.WhenAll(server.WaitForExit, Task.Run(() => builder.Run(cts.Token)));
         }
 
         private static void ResetConsoleOutput()

@@ -3,12 +3,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Microsoft.Docs.Build
 {
@@ -20,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly ILanguageServerNotificationListener _notificationListener;
-        private readonly LanguageServerProgressReporterFactory _progressReporterFactory;
+        private readonly IServiceProvider _serviceProvider;
         private readonly PathString _workingDirectory;
         private List<PathString> _filesWithDiagnostics = new();
 
@@ -30,7 +33,7 @@ namespace Microsoft.Docs.Build
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
             ILanguageServerNotificationListener notificationListener,
-            LanguageServerProgressReporterFactory progressReporterFactory)
+            IServiceProvider serviceProvider)
         {
             options.DryRun = true;
 
@@ -38,7 +41,7 @@ namespace Microsoft.Docs.Build
             _diagnosticPublisher = diagnosticPublisher;
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
-            _progressReporterFactory = progressReporterFactory;
+            _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
             _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
         }
@@ -56,15 +59,15 @@ namespace Microsoft.Docs.Build
                 {
                     await WaitToTriggerBuild(cancellationToken);
 
-                    using var progressReporter = await _progressReporterFactory.CreateReporter();
-                    progressReporter.ReportProgress("Start build...");
+                    using var progressReporter = await CreateProgressReporter();
+                    progressReporter.Report("Start build...");
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
                     _builder.Build(errors, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
                     _notificationListener.OnNotificationHandled();
-                    progressReporter.ReportProgress("Build finished");
+                    progressReporter.Report("Build finished");
                 }
                 catch (Exception ex)
                 {
@@ -90,6 +93,13 @@ namespace Microsoft.Docs.Build
             catch (OperationCanceledException)
             {
             }
+        }
+
+        private async Task<LanguageServerProgressReporter> CreateProgressReporter()
+        {
+            var languageServer = _serviceProvider.GetService<ILanguageServer>();
+            Debug.Assert(languageServer != null);
+            return new LanguageServerProgressReporter(await languageServer.WorkDoneManager.Create(new WorkDoneProgressBegin()));
         }
 
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)

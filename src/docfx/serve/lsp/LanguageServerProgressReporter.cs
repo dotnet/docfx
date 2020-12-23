@@ -7,7 +7,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server.WorkDone;
 
 namespace Microsoft.Docs.Build
 {
-    internal class LanguageServerProgressReporter : IProgressReporter, IDisposable
+    internal class LanguageServerProgressReporter : IProgress<string>, IDisposable
     {
         private readonly IWorkDoneObserver _workDoneManager;
 
@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
             _workDoneManager.Dispose();
         }
 
-        public void ReportProgress(string message)
+        public void Report(string message)
         {
             _workDoneManager.OnNext(new WorkDoneProgressReport()
             {
