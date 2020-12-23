@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Microsoft.Docs.Build
@@ -25,6 +26,11 @@ namespace Microsoft.Docs.Build
         {
             get
             {
+                if (TryGetValue(out var value))
+                {
+                    return value;
+                }
+
                 if (Monitor.IsEntered(_syncLock))
                 {
                     throw new InvalidOperationException("ValueFactory attempted to access the Value property of this instance.");
@@ -32,12 +38,9 @@ namespace Microsoft.Docs.Build
 
                 lock (_syncLock)
                 {
-                    var currentFunction = _function;
-                    if (currentFunction != null && !currentFunction.HasChanged())
+                    if (TryGetValue(out value))
                     {
-                        Watcher.AttachToParent(currentFunction);
-                        currentFunction.Replay();
-                        return _value!;
+                        return value;
                     }
 
                     var function = new WatchFunction();
@@ -48,7 +51,6 @@ namespace Microsoft.Docs.Build
                     {
                         _value = _valueFactory();
                         _function = function;
-
                         return _value!;
                     }
                     finally
@@ -57,6 +59,21 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private bool TryGetValue([NotNullWhen(true)] out T? value)
+        {
+            var currentFunction = _function;
+            if (currentFunction != null && !currentFunction.HasChanged())
+            {
+                Watcher.AttachToParent(currentFunction);
+                currentFunction.Replay();
+                value = _value!;
+                return true;
+            }
+
+            value = default;
+            return false;
         }
     }
 }
