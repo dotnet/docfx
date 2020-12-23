@@ -108,8 +108,14 @@ namespace Microsoft.Docs.Build
             var cachePath = Path.Combine(appDataPath, "cache");
             var statePath = Path.Combine(appDataPath, "state");
 
+            if (spec.CleanFolder)
+            {
+                if (Directory.Exists(basePath))
+                {
+                    Directory.Delete(basePath, recursive: true);
+                }
+            }
             Directory.CreateDirectory(basePath);
-            EnsureCleanCacheFolder();
 
             var repos = spec.Repos
                 .Select(repo => new PackagePath(repo.Key).Url)
@@ -161,14 +167,6 @@ namespace Microsoft.Docs.Build
             }
 
             return (docsetPath, appDataPath, outputPath, repos, package);
-
-            void EnsureCleanCacheFolder()
-            {
-                if (Directory.Exists(appDataPath))
-                {
-                    Directory.Delete(appDataPath, recursive: true);
-                }
-            }
         }
 
         private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Package package)

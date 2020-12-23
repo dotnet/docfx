@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
                         _notificationSync.TrySetException(new InvalidOperationException(message.Message));
                     }
                 })
-                .OnRequest<CredentialRefreshParams, JToken>("docfx/userCredentialRefresh", async (CredentialRefreshParams @params) =>
+                .OnRequest("docfx/userCredentialRefresh", async (CredentialRefreshParams @params) =>
                 {
                     if (_credentialRefreshHandler == null)
                     {

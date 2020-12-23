@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
     {
         private const string DocsOPSTokenHeader = "X-OP-BuildUserToken";
 
+        private static readonly SemaphoreSlim s_credentialRefreshSemaphore = new(1);
+
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         private readonly Action<HttpRequestMessage> _credentialProvider;
@@ -63,8 +65,16 @@ namespace Microsoft.Docs.Build
                     && IsSameDocsEnvironmentRequest(request)
                     && _getRefreshedCredential != null)
                 {
-                    using var cts = new CancellationTokenSource(60000);
-                    _refreshedToken = await _getRefreshedCredential(cts.Token);
+                    var originalRefreshToken = _refreshedToken;
+                    await s_credentialRefreshSemaphore.WaitAsync(CancellationToken.None);
+
+                    if (_refreshedToken == originalRefreshToken)
+                    {
+                        using var cts = new CancellationTokenSource(60000);
+                        _refreshedToken = await _getRefreshedCredential.Invoke(cts.Token);
+                        s_credentialRefreshSemaphore.Release();
+                    }
+
                     if (_refreshedToken != null)
                     {
                         await FillOpsToken(request);

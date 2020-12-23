@@ -111,6 +111,7 @@ languageServer:
       a.md: []
 ---
 # Support refresh op build user token
+cleanFolder: true
 environments:
   - DOCS_OPS_TOKEN
 inputs:
@@ -131,7 +132,7 @@ languageServer:
         type: docsOpsToken
       response:
         result:
-          token: DOCS_OPS_TOKEN
+          token: "{DOCS_OPS_TOKEN}"
   - expectDiagnostics:
       docfx.yml: [{"code": "moniker-range-invalid"}]
 ---
