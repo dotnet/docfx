@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly ILanguageServerNotificationListener _notificationListener;
+        private readonly LanguageServerProgressReporterFactory _progressReporterFactory;
         private readonly PathString _workingDirectory;
         private List<PathString> _filesWithDiagnostics = new();
 
@@ -28,7 +29,8 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
-            ILanguageServerNotificationListener notificationListener)
+            ILanguageServerNotificationListener notificationListener,
+            LanguageServerProgressReporterFactory progressReporterFactory)
         {
             options.DryRun = true;
 
@@ -36,6 +38,7 @@ namespace Microsoft.Docs.Build
             _diagnosticPublisher = diagnosticPublisher;
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
+            _progressReporterFactory = progressReporterFactory;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
             _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
         }
@@ -53,12 +56,15 @@ namespace Microsoft.Docs.Build
                 {
                     await WaitToTriggerBuild(cancellationToken);
 
+                    using var progressReporter = await _progressReporterFactory.CreateReporter();
+                    progressReporter.ReportProgress("Start build...");
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
                     _builder.Build(errors, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
                     _notificationListener.OnNotificationHandled();
+                    progressReporter.ReportProgress("Build finished");
                 }
                 catch (Exception ex)
                 {
