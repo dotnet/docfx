@@ -179,16 +179,21 @@ namespace Microsoft.Docs.Build
                 {
                     if (joinTOCConfig.TopLevelToc != null)
                     {
-                        node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
+                        var topLevelTocFullPath = Path.Combine(_docsetPath, joinTOCConfig.TopLevelToc);
 
-                        // Generate Service Page.
-                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _buildScope, _parser, _errors);
-
-                        foreach (var item in node.Items)
+                        if (File.Exists(topLevelTocFullPath))
                         {
-                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                            node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
+
+                            // Generate Service Page.
+                            var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _buildScope, _parser, _errors);
+
+                            foreach (var item in node.Items)
+                            {
+                                servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                            }
+                            AddOverviewPage(node);
                         }
-                        AddOverviewPage(node);
                     }
                 }
 

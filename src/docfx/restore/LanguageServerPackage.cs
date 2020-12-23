@@ -11,27 +11,26 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerPackage : Package
     {
-        public override PathString BasePath => _packages.First().BasePath;
+        public override PathString BasePath => _memoryPackage.BasePath;
 
+        private readonly MemoryPackage _memoryPackage;
         private readonly List<Package> _packages = new();
-        private DateTime _lastPackageFilesUpdateTime;
-
-        private MemoryPackage MemoryPackage => (_packages[0] as MemoryPackage)!;
+        private DateTime _lastPackageFilesUpdateTime = DateTime.UtcNow;
 
         public LanguageServerPackage(MemoryPackage memoryPackage, Package fallbackPackage)
         {
+            Debug.Assert(memoryPackage.BasePath == fallbackPackage.BasePath);
+
+            _memoryPackage = memoryPackage;
             _packages.Add(memoryPackage);
             _packages.Add(fallbackPackage);
-            Debug.Assert(_packages.All(pkg => pkg.BasePath == _packages[0].BasePath));
-
-            _lastPackageFilesUpdateTime = DateTime.UtcNow;
         }
 
-        public void AddOrUpdate(PathString path, string content) => MemoryPackage.AddOrUpdate(path, content);
+        public void AddOrUpdate(PathString path, string content) => _memoryPackage.AddOrUpdate(path, content);
 
         public override bool Exists(PathString path) => Watcher.Read(() => _packages.Any(pkg => pkg.Exists(path)));
 
-        public IEnumerable<PathString> GetAllFilesInMemory() => MemoryPackage.GetAllFilesInMemory();
+        public IEnumerable<PathString> GetAllFilesInMemory() => _memoryPackage.GetAllFilesInMemory();
 
         public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
             => Watcher.Read(
@@ -43,7 +42,7 @@ namespace Microsoft.Docs.Build
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
             => Watcher.Read(() =>
             {
-                for (int i = 0; i < _packages.Count; i++)
+                for (var i = 0; i < _packages.Count; i++)
                 {
                     var lastWriteTimeUtc = _packages[i].TryGetLastWriteTimeUtc(path);
                     if (lastWriteTimeUtc != null)
@@ -67,12 +66,12 @@ namespace Microsoft.Docs.Build
 
         public void RefreshPackageFilesUpdateTime() => _lastPackageFilesUpdateTime = DateTime.UtcNow;
 
-        public void RemoveFile(PathString path) => MemoryPackage.RemoveFile(path);
+        public void RemoveFile(PathString path) => _memoryPackage.RemoveFile(path);
 
         public override PathString? TryGetPhysicalPath(PathString path)
             => Watcher.Read(() =>
             {
-                for (int i = 0; i < _packages.Count; i++)
+                for (var i = 0; i < _packages.Count; i++)
                 {
                     var physicalPath = _packages[i].TryGetPhysicalPath(path);
                     if (physicalPath != null)

@@ -15,8 +15,7 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            var server = LanguageServerHost.StartLanguageServer(workingDirectory, options, package).GetAwaiter().GetResult();
-            server.WaitForExit.GetAwaiter().GetResult();
+            LanguageServerHost.RunLanguageServer(workingDirectory, options, package).GetAwaiter().GetResult();
             return false;
         }
     }

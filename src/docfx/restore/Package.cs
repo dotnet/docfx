@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
         public abstract Stream ReadStream(PathString path);
 
-        public string ReadString(PathString path)
+        public virtual string ReadString(PathString path)
         {
             using var reader = ReadText(path);
             return reader.ReadToEnd();

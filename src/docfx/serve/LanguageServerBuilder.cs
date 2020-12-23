@@ -7,14 +7,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 namespace Microsoft.Docs.Build
 {
     internal class LanguageServerBuilder
     {
+        private readonly ILogger _logger;
         private readonly Builder _builder;
-        private readonly ErrorList _errorList = new();
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
@@ -23,6 +24,7 @@ namespace Microsoft.Docs.Build
         private List<PathString> _filesWithDiagnostics = new();
 
         public LanguageServerBuilder(
+            ILoggerFactory loggerFactory,
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
@@ -34,8 +36,8 @@ namespace Microsoft.Docs.Build
             _diagnosticPublisher = diagnosticPublisher;
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
-            _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _ = StartAsync();
+            _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
+            _builder = new(languageServerPackage.BasePath, options, _languageServerPackage);
         }
 
         public void QueueBuild()
@@ -43,28 +45,38 @@ namespace Microsoft.Docs.Build
             _buildChannel.Writer.TryWrite(true);
         }
 
-        private async Task StartAsync()
+        public async void Run(CancellationToken cancellationToken = default)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                await WaitToTriggerBuild();
-                var filesToBuild = _languageServerPackage.GetAllFilesInMemory().ToList();
-                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
+                try
+                {
+                    await WaitToTriggerBuild(cancellationToken);
 
-                PublishDiagnosticsParams(filesToBuild);
-                _notificationListener.OnNotificationHandled();
+                    var errors = new ErrorList();
+                    var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+                    _builder.Build(errors, filesToBuild.Select(f => f.Value).ToArray());
+
+                    PublishDiagnosticsParams(errors, filesToBuild);
+                    _notificationListener.OnNotificationHandled();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex, "Failed to handle build request");
+                }
             }
         }
 
-        private async Task WaitToTriggerBuild()
+        private async Task WaitToTriggerBuild(CancellationToken cancellationToken)
         {
-            await _buildChannel.Reader.ReadAsync();
+            await _buildChannel.Reader.ReadAsync(cancellationToken);
 
             try
             {
                 while (true)
                 {
-                    using var cts = new CancellationTokenSource(1000);
+                    using var timeout = new CancellationTokenSource(1000);
+                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();
                 }
@@ -74,10 +86,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild)
+        private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
-            var diagnosticsGroupByFile = from error in _errorList
+            var diagnosticsGroupByFile = from error in errors
                                          let source = error.Source
                                          where source != null
                                          let diagnostic = ConvertToDiagnostics(error, source)
