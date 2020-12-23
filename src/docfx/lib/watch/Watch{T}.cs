@@ -9,11 +9,11 @@ namespace Microsoft.Docs.Build
     public class Watch<T>
     {
         private readonly Func<T> _valueFactory;
+        private readonly object _syncLock = new object();
 
         private T? _value;
 
         private volatile WatchFunction? _function;
-        private object? _syncLock;
 
         public Watch(Func<T> valueFactory) => _valueFactory = valueFactory;
 
@@ -25,43 +25,38 @@ namespace Microsoft.Docs.Build
         {
             get
             {
-                var function = _function;
-                if (function != null && !function.HasChanged())
+                if (Monitor.IsEntered(_syncLock))
                 {
-                    Watcher.AttachToParent(function);
-                    function.Replay();
-                    return _value!;
+                    throw new InvalidOperationException("ValueFactory attempted to access the Value property of this instance.");
                 }
 
-                function = new WatchFunction();
-
-                Watcher.BeginFunctionScope(function);
-
-                try
+                lock (_syncLock)
                 {
-                    if (_syncLock != null && Monitor.IsEntered(_syncLock))
+                    var currentFunction = _function;
+                    if (currentFunction != null && !currentFunction.HasChanged())
                     {
-                        throw new InvalidOperationException("ValueFactory attempted to access the Value property of this instance.");
+                        Watcher.AttachToParent(currentFunction);
+                        currentFunction.Replay();
+                        return _value!;
                     }
 
-                    lock (EnsureLock(ref _syncLock))
+                    var function = new WatchFunction();
+
+                    Watcher.BeginFunctionScope(function);
+
+                    try
                     {
                         _value = _valueFactory();
                         _function = function;
-                    }
 
-                    return _value!;
-                }
-                finally
-                {
-                    Watcher.EndFunctionScope(attachToParent: function.HasChildren);
+                        return _value!;
+                    }
+                    finally
+                    {
+                        Watcher.EndFunctionScope(attachToParent: function.HasChildren);
+                    }
                 }
             }
-        }
-
-        private static object EnsureLock(ref object? syncLock)
-        {
-            return syncLock ?? Interlocked.CompareExchange(ref syncLock, new object(), null) ?? syncLock;
         }
     }
 }
