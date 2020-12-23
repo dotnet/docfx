@@ -17,10 +17,7 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private static readonly SemaphoreSlim s_credentialRefreshSemaphore = new(1);
-
         private readonly Action<HttpRequestMessage> _credentialProvider;
-        private readonly Func<CancellationToken, Task<string?>>? _getRefreshedCredential;
 
         // TODO: use Azure front door endpoint when it is stable
         private static readonly string s_docsProdServiceEndpoint =
@@ -100,7 +97,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task FillOpsToken(HttpRequestMessage request, DocsEnvironment? environment = null)
+        private static async Task FillOpsToken(HttpRequestMessage request, DocsEnvironment? environment = null)
         {
             if (IsSameDocsEnvironmentRequest(request))
             {
