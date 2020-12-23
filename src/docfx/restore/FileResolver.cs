@@ -16,11 +16,16 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
+        private static readonly HttpClientHandler s_defaultClientHandler = new HttpClientHandler
+        {
+            CheckCertificateRevocationList = true,
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+        };
+
         // NOTE: This line assumes each build runs in a new process
         private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
 
         private readonly Lazy<string?>? _fallbackDocsetPath;
-        private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
         private readonly Package _package;
@@ -29,7 +34,7 @@ namespace Microsoft.Docs.Build
         public FileResolver(
             Package package,
             Lazy<string?>? fallbackDocsetPath = null,
-            Action<HttpRequestMessage>? credentialProvider = null,
+            CredentialHandler? credentialHandler = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
@@ -39,13 +44,9 @@ namespace Microsoft.Docs.Build
             _fetchOptions = fetchOptions;
             _httpClient = new(
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                new CredentialHandler(
-                    credentialProvider,
-                    new HttpClientHandler
-                    {
-                        CheckCertificateRevocationList = true,
-                        AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                    }),
+                credentialHandler != null
+                    ? credentialHandler.Create(s_defaultClientHandler)
+                    : s_defaultClientHandler,
 #pragma warning restore CA2000 // Dispose objects before losing scope
                 true);
         }
@@ -254,8 +255,6 @@ namespace Microsoft.Docs.Build
             {
                 message.Headers.IfNoneMatch.Add(etag);
             }
-
-            _credentialProvider?.Invoke(message);
 
             if (_opsConfigAdapter != null)
             {

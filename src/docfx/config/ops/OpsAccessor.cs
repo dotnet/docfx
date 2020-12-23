@@ -8,7 +8,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
@@ -27,14 +26,31 @@ namespace Microsoft.Docs.Build
 
         private const string SandboxEnabledModuleListPath = "https://docs.microsoft.com/api/resources/sandbox/verify";
 
+        public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
+
+        // TODO: use Azure front door endpoint when it is stable
+        public static readonly string DocsProdServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
+
+        public static readonly string DocsPPEServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
+
+        public static readonly string DocsInternalServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
+
+        public static readonly string DocsPerfServiceEndpoint =
+            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
+
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _httpClient;
+        private readonly HttpClient _opsHttpClient;
 
-        public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
+        public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
             _errors = errors;
+            _httpClient = new(credentialHandler);
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            _httpClient = new(new CredentialHandler(credentialProvider, new HttpClientHandler()), true);
+            _opsHttpClient = new HttpClient(credentialHandler.Create(new OpsCredentialHandler(new HttpClientHandler())), true);
 #pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
@@ -120,27 +136,56 @@ namespace Microsoft.Docs.Build
         {
             using var request = new HttpRequestMessage
             {
-                RequestUri = new Uri($"{CredentialHandler.BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
+                RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await _opsHttpClient.SendAsync(request);
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var url = $"{CredentialHandler.BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
+            var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await _opsHttpClient.SendAsync(request);
 
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
             return response.IsSuccessStatusCode;
+        }
+
+        public static DocsEnvironment ExtractDocsEnvironmentFromUrl(string? url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                throw new NotSupportedException();
+            }
+
+            if (url.StartsWith(DocsProdServiceEndpoint))
+            {
+                return DocsEnvironment.Prod;
+            }
+            else if (url.StartsWith(DocsPPEServiceEndpoint))
+            {
+                return DocsEnvironment.PPE;
+            }
+            else if (url.StartsWith(DocsInternalServiceEndpoint))
+            {
+                return DocsEnvironment.Internal;
+            }
+            else if (url.StartsWith(DocsPerfServiceEndpoint))
+            {
+                return DocsEnvironment.Perf;
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
 
         private async Task<string> Fetch(
@@ -150,7 +195,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment? environment = null)
         {
             Debug.Assert(routePath.StartsWith("/"));
-            var url = CredentialHandler.BuildServiceEndpoint(environment) + routePath;
+            var url = BuildServiceEndpoint(environment) + routePath;
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
             {
@@ -159,7 +204,7 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
-            var response = await _httpClient.SendAsync(request);
+            var response = await _opsHttpClient.SendAsync(request);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -173,7 +218,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 Debug.Assert(routePath.StartsWith("/"));
-                var url = CredentialHandler.BuildServiceEndpoint(environment) + routePath;
+                var url = BuildServiceEndpoint(environment) + routePath;
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
@@ -188,7 +233,7 @@ namespace Microsoft.Docs.Build
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
-                           var response = await _httpClient.SendAsync(request);
+                           var response = await _opsHttpClient.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
@@ -275,9 +320,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
+        {
+            return (environment ?? DocsEnvironment) switch
+            {
+                DocsEnvironment.Prod => DocsProdServiceEndpoint,
+                DocsEnvironment.PPE => DocsPPEServiceEndpoint,
+                DocsEnvironment.Internal => DocsInternalServiceEndpoint,
+                DocsEnvironment.Perf => DocsPerfServiceEndpoint,
+                _ => throw new NotSupportedException(),
+            };
+        }
+
         private static string TaxonomyServicePath(DocsEnvironment? environment = null)
         {
-            return (environment ?? CredentialHandler.DocsEnvironment) switch
+            return (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => TaxonomyServiceProdPath,
                 DocsEnvironment.PPE => TaxonomyServicePPEPath,
@@ -294,7 +351,14 @@ namespace Microsoft.Docs.Build
             {
                 return DocsEnvironment.Prod;
             }
-            return CredentialHandler.DocsEnvironment;
+            return DocsEnvironment;
+        }
+
+        private static DocsEnvironment GetDocsEnvironment()
+        {
+            return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
+                ? docsEnvironment
+                : DocsEnvironment.Prod;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
-        public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor, GitHubAccessor) Load(
+        public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
             ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package package)
         {
             // load and trace entry repository
@@ -64,14 +64,14 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = preloadConfig.GetCredentialProvider();
-            var opsAccessor = new OpsAccessor(errors, credentialProvider);
+            var credentialHandler = preloadConfig.GetCredentialHandler();
+            var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 
             PackageResolver? packageResolver = default;
             var fallbackDocsetPath = new Lazy<string?>(
                 () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
-            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialHandler, configAdapter, fetchOptions);
 
             packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 
@@ -84,7 +84,7 @@ namespace Microsoft.Docs.Build
             var config = JsonUtility.ToObject<Config>(errors, configObject);
 
             Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
-            return (config, buildOptions, packageResolver, fileResolver, opsAccessor, new(config, credentialProvider));
+            return (config, buildOptions, packageResolver, fileResolver, opsAccessor);
         }
 
         private static JObject? LoadConfig(ErrorBuilder errors, Package package, PathString directory = default)

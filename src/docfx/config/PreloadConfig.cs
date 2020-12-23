@@ -57,27 +57,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string? DocsRepositoryOwnerName { get; init; }
 
-        public Action<HttpRequestMessage> GetCredentialProvider()
+        public CredentialHandler GetCredentialHandler()
         {
-            var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToArray();
-
-            return message =>
+            return new Lazy<CredentialHandler>(() =>
             {
-                if (message.RequestUri?.ToString() is string url)
-                {
-                    foreach (var (baseUrl, rule) in rules)
-                    {
-                        if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
-                        {
-                            foreach (var header in rule.Headers)
-                            {
-                                message.Headers.Add(header.Key, header.Value);
-                            }
-                            break;
-                        }
-                    }
-                }
-            };
+                var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToList();
+
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                return new(rules, new HttpClientHandler());
+#pragma warning restore CA2000 // Dispose objects before losing scope
+            }).Value;
         }
     }
 }

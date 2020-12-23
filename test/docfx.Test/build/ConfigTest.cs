@@ -122,10 +122,10 @@ namespace Microsoft.Docs.Build
     }
 }".Replace('\'', '"'), null);
 
-            var credentialProvider = config.GetCredentialProvider();
+            var credentialHandler = config.GetCredentialHandler();
 
             using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
-            credentialProvider(message);
+            credentialHandler.Handle(message);
             Assert.Equal(value, message.Headers.GetValues("key").First());
         }
     }

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -36,7 +37,21 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var accessor = new OpsAccessor(null, request => request.Headers.Add("X-OP-BuildUserToken", token));
+            var credentialHanlder = new CredentialHandler(
+                new List<KeyValuePair<string, HttpConfig>>()
+                {
+                    new KeyValuePair<string, HttpConfig>(
+                        OpsAccessor.DocsProdServiceEndpoint,
+                        new HttpConfig()
+                        {
+                            Headers = new Dictionary<string, string>()
+                            {
+                                { "X-OP-BuildUserToken", token },
+                            },
+                        }),
+                },
+                new HttpClientHandler());
+            var accessor = new OpsAccessor(null, credentialHanlder);
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);
