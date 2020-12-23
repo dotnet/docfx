@@ -95,7 +95,7 @@ P4</p>
                 if (headBlock.Level == 1)
                 {
                     var next = context.LookAhead(1);
-                    if (next is ThematicBreakBlock block)
+                    if (next is ThematicBreakBlock)
                     {
                         var newBlock = headBlock;
                         newBlock.Level = 2;

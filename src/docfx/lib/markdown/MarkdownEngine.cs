@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
 
         private readonly PublishUrlMap _publishUrlMap;
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new(() => new());
+        private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
         public MarkdownEngine(
             Config config,
@@ -90,13 +90,13 @@ namespace Microsoft.Docs.Build
                 {
                     var status = new Status(errors);
 
-                    t_status.Value!.Push(status);
+                    s_status.Value!.Push(status);
 
                     return Markdown.Parse(content, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
-                    t_status.Value!.Pop();
+                    s_status.Value!.Pop();
                 }
             }
         }
@@ -115,13 +115,13 @@ namespace Microsoft.Docs.Build
                 {
                     var status = new Status(errors, contentFallback, conceptual);
 
-                    t_status.Value!.Push(status);
+                    s_status.Value!.Push(status);
 
                     return Markdown.ToHtml(markdown, _pipelines[(int)pipelineType]);
                 }
                 finally
                 {
-                    t_status.Value!.Pop();
+                    s_status.Value!.Pop();
                 }
             }
         }
@@ -288,17 +288,17 @@ namespace Microsoft.Docs.Build
                 source = source.WithOffset(line.Value + 1, 0);
             }
 
-            t_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", source));
+            s_status.Value!.Peek().Errors.Add(new Error(level, code, $"{message}", source));
         }
 
         private static ErrorBuilder GetErrors()
         {
-            return t_status.Value!.Peek().Errors;
+            return s_status.Value!.Peek().Errors;
         }
 
         private static ConceptualModel? GetConceptual()
         {
-            return t_status.Value!.Peek().Conceptual;
+            return s_status.Value!.Peek().Conceptual;
         }
 
         private string? GetLayout(FilePath path)
@@ -308,7 +308,7 @@ namespace Microsoft.Docs.Build
 
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
         {
-            var status = t_status.Value!.Peek();
+            var status = s_status.Value!.Peek();
             var (error, file) = _linkResolver.ResolveContent(
                 new SourceInfo<string>(path, origin.GetSourceInfo()),
                 origin.GetFilePath(),
@@ -339,7 +339,7 @@ namespace Microsoft.Docs.Build
         private string GetLink(SourceInfo<string> href, MarkdownObject origin)
         {
             _contentValidator.ValidateLink(GetRootFilePath(), href, origin, false, null, -1);
-            var status = t_status.Value!.Peek();
+            var status = s_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
 
@@ -350,7 +350,7 @@ namespace Microsoft.Docs.Build
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {
-            var status = t_status.Value!.Peek();
+            var status = s_status.Value!.Peek();
 
             var (error, link, display, _) = href.HasValue
                 ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath())

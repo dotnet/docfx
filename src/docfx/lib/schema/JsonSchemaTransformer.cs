@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
         private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema, int? min, int? max)> _uidReferenceCountList = new();
         private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList = new();
 
-        private static readonly ThreadLocal<Stack<SourceInfo<string>>> t_recursionDetector = new(() => new());
+        private static readonly ThreadLocal<Stack<SourceInfo<string>>> s_recursionDetector = new(() => new());
 
         public JsonSchemaTransformer(
             DocumentProvider documentProvider,
@@ -296,7 +296,7 @@ namespace Microsoft.Docs.Build
             int uidCount,
             string propertyPath)
         {
-            var recursionDetector = t_recursionDetector.Value!;
+            var recursionDetector = s_recursionDetector.Value!;
             if (recursionDetector.Contains(uid))
             {
                 throw Errors.Link.CircularReference(uid, uid, recursionDetector, uid => $"{uid} ({uid.Source})").ToException();

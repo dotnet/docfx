@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                 Message = error.Message,
             };
 
-            int ConvertLocation(int original)
+            static int ConvertLocation(int original)
             {
                 var target = original - 1;
                 return target < 0 ? 0 : target;

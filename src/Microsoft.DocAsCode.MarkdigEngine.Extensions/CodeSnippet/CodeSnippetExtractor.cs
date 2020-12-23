@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     {
         public const string TagNamePlaceHolder = "{tagname}";
 
-        private static readonly Regex TagnameFormat = new Regex(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_tagnameFormat = new Regex(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly string _startLineTemplate;
         private readonly string _endLineTemplate;
@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 column++;
             }
 
-            return column == line.Length && (!containTagname || TagnameFormat.IsMatch(tagName));
+            return column == line.Length && (!containTagname || s_tagnameFormat.IsMatch(tagName));
         }
     }
 }

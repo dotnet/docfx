@@ -164,7 +164,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-               return _generatedContents[file].generatedContent;
+                return _generatedContents[file].generatedContent;
             }
 
             return _yamlTokenCache.GetOrAdd(file, path =>

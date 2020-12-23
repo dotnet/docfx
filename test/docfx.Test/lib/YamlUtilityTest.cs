@@ -144,7 +144,7 @@ d: true
         [InlineData("NULL")]
         public void TestNull(string yaml)
         {
-            var (errors, value) = DeserializeWithValidation<object>(yaml);
+            var (errors, _) = DeserializeWithValidation<object>(yaml);
             Assert.Empty(errors);
         }
 
@@ -213,7 +213,7 @@ d: true
             {
                 Assert.Equal(i, values[i].B);
                 Assert.Equal($"Good{i}!", values[i].C);
-                Assert.Equal((i % 2 != 0) ? true : false, values[i].D);
+                Assert.Equal(i % 2 != 0, values[i].D);
             }
         }
 
@@ -260,7 +260,7 @@ valueRequired: a
         public void TestStringEmpty()
         {
             var yaml = "";
-            var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
+            var (errors, _) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
             Assert.Empty(errors);
         }
 

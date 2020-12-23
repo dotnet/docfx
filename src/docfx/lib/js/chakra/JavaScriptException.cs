@@ -13,7 +13,7 @@ namespace ChakraHost.Hosting
         /// <summary>
         /// The error code.
         /// </summary>
-        private readonly JavaScriptErrorCode code;
+        private readonly JavaScriptErrorCode _code;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptException"/> class. 
@@ -32,7 +32,7 @@ namespace ChakraHost.Hosting
         public JavaScriptException(JavaScriptErrorCode code, string message) :
             base(message)
         {
-            this.code = code;
+            _code = code;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace ChakraHost.Hosting
         {
             if (message != null)
             {
-                code = (JavaScriptErrorCode)base.HResult;
+                _code = (JavaScriptErrorCode)base.HResult;
             }
         }
 
@@ -66,7 +66,7 @@ namespace ChakraHost.Hosting
         /// </summary>
         public JavaScriptErrorCode ErrorCode
         {
-            get { return code; }
+            get { return _code; }
         }
     }
 }

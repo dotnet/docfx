@@ -293,30 +293,28 @@ namespace Microsoft.Docs.Build
 
             // Validate and transform model using JSON schema
             var content = _jsonSchemaTransformer.TransformContent(errors, file);
-            if (!(content is JObject transformedContent))
+            if (content is not JObject transformedContent)
             {
                 throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();
             }
-            else
+
+            switch (mime.Value?.ToLowerInvariant())
             {
-                switch (mime.Value?.ToLowerInvariant())
-                {
-                    case "learningpath":
-                        _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
-                        break;
+                case "learningpath":
+                    _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
+                    break;
 
-                    case "module":
-                        _learnHierarchyBuilder.AddModule(JsonUtility.ToObject<Module>(errors, transformedContent));
-                        break;
+                case "module":
+                    _learnHierarchyBuilder.AddModule(JsonUtility.ToObject<Module>(errors, transformedContent));
+                    break;
 
-                    case "moduleunit":
-                        _learnHierarchyBuilder.AddModuleUnit(JsonUtility.ToObject<ModuleUnit>(errors, transformedContent));
-                        break;
+                case "moduleunit":
+                    _learnHierarchyBuilder.AddModuleUnit(JsonUtility.ToObject<ModuleUnit>(errors, transformedContent));
+                    break;
 
-                    case "achievements":
-                        _learnHierarchyBuilder.AddAchievements(JsonUtility.ToObject<AchievementArray>(errors, transformedContent));
-                        break;
-                }
+                case "achievements":
+                    _learnHierarchyBuilder.AddAchievements(JsonUtility.ToObject<AchievementArray>(errors, transformedContent));
+                    break;
             }
 
             JsonUtility.Merge(pageModel, transformedContent);

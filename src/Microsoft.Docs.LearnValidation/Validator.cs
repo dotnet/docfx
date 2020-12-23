@@ -65,7 +65,7 @@ namespace Microsoft.Docs.LearnValidation
                 var achievement = isModule ? (item as ModuleValidateModel).Achievement : (item as PathValidateModel).Achievement;
                 if (achievement != null && !(achievement is string))
                 {
-                    var (achievementUid, achievementModel) = AchievementSyncModel.ConvertAchievement(achievement);
+                    var (_, achievementModel) = AchievementSyncModel.ConvertAchievement(achievement);
                     if (achievementModel != null)
                     {
                         achievements.Add(new AchievementValidateModel

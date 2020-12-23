@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        private static readonly AsyncLocal<ImmutableStack<FilePath>> t_recursionDetector =
+        private static readonly AsyncLocal<ImmutableStack<FilePath>> s_recursionDetector =
                             new AsyncLocal<ImmutableStack<FilePath>> { Value = ImmutableStack<FilePath>.Empty };
 
         public TocLoader(
@@ -159,9 +159,9 @@ namespace Microsoft.Docs.Build
             var servicePages = new List<FilePath>();
 
             // add to parent path
-            t_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
+            s_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
 
-            var recursionDetector = t_recursionDetector.Value!;
+            var recursionDetector = s_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
             {
                 throw Errors.Link.CircularReference(new SourceInfo(file, 1, 1), file, recursionDetector).ToException();
@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector = recursionDetector.Push(file);
-                t_recursionDetector.Value = recursionDetector;
+                s_recursionDetector.Value = recursionDetector;
 
                 var node = _parser.Parse(file, _errors);
 
@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_recursionDetector.Value = recursionDetector.Pop();
+                s_recursionDetector.Value = recursionDetector.Pop();
             }
         }
 
