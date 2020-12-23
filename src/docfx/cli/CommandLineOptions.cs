@@ -27,6 +27,9 @@ namespace Microsoft.Docs.Build
         public string? TemplateBasePath;
         public IReadOnlyList<string>? Files;
 
+        public string? TemplateName;
+        public string WorkingDirectory = ".";
+
         public JObject? StdinConfig;
 
         public JObject ToJObject()

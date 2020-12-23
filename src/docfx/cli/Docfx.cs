@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            var (command, workingDirectory, options) = ParseCommandLineOptions(args);
+            var (command, options) = ParseCommandLineOptions(args);
             if (string.IsNullOrEmpty(command))
             {
                 return 1;
@@ -69,7 +69,7 @@ namespace Microsoft.Docs.Build
             using (Log.BeginScope(options.Verbose))
             {
                 Log.Write($"docfx: {GetDocfxVersion()}");
-                Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Microsoft.Docs.Validation.IValidator))}");
+                Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
                 Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
                 Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
 
@@ -78,19 +78,18 @@ namespace Microsoft.Docs.Build
 
                 return command switch
                 {
-                    "new" => New.Run(workingDirectory, options),
-                    "restore" => Restore.Run(workingDirectory, options),
-                    "build" => Builder.Run(workingDirectory, options, package),
-                    "serve" => Serve.Run(workingDirectory, options, package),
+                    "new" => New.Run(options),
+                    "restore" => Restore.Run(options),
+                    "build" => Builder.Run(options, package),
+                    "serve" => Serve.Run(options, package),
                     _ => false,
                 } ? 1 : 0;
             }
         }
 
-        private static (string command, string workingDirectory, CommandLineOptions options) ParseCommandLineOptions(string[] args)
+        private static (string command, CommandLineOptions options) ParseCommandLineOptions(string[] args)
         {
             var command = "build";
-            var workingDirectory = ".";
             var options = new CommandLineOptions();
 
             if (args.Length == 0)
@@ -110,11 +109,11 @@ namespace Microsoft.Docs.Build
                     syntax.DefineCommand("new", ref command, "Creates a new docset.");
                     syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place generated output.");
                     syntax.DefineOption("force", ref options.Force, "Forces content to be generated even if it would change existing files.");
-                    syntax.DefineParameter("type", ref workingDirectory, "Docset template name");
+                    syntax.DefineParameter("type", ref options.TemplateName, "Docset template name");
 
                     // restore command
                     syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                    DefineCommonOptions(syntax, ref workingDirectory, options);
+                    DefineCommonOptions(syntax, options);
 
                     // build command
                     syntax.DefineCommand("build", ref command, "Builds a docset.");
@@ -135,12 +134,12 @@ namespace Microsoft.Docs.Build
                         "template-base-path",
                         ref options.TemplateBasePath,
                         "The base path used for referencing the template resource file when applying liquid.");
-                    DefineCommonOptions(syntax, ref workingDirectory, options);
+                    DefineCommonOptions(syntax, options);
 
                     // serve command
                     syntax.DefineCommand("serve", ref command, "Serves content in a docset.");
                     syntax.DefineOption("language-server", ref options.LanguageServer, "Starts a language server");
-                    DefineCommonOptions(syntax, ref workingDirectory, options);
+                    DefineCommonOptions(syntax, options);
                 });
 
                 if (options.Stdin && Console.ReadLine() is string stdin)
@@ -148,7 +147,7 @@ namespace Microsoft.Docs.Build
                     options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
                 }
 
-                return (command, Path.GetFullPath(workingDirectory), options);
+                return (command, options);
             }
             catch (ArgumentSyntaxException ex)
             {
@@ -157,13 +156,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void DefineCommonOptions(ArgumentSyntax syntax, ref string workingDirectory, CommandLineOptions options)
+        private static void DefineCommonOptions(ArgumentSyntax syntax, CommandLineOptions options)
         {
             syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
             syntax.DefineOption("log", ref options.Log, "Enable logging to the specified file path.");
             syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
             syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
-            syntax.DefineParameter("directory", ref workingDirectory, "A directory that contains docfx.yml/docfx.json.");
+            syntax.DefineParameter("directory", ref options.WorkingDirectory, "A directory that contains docfx.yml/docfx.json.");
         }
 
         private static void PrintFatalErrorMessage(Exception exception)

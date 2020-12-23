@@ -74,13 +74,12 @@ namespace Microsoft.Docs.Build
 
         public static DocsetBuilder? Create(
             ErrorBuilder errors,
-            string workingDirectory,
             string docsetPath,
             string? outputPath,
             Package package,
             CommandLineOptions options)
         {
-            var errorLog = new ErrorLog(errors, workingDirectory, docsetPath);
+            var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
             try
             {

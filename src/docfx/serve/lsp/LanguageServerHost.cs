@@ -15,17 +15,16 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerHost
     {
-        public static Task RunLanguageServer(string workingDirectory, CommandLineOptions options, Package? package = null)
+        public static Task RunLanguageServer(CommandLineOptions options, Package? package = null)
         {
-            var stdIn = Console.OpenStandardInput();
-            var stdOut = Console.OpenStandardOutput();
+            var stdin = Console.OpenStandardInput();
+            var stdout = Console.OpenStandardOutput();
             ResetConsoleOutput();
 
-            return RunLanguageServer(workingDirectory, options, PipeReader.Create(stdIn), PipeWriter.Create(stdOut), package);
+            return RunLanguageServer(options, PipeReader.Create(stdin), PipeWriter.Create(stdout), package);
         }
 
         public static async Task RunLanguageServer(
-            string workingDirectory,
             CommandLineOptions commandLineOptions,
             PipeReader input,
             PipeWriter output,
@@ -34,6 +33,10 @@ namespace Microsoft.Docs.Build
         {
             using var cts = new CancellationTokenSource();
 
+            var languageServerPackage = new LanguageServerPackage(
+                new(commandLineOptions.WorkingDirectory),
+                package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
+
             var server = await LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
@@ -41,7 +44,7 @@ namespace Microsoft.Docs.Build
                 .WithHandler<TextDocumentHandler>()
                 .WithServices(services => services
                     .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
-                    .AddSingleton(new LanguageServerPackage(new MemoryPackage(workingDirectory), package ?? new LocalPackage(workingDirectory)))
+                    .AddSingleton(languageServerPackage)
                     .AddSingleton(commandLineOptions)
                     .AddSingleton<DiagnosticPublisher>()
                     .AddSingleton<LanguageServerBuilder>()
