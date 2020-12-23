@@ -45,6 +45,7 @@ namespace Microsoft.Docs.Build
             PackageResolver packageResolver,
             FileResolver fileResolver,
             OpsAccessor opsAccessor,
+            GitHubAccessor gitHubAccessor,
             RepositoryProvider repositoryProvider,
             Package package)
         {
@@ -58,7 +59,7 @@ namespace Microsoft.Docs.Build
             _sourceMap = _errors.SourceMap = new(_errors, new(_buildOptions.DocsetPath), _config, _fileResolver);
             _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
             _buildScope = new(_config, _input, _buildOptions);
-            _githubAccessor = new(_config);
+            _githubAccessor = gitHubAccessor;
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
             _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
@@ -85,7 +86,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
-                var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
+                var (config, buildOptions, packageResolver, fileResolver, opsAccessor, gitHubAccessor) = ConfigLoader.Load(
                     errorLog, docsetPath, outputPath, options, fetchOptions, package);
 
                 if (errorLog.HasError)
@@ -108,7 +109,7 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run();
 
-                return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package);
+                return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, gitHubAccessor, repositoryProvider, package);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {

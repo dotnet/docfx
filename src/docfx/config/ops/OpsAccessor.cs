@@ -28,14 +28,13 @@ namespace Microsoft.Docs.Build
         private const string SandboxEnabledModuleListPath = "https://docs.microsoft.com/api/resources/sandbox/verify";
 
         private readonly ErrorBuilder _errors;
-        private readonly HttpClient _httpClient = new();
-        private readonly HttpClient _opsHttpClient;
+        private readonly HttpClient _httpClient;
 
         public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
         {
             _errors = errors;
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            _opsHttpClient = new(new OpsCredentialHandler(credentialProvider, new HttpClientHandler()), true);
+            _httpClient = new(new CredentialHandler(credentialProvider, new HttpClientHandler()), true);
 #pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
@@ -121,23 +120,23 @@ namespace Microsoft.Docs.Build
         {
             using var request = new HttpRequestMessage
             {
-                RequestUri = new Uri($"{OpsCredentialHandler.BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
+                RequestUri = new Uri($"{CredentialHandler.BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
 
-            var response = await _opsHttpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var url = $"{OpsCredentialHandler.BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
+            var url = $"{CredentialHandler.BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = await _opsHttpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
 
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
@@ -151,7 +150,7 @@ namespace Microsoft.Docs.Build
             DocsEnvironment? environment = null)
         {
             Debug.Assert(routePath.StartsWith("/"));
-            var url = OpsCredentialHandler.BuildServiceEndpoint(environment) + routePath;
+            var url = CredentialHandler.BuildServiceEndpoint(environment) + routePath;
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (headers != null)
             {
@@ -160,7 +159,7 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
-            var response = await _opsHttpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -174,7 +173,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 Debug.Assert(routePath.StartsWith("/"));
-                var url = OpsCredentialHandler.BuildServiceEndpoint(environment) + routePath;
+                var url = CredentialHandler.BuildServiceEndpoint(environment) + routePath;
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions
@@ -189,7 +188,7 @@ namespace Microsoft.Docs.Build
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
-                           var response = await _opsHttpClient.SendAsync(request);
+                           var response = await _httpClient.SendAsync(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
@@ -278,7 +277,7 @@ namespace Microsoft.Docs.Build
 
         private static string TaxonomyServicePath(DocsEnvironment? environment = null)
         {
-            return (environment ?? OpsCredentialHandler.DocsEnvironment) switch
+            return (environment ?? CredentialHandler.DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => TaxonomyServiceProdPath,
                 DocsEnvironment.PPE => TaxonomyServicePPEPath,
@@ -295,7 +294,7 @@ namespace Microsoft.Docs.Build
             {
                 return DocsEnvironment.Prod;
             }
-            return OpsCredentialHandler.DocsEnvironment;
+            return CredentialHandler.DocsEnvironment;
         }
     }
 }

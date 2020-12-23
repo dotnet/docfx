@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -11,13 +12,13 @@ using Azure.Security.KeyVault.Secrets;
 
 namespace Microsoft.Docs.Build
 {
-    internal class OpsCredentialHandler : DelegatingHandler
+    internal class CredentialHandler : DelegatingHandler
     {
         private const string DocsOPSTokenHeader = "X-OP-BuildUserToken";
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private readonly Action<HttpRequestMessage> _credentialProvider;
+        private readonly Action<HttpRequestMessage>? _credentialProvider;
 
         // TODO: use Azure front door endpoint when it is stable
         private static readonly string s_docsProdServiceEndpoint =
@@ -37,7 +38,7 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
 
-        public OpsCredentialHandler(Action<HttpRequestMessage> credentialProvider, HttpMessageHandler innerHandler)
+        public CredentialHandler(Action<HttpRequestMessage>? credentialProvider, HttpMessageHandler innerHandler)
             : base(innerHandler)
         {
             _credentialProvider = credentialProvider;
@@ -47,11 +48,11 @@ namespace Microsoft.Docs.Build
         {
             using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
             {
-                // Default header which allows fallback to public data when credential is not provided.
-                request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
-
                 _credentialProvider?.Invoke(request);
-                await FillOpsToken(request);
+                if (TryExtractDocsEnvironmentFromUrl(request.RequestUri?.AbsoluteUri, out _))
+                {
+                    return await HandleOpsRequest(request, cancellationToken);
+                }
 
                 return await base.SendAsync(request, cancellationToken);
             }
@@ -69,31 +70,45 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static DocsEnvironment ExtractDocsEnvironmentFromUrl(string? url)
+        private async Task<HttpResponseMessage> HandleOpsRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            // Default header which allows fallback to public data when credential is not provided.
+            request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
+            await FillOpsToken(request);
+            return await base.SendAsync(request, cancellationToken);
+        }
+
+        private static bool TryExtractDocsEnvironmentFromUrl(string? url, out DocsEnvironment? docsEnvironment)
+        {
+            docsEnvironment = default;
             if (string.IsNullOrEmpty(url))
             {
-                throw new NotSupportedException();
+                return false;
             }
-            else if (url.StartsWith(s_docsProdServiceEndpoint))
+
+            if (url.StartsWith(s_docsProdServiceEndpoint))
             {
-                return DocsEnvironment.Prod;
+                docsEnvironment = DocsEnvironment.Prod;
+                return true;
             }
             else if (url.StartsWith(s_docsPPEServiceEndpoint))
             {
-                return DocsEnvironment.PPE;
+                docsEnvironment = DocsEnvironment.PPE;
+                return true;
             }
             else if (url.StartsWith(s_docsInternalServiceEndpoint))
             {
-                return DocsEnvironment.Internal;
+                docsEnvironment = DocsEnvironment.Internal;
+                return true;
             }
             else if (url.StartsWith(s_docsPerfServiceEndpoint))
             {
-                return DocsEnvironment.Perf;
+                docsEnvironment = DocsEnvironment.Perf;
+                return true;
             }
             else
             {
-                throw new NotSupportedException();
+                return false;
             }
         }
 
@@ -136,7 +151,7 @@ namespace Microsoft.Docs.Build
         private static bool IsSameDocsEnvironmentRequest(HttpRequestMessage request)
         {
             var url = request.RequestUri?.ToString();
-            var docsEnvironment = ExtractDocsEnvironmentFromUrl(url);
+            Debug.Assert(TryExtractDocsEnvironmentFromUrl(url, out var docsEnvironment));
             return docsEnvironment == DocsEnvironment;
         }
 

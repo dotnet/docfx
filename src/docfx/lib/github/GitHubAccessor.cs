@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
 
         private volatile Error? _fatalError;
 
-        public GitHubAccessor(Config config)
+        public GitHubAccessor(Config config, Action<HttpRequestMessage>? credentialProvider)
         {
             _userCache = new(
                 AppData.GitHubUserCachePath,
@@ -40,7 +40,9 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.GithubToken))
             {
-                _httpClient = new HttpClient();
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                _httpClient = new(new CredentialHandler(credentialProvider, new HttpClientHandler()), true);
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
             }

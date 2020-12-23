@@ -18,17 +18,13 @@ namespace Microsoft.Docs.Build
     {
         // NOTE: This line assumes each build runs in a new process
         private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
-        private static readonly HttpClient s_httpClient = new(new HttpClientHandler
-        {
-            CheckCertificateRevocationList = true,
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-        });
 
         private readonly Lazy<string?>? _fallbackDocsetPath;
         private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
         private readonly Package _package;
+        private readonly HttpClient _httpClient;
 
         public FileResolver(
             Package package,
@@ -41,7 +37,17 @@ namespace Microsoft.Docs.Build
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
-            _credentialProvider = credentialProvider;
+            _httpClient = new(
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                new CredentialHandler(
+                    credentialProvider,
+                    new HttpClientHandler
+                    {
+                        CheckCertificateRevocationList = true,
+                        AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                    }),
+#pragma warning restore CA2000 // Dispose objects before losing scope
+                true);
         }
 
         public string? TryReadString(SourceInfo<string> file)
@@ -260,7 +266,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return await s_httpClient.SendAsync(message);
+            return await _httpClient.SendAsync(message);
         }
     }
 }

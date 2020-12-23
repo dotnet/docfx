@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
         {
             return siteName switch
             {
-                "DocsAzureCN" => OpsCredentialHandler.DocsEnvironment switch
+                "DocsAzureCN" => CredentialHandler.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "ppe.docs.azure.cn",
                     _ => throw new NotSupportedException(),
                 },
-                "dev.microsoft.com" => OpsCredentialHandler.DocsEnvironment switch
+                "dev.microsoft.com" => CredentialHandler.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
                     DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
@@ -156,18 +156,18 @@ namespace Microsoft.Docs.Build
                     DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
                     _ => throw new NotSupportedException(),
                 },
-                "rd.microsoft.com" => OpsCredentialHandler.DocsEnvironment switch
+                "rd.microsoft.com" => CredentialHandler.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "rd.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },
-                "Startups" => OpsCredentialHandler.DocsEnvironment switch
+                "Startups" => CredentialHandler.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "startups.microsoft.com",
                     DocsEnvironment.PPE => "ppe.startups.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },
-                _ => OpsCredentialHandler.DocsEnvironment switch
+                _ => CredentialHandler.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
                     DocsEnvironment.PPE => "ppe.docs.microsoft.com",
@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
 
         private static string GetXrefHostName(string siteName, string branch)
         {
-            return !IsLive(branch) && OpsCredentialHandler.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+            return !IsLive(branch) && CredentialHandler.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
         }
 
         private static bool IsLive(string branch)
