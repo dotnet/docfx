@@ -28,14 +28,14 @@ namespace ChakraHost.Hosting
         /// <summary>
         /// The handle.
         /// </summary>
-        private IntPtr handle;
+        private IntPtr _handle;
 
         /// <summary>
         ///     Gets a value indicating whether the runtime is valid.
         /// </summary>
         public bool IsValid
         {
-            get { return handle != IntPtr.Zero; }
+            get { return _handle != IntPtr.Zero; }
         }
 
         /// <summary>
@@ -49,8 +49,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                UIntPtr memoryUsage;
-                Native.ThrowIfError(Native.JsGetRuntimeMemoryUsage(this, out memoryUsage));
+                Native.ThrowIfError(Native.JsGetRuntimeMemoryUsage(this, out var memoryUsage));
                 return memoryUsage;
             }
         }
@@ -66,8 +65,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                UIntPtr memoryLimit;
-                Native.ThrowIfError(Native.JsGetRuntimeMemoryLimit(this, out memoryLimit));
+                Native.ThrowIfError(Native.JsGetRuntimeMemoryLimit(this, out var memoryLimit));
                 return memoryLimit;
             }
 
@@ -84,8 +82,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                bool isDisabled;
-                Native.ThrowIfError(Native.JsIsRuntimeExecutionDisabled(this, out isDisabled));
+                Native.ThrowIfError(Native.JsIsRuntimeExecutionDisabled(this, out var isDisabled));
                 return isDisabled;
             }
 
@@ -104,10 +101,9 @@ namespace ChakraHost.Hosting
         /// <param name="version">The version of the runtime to be created.</param>
         /// <param name="threadServiceCallback">The thread service for the runtime. Can be null.</param>
         /// <returns>The runtime created.</returns>
-        public static JavaScriptRuntime Create(JavaScriptRuntimeAttributes attributes, JavaScriptRuntimeVersion version, JavaScriptThreadServiceCallback? threadServiceCallback)
+        public static JavaScriptRuntime Create(JavaScriptRuntimeAttributes attributes, JavaScriptThreadServiceCallback? threadServiceCallback)
         {
-            JavaScriptRuntime handle;
-            Native.ThrowIfError(Native.JsCreateRuntime(attributes, threadServiceCallback, out handle));
+            Native.ThrowIfError(Native.JsCreateRuntime(attributes, threadServiceCallback, out var handle));
             return handle;
         }
 
@@ -115,11 +111,10 @@ namespace ChakraHost.Hosting
         ///     Creates a new runtime.
         /// </summary>
         /// <param name="attributes">The attributes of the runtime to be created.</param>
-        /// <param name="version">The version of the runtime to be created.</param>
         /// <returns>The runtime created.</returns>
-        public static JavaScriptRuntime Create(JavaScriptRuntimeAttributes attributes, JavaScriptRuntimeVersion version)
+        public static JavaScriptRuntime Create(JavaScriptRuntimeAttributes attributes)
         {
-            return Create(attributes, version, null);
+            return Create(attributes, null);
         }
 
         /// <summary>
@@ -128,7 +123,7 @@ namespace ChakraHost.Hosting
         /// <returns>The runtime created.</returns>
         public static JavaScriptRuntime Create()
         {
-            return Create(JavaScriptRuntimeAttributes.None, JavaScriptRuntimeVersion.Version11, null);
+            return Create(JavaScriptRuntimeAttributes.None, null);
         }
 
         /// <summary>
@@ -146,7 +141,7 @@ namespace ChakraHost.Hosting
                 Native.ThrowIfError(Native.JsDisposeRuntime(this));
             }
 
-            handle = IntPtr.Zero;
+            _handle = IntPtr.Zero;
         }
 
         /// <summary>
@@ -220,8 +215,7 @@ namespace ChakraHost.Hosting
         /// <returns>The created script context.</returns>
         public JavaScriptContext CreateContext()
         {
-            JavaScriptContext reference;
-            Native.ThrowIfError(Native.JsCreateContext(this, out reference));
+            Native.ThrowIfError(Native.JsCreateContext(this, out var reference));
             return reference;
         }
     }

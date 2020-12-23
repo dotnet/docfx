@@ -183,8 +183,7 @@ namespace Microsoft.Docs.Build
                     case ContainerInline inline:
                         foreach (var child in inline)
                         {
-                            var replacement = ReplaceCore(child, action) as Inline;
-                            if (replacement is null)
+                            if (ReplaceCore(child, action) is not Inline replacement)
                             {
                                 child.Remove();
                             }
@@ -254,15 +253,12 @@ namespace Microsoft.Docs.Build
 
         public static bool IsInlineImage(this MarkdownObject node, int imageIndex)
         {
-            switch (node)
+            return node switch
             {
-                case Inline inline:
-                    return inline.IsInlineImage();
-                case HtmlBlock htmlBlock:
-                    return htmlBlock.IsInlineImage(imageIndex);
-                default:
-                    return false;
-            }
+                Inline inline => inline.IsInlineImage(),
+                HtmlBlock htmlBlock => htmlBlock.IsInlineImage(imageIndex),
+                _ => false,
+            };
         }
 
         private static bool IsInlineImage(this Inline node)

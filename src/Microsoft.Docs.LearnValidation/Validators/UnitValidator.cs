@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
@@ -11,12 +9,9 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class UnitValidator : ValidatorBase
     {
-        private readonly HashSet<string> _taskValidationTypeSet;
-
         public UnitValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
               : base(manifestItems, basePath, logger)
         {
-            _taskValidationTypeSet = GetTaskValidationTypeSet();
         }
 
         public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
@@ -45,19 +40,6 @@ namespace Microsoft.Docs.LearnValidation
             var unit = JsonConvert.DeserializeObject<UnitValidateModel>(validatorHierarchyItem.ServiceData);
             SetHierarchyData(unit, validatorHierarchyItem, manifestItem);
             return unit;
-        }
-
-        private static HashSet<string> GetTaskValidationTypeSet()
-        {
-            var taskValidationTypeFile = Path.Combine(AppContext.BaseDirectory, "data/AzureResourceTypes.txt");
-            var taskValidationTypeSet = new HashSet<string>();
-
-            if (File.Exists(taskValidationTypeFile))
-            {
-                taskValidationTypeSet = new HashSet<string>(File.ReadAllLines(taskValidationTypeFile));
-            }
-
-            return taskValidationTypeSet;
         }
     }
 }

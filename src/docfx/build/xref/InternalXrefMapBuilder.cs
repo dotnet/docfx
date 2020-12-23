@@ -123,8 +123,8 @@ namespace Microsoft.Docs.Build
                     foreach (var spec in specsWithSameMonikerList)
                     {
                         duplicateSpecs.Add(spec);
-                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath)
-                            with { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning, });
+                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath) with
+                        { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning, });
                     }
                 }
             }

@@ -13,9 +13,9 @@ namespace Microsoft.Docs.Build
         // An internal HACK to workaround the `SourceInfo.ToString` behavior dependency.
         // TODO: remove this after we retire apex validation.
         [ThreadStatic]
-        private static bool t_forceSourceInfoToStringFilePathOnly;
+        private static bool s_forceSourceInfoToStringFilePathOnly;
 
-        public static bool ForceSourceInfoToStringFilePathOnly => t_forceSourceInfoToStringFilePathOnly;
+        public static bool ForceSourceInfoToStringFilePathOnly => s_forceSourceInfoToStringFilePathOnly;
 
         public static MarkdownPipelineBuilder UseApexValidation(
             this MarkdownPipelineBuilder builder,
@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            t_forceSourceInfoToStringFilePathOnly = true;
+                            s_forceSourceInfoToStringFilePathOnly = true;
 
                             foreach (var validator in validators)
                             {
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                         }
                         finally
                         {
-                            t_forceSourceInfoToStringFilePathOnly = false;
+                            s_forceSourceInfoToStringFilePathOnly = false;
                         }
                     }
                 }

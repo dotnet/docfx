@@ -69,14 +69,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (comparator != null)
                 {
-                    if (result != null)
-                    {
-                        result = new LogicExpression(result, LogicOperatorType.And, comparator);
-                    }
-                    else
-                    {
-                        result = comparator;
-                    }
+                    result = result != null ? new LogicExpression(result, LogicOperatorType.And, comparator) : comparator;
                 }
             }
 

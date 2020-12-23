@@ -226,15 +226,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             slice.NextChar();
             SkipWhitespace(ref slice);
 
-            string includedFilePath;
-            if (slice.CurrentChar == '<')
-            {
-                includedFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
-            }
-            else
-            {
-                includedFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
-            }
+            var includedFilePath = slice.CurrentChar == '<'
+                ? TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true)
+                : TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
 
             if (includedFilePath == null)
             {

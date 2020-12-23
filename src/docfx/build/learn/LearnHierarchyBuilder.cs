@@ -5,13 +5,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Docs.Validation;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class LearnHierarchyBuilder
     {
-        private readonly ErrorBuilder _errors;
         private readonly ContentValidator _contentValidator;
 
         private readonly ListBuilder<LearningPath> _learningPaths = new ListBuilder<LearningPath>();
@@ -19,9 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly ListBuilder<ModuleUnit> _moduleUnits = new ListBuilder<ModuleUnit>();
         private readonly ListBuilder<Achievement> _achievements = new ListBuilder<Achievement>();
 
-        public LearnHierarchyBuilder(ErrorBuilder errors, ContentValidator contentValidator)
+        public LearnHierarchyBuilder(ContentValidator contentValidator)
         {
-            _errors = errors;
             _contentValidator = contentValidator;
         }
 

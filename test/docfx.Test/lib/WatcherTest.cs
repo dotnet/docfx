@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
             var counter = 0;
             var watch = new Watch<int>(() => ++counter + GetCounterNoChange());
 
-            int GetCounterNoChange() => Watcher.Read(() => 0);
+            static int GetCounterNoChange() => Watcher.Read(() => 0);
 
             Assert.Equal(1, watch.Value);
             Assert.Equal(1, watch.Value);

@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (path[^1] == '/' && res.Length > 0 && res[res.Length - 1] != '/')
+            if (path[^1] == '/' && res.Length > 0 && res[^1] != '/')
             {
                 res.Append('/');
             }

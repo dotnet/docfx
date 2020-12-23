@@ -12,9 +12,9 @@ namespace Microsoft.Docs.Build
 
         private readonly HashSet<IFunction> _children = new();
 
-        private volatile bool _hasChanged;
-        private volatile object _hasChangedScope;
-        private volatile object _replayScope;
+        private bool _hasChanged;
+        private object _hasChangedScope;
+        private object _replayScope;
 
         public WatchFunction()
         {
@@ -39,8 +39,16 @@ namespace Microsoft.Docs.Build
                 return _hasChanged;
             }
 
-            _hasChangedScope = scope;
-            return _hasChanged = HasChangedCore();
+            lock (_children)
+            {
+                if (scope == _hasChangedScope)
+                {
+                    return _hasChanged;
+                }
+
+                _hasChangedScope = scope;
+                return _hasChanged = HasChangedCore();
+            }
         }
 
         public void Replay()
@@ -51,8 +59,16 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            _replayScope = scope;
-            ReplayCore();
+            lock (_children)
+            {
+                if (scope == _replayScope)
+                {
+                    return;
+                }
+
+                _replayScope = scope;
+                ReplayCore();
+            }
         }
 
         private bool HasChangedCore()

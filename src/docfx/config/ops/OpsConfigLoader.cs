@@ -192,12 +192,14 @@ namespace Microsoft.Docs.Build
                     var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
                     var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
                     conceptualToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ConceptualTOCUrl;
-
-                    if (!string.IsNullOrEmpty(config.ReferenceTOCUrl))
-                    {
-                        refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
-                    }
                     conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
+                }
+
+                if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
+                {
+                    var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
+                    var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
+                    refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
                 }
 
                 var item = new JObject();

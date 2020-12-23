@@ -199,7 +199,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            var queryChar = slice.CurrentChar;
+            _ = slice.CurrentChar;
             var query = StringBuilderCache.Local();
             var c = slice.NextChar();
 
@@ -221,7 +221,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return false;
             }
 
-            var queryChar = slice.CurrentChar;
+            _ = slice.CurrentChar;
             var query = StringBuilderCache.Local();
             var c = slice.NextChar();
 

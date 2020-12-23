@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            var count = error.Level switch
+            _ = error.Level switch
             {
                 ErrorLevel.Error => Interlocked.Increment(ref _errorCount),
                 ErrorLevel.Warning => Interlocked.Increment(ref _warningCount),
