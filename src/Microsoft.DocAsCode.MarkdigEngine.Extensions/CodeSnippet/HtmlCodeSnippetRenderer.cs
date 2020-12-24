@@ -380,8 +380,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                     else
                     {
-                        var indentSpaces = 0;
-                        var rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
+                        var rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out var indentSpaces);
                         commonIndent = Math.Min(commonIndent, indentSpaces);
                         codeLines.Add(rawCodeLine);
                     }

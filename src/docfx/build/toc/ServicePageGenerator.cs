@@ -83,16 +83,9 @@ namespace Microsoft.Docs.Build
                 var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc);
                 var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? referenceTOCRelativeDir ?? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
                 var pageType = node.LandingPageType.Value;
-                FilePath servicePagePath;
-                if (pageType == LandingPageType.Root)
-                {
-                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"));
-                }
-                else
-                {
-                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
-                }
-
+                var servicePagePath = pageType == LandingPageType.Root
+                    ? FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"))
+                    : FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
                 if (!_buildScope.Contains(servicePagePath.Path))
                 {
                     return;
@@ -119,28 +112,18 @@ namespace Microsoft.Docs.Build
 
                     if (item.Value.LandingPageType.Value != null)
                     {
-                        if (!string.IsNullOrEmpty(childHref))
+                        if (string.IsNullOrEmpty(childHref))
                         {
-                            if (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile)
-                            {
-                                childHref = null;
-                            }
-                            else
-                            {
-                                childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
-                            }
+                            // generate href for it based on service-page path
+                            childHref = pageType == LandingPageType.Root
+                                ? $"./{childName?.Replace(" ", "")}.yml"
+                                : $"{name.Value?.Replace(" ", "")}/{childName?.Replace(" ", "")}.yml";
                         }
                         else
                         {
-                            // generate href for it based on service-page path
-                            if (pageType == LandingPageType.Root)
-                            {
-                                childHref = $"./{childName?.Replace(" ", "")}.yml";
-                            }
-                            else
-                            {
-                                childHref = $"{name.Value?.Replace(" ", "")}/{childName?.Replace(" ", "")}.yml";
-                            }
+                            childHref = childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile
+                                ? null
+                                : GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
                         }
                         child = new ServicePageItem(childName, childHref, null);
                     }

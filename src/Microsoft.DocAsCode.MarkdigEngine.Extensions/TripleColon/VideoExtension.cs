@@ -100,8 +100,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!string.IsNullOrEmpty(maxWidth))
             {
-                int number;
-                if (!int.TryParse(maxWidth, out number))
+                if (!int.TryParse(maxWidth, out _))
                 {
                     logError($"Video reference '{src}' is invalid. 'max-width' must be a number.");
                     return false;

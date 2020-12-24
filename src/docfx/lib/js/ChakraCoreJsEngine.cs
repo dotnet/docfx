@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
                         JavaScriptRuntimeAttributes.DisableEval |
                         JavaScriptRuntimeAttributes.EnableIdleProcessing;
 
-            return JavaScriptRuntime.Create(flags, JavaScriptRuntimeVersion.VersionEdge).CreateContext();
+            return JavaScriptRuntime.Create(flags).CreateContext();
         }
 
         private JavaScriptValue Run(PathString scriptPath)

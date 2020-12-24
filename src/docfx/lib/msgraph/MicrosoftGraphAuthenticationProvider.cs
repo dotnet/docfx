@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAuthenticationProvider : IAuthenticationProvider, IDisposable
     {
-        private static readonly string[] scopes = { "https://graph.microsoft.com/.default" };
+        private static readonly string[] s_scopes = { "https://graph.microsoft.com/.default" };
 
         private readonly IConfidentialClientApplication _cca;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 await _semaphore.WaitAsync();
                 if (_authenticationResult == null || _authenticationResult.ExpiresOn.UtcDateTime < DateTime.UtcNow.AddMinutes(-1))
                 {
-                    _authenticationResult = await _cca.AcquireTokenForClient(scopes).ExecuteAsync();
+                    _authenticationResult = await _cca.AcquireTokenForClient(s_scopes).ExecuteAsync();
                 }
                 return _authenticationResult.AccessToken;
             }

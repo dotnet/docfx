@@ -48,8 +48,6 @@ namespace Microsoft.Docs.Build
             var reader = new HtmlReader(templateStr);
             var result = new StringBuilder();
             var uidName = default(string);
-            var partialName = default(string);
-            var titleName = default(string);
             var hasInnerContent = false;
 
             while (reader.Read(out var token))
@@ -59,8 +57,8 @@ namespace Microsoft.Docs.Build
                     if (token.Type == HtmlTokenType.StartTag)
                     {
                         uidName = default;
-                        partialName = default;
-                        titleName = default;
+                        string? partialName = default;
+                        string? titleName = default;
                         hasInnerContent = false;
                         foreach (ref readonly var attribute in token.Attributes.Span)
                         {

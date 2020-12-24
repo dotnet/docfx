@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Enumeration;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,10 +14,7 @@ namespace Microsoft.Docs.Build
 
         private readonly PathString _directory;
 
-        public LocalPackage(string directory = ".")
-        {
-            _directory = new(Path.GetFullPath(directory));
-        }
+        public LocalPackage(string directory = ".") => _directory = new(Path.GetFullPath(directory));
 
         public override PathString BasePath => _directory;
 

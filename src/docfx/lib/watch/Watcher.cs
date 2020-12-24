@@ -10,8 +10,8 @@ namespace Microsoft.Docs.Build
     public static class Watcher
     {
         private static readonly object s_defaultScope = new();
-        private static readonly AsyncLocal<ImmutableStack<IFunction>> t_callstack = new();
-        private static readonly AsyncLocal<IDisposable?> t_scope = new();
+        private static readonly AsyncLocal<ImmutableStack<IFunction>> s_callstack = new();
+        private static readonly AsyncLocal<IDisposable?> s_scope = new();
 
         public static T Read<T>(Func<T> valueFactory)
         {
@@ -67,28 +67,28 @@ namespace Microsoft.Docs.Build
 
         public static IDisposable BeginScope()
         {
-            if (t_scope.Value != null)
+            if (s_scope.Value != null)
             {
                 throw new InvalidOperationException("Cannot start a nested scope.");
             }
-            return t_scope.Value = new DelegatingDisposable(() => t_scope.Value = null);
+            return s_scope.Value = new DelegatingDisposable(() => s_scope.Value = null);
         }
 
-        internal static object GetCurrentScope() => t_scope.Value ?? s_defaultScope;
+        internal static object GetCurrentScope() => s_scope.Value ?? s_defaultScope;
 
         internal static void BeginFunctionScope(IFunction function)
         {
-            var stack = t_callstack.Value ?? ImmutableStack<IFunction>.Empty;
+            var stack = s_callstack.Value ?? ImmutableStack<IFunction>.Empty;
 
-            t_callstack.Value = stack.Push(function);
+            s_callstack.Value = stack.Push(function);
         }
 
         internal static void EndFunctionScope(bool attachToParent = true)
         {
-            var stack = t_callstack.Value;
+            var stack = s_callstack.Value;
             if (stack != null && !stack.IsEmpty)
             {
-                t_callstack.Value = stack = stack.Pop(out var child);
+                s_callstack.Value = stack = stack.Pop(out var child);
                 if (attachToParent && !stack.IsEmpty)
                 {
                     stack.Peek().AddChild(child);
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
 
         internal static void AttachToParent(IFunction child)
         {
-            var stack = t_callstack.Value;
+            var stack = s_callstack.Value;
             if (stack != null && !stack.IsEmpty)
             {
                 stack.Peek().AddChild(child);

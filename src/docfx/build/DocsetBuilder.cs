@@ -35,6 +35,7 @@ namespace Microsoft.Docs.Build
         private readonly PublishUrlMap _publishUrlMap;
         private readonly CustomRuleProvider _customRuleProvider;
         private readonly BookmarkValidator _bookmarkValidator;
+        private readonly IProgress<string> _progressReporter;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -46,7 +47,8 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             OpsAccessor opsAccessor,
             RepositoryProvider repositoryProvider,
-            Package package)
+            Package package,
+            IProgress<string> progressReporter)
         {
             _errors = errors;
             _config = config;
@@ -70,20 +72,22 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
             _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
             _bookmarkValidator = new(_errors);
+            _progressReporter = progressReporter;
         }
 
         public static DocsetBuilder? Create(
             ErrorBuilder errors,
-            string workingDirectory,
             string docsetPath,
             string? outputPath,
             Package package,
-            CommandLineOptions options)
+            CommandLineOptions options,
+            IProgress<string> progressReporter)
         {
-            var errorLog = new ErrorLog(errors, workingDirectory, docsetPath);
+            var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
             try
             {
+                progressReporter.Report("Loading config...");
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
                     errorLog, docsetPath, outputPath, options, fetchOptions, package);
@@ -97,6 +101,7 @@ namespace Microsoft.Docs.Build
 
                 if (!options.NoRestore)
                 {
+                    progressReporter.Report("Restoring dependencies...");
                     Restore.RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
                     if (errorLog.HasError)
                     {
@@ -108,7 +113,7 @@ namespace Microsoft.Docs.Build
 
                 new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run();
 
-                return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package);
+                return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package, progressReporter);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
@@ -121,6 +126,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                _progressReporter.Report("Building...");
                 JsonSchemaTransformer? jsonSchemaTransformer = null;
                 ContentValidator? contentValidator = null;
 
@@ -145,7 +151,7 @@ namespace Microsoft.Docs.Build
                 var searchIndexBuilder = new SearchIndexBuilder(_config, _errors, _documentProvider, _metadataProvider);
 
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
-                var learnHierarchyBuilder = new LearnHierarchyBuilder(_errors, contentValidator);
+                var learnHierarchyBuilder = new LearnHierarchyBuilder(contentValidator);
                 var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, contentValidator, metadataValidator, markdownEngine, searchIndexBuilder, _redirectionProvider, jsonSchemaTransformer, learnHierarchyBuilder);
                 var tocBuilder = new TocBuilder(_config, tocLoader, contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);

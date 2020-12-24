@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -32,21 +33,20 @@ namespace Microsoft.Docs.Build
                     WorkingDirectory = cwd ?? ".",
                     Arguments = commandLineArgs,
                     UseShellExecute = false,
-                    RedirectStandardOutput = stdout,
+                    RedirectStandardOutput = true,
                     RedirectStandardError = true,
                 };
 
                 using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
 
                 using var errorStream = new MemoryStream();
-                var readError = Task.Run(() => PipeStream(process.StandardError.BaseStream, Console.OpenStandardOutput(), errorStream));
+                var readError = Task.Run(() => PipeStream(process.StandardError.BaseStream, Console.Out, errorStream));
                 var result = stdout ? process.StandardOutput.ReadToEnd() : "";
 
-                process.WaitForExit();
+                Task.WhenAll(process.WaitForExitAsync(), readError).GetAwaiter().GetResult();
 
                 if (process.ExitCode != 0)
                 {
-                    readError.GetAwaiter().GetResult();
                     errorStream.Seek(0, SeekOrigin.Begin);
 
                     using var errorReader = new StreamReader(errorStream);
@@ -66,9 +66,8 @@ namespace Microsoft.Docs.Build
                 return arg.Replace(secret, secret.Length > 10 ? secret[0..3] + "***" + secret[^3..] : "***");
             }
 
-            static void PipeStream(Stream input, Stream output1, Stream output2)
+            static void PipeStream(Stream input, TextWriter consoleOutput, Stream output)
             {
-                var console = Console.OpenStandardOutput();
                 var buffer = new byte[1024];
 
                 while (true)
@@ -79,8 +78,8 @@ namespace Microsoft.Docs.Build
                         break;
                     }
 
-                    output1.Write(buffer, 0, bytesRead);
-                    output2.Write(buffer, 0, bytesRead);
+                    consoleOutput.Write(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                    output.Write(buffer, 0, bytesRead);
                 }
             }
         }

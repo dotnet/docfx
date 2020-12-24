@@ -133,6 +133,7 @@ ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
 
         [StructLayout(LayoutKind.Sequential)]
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1307", Justification = "Interop")]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Interop")]
         private struct MEMORYSTATUSEX
         {
             // The length field must be set to the size of this data structure.

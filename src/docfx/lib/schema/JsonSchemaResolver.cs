@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 {
     internal class JsonSchemaResolver
     {
-        private static readonly ThreadLocal<JsonSchemaResolver?> t_current = new();
+        private static readonly ThreadLocal<JsonSchemaResolver?> s_current = new();
 
         private readonly JToken _schema;
         private readonly Uri _baseUrl = new("https://me");
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public static readonly JsonSchemaResolver Null = new(new JObject(), (a, b) => null);
 
-        internal static JsonSchemaResolver Current => t_current.Value ?? throw new InvalidOperationException("Use JsonSchemaLoader to load JSON schema");
+        internal static JsonSchemaResolver Current => s_current.Value ?? throw new InvalidOperationException("Use JsonSchemaLoader to load JSON schema");
 
         internal JsonSchemaResolver(JToken schema, Func<Uri, Uri, JsonSchema?> resolveExternalSchema)
         {
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                t_current.Value = this;
+                s_current.Value = this;
 
                 var resolvedSchema = JsonUtility.ToObject<JsonSchema>(ErrorBuilder.Null, token);
                 return string.IsNullOrEmpty(resolvedSchema.Ref)
@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_current.Value = null;
+                s_current.Value = null;
             }
         }
 
