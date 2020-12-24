@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
                     progressReporter.Report("Start build...");
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-                    _builder.Build(errors, filesToBuild.Select(f => f.Value).ToArray());
+                    _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
                     _notificationListener.OnNotificationHandled();
