@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
@@ -41,6 +42,7 @@ namespace Microsoft.Docs.Build
         public static readonly string DocsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
+        private static int s_validationRulesetReported;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _httpClient;
         private readonly HttpClient _opsHttpClient;
@@ -234,7 +236,8 @@ namespace Microsoft.Docs.Build
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
                            var response = await _opsHttpClient.SendAsync(request);
-                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
+                               Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                            }
