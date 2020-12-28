@@ -21,8 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
         private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
-        private readonly Lazy<ExternalXrefMap> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+        private readonly Watch<ExternalXrefMap> _externalXrefMap;
+        private readonly Watch<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         public XrefResolver(
             Config config,
