@@ -9,7 +9,7 @@ namespace Microsoft.Docs.LearnValidation
     public class UnitValidateModel : UnitSyncModel, IValidateModel
     {
         [JsonProperty("source_relative_path")]
-        public string SourceRelativePath { get; set; }
+        public string SourceRelativePath { get; set; } = "";
 
         public bool IsValid { get; set; }
 
@@ -17,14 +17,14 @@ namespace Microsoft.Docs.LearnValidation
 
         public string Uid => UId;
 
-        public IValidateModel Parent { get; set; }
+        public IValidateModel? Parent { get; set; }
 
-        public string MSDate { get; set; }
+        public string MSDate { get; set; } = "";
 
-        public string ServiceData { get; set; }
+        public string ServiceData { get; set; } = "";
 
-        public string PublishUpdatedAt { get; set; }
+        public string PublishUpdatedAt { get; set; } = "";
 
-        public string PageKind { get; set; }
+        public string PageKind { get; set; } = "";
     }
 }

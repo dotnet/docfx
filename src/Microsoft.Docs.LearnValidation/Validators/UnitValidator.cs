@@ -23,7 +23,7 @@ namespace Microsoft.Docs.LearnValidation
                 var unit = item as UnitValidateModel;
 
                 // unit has parent, but that module has error when SDP validating
-                if (unit.Parent == null)
+                if (unit?.Parent == null)
                 {
                     itemValid = false;
                 }

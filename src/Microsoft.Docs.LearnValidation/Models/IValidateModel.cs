@@ -11,7 +11,7 @@ namespace Microsoft.Docs.LearnValidation
 
         bool IsValid { get; set; }
 
-        IValidateModel Parent { get; set; }
+        IValidateModel? Parent { get; set; }
 
         bool IsDeleted { get; set; }
 

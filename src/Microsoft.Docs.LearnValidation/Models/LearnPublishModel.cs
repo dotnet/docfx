@@ -14,6 +14,6 @@ namespace Microsoft.Docs.LearnValidation.Models
         public List<LearnPublishItem> Files { get; } = new List<LearnPublishItem>();
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; private set; }
+        public JObject ExtensionData { get; private set; } = new JObject();
     }
 }

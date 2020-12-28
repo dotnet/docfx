@@ -10,12 +10,12 @@ namespace Microsoft.Docs.LearnValidation.Models
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class LearnPublishItem
     {
-        public string SourcePath { get; set; }
+        public string SourcePath { get; set; } = "";
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool HasError { get; set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; private set; }
+        public JObject ExtensionData { get; private set; } = new JObject();
     }
 }

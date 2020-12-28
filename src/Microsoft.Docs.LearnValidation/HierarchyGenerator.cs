@@ -28,9 +28,9 @@ namespace Microsoft.Docs.LearnValidation
                     continue;
                 }
 
-                if (item is AchievementValidateModel)
+                if (item is AchievementValidateModel achievement && achievement != null)
                 {
-                    hierarchy.Achievements.Add(ConvertValidationModelToAchievement(item as AchievementValidateModel));
+                    hierarchy.Achievements.Add(ConvertValidationModelToAchievement(achievement));
                     continue;
                 }
 
