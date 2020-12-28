@@ -19,7 +19,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public IValidateModel? Parent { get; set; }
 
-        public string MSDate { get; set; } = "";
+        public string? MSDate { get; set; }
 
         public string ServiceData { get; set; } = "";
 
@@ -27,6 +27,6 @@ namespace Microsoft.Docs.LearnValidation
 
         public string PageKind { get; set; } = "";
 
-        public string AssetId { get; set; } = "";
+        public string? AssetId { get; set; }
     }
 }

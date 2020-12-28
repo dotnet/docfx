@@ -22,7 +22,7 @@ namespace Microsoft.Docs.LearnValidation
         public IValidateModel? Parent { get; set; }
 
         [JsonProperty("ms.date")]
-        public string MSDate { get; set; } = "";
+        public string? MSDate { get; set; }
 
         [JsonProperty("updated_at")]
         public string PublishUpdatedAt { get; set; } = "";

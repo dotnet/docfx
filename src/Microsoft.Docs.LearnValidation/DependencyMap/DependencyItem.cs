@@ -16,6 +16,6 @@ namespace Microsoft.Docs.LearnValidation
         public string DependencyType { get; set; } = "";
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Version { get; set; } = "";
+        public string? Version { get; set; }
     }
 }

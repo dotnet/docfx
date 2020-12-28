@@ -15,7 +15,7 @@ namespace Microsoft.Docs.LearnValidation
 
         bool IsDeleted { get; set; }
 
-        string MSDate { get; set; }
+        string? MSDate { get; set; }
 
         string ServiceData { get; set; }
 
@@ -23,6 +23,6 @@ namespace Microsoft.Docs.LearnValidation
 
         string PageKind { get; set; }
 
-        string AssetId { get; set; }
+        string? AssetId { get; set; }
     }
 }

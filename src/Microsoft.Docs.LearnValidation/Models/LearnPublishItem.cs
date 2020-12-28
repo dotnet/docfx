@@ -16,6 +16,6 @@ namespace Microsoft.Docs.LearnValidation.Models
         public bool HasError { get; set; }
 
         [JsonExtensionData]
-        public JObject ExtensionData { get; private set; } = new JObject();
+        public JObject? ExtensionData { get; private set; }
     }
 }
