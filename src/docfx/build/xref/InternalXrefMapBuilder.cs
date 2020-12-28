@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
-        private readonly JsonSchemaTransformer _jsonSchemaTransformer;
+        private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
             Config config,
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             BuildScope buildScope,
-            JsonSchemaTransformer jsonSchemaTransformer)
+            Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
             _errors = errors;
@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
 
                 case FileFormat.Yaml:
                 case FileFormat.Json:
-                    var specs = _jsonSchemaTransformer.LoadXrefSpecs(errors, file);
+                    var specs = _jsonSchemaTransformer().LoadXrefSpecs(errors, file);
                     xrefs.AddRange(specs);
                     break;
             }
