@@ -46,13 +46,13 @@ namespace Microsoft.Docs.LearnValidation
             Parallel.For(0, ManifestItems.Count, i =>
             {
                 var manifestItem = ManifestItems[i];
-                var path = Path.Combine(BathPath, manifestItem.Output.MetadataOutput.RelativePath);
+                var path = Path.Combine(BathPath, manifestItem?.Output?.MetadataOutput?.RelativePath ?? "");
                 if (!File.Exists(path))
                 {
-                    path = manifestItem.Output.MetadataOutput.LinkToPath;
+                    path = manifestItem?.Output?.MetadataOutput?.LinkToPath ?? "";
                 }
                 var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
-                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem);
+                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem ?? new LegacyManifestItem());
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
                 items[i] = (IValidateModel)hierarchyItem;
             });
