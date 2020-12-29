@@ -90,8 +90,7 @@ namespace Microsoft.Docs.Build
 
         public void ValidateHierarchy(List<HierarchyModel> models)
         {
-            Write(_validator.ValidateHierarchy(models, new ValidationContext { DocumentType = new string[] { "learningpath", "module", "moduleunit" } })
-                .GetAwaiter().GetResult());
+            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
@@ -114,7 +113,7 @@ namespace Microsoft.Docs.Build
                 };
                 var validationContext = new ValidationContext
                 {
-                    DocumentType = new string[] { documentType },
+                    DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
                     Monikers = monikers,
                 };
@@ -317,7 +316,7 @@ namespace Microsoft.Docs.Build
             {
                 context = new ValidationContext
                 {
-                    DocumentType = new string[] { documentType },
+                    DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
                     Monikers = GetMonikers(file, needMonikers),
                 };
