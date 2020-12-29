@@ -28,14 +28,14 @@ namespace Microsoft.Docs.LearnValidation
                 var path = item as PathValidateModel;
 
                 // when trophy is defined in another path, but that path has error when SDP validating
-                if (path.Achievement is string achievementUID && !fullItemsDict.ContainsKey(achievementUID))
+                if (path?.Achievement is string achievementUID && !fullItemsDict.ContainsKey(achievementUID))
                 {
                     itemValid = false;
                 }
 
                 // path has child module, but that module has error when SDP validating, except the shared module
-                var childrenCantFind = path.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !_isSharedItem(m, "Module")).ToList();
-                if (childrenCantFind.Any())
+                var childrenCantFind = path?.Modules.Where(m => !fullItemsDict.ContainsKey(m) && !_isSharedItem(m, "Module")).ToList();
+                if (childrenCantFind != null && childrenCantFind.Any())
                 {
                     itemValid = false;
                 }

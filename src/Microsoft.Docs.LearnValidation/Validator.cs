@@ -20,7 +20,7 @@ namespace Microsoft.Docs.LearnValidation
         public Validator(string manifestFilePath, LearnValidationLogger logger, Func<string, string, bool> isSharedItem)
         {
             _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath));
-            _outputBasePath = Path.GetDirectoryName(manifestFilePath);
+            _outputBasePath = Path.GetDirectoryName(manifestFilePath) ?? "";
             _logger = logger;
             _isSharedItem = isSharedItem;
         }
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.LearnValidation
             var achievements = new List<IValidateModel>();
             foreach (var item in items)
             {
-                var achievement = isModule ? (item as ModuleValidateModel).Achievement : (item as PathValidateModel).Achievement;
+                var achievement = isModule ? (item as ModuleValidateModel)?.Achievement : (item as PathValidateModel)?.Achievement;
                 if (achievement != null && !(achievement is string))
                 {
                     var (_, achievementModel) = AchievementSyncModel.ConvertAchievement(achievement);

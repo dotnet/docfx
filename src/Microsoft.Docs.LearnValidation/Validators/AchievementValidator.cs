@@ -34,15 +34,15 @@ namespace Microsoft.Docs.LearnValidation
 
             Items = ManifestItems.SelectMany(m =>
             {
-                var path = Path.Combine(BathPath, m.Output.TocOutput.RelativePath!);
+                var path = Path.Combine(BathPath, m?.Output?.TocOutput?.RelativePath ?? "");
                 if (!File.Exists(path))
                 {
-                    path = m.Output.MetadataOutput.LinkToPath;
+                    path = m?.Output?.MetadataOutput?.LinkToPath ?? "";
                 }
 
                 var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path));
 
-                achievements.ForEach(achievement => achievement.SourceRelativePath = m.SourceRelativePath!);
+                achievements.ForEach(achievement => achievement.SourceRelativePath = m?.SourceRelativePath!);
 
                 return achievements;
             }).Cast<IValidateModel>().ToList();
