@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 Uid = p.Uid.Value,
                 ChildrenUids = p.Modules?.Select(m => m.Value).ToList(),
                 SourceInfo = p.Uid.Source,
-                SchemaType = "learningpath",
+                PageType = "learningpath",
             }).ToList();
 
             var moduleModels = _modules.AsList().Select(p => new HierarchyModel
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 Uid = p.Uid.Value,
                 ChildrenUids = p.Units?.Select(u => u.Value).ToList(),
                 SourceInfo = p.Uid.Source,
-                SchemaType = "module",
+                PageType = "module",
             }).ToList();
 
             var unitModels = _moduleUnits.AsList().Select(p => new HierarchyModel
@@ -73,28 +73,28 @@ namespace Microsoft.Docs.Build
                 Uid = p.Uid.Value,
                 UseAzureSandbox = p.AzureSandbox,
                 SourceInfo = p.Uid.Source,
-                SchemaType = "moduleunit",
+                PageType = "moduleunit",
             }).ToList();
 
             var achievementModels = _achievements.AsList().Select(p => new HierarchyModel
             {
                 Uid = p.Uid.Value,
                 SourceInfo = p.Uid.Source,
-                SchemaType = p.Type.ToString(),
+                PageType = p.Type.ToString(),
             }).ToList();
 
             var trophys = _learningPaths.AsList().Where(p => p.Trophy != null).Select(p => new HierarchyModel
             {
                 Uid = p.Trophy!.Uid.Value,
                 SourceInfo = p.Trophy.Uid.Source,
-                SchemaType = "trophy",
+                PageType = "trophy",
             }).ToList();
 
             var badges = _modules.AsList().Where(p => p.Badge != null).Select(p => new HierarchyModel
             {
                 Uid = p.Badge!.Uid.Value,
                 SourceInfo = p.Badge.Uid.Source,
-                SchemaType = "badge",
+                PageType = "badge",
             }).ToList();
 
             return pathModels.Concat(moduleModels).Concat(unitModels).Concat(achievementModels).Concat(trophys).Concat(badges);

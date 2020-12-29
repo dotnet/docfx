@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
 
         public void ValidateHierarchy(List<HierarchyModel> models)
         {
-            Write(_validator.ValidateHierarchy(models, new ValidationContext { DocumentType = "learn" }).GetAwaiter().GetResult());
+            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
