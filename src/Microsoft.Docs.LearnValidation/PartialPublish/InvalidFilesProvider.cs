@@ -30,6 +30,11 @@ namespace Microsoft.Docs.LearnValidation
             // Mark modules
             foreach (var module in modules)
             {
+                if (module is null)
+                {
+                    continue;
+                }
+
                 if (!module.IsValid || module.Units.Any(u => !uidMapping[u].IsValid))
                 {
                     if (module.IsValid)
@@ -64,6 +69,11 @@ namespace Microsoft.Docs.LearnValidation
             // Mark learningpath
             foreach (var learningpath in learningpaths)
             {
+                if (learningpath is null)
+                {
+                    continue;
+                }
+
                 var modulesNeedCheck = learningpath.Modules.Where(m => !uidMapping.ContainsKey(m) || !uidMapping[m].IsValid).ToList();
                 var moduleCantFallback = modulesNeedCheck.Where(m => !_learnValidationHelper.IsModule(m)).ToList();
                 if (moduleCantFallback.Any())

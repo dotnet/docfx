@@ -15,7 +15,7 @@ namespace Microsoft.Docs.LearnValidation
             using (var stream = File.OpenRead(dependencyMapFile))
             using (var reader = new StreamReader(stream))
             {
-                string line;
+                string? line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     var dependentInfo = !string.IsNullOrEmpty(line) ? JsonConvert.DeserializeObject<DependencyItem>(line) : null;

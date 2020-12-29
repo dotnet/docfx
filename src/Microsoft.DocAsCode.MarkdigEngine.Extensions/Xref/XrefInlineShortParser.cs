@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             var c = slice.PeekCharExtra(-1);
 
-            if (c == '\\')
+            if (!c.IsWhiteSpaceOrZero() && !ContinuableCharacters.Contains(c))
             {
                 return false;
             }

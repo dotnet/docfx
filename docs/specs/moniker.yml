@@ -638,11 +638,10 @@ inputs:
       ]
     }
 outputs:
-  docs/c.json:
+  docs/c.json: |
+    { "conceptual": "<p>Link to <a href=\"a\">netcore-2.0</a></p>" }
   218c13d0/docs/a.json:
   4667fedf/docs/a.json:
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'."}
 ---
 # Define same uid with multiple moniker ranges with same name, 
 # reference to it without moniker in the same docset, anyone can be taken
@@ -736,7 +735,6 @@ outputs:
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-2.0, netcore-2.1</a></p>"}
   .errors.log: |
     {"message_severity":"error","code":"moniker-overlapping","message":"Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'."}
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'netcore-1.1, netcore-2.0', 'netcore-2.0, netcore-2.1'."}
     {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'."}
   .xrefmap.json: | 
     {"references":[{"uid":"a","name":"netcore-2.0, netcore-2.1"}]}
@@ -916,8 +914,6 @@ outputs:
     }
   .xrefmap.json: | 
     {"references":[{"uid":"a","name":"b with no version"}]}
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'b with no version', 'netcore-1.1', 'netcore-2.0'."}
 ---
 # Build toc with monikers info
 inputs:

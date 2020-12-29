@@ -441,15 +441,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl, string? propertyPath)
                 => new Error(ErrorLevel.Warning, "duplicate-uid-global", $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.", uid, propertyPath);
-
-            /// <summary>
-            /// Same uid defined within different versions with different values of the same xref property.
-            /// Examples:
-            ///   - Same uid defined in multiple .md files with different versions have different titles.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error XrefPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
-                => new Error(ErrorLevel.Info, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
         }
 
         public static class Versioning

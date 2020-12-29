@@ -24,21 +24,25 @@ namespace Microsoft.Docs.LearnValidation
                 var module = item as ModuleValidateModel;
 
                 // when badge is defined in another module, but that module has error when SDP validating
-                if (module.Achievement is string achievementUID && !fullItemsDict.ContainsKey(achievementUID))
+                if (module?.Achievement is string achievementUID && !fullItemsDict.ContainsKey(achievementUID))
                 {
                     itemValid = false;
                 }
 
                 // module has child unit, but that unit has error when SDP validating
-                var childrenCantFind = module.Units.Where(u => !fullItemsDict.ContainsKey(u));
-                if (childrenCantFind.Any())
+                var childrenCantFind = module?.Units.Where(u => !fullItemsDict.ContainsKey(u));
+                if (childrenCantFind != null && childrenCantFind.Any())
                 {
                     itemValid = false;
                 }
 
-                foreach (var unit in module.Units.Except(childrenCantFind))
+                var validUnits = childrenCantFind is null ? module?.Units : module?.Units.Except(childrenCantFind);
+                if (validUnits != null && module != null)
                 {
-                    fullItemsDict[unit].Parent = module;
+                    foreach (var unit in validUnits)
+                    {
+                        fullItemsDict[unit].Parent = module;
+                    }
                 }
 
                 item.IsValid = itemValid;
