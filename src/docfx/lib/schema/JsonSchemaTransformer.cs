@@ -25,11 +25,10 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly Input _input;
 
-        private readonly MemoryCache<FilePath, (JToken, JsonSchema, JsonSchemaMap)> _schemaDocumentsCache = new();
+        private readonly MemoryCache<FilePath, Watch<(JToken, JsonSchema, JsonSchemaMap, int)>> _schemaDocumentsCache = new();
 
-        private readonly ConcurrentDictionary<FilePath, int> _uidCountCache = new(ReferenceEqualsComparer.Default);
-        private readonly ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema, int? min, int? max)> _uidReferenceCountList = new();
-        private readonly ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)> _xrefList = new();
+        private readonly Scoped<ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema, int? min, int? max)>> _uidReferenceCountList = new();
+        private readonly Scoped<ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)>> _xrefList = new();
 
         private static readonly ThreadLocal<Stack<SourceInfo<string>>> s_recursionDetector = new(() => new());
 
@@ -55,9 +54,9 @@ namespace Microsoft.Docs.Build
 
         public void PostValidate()
         {
-            foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList)
+            foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList.Value)
             {
-                var references = _xrefList.Where(item => item.xref == uid).Select(item => item.xref.Source).ToArray();
+                var references = _xrefList.Value.Where(item => item.xref == uid).Select(item => item.xref.Source).ToArray();
 
                 if (minReferenceCount != null && references.Length < minReferenceCount)
                 {
@@ -73,7 +72,7 @@ namespace Microsoft.Docs.Build
 
         public ExternalXref[] GetValidateExternalXrefs()
         {
-            return _xrefList.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
+            return _xrefList.Value.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
             {
                 return new ExternalXref
                 { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName, SchemaType = xrefGroup.First().schemaType };
@@ -82,8 +81,7 @@ namespace Microsoft.Docs.Build
 
         public JToken TransformContent(ErrorBuilder errors, FilePath file)
         {
-            var (token, schema, schemaMap) = ValidateContent(errors, file);
-            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(schemaMap, token));
+            var (token, schema, schemaMap, uidCount) = ValidateContent(errors, file);
             var xrefmap = new JObject();
             var result = TransformContentCore(errors, schemaMap, file, schema, token, uidCount, "", xrefmap);
             if (xrefmap.Count > 0)
@@ -95,19 +93,18 @@ namespace Microsoft.Docs.Build
 
         public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)
         {
-            var (token, schema, schemaMap) = ValidateContent(errors, file);
+            var (token, schema, schemaMap, uidCount) = ValidateContent(errors, file);
             var xrefSpecs = new List<InternalXrefSpec>();
-            var uidCount = _uidCountCache.GetOrAdd(file, GetFileUidCount(schemaMap, token));
             LoadXrefSpecsCore(errors, file, schema, schemaMap, token, xrefSpecs, uidCount);
             return xrefSpecs;
         }
 
-        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap) ValidateContent(ErrorBuilder errors, FilePath file)
+        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap, int uidCount) ValidateContent(ErrorBuilder errors, FilePath file)
         {
-            return _schemaDocumentsCache.GetOrAdd(file, file => ValidateContentCore(errors, file));
+            return _schemaDocumentsCache.GetOrAdd(file, file => new(() => ValidateContentCore(errors, file))).Value;
         }
 
-        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap) ValidateContentCore(ErrorBuilder errors, FilePath file)
+        private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap, int uidCount) ValidateContentCore(ErrorBuilder errors, FilePath file)
         {
             var token = file.Format switch
             {
@@ -120,7 +117,9 @@ namespace Microsoft.Docs.Build
             var schemaMap = new JsonSchemaMap(IsContentTransform);
             var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
             errors.AddRange(schemaErrors);
-            return (token, schemaValidator.Schema, schemaMap);
+
+            var uidCount = GetFileUidCount(schemaMap, token);
+            return (token, schemaValidator.Schema, schemaMap, uidCount);
         }
 
         private static bool IsContentTransform(JsonSchema schema)
@@ -454,19 +453,19 @@ namespace Microsoft.Docs.Build
 
                     if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
                     {
-                        _uidReferenceCountList.Add((
+                        Watcher.Write(() => _uidReferenceCountList.Value.Add((
                             new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
                             propertyPath,
                             rootSchema,
                             schema.MinReferenceCount,
-                            schema.MaxReferenceCount));
+                            schema.MaxReferenceCount)));
                     }
                     else if (schema.ContentType == JsonSchemaContentType.Xref)
                     {
-                        _xrefList.Add((
+                        Watcher.Write(() => _xrefList.Value.Add((
                             new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
                             (xrefSpec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null,
-                            xrefSpec?.SchemaType));
+                            xrefSpec?.SchemaType)));
                     }
                     return value;
             }
