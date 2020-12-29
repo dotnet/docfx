@@ -207,4 +207,30 @@ languageServer:
   - expectDiagnostics:
       TOC.yml: []
 ---
-
+# Isolate metadata validation state between builds
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { "docsetUnique": ["title"] }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: a
+        ---
+      b.md: |
+        ---
+        title: a
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-attribute" }]
+      b.md: [{ "code": "duplicate-attribute" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: []
+      b.md: []
