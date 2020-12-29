@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
         private readonly PublishUrlMap _publishUrlMap;
 
-        private readonly Lazy<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
+        private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
         public TocMap(
             Config config,
