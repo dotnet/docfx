@@ -127,3 +127,65 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "violate-schema" }]
 ---
+# Isolate xref state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      a.md: |
+        ---
+        uid: a
+        ---
+      b.md: '<xref:a>'
+  - expectDiagnostics:
+      b.md: []
+  - editFiles:
+      a.md: |
+        ---
+        uid: a-changed
+        ---
+  - expectDiagnostics:
+      b.md: [{ "code": "xref-not-found" }]
+  - editFiles:
+      b.md: '<xref:a-changed>'
+  - expectDiagnostics:
+      b.md: []
+---
+# Isolate YAML state between builds
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "xref" },
+        "markdown": { "contentType": "markdown" }
+      },
+      "required": ["markdown"]
+    }
+languageServer:
+  - openFiles:
+      a.yml: |
+        #YamlMime:TestData
+        uid: a
+        xref: b
+        markdown: md1
+      b.yml: |
+        #YamlMime:TestData
+        uid: b
+        xref: a
+        markdown: md2
+  - expectDiagnostics:
+      a.yml: []
+      b.yml: []
+  - editFiles:
+      a.yml: |
+        #YamlMime:TestData
+        uid: a-changed
+        xref: b-changed
+      b.yml: |
+        #YamlMime:TestData
+        markdown: '[!include[](a.md)]'
+  - expectDiagnostics:
+      a.yml: [{ "code": "missing-attribute" }, { "code": "xref-not-found" }]
+      b.yml: [{ "code": "include-not-found" }]
+---
