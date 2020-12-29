@@ -189,3 +189,22 @@ languageServer:
       a.yml: [{ "code": "missing-attribute" }, { "code": "xref-not-found" }]
       b.yml: [{ "code": "include-not-found" }]
 ---
+# Isolate TOC state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      TOC.yml: |
+        items:
+        - href: b.md
+      a.md:
+  - expectDiagnostics:
+      TOC.yml: [{ "code": "file-not-found" }, { "code": "missing-attribute" }]
+  - editFiles:
+      TOC.yml: |
+        items:
+        - href: a.md
+          name: a
+  - expectDiagnostics:
+      TOC.yml: []
+---
+
