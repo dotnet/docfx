@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
 
-        public static string? DocsOpsToken => GetValue("DOCS_OPS_TOKEN");
+        public static string? DocsHttp => GetValue("DOCS_HTTP");
 
         private static string? GetValue(string name)
         {
