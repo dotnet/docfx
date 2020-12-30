@@ -45,6 +45,10 @@ namespace Microsoft.Docs.Build
         private readonly LinkResolver _linkResolver;
         private readonly MarkdownEngine _markdownEngine;
         private readonly JsonSchemaTransformer _jsonSchemaTransformer;
+        private readonly MetadataValidator _metadataValidator;
+        private readonly TocParser _tocParser;
+        private readonly TocLoader _tocLoader;
+        private readonly TocMap _tocMap;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -91,6 +95,10 @@ namespace Microsoft.Docs.Build
             _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider);
             _markdownEngine = new(_config, _input, _fileResolver, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
             _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
+            _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
+            _tocParser = new(_input, _markdownEngine);
+            _tocLoader = new(_buildOptions, _input, _linkResolver, _xrefResolver, _tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
+            _tocMap = new(_config, _errors, _input, _buildScope, _dependencyMapBuilder, _tocParser, _tocLoader, _documentProvider, _contentValidator, _publishUrlMap);
         }
 
         public static DocsetBuilder? Create(
@@ -147,23 +155,16 @@ namespace Microsoft.Docs.Build
                 _progressReporter.Report("Building...");
 
                 var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
-
-                var tocParser = new TocParser(_input, _markdownEngine);
-                var tocLoader = new TocLoader(_buildOptions.DocsetPath, _input, _linkResolver, _xrefResolver, tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
-                var tocMap = new TocMap(_config, _errors, _input, _buildScope, _dependencyMapBuilder, tocParser, tocLoader, _documentProvider, _contentValidator, _publishUrlMap);
-
                 var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
-                var metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
-
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
                 var learnHierarchyBuilder = new LearnHierarchyBuilder(_contentValidator);
-                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, tocMap, _linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, metadataValidator, _markdownEngine, _searchIndexBuilder, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);
-                var tocBuilder = new TocBuilder(_config, tocLoader, _contentValidator, _metadataProvider, metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _tocMap, _linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, _metadataValidator, _markdownEngine, _searchIndexBuilder, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);
+                var tocBuilder = new TocBuilder(_config, _tocLoader, _contentValidator, _metadataProvider, _metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
                 var filesToBuild = files != null
                     ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
-                    : _publishUrlMap.GetFiles().Concat(tocMap.GetFiles()).ToHashSet();
+                    : _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles()).ToHashSet();
 
                 using (var scope = Progress.Start($"Building {filesToBuild.Count} files"))
                 {
@@ -174,7 +175,7 @@ namespace Microsoft.Docs.Build
                 Parallel.Invoke(
                     () => _bookmarkValidator.Validate(),
                     () => _contentValidator.PostValidate(),
-                    () => _errors.AddRange(metadataValidator.PostValidate()),
+                    () => _errors.AddRange(_metadataValidator.PostValidate()),
                     () => _contributionProvider.Save(),
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),

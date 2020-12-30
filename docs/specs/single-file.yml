@@ -189,3 +189,48 @@ languageServer:
       a.yml: [{ "code": "missing-attribute" }, { "code": "xref-not-found" }]
       b.yml: [{ "code": "include-not-found" }]
 ---
+# Isolate TOC state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      TOC.yml: |
+        items:
+        - href: b.md
+      a.md:
+  - expectDiagnostics:
+      TOC.yml: [{ "code": "file-not-found" }, { "code": "missing-attribute" }]
+  - editFiles:
+      TOC.yml: |
+        items:
+        - href: a.md
+          name: a
+  - expectDiagnostics:
+      TOC.yml: []
+---
+# Isolate metadata validation state between builds
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { "docsetUnique": ["title"] }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: a
+        ---
+      b.md: |
+        ---
+        title: a
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-attribute" }]
+      b.md: [{ "code": "duplicate-attribute" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: []
+      b.md: []
