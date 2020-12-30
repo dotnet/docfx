@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
             _sourceMap = _errors.SourceMap = new(_errors, new(_buildOptions.DocsetPath), _config, _fileResolver);
             _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
             _buildScope = new(_config, _input, _buildOptions);
-            _githubAccessor = new(config);
+            _githubAccessor = new(_config);
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
             _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);

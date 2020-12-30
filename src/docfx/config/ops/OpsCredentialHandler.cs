@@ -35,36 +35,33 @@ namespace Microsoft.Docs.Build
 
         private static async Task FillOpsToken(HttpRequestMessage request, DocsEnvironment? environment = null)
         {
-            if (IsSameDocsEnvironmentRequest(request))
+            if (!request.Headers.Contains(DocsOPSTokenHeader))
             {
-                if (!request.Headers.Contains("X-OP-BuildUserToken")
-                    && !string.IsNullOrEmpty(EnvironmentVariable.DocsOpsToken))
+                if (IsSameDocsEnvironmentRequest(request) && !string.IsNullOrEmpty(EnvironmentVariable.DocsOpsToken))
                 {
                     request.AddOrUpdateHeader(DocsOPSTokenHeader, EnvironmentVariable.DocsOpsToken);
                 }
-            }
-
-            // don't access key vault for osx since azure-cli will crash in osx
-            // https://github.com/Azure/azure-cli/issues/7519
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
-                !request.Headers.Contains(DocsOPSTokenHeader))
-            {
-                // For development usage
-                try
+                else if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    var tokenTask = (environment ?? OpsAccessor.DocsEnvironment) switch
+                    // don't access key vault for osx since azure-cli will crash in osx
+                    // https://github.com/Azure/azure-cli/issues/7519
+                    // For development usage
+                    try
                     {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
-                        _ => throw new InvalidOperationException(),
-                    };
-                    var token = await tokenTask.Value;
-                    request.AddOrUpdateHeader(DocsOPSTokenHeader, token);
-                }
-                catch (Exception ex)
-                {
-                    Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access.");
-                    Log.Write(ex);
+                        var tokenTask = (environment ?? OpsAccessor.DocsEnvironment) switch
+                        {
+                            DocsEnvironment.Prod => s_opsTokenProd,
+                            DocsEnvironment.PPE => s_opsTokenSandbox,
+                            _ => throw new InvalidOperationException(),
+                        };
+                        var token = await tokenTask.Value;
+                        request.AddOrUpdateHeader(DocsOPSTokenHeader, token);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access.");
+                        Log.Write(ex);
+                    }
                 }
             }
         }

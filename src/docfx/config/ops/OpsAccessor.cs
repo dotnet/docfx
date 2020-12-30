@@ -29,16 +29,16 @@ namespace Microsoft.Docs.Build
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
         // TODO: use Azure front door endpoint when it is stable
-        public static readonly string DocsProdServiceEndpoint =
+        private static readonly string s_docsProdServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
 
-        public static readonly string DocsPPEServiceEndpoint =
+        private static readonly string s_docsPPEServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
 
-        public static readonly string DocsInternalServiceEndpoint =
+        private static readonly string s_docsInternalServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
 
-        public static readonly string DocsPerfServiceEndpoint =
+        private static readonly string s_docsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
         private readonly ErrorBuilder _errors;
@@ -166,19 +166,19 @@ namespace Microsoft.Docs.Build
                 throw new NotSupportedException();
             }
 
-            if (url.StartsWith(DocsProdServiceEndpoint))
+            if (url.StartsWith(s_docsProdServiceEndpoint))
             {
                 return DocsEnvironment.Prod;
             }
-            else if (url.StartsWith(DocsPPEServiceEndpoint))
+            else if (url.StartsWith(s_docsPPEServiceEndpoint))
             {
                 return DocsEnvironment.PPE;
             }
-            else if (url.StartsWith(DocsInternalServiceEndpoint))
+            else if (url.StartsWith(s_docsInternalServiceEndpoint))
             {
                 return DocsEnvironment.Internal;
             }
-            else if (url.StartsWith(DocsPerfServiceEndpoint))
+            else if (url.StartsWith(s_docsPerfServiceEndpoint))
             {
                 return DocsEnvironment.Perf;
             }
@@ -324,10 +324,10 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => DocsProdServiceEndpoint,
-                DocsEnvironment.PPE => DocsPPEServiceEndpoint,
-                DocsEnvironment.Internal => DocsInternalServiceEndpoint,
-                DocsEnvironment.Perf => DocsPerfServiceEndpoint,
+                DocsEnvironment.Prod => s_docsProdServiceEndpoint,
+                DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
+                DocsEnvironment.Internal => s_docsInternalServiceEndpoint,
+                DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
         }

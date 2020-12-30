@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var credentialHanlder = new CredentialHandler(
+            var credentialHandler = new CredentialHandler(
                 new List<KeyValuePair<string, HttpConfig>>()
                 {
                     new KeyValuePair<string, HttpConfig>(
-                        OpsAccessor.DocsProdServiceEndpoint,
+                        "https://op-build-prod.azurewebsites.net",
                         new HttpConfig()
                         {
                             Headers = new Dictionary<string, string>()
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                         }),
                 },
                 new HttpClientHandler());
-            var accessor = new OpsAccessor(null, credentialHanlder);
+            var accessor = new OpsAccessor(null, credentialHandler);
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);

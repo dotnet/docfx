@@ -11,9 +11,9 @@ namespace Microsoft.Docs.Build
 {
     internal class CredentialHandler : DelegatingHandler
     {
-        private readonly List<KeyValuePair<string, HttpConfig>> _credentials;
+        private readonly IReadOnlyList<KeyValuePair<string, HttpConfig>> _credentials;
 
-        public CredentialHandler(List<KeyValuePair<string, HttpConfig>> credentials, HttpMessageHandler innerHandler)
+        public CredentialHandler(IReadOnlyList<KeyValuePair<string, HttpConfig>> credentials, HttpMessageHandler innerHandler)
             : base(innerHandler)
         {
             _credentials = credentials;
