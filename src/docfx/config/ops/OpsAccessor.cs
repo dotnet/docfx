@@ -45,15 +45,11 @@ namespace Microsoft.Docs.Build
         private static int s_validationRulesetReported;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _httpClient;
-        private readonly HttpClient _opsHttpClient;
 
         public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
             _errors = errors;
             _httpClient = new(credentialHandler);
-#pragma warning disable CA2000 // Dispose objects before losing scope
-            _opsHttpClient = new HttpClient(credentialHandler.Create(new OpsCredentialHandler(new HttpClientHandler())));
-#pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
         public async Task<string> GetDocsetInfo(string repositoryUrl)
@@ -143,7 +139,7 @@ namespace Microsoft.Docs.Build
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
             };
 
-            var response = await _opsHttpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
@@ -154,40 +150,42 @@ namespace Microsoft.Docs.Build
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = await _opsHttpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
 
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
             return response.IsSuccessStatusCode;
         }
 
-        public static DocsEnvironment ExtractDocsEnvironmentFromUrl(string? url)
+        public static bool TryExtractDocsEnvironmentFromUrl(string? url, out DocsEnvironment docsEnvironment)
         {
+            docsEnvironment = default;
             if (string.IsNullOrEmpty(url))
             {
-                throw new NotSupportedException();
+                return false;
             }
 
             if (url.StartsWith(s_docsProdServiceEndpoint))
             {
-                return DocsEnvironment.Prod;
+                docsEnvironment = DocsEnvironment.Prod;
             }
             else if (url.StartsWith(s_docsPPEServiceEndpoint))
             {
-                return DocsEnvironment.PPE;
+                docsEnvironment = DocsEnvironment.PPE;
             }
             else if (url.StartsWith(s_docsInternalServiceEndpoint))
             {
-                return DocsEnvironment.Internal;
+                docsEnvironment = DocsEnvironment.Internal;
             }
             else if (url.StartsWith(s_docsPerfServiceEndpoint))
             {
-                return DocsEnvironment.Perf;
+                docsEnvironment = DocsEnvironment.Perf;
             }
             else
             {
-                throw new NotSupportedException();
+                return false;
             }
+            return true;
         }
 
         private async Task<string> Fetch(
@@ -206,7 +204,7 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation(key, value);
                 }
             }
-            var response = await _opsHttpClient.SendAsync(request);
+            var response = await SendRequest(request);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -235,7 +233,7 @@ namespace Microsoft.Docs.Build
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                            request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
 
-                           var response = await _opsHttpClient.SendAsync(request);
+                           var response = await SendRequest(request);
                            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
                                Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
                            {
@@ -320,6 +318,17 @@ namespace Microsoft.Docs.Build
                 Log.Write(ex);
                 _errors.Add(Errors.System.ValidationIncomplete());
                 return "{}";
+            }
+        }
+
+        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
+        {
+            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
+            {
+                // Default header which allows fallback to public data when credential is not provided.
+                request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
+
+                return await _httpClient.SendAsync(request);
             }
         }
 
