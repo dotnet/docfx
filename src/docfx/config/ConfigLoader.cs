@@ -176,10 +176,25 @@ namespace Microsoft.Docs.Build
                 let key = entry.Key.ToString()
                 where key.StartsWith("DOCFX_")
                 let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
-                let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                where values != null
-                let configValue = values.Length == 1 ? (object)values[0] : values
-                select new JProperty(configKey, configValue));
+                select new JProperty(configKey, GetJsonValue(entry.Value?.ToString())));
+        }
+
+        private static object? GetJsonValue(string? value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+            try
+            {
+                return JsonUtility.DeserializeData<JObject>(value, null);
+            }
+            catch (Exception)
+            {
+            }
+
+            var values = value.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            return values.Length == 1 ? values[0] : values;
         }
     }
 }
