@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             _errors = errors;
             _httpClient = new(credentialHandler);
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            _opsHttpClient = new HttpClient(credentialHandler.Create(new OpsCredentialHandler(new HttpClientHandler())), true);
+            _opsHttpClient = new HttpClient(credentialHandler.Create(new OpsCredentialHandler(new HttpClientHandler())));
 #pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
