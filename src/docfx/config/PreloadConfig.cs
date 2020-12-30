@@ -59,11 +59,12 @@ namespace Microsoft.Docs.Build
 
         public CredentialHandler GetCredentialHandler()
         {
-            var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToList();
+            return new Lazy<CredentialHandler>(() =>
+            {
+                var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToList();
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
-            return new(rules, new HttpClientHandler());
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                return new(rules, new HttpClientHandler());
+            }).Value;
         }
     }
 }
