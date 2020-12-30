@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <nullable>disable</nullable>
+    <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

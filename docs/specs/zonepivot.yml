@@ -11,25 +11,49 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotUsed",
             "code": "pivot-id-unused",
             "message": "Pivot ID '{2}' is defined in '{1}' group in '{0}', but not used.",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -148,25 +172,49 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotUsed",
             "code": "pivot-id-unused",
             "message": "Pivot ID '{2}' is defined in '{1}' group in '{0}', but not used.",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -235,25 +283,49 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotUsed",
             "code": "pivot-id-unused",
             "message": "Pivot ID '{2}' is defined in '{1}' group in '{0}', but not used.",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -284,25 +356,49 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotUsed",
             "code": "pivot-id-unused",
             "message": "Pivot ID '{2}' is defined in '{1}' group in '{0}', but not used.",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -383,25 +479,49 @@ inputs:
             "type": "GroupIdDuplicate",
             "code": "duplicate-pivot-groups",
             "message": "Pivot group id '{1}' is duplicated in '{0}'. Only the first group with this ID will be used. Delete or rename the subsequent group.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotIdDuplicate",
             "code": "duplicate-pivot-ids",
             "message": "Pivot id '{2}' is duplicated in pivot group '{1}' in '{0}'. Only the first pivot with this ID will be used. Delete or rename the subsequent pivot.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotDefined",
             "code": "pivot-id-not-found",
             "message": "Pivot ID '{2}' is not defined {1} in '{0}'.",
-            "severity": "suggestion"
+            "severity": "suggestion",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           },
           {
             "type": "PivotNotUsed",
             "code": "pivot-id-unused",
             "message": "Pivot ID '{2}' is defined in '{1}' group in '{0}', but not used.",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }

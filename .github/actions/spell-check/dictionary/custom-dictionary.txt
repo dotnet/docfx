@@ -200,6 +200,7 @@ intellisense
 interop
 interoperability
 iparser
+IProgress
 ipsom
 ipsum
 ipynb
@@ -220,6 +221,7 @@ ituple
 itype
 ivalidation
 ivalidator
+IWork
 ixref
 jarray
 javascript

@@ -48,8 +48,8 @@ namespace Microsoft.Docs.Build
                 lock (s_lock)
                 {
                     LearnValidationEntry.Run(
-                        repoUrl: _buildOptions.Repository?.Url,
-                        repoBranch: _buildOptions.Repository?.Branch,
+                        repoUrl: _buildOptions.Repository?.Url ?? "",
+                        repoBranch: _buildOptions.Repository?.Branch ?? "",
                         docsetName: _config.Name,
                         docsetOutputPath: _buildOptions.OutputPath,
                         publishFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, ".publish.json")),

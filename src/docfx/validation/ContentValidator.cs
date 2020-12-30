@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -27,7 +26,6 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
         private readonly PublishUrlMap _publishUrlMap;
-        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new();
 
         public ContentValidator(
             Config config,
@@ -54,7 +52,7 @@ namespace Microsoft.Docs.Build
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
         {
             // validate image link and altText here
-            if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
+            if (TryCreateValidationContext(file, out var validationContext))
             {
                 var item = new Link
                 {
@@ -90,7 +88,7 @@ namespace Microsoft.Docs.Build
 
         public void ValidateHierarchy(List<HierarchyModel> models)
         {
-            Write(_validator.ValidateHierarchy(models, new ValidationContext { DocumentType = "learn" }).GetAwaiter().GetResult());
+            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)

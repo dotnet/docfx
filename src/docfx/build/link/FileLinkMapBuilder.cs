@@ -12,7 +12,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
-        private readonly ConcurrentHashSet<FileLinkItem> _links = new();
+
+        private readonly Scoped<ConcurrentHashSet<FileLinkItem>> _links = new();
 
         public FileLinkMapBuilder(
             ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
@@ -34,8 +35,7 @@ namespace Microsoft.Docs.Build
 
             var monikers = _monikerProvider.GetFileLevelMonikers(_errors, inclusionRoot);
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
-
-            _links.TryAdd(new FileLinkItem
+            var item = new FileLinkItem
             {
                 InclusionRoot = inclusionRoot,
                 SourceUrl = sourceUrl,
@@ -43,13 +43,15 @@ namespace Microsoft.Docs.Build
                 TargetUrl = targetUrl,
                 SourceGitUrl = sourceGitUrl,
                 SourceLine = source is null ? 1 : source.Line,
-            });
+            };
+
+            Watcher.Write(() => _links.Value.TryAdd(item));
         }
 
         public object Build(PublishModel publishModel)
         {
             var publishFiles = publishModel.Files.Where(item => !item.HasError && item.SourceFile != null).Select(item => item.SourceFile).ToHashSet();
-            var links = _links.Where(x => publishFiles.Contains(x.InclusionRoot)).OrderBy(x => x).ToArray();
+            var links = _links.Value.Where(x => publishFiles.Contains(x.InclusionRoot)).OrderBy(x => x).ToArray();
 
             return new { links };
         }

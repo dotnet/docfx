@@ -22,7 +22,7 @@ Besides using file path to link to another file, DocFX also allows you to give a
   ```
   > **_Notice_**: Only title will be considered as xref property for `uid` definition in `.md` files
 - Define multiple UID with same value internally with different versions and reference to this UID without versioning within the current repository. 
-    - The user should define multiple UID of the same value with the same `title` for conceptual repository. Otherwise, a `xref-property-conflict` warning will be logged and the first UID order by the declaring file will be picked
+    - The user should define multiple UID of the same value with the same `title` for conceptual repository. Otherwise, the first UID order by the declaring file will be picked
         ```yaml
         # v1: 1.0, 2.0, 3.0
         # v2: 4.0, 5.0
@@ -42,8 +42,6 @@ Besides using file path to link to another file, DocFX also allows you to give a
         outputs:
             docs/b.json: |
                 {"conceptual":"<p>Link to <a href=\"a\">Title from v1</a></p>\n"}
-            .errors.log: |
-                ["warning","xref-property-conflict","UID 'a' is defined with different names: 'netcore-1.1', 'netcore-2.0'"]
         ```
     - Define multiple UID with same value internally with overlapping versions, we should throw `moniker-overlapping` warning. And the first UID order by the declaring file will be picked.
         ```yaml

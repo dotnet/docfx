@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
@@ -36,9 +35,9 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            try
+            if (error.Source?.File is FilePath source)
             {
-                if (error.Source?.File is FilePath source)
+                try
                 {
                     var msAuthor = MetadataProvider?.GetMetadata(Null, source).MsAuthor;
                     if (msAuthor != default)
@@ -46,13 +45,12 @@ namespace Microsoft.Docs.Build
                         error = error with { MsAuthor = msAuthor };
                     }
                 }
+                catch
+                {
+                }
+            }
 
-                error = CustomRuleProvider?.ApplyCustomRule(error) ?? error;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
-            {
-                Log.Write(ex);
-            }
+            error = CustomRuleProvider?.ApplyCustomRule(error) ?? error;
 
             if (error.Level == ErrorLevel.Off)
             {

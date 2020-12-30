@@ -23,12 +23,12 @@ namespace Microsoft.Docs.Build
         private readonly PackageResolver _packageResolver;
         private readonly RepositoryProvider _repositoryProvider;
 
-        private readonly MemoryCache<FilePath, JToken> _jsonTokenCache = new();
-        private readonly MemoryCache<FilePath, JToken> _yamlTokenCache = new();
-        private readonly MemoryCache<PathString, byte[]?> _gitBlobCache = new();
+        private readonly MemoryCache<FilePath, Watch<JToken>> _jsonTokenCache = new();
+        private readonly MemoryCache<FilePath, Watch<JToken>> _yamlTokenCache = new();
+        private readonly MemoryCache<PathString, Watch<byte[]?>> _gitBlobCache = new();
+        private readonly ConcurrentDictionary<FilePath, Watch<SourceInfo<string?>>> _mimeTypeCache = new();
 
-        private readonly ConcurrentDictionary<FilePath, SourceInfo<string?>> _mimeTypeCache = new();
-        private readonly ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)> _generatedContents = new();
+        private readonly Scoped<ConcurrentDictionary<FilePath, (string? yamlMime, JToken generatedContent)>> _generatedContents = new();
 
         public Input(
             BuildOptions buildOptions,
@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents.ContainsKey(file);
+                return _generatedContents.Value.ContainsKey(file);
             }
 
             if (file.IsGitCommit)
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
         public FilePath? GetFirstMatchInSplitToc(string pathString)
         {
             var path = new PathString(pathString);
-            foreach (var (k, _) in _generatedContents)
+            foreach (var (k, _) in _generatedContents.Value)
             {
                 if (k.Path.Value == path)
                 {
@@ -147,14 +147,14 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents[file].generatedContent;
+                return _generatedContents.Value[file].generatedContent;
             }
 
-            return _jsonTokenCache.GetOrAdd(file, path =>
+            return _jsonTokenCache.GetOrAdd(file, path => new(() =>
             {
                 using var reader = ReadText(path);
                 return JsonUtility.Parse(errors, reader, path);
-            });
+            })).Value;
         }
 
         /// <summary>
@@ -164,14 +164,14 @@ namespace Microsoft.Docs.Build
         {
             if (file.Origin == FileOrigin.Generated)
             {
-                return _generatedContents[file].generatedContent;
+               return _generatedContents.Value[file].generatedContent;
             }
 
-            return _yamlTokenCache.GetOrAdd(file, path =>
+            return _yamlTokenCache.GetOrAdd(file, path => new(() =>
             {
                 using var reader = ReadText(path);
                 return YamlUtility.Parse(errors, reader, path);
-            });
+            })).Value;
         }
 
         /// <summary>
@@ -234,15 +234,12 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.Origin == FileOrigin.Generated);
 
-            _generatedContents.TryAdd(file, (yamlMime, content));
+            Watcher.Write(() => _generatedContents.Value.TryAdd(file, (yamlMime, content)));
         }
 
         public SourceInfo<string?> GetMime(ContentType contentType, FilePath filePath)
         {
-            return _mimeTypeCache.GetOrAdd(filePath, path =>
-            {
-                return contentType == ContentType.Page ? ReadMimeFromFile(path) : default;
-            });
+            return contentType == ContentType.Page ? _mimeTypeCache.GetOrAdd(filePath, path => new(() => ReadMimeFromFile(path))).Value : default;
         }
 
         private SourceInfo<string?> ReadMimeFromFile(FilePath filePath)
@@ -280,7 +277,7 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(file.Origin == FileOrigin.Generated);
 
-            return _generatedContents[file].yamlMime;
+            return _generatedContents.Value[file].yamlMime;
         }
 
         private (Package, PathString) ResolveFilePath(FilePath file)
@@ -330,7 +327,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
 
-            return _gitBlobCache.GetOrAdd(physicalPath.Value, path =>
+            return _gitBlobCache.GetOrAdd(physicalPath.Value, path => new(() =>
             {
                 var (repo, _, commits) = _repositoryProvider.GetCommitHistory(path);
                 if (repo is null || commits.Length <= 1)
@@ -338,7 +335,7 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
                 return GitUtility.ReadBytes(repo.Path, pathToRepo, commits[1].Sha);
-            });
+            })).Value;
         }
     }
 }

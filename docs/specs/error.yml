@@ -13,7 +13,13 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -57,7 +63,13 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "WARNING"
+            "severity": "WARNING",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -101,7 +113,13 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "ERROR"
+            "severity": "ERROR",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -169,7 +187,13 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }
@@ -210,7 +234,13 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingpage",
+              "hubpage",
+              "toc"
+            ]
           }
         ]
       }

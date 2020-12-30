@@ -19,7 +19,8 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly MonikerProvider? _monikerProvider;
         private readonly CustomRuleProvider? _customRuleProvider;
-        private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder = new();
+
+        private readonly Scoped<ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>> _metadataBuilder = new();
 
         private static readonly ThreadLocal<FilePath?> s_filePath = new();
 
@@ -758,11 +759,11 @@ namespace Microsoft.Docs.Build
                         {
                             continue;
                         }
-                        else
-                        {
-                            _metadataBuilder.Add(
-                            (schema, JsonUtility.AddToPropertyPath(propertyPath, docsetUniqueKey), moniker, value, JsonUtility.GetSourceInfo(value)));
-                        }
+
+                        var key = JsonUtility.AddToPropertyPath(propertyPath, docsetUniqueKey);
+                        var sourceInfo = JsonUtility.GetSourceInfo(value);
+
+                        Watcher.Write(() => _metadataBuilder.Value.Add((schema, key, moniker, value, sourceInfo)));
                     }
                 }
             }
@@ -770,7 +771,7 @@ namespace Microsoft.Docs.Build
 
         private void PostValidateDocsetUnique(List<Error> errors)
         {
-            var validatedMetadata = _metadataBuilder.AsList();
+            var validatedMetadata = _metadataBuilder.Value.AsList();
             var validatedMetadataGroups = validatedMetadata
                 .Where(k => IsStrictHaveValue(k.value))
                 .GroupBy(

@@ -95,7 +95,6 @@ outputs:
   module.raw.page.json:
   unit.mta.json:
   unit.raw.page.json:
-  achievement.json:
   full-dependent-list.txt:
   hierarchy.json: |
     {

@@ -142,6 +142,17 @@ jobs:
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
 
+  # Push to azure devops feed
+  - task: NuGetCommand@2
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+    displayName: Publish NuGet Packages
+    inputs:
+      command: push
+      packagesToPush: drop/**/*.nupkg
+      publishFeedCredentials: docs-public-packages
+      nugetFeedType: external
+      allowPackageConflicts: true
+
   # Publish binary packages to production
   - task: AzureFileCopy@3
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
