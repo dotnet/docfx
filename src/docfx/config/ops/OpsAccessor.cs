@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
 using Polly;
@@ -19,6 +21,8 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsAccessor : ILearnServiceAccessor
     {
+        private const string DocsOPSTokenHeader = "X-OP-BuildUserToken";
+
         private const string TaxonomyServiceProdPath = "https://taxonomyservice.azurefd.net/taxonomies/simplified?" +
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
 
@@ -42,15 +46,47 @@ namespace Microsoft.Docs.Build
         private static readonly string s_docsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
+        private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
+        private static readonly Lazy<string?> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
+        private static readonly Lazy<string?> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
+
         private static int s_validationRulesetReported;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _httpClient;
 
-        public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
+        public OpsAccessor(ErrorBuilder errors, CredentialProvider credentialProvider)
         {
             _errors = errors;
-            _httpClient = new(credentialHandler);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+            _httpClient = new HttpClient(new CredentialHandler(credentialProvider), true);
+#pragma warning restore CA2000 // Dispose objects before losing scope
         }
+
+        private static readonly Dictionary<string, HttpConfig> s_fallBackCredentials = new Dictionary<string, HttpConfig>()
+        {
+            {
+                s_docsProdServiceEndpoint,
+                new HttpConfig()
+                {
+                    Headers = new Dictionary<string, Lazy<string?>>
+                    {
+                        { DocsOPSTokenHeader, s_opsTokenProd },
+                    },
+                }
+            },
+            {
+                s_docsPPEServiceEndpoint,
+                new HttpConfig()
+                {
+                    Headers = new Dictionary<string, Lazy<string?>>
+                    {
+                        { DocsOPSTokenHeader, s_opsTokenSandbox },
+                    },
+                }
+            },
+        };
+
+        public static Dictionary<string, HttpConfig> FallBackCredentials => s_fallBackCredentials;
 
         public async Task<string> GetDocsetInfo(string repositoryUrl)
         {
@@ -364,6 +400,26 @@ namespace Microsoft.Docs.Build
                 return DocsEnvironment.Prod;
             }
             return DocsEnvironment;
+        }
+
+        private static string? GetSecret(string secret)
+        {
+            try
+            {
+                var response = s_secretClient.GetSecretAsync(secret).GetAwaiter().GetResult();
+                if (response.Value is null)
+                {
+                    throw new HttpRequestException(response.GetRawResponse().ToString());
+                }
+
+                return response.Value.Value;
+            }
+            catch (Exception ex)
+            {
+                Log.Write($"Cannot get '{secret}' from azure key vault, please make sure you have been granted the permission to access.");
+                Log.Write(ex);
+                return default;
+            }
         }
 
         private static DocsEnvironment GetDocsEnvironment()

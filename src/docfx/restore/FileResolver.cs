@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
         public FileResolver(
             Package package,
             Lazy<string?>? fallbackDocsetPath = null,
-            CredentialHandler? credentialHandler = null,
+            CredentialProvider? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
@@ -43,11 +43,11 @@ namespace Microsoft.Docs.Build
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
             _httpClient = new(
+                credentialProvider != null
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                credentialHandler != null
-                    ? credentialHandler.Create(s_defaultClientHandler)
-                    : s_defaultClientHandler,
+                    ? new CredentialHandler(credentialProvider, s_defaultClientHandler)
 #pragma warning restore CA2000 // Dispose objects before losing scope
+                    : s_defaultClientHandler,
                 true);
         }
 

@@ -256,19 +256,20 @@ namespace Microsoft.Docs.Build
                 from http in config.Http
                 where url.StartsWith(http.Key)
                 from header in http.Value.Headers
-                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
+                where header.Value.Value != null
+                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
 
             return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
 
-            static string GetSecretFromHeader(KeyValuePair<string, string> header)
+            static string GetSecretFromHeader(KeyValuePair<string, Lazy<string?>> header)
             {
                 if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
-                    AuthenticationHeaderValue.TryParse(header.Value, out var value) &&
+                    AuthenticationHeaderValue.TryParse(header.Value.Value, out var value) &&
                     value.Parameter is string parameter)
                 {
                     return parameter;
                 }
-                return header.Value;
+                return header.Value.Value!;
             }
         }
     }

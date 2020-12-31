@@ -115,14 +115,14 @@ namespace Microsoft.Docs.Build
         public static void HttpCredential_Respect_LongestMatch(string url, string value)
         {
             var config = JsonUtility.DeserializeData<PreloadConfig>(
-                @"{
+@"{
     'http': {
         'https://a.com/a': { 'headers': { 'key': 'a' } },
         'https://a.com/a/b': { 'headers': { 'key': 'a/b' } }
     }
 }".Replace('\'', '"'), null);
 
-            var credentialHandler = config.GetCredentialHandler();
+            var credentialHandler = new CredentialHandler(config.GetCredentialProvider());
 
             using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
             credentialHandler.Handle(message);
