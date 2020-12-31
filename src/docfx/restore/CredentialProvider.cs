@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Http;
 
@@ -10,6 +11,7 @@ namespace Microsoft.Docs.Build
     internal class CredentialProvider
     {
         private readonly IReadOnlyDictionary<string, HttpConfig> _credentials;
+        private readonly ConcurrentDictionary<string, Dictionary<string, string>> _credentialCache = new();
 
         public CredentialProvider(IReadOnlyDictionary<string, HttpConfig> credentials)
         {
@@ -18,13 +20,17 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string> GetCredentials(HttpRequestMessage request)
         {
-            var credentials = new Dictionary<string, string>();
             if (request.RequestUri?.ToString() is string url)
             {
-                GetCredentialsCore(credentials, url, _credentials);
-                GetCredentialsCore(credentials, url, OpsAccessor.FallBackCredentials);
+                return _credentialCache.GetOrAdd(url, _ =>
+                {
+                    var credentials = new Dictionary<string, string>();
+                    GetCredentialsCore(credentials, url, _credentials);
+                    GetCredentialsCore(credentials, url, OpsAccessor.FallBackCredentials);
+                    return credentials;
+                });
             }
-            return credentials;
+            return new Dictionary<string, string>();
         }
 
         private static void GetCredentialsCore(Dictionary<string, string> credentials, string url, IReadOnlyDictionary<string, HttpConfig> providedCredentials)
