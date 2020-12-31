@@ -568,3 +568,4 @@ IFunction
 TChange
 vsthrd
 IAsync
+IDid
