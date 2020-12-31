@@ -40,7 +40,10 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (key, value) in _credentialProvider.GetCredentials(request))
             {
-                request.TryUpdateHeader(key, value);
+                if (!request.Headers.Contains(key))
+                {
+                    request.Headers.Add(key, value);
+                }
             }
         }
     }
