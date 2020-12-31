@@ -378,17 +378,13 @@ namespace Microsoft.Docs.Build
                 // For development usage
                 try
                 {
-                    var token = EnvironmentVariable.DocsOpsToken;
-                    if (string.IsNullOrEmpty(token))
+                    var tokenTask = (environment ?? DocsEnvironment) switch
                     {
-                        var tokenTask = (environment ?? DocsEnvironment) switch
-                        {
-                            DocsEnvironment.Prod => s_opsTokenProd,
-                            DocsEnvironment.PPE => s_opsTokenSandbox,
-                            _ => throw new InvalidOperationException(),
-                        };
-                        token = await tokenTask.Value;
-                    }
+                        DocsEnvironment.Prod => s_opsTokenProd,
+                        DocsEnvironment.PPE => s_opsTokenSandbox,
+                        _ => throw new InvalidOperationException(),
+                    };
+                    var token = await tokenTask.Value;
 
                     request.Headers.Add("X-OP-BuildUserToken", token);
                 }
