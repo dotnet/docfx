@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -57,27 +56,15 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string? DocsRepositoryOwnerName { get; init; }
 
-        public Action<HttpRequestMessage> GetCredentialProvider()
+        public CredentialProvider GetCredentialProvider()
         {
-            var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal).ToArray();
-
-            return message =>
+            return new Lazy<CredentialProvider>(() =>
             {
-                if (message.RequestUri?.ToString() is string url)
-                {
-                    foreach (var (baseUrl, rule) in rules)
-                    {
-                        if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
-                        {
-                            foreach (var header in rule.Headers)
-                            {
-                                message.Headers.Add(header.Key, header.Value);
-                            }
-                            break;
-                        }
-                    }
-                }
-            };
+                var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal)
+                    .ToDictionary(entry => entry.Key, entry => entry.Value);
+
+                return new(rules);
+            }).Value;
         }
     }
 }

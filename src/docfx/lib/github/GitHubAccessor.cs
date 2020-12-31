@@ -40,7 +40,9 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.GithubToken))
             {
-                _httpClient = new HttpClient();
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                _httpClient = new(new CredentialHandler(config.GetCredentialProvider()), true);
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
             }
