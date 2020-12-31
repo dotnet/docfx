@@ -65,6 +65,12 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
+            if (!inclusionBlock.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(Errors.Markdown.IncludeNotSupport(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
+                return;
+            }
+
             if (InclusionContext.IsCircularReference(file, out var dependencyChain))
             {
                 throw Errors.Link.CircularReference((SourceInfo)file, file, dependencyChain.Reverse()).ToException();
@@ -86,6 +92,12 @@ namespace Microsoft.Docs.Build
             if (content is null)
             {
                 errors.Add(Errors.Markdown.IncludeNotFound(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
+                return;
+            }
+
+            if (!inclusionInline.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(Errors.Markdown.IncludeNotSupport(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
                 return;
             }
 

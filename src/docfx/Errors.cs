@@ -505,6 +505,9 @@ namespace Microsoft.Docs.Build
         {
             public static Error IncludeNotFound(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
+
+            public static Error IncludeNotSupport(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-not-support", $"Invalid include link extension: '{source}'.", source);
         }
 
         public static class JsonSchema

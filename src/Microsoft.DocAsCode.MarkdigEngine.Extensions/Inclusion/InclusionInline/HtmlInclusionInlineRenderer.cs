@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers;
@@ -26,6 +27,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (content == null)
             {
                 _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
+                renderer.Write(inclusion.GetRawToken());
+                return;
+            }
+
+            if (!inclusion.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                _context.LogWarning("include-not-support", $"Invalid include link extension: '{inclusion.IncludedFilePath}'.", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
