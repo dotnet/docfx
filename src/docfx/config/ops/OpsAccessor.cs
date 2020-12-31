@@ -62,11 +62,11 @@ namespace Microsoft.Docs.Build
 #pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
-        private static readonly Dictionary<string, HttpConfig> s_fallBackCredentials = new Dictionary<string, HttpConfig>()
+        private static readonly Dictionary<string, LazyHttpConfig> s_fallBackCredentials = new Dictionary<string, LazyHttpConfig>()
         {
             {
                 s_docsProdServiceEndpoint,
-                new HttpConfig()
+                new LazyHttpConfig()
                 {
                     Headers = new Dictionary<string, Lazy<string?>>
                     {
@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
             },
             {
                 s_docsPPEServiceEndpoint,
-                new HttpConfig()
+                new LazyHttpConfig()
                 {
                     Headers = new Dictionary<string, Lazy<string?>>
                     {
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             },
         };
 
-        public static Dictionary<string, HttpConfig> FallBackCredentials => s_fallBackCredentials;
+        public static Dictionary<string, LazyHttpConfig> FallBackCredentials => s_fallBackCredentials;
 
         public async Task<string> GetDocsetInfo(string repositoryUrl)
         {
@@ -191,37 +191,6 @@ namespace Microsoft.Docs.Build
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
             return response.IsSuccessStatusCode;
-        }
-
-        public static bool TryExtractDocsEnvironmentFromUrl(string? url, out DocsEnvironment docsEnvironment)
-        {
-            docsEnvironment = default;
-            if (string.IsNullOrEmpty(url))
-            {
-                return false;
-            }
-
-            if (url.StartsWith(s_docsProdServiceEndpoint))
-            {
-                docsEnvironment = DocsEnvironment.Prod;
-            }
-            else if (url.StartsWith(s_docsPPEServiceEndpoint))
-            {
-                docsEnvironment = DocsEnvironment.PPE;
-            }
-            else if (url.StartsWith(s_docsInternalServiceEndpoint))
-            {
-                docsEnvironment = DocsEnvironment.Internal;
-            }
-            else if (url.StartsWith(s_docsPerfServiceEndpoint))
-            {
-                docsEnvironment = DocsEnvironment.Perf;
-            }
-            else
-            {
-                return false;
-            }
-            return true;
         }
 
         private async Task<string> Fetch(

@@ -29,6 +29,26 @@ namespace Microsoft.Docs.Build
 
         private static void GetCredentialsCore(Dictionary<string, string> credentials, string url, IReadOnlyDictionary<string, HttpConfig> providedCredentials)
         {
+            // TODO: Merge with the following function
+            foreach (var (baseUrl, rule) in providedCredentials)
+            {
+                if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (var header in rule.Headers)
+                    {
+                        if (!credentials.ContainsKey(header.Key) && !string.IsNullOrEmpty(header.Value))
+                        {
+                            credentials.Add(header.Key, header.Value);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        private static void GetCredentialsCore(
+            Dictionary<string, string> credentials, string url, IReadOnlyDictionary<string, LazyHttpConfig> providedCredentials)
+        {
             foreach (var (baseUrl, rule) in providedCredentials)
             {
                 if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))

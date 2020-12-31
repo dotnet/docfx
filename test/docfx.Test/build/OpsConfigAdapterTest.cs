@@ -44,9 +44,9 @@ namespace Microsoft.Docs.Build
                         "https://op-build-prod.azurewebsites.net",
                         new HttpConfig()
                         {
-                            Headers = new Dictionary<string, Lazy<string>>
+                            Headers = new Dictionary<string, string>
                             {
-                                { "X-OP-BuildUserToken", new Lazy<string>(token) },
+                                { "X-OP-BuildUserToken", token },
                             },
                         }
                     },
