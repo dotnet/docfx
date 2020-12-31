@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
                 .WithHandler<TextDocumentHandler>()
-                .WithHandler<DidChangeWatcherFilesHandler>()
+                .WithHandler<DidChangeWatchedFilesHandler>()
                 .WithServices(services => services
                     .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
                     .AddSingleton(languageServerPackage)

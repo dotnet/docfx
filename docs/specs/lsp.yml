@@ -110,3 +110,21 @@ languageServer:
       docfx.yml: []
       a.md: []
 ---
+# File creating and deleting should trigger new build with refreshed build scope
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[B](b.md)"
+  - expectDiagnostics: 
+      a.md: [{ "code": "file-not-found" }]
+  - createFiles:
+      b.md:
+  - expectDiagnostics: 
+      a.md: []
+  - deleteFiles:
+    - b.md
+  - expectDiagnostics: 
+      a.md: [{ "code": "file-not-found" }]
+---

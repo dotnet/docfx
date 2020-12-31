@@ -11,37 +11,26 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DidChangeWatcherFilesHandler : IDidChangeWatchedFilesHandler
+    internal class DidChangeWatchedFilesHandler : IDidChangeWatchedFilesHandler
     {
         private readonly LanguageServerBuilder _languageServerBuilder;
-        private readonly Container<FileSystemWatcher> _watcher = new Container<FileSystemWatcher>(
-                new FileSystemWatcher() { GlobPattern = "**/*.{md,yml,json}", Kind = WatchKind.Create },
-                new FileSystemWatcher() { GlobPattern = "**/*.{md,yml,json}", Kind = WatchKind.Delete });
+        private readonly LanguageServerPackage _package;
 
-        public DidChangeWatcherFilesHandler(
-            LanguageServerBuilder languageServerBuilder)
+        private readonly Container<FileSystemWatcher> _watcher = new Container<FileSystemWatcher>(
+                new FileSystemWatcher() { GlobPattern = "**/*", Kind = WatchKind.Create | WatchKind.Delete });
+
+        public DidChangeWatchedFilesHandler(
+            LanguageServerBuilder languageServerBuilder,
+            LanguageServerPackage package)
         {
             _languageServerBuilder = languageServerBuilder;
+            _package = package;
         }
 
         public Task<Unit> Handle(DidChangeWatchedFilesParams notification, CancellationToken cancellationToken)
         {
-            foreach (var change in notification.Changes)
-            {
-                switch (change.Type)
-                {
-                    case FileChangeType.Created:
-                        {
-                            _languageServerBuilder.QueueBuild();
-                            break;
-                        }
-                    case FileChangeType.Deleted:
-                        {
-                            _languageServerBuilder.QueueBuild();
-                            break;
-                        }
-                }
-            }
+            _package.RefreshPackageFilesUpdateTime();
+            _languageServerBuilder.QueueBuild();
             return Unit.Task;
         }
 

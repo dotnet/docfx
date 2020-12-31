@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol;
@@ -15,8 +17,11 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
+using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Xunit;
 using Yunit;
+using Directory = System.IO.Directory;
+using File = System.IO.File;
 
 namespace Microsoft.Docs.Build
 {
@@ -26,6 +31,7 @@ namespace Microsoft.Docs.Build
 
         private readonly string _workingDirectory;
         private readonly Lazy<Task<ILanguageClient>> _client;
+        private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
 
@@ -40,6 +46,7 @@ namespace Microsoft.Docs.Build
         {
             _workingDirectory = workingDirectory;
             _client = new(() => InitializeClient(workingDirectory, package));
+            _package = package;
         }
 
         public async Task ProcessCommand(LanguageServerTestCommand command)
@@ -68,6 +75,35 @@ namespace Microsoft.Docs.Build
                     });
                 }
             }
+            else if (command.CreateFiles != null)
+            {
+                var fileEvents = new List<FileEvent>();
+                foreach (var (file, text) in command.CreateFiles)
+                {
+                    if (_package is MemoryPackage memoryPackage)
+                    {
+                        memoryPackage.AddOrUpdate(new PathString(file), text ?? string.Empty);
+                        fileEvents.Add(new FileEvent()
+                        {
+                            Uri = ToUri(file),
+                            Type = FileChangeType.Created,
+                        });
+                    }
+                    else
+                    {
+                        var fullPath = Path.Combine(_workingDirectory, file);
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                        File.Create(fullPath);
+                        File.WriteAllText(fullPath, text ?? string.Empty);
+                    }
+                }
+
+                BeforeSendNotification();
+                client.DidChangeWatchedFiles(new()
+                {
+                    Changes = new(fileEvents),
+                });
+            }
             else if (command.CloseFiles != null)
             {
                 foreach (var file in command.CloseFiles)
@@ -79,6 +115,32 @@ namespace Microsoft.Docs.Build
                         TextDocument = new(ToUri(file)),
                     });
                 }
+            }
+            else if (command.DeleteFiles != null)
+            {
+                var fileEvents = new List<FileEvent>();
+                foreach (var file in command.DeleteFiles)
+                {
+                    if (_package is MemoryPackage memoryPackage)
+                    {
+                        memoryPackage.Delete(new PathString(file));
+                        fileEvents.Add(new FileEvent()
+                        {
+                            Uri = ToUri(file),
+                            Type = FileChangeType.Deleted,
+                        });
+                    }
+                    else
+                    {
+                        File.Delete(Path.Combine(_workingDirectory, file));
+                    }
+                }
+
+                BeforeSendNotification();
+                client.DidChangeWatchedFiles(new()
+                {
+                    Changes = new(fileEvents),
+                });
             }
             else if (command.ExpectDiagnostics != null)
             {

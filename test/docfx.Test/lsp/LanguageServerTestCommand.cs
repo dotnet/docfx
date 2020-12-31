@@ -12,7 +12,11 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string> EditFiles { get; init; }
 
+        public Dictionary<string, string> CreateFiles { get; init; }
+
         public List<string> CloseFiles { get; init; }
+
+        public List<string> DeleteFiles { get; init; }
 
         public Dictionary<string, JToken> ExpectDiagnostics { get; init; }
 
