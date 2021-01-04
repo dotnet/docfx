@@ -16,25 +16,24 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
-        private static readonly HttpClientHandler s_defaultClientHandler = new HttpClientHandler
+        // NOTE: This line assumes each build runs in a new process
+        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
+        private static readonly HttpClient s_httpClient = new(new HttpClientHandler
         {
             CheckCertificateRevocationList = true,
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-        };
-
-        // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
+        });
 
         private readonly Lazy<string?>? _fallbackDocsetPath;
+        private readonly Action<HttpRequestMessage>? _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
         private readonly Package _package;
-        private readonly HttpClient _httpClient;
 
         public FileResolver(
             Package package,
             Lazy<string?>? fallbackDocsetPath = null,
-            CredentialProvider? credentialProvider = null,
+            Action<HttpRequestMessage>? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
@@ -42,13 +41,7 @@ namespace Microsoft.Docs.Build
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
-            _httpClient = new(
-                credentialProvider != null
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                    ? new CredentialHandler(credentialProvider, s_defaultClientHandler)
-#pragma warning restore CA2000 // Dispose objects before losing scope
-                    : s_defaultClientHandler,
-                true);
+            _credentialProvider = credentialProvider;
         }
 
         public string? TryReadString(SourceInfo<string> file)
@@ -256,6 +249,8 @@ namespace Microsoft.Docs.Build
                 message.Headers.IfNoneMatch.Add(etag);
             }
 
+            _credentialProvider?.Invoke(message);
+
             if (_opsConfigAdapter != null)
             {
                 var response = await _opsConfigAdapter.InterceptHttpRequest(message);
@@ -265,7 +260,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return await _httpClient.SendAsync(message);
+            return await s_httpClient.SendAsync(message);
         }
     }
 }
