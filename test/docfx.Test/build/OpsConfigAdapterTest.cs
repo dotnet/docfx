@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var credentialProvider = new CredentialProvider(_ => new() { Headers = new() { ["X-OP-BuildUserToken"] = token } });
+            var credentialProvider = new CredentialProvider((_, _) => new() { Headers = new() { ["X-OP-BuildUserToken"] = token } });
             var accessor = new OpsAccessor(null, credentialProvider);
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };

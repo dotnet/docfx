@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = new CredentialProvider(preloadConfig.GetHttpConfig);
+            var credentialProvider = new CredentialProvider((url, _) => preloadConfig.GetHttpConfig(url));
             var opsAccessor = new OpsAccessor(errors, credentialProvider);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 

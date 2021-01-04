@@ -13,20 +13,21 @@ namespace Microsoft.Docs.Build
     {
         private const int RetryCount = 3;
 
-        private readonly Func<string, HttpConfig?>[] _credentials;
-        private readonly ConcurrentDictionary<string, HttpConfig> _credentialCache = new();
+        private readonly Func<string, bool, HttpConfig?>[] _credentials;
+        private readonly ConcurrentDictionary<string, HttpConfig?> _credentialCache = new();
 
-        public CredentialProvider(params Func<string, HttpConfig?>[] credentials) => _credentials = credentials;
+        public CredentialProvider(params Func<string, bool, HttpConfig?>[] credentials) => _credentials = credentials;
 
         public async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
         {
             HttpResponseMessage? response = null;
 
-            var url = request.RequestUri?.ToString();
+            var isUnauthorized = false;
+            var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
 
             for (var i = 0; i < RetryCount; i++)
             {
-                ApplyCredentials(request, url);
+                ApplyCredentials(url, request, isUnauthorized);
 
                 response = await next(request);
 
@@ -35,15 +36,16 @@ namespace Microsoft.Docs.Build
                     break;
                 }
 
-                UpdateCredentials(url);
+                isUnauthorized = true;
+                _credentialCache.TryRemove(url, out _);
             }
 
             return response!;
         }
 
-        private void ApplyCredentials(HttpRequestMessage request, string? url)
+        private void ApplyCredentials(string url, HttpRequestMessage request, bool isUnauthorized)
         {
-            if (url != null && _credentialCache.TryGetValue(url, out var http))
+            if (_credentialCache.GetOrAdd(url, key => GetCredential(key, isUnauthorized)) is HttpConfig http)
             {
                 foreach (var (key, value) in http.Headers)
                 {
@@ -55,19 +57,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void UpdateCredentials(string? url)
+        private HttpConfig? GetCredential(string url, bool isUnauthorized)
         {
-            if (url != null)
+            foreach (var credential in _credentials)
             {
-                foreach (var credential in _credentials)
+                if (credential(url, isUnauthorized) is HttpConfig http)
                 {
-                    if (credential(url) is HttpConfig http)
-                    {
-                        _credentialCache[url] = http;
-                        break;
-                    }
+                    return http;
                 }
             }
+            return default;
         }
     }
 }
