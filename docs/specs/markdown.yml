@@ -787,7 +787,7 @@ inputs:
     b  
 outputs:
   a.json: |
-    { "conceptual": "<p><a href=\"#to\" name=\"to\">to</a></p><p>a<br></br>b</p>" }
+    { "conceptual": "<p><a href=\"#to\" name=\"to\">to</a></p><p>a<br/>b</p>" }
 ---
 # Skip resolvement of autolink `tel` to avoid `file-not-found`
 inputs:
