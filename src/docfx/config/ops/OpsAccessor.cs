@@ -51,11 +51,11 @@ namespace Microsoft.Docs.Build
 
         private static int s_validationRulesetReported;
 
-        private readonly Action<HttpRequestMessage> _credentialProvider;
+        private readonly CredentialProvider _credentialProvider;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new();
 
-        public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
+        public OpsAccessor(ErrorBuilder errors, CredentialProvider credentialProvider)
         {
             _errors = errors;
             _credentialProvider = credentialProvider;
@@ -306,11 +306,12 @@ namespace Microsoft.Docs.Build
                 // Default header which allows fallback to public data when credential is not provided.
                 request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
 
-                _credentialProvider?.Invoke(request);
+                return await _credentialProvider.SendRequest(request, async request =>
+                {
+                    await FillOpsToken(request, environment);
 
-                await FillOpsToken(request, environment);
-
-                return await _http.SendAsync(request);
+                    return await _http.SendAsync(request);
+                });
             }
         }
 
