@@ -8,7 +8,6 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Client;
 using OmniSharp.Extensions.LanguageServer.Protocol;
@@ -20,8 +19,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Window;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Xunit;
 using Yunit;
-using Directory = System.IO.Directory;
-using File = System.IO.File;
 
 namespace Microsoft.Docs.Build
 {
@@ -83,11 +80,6 @@ namespace Microsoft.Docs.Build
                     if (_package is MemoryPackage memoryPackage)
                     {
                         memoryPackage.AddOrUpdate(new PathString(file), text ?? string.Empty);
-                        fileEvents.Add(new FileEvent()
-                        {
-                            Uri = ToUri(file),
-                            Type = FileChangeType.Created,
-                        });
                     }
                     else
                     {
@@ -96,6 +88,40 @@ namespace Microsoft.Docs.Build
                         File.Create(fullPath);
                         File.WriteAllText(fullPath, text ?? string.Empty);
                     }
+                    fileEvents.Add(new FileEvent()
+                    {
+                        Uri = ToUri(file),
+                        Type = FileChangeType.Created,
+                    });
+                }
+
+                BeforeSendNotification();
+                client.DidChangeWatchedFiles(new()
+                {
+                    Changes = new(fileEvents),
+                });
+            }
+            else if (command.ChangeFilesWithoutEditor != null)
+            {
+                var fileEvents = new List<FileEvent>();
+                foreach (var (file, text) in command.ChangeFilesWithoutEditor)
+                {
+                    if (_package is MemoryPackage memoryPackage)
+                    {
+                        memoryPackage.AddOrUpdate(new PathString(file), text ?? string.Empty);
+                    }
+                    else
+                    {
+                        var fullPath = Path.Combine(_workingDirectory, file);
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                        File.Create(fullPath);
+                        File.WriteAllText(fullPath, text ?? string.Empty);
+                    }
+                    fileEvents.Add(new FileEvent()
+                    {
+                        Uri = ToUri(file),
+                        Type = FileChangeType.Changed,
+                    });
                 }
 
                 BeforeSendNotification();
@@ -123,17 +149,17 @@ namespace Microsoft.Docs.Build
                 {
                     if (_package is MemoryPackage memoryPackage)
                     {
-                        memoryPackage.Delete(new PathString(file));
-                        fileEvents.Add(new FileEvent()
-                        {
-                            Uri = ToUri(file),
-                            Type = FileChangeType.Deleted,
-                        });
+                        memoryPackage.RemoveFile(new PathString(file));
                     }
                     else
                     {
                         File.Delete(Path.Combine(_workingDirectory, file));
                     }
+                    fileEvents.Add(new FileEvent()
+                    {
+                        Uri = ToUri(file),
+                        Type = FileChangeType.Deleted,
+                    });
                 }
 
                 BeforeSendNotification();
