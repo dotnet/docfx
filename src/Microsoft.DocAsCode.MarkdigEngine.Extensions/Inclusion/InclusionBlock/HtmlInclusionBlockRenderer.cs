@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionBlock inclusion)
         {
-            if (!inclusion.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(inclusion.IncludedFilePath) && !inclusion.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
                 _context.LogWarning("include-invalid", $"Invalid include link extension: '{inclusion.IncludedFilePath}'.", inclusion);
                 renderer.Write(inclusion.GetRawToken());

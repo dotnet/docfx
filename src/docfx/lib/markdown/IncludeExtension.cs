@@ -58,7 +58,7 @@ namespace Microsoft.Docs.Build
         private static void ExpandInclusionBlock(
             MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
-            if (!inclusionBlock.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(inclusionBlock.IncludedFilePath) && !inclusionBlock.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
                 errors.Add(Errors.Markdown.IncludeInvalid(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
                 return;
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
         private static void ExpandInclusionInline(
             MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
-            if (!inclusionInline.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(inclusionInline.IncludedFilePath) && !inclusionInline.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
                 errors.Add(Errors.Markdown.IncludeInvalid(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
                 return;
