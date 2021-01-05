@@ -110,3 +110,31 @@ languageServer:
       docfx.yml: []
       a.md: []
 ---
+# Support refresh op build user token when it expires
+noCache: true
+environments:
+  - DOCS_OPS_TOKEN
+inputs:
+  docfx.yml: |
+    monikerDefinition: https://ops/monikerDefinition/
+    monikerRange:
+      'a.md': '> netcore-1.0 || < invalid-moniker'
+    http:
+      https://op-build-prod.azurewebsites.net:
+        headers:
+          X-OP-BuildUserToken: invalid-token
+  a.md:
+languageServer:
+  - openFiles:
+      a.md:
+  - ExpectCredentialRefreshRequest:
+      params:
+        url: https://op-build-prod.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
+      response: 
+        http: 
+          https://op-build-prod.azurewebsites.net:
+            headers:
+              X-OP-BuildUserToken: '{DOCS_OPS_TOKEN}'
+  - expectDiagnostics:
+      docfx.yml: [{"code": "moniker-range-invalid"}]
+---

@@ -24,27 +24,18 @@ namespace Microsoft.Docs.Build
             _credentialProvider = credentialProvider;
         }
 
-        internal void Handle(HttpRequestMessage request)
-        {
-            FillInCredentials(request);
-        }
-
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            FillInCredentials(request);
+            _credentialProvider.FillInCredentials(request);
 
-            return await base.SendAsync(request, cancellationToken);
-        }
-
-        private void FillInCredentials(HttpRequestMessage request)
-        {
-            foreach (var (key, value) in _credentialProvider.GetCredentials(request))
+            var response = await base.SendAsync(request, cancellationToken);
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized
+                && _credentialProvider.SupportRefreshToken)
             {
-                if (!request.Headers.Contains(key))
-                {
-                    request.Headers.Add(key, value);
-                }
+                await _credentialProvider.RefreshCredential(request);
+                response = await base.SendAsync(request, cancellationToken);
             }
+            return response;
         }
     }
 }

@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -36,10 +38,12 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
         private TaskCompletionSource _notificationSync = new TaskCompletionSource();
 
-        public LanguageServerTestClient(string workingDirectory, Package package)
+        private Func<GetCredentialParams, Task<JToken>> _credentialRefreshHandler;
+
+        public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
             _workingDirectory = workingDirectory;
-            _client = new(() => InitializeClient(workingDirectory, package));
+            _client = new(() => InitializeClient(workingDirectory, package, noCache));
         }
 
         public async Task ProcessCommand(LanguageServerTestCommand command)
@@ -86,6 +90,19 @@ namespace Microsoft.Docs.Build
 
                 s_languageServerJsonDiff.Verify(command.ExpectDiagnostics, _diagnostics);
             }
+            else if (command.ExpectCredentialRefreshRequest != null)
+            {
+                JToken parameters = null;
+
+                _credentialRefreshHandler = (GetCredentialParams @params) =>
+                {
+                    parameters = JToken.Parse(JsonUtility.Serialize(@params));
+                    return Task.FromResult(ApplyCredentialVariables(command.ExpectCredentialRefreshRequest.Response));
+                };
+
+                await SynchronizeNotifications();
+                s_languageServerJsonDiff.Verify(command.ExpectCredentialRefreshRequest.Params, parameters);
+            }
             else if (command.ExpectNoNotification)
             {
                 await SynchronizeNotifications();
@@ -115,6 +132,16 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
+        }
+
+        private JToken ApplyCredentialVariables(JToken @params)
+        {
+            return TestUtility.ApplyVariables(
+                @params,
+                new Dictionary<string, string>
+                {
+                    { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
+                });
         }
 
         private void BeforeSendNotification()

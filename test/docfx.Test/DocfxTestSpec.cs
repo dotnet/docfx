@@ -27,6 +27,8 @@ namespace Microsoft.Docs.Build
 
         public bool UsePhysicalInput { get; set; }
 
+        public bool NoCache { get; set; }
+
         public string Locale { get; set; }
 
         [JsonConverter(typeof(OneOrManyConverter))]

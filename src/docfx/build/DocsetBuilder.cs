@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -107,7 +108,8 @@ namespace Microsoft.Docs.Build
             string? outputPath,
             Package package,
             CommandLineOptions options,
-            IProgress<string> progressReporter)
+            IProgress<string> progressReporter,
+            Func<string, Task<Dictionary<string, HttpConfig>>>? getCredential)
         {
             var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
@@ -116,7 +118,7 @@ namespace Microsoft.Docs.Build
                 progressReporter.Report("Loading config...");
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errorLog, docsetPath, outputPath, options, fetchOptions, package);
+                   errorLog, docsetPath, outputPath, options, fetchOptions, package, getCredential);
 
                 if (errorLog.HasError)
                 {

@@ -125,7 +125,7 @@ namespace Microsoft.Docs.Build
             var credentialHandler = new CredentialHandler(config.GetCredentialProvider());
 
             using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
-            credentialHandler.Handle(message);
+            credentialProvider.FillInCredentials(message);
             Assert.Equal(value, message.Headers.GetValues("key").First());
         }
     }

@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -36,7 +38,13 @@ namespace Microsoft.Docs.Build
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
-            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package package)
+            ErrorBuilder errors,
+            string docsetPath,
+            string? outputPath,
+            CommandLineOptions options,
+            FetchOptions fetchOptions,
+            Package package,
+            Func<string, Task<Dictionary<string, HttpConfig>>>? getCredential = null)
         {
             // load and trace entry repository
             var repository = Repository.Create(package.BasePath);
@@ -64,7 +72,7 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = preloadConfig.GetCredentialProvider();
+            var credentialProvider = preloadConfig.GetCredentialProvider(getCredential);
             var opsAccessor = new OpsAccessor(errors, credentialProvider);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 

@@ -54,6 +54,7 @@ namespace Microsoft.Docs.Build
                     .AddSingleton(languageServerPackage)
                     .AddSingleton(commandLineOptions)
                     .AddSingleton<DiagnosticPublisher>()
+                    .AddSingleton<LanguageServerCredentialProvider>()
                     .AddSingleton<LanguageServerBuilder>()
                     .AddOptions()
                     .AddLogging())

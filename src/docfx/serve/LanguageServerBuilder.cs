@@ -32,6 +32,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
+            LanguageServerCredentialProvider credentialProvider,
             ILanguageServerNotificationListener notificationListener,
             IServiceProvider serviceProvider)
         {
@@ -43,7 +44,7 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
             _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(options, _languageServerPackage);
+            _builder = new(options, _languageServerPackage, credentialProvider.GetRefreshedToken);
         }
 
         public void QueueBuild()
@@ -59,15 +60,17 @@ namespace Microsoft.Docs.Build
                 {
                     await WaitToTriggerBuild(cancellationToken);
 
-                    using var progressReporter = await CreateProgressReporter();
-                    progressReporter.Report("Start build...");
+                    // TODO: diable reporting progress temporarily since it will block other request from server to client
+                    // using var progressReporter = await CreateProgressReporter();
+                    // progressReporter.Report("Start build...");
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-                    _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
+                    _builder.Build(errors, new ConsoleProgressReporter(), filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
                     _notificationListener.OnNotificationHandled();
-                    progressReporter.Report("Build finished");
+
+                    // progressReporter.Report("Build finished");
                 }
                 catch (Exception ex)
                 {

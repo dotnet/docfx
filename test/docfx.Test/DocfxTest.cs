@@ -127,6 +127,7 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
+                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
                 { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
@@ -189,7 +190,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package)
         {
-            await using var client = new LanguageServerTestClient(docsetPath, package);
+            await using var client = new LanguageServerTestClient(docsetPath, package, spec.NoCache);
 
             foreach (var command in spec.LanguageServer)
             {
@@ -213,6 +214,7 @@ namespace Microsoft.Docs.Build
                     dryRun ? "--dry-run" : null,
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
+                    spec.NoCache ? "--no-cache" : null,
                 }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
