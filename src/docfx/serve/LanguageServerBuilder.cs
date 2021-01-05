@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
             _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(options, _languageServerPackage, credentialProvider.GetRefreshedToken);
+            _builder = new(options, _languageServerPackage, credentialProvider.GetCredential);
         }
 
         public void QueueBuild()
@@ -60,17 +60,18 @@ namespace Microsoft.Docs.Build
                 {
                     await WaitToTriggerBuild(cancellationToken);
 
-                    // TODO: diable reporting progress temporarily since it will block other request from server to client
-                    // using var progressReporter = await CreateProgressReporter();
-                    // progressReporter.Report("Start build...");
+                    using var progressReporter = await CreateProgressReporter();
+                    await Task.Yield();
+                    progressReporter.Report("Start build...");
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-                    _builder.Build(errors, new ConsoleProgressReporter(), filesToBuild.Select(f => f.Value).ToArray());
+                    _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
                     _notificationListener.OnNotificationHandled();
 
-                    // progressReporter.Report("Build finished");
+                    progressReporter.Report("Build finished");
+                    progressReporter.OnCompleted();
                 }
                 catch (Exception ex)
                 {
@@ -102,7 +103,11 @@ namespace Microsoft.Docs.Build
         {
             var languageServer = _serviceProvider.GetService<ILanguageServer>();
             Debug.Assert(languageServer != null);
-            return new LanguageServerProgressReporter(await languageServer.WorkDoneManager.Create(new WorkDoneProgressBegin()));
+            return new LanguageServerProgressReporter(await languageServer.WorkDoneManager.Create(
+                new WorkDoneProgressBegin()
+                {
+                    Title = "Docs real-time validation",
+                }));
         }
 
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)

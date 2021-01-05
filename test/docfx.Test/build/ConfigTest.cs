@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
     }
 }".Replace('\'', '"'), null);
 
-            var credentialHandler = new CredentialHandler(config.GetCredentialProvider());
+            var credentialProvider = config.GetCredentialProvider();
 
             using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
             credentialProvider.FillInCredentials(message);

@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
             return path is null ? uri.ToString() : PathUtility.NormalizeFile(Path.GetRelativePath(_workingDirectory, path));
         }
 
-        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package)
+        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package, bool noCache)
         {
             var clientPipe = new Pipe();
             var serverPipe = new Pipe();
@@ -203,7 +203,11 @@ namespace Microsoft.Docs.Build
                 }));
 
             Task.Run(() => LanguageServerHost.RunLanguageServer(
-                new() { WorkingDirectory = workingDirectory }, clientPipe.Reader, serverPipe.Writer, package, notificationListener: this)).GetAwaiter();
+                new() { WorkingDirectory = workingDirectory, NoCache = noCache },
+                clientPipe.Reader,
+                serverPipe.Writer,
+                package,
+                notificationListener: this)).GetAwaiter();
 
             await client.Initialize(default);
 
