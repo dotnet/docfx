@@ -272,12 +272,14 @@ inputs:
   docs/a.md: |
     [!include[B](../media/b.png)]
     Link to [!include[C](../c.ps1)]
+    Empty inclusion [!include[D]()]
   media/b.png: Token
   c.ps1: Token
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"include-not-support","message":"Invalid include link extension: '../media/b.png'.","file":"docs/a.md","line":1,"column":1}
-    {"message_severity":"warning","code":"include-not-support","message":"Invalid include link extension: '../c.ps1'.","file":"docs/a.md","line":2,"column":9}
+    {"message_severity":"warning","code":"include-invalid","message":"Invalid include link extension: '../media/b.png'.","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"warning","code":"include-invalid","message":"Invalid include link extension: '../c.ps1'.","file":"docs/a.md","line":2,"column":9}
+    {"message_severity":"warning","code":"include-invalid","message":"Invalid include link extension: ''.","file":"docs/a.md","line":3,"column":17}
 ---
 # Show warning if redirection file conflicts with existing file
 inputs:

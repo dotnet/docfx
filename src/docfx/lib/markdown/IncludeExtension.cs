@@ -58,16 +58,16 @@ namespace Microsoft.Docs.Build
         private static void ExpandInclusionBlock(
             MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
+            if (!inclusionBlock.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(Errors.Markdown.IncludeInvalid(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
+                return;
+            }
+
             var (content, file) = context.ReadFile(inclusionBlock.IncludedFilePath, inclusionBlock);
             if (content is null || file is null)
             {
                 errors.Add(Errors.Markdown.IncludeNotFound(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
-                return;
-            }
-
-            if (!inclusionBlock.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-            {
-                errors.Add(Errors.Markdown.IncludeNotSupport(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
                 return;
             }
 
@@ -88,16 +88,16 @@ namespace Microsoft.Docs.Build
         private static void ExpandInclusionInline(
             MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
+            if (!inclusionInline.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(Errors.Markdown.IncludeInvalid(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
+                return;
+            }
+
             var (content, file) = context.ReadFile(inclusionInline.IncludedFilePath, inclusionInline);
             if (content is null)
             {
                 errors.Add(Errors.Markdown.IncludeNotFound(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
-                return;
-            }
-
-            if (!inclusionInline.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-            {
-                errors.Add(Errors.Markdown.IncludeNotSupport(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
                 return;
             }
 

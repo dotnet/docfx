@@ -22,18 +22,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
         {
+            if (!inclusion.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                _context.LogWarning("include-invalid", $"Invalid include link extension: '{inclusion.IncludedFilePath}'.", inclusion);
+                renderer.Write(inclusion.GetRawToken());
+                return;
+            }
+
             var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, inclusion);
 
             if (content == null)
             {
                 _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
-                renderer.Write(inclusion.GetRawToken());
-                return;
-            }
-
-            if (!inclusion.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-            {
-                _context.LogWarning("include-not-support", $"Invalid include link extension: '{inclusion.IncludedFilePath}'.", inclusion);
                 renderer.Write(inclusion.GetRawToken());
                 return;
             }
