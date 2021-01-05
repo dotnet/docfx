@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 
         public WatchDebugView(Watch<T> watch) => _watch = watch;
 
+        public int ChangeCount => _watch.ChangeCount;
+
         public T? Value => _watch.ValueForDebugDisplay;
     }
 }

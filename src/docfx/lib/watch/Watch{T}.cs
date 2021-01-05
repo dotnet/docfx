@@ -9,19 +9,20 @@ using System.Threading;
 namespace Microsoft.Docs.Build
 {
     [DebuggerTypeProxy(typeof(WatchDebugView<>))]
-    [DebuggerDisplay("{ValueForDebugDisplay}")]
+    [DebuggerDisplay("ChangeCount={ChangeCount}, Value={ValueForDebugDisplay}")]
     public class Watch<T>
     {
         private readonly Func<T> _valueFactory;
         private readonly object _syncLock = new object();
 
         private T? _value;
+        private int _changeCount;
 
         private volatile WatchFunction? _function;
 
         public Watch(Func<T> valueFactory) => _valueFactory = valueFactory;
 
-        public bool IsValueCreated => _function != null;
+        public int ChangeCount => _changeCount;
 
         public override string? ToString() => _function != null ? _value?.ToString() : base.ToString();
 
@@ -45,6 +46,8 @@ namespace Microsoft.Docs.Build
                     {
                         return value;
                     }
+
+                    _changeCount++;
 
                     var function = new WatchFunction();
 

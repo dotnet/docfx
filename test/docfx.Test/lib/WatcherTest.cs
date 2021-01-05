@@ -14,9 +14,9 @@ namespace Microsoft.Docs.Build
         public static void Watch_ValueFactory()
         {
             var watchString = new Watch<string>(() => "foo");
-            Assert.False(watchString.IsValueCreated);
+            Assert.Equal(0, watchString.ChangeCount);
             Assert.Equal("foo", watchString.Value);
-            Assert.True(watchString.IsValueCreated);
+            Assert.Equal(1, watchString.ChangeCount);
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
         {
             var watch = new Watch<object>(() => 1);
             Assert.NotEqual("1", watch.ToString());
-            Assert.False(watch.IsValueCreated);
+            Assert.Equal(0, watch.ChangeCount);
 
             var value = watch.Value;
             Assert.Equal("1", watch.ToString());
@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
             var parent = new Watch<int>(() => ++parentCounter + child.Value);
 
             Assert.Equal(1, child.Value);
-            Assert.True(child.IsValueCreated);
+            Assert.Equal(1, child.ChangeCount);
             Assert.Equal(2, parent.Value);
 
             using (Watcher.BeginScope())
