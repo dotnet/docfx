@@ -18,8 +18,7 @@ namespace Microsoft.Docs.Build
         private readonly ILanguageServerNotificationListener _notificationListener;
         private readonly LanguageServerPackage _package;
 
-        private readonly Container<FileSystemWatcher> _watcher = new Container<FileSystemWatcher>(
-                new FileSystemWatcher() { GlobPattern = "**/*", Kind = WatchKind.Create | WatchKind.Delete | WatchKind.Change });
+        private readonly Container<FileSystemWatcher> _watcher;
 
         public DidChangeWatchedFilesHandler(
             LanguageServerBuilder languageServerBuilder,
@@ -29,6 +28,8 @@ namespace Microsoft.Docs.Build
             _languageServerBuilder = languageServerBuilder;
             _notificationListener = notificationListener;
             _package = package;
+            _watcher = new Container<FileSystemWatcher>(
+                new FileSystemWatcher() { GlobPattern = $"{_package.BasePath}/**/*", Kind = WatchKind.Create | WatchKind.Delete | WatchKind.Change });
         }
 
         public Task<Unit> Handle(DidChangeWatchedFilesParams notification, CancellationToken cancellationToken)
@@ -41,7 +42,7 @@ namespace Microsoft.Docs.Build
                         return false;
                     }
                     var filePath = new PathString(@event.Uri.GetFileSystemPath());
-                    if (!filePath.StartsWithPath(_package.BasePath, out var relativePath) || relativePath.Value.StartsWith(".git"))
+                    if (_package.BasePath.GetRelativePath(filePath).StartsWith(".git"))
                     {
                         return false;
                     }

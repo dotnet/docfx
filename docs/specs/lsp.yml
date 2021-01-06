@@ -149,7 +149,7 @@ languageServer:
   - expectDiagnostics: 
       b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
 ---
-# File changes/create/delete out of current workspace should not trigger build
+# File changes/create/delete in git folder should not trigger build
 inputs:
   docfx.yml:
   a.md:
@@ -159,11 +159,11 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
   - createFiles:
-      ../test.md: ""
+      .git/test.md: ""
   - expectNoNotification: true
   - editFilesWithoutEditor:
-      ../test.md: ""
+      .git/test.md: ""
   - expectNoNotification: true
   - deleteFiles:
-    - ../test.md
+    - .git/test.md
   - expectNoNotification: true
