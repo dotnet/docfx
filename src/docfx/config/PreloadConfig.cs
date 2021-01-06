@@ -56,8 +56,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string? DocsRepositoryOwnerName { get; init; }
 
-        public Dictionary<string, HttpConfig> GetHttpConfig()
-            => Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal)
-                    .ToDictionary(entry => entry.Key, entry => entry.Value);
+        public HttpConfig? GetHttpConfig(string url)
+        {
+            foreach (var (baseUrl, rule) in Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal))
+            {
+                if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
+                {
+                    return rule;
+                }
+            }
+            return default;
+        }
     }
 }

@@ -37,20 +37,11 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var credentialHandler = new CredentialHandler(new Dictionary<string, HttpConfig>()
-                {
-                    {
-                        "https://op-build-prod.azurewebsites.net",
-                        new HttpConfig()
-                        {
-                            Headers = new Dictionary<string, string>
-                            {
-                                { "X-OP-BuildUserToken", token },
-                            },
-                        }
-                    },
-                });
-            var accessor = new OpsAccessor(null, credentialHandler);
+            var xredentialHandler = new CredentialHandler((_, _) =>
+            {
+                return Task.FromResult<HttpConfig>(new() { Headers = new() { ["X-OP-BuildUserToken"] = token } });
+            });
+            var accessor = new OpsAccessor(null, xredentialHandler);
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);

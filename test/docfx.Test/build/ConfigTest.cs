@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Linq;
-using System.Net.Http;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -122,11 +119,10 @@ namespace Microsoft.Docs.Build
     }
 }".Replace('\'', '"'), null);
 
-            var credentialHandler = new CredentialHandler(config.GetHttpConfig());
+            var httpConfig = config.GetHttpConfig(url);
 
-            using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
-            credentialHandler.FillInCredentials(message);
-            Assert.Equal(value, message.Headers.GetValues("key").First());
+            Assert.NotNull(httpConfig);
+            Assert.Equal(value, httpConfig.Headers["key"]);
         }
     }
 }

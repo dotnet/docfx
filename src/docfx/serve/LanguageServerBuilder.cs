@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
             _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(options, _languageServerPackage, credentialProvider.GetCredential);
+            _builder = new(options, _languageServerPackage, credentialProvider.GetCredentials);
         }
 
         public void QueueBuild()

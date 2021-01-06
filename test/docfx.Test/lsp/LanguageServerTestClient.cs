@@ -96,11 +96,9 @@ namespace Microsoft.Docs.Build
                 _credentialRefreshHandler = (GetCredentialParams @params) =>
                 {
                     parameters = JToken.Parse(JsonUtility.Serialize(@params));
+                    s_languageServerJsonDiff.Verify(command.ExpectCredentialRefreshRequest.Params, parameters);
                     return Task.FromResult(ApplyCredentialVariables(command.ExpectCredentialRefreshRequest.Response));
                 };
-
-                await SynchronizeNotifications();
-                s_languageServerJsonDiff.Verify(command.ExpectCredentialRefreshRequest.Params, parameters);
             }
             else if (command.ExpectNoNotification)
             {

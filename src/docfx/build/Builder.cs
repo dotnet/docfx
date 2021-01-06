@@ -2,10 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
         private readonly Package _package;
-        private readonly Func<string, Task<Dictionary<string, HttpConfig>>>? _getCredential;
+        private readonly Func<HttpRequestMessage, bool, Task<HttpConfig?>>? _getCredential;
 
         public Builder(
-            CommandLineOptions options, Package package, Func<string, Task<Dictionary<string, HttpConfig>>>? getCredential = null)
+            CommandLineOptions options, Package package, Func<HttpRequestMessage, bool, Task<HttpConfig?>>? getCredential = null)
         {
             _options = options;
             _package = package;
