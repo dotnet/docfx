@@ -37,11 +37,11 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var xredentialHandler = new CredentialHandler((_, _) =>
+            var credentialHandler = new CredentialHandler((_, _) =>
             {
                 return Task.FromResult<HttpConfig>(new() { Headers = new() { ["X-OP-BuildUserToken"] = token } });
             });
-            var accessor = new OpsAccessor(null, xredentialHandler);
+            var accessor = new OpsAccessor(null, credentialHandler);
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);
