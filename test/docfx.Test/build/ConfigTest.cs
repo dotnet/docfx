@@ -122,11 +122,10 @@ namespace Microsoft.Docs.Build
     }
 }".Replace('\'', '"'), null);
 
-            var credentialProvider = config.GetCredentialProvider();
+            var httpConfig = config.GetHttpConfig(url);
 
-            using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
-            credentialProvider(message);
-            Assert.Equal(value, message.Headers.GetValues("key").First());
+            Assert.NotNull(httpConfig);
+            Assert.Equal(value, httpConfig.Headers["key"]);
         }
     }
 }

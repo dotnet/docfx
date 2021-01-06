@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         });
 
         private readonly Lazy<string?>? _fallbackDocsetPath;
-        private readonly Action<HttpRequestMessage>? _credentialProvider;
+        private readonly CredentialProvider _credentialProvider;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
         private readonly Package _package;
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
         public FileResolver(
             Package package,
             Lazy<string?>? fallbackDocsetPath = null,
-            Action<HttpRequestMessage>? credentialProvider = null,
+            CredentialProvider? credentialProvider = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
-            _credentialProvider = credentialProvider;
+            _credentialProvider = credentialProvider ?? new();
         }
 
         public string? TryReadString(SourceInfo<string> file)
@@ -243,24 +243,25 @@ namespace Microsoft.Docs.Build
         {
             // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
             // "The request message was already sent. Cannot send the same request message multiple times."
-            using var message = new HttpRequestMessage(HttpMethod.Get, url);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
             if (etag != null)
             {
-                message.Headers.IfNoneMatch.Add(etag);
+                request.Headers.IfNoneMatch.Add(etag);
             }
 
-            _credentialProvider?.Invoke(message);
-
-            if (_opsConfigAdapter != null)
+            return await _credentialProvider.SendRequest(request, async request =>
             {
-                var response = await _opsConfigAdapter.InterceptHttpRequest(message);
-                if (response != null)
+                if (_opsConfigAdapter != null)
                 {
-                    return response;
+                    var response = await _opsConfigAdapter.InterceptHttpRequest(request);
+                    if (response != null)
+                    {
+                        return response;
+                    }
                 }
-            }
 
-            return await s_httpClient.SendAsync(message);
+                return await s_httpClient.SendAsync(request);
+            });
         }
     }
 }

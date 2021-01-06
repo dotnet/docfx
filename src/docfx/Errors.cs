@@ -503,6 +503,9 @@ namespace Microsoft.Docs.Build
 
         public static class Markdown
         {
+            public static Error IncludeInvalid(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-invalid", $"Invalid include link extension: '{source}'.", source);
+
             public static Error IncludeNotFound(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
         }

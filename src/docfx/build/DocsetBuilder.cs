@@ -180,7 +180,7 @@ namespace Microsoft.Docs.Build
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),
                     () => _errors.AddRange(_microsoftGraphAccessor.Save()),
-                    () => _jsonSchemaTransformer.PostValidate(),
+                    () => _jsonSchemaTransformer.PostValidate(files != null),
                     () => learnHierarchyBuilder.ValidateHierarchy());
 
                 if (_config.DryRun)

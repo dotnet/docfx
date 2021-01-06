@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = preloadConfig.GetCredentialProvider();
+            var credentialProvider = new CredentialProvider((url, _) => preloadConfig.GetHttpConfig(url));
             var opsAccessor = new OpsAccessor(errors, credentialProvider);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 
@@ -176,18 +176,16 @@ namespace Microsoft.Docs.Build
                 let key = entry.Key.ToString()
                 where key.StartsWith("DOCFX_")
                 let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
-                select new JProperty(configKey, GetJsonValue(entry.Value?.ToString())));
+                let configValue = entry.Value?.ToString()
+                where !string.IsNullOrEmpty(configValue)
+                select new JProperty(configKey, GetJsonValue(configValue)));
         }
 
-        private static object? GetJsonValue(string? value)
+        private static object GetJsonValue(string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
             try
             {
-                return JsonUtility.DeserializeData<JObject>(value, null);
+                return JObject.Parse(value);
             }
             catch (Exception)
             {

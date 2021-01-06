@@ -52,8 +52,13 @@ namespace Microsoft.Docs.Build
             _input = input;
         }
 
-        public void PostValidate()
+        public void PostValidate(bool isPartialBuild)
         {
+            if (isPartialBuild)
+            {
+                return;
+            }
+
             foreach (var (uid, propertyPath, schema, minReferenceCount, maxReferenceCount) in _uidReferenceCountList.Value)
             {
                 var references = _xrefList.Value.Where(item => item.xref == uid).Select(item => item.xref.Source).ToArray();

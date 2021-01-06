@@ -2,23 +2,27 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Microsoft.Docs.Build
 {
+    [DebuggerTypeProxy(typeof(WatchDebugView<>))]
+    [DebuggerDisplay("ChangeCount={ChangeCount}, Value={ValueForDebugDisplay}")]
     public class Watch<T>
     {
         private readonly Func<T> _valueFactory;
         private readonly object _syncLock = new object();
 
         private T? _value;
+        private int _changeCount;
 
         private volatile WatchFunction? _function;
 
         public Watch(Func<T> valueFactory) => _valueFactory = valueFactory;
 
-        public bool IsValueCreated => _function != null;
+        public int ChangeCount => _changeCount;
 
         public override string? ToString() => _function != null ? _value?.ToString() : base.ToString();
 
@@ -43,6 +47,8 @@ namespace Microsoft.Docs.Build
                         return value;
                     }
 
+                    _changeCount++;
+
                     var function = new WatchFunction();
 
                     Watcher.BeginFunctionScope(function);
@@ -60,6 +66,8 @@ namespace Microsoft.Docs.Build
                 }
             }
         }
+
+        internal T? ValueForDebugDisplay => _value;
 
         private bool TryGetValue([NotNullWhen(true)] out T? value)
         {

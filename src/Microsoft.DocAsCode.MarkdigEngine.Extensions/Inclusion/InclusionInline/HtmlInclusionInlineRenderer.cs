@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using Markdig;
 using Markdig.Renderers;
@@ -21,6 +22,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
         {
+            if (!string.IsNullOrEmpty(inclusion.IncludedFilePath) && !inclusion.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                _context.LogWarning("include-invalid", $"Invalid include link extension: '{inclusion.IncludedFilePath}'.", inclusion);
+                renderer.Write(inclusion.GetRawToken());
+                return;
+            }
+
             var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, inclusion);
 
             if (content == null)

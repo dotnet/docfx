@@ -46,8 +46,9 @@ namespace Microsoft.Docs.Build
                     return _hasChanged;
                 }
 
+                _hasChanged = HasChangedCore();
                 _hasChangedScope = scope;
-                return _hasChanged = HasChangedCore();
+                return _hasChanged;
             }
         }
 
