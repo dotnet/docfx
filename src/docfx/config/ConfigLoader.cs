@@ -72,14 +72,14 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = preloadConfig.GetCredentialProvider(getCredential);
-            var opsAccessor = new OpsAccessor(errors, credentialProvider);
+            var credentialHandler = new CredentialHandler(preloadConfig.GetHttpConfig(), getCredential);
+            var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 
             PackageResolver? packageResolver = default;
             var fallbackDocsetPath = new Lazy<string?>(
                 () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
-            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialHandler, configAdapter, fetchOptions);
 
             packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 

@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -195,6 +194,14 @@ namespace Microsoft.Docs.Build
                     {
                         _notificationSync.TrySetException(new InvalidOperationException(message.Message));
                     }
+                })
+                .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
+                {
+                    if (_credentialRefreshHandler == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    return await _credentialRefreshHandler.Invoke(@params);
                 })
                 .OnPublishDiagnostics(item =>
                 {
