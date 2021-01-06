@@ -5,6 +5,8 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "# Heading\nInvalid Link [B](b.md)"
+      toc.md: |
+        # [B](b.md)
   - expectDiagnostics:
       a.md:
       - range:
@@ -14,10 +16,27 @@ languageServer:
         code: file-not-found
         source: Docs Validation
         message: "Invalid file link: 'b.md'."
+      toc.md: [{ "code": "file-not-found" }]
   - editFiles:
       a.md: New Content
   - expectDiagnostics:
       a.md: []
+---
+# Invalid config file should handled
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      docfx.yml: "{"
+      a.md: "[Test](non-existed.md)"
+  - expectDiagnostics: 
+      a.md: []
+      docfx.yml: [{ "code": "yaml-syntax-error" }]
+  - editFiles:
+      docfx.yml:
+  - expectDiagnostics: 
+      a.md: [{ "code": "file-not-found" }]
 ---
 # Multiple docsets
 inputs:
