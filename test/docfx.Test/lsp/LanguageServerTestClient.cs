@@ -101,10 +101,10 @@ namespace Microsoft.Docs.Build
                     Changes = new(fileEvents),
                 });
             }
-            else if (command.ChangeFilesWithoutEditor != null)
+            else if (command.EditFilesWithoutEditor != null)
             {
                 var fileEvents = new List<FileEvent>();
-                foreach (var (file, text) in command.ChangeFilesWithoutEditor)
+                foreach (var (file, text) in command.EditFilesWithoutEditor)
                 {
                     if (_package is MemoryPackage memoryPackage)
                     {

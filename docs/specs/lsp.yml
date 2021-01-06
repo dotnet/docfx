@@ -140,7 +140,7 @@ languageServer:
       b.md: "[Invalid Link](c.md)"
   - expectDiagnostics: 
       b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
-  - changeFilesWithoutEditor:
+  - editFilesWithoutEditor:
       b.md: "[Invalid Link](d.md)"
   - expectDiagnostics: 
       b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
@@ -161,7 +161,7 @@ languageServer:
   - createFiles:
       ../test.md: ""
   - expectNoNotification: true
-  - changeFilesWithoutEditor:
+  - editFilesWithoutEditor:
       ../test.md: ""
   - expectNoNotification: true
   - deleteFiles:

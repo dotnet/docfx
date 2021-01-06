@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, string> CreateFiles { get; init; }
 
-        public Dictionary<string, string> ChangeFilesWithoutEditor { get; init; }
+        public Dictionary<string, string> EditFilesWithoutEditor { get; init; }
 
         public List<string> CloseFiles { get; init; }
 
