@@ -20,7 +20,7 @@
   "dependencies": {
     "@types/axios": "^0.9.36",
     "@types/node": "^7.0.12",
-    "axios": "0.20.0",
+    "axios": "0.21.1",
     "child-process-promise": "^2.2.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
