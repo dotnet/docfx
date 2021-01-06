@@ -112,7 +112,6 @@ namespace Microsoft.Docs.Build
         private static void GetCredentialsCore(
             Dictionary<string, string> credentials, string url, IEnumerable<KeyValuePair<string, HttpConfig>> providedCredentials)
         {
-            // TODO: Merge with the following function
             foreach (var (baseUrl, rule) in providedCredentials)
             {
                 if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
