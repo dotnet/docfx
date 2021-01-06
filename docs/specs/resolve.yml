@@ -11,6 +11,7 @@ outputs:
     { "conceptual": "<p>Link to <a href=\"a\">a</a></p>" }
 ---
 # Preserve query and fragment for links to files
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.md: Link to [b](b.md#a?b=c)
@@ -265,8 +266,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'redirect.md'.","file":"docs/a.md","line":1,"column":9}
 ---
-# Show warning if inclusion is using links not `.md` extension
-dryRunOnly: true
+# Show warning if inclusion is not using links with `.md` extension
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -275,6 +275,9 @@ inputs:
   media/b.png: Token
   c.ps1: Token
 outputs:
+  docs/a.json:
+  media/b.png:
+  c.ps1:
   .errors.log: |
     {"message_severity":"warning","code":"include-invalid","message":"Invalid include link extension: '../media/b.png'.","file":"docs/a.md","line":1,"column":1}
     {"message_severity":"warning","code":"include-invalid","message":"Invalid include link extension: '../c.ps1'.","file":"docs/a.md","line":2,"column":9}

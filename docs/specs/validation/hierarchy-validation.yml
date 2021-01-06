@@ -1,4 +1,5 @@
 # Hierarchy validation - learn, module not sandbox mapping
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
