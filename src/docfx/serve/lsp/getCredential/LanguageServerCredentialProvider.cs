@@ -33,9 +33,9 @@ namespace Microsoft.Docs.Build
         private async Task RefreshCredential(string url, HttpConfig? httpConfigUsed)
         {
             await _credentialRefreshSemaphore.WaitAsync(CancellationToken.None);
-            var httpconfig = GetCredentials(url);
+            var httpConfig = GetCredentials(url);
 
-            if (httpconfig == null || httpconfig == httpConfigUsed)
+            if (httpConfig == null || httpConfig == httpConfigUsed)
             {
                 var getCredentialResponse = await _languageServer.SendRequest(
                     new GetCredentialParams() { Url = url },

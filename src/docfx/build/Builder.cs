@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static Microsoft.Docs.Build.CredentialHandler;
 
 namespace Microsoft.Docs.Build
 {

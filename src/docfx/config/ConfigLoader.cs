@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using static Microsoft.Docs.Build.CredentialHandler;
 
 namespace Microsoft.Docs.Build
 {

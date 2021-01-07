@@ -16,8 +16,6 @@ namespace Microsoft.Docs.Build
         private readonly CredentialProvider[] _credentialProviders;
         private readonly ConcurrentDictionary<string, Task<HttpConfig>> _credentialCache = new();
 
-        public delegate Task<HttpConfig?> CredentialProvider(string url, HttpConfig? httpConfigUsed, bool needRefresh);
-
         public CredentialHandler(params CredentialProvider[] credentialProviders) => _credentialProviders = credentialProviders;
 
         public async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> httpRequestFactory, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)

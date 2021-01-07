@@ -42,8 +42,6 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
         private TaskCompletionSource _notificationSync = new TaskCompletionSource();
 
-        private Func<GetCredentialParams, Task<JToken>> _credentialRefreshHandler;
-
         public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
             _workingDirectory = workingDirectory;

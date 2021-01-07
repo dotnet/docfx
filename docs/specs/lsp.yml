@@ -185,18 +185,15 @@ languageServer:
       a.md: "[!INCLUDE[](b.md)]"
       b.md: "[Invalid Link](c.md)"
   - expectDiagnostics:
-      b.md:
-        [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
   - editFilesWithoutEditor:
       b.md: "[Invalid Link](d.md)"
   - expectDiagnostics:
-      b.md:
-        [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
   - closeFiles:
       - b.md
   - expectDiagnostics:
-      b.md:
-        [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
 ---
 # File changes/create/delete in git folder should not trigger build
 inputs:
