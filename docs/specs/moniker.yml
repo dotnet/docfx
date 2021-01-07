@@ -308,6 +308,7 @@ outputs:
     }
 ---
 # Redirection file with monikers - Redirection url conflict
+noSingleFile: true
 inputs:
   docfx.yml: |
     monikerRange:
@@ -1234,6 +1235,7 @@ outputs:
     }
 ---
 # Build toc with duplicate monikers
+noSingleFile: true
 inputs:
   docfx.yml: |
     monikerRange:
@@ -1491,6 +1493,7 @@ outputs:
     }
 ---
 # Report a error when there are multiple files publish to same url, some with version, some without
+noSingleFile: true
 inputs:
   docfx.yml: |
     monikerRange:
@@ -1819,6 +1822,7 @@ outputs:
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '' is '', while file monikers is 'netcore-1.0'.","file":"docs/b.md","line":2,"column":11}
 ---
 # Group config is ignored with groups missing in docfx.json of v2
+noSingleFile: true
 inputs:
   docfx.json: |
     {
