@@ -17,6 +17,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Window;
+using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using Xunit;
 using Yunit;
 
@@ -28,6 +29,7 @@ namespace Microsoft.Docs.Build
 
         private readonly string _workingDirectory;
         private readonly Lazy<Task<ILanguageClient>> _client;
+        private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
         private readonly Channel<(JToken request, TaskCompletionSource<JToken> response)> _requestChannel =
@@ -46,6 +48,7 @@ namespace Microsoft.Docs.Build
         {
             _workingDirectory = workingDirectory;
             _client = new(() => InitializeClient(workingDirectory, package, noCache));
+            _package = package;
         }
 
         public async Task ProcessCommand(LanguageServerTestCommand command)
@@ -74,6 +77,64 @@ namespace Microsoft.Docs.Build
                     });
                 }
             }
+            else if (command.CreateFiles != null)
+            {
+                var fileEvents = new List<FileEvent>();
+                foreach (var (file, text) in command.CreateFiles)
+                {
+                    if (_package is MemoryPackage memoryPackage)
+                    {
+                        memoryPackage.AddOrUpdate(new PathString(file), text ?? string.Empty);
+                    }
+                    else
+                    {
+                        var fullPath = Path.Combine(_workingDirectory, file);
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                        File.Create(fullPath);
+                        File.WriteAllText(fullPath, text ?? string.Empty);
+                    }
+                    fileEvents.Add(new FileEvent()
+                    {
+                        Uri = ToUri(file),
+                        Type = FileChangeType.Created,
+                    });
+                }
+
+                BeforeSendNotification();
+                client.DidChangeWatchedFiles(new()
+                {
+                    Changes = new(fileEvents),
+                });
+            }
+            else if (command.EditFilesWithoutEditor != null)
+            {
+                var fileEvents = new List<FileEvent>();
+                foreach (var (file, text) in command.EditFilesWithoutEditor)
+                {
+                    if (_package is MemoryPackage memoryPackage)
+                    {
+                        memoryPackage.AddOrUpdate(new PathString(file), text ?? string.Empty);
+                    }
+                    else
+                    {
+                        var fullPath = Path.Combine(_workingDirectory, file);
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                        File.Create(fullPath);
+                        File.WriteAllText(fullPath, text ?? string.Empty);
+                    }
+                    fileEvents.Add(new FileEvent()
+                    {
+                        Uri = ToUri(file),
+                        Type = FileChangeType.Changed,
+                    });
+                }
+
+                BeforeSendNotification();
+                client.DidChangeWatchedFiles(new()
+                {
+                    Changes = new(fileEvents),
+                });
+            }
             else if (command.CloseFiles != null)
             {
                 foreach (var file in command.CloseFiles)
@@ -85,6 +146,32 @@ namespace Microsoft.Docs.Build
                         TextDocument = new(ToUri(file)),
                     });
                 }
+            }
+            else if (command.DeleteFiles != null)
+            {
+                var fileEvents = new List<FileEvent>();
+                foreach (var file in command.DeleteFiles)
+                {
+                    if (_package is MemoryPackage memoryPackage)
+                    {
+                        memoryPackage.RemoveFile(new PathString(file));
+                    }
+                    else
+                    {
+                        File.Delete(Path.Combine(_workingDirectory, file));
+                    }
+                    fileEvents.Add(new FileEvent()
+                    {
+                        Uri = ToUri(file),
+                        Type = FileChangeType.Deleted,
+                    });
+                }
+
+                BeforeSendNotification();
+                client.DidChangeWatchedFiles(new()
+                {
+                    Changes = new(fileEvents),
+                });
             }
             else if (command.ExpectDiagnostics != null)
             {
