@@ -129,3 +129,60 @@ languageServer:
       docfx.yml: []
       a.md: []
 ---
+# File creating and deleting should trigger new build with refreshed build scope
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[B](b.md)"
+  - expectDiagnostics: 
+      a.md: [{ "code": "file-not-found" }]
+  - createFiles:
+      b.md:
+  - expectDiagnostics: 
+      a.md: []
+  - deleteFiles:
+    - b.md
+  - expectDiagnostics: 
+      a.md: [{ "code": "file-not-found" }]
+---
+# File Change should trigger new build
+# But in memory content should be used until the user close the in memory file
+inputs:
+  docfx.yml:
+  a.md:
+  b.md:
+languageServer:
+  - openFiles:
+      a.md: "[!INCLUDE[](b.md)]"
+      b.md: "[Invalid Link](c.md)"
+  - expectDiagnostics: 
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
+  - editFilesWithoutEditor:
+      b.md: "[Invalid Link](d.md)"
+  - expectDiagnostics: 
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
+  - closeFiles:
+    - b.md
+  - expectDiagnostics: 
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
+---
+# File changes/create/delete in git folder should not trigger build
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[B](b.md)"
+  - expectDiagnostics:
+      a.md: [{ "code": "file-not-found" }]
+  - createFiles:
+      .git/test.md: ""
+  - expectNoNotification: true
+  - editFilesWithoutEditor:
+      .git/test.md: ""
+  - expectNoNotification: true
+  - deleteFiles:
+    - .git/test.md
+  - expectNoNotification: true

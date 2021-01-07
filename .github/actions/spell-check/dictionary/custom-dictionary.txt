@@ -568,4 +568,5 @@ IFunction
 TChange
 vsthrd
 IAsync
+IDid
 IProducer
