@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = CreateTemplateModel(file, mime, JsonUtility.SortProperties(outputModel));
+            var (templateModel, templateMetadata) = CreateTemplateModel(errors, file, mime, JsonUtility.SortProperties(outputModel));
 
             if (_config.OutputType == OutputType.PageJson)
             {
@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var html = _templateEngine.RunLiquid(mime, templateModel);
+                var html = _templateEngine.RunLiquid(errors, mime, templateModel);
                 return (html, JsonUtility.SortProperties(templateMetadata));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -334,9 +334,9 @@ namespace Microsoft.Docs.Build
             return pageModel;
         }
 
-        private (TemplateModel model, JObject metadata) CreateTemplateModel(FilePath file, string? mime, JObject pageModel)
+        private (TemplateModel model, JObject metadata) CreateTemplateModel(ErrorBuilder errors, FilePath file, string? mime, JObject pageModel)
         {
-            var content = CreateContent(file, mime, pageModel);
+            var content = CreateContent(errors, file, mime, pageModel);
 
             if (_config.DryRun)
             {
@@ -372,7 +372,7 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private string CreateContent(FilePath file, string? mime, JObject pageModel)
+        private string CreateContent(ErrorBuilder errors, FilePath file, string? mime, JObject pageModel)
         {
             if (TemplateEngine.IsConceptual(mime) || TemplateEngine.IsLandingData(mime))
             {
@@ -382,7 +382,7 @@ namespace Microsoft.Docs.Build
 
             // Generate SDP content
             var model = _templateEngine.RunJavaScript($"{mime}.html.primary.js", pageModel);
-            var content = _templateEngine.RunMustache($"{mime}.html", model);
+            var content = _templateEngine.RunMustache(errors, $"{mime}.html", model);
 
             return ProcessHtml(file, content);
         }

@@ -39,11 +39,15 @@ namespace Microsoft.Docs.Build
                    _package.Exists(_baseDirectory.Concat(new PathString($"{templateName}.tmpl")));
         }
 
-        public string Render(string templateName, JToken model)
+        public string Render(ErrorBuilder errors, string templateName, JToken model)
         {
             var context = new Stack<JToken>();
-            var template = GetTemplate($"{templateName}.primary.tmpl") ?? GetTemplate($"{templateName}.tmpl") ??
-                throw Errors.Template.MustacheNotFound($"{templateName}.tmpl").ToException();
+            var template = GetTemplate($"{templateName}.primary.tmpl") ?? GetTemplate($"{templateName}.tmpl");
+            if (template == null)
+            {
+                errors.Add(Errors.Template.MustacheNotFound($"{templateName}.tmpl"));
+                return "";
+            }
 
             var result = new StringBuilder(1024);
             var xrefmap = model is JObject obj && obj.TryGetValue("_xrefmap", out var item) && item is JObject map ? map : null;

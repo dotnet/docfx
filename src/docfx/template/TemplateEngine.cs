@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
         }
 
-        public string RunLiquid(SourceInfo<string?> mime, TemplateModel model)
+        public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
         {
             var layout = model.RawMetadata?.Value<string>("layout") ?? mime.Value ?? throw new InvalidOperationException();
 
@@ -105,12 +105,12 @@ namespace Microsoft.Docs.Build
                 ["metadata"] = model.PageMetadata,
             };
 
-            return _liquid.Render(layout, liquidModel);
+            return _liquid.Render(errors, layout, mime, liquidModel);
         }
 
-        public string RunMustache(string templateName, JToken pageModel)
+        public string RunMustache(ErrorBuilder errors, string templateName, JToken pageModel)
         {
-            return _mustacheTemplate.Render(templateName, pageModel);
+            return _mustacheTemplate.Render(errors, templateName, pageModel);
         }
 
         public JToken RunJavaScript(string scriptName, JObject model, string methodName = "transform")
