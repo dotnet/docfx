@@ -16,7 +16,9 @@ namespace Microsoft.Docs.Build
 
         public Dictionary<string, JToken> ExpectDiagnostics { get; init; }
 
-        public GetCredentialRequest ExpectGetCredentialRequest { get; init; }
+        public JToken ExpectGetCredentialRequest { get; init; }
+
+        public JToken Response { get; init; }
 
         public bool ExpectNoNotification { get; init; }
     }

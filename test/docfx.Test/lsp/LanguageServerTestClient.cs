@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Client;
@@ -29,6 +30,8 @@ namespace Microsoft.Docs.Build
         private readonly Lazy<Task<ILanguageClient>> _client;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
+        private readonly Channel<(JToken request, TaskCompletionSource<JToken> response)> _requestChannel =
+            Channel.CreateUnbounded<(JToken, TaskCompletionSource<JToken>)>();
 
         private int _serverNotificationSent;
         private int _serverNotificationHandled;
@@ -91,14 +94,10 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                JToken parameters = null;
+                var (request, response) = await _requestChannel.Reader.ReadAsync();
 
-                _credentialRefreshHandler = (GetCredentialParams @params) =>
-                {
-                    parameters = JToken.Parse(JsonUtility.Serialize(@params));
-                    s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest.Params, parameters);
-                    return Task.FromResult(ApplyCredentialVariables(command.ExpectGetCredentialRequest.Response));
-                };
+                s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
+                response.SetResult(ApplyCredentialVariables(command.Response));
             }
             else if (command.ExpectNoNotification)
             {
@@ -195,11 +194,10 @@ namespace Microsoft.Docs.Build
                 })
                 .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
                 {
-                    if (_credentialRefreshHandler == null)
-                    {
-                        throw new InvalidOperationException();
-                    }
-                    return await _credentialRefreshHandler.Invoke(@params);
+                    var response = new TaskCompletionSource<JToken>();
+                    _requestChannel.Writer.TryWrite((JToken.Parse(JsonUtility.Serialize(@params)), response));
+
+                    return await response.Task;
                 })
                 .OnPublishDiagnostics(item =>
                 {

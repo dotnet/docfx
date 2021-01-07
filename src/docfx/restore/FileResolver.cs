@@ -241,27 +241,31 @@ namespace Microsoft.Docs.Build
 
         private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue? etag = null)
         {
-            // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
-            // "The request message was already sent. Cannot send the same request message multiple times."
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            if (etag != null)
-            {
-                request.Headers.IfNoneMatch.Add(etag);
-            }
-
-            return await _credentialHandler.SendRequest(request, async request =>
-            {
-                if (_opsConfigAdapter != null)
+            return await _credentialHandler.SendRequest(
+                () =>
                 {
-                    var response = await _opsConfigAdapter.InterceptHttpRequest(request);
-                    if (response != null)
+                    // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
+                    // "The request message was already sent. Cannot send the same request message multiple times."
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    if (etag != null)
                     {
-                        return response;
+                        request.Headers.IfNoneMatch.Add(etag);
                     }
-                }
+                    return request;
+                },
+                async request =>
+                {
+                    if (_opsConfigAdapter != null)
+                    {
+                        var response = await _opsConfigAdapter.InterceptHttpRequest(request);
+                        if (response != null)
+                        {
+                            return response;
+                        }
+                    }
 
-                return await s_httpClient.SendAsync(request);
-            });
+                    return await s_httpClient.SendAsync(request);
+                });
         }
     }
 }

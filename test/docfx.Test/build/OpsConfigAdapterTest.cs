@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -37,7 +36,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var credentialHandler = new CredentialHandler((_, _) =>
+            var credentialHandler = new CredentialHandler((_, _, _) =>
             {
                 return Task.FromResult<HttpConfig>(new() { Headers = new() { ["X-OP-BuildUserToken"] = token } });
             });

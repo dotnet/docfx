@@ -5,8 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+using static Microsoft.Docs.Build.CredentialHandler;
 
 namespace Microsoft.Docs.Build
 {
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
             Package package,
             CommandLineOptions options,
             IProgress<string> progressReporter,
-            Func<HttpRequestMessage, bool, Task<HttpConfig?>>? getCredential = null)
+            CredentialProvider? getCredential = null)
         {
             var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 

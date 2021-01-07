@@ -147,13 +147,12 @@ languageServer:
   - openFiles:
       a.md:
   - expectGetCredentialRequest:
-      params:
-        url: https://op-build-prod.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
-      response: 
-        http: 
-          https://op-build-prod.azurewebsites.net:
-            headers:
-              X-OP-BuildUserToken: '{DOCS_OPS_TOKEN}'
+      url: https://op-build-prod.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
+    response: 
+      http: 
+        https://op-build-prod.azurewebsites.net:
+          headers:
+            X-OP-BuildUserToken: '{DOCS_OPS_TOKEN}'
   - expectDiagnostics:
       docfx.yml: [{"code": "moniker-range-invalid"}]
 ---

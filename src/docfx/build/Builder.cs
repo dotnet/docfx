@@ -5,8 +5,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+using static Microsoft.Docs.Build.CredentialHandler;
 
 namespace Microsoft.Docs.Build
 {
@@ -17,10 +17,9 @@ namespace Microsoft.Docs.Build
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
         private readonly Package _package;
-        private readonly Func<HttpRequestMessage, bool, Task<HttpConfig?>>? _getCredential;
+        private readonly CredentialProvider? _getCredential;
 
-        public Builder(
-            CommandLineOptions options, Package package, Func<HttpRequestMessage, bool, Task<HttpConfig?>>? getCredential = null)
+        public Builder(CommandLineOptions options, Package package, CredentialProvider? getCredential = null)
         {
             _options = options;
             _package = package;

@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
-            LanguageServerCredentialProvider credentialProvider,
+            LanguageServerCredentialProvider languageServerCredentialProvider,
             ILanguageServerNotificationListener notificationListener,
             IServiceProvider serviceProvider)
         {
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
             _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(options, _languageServerPackage, credentialProvider.GetCredentials);
+            _builder = new(options, _languageServerPackage, languageServerCredentialProvider.GetCredentials);
         }
 
         public void QueueBuild()
@@ -76,7 +76,6 @@ namespace Microsoft.Docs.Build
                     _notificationListener.OnNotificationHandled();
 
                     progressReporter.Report("Build finished");
-                    progressReporter.OnCompleted();
                 }
                 catch (Exception ex)
                 {

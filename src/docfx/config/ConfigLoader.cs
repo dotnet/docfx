@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using static Microsoft.Docs.Build.CredentialHandler;
 
 namespace Microsoft.Docs.Build
 {
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             FetchOptions fetchOptions,
             Package package,
-            Func<HttpRequestMessage, bool, Task<HttpConfig?>>? getCredential = null)
+            CredentialProvider? getCredential = null)
         {
             // load and trace entry repository
             var repository = Repository.Create(package.BasePath);
@@ -73,13 +73,12 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProviders = new List<Func<HttpRequestMessage, bool, Task<HttpConfig?>>>();
+            var credentialProviders = new List<CredentialProvider>();
             if (getCredential != null)
             {
                 credentialProviders.Add(getCredential);
             }
-            credentialProviders.Add(
-                (request, _) => Task.FromResult(preloadConfig.GetHttpConfig(request.RequestUri?.ToString() ?? throw new InvalidOperationException())));
+            credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.GetHttpConfig(url)));
             var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
             var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);

@@ -3,8 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,38 +13,46 @@ namespace Microsoft.Docs.Build
     {
         private const int RetryCount = 3;
 
-        private readonly Func<HttpRequestMessage, bool, Task<HttpConfig?>>[] _credentialProviders;
-        private readonly ConcurrentDictionary<string, Task<Dictionary<string, string>>> _credentialCache = new();
+        private readonly CredentialProvider[] _credentialProviders;
+        private readonly ConcurrentDictionary<string, Task<HttpConfig>> _credentialCache = new();
 
-        public CredentialHandler(params Func<HttpRequestMessage, bool, Task<HttpConfig?>>[] credentialProviders) => _credentialProviders = credentialProviders;
+        public delegate Task<HttpConfig?> CredentialProvider(string url, HttpConfig? httpConfigUsed, bool needRefresh);
 
-        public async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
+        public CredentialHandler(params CredentialProvider[] credentialProviders) => _credentialProviders = credentialProviders;
+
+        public async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> httpRequestFactory, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
         {
             HttpResponseMessage? response = null;
-            var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
 
             var needRefresh = false;
+            HttpConfig? httpConfigUsed = null;
             for (var i = 0; i < RetryCount; i++)
             {
-                await FillInCredentials(request, url, needRefresh);
-
-                response = await next(request);
-                if (response.StatusCode != HttpStatusCode.Unauthorized)
+                using var request = httpRequestFactory();
+                var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
                 {
-                    break;
-                }
+                    var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
+                    FillInCredentials(request, httpConfig);
 
-                needRefresh = true;
-                _credentialCache.TryRemove(url, out _);
-                request = await CopyHttpRequestMessage(request);
+                    response = await next(request);
+                    if (response.StatusCode != HttpStatusCode.Unauthorized)
+                    {
+                        break;
+                    }
+
+                    needRefresh = true;
+                    _credentialCache.TryRemove(url, out _);
+                    httpConfigUsed = httpConfig;
+                }
             }
 
             return response!;
         }
 
-        internal async Task FillInCredentials(HttpRequestMessage request, string url, bool needRefresh)
+        internal static void FillInCredentials(HttpRequestMessage request, HttpConfig httpConfig)
         {
-            foreach (var (key, value) in await GetCredentials(request, url, needRefresh))
+            foreach (var (key, value) in httpConfig.Headers)
             {
                 if (request.Headers.Contains(key))
                 {
@@ -56,58 +62,21 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Task<Dictionary<string, string>> GetCredentials(HttpRequestMessage request, string url, bool needRefresh)
+        private Task<HttpConfig> GetCredentials(string url, HttpConfig? httpConfigUsed, bool needRefresh)
         {
             return _credentialCache.GetOrAdd(url, async _ =>
             {
                 foreach (var credentialProvider in _credentialProviders)
                 {
-                    var httpConfig = await credentialProvider.Invoke(request, needRefresh);
+                    var httpConfig = await credentialProvider.Invoke(url, httpConfigUsed, needRefresh);
                     if (httpConfig != null)
                     {
-                        return httpConfig.Headers;
+                        return httpConfig;
                     }
                 }
 
                 return new();
             });
-        }
-
-        private static async Task<HttpRequestMessage> CopyHttpRequestMessage(HttpRequestMessage req)
-        {
-            var clone = new HttpRequestMessage(req.Method, req.RequestUri);
-
-            using var ms = new MemoryStream();
-            if (req.Content != null)
-            {
-                await req.Content.CopyToAsync(ms).ConfigureAwait(false);
-                ms.Position = 0;
-                clone.Content = new StreamContent(ms);
-
-                if (req.Content.Headers != null)
-                {
-                    foreach (var h in req.Content.Headers)
-                    {
-                        clone.Content.Headers.Add(h.Key, h.Value);
-                    }
-                }
-            }
-
-
-            clone.Version = req.Version;
-
-            foreach (var prop in req.Options)
-            {
-                clone.Options.Set(new(prop.Key), prop.Value);
-            }
-
-            foreach (var header in req.Headers)
-            {
-                clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-
-            req.Dispose();
-            return clone;
         }
     }
 }

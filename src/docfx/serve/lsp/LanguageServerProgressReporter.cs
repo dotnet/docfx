@@ -28,10 +28,5 @@ namespace Microsoft.Docs.Build
                 Message = message,
             });
         }
-
-        public void OnCompleted()
-        {
-            _workDoneManager.OnCompleted();
-        }
     }
 }
