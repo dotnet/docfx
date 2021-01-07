@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Client;
@@ -31,6 +32,8 @@ namespace Microsoft.Docs.Build
         private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
+        private readonly Channel<(JToken request, TaskCompletionSource<JToken> response)> _requestChannel =
+            Channel.CreateUnbounded<(JToken, TaskCompletionSource<JToken>)>();
 
         private int _serverNotificationSent;
         private int _serverNotificationHandled;
@@ -39,10 +42,10 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
         private TaskCompletionSource _notificationSync = new TaskCompletionSource();
 
-        public LanguageServerTestClient(string workingDirectory, Package package)
+        public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
             _workingDirectory = workingDirectory;
-            _client = new(() => InitializeClient(workingDirectory, package));
+            _client = new(() => InitializeClient(workingDirectory, package, noCache));
             _package = package;
         }
 
@@ -174,6 +177,13 @@ namespace Microsoft.Docs.Build
 
                 s_languageServerJsonDiff.Verify(command.ExpectDiagnostics, _diagnostics);
             }
+            else if (command.ExpectGetCredentialRequest != null)
+            {
+                var (request, response) = await _requestChannel.Reader.ReadAsync();
+
+                s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
+                response.SetResult(ApplyCredentialVariables(command.Response));
+            }
             else if (command.ExpectNoNotification)
             {
                 await SynchronizeNotifications();
@@ -203,6 +213,16 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
+        }
+
+        private JToken ApplyCredentialVariables(JToken @params)
+        {
+            return TestUtility.ApplyVariables(
+                @params,
+                new Dictionary<string, string>
+                {
+                    { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
+                });
         }
 
         private void BeforeSendNotification()
@@ -237,7 +257,7 @@ namespace Microsoft.Docs.Build
             return path is null ? uri.ToString() : PathUtility.NormalizeFile(Path.GetRelativePath(_workingDirectory, path));
         }
 
-        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package)
+        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package, bool noCache)
         {
             var clientPipe = new Pipe();
             var serverPipe = new Pipe();
@@ -257,6 +277,13 @@ namespace Microsoft.Docs.Build
                         _notificationSync.TrySetException(new InvalidOperationException(message.Message));
                     }
                 })
+                .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
+                {
+                    var response = new TaskCompletionSource<JToken>();
+                    _requestChannel.Writer.TryWrite((JToken.Parse(JsonUtility.Serialize(@params)), response));
+
+                    return await response.Task;
+                })
                 .OnPublishDiagnostics(item =>
                 {
                     _diagnostics[ToFile(item.Uri)] = JToken.FromObject(item.Diagnostics, JsonUtility.Serializer);
@@ -264,7 +291,11 @@ namespace Microsoft.Docs.Build
                 }));
 
             Task.Run(() => LanguageServerHost.RunLanguageServer(
-                new() { WorkingDirectory = workingDirectory }, clientPipe.Reader, serverPipe.Writer, package, notificationListener: this)).GetAwaiter();
+                new() { WorkingDirectory = workingDirectory, NoCache = noCache },
+                clientPipe.Reader,
+                serverPipe.Writer,
+                package,
+                notificationListener: this)).GetAwaiter();
 
             await client.Initialize(default);
 
