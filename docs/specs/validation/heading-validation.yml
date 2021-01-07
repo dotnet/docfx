@@ -1027,6 +1027,7 @@ outputs:
     {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"j.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
 # Canonial Version Only H1 Unique Check
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -1087,6 +1088,7 @@ outputs:
   2420f88b/docs/b.json:
 ---
 # Canonial Version Only H1 Unique Check with Inclusion
+noSingleFile: true
 inputs:
   docfx.yml: |
     exclude:
@@ -1333,6 +1335,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-moniker","message":"H1s are not allowed in moniker sections. Each article should have one and only one H1.","file":"v2/b.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
 # Content validation - H1 unique
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
