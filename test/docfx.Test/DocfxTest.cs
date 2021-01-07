@@ -54,9 +54,15 @@ namespace Microsoft.Docs.Build
         {
             yield return "";
 
-            if (!spec.DryRunOnly && !spec.NoDryRun && spec.Outputs.ContainsKey(".errors.log"))
+            var hasError = spec.Outputs.ContainsKey(".errors.log");
+            if (hasError && !spec.DryRunOnly && !spec.NoDryRun)
             {
                 yield return "DryRun";
+            }
+
+            if (hasError && !spec.NoSingleFile && !spec.BuildFiles.Any() && spec.Inputs.Keys.Count(file => IsContentFile(file)) > 1)
+            {
+                yield return "SingleFile";
             }
         }
 
@@ -164,7 +170,8 @@ namespace Microsoft.Docs.Build
 
         private static void RunCore(string docsetPath, string outputPath, TestData test, DocfxTestSpec spec, Package package)
         {
-            var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun");
+            var singleFile = test.Matrix.Contains("SingleFile");
+            var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun") || singleFile;
 
             if (spec.LanguageServer.Count != 0)
             {
@@ -179,12 +186,12 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, dryRun, spec, package.CreateSubPackage(locDocsetPath));
+                    RunBuild(locDocsetPath, outputPath, dryRun, singleFile, spec, package.CreateSubPackage(locDocsetPath));
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, dryRun, spec, package);
+                RunBuild(docsetPath, outputPath, dryRun, singleFile, spec, package);
             }
         }
 
@@ -198,7 +205,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, DocfxTestSpec spec, Package package)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, bool singleFile, DocfxTestSpec spec, Package package)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -206,18 +213,25 @@ namespace Microsoft.Docs.Build
 
             using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.NoInputCheck))
             {
-                var commandLine = new[]
+                if (singleFile)
                 {
-                    "build", docsetPath,
-                    "--output", randomOutputPath,
-                    "--log", Path.Combine(randomOutputPath, ".errors.log"),
-                    dryRun ? "--dry-run" : null,
-                    spec.NoRestore ? "--no-restore" : null,
-                    spec.NoDrySync ? "--no-dry-sync" : null,
-                    spec.NoCache ? "--no-cache" : null,
-                }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
+                    RunSingleFileBuild(docsetPath, randomOutputPath, spec, package);
+                }
+                else
+                {
+                    var commandLine = new[]
+                    {
+                        "build", docsetPath,
+                        "--output", randomOutputPath,
+                        "--log", Path.Combine(randomOutputPath, ".errors.log"),
+                        dryRun ? "--dry-run" : null,
+                        spec.NoRestore ? "--no-restore" : null,
+                        spec.NoCache ? "--no-cache" : null,
+                        spec.NoDrySync ? "--no-dry-sync" : null,
+                    }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
-                Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
+                    Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
+                }
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
@@ -231,6 +245,37 @@ namespace Microsoft.Docs.Build
             {
                 Directory.Delete(randomOutputPath, recursive: true);
             }
+        }
+
+        private static void RunSingleFileBuild(string docsetPath, string outputPath, DocfxTestSpec spec, Package package)
+        {
+            // Single file build builds each content file and verifies the union of
+            // each file build result is the same as expected output. Implies dryRun.
+            var commandLine = new CommandLineOptions
+            {
+                WorkingDirectory = docsetPath,
+                Output = outputPath,
+                DryRun = true,
+                NoRestore = spec.NoRestore,
+                NoDrySync = spec.NoDrySync,
+            };
+
+            var errors = new ErrorList();
+            var builder = new Builder(commandLine, package);
+
+            foreach (var (file, _) in spec.Inputs)
+            {
+                if (IsContentFile(file))
+                {
+                    builder.Build(errors, new Progress<string>(), new[] { file });
+                }
+            }
+
+            Directory.CreateDirectory(outputPath);
+
+            File.WriteAllLines(
+                Path.Combine(outputPath, ".errors.log"),
+                errors.Select(error => error with { MessageArguments = null }).Distinct().Select(error => error.ToString()));
         }
 
         private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)
@@ -281,6 +326,22 @@ namespace Microsoft.Docs.Build
                 && fileName != "op_aggregated_file_map_info.json"
                 && fileName != "full-dependent-list.txt"
                 && fileName != "server-side-dependent-list.txt";
+        }
+
+        private static bool IsContentFile(string path)
+        {
+            var name = Path.GetFileNameWithoutExtension(path);
+
+            if (name.Equals("docfx", PathUtility.PathComparison) ||
+                name.Equals("redirections", PathUtility.PathComparison) ||
+                name.StartsWith("."))
+            {
+                return false;
+            }
+
+            return path.EndsWith(".md", PathUtility.PathComparison) ||
+                   path.EndsWith(".json", PathUtility.PathComparison) ||
+                   path.EndsWith(".yml", PathUtility.PathComparison);
         }
 
         private static bool IsHtml(JToken expected, JToken actual, string name)

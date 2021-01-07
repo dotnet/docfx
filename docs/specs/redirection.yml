@@ -207,6 +207,7 @@ outputs:
     }
 ---
 # Show warning if two or more files redirect to the same file with document id
+noSingleFile: true
 inputs:
   docsets.yml:
   sccm/docfx.yml: |
@@ -422,6 +423,7 @@ outputs:
     {"metadata":{ "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}}
 ---
 # redirection defined in markdown yaml metadata is not supported
+noSingleFile: true
 inputs:
   docfx.yml:
   redirections.yml: |

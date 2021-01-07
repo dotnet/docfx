@@ -73,14 +73,13 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProviders = new List<Func<HttpRequestMessage, bool, Task<HttpConfig?>>>()
-            {
-                (request, _) => Task.FromResult(preloadConfig.GetHttpConfig(request.RequestUri?.ToString() ?? throw new InvalidOperationException())),
-            };
+            var credentialProviders = new List<Func<HttpRequestMessage, bool, Task<HttpConfig?>>>();
             if (getCredential != null)
             {
                 credentialProviders.Add(getCredential);
             }
+            credentialProviders.Add(
+                (request, _) => Task.FromResult(preloadConfig.GetHttpConfig(request.RequestUri?.ToString() ?? throw new InvalidOperationException())));
             var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
             var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);

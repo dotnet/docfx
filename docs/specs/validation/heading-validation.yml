@@ -1411,6 +1411,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"h2-duplicated","message":"Duplicate heading: H2 'Title 1'. Each heading in an article must be unique.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
 # Content validation - H1 unique log limit
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json

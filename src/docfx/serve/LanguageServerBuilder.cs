@@ -61,6 +61,11 @@ namespace Microsoft.Docs.Build
                     await WaitToTriggerBuild(cancellationToken);
 
                     using var progressReporter = await CreateProgressReporter();
+
+                    // This is to avoid the task await deadlock in the credential refresh scenario
+                    // The progress reporter create request task can only be completed when the current build done if there is no `Task.Yield`
+                    // The current build can only be completed when the credential refresh request response get handled.
+                    // But the responses of language server are handled sequentially, which cause the deadlock.
                     await Task.Yield();
                     progressReporter.Report("Start build...");
                     var errors = new ErrorList();

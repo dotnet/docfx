@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -36,7 +37,8 @@ namespace Microsoft.Docs.Build
                 }
 
                 needRefresh = true;
-                _credentialCache.Clear();
+                _credentialCache.TryRemove(url, out _);
+                request = await CopyHttpRequestMessage(request);
             }
 
             return response!;
@@ -58,24 +60,54 @@ namespace Microsoft.Docs.Build
         {
             return _credentialCache.GetOrAdd(url, async _ =>
             {
-                var credentials = new Dictionary<string, string>();
                 foreach (var credentialProvider in _credentialProviders)
                 {
                     var httpConfig = await credentialProvider.Invoke(request, needRefresh);
                     if (httpConfig != null)
                     {
-                        foreach (var header in httpConfig.Headers)
-                        {
-                            if (!credentials.ContainsKey(header.Key) && !string.IsNullOrEmpty(header.Value))
-                            {
-                                credentials.Add(header.Key, header.Value);
-                            }
-                        }
+                        return httpConfig.Headers;
                     }
                 }
 
-                return credentials;
+                return new();
             });
+        }
+
+        private static async Task<HttpRequestMessage> CopyHttpRequestMessage(HttpRequestMessage req)
+        {
+            var clone = new HttpRequestMessage(req.Method, req.RequestUri);
+
+            using var ms = new MemoryStream();
+            if (req.Content != null)
+            {
+                await req.Content.CopyToAsync(ms).ConfigureAwait(false);
+                ms.Position = 0;
+                clone.Content = new StreamContent(ms);
+
+                if (req.Content.Headers != null)
+                {
+                    foreach (var h in req.Content.Headers)
+                    {
+                        clone.Content.Headers.Add(h.Key, h.Value);
+                    }
+                }
+            }
+
+
+            clone.Version = req.Version;
+
+            foreach (var prop in req.Options)
+            {
+                clone.Options.Set(new(prop.Key), prop.Value);
+            }
+
+            foreach (var header in req.Headers)
+            {
+                clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+
+            req.Dispose();
+            return clone;
         }
     }
 }

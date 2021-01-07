@@ -355,6 +355,7 @@ outputs:
     { "conceptual": "<p>http://*.windowsupdate.microsoft.com</p>" }
 ---
 # validate internal/external bookmarks in markdown documents
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -411,6 +412,7 @@ outputs:
     {"conceptual": "<p><a href=\"/en-us/c\" data-linktype=\"absolute-path\">external link</a></p>"}
 ---
 # do not output file if bookmark-not-found is treated as error
+noSingleFile: true
 inputs:
   docfx.yml: |
     rules:
@@ -427,6 +429,7 @@ outputs:
     {"message_severity":"error","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/b.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # Bookmark suggestion and validation
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.md: |

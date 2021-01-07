@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
-                null);
+                new ValidationCollectionFactory());
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)

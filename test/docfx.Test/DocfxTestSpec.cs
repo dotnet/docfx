@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public bool NoDryRun { get; set; }
 
+        public bool NoSingleFile { get; set; }
+
         public bool DryRunOnly { get; set; }
 
         public bool NoDrySync { get; set; } = true;

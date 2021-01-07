@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    public class CredentialRefreshRequest
+    public class GetCredentialRequest
     {
         public JToken Params { get; init; }
 

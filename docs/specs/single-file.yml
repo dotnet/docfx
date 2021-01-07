@@ -234,3 +234,54 @@ languageServer:
   - expectDiagnostics:
       a.md: []
       b.md: []
+---
+# Isolate unique validation state between builds
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "message": "Title '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: title 1
+        ---
+      b.md: |
+        ---
+        title: title 1
+        ---
+      c.md: |
+        ---
+        title: title 1
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-titles" }]
+      b.md: [{ "code": "duplicate-titles" }]
+      c.md: [{ "code": "duplicate-titles" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-titles" , "message": "Title 'title 1' is duplicated with other articles: 'a.md(2,8), c.md(2,8)'" }]
+      b.md: []
+      c.md: [{ "code": "duplicate-titles" , "message": "Title 'title 1' is duplicated with other articles: 'a.md(2,8), c.md(2,8)'" }]

@@ -89,15 +89,15 @@ namespace Microsoft.Docs.Build
 
                 s_languageServerJsonDiff.Verify(command.ExpectDiagnostics, _diagnostics);
             }
-            else if (command.ExpectCredentialRefreshRequest != null)
+            else if (command.ExpectGetCredentialRequest != null)
             {
                 JToken parameters = null;
 
                 _credentialRefreshHandler = (GetCredentialParams @params) =>
                 {
                     parameters = JToken.Parse(JsonUtility.Serialize(@params));
-                    s_languageServerJsonDiff.Verify(command.ExpectCredentialRefreshRequest.Params, parameters);
-                    return Task.FromResult(ApplyCredentialVariables(command.ExpectCredentialRefreshRequest.Response));
+                    s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest.Params, parameters);
+                    return Task.FromResult(ApplyCredentialVariables(command.ExpectGetCredentialRequest.Response));
                 };
             }
             else if (command.ExpectNoNotification)
