@@ -316,6 +316,21 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-partial-template-unresolve.yml","line":2,"end_line":2,"column":12,"end_column":21}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-unresolve.yml","line":2,"end_line":2,"column":6,"end_column":15}
 ---
+# Mustache template file missing should not crash
+inputs: 
+  docfx.yml: |
+    outputType: html
+    urlType: pretty
+  index.yml: |
+    ### YamlMime:TestPage
+    title: Microsoft Genomics documentation
+  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+outputs: 
+  index.html: ""
+  .errors.log: |
+    {"message_severity":"warning","code":"liquid-not-found","file":"index.yml","line":1,"column":1}
+    {"message_severity":"warning","code":"mustache-not-found","message":"Mustache template is not found at 'TestPage.html.tmpl'.","line":0,"column":0}
+---
 # Leave xref-properties empty if not explicitly defined by author,
 # to avoid unintentional inheritance from parent context
 inputs:

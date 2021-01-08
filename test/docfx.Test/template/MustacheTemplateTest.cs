@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
 
             Assert.Equal(
                 JsonDiff.NormalizeHtml(html).Replace('\'', '"'),
-                JsonDiff.NormalizeHtml(_template.Render(name, model)));
+                JsonDiff.NormalizeHtml(_template.Render(ErrorBuilder.Null, name, model)));
         }
     }
 }

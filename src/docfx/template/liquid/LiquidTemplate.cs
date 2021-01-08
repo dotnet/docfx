@@ -40,11 +40,12 @@ namespace Microsoft.Docs.Build
             _localizedStrings = global is null ? new() : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
         }
 
-        public string Render(string templateName, JObject model)
+        public string Render(ErrorBuilder errors, string templateName, SourceInfo<string?> mime, JObject model)
         {
             var template = LoadTemplate(new PathString($"{templateName}.html.liquid"));
             if (template is null)
             {
+                errors.Add(Errors.Template.LiquidNotFound(mime));
                 return "";
             }
 
