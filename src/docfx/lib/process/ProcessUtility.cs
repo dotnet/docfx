@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string[]? secrets = null)
+        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, bool shellExecute = false, string[]? secrets = null)
         {
             var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
 
@@ -31,22 +31,38 @@ namespace Microsoft.Docs.Build
                     FileName = fileName,
                     WorkingDirectory = cwd ?? ".",
                     Arguments = commandLineArgs,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
                 };
+
+                if (shellExecute)
+                {
+                    psi.UseShellExecute = true;
+                    psi.CreateNoWindow = true;
+                    psi.WindowStyle = ProcessWindowStyle.Hidden;
+                }
+                else
+                {
+                    psi.RedirectStandardOutput = true;
+                    psi.RedirectStandardError = true;
+                }
 
                 using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
 
                 var error = new StringBuilder();
                 var result = new StringBuilder();
 
-                var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
-                var pipeOutput = stdout
-                    ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
-                    : Task.Run(() => PipeStream(process.StandardOutput, Console.Out));
+                if (shellExecute)
+                {
+                    process.WaitForExit();
+                }
+                else
+                {
+                    var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
+                    var pipeOutput = stdout
+                        ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
+                        : Task.Run(() => PipeStream(process.StandardOutput, Console.Out));
 
-                Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
+                    Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
+                }
 
                 if (process.ExitCode != 0)
                 {
