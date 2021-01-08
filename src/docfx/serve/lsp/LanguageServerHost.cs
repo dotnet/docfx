@@ -49,11 +49,13 @@ namespace Microsoft.Docs.Build
                 .WithOutput(output)
                 .ConfigureLogging(x => x.AddLanguageProtocolLogging())
                 .WithHandler<TextDocumentHandler>()
+                .WithHandler<DidChangeWatchedFilesHandler>()
                 .WithServices(services => services
                     .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
                     .AddSingleton(languageServerPackage)
                     .AddSingleton(commandLineOptions)
                     .AddSingleton<DiagnosticPublisher>()
+                    .AddSingleton<LanguageServerCredentialProvider>()
                     .AddSingleton<LanguageServerBuilder>()
                     .AddOptions()
                     .AddLogging())

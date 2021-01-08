@@ -5,19 +5,38 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "# Heading\nInvalid Link [B](b.md)"
+      toc.md: |
+        # [B](b.md)
   - expectDiagnostics:
       a.md:
-      - range:
-          start: { "line": 1, "character": 13 }
-          end: { "line": 1, "character": 13 }
-        severity: 2
-        code: file-not-found
-        source: Docs Validation
-        message: "Invalid file link: 'b.md'."
+        - range:
+            start: { "line": 1, "character": 13 }
+            end: { "line": 1, "character": 13 }
+          severity: 2
+          code: file-not-found
+          source: Docs Validation
+          message: "Invalid file link: 'b.md'."
+      toc.md: [{ "code": "file-not-found" }]
   - editFiles:
       a.md: New Content
   - expectDiagnostics:
       a.md: []
+---
+# Invalid config file should handled
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      docfx.yml: "{"
+      a.md: "[Test](non-existed.md)"
+  - expectDiagnostics:
+      a.md: []
+      docfx.yml: [{ "code": "yaml-syntax-error" }]
+  - editFiles:
+      docfx.yml:
+  - expectDiagnostics:
+      a.md: [{ "code": "file-not-found" }]
 ---
 # Multiple docsets
 inputs:
@@ -42,11 +61,11 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "[Test](non-existed.md)"
-  - expectDiagnostics: 
+  - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
   - openFiles:
       b.md: "[Test](non-existed.md)"
-  - expectDiagnostics: 
+  - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
       b.md: [{ "code": "file-not-found" }]
 ---
@@ -57,10 +76,10 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "[Test](non-existed.md)"
-  - expectDiagnostics: 
+  - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
   - openFiles:
-      '../a.md': "Invalid change"
+      ../a.md: "Invalid change"
   - expectNoNotification: true
 ---
 # Diagnostic should be cleared when the file get closed
@@ -70,11 +89,11 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "[Test](non-existed.md)"
-  - expectDiagnostics: 
+  - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
   - closeFiles:
-    - a.md
-  - expectDiagnostics: 
+      - a.md
+  - expectDiagnostics:
       a.md: []
 ---
 # 1. All the detected issues should be reported no matter it is opened or not
@@ -87,12 +106,12 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "[!INCLUDE[](b.md)]"
-  - expectDiagnostics: 
+  - expectDiagnostics:
       a.md: []
       b.md: [{ "code": "file-not-found" }]
   - closeFiles:
-    - a.md
-  - expectDiagnostics: 
+      - a.md
+  - expectDiagnostics:
       b.md: []
 ---
 # All the issues should be cleared when there is no opened file
@@ -102,11 +121,95 @@ inputs:
 languageServer:
   - openFiles:
       a.md: "[!INCLUDE[](b.md)]"
-  - expectDiagnostics: 
+  - expectDiagnostics:
       docfx.yml: [{ "code": "yaml-syntax-error" }]
   - closeFiles:
-    - a.md
-  - expectDiagnostics: 
+      - a.md
+  - expectDiagnostics:
       docfx.yml: []
       a.md: []
 ---
+# Support refresh op build user token when it expires
+noCache: true
+environments:
+  - DOCS_OPS_TOKEN
+inputs:
+  docfx.yml: |
+    monikerDefinition: https://ops/monikerDefinition/
+    monikerRange:
+      'a.md': '> netcore-1.0 || < invalid-moniker'
+    http:
+      https://op-build-prod.azurewebsites.net:
+        headers:
+          X-OP-BuildUserToken: invalid-token
+  a.md:
+languageServer:
+  - openFiles:
+      a.md:
+  - expectGetCredentialRequest:
+      url: https://op-build-prod.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
+    response:
+      http:
+        https://op-build-prod.azurewebsites.net:
+          headers:
+            X-OP-BuildUserToken: "{DOCS_OPS_TOKEN}"
+  - expectDiagnostics:
+      docfx.yml: [{ "code": "moniker-range-invalid" }]
+---
+# File creating and deleting should trigger new build with refreshed build scope
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[B](b.md)"
+  - expectDiagnostics:
+      a.md: [{ "code": "file-not-found" }]
+  - createFiles:
+      b.md:
+  - expectDiagnostics:
+      a.md: []
+  - deleteFiles:
+      - b.md
+  - expectDiagnostics:
+      a.md: [{ "code": "file-not-found" }]
+---
+# File Change should trigger new build
+# But in memory content should be used until the user close the in memory file
+inputs:
+  docfx.yml:
+  a.md:
+  b.md:
+languageServer:
+  - openFiles:
+      a.md: "[!INCLUDE[](b.md)]"
+      b.md: "[Invalid Link](c.md)"
+  - expectDiagnostics:
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
+  - editFilesWithoutEditor:
+      b.md: "[Invalid Link](d.md)"
+  - expectDiagnostics:
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'c.md'." }]
+  - closeFiles:
+      - b.md
+  - expectDiagnostics:
+      b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
+---
+# File changes/create/delete in git folder should not trigger build
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: "[B](b.md)"
+  - expectDiagnostics:
+      a.md: [{ "code": "file-not-found" }]
+  - createFiles:
+      .git/test.md: ""
+  - expectNoNotification: true
+  - editFilesWithoutEditor:
+      .git/test.md: ""
+  - expectNoNotification: true
+  - deleteFiles:
+      - .git/test.md
+  - expectNoNotification: true

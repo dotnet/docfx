@@ -26,6 +26,8 @@ inputs:
   docs/a.md: Hello `docfx`!
 outputs: 
   docs/a/index.html:
+  .errors.log: |
+    {"message_severity":"warning","code":"liquid-not-found","file":"docs/a.md","line":1,"column":1}
 ---
 # Source file name ending with spaces should not crash
 inputs:

@@ -139,6 +139,7 @@ namespace Microsoft.Docs.Build
                     // serve command
                     syntax.DefineCommand("serve", ref command, "Serves content in a docset.");
                     syntax.DefineOption("language-server", ref options.LanguageServer, "Starts a language server");
+                    syntax.DefineOption("no-cache", ref options.NoCache, "Always fetch latest dependencies in build.");
                     DefineCommonOptions(syntax, options);
                 });
 

@@ -16,25 +16,24 @@ namespace Microsoft.Docs.Build
 {
     internal class FileResolver
     {
-        private static readonly HttpClientHandler s_defaultClientHandler = new HttpClientHandler
+        // NOTE: This line assumes each build runs in a new process
+        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
+        private static readonly HttpClient s_httpClient = new(new HttpClientHandler
         {
             CheckCertificateRevocationList = true,
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-        };
-
-        // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
+        });
 
         private readonly Lazy<string?>? _fallbackDocsetPath;
+        private readonly CredentialHandler _credentialHandler;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
         private readonly Package _package;
-        private readonly HttpClient _httpClient;
 
         public FileResolver(
             Package package,
             Lazy<string?>? fallbackDocsetPath = null,
-            CredentialProvider? credentialProvider = null,
+            CredentialHandler? credentialHandler = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
@@ -42,13 +41,7 @@ namespace Microsoft.Docs.Build
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
-            _httpClient = new(
-                credentialProvider != null
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                    ? new CredentialHandler(credentialProvider, s_defaultClientHandler)
-#pragma warning restore CA2000 // Dispose objects before losing scope
-                    : s_defaultClientHandler,
-                true);
+            _credentialHandler = credentialHandler ?? new();
         }
 
         public string? TryReadString(SourceInfo<string> file)
@@ -248,24 +241,31 @@ namespace Microsoft.Docs.Build
 
         private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue? etag = null)
         {
-            // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
-            // "The request message was already sent. Cannot send the same request message multiple times."
-            using var message = new HttpRequestMessage(HttpMethod.Get, url);
-            if (etag != null)
-            {
-                message.Headers.IfNoneMatch.Add(etag);
-            }
-
-            if (_opsConfigAdapter != null)
-            {
-                var response = await _opsConfigAdapter.InterceptHttpRequest(message);
-                if (response != null)
+            return await _credentialHandler.SendRequest(
+                () =>
                 {
-                    return response;
-                }
-            }
+                    // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
+                    // "The request message was already sent. Cannot send the same request message multiple times."
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    if (etag != null)
+                    {
+                        request.Headers.IfNoneMatch.Add(etag);
+                    }
+                    return request;
+                },
+                async request =>
+                {
+                    if (_opsConfigAdapter != null)
+                    {
+                        var response = await _opsConfigAdapter.InterceptHttpRequest(request);
+                        if (response != null)
+                        {
+                            return response;
+                        }
+                    }
 
-            return await _httpClient.SendAsync(message);
+                    return await s_httpClient.SendAsync(request);
+                });
         }
     }
 }

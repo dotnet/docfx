@@ -107,7 +107,8 @@ namespace Microsoft.Docs.Build
             string? outputPath,
             Package package,
             CommandLineOptions options,
-            IProgress<string> progressReporter)
+            IProgress<string> progressReporter,
+            CredentialProvider? getCredential = null)
         {
             var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
@@ -116,7 +117,7 @@ namespace Microsoft.Docs.Build
                 progressReporter.Report("Loading config...");
                 var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
                 var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-                    errorLog, docsetPath, outputPath, options, fetchOptions, package);
+                   errorLog, docsetPath, outputPath, options, fetchOptions, package, getCredential);
 
                 if (errorLog.HasError)
                 {
@@ -180,7 +181,7 @@ namespace Microsoft.Docs.Build
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),
                     () => _errors.AddRange(_microsoftGraphAccessor.Save()),
-                    () => _jsonSchemaTransformer.PostValidate(),
+                    () => _jsonSchemaTransformer.PostValidate(files != null),
                     () => learnHierarchyBuilder.ValidateHierarchy());
 
                 if (_config.DryRun)

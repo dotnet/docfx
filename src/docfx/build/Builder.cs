@@ -16,11 +16,13 @@ namespace Microsoft.Docs.Build
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
         private readonly Package _package;
+        private readonly CredentialProvider? _getCredential;
 
-        public Builder(CommandLineOptions options, Package package)
+        public Builder(CommandLineOptions options, Package package, CredentialProvider? getCredential = null)
         {
             _options = options;
             _package = package;
+            _getCredential = getCredential;
             _docsets = new(LoadDocsets);
         }
 
@@ -78,7 +80,13 @@ namespace Microsoft.Docs.Build
 
             return (from docset in docsets
                     let item = DocsetBuilder.Create(
-                        _errors, docset.docsetPath, docset.outputPath, _package.CreateSubPackage(docset.docsetPath), _options, _progressReporter)
+                        _errors,
+                        docset.docsetPath,
+                        docset.outputPath,
+                        _package.CreateSubPackage(docset.docsetPath),
+                        _options,
+                        _progressReporter,
+                        _getCredential)
                     where item != null
                     select item).ToArray();
         }

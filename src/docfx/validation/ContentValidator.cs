@@ -46,7 +46,8 @@ namespace Microsoft.Docs.Build
             _validator = new Validator(
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
-                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList));
+                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
+                new ValidationCollectionFactory());
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
@@ -54,7 +55,7 @@ namespace Microsoft.Docs.Build
             // validate image link and altText here
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                var item = new Link
+                var item = new LinkNode
                 {
                     UrlLink = link,
                     AltText = altText,
@@ -70,7 +71,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem)
+        public void ValidateCodeBlock(FilePath file, CodeBlockNode codeBlockItem)
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
@@ -86,7 +87,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateHierarchy(List<HierarchyModel> models)
+        public void ValidateHierarchy(List<HierarchyNode> models)
         {
             Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
@@ -139,7 +140,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                var textItem = new TextItem()
+                var textItem = new TextNode()
                 {
                     Content = content,
                     SourceInfo = new SourceInfo(file),
@@ -253,7 +254,10 @@ namespace Microsoft.Docs.Build
 
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                validationContext.ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups);
+                validationContext = validationContext with
+                {
+                    ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups),
+                };
                 List<(string, object)> usages = zonePivotUsages.Select(u => (u.Value, (object)u.Source!)).ToList();
                 Write(_validator.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
             }

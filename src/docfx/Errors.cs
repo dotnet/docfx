@@ -503,6 +503,9 @@ namespace Microsoft.Docs.Build
 
         public static class Markdown
         {
+            public static Error IncludeInvalid(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-invalid", $"Invalid include link extension: '{source}'.", source);
+
             public static Error IncludeNotFound(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
         }
@@ -798,11 +801,18 @@ namespace Microsoft.Docs.Build
         public static class Template
         {
             /// <summary>
+            /// Liquid is not found for current mime type.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error LiquidNotFound(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
+
+            /// <summary>
             /// Mustache is not found for current mime type.
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error MustacheNotFound(string templateFileName)
-                => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
+                => new Error(ErrorLevel.Warning, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
         }
 
         public static class SourceMap

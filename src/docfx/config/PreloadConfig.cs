@@ -56,15 +56,16 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public string? DocsRepositoryOwnerName { get; init; }
 
-        public CredentialProvider GetCredentialProvider()
+        public HttpConfig? GetHttpConfig(string url)
         {
-            return new Lazy<CredentialProvider>(() =>
+            foreach (var (baseUrl, rule) in Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal))
             {
-                var rules = Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal)
-                    .ToDictionary(entry => entry.Key, entry => entry.Value);
-
-                return new(rules);
-            }).Value;
+                if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
+                {
+                    return rule;
+                }
+            }
+            return default;
         }
     }
 }

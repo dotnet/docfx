@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Linq;
-using System.Net.Http;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -115,18 +112,17 @@ namespace Microsoft.Docs.Build
         public static void HttpCredential_Respect_LongestMatch(string url, string value)
         {
             var config = JsonUtility.DeserializeData<PreloadConfig>(
-@"{
+                @"{
     'http': {
         'https://a.com/a': { 'headers': { 'key': 'a' } },
         'https://a.com/a/b': { 'headers': { 'key': 'a/b' } }
     }
 }".Replace('\'', '"'), null);
 
-            var credentialHandler = new CredentialHandler(config.GetCredentialProvider());
+            var httpConfig = config.GetHttpConfig(url);
 
-            using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
-            credentialHandler.Handle(message);
-            Assert.Equal(value, message.Headers.GetValues("key").First());
+            Assert.NotNull(httpConfig);
+            Assert.Equal(value, httpConfig.Headers["key"]);
         }
     }
 }
