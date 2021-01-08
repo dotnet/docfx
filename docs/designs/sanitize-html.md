@@ -14,6 +14,7 @@ Content authors can embed arbitrary HTML tags to markdown documents. These HTML 
 - Apply HTML sanitization consistently for all user content
 - Report warnings for removing disallowed HTML tags and attributes
 - Sanitize URL, it is tracked by 
+- Enable referencing sanitization modes from YAML schemas
 
 ### Out of scope
 
@@ -26,10 +27,11 @@ The sanitization is performed against user HTML, that is in most cases HTML tags
 
 ### Sanitization Modes
 
-There are 3 sanitization modes:
+There are 4 sanitization modes:
 
 - `standard` (*default*): Described below
 - `strict`: Disallow html
+- `strict-inline`: Based on strict, permitting only phrasing content. Block elements such as `blockquote`, `ul`, and `p` are not permitted.
 - `loose`: This is based on the `standard` mode, with a few more allowed HTML attributes like `class`, `style`. The final list came from the telemetry of the old hub/landing pages and archived contents.
 
 Sanitization mode is automatically set to `loose` for old hub pages, landing pages and archived contents.
