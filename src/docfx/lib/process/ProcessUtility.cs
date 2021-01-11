@@ -20,7 +20,8 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, bool shellExecute = false, string[]? secrets = null)
+        public static string Execute(
+            string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, bool shellExecute = false, string[]? secrets = null)
         {
             var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
 

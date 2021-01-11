@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 
         public CredentialHandler(params CredentialProvider[] credentialProviders) => _credentialProviders = credentialProviders;
 
-        public async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> httpRequestFactory, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
+        public async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> requestFactory, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
         {
             HttpResponseMessage? response = null;
 
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
             HttpConfig? httpConfigUsed = null;
             for (var i = 0; i < RetryCount; i++)
             {
-                using var request = httpRequestFactory();
+                using var request = requestFactory();
                 var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
                 {
