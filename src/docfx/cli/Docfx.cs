@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Web;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -67,10 +68,7 @@ namespace Microsoft.Docs.Build
 
         private static Command NewCommand()
         {
-            var command = new Command("new", "Creates a new docset.")
-            {
-                Handler = CommandHandler.Create<CommandLineOptions>(Handler),
-            };
+            var command = CreateCommand("new", "Creates a new docset.", New.Run);
 
             command.AddOption(new Option<string>(
                 new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
@@ -78,40 +76,43 @@ namespace Microsoft.Docs.Build
                 "--force", "Forces content to be generated even if it would change existing files."));
             command.AddArgument(new Argument<string>("templateName", "Docset template name") { Arity = ArgumentArity.ZeroOrOne });
             return command;
+        }
 
-            static int Handler(CommandLineOptions options)
+        private static Command CreateCommand(string name, string description, Func<CommandLineOptions, bool> run)
+        {
+            return new Command(name, description)
             {
-                using (Log.BeginScope(options.Verbose))
+                Handler = CommandHandler.Create<CommandLineOptions>(options =>
                 {
-                    return New.Run(options) ? 1 : 0;
-                }
-            }
+                    using (Log.BeginScope(options.Verbose))
+                    {
+                        if (options.Stdin && Console.ReadLine() is string stdin)
+                        {
+                            {
+                                options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
+                            }
+                        }
+                        Log.Write($"docfx: {GetDocfxVersion()}");
+                        Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
+                        Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
+                        Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
+
+                        return run(options) ? 1 : 0;
+                    }
+                }),
+            };
         }
 
         private static Command RestoreCommand()
         {
-            var command = new Command("restore", "Restores dependencies before build.")
-            {
-                Handler = CommandHandler.Create<CommandLineOptions>(Handler),
-            };
+            var command = CreateCommand("restore", "Restores dependencies before build.", Restore.Run);
             DefineCommonCommands(command);
             return command;
-
-            static int Handler(CommandLineOptions options)
-            {
-                using (Log.BeginScope(options.Verbose))
-                {
-                    return Restore.Run(options) ? 1 : 0;
-                }
-            }
         }
 
         private static Command BuildCommand(Package? package)
         {
-            var command = new Command("build", "Builds a docset.")
-            {
-                Handler = CommandHandler.Create((CommandLineOptions options) => Handler(options, package)),
-            };
+            var command = CreateCommand("build", "Builds a docset.", options => Builder.Run(options, package));
             DefineCommonCommands(command);
             command.AddOption(new Option<string[]>(
                 new[] { "--file", "--files" }, "Build only the specified files."));
@@ -130,38 +131,17 @@ namespace Microsoft.Docs.Build
             command.AddOption(new Option<string>(
                 "--template-base-path", "The base path used for referencing the template resource file when applying liquid."));
             return command;
-
-            static int Handler(CommandLineOptions options, Package? package)
-            {
-                using (Log.BeginScope(options.Verbose))
-                {
-                    PrintInfo();
-                    return Builder.Run(options, package) ? 1 : 0;
-                }
-            }
         }
 
         private static Command ServeCommand(Package? package)
         {
-            var command = new Command("serve", "Serves content in a docset.")
-            {
-                Handler = CommandHandler.Create((CommandLineOptions options) => Handler(options, package)),
-            };
+            var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
             DefineCommonCommands(command);
             command.AddOption(new Option<bool>(
                 "--language-server", "Do not produce build artifact and only produce validation result."));
             command.AddOption(new Option<bool>(
                 "--no-cache", "Always fetch latest dependencies in build."));
             return command;
-
-            static int Handler(CommandLineOptions options, Package? package)
-            {
-                using (Log.BeginScope(options.Verbose))
-                {
-                    PrintInfo();
-                    return Serve.Run(options, package) ? 1 : 0;
-                }
-            }
         }
 
         private static void DefineCommonCommands(Command command)
@@ -177,14 +157,6 @@ namespace Microsoft.Docs.Build
                 "--log", "Enable logging to the specified file path."));
             command.AddOption(new Option<string>(
                 "--template", "The directory or git repository that contains website template."));
-        }
-
-        private static void PrintInfo()
-        {
-            Log.Write($"docfx: {GetDocfxVersion()}");
-            Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
-            Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
-            Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
         }
 
         private static void PrintFatalErrorMessage(Exception exception)
