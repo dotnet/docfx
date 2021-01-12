@@ -2,14 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1401:FieldsMustBePrivate", Justification = "Command line options")]
-    [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Command line options")]
     internal class CommandLineOptions
     {
         public string? Output { get; init; }
@@ -44,7 +41,7 @@ namespace Microsoft.Docs.Build
 
         public string WorkingDirectory { get; set; } = ".";
 
-        public JObject? StdinConfig;
+        public JObject? StdinConfig { get; set; }
 
         public JObject ToJObject()
         {
