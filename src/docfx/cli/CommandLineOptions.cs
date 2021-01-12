@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public string? TemplateName { get; init; }
 
-        public string WorkingDirectory { get; set; } = ".";
+        public string Directory { get; set; } = ".";
 
         public JObject? StdinConfig { get; set; }
 

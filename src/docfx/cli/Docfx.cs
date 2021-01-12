@@ -76,7 +76,7 @@ namespace Microsoft.Docs.Build
                 new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
             command.AddOption(new Option<bool>(
                 "--force", "Forces content to be generated even if it would change existing files."));
-            command.AddArgument(new Argument<string>("templateName", "Docset template name"));
+            command.AddArgument(new Argument<string>("templateName", "Docset template name") { Arity = ArgumentArity.ZeroOrOne });
             return command;
 
             static int Handler(CommandLineOptions options)
@@ -167,7 +167,7 @@ namespace Microsoft.Docs.Build
         private static void DefineCommonCommands(Command command)
         {
             command.AddArgument(new Argument<string>(
-                "WorkingDirectory", () => ".", "A directory that contains docfx.yml/docfx.json."));
+                "directory", "A directory that contains docfx.yml/docfx.json.") { Arity = ArgumentArity.ZeroOrOne });
 
             command.AddOption(new Option<bool>(
                 "--stdin", "Enable additional config in JSON one liner using standard input."));
