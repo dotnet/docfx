@@ -114,7 +114,7 @@ namespace Microsoft.Docs.Build
 
         private static void DefineCommonCommands(Command command)
         {
-            command.AddArgument(new Argument<string> { Name = "WorkingDirectory" });
+            command.AddArgument(new Argument<string>("WorkingDirectory", () => "."));
 
             command.AddOption(new Option<bool>("--stdin", "Enable additional config in JSON one liner using standard input."));
             command.AddOption(new Option<bool>(new[] { "-v", "--verbose" }, "Enable diagnostics console output."));
