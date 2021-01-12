@@ -12,23 +12,37 @@ namespace Microsoft.Docs.Build
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Command line options")]
     internal class CommandLineOptions
     {
-        public string? Output;
-        public string? Log;
-        public bool Verbose;
-        public OutputType? OutputType;
-        public bool DryRun;
-        public bool NoDrySync;
-        public bool Stdin;
-        public bool Force;
-        public bool NoCache;
-        public bool NoRestore;
-        public bool LanguageServer;
-        public string? Template;
-        public string? TemplateBasePath;
-        public IReadOnlyList<string>? Files;
+        public string? Output { get; init; }
 
-        public string? TemplateName;
-        public string WorkingDirectory = ".";
+        public string? Log { get; init; }
+
+        public bool Verbose { get; init; }
+
+        public OutputType? OutputType { get; init; }
+
+        public bool DryRun { get; set; }
+
+        public bool NoDrySync { get; init; }
+
+        public bool Stdin { get; init; }
+
+        public bool Force { get; init; }
+
+        public bool NoCache { get; init; }
+
+        public bool NoRestore { get; init; }
+
+        public bool LanguageServer { get; init; }
+
+        public string? Template { get; init; }
+
+        public string? TemplateBasePath { get; init; }
+
+        public IReadOnlyList<string>? Files { get; init; }
+
+        public string? TemplateName { get; init; }
+
+        public string WorkingDirectory { get; set; } = ".";
 
         public JObject? StdinConfig;
 

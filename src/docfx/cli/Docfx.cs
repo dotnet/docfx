@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections;
-using System.CommandLine;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -12,7 +11,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Web;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -58,7 +56,7 @@ namespace Microsoft.Docs.Build
                 return 0;
             }
 
-            var (command, options) = ParseCommandLineOptions(args);
+            var (command, options) = CommandLine.Parse(args);
             if (string.IsNullOrEmpty(command))
             {
                 return 1;
@@ -85,85 +83,6 @@ namespace Microsoft.Docs.Build
                     _ => false,
                 } ? 1 : 0;
             }
-        }
-
-        private static (string command, CommandLineOptions options) ParseCommandLineOptions(string[] args)
-        {
-            var command = "build";
-            var options = new CommandLineOptions();
-
-            if (args.Length == 0)
-            {
-                // Show usage when just running `docfx`
-                args = new[] { "--help" };
-            }
-
-            try
-            {
-                ArgumentSyntax.Parse(args, syntax =>
-                {
-                    // Handle parse errors by us
-                    syntax.HandleErrors = false;
-
-                    // new command
-                    syntax.DefineCommand("new", ref command, "Creates a new docset.");
-                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place generated output.");
-                    syntax.DefineOption("force", ref options.Force, "Forces content to be generated even if it would change existing files.");
-                    syntax.DefineParameter("type", ref options.TemplateName, "Docset template name");
-
-                    // restore command
-                    syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                    DefineCommonOptions(syntax, options);
-
-                    // build command
-                    syntax.DefineCommand("build", ref command, "Builds a docset.");
-                    syntax.DefineOptionList("file", ref options.Files, "Build only the specified files.");
-                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-
-                    syntax.DefineOption(
-                        "output-type",
-                        ref options.OutputType,
-                        value => Enum.TryParse<OutputType>(value, ignoreCase: true, out var result) ? result : default,
-                        "Output directory in which to place built artifacts.");
-
-                    syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
-                    syntax.DefineOption("no-dry-sync", ref options.NoDrySync, "Do not run dry sync for learn validation.");
-                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
-                    syntax.DefineOption("no-cache", ref options.NoCache, "Always fetch latest dependencies in build.");
-                    syntax.DefineOption(
-                        "template-base-path",
-                        ref options.TemplateBasePath,
-                        "The base path used for referencing the template resource file when applying liquid.");
-                    DefineCommonOptions(syntax, options);
-
-                    // serve command
-                    syntax.DefineCommand("serve", ref command, "Serves content in a docset.");
-                    syntax.DefineOption("language-server", ref options.LanguageServer, "Starts a language server");
-                    syntax.DefineOption("no-cache", ref options.NoCache, "Always fetch latest dependencies in build.");
-                    DefineCommonOptions(syntax, options);
-                });
-
-                if (options.Stdin && Console.ReadLine() is string stdin)
-                {
-                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
-                }
-
-                return (command, options);
-            }
-            catch (ArgumentSyntaxException ex)
-            {
-                Console.Write(ex.Message);
-                return default;
-            }
-        }
-
-        private static void DefineCommonOptions(ArgumentSyntax syntax, CommandLineOptions options)
-        {
-            syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-            syntax.DefineOption("log", ref options.Log, "Enable logging to the specified file path.");
-            syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
-            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
-            syntax.DefineParameter("directory", ref options.WorkingDirectory, "A directory that contains docfx.yml/docfx.json.");
         }
 
         private static void PrintFatalErrorMessage(Exception exception)
