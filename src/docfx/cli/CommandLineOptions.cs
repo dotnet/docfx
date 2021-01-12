@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
 {
     internal class CommandLineOptions
     {
+        private string _workingDirectory = ".";
+
         public string? Output { get; init; }
 
         public string? Log { get; init; }
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
 
         public string? TemplateName { get; init; }
 
-        public string Directory { get; set; } = ".";
+        public string Directory { get { return _workingDirectory; } set { _workingDirectory ??= "."; } }
 
         public JObject? StdinConfig { get; set; }
 
