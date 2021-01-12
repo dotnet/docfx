@@ -17,10 +17,10 @@ namespace Microsoft.Docs.Build
             var stopwatch = Stopwatch.StartNew();
             using var errors = new ErrorWriter(options.Log);
 
-            var docsets = ConfigLoader.FindDocsets(errors, new LocalPackage(options.Directory), options);
+            var docsets = ConfigLoader.FindDocsets(errors, new LocalPackage(options.WorkingDirectory), options);
             if (docsets.Length == 0)
             {
-                errors.Add(Errors.Config.ConfigNotFound(options.Directory));
+                errors.Add(Errors.Config.ConfigNotFound(options.WorkingDirectory));
                 return errors.HasError;
             }
 
@@ -38,13 +38,13 @@ namespace Microsoft.Docs.Build
         public static void RestoreDocset(
             ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            var errorLog = new ErrorLog(errors, options.Directory, docsetPath);
+            var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
             try
             {
                 // load configuration from current entry or fallback repository
                 var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
-                    errorLog, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(options.Directory, docsetPath)));
+                    errorLog, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath)));
 
                 if (errorLog.HasError)
                 {

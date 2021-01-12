@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray();
 
-            package ??= new LocalPackage(options.Directory);
+            package ??= new LocalPackage(options.WorkingDirectory);
 
             new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
 
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
             var docsets = ConfigLoader.FindDocsets(_errors, _package, _options);
             if (docsets.Length == 0)
             {
-                _errors.Add(Errors.Config.ConfigNotFound(_options.Directory));
+                _errors.Add(Errors.Config.ConfigNotFound(_options.WorkingDirectory));
             }
 
             return (from docset in docsets
@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
 
         private string GetPathToDocset(DocsetBuilder docset, string file)
         {
-            return Path.GetRelativePath(docset.BuildOptions.DocsetPath, Path.Combine(_options.Directory, file));
+            return Path.GetRelativePath(docset.BuildOptions.DocsetPath, Path.Combine(_options.WorkingDirectory, file));
         }
     }
 }

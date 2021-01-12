@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             IProgress<string> progressReporter,
             CredentialProvider? getCredential = null)
         {
-            var errorLog = new ErrorLog(errors, options.Directory, docsetPath);
+            var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
             try
             {

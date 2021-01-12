@@ -41,8 +41,8 @@ namespace Microsoft.Docs.Build
             using var cts = new CancellationTokenSource();
 
             var languageServerPackage = new LanguageServerPackage(
-                new(commandLineOptions.Directory),
-                package ?? new LocalPackage(commandLineOptions.Directory));
+                new(commandLineOptions.WorkingDirectory),
+                package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
 
             var server = await LanguageServer.From(options => options
                 .WithInput(input)
