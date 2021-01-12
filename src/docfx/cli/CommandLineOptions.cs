@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
 
         public string? TemplateName { get; init; }
 
-        public string? Directory { get; set; }
+        public string? Directory { private get; set; }
 
         public string WorkingDirectory => Directory ?? ".";
 
