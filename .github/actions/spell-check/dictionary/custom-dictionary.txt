@@ -572,3 +572,4 @@ IAsync
 IDid
 IProducer
 msys
+Arity

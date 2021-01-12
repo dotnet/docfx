@@ -253,7 +253,7 @@ namespace Microsoft.Docs.Build
             // each file build result is the same as expected output. Implies dryRun.
             var commandLine = new CommandLineOptions
             {
-                WorkingDirectory = docsetPath,
+                Directory = docsetPath,
                 Output = outputPath,
                 DryRun = true,
                 NoRestore = spec.NoRestore,
