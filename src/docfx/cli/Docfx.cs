@@ -128,9 +128,7 @@ namespace Microsoft.Docs.Build
                     {
                         if (options.Stdin && Console.ReadLine() is string stdin)
                         {
-                            {
-                                options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
-                            }
+                            options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
                         }
                         Log.Write($"docfx: {GetDocfxVersion()}");
                         Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
