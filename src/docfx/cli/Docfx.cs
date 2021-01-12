@@ -69,38 +69,12 @@ namespace Microsoft.Docs.Build
         private static Command NewCommand()
         {
             var command = CreateCommand("new", "Creates a new docset.", New.Run);
-
             command.AddOption(new Option<string>(
                 new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
             command.AddOption(new Option<bool>(
                 "--force", "Forces content to be generated even if it would change existing files."));
             command.AddArgument(new Argument<string>("templateName", "Docset template name") { Arity = ArgumentArity.ZeroOrOne });
             return command;
-        }
-
-        private static Command CreateCommand(string name, string description, Func<CommandLineOptions, bool> run)
-        {
-            return new Command(name, description)
-            {
-                Handler = CommandHandler.Create<CommandLineOptions>(options =>
-                {
-                    using (Log.BeginScope(options.Verbose))
-                    {
-                        if (options.Stdin && Console.ReadLine() is string stdin)
-                        {
-                            {
-                                options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
-                            }
-                        }
-                        Log.Write($"docfx: {GetDocfxVersion()}");
-                        Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
-                        Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
-                        Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
-
-                        return run(options) ? 1 : 0;
-                    }
-                }),
-            };
         }
 
         private static Command RestoreCommand()
@@ -142,6 +116,31 @@ namespace Microsoft.Docs.Build
             command.AddOption(new Option<bool>(
                 "--no-cache", "Always fetch latest dependencies in build."));
             return command;
+        }
+
+        private static Command CreateCommand(string name, string description, Func<CommandLineOptions, bool> run)
+        {
+            return new Command(name, description)
+            {
+                Handler = CommandHandler.Create<CommandLineOptions>(options =>
+                {
+                    using (Log.BeginScope(options.Verbose))
+                    {
+                        if (options.Stdin && Console.ReadLine() is string stdin)
+                        {
+                            {
+                                options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
+                            }
+                        }
+                        Log.Write($"docfx: {GetDocfxVersion()}");
+                        Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
+                        Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
+                        Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
+
+                        return run(options) ? 1 : 0;
+                    }
+                }),
+            };
         }
 
         private static void DefineCommonCommands(Command command)
