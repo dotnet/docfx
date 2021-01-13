@@ -291,7 +291,7 @@ namespace Microsoft.Docs.Build
                 }));
 
             Task.Run(() => LanguageServerHost.RunLanguageServer(
-                new() { WorkingDirectory = workingDirectory, NoCache = noCache },
+                new() { Directory = workingDirectory, NoCache = noCache },
                 clientPipe.Reader,
                 serverPipe.Writer,
                 package,

@@ -816,3 +816,27 @@ outputs:
     { "code": "unknown-language-code", "file": "b.md", "line": 2, "column": 1 }
     { "code": "invalid-code", "file": "b.md", "line": 2, "column": 1 }
 ---
+# Treat standalone include as block inside table cell
+inputs:
+  docfx.yml:
+  a.md: |
+    a | b
+    --|--
+    [!INCLUDE[](block.md)] | inline [!INCLUDE[](block.md)]
+  block.md: |
+   - foo
+   - bar
+outputs:
+  a.json: |
+    {
+      "conceptual": "
+        <table>
+          <thead><tr><th>a</th><th>b</th></tr></thead>
+          <tbody><tr>
+            <td><ul><li>foo</li><li>bar</li></ul></td>
+            <td>inline - foo - bar</td>
+          </tr></tbody>
+        </table>"
+    }
+  block.json:
+---

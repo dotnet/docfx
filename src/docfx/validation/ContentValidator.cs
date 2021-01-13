@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,7 +11,7 @@ using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContentValidator
+    internal class ContentValidator : ICollectionFactory
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
         // Learn content: "learningpath", "module", "moduleunit"
@@ -47,7 +48,7 @@ namespace Microsoft.Docs.Build
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
-                new ValidationCollectionFactory());
+                this);
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
@@ -266,6 +267,11 @@ namespace Microsoft.Docs.Build
         public void PostValidate()
         {
             Write(_validator.PostValidate().GetAwaiter().GetResult());
+        }
+
+        public IProducerConsumerCollection<T> CreateCollection<T>()
+        {
+            return new ScopedConcurrentBag<T>();
         }
 
         private void Write(IEnumerable<ValidationError> validationErrors)
