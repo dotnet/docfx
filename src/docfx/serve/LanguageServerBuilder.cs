@@ -119,8 +119,7 @@ namespace Microsoft.Docs.Build
         {
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupByFile = from error in errors
-                                         let source = error.Source
-                                         where source != null
+                                         let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
             foreach (var diagnostics in diagnosticsGroupByFile)
