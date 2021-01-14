@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                     WorkingDirectory = cwd ?? ".",
                     Arguments = commandLineArgs,
                     UseShellExecute = false,
-                    RedirectStandardOutput = true,
+                    RedirectStandardOutput = stdout,
                     RedirectStandardError = true,
                 };
 
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
                 var pipeOutput = stdout
                     ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
-                    : Task.Run(() => PipeStream(process.StandardOutput, Console.Out));
+                    : Task.CompletedTask;
 
                 Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
 

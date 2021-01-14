@@ -112,7 +112,9 @@ namespace Microsoft.Docs.Build
             var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
             DefineCommonCommands(command);
             command.AddOption(new Option<bool>(
-                "--language-server", "Do not produce build artifact and only produce validation result."));
+                "--language-server", "Starts a language server"));
+            command.AddOption(new Option<int>(
+                "--port", "The port used to communicate with the client"));
             command.AddOption(new Option<bool>(
                 "--no-cache", "Always fetch latest dependencies in build."));
             return command;
