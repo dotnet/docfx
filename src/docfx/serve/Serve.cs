@@ -15,8 +15,6 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            GitUtility.ForceShellExecute = true;
-
             LanguageServerHost.RunLanguageServer(options, package).GetAwaiter().GetResult();
             return false;
         }
