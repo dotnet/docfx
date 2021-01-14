@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         {
             if (options.Port == null)
             {
-                throw new InvalidOperationException("`Port` parameter is required to serve curent docset as language server, please use `--port {port}`");
+                throw new InvalidOperationException("`Port` parameter is required to serve current docset as language server, please use `--port {port}`");
             }
 
             if (!options.LanguageServer)
