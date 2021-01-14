@@ -112,7 +112,11 @@ namespace Microsoft.Docs.Build
             var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
             DefineCommonCommands(command);
             command.AddOption(new Option<bool>(
-                "--language-server", "Do not produce build artifact and only produce validation result."));
+                "--language-server", "Starts a language server"));
+            command.AddOption(new Option<string>(
+                "--address", () => "0.0.0.0", "The address used to serve"));
+            command.AddOption(new Option<int>(
+                "--port", () => 8080, "The port used to communicate with the client"));
             command.AddOption(new Option<bool>(
                 "--no-cache", "Always fetch latest dependencies in build."));
             return command;
@@ -143,8 +147,7 @@ namespace Microsoft.Docs.Build
 
         private static void DefineCommonCommands(Command command)
         {
-            command.AddArgument(new Argument<string>(
-                "directory", "A directory that contains docfx.yml/docfx.json.") { Arity = ArgumentArity.ZeroOrOne });
+            command.AddArgument(new Argument<string>("directory", "A directory that contains docfx.yml/docfx.json."){ Arity = ArgumentArity.ZeroOrOne });
 
             command.AddOption(new Option<bool>(
                 "--stdin", "Enable additional config in JSON one liner using standard input."));
