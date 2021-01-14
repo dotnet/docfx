@@ -109,6 +109,7 @@ outputs:
 # loc page link and content fallback
 # with default branch fallback
 noCache: true
+noDryRun: true
 locale: zh-cn
 repos:
   https://docs.com/page-fallback#main:
@@ -165,6 +166,8 @@ outputs:
 ---
 # loc resource fallback bilingual
 # with default branch fallback
+noCache: true
+noDryRun: true
 locale: zh-cn
 repos:
   https://docs.com/resource-fallback#main:
@@ -182,6 +185,8 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
+  .errors.log: |
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/resource-fallback' does not match. Please check with dependency repo and update the default branch."}
 ---
 # loc page link and content fallback folder
 locale: zh-cn
@@ -351,14 +356,14 @@ repos:
           [link to a](a.md)
         docs/a.md: a
         docfx.yml:
-  https://github.com/ss/c.zh-cn#master-sxs:
+  https://github.com/ss/c.zh-cn#main-sxs:
     - files:
         docfx.yml:
         docs/a.md: |
           sxs content
           [link to b](b.md)
           [!include[include b](b.md)]
-  https://github.com/ss/c.zh-cn#master:
+  https://github.com/ss/c.zh-cn#main:
     - files:
         docs/a.md:
 outputs:
