@@ -113,8 +113,10 @@ namespace Microsoft.Docs.Build
             DefineCommonCommands(command);
             command.AddOption(new Option<bool>(
                 "--language-server", "Starts a language server"));
+            command.AddOption(new Option<string>(
+                "--address", "The address used to serve(default to be '0.0.0.0')"));
             command.AddOption(new Option<int>(
-                "--port", "The port used to communicate with the client"));
+                "--port", "The port used to communicate with the client(default to be '8080')"));
             command.AddOption(new Option<bool>(
                 "--no-cache", "Always fetch latest dependencies in build."));
             return command;
@@ -146,7 +148,8 @@ namespace Microsoft.Docs.Build
         private static void DefineCommonCommands(Command command)
         {
             command.AddArgument(new Argument<string>(
-                "directory", "A directory that contains docfx.yml/docfx.json.") { Arity = ArgumentArity.ZeroOrOne });
+                "directory", "A directory that contains docfx.yml/docfx.json.")
+            { Arity = ArgumentArity.ZeroOrOne });
 
             command.AddOption(new Option<bool>(
                 "--stdin", "Enable additional config in JSON one liner using standard input."));

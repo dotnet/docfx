@@ -31,7 +31,9 @@ namespace Microsoft.Docs.Build
 
         public bool LanguageServer { get; init; }
 
-        public int? Port { get; init; }
+        public int Port { get; init; } = 8080;
+
+        public string Address { get; init; } = "0.0.0.0";
 
         public string? Template { get; init; }
 
