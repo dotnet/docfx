@@ -18,8 +18,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        internal static bool ForceShellExecute { get; set; }
-
         public static PathString? FindRepository(string? path)
         {
             var repoPath = path;
@@ -239,11 +237,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                // git.exe on Windows sometimes hangs at [detect_msys_tty](https://github.com/git-for-windows/git/blob/main/compat/winansi.c#L571)
-                // This change forces git to run in shell https://github.com/git-for-windows/git/issues/2376
-                var shellExecute = !stdout && ForceShellExecute && RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, shellExecute, secrets);
+                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, secrets);
             }
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
