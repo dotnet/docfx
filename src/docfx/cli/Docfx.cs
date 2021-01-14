@@ -114,9 +114,9 @@ namespace Microsoft.Docs.Build
             command.AddOption(new Option<bool>(
                 "--language-server", "Starts a language server"));
             command.AddOption(new Option<string>(
-                "--address", "The address used to serve(default to be '0.0.0.0')"));
+                "--address", () => "0.0.0.0", "The address used to serve"));
             command.AddOption(new Option<int>(
-                "--port", "The port used to communicate with the client(default to be '8080')"));
+                "--port", () => 8080, "The port used to communicate with the client"));
             command.AddOption(new Option<bool>(
                 "--no-cache", "Always fetch latest dependencies in build."));
             return command;
