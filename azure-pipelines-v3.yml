@@ -165,7 +165,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: ne(variables['Build.SourceBranch'], 'refs/heads/v3-release')
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
   dependsOn: WindowsBuild
   pool:
     name: DocFX
