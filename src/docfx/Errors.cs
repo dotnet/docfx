@@ -802,7 +802,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DependencyRepositoryBranchNotMatch(string repoUrl, string branch)
-                => new Error(ErrorLevel.Suggestion, "dependency-repository-branch-not-match", $"The branch({branch}) used to reference in the dependency repository '{repoUrl}' does not match. Please check with dependency repo and update the default branch.");
+                => new Error(ErrorLevel.Suggestion, "dependency-repository-branch-not-match", $"The branch({branch}) used to reference in the dependency repository '{repoUrl}' does not match. Please confirm with cross reference repo and update master to main in this repo config file.");
         }
 
         public static class Template

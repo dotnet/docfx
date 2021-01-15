@@ -127,7 +127,7 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
   .errors.log: |
-    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/page-fallback' does not match. Please check with dependency repo and update the default branch."}
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/page-fallback' does not match. Please confirm with cross reference repo and update master to main in this repo config file."}
 ---
 # loc resource fallback
 locale: zh-cn
@@ -186,7 +186,7 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
   .errors.log: |
-    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/resource-fallback' does not match. Please check with dependency repo and update the default branch."}
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/resource-fallback' does not match. Please confirm with cross reference repo and update master to main in this repo config file."}
 ---
 # loc page link and content fallback folder
 locale: zh-cn
