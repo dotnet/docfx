@@ -14,31 +14,4 @@ For each PR build, the output will be compared with checked in baseline, and the
 ## Selected Docs Repos
 Repos are selected for covering different docfx build functionalities. e.g.: the core markdown parser, yml SDP, versioning & xref, reference plugins, etc.
 
-| page view | repos                         | version | loc | xref | conceptual | SDP conceptual | SDP Ref | multi<br/>docset | Ecma2Yaml | Maml2Yaml | JoinTOC | Split<br/>TOC | Rest | vsts | learn | JS TS | special |
-|-----------|-------------------------------|---------|-----|------|------------|----------------|---------|------------------|-----------|-----------|---------|---------------|------|------|-------|-------|---------|
-| 1         | azure-docs-pr                 |         |     |      | ✔          | ✔              |         |                  |           |           |         |               |      |      |       |       |         |
-| 2         | sql-docs-pr                   | ✔       |     |      | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 4         | docs                          | ✔       |     | ✔    | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 5         | learn-pr                      |         |     |      |            |                |         |                  |           |           |         |               |      |      | ✔     |       |         |
-| 8         | windowsserverdocs-pr          |         |     |      | ✔          |                |         | ✔                |           |           |         |               |      |      |       |       |         |
-| 11        | VBA-Docs                      |         |     |      | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 12        | azure-devops-docs-pr          | ✔       |     |      | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 14        | AspNetCore.Docs               | ✔       |     |      | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 15        | microsoft-365-docs-pr(.zh-cn) |         | ✔   |      |            |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 18        | powerbi-docs-pr(.de-DE)       |         | ✔   |      |            |                |         |                  |           |           |         |               |      |      |       |       |         |
-| 21        | PowerShell-Docs               |         |     |      |            |                |         |                  |           | ✔         |         |               |      |      |       |       |         |
-| 50+       | roslyn-docs-api               |         |     |      |            |                | ✔       |                  | ✔         |           |         | ✔             |      |      |       |       |         |
-| 50+       | azure-docs-rest-apis          |         |     |      |            |                | ✔       |                  |           |           |         |               | ✔    |      |       |       |         |
-| 50+       | mc-docs-pr                    |         |     |      |            |                |         |                  |           |           |         |               |      |      |       |       | ✔       |
-| 50+       | dynamics365smb-devitpro       |         |     |      | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| NA        | DevSandBox                    |         |     |      |            | ✔              | ✔       |                  |           |           |         |               | ✔    |      |       |       |         |
-| NA        | test                          |         |     |      |            | ✔              | ✔       |                  |           |           |         |               | ✔    |      |       |       |         |
-| NA        | DocsRoot                      |         |     |      | ✔          |                |         |                  |           |           |         |               |      |      |       |       |         |
-| NA        | windows-compatibility         |         |     |      |            |                |         |                  |           |           |         |               |      | ✔    |       |       |         |
-| NA        | azure-docs-cli                |         |     |      |            | ✔              | ✔       |                  |           |           | ✔       |               |      |      |       |       |         |
-| NA        | dataprep-dotnet-pr            |         |     |      |            |                | ✔       |                  | ✔         |           | ✔       | ✔             |      |      |       |       |         |
-| NA        | azure-mediaplayer-typescript  |         |     |      |            |                | ✔       |                  |           |           |         |               |      |      |       | ✔     |         |
-| NA        | quantum-docs-pr               |         |     |      |            |                |         |                  |           |           | ✔       |               |      |      |       |       | ✔       |
-
-* the table is generated with vscode plugin[excel-to-markdown-table](https://marketplace.visualstudio.com/items?itemName=csholmq.excel-to-markdown-table)
-* [source excel ./test-repos.xlsx](./test-repos.xlsx)
+See [source excel ./test-repos.csv](./test-repos.csv) for details
