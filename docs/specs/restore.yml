@@ -60,7 +60,7 @@ outputs:
 inputs:
   docfx.yml: |
     xref: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/xrefmap.json
-  a.md: '@System.String'
+  a.md: "@System.String"
 outputs:
   a.json: |
     { "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
@@ -69,7 +69,7 @@ outputs:
 inputs:
   docfx.yml: |
     extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/extend.yml
-  a.md: '@System.String'
+  a.md: "@System.String"
 outputs:
   a.json: |
     { "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
@@ -152,7 +152,7 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies#restore/long-path
-  docs/test.md: 
+  docs/test.md:
     "[!INCLUDE[](~/dep/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-\
     file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-tes\
     t-for-l/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-\
@@ -199,13 +199,13 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrcontent/b
-              branch: master
+              branch: main
               includeInBuild: true
             crrc: https://docs.com/crrcontent/c
         docs/a.md:
   https://docs.com/crrcontent/b:
     - files:
-        folder/b.md: 
+        folder/b.md:
         folder/image.png: xxx
   https://docs.com/crrcontent/c:
     - files:
@@ -229,7 +229,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrcontent/2
-              branch: master
+              branch: main
               includeInBuild: true
             crrc:
               url: https://docs.com/crrcontent/3
@@ -256,7 +256,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrmetadata/2
-              branch: master
+              branch: main
               includeInBuild: true
         docs/b.md:
   https://docs.com/crrmetadata/2:
@@ -279,7 +279,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrmoniker/2
-              branch: master
+              branch: main
               includeInBuild: true
           monikerDefinition: monikerDefinition.json
         docs/b.md:
@@ -311,7 +311,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrsame/b
-              branch: master
+              branch: main
               includeInBuild: true
             crrc:
               url: https://docs.com/crrsame/c

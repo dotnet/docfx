@@ -426,6 +426,8 @@ outputs:
     {"message_severity":"error","code":"directory-not-found"}
 ---
 # Dependency repositories should be correctly restored no matter the default branch is main or master - reference with main
+noCache: true
+noDryRun: true
 repos:
   https://docs.com/content/a:
   - files:
@@ -449,8 +451,12 @@ repos:
 outputs:
   docs/a.json: |
     {"conceptual":"<p>DEP</p><p>DEP</p>"}
+  .errors.log: |
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(main) used to reference in the dependency repository 'https://docs.com/crr-content/non-migrated' does not match. Please confirm with cross reference repo and update 'main' to 'master' in this repo config file."}
 ---
 # Dependency repositories should be correctly restored no matter the default branch is main or master - reference with master
+noCache: true
+noDryRun: true
 repos:
   https://docs.com/content/a:
   - files:
@@ -474,6 +480,8 @@ repos:
 outputs:
   docs/a.json: |
     {"conceptual":"<p>DEP</p><p>DEP</p>"}
+  .errors.log: |
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/crr-content/migrated' does not match. Please confirm with cross reference repo and update 'master' to 'main' in this repo config file."}
 ---
 # Respect docsets.json config to search for multiple docsets
 inputs:
