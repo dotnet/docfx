@@ -210,7 +210,7 @@ jobs:
       DocsRoot:
         params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       windows-compatibility:
-        params: https://cpubwin.visualstudio.com/_git/windows-compatibility --timeout 20
+        params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
       azure-docs-cli:
         params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
       dataprep-dotnet-pr:

@@ -581,7 +581,6 @@ powerbi
 roslyn
 smb
 testdata
-unexptected
 vsts
 windowsserverdocs
 xlsx

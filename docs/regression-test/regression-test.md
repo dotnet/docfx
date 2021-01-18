@@ -3,7 +3,7 @@
 ## Introduction
 
 Regression test runs docfx e2e build locally against real docs repo to:
-- guard unexptected changes
+- guard unexpected changes
 - ensure expected changes
 
 The test baseline is previous **commit build's output**, which is checked in [docfx.testdata](https://ceapex.visualstudio.com/Engineering/_git/docfx.testdata).  
