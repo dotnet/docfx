@@ -573,3 +573,16 @@ IDid
 IProducer
 msys
 Arity
+acsholmq
+dataprep
+devitpro
+generaetd
+mediaplayer
+powerbi
+roslyn
+smb
+testdata
+unexptected
+vsts
+windowsserverdocs
+xlsx
