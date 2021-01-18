@@ -147,7 +147,7 @@ namespace Microsoft.Docs.Build
 
         private static void DefineCommonCommands(Command command)
         {
-            command.AddArgument(new Argument<string>("directory", "A directory that contains docfx.yml/docfx.json."){ Arity = ArgumentArity.ZeroOrOne });
+            command.AddArgument(new Argument<string>("directory", "A directory that contains docfx.yml/docfx.json.") { Arity = ArgumentArity.ZeroOrOne });
 
             command.AddOption(new Option<bool>(
                 "--stdin", "Enable additional config in JSON one liner using standard input."));
