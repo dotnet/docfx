@@ -178,9 +178,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (branchUsed == "main" && committish == "master")
+            if (branchUsed != committish)
             {
-                _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish));
+                _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish, branchUsed));
             }
 
             try
