@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
     {
         public OpsDocsetConfig[] DocsetsToPublish { get; init; } = Array.Empty<OpsDocsetConfig>();
 
-        public HashSet<string> RedirectionFiles { get; init; } = new HashSet<string>();
+        public HashSet<string> RedirectionFiles { get; init; } = new HashSet<string>(PathUtility.PathComparer);
 
         public OpsDependencyConfig[] DependentRepositories { get; init; } = Array.Empty<OpsDependencyConfig>();
 
