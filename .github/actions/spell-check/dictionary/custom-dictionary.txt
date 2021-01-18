@@ -576,7 +576,6 @@ Arity
 csholmq
 dataprep
 devitpro
-generaetd
 mediaplayer
 powerbi
 roslyn

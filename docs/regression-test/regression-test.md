@@ -40,5 +40,5 @@ Repos are selected for covering different docfx build functionalities. e.g.: the
 | NA        | azure-mediaplayer-typescript  |         |     |      |            |                | ✔       |                  |           |           |         |               |      |      |       | ✔     |         |
 | NA        | quantum-docs-pr               |         |     |      |            |                |         |                  |           |           | ✔       |               |      |      |       |       | ✔       |
 
-* the table is generaetd with: [itemName=csholmq.excel-to-markdown-table](https://marketplace.visualstudio.com/items?itemName=csholmq.excel-to-markdown-table)
+* the table is generated with: [itemName=csholmq.excel-to-markdown-table](https://marketplace.visualstudio.com/items?itemName=csholmq.excel-to-markdown-table)
 * [source excel ./test-repos.xlsx](./test-repos.xlsx)
