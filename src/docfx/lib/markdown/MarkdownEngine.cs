@@ -12,7 +12,6 @@ using Markdig.Extensions.EmphasisExtras;
 using Markdig.Parsers;
 using Markdig.Parsers.Inlines;
 using Markdig.Renderers;
-using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
@@ -155,7 +154,6 @@ namespace Microsoft.Docs.Build
                 EnableHtmlForInline = false,
                 EnableHtmlEscape = false,
             };
-            renderer.ObjectRenderers.Replace<CodeInlineRenderer>(new NewCodeInlineRenderer());
 
             _pipelines[(int)MarkdownPipelineType.Markdown].Setup(renderer);
             renderer.Render(markdownObject);
@@ -403,30 +401,6 @@ namespace Microsoft.Docs.Build
                 Errors = errors;
                 Conceptual = conceptual;
                 ContentFallback = contentFallback;
-            }
-        }
-
-        // patch of CodeInlineRenderer, will be fixed in upstream. todo
-        private class NewCodeInlineRenderer : CodeInlineRenderer
-        {
-            protected override void Write(HtmlRenderer renderer, CodeInline obj)
-            {
-                if (renderer.EnableHtmlForInline)
-                {
-                    renderer.Write("<code").WriteAttributes(obj).Write(">");
-                }
-                if (renderer.EnableHtmlEscape)
-                {
-                    renderer.WriteEscape(obj.Content);
-                }
-                else
-                {
-                    renderer.Write(obj.Content);
-                }
-                if (renderer.EnableHtmlForInline)
-                {
-                    renderer.Write("</code>");
-                }
             }
         }
     }
