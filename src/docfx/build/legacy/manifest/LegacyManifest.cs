@@ -170,18 +170,13 @@ namespace Microsoft.Docs.Build
                 return "Toc";
             }
 
-            switch (type)
+            return type switch
             {
-                case ContentType.Page:
-                case ContentType.Redirection: // todo: support reference redirection
-                    return "Content";
-                case ContentType.Resource:
-                    return "Resource";
-                case ContentType.Toc:
-                    return "Toc";
-                default:
-                    return "";
-            }
+                ContentType.Page or ContentType.Redirection => "Content",
+                ContentType.Resource => "Resource",
+                ContentType.Toc => "Toc",
+                _ => "",
+            };
         }
     }
 }

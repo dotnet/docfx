@@ -342,6 +342,7 @@ outputs:
 ---
 # Define duplicate uid in conceptual and SDP 
 # should output error and uid cannot be resolved
+noSingleFile: true
 repos:
   https://docs.com/define-duplciate-uid#master:
     - files:
@@ -1581,9 +1582,13 @@ outputs:
   136a42ac/docs/a.json:
   136a42ac/docs/b.json:
   4667fedf/docs/a.json:
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
+  .xrefmap.json: |
+    {
+      "references": [
+        { "uid": "a", "name": "name 2", "description": "<p>test 2 <a href=\"b.json\">name b</a></p>" },
+        { "uid": "b", "name": "name b" }
+      ]
+    }
 ---
 # referencing multiple version, using uid with intersection for toc & SDP
 inputs:
@@ -1654,8 +1659,6 @@ outputs:
   4667fedf/docs/a.json:
   4667fedf/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # can cross version referencing single-version uid
 inputs:
@@ -1752,8 +1755,6 @@ outputs:
   439a76d0/v3/b.raw.page.json: |
     {"content": "<a href=\"../v2/a.json\" data-linktype=\"relative-path\"> name 2.0 </a>"}
   439a76d0/v3/b.mta.json:
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:
@@ -1806,6 +1807,7 @@ outputs:
   docs/c.json:
 ---
 # support uid reference count validation 2
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -1838,6 +1840,7 @@ outputs:
     {"message_severity":"warning","code":"min-reference-count-invalid","message":"UID 'a' reference count should be least 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
 ---
 # support SDP validation validateExternalXrefs
+noSingleFile: true
 repos:
   https://docs.com/test-valdiate-external-xref:
     - files:
@@ -1897,6 +1900,7 @@ outputs:
     {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # support SDP validation validateExternalXrefs, locale build
+noSingleFile: true
 locale: zh-cn
 repos:
   https://docs.com/test-valdiate-external-xref.zh-cn:

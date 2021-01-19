@@ -50,7 +50,7 @@ outputs:
 ---
 # loc file contributor info 1
 locale: zh-cn
-repos: 
+repos:
   https://github.com/c/contribution1#master:
     - files:
         docfx.yml:
@@ -69,7 +69,7 @@ outputs:
 # loc file contributor info 4
 # bilingual
 locale: zh-cn
-repos: 
+repos:
   https://github.com/c/contribution4#master:
     - files:
         docfx.yml:
@@ -108,6 +108,8 @@ outputs:
 ---
 # loc page link and content fallback
 # with default branch fallback
+noCache: true
+noDryRun: true
 locale: zh-cn
 repos:
   https://docs.com/page-fallback#main:
@@ -124,6 +126,8 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+  .errors.log: |
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/page-fallback' does not match. Please confirm with cross reference repo and update 'master' to 'main' in this repo config file."}
 ---
 # loc resource fallback
 locale: zh-cn
@@ -162,6 +166,8 @@ outputs:
 ---
 # loc resource fallback bilingual
 # with default branch fallback
+noCache: true
+noDryRun: true
 locale: zh-cn
 repos:
   https://docs.com/resource-fallback#main:
@@ -179,6 +185,8 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
+  .errors.log: |
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(master) used to reference in the dependency repository 'https://docs.com/resource-fallback' does not match. Please confirm with cross reference repo and update 'master' to 'main' in this repo config file."}
 ---
 # loc page link and content fallback folder
 locale: zh-cn
@@ -348,14 +356,14 @@ repos:
           [link to a](a.md)
         docs/a.md: a
         docfx.yml:
-  https://github.com/ss/c.zh-cn#master-sxs:
+  https://github.com/ss/c.zh-cn#main-sxs:
     - files:
         docfx.yml:
         docs/a.md: |
           sxs content
           [link to b](b.md)
           [!include[include b](b.md)]
-  https://github.com/ss/c.zh-cn#master:
+  https://github.com/ss/c.zh-cn#main:
     - files:
         docs/a.md:
 outputs:
@@ -373,12 +381,12 @@ repos:
     - files:
         docs/a.md: a
         docfx.yml:
-  https://github.com/bilingual/a.zh-cn#master-sxs:
+  https://github.com/bilingual/a.zh-cn#main-sxs:
     - files:
         docfx.yml:
         docs/a.md: |
           loc sxs content
-  https://github.com/bilingual/a.zh-cn#master:
+  https://github.com/bilingual/a.zh-cn#main:
     - files:
         docs/a.md: |
           loc content
@@ -562,7 +570,7 @@ repos:
           dependencies:
             child1: https://github.com/locconfig2/d#live
         docs/a.md:
-  https://github.com/locconfig2/c.zh-cn#master-sxs:
+  https://github.com/locconfig2/c.zh-cn#main-sxs:
     - files:
         docs/a.md: |
           [!include[include child](~/child1/token.md)]
@@ -576,10 +584,10 @@ repos:
     - files:
         token.md: |
           live branch
-  https://github.com/locconfig2/d#master:
+  https://github.com/locconfig2/d#main:
     - files:
         token.md: |
-          master branch
+          main branch
 outputs:
   docs/a.json: |
     { "conceptual": "<p>live branch</p>\n" }
@@ -717,7 +725,7 @@ repos:
   https://docs.com/fallback-content-bookmark-validation.zh-cn#master:
     - files:
         docfx.yml:
-        b.md: '[](a.md#invalid-bookmark)'
+        b.md: "[](a.md#invalid-bookmark)"
 outputs:
   b.json:
 ---
@@ -799,6 +807,8 @@ outputs:
     {"items":[{"href":"a"}]}
 ---
 # loc repo consume _repo.en-us repo in op config
+noCache: true
+noDryRun: true
 locale: zh-cn
 repos:
   https://docs.com/org-en-us/page-fallback#master:
@@ -824,6 +834,8 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+  .errors.log: |
+    {"message_severity":"suggestion","code":"dependency-repository-branch-not-match","message":"The branch(main) used to reference in the dependency repository 'https://docs.com/org-en-us/page-fallback' does not match. Please confirm with cross reference repo and update 'main' to 'master' in this repo config file."}
 ---
 # Remove duplicated fallback-error
 locale: zh-cn
@@ -840,3 +852,34 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}
+---
+# loc repo fallback to en-us
+locale: zh-cn
+repos:
+  https://github.com/user/loc-fallback#main:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{  "build_source_folder": "a"}],
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+          }
+        a/docfx.yml:
+        a/api/bot/TOC.yml: |
+          items:
+          - name: MS.ServicePage2.xxx
+            items:
+            - name: MS.ServicePage.xxx
+        a/docs-ref-toc/top_level_toc.yml: |
+          items:
+          - name: API Reference
+  https://github.com/user/loc-fallback.zh-cn#main:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{  "build_source_folder": "a"}],
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+          }
+        a/docfx.yml:
+        a/TOC.yml:
+outputs:
+  a/toc.json:

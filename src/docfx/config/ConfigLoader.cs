@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -36,7 +38,13 @@ namespace Microsoft.Docs.Build
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
-            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package package)
+            ErrorBuilder errors,
+            string docsetPath,
+            string? outputPath,
+            CommandLineOptions options,
+            FetchOptions fetchOptions,
+            Package package,
+            CredentialProvider? getCredential = null)
         {
             // load and trace entry repository
             var repository = Repository.Create(package.BasePath);
@@ -64,16 +72,22 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = preloadConfig.GetCredentialProvider();
-            var opsAccessor = new OpsAccessor(errors, credentialProvider);
+            var credentialProviders = new List<CredentialProvider>();
+            if (getCredential != null)
+            {
+                credentialProviders.Add(getCredential);
+            }
+            credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.GetHttpConfig(url)));
+            var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
+            var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 
             PackageResolver? packageResolver = default;
             var fallbackDocsetPath = new Lazy<string?>(
                 () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
-            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialHandler, configAdapter, fetchOptions);
 
-            packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
+            packageResolver = new PackageResolver(errors, docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 
             var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, package);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
@@ -176,10 +190,23 @@ namespace Microsoft.Docs.Build
                 let key = entry.Key.ToString()
                 where key.StartsWith("DOCFX_")
                 let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
-                let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                where values != null
-                let configValue = values.Length == 1 ? (object)values[0] : values
-                select new JProperty(configKey, configValue));
+                let configValue = entry.Value?.ToString()
+                where !string.IsNullOrEmpty(configValue)
+                select new JProperty(configKey, GetJsonValue(configValue)));
+        }
+
+        private static object GetJsonValue(string value)
+        {
+            try
+            {
+                return JObject.Parse(value);
+            }
+            catch (Exception)
+            {
+            }
+
+            var values = value.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            return values.Length == 1 ? values[0] : values;
         }
     }
 }

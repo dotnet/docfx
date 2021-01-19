@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -112,7 +111,7 @@ namespace Microsoft.Docs.Build
             return new TextDocumentAttributes(uri, "docfx");
         }
 
-        private bool TryUpdatePackage(DocumentUri file, string content)
+        private bool TryUpdatePackage(DocumentUri file, string? content)
         {
             var filePath = new PathString(file.GetFileSystemPath());
             if (!filePath.StartsWithPath(_package.BasePath, out _))
@@ -120,7 +119,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            _package.AddOrUpdate(filePath, content);
+            _package.AddOrUpdate(filePath, content ?? "");
             return true;
         }
 

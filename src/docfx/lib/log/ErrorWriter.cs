@@ -27,10 +27,6 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => throw new NotSupportedException();
 
-        public override void Clear()
-        {
-        }
-
         public ErrorWriter(string? outputPath = null)
         {
             _output = new(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
@@ -38,7 +34,7 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            var count = error.Level switch
+            _ = error.Level switch
             {
                 ErrorLevel.Error => Interlocked.Increment(ref _errorCount),
                 ErrorLevel.Warning => Interlocked.Increment(ref _warningCount),

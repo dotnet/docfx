@@ -3,30 +3,38 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 
 namespace Microsoft.Docs.Build
 {
     internal class LanguageServerBuilder
     {
+        private readonly ILogger _logger;
         private readonly Builder _builder;
-        private readonly ErrorList _errorList = new();
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
         private readonly DiagnosticPublisher _diagnosticPublisher;
         private readonly LanguageServerPackage _languageServerPackage;
         private readonly ILanguageServerNotificationListener _notificationListener;
+        private readonly IServiceProvider _serviceProvider;
         private readonly PathString _workingDirectory;
         private List<PathString> _filesWithDiagnostics = new();
 
         public LanguageServerBuilder(
+            ILoggerFactory loggerFactory,
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
-            ILanguageServerNotificationListener notificationListener)
+            LanguageServerCredentialProvider languageServerCredentialProvider,
+            ILanguageServerNotificationListener notificationListener,
+            IServiceProvider serviceProvider)
         {
             options.DryRun = true;
 
@@ -34,8 +42,9 @@ namespace Microsoft.Docs.Build
             _diagnosticPublisher = diagnosticPublisher;
             _languageServerPackage = languageServerPackage;
             _notificationListener = notificationListener;
-            _builder = new(_errorList, languageServerPackage.BasePath, options, _languageServerPackage);
-            _ = StartAsync();
+            _serviceProvider = serviceProvider;
+            _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
+            _builder = new(options, _languageServerPackage, languageServerCredentialProvider.GetCredentials);
         }
 
         public void QueueBuild()
@@ -43,28 +52,49 @@ namespace Microsoft.Docs.Build
             _buildChannel.Writer.TryWrite(true);
         }
 
-        private async Task StartAsync()
+        public async void Run(CancellationToken cancellationToken = default)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                await WaitToTriggerBuild();
-                var filesToBuild = _languageServerPackage.GetAllFilesInMemory().ToList();
-                _builder.Build(filesToBuild.Select(f => f.Value).ToArray());
+                try
+                {
+                    await WaitToTriggerBuild(cancellationToken);
 
-                PublishDiagnosticsParams(filesToBuild);
-                _notificationListener.OnNotificationHandled();
+                    using var progressReporter = await CreateProgressReporter();
+
+                    progressReporter.Report("Start build...");
+                    var errors = new ErrorList();
+                    var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+
+                    // This is to avoid the task await deadlock in the credential refresh scenario
+                    // The progress reporter create request task can only be completed when the current build done if there is no `Task.Yield`
+                    // The current build can only be completed when the credential refresh request response get handled.
+                    // But the responses of language server are handled sequentially, which cause the deadlock.
+                    await Task.Yield();
+                    _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
+
+                    PublishDiagnosticsParams(errors, filesToBuild);
+                    _notificationListener.OnNotificationHandled();
+
+                    progressReporter.Report("Build finished");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex, "Failed to handle build request");
+                }
             }
         }
 
-        private async Task WaitToTriggerBuild()
+        private async Task WaitToTriggerBuild(CancellationToken cancellationToken)
         {
-            await _buildChannel.Reader.ReadAsync();
+            await _buildChannel.Reader.ReadAsync(cancellationToken);
 
             try
             {
                 while (true)
                 {
-                    using var cts = new CancellationTokenSource(1000);
+                    using var timeout = new CancellationTokenSource(1000);
+                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();
                 }
@@ -74,12 +104,22 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void PublishDiagnosticsParams(IEnumerable<PathString> filesToBuild)
+        private async Task<LanguageServerProgressReporter> CreateProgressReporter()
+        {
+            var languageServer = _serviceProvider.GetService<ILanguageServer>();
+            Debug.Assert(languageServer != null);
+            return new LanguageServerProgressReporter(await languageServer.WorkDoneManager.Create(
+                new WorkDoneProgressBegin()
+                {
+                    Title = "Docs real-time validation",
+                }));
+        }
+
+        private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
-            var diagnosticsGroupByFile = from error in _errorList
-                                         let source = error.Source
-                                         where source != null
+            var diagnosticsGroupByFile = from error in errors
+                                         let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
             foreach (var diagnostics in diagnosticsGroupByFile)
@@ -117,7 +157,7 @@ namespace Microsoft.Docs.Build
                 Message = error.Message,
             };
 
-            int ConvertLocation(int original)
+            static int ConvertLocation(int original)
             {
                 var target = original - 1;
                 return target < 0 ? 0 : target;

@@ -8,7 +8,7 @@ namespace Microsoft.Docs.Build
 {
     public static class MarkdigUtilityTest
     {
-        private static readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder().UseYamlFrontMatter().Build();
+        private static readonly MarkdownPipeline s_markdownPipeline = new MarkdownPipelineBuilder().UseYamlFrontMatter().Build();
 
         [Theory]
         [InlineData("abc", true)]
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n <!--comments \n--> <div>text</div>\n  ", true)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
-            var markdownDocument = Markdig.Markdown.Parse(markdownContent, _markdownPipeline);
+            var markdownDocument = Markdig.Markdown.Parse(markdownContent, s_markdownPipeline);
 
             Assert.Equal(expectedVisible, MarkdigUtility.IsVisible(markdownDocument));
         }

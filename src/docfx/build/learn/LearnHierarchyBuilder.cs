@@ -5,13 +5,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Docs.Validation;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class LearnHierarchyBuilder
     {
-        private readonly ErrorBuilder _errors;
         private readonly ContentValidator _contentValidator;
 
         private readonly ListBuilder<LearningPath> _learningPaths = new ListBuilder<LearningPath>();
@@ -19,9 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly ListBuilder<ModuleUnit> _moduleUnits = new ListBuilder<ModuleUnit>();
         private readonly ListBuilder<Achievement> _achievements = new ListBuilder<Achievement>();
 
-        public LearnHierarchyBuilder(ErrorBuilder errors, ContentValidator contentValidator)
+        public LearnHierarchyBuilder(ContentValidator contentValidator)
         {
-            _errors = errors;
             _contentValidator = contentValidator;
         }
 
@@ -53,51 +50,51 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private IEnumerable<HierarchyModel> GetAllLearnHierarchyModels()
+        private IEnumerable<HierarchyNode> GetAllLearnHierarchyModels()
         {
-            var pathModels = _learningPaths.AsList().Select(p => new HierarchyModel
+            var pathModels = _learningPaths.AsList().Select(p => new HierarchyNode
             {
                 Uid = p.Uid.Value,
                 ChildrenUids = p.Modules?.Select(m => m.Value).ToList(),
                 SourceInfo = p.Uid.Source,
-                SchemaType = "learningpath",
+                PageType = "learningpath",
             }).ToList();
 
-            var moduleModels = _modules.AsList().Select(p => new HierarchyModel
+            var moduleModels = _modules.AsList().Select(p => new HierarchyNode
             {
                 Uid = p.Uid.Value,
                 ChildrenUids = p.Units?.Select(u => u.Value).ToList(),
                 SourceInfo = p.Uid.Source,
-                SchemaType = "module",
+                PageType = "module",
             }).ToList();
 
-            var unitModels = _moduleUnits.AsList().Select(p => new HierarchyModel
+            var unitModels = _moduleUnits.AsList().Select(p => new HierarchyNode
             {
                 Uid = p.Uid.Value,
                 UseAzureSandbox = p.AzureSandbox,
                 SourceInfo = p.Uid.Source,
-                SchemaType = "moduleunit",
+                PageType = "moduleunit",
             }).ToList();
 
-            var achievementModels = _achievements.AsList().Select(p => new HierarchyModel
+            var achievementModels = _achievements.AsList().Select(p => new HierarchyNode
             {
                 Uid = p.Uid.Value,
                 SourceInfo = p.Uid.Source,
-                SchemaType = p.Type.ToString(),
+                PageType = p.Type.ToString(),
             }).ToList();
 
-            var trophys = _learningPaths.AsList().Where(p => p.Trophy != null).Select(p => new HierarchyModel
+            var trophys = _learningPaths.AsList().Where(p => p.Trophy != null).Select(p => new HierarchyNode
             {
                 Uid = p.Trophy!.Uid.Value,
                 SourceInfo = p.Trophy.Uid.Source,
-                SchemaType = "trophy",
+                PageType = "trophy",
             }).ToList();
 
-            var badges = _modules.AsList().Where(p => p.Badge != null).Select(p => new HierarchyModel
+            var badges = _modules.AsList().Where(p => p.Badge != null).Select(p => new HierarchyNode
             {
                 Uid = p.Badge!.Uid.Value,
                 SourceInfo = p.Badge.Uid.Source,
-                SchemaType = "badge",
+                PageType = "badge",
             }).ToList();
 
             return pathModels.Concat(moduleModels).Concat(unitModels).Concat(achievementModels).Concat(trophys).Concat(badges);

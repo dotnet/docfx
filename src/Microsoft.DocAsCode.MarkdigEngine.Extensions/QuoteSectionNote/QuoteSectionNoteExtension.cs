@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
-            if (renderer is HtmlRenderer htmlRenderer)
+            if (renderer is HtmlRenderer)
             {
                 var quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
 

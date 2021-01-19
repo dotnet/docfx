@@ -443,15 +443,6 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl, string? propertyPath)
                 => new Error(ErrorLevel.Warning, "duplicate-uid-global", $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.", uid, propertyPath);
-
-            /// <summary>
-            /// Same uid defined within different versions with different values of the same xref property.
-            /// Examples:
-            ///   - Same uid defined in multiple .md files with different versions have different titles.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error XrefPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
-                => new Error(ErrorLevel.Info, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
         }
 
         public static class Versioning
@@ -514,6 +505,9 @@ namespace Microsoft.Docs.Build
 
         public static class Markdown
         {
+            public static Error IncludeInvalid(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-invalid", $"Invalid include link extension: '{source}'.", source);
+
             public static Error IncludeNotFound(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
         }
@@ -804,16 +798,30 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error RepositoryOwnerPermissionInsufficient(string? repoOwner, string? dependentRepoOrg, string? dependentRepoName, string dependentRepoUrl)
                 => new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", $"Docs Build cannot access CRR repo {dependentRepoUrl} using the access token from user {repoOwner} because {repoOwner} does not have Read access to the CRR repo. Please ask {repoOwner} to contact the admins of the CRR repo {dependentRepoUrl} to get Read permission. Don't know who to contact? This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/");
+
+            /// <summary>
+            /// The branch used to reference the dependency repository doesn't match the real used branch
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DependencyRepositoryBranchNotMatch(string repoUrl, string branch, string fallbackBranch)
+                => new Error(ErrorLevel.Suggestion, "dependency-repository-branch-not-match", $"The branch({branch}) used to reference in the dependency repository '{repoUrl}' does not match. Please confirm with cross reference repo and update '{branch}' to '{fallbackBranch}' in this repo config file.");
         }
 
         public static class Template
         {
             /// <summary>
+            /// Liquid is not found for current mime type.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error LiquidNotFound(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
+
+            /// <summary>
             /// Mustache is not found for current mime type.
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error MustacheNotFound(string templateFileName)
-                => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
+                => new Error(ErrorLevel.Warning, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
         }
 
         public static class SourceMap

@@ -1,4 +1,5 @@
 # title unique check
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -66,6 +67,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'c.md(2,8), d.md'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
 # title unique check - log limit
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -128,6 +130,7 @@ outputs:
     {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"f.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
 ---
 # Canonial Version title unique check
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json

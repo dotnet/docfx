@@ -22,7 +22,8 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentHashSet<FilePath> _additionalResources = new();
+
+        private readonly Scoped<ConcurrentHashSet<FilePath>> _additionalResources = new();
 
         public LinkResolver(
             Config config,
@@ -113,7 +114,7 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
-        public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources;
+        public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources.Value;
 
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
             SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot)
@@ -157,7 +158,7 @@ namespace Microsoft.Docs.Build
             {
                 if (file.Origin == FileOrigin.Dependency && _buildScope.GetContentType(file) == ContentType.Resource)
                 {
-                    _additionalResources.TryAdd(file);
+                    Watcher.Write(() => _additionalResources.Value.TryAdd(file));
                     return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
                 }
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
@@ -218,9 +219,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        System.Console.WriteLine($"Link `{href}` cannot be resolved");
-                        return (Errors.Link.FileNotFound(
-                            new SourceInfo<string>(path, href)), null, query, fragment, linkType);
+                        return (Errors.Link.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, linkType);
                     }
 
                     return (null, file, query, fragment, linkType);

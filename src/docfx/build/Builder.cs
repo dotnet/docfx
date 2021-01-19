@@ -11,22 +11,22 @@ namespace Microsoft.Docs.Build
 {
     internal class Builder
     {
-        private readonly ErrorBuilder _errors;
-        private readonly string _workingDirectory;
+        private readonly ScopedErrorBuilder _errors = new();
+        private readonly ScopedProgressReporter _progressReporter = new();
         private readonly CommandLineOptions _options;
         private readonly Watch<DocsetBuilder[]> _docsets;
         private readonly Package _package;
+        private readonly CredentialProvider? _getCredential;
 
-        public Builder(ErrorBuilder errors, string workingDirectory, CommandLineOptions options, Package package)
+        public Builder(CommandLineOptions options, Package package, CredentialProvider? getCredential = null)
         {
-            _workingDirectory = workingDirectory;
             _options = options;
-            _errors = errors;
             _package = package;
+            _getCredential = getCredential;
             _docsets = new(LoadDocsets);
         }
 
-        public static bool Run(string workingDirectory, CommandLineOptions options, Package? package = null)
+        public static bool Run(CommandLineOptions options, Package? package = null)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -34,9 +34,9 @@ namespace Microsoft.Docs.Build
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray();
 
-            package ??= new LocalPackage(workingDirectory);
+            package ??= new LocalPackage(options.WorkingDirectory);
 
-            new Builder(errors, workingDirectory, options, package).Build(files);
+            new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
 
             Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
             Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
@@ -45,16 +45,16 @@ namespace Microsoft.Docs.Build
             return errors.HasError;
         }
 
-        public void Build(string[]? files = null)
+        public void Build(ErrorBuilder errors, IProgress<string> progressReporter, string[]? files = null)
         {
-            _errors.Clear();
-
             if (files?.Length == 0)
             {
                 return;
             }
 
             using (Watcher.BeginScope())
+            using (_errors.BeginScope(errors))
+            using (_progressReporter.BeginScope(progressReporter))
             {
                 try
                 {
@@ -71,22 +71,29 @@ namespace Microsoft.Docs.Build
 
         private DocsetBuilder[] LoadDocsets()
         {
+            _progressReporter.Report("Loading docsets...");
             var docsets = ConfigLoader.FindDocsets(_errors, _package, _options);
             if (docsets.Length == 0)
             {
-                _errors.Add(Errors.Config.ConfigNotFound(_workingDirectory));
+                _errors.Add(Errors.Config.ConfigNotFound(_options.WorkingDirectory));
             }
 
             return (from docset in docsets
                     let item = DocsetBuilder.Create(
-                        _errors, _workingDirectory, docset.docsetPath, docset.outputPath, _package.CreateSubPackage(docset.docsetPath), _options)
+                        _errors,
+                        docset.docsetPath,
+                        docset.outputPath,
+                        _package.CreateSubPackage(docset.docsetPath),
+                        _options,
+                        _progressReporter,
+                        _getCredential)
                     where item != null
                     select item).ToArray();
         }
 
         private string GetPathToDocset(DocsetBuilder docset, string file)
         {
-            return Path.GetRelativePath(docset.BuildOptions.DocsetPath, Path.Combine(_workingDirectory, file));
+            return Path.GetRelativePath(docset.BuildOptions.DocsetPath, Path.Combine(_options.WorkingDirectory, file));
         }
     }
 }

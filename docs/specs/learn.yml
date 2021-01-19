@@ -95,7 +95,6 @@ outputs:
   module.raw.page.json:
   unit.mta.json:
   unit.raw.page.json:
-  achievement.json:
   full-dependent-list.txt:
   hierarchy.json: |
     {
@@ -932,6 +931,7 @@ outputs:
 # Test: path-trophy-missing, path-achievement-not-found, path-achievement-not-trophy
 # same as: module-badge-missing, module-achievement-not-found, module-achievement-not-badge
 # SDP validation to implement Learn Validation 
+noSingleFile: true
 repos:
   https://github.com/learn/learn-pr:
   - files:
@@ -1071,6 +1071,7 @@ outputs:
 ---
 # Test: unit-duration-missing, unit-multiple-parents, unit-no-module-parent, uid-not-found
 # SDP validation to implement Learn Validation 
+noSingleFile: true
 repos:
   https://github.com/learn/learn-pr:
   - files:

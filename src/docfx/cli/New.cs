@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,27 +12,29 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string s_templatePath = Path.Combine(AppContext.BaseDirectory, "data", "new");
 
-        public static bool Run(string type, CommandLineOptions options)
+        public static bool Run(CommandLineOptions options)
         {
-            if (type == "." || !Directory.Exists(Path.Combine(s_templatePath, type)))
+            var templateName = options.TemplateName;
+
+            if (string.IsNullOrEmpty(templateName) ||
+                !templateName.All(ch => char.IsLetterOrDigit(ch) || ch == '-') ||
+                !Directory.Exists(Path.Combine(s_templatePath, templateName)))
             {
                 ShowTemplates();
-                return false;
+                return true;
             }
 
             if (options.Force)
             {
-                CreateFromTemplate(type, options, dryRun: false);
-                return false;
+                return CreateFromTemplate(templateName, options, dryRun: false);
             }
 
-            if (CreateFromTemplate(type, options, dryRun: true))
+            if (CreateFromTemplate(templateName, options, dryRun: true))
             {
-                CreateFromTemplate(type, options, dryRun: false);
-                return false;
+                return true;
             }
 
-            return true;
+            return CreateFromTemplate(templateName, options, dryRun: false);
         }
 
         private static void ShowTemplates()
@@ -61,19 +64,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool CreateFromTemplate(string type, CommandLineOptions options, bool dryRun)
+        private static bool CreateFromTemplate(string templateName, CommandLineOptions options, bool dryRun)
         {
             var output = options.Output ?? ".";
             var overwriteFiles = new List<string>();
 
-            foreach (var file in Directory.GetFiles(Path.Combine(s_templatePath, type)))
+            foreach (var file in Directory.GetFiles(Path.Combine(s_templatePath, templateName)))
             {
                 if (Path.GetFileName(file).StartsWith("__"))
                 {
                     continue;
                 }
 
-                var target = Path.GetRelativePath(Path.Combine(s_templatePath, type), file);
+                var target = Path.GetRelativePath(Path.Combine(s_templatePath, templateName), file);
                 var targetFullPath = Path.GetFullPath(Path.Combine(output, target));
 
                 if (dryRun)
@@ -94,7 +97,7 @@ namespace Microsoft.Docs.Build
             {
                 if (overwriteFiles.Count <= 0)
                 {
-                    return true;
+                    return false;
                 }
 
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -108,14 +111,16 @@ namespace Microsoft.Docs.Build
                 Console.WriteLine();
                 Console.WriteLine("Rerun the command and pass --force to accept and create.");
                 Console.ResetColor();
-                return false;
+                return true;
             }
 
-            Console.WriteLine($"The template \"{type}\" was created successfully.");
+            Console.WriteLine($"The template \"{templateName}\" was created successfully.");
             Console.WriteLine();
 
             Console.WriteLine($"Restoring dependencies in \"{output}\"");
-            return Restore.Run(output, options);
+
+            options.Directory = output;
+            return Restore.Run(options);
         }
     }
 }

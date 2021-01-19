@@ -18,9 +18,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     /// </remarks>
     public static class InclusionContext
     {
-        private static readonly ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>> t_markupStacks
-                          = new ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>>(
-                                  () => new Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>());
+        private static readonly ThreadLocal<Stack<(object file, HashSet<object> dependencies, Stack<object> inclusionStack)>> s_stack = new(() => new());
 
         /// <summary>
         /// Gets the current file. This is the included file if the engine is currently parsing or rendering an include file.
@@ -29,7 +27,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             get
             {
-                var markupStack = t_markupStacks.Value;
+                var markupStack = s_stack.Value;
                 return markupStack.Count > 0 ? markupStack.Peek().inclusionStack.Peek() : null;
             }
         }
@@ -41,7 +39,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             get
             {
-                var markupStack = t_markupStacks.Value;
+                var markupStack = s_stack.Value;
                 return markupStack.Count > 0 ? markupStack.Peek().file : null;
             }
         }
@@ -53,7 +51,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             get
             {
-                var markupStack = t_markupStacks.Value;
+                var markupStack = s_stack.Value;
                 return markupStack.Count > 0 && markupStack.Peek().inclusionStack.Count > 1;
             }
         }
@@ -65,7 +63,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             get
             {
-                var markupStack = t_markupStacks.Value;
+                var markupStack = s_stack.Value;
                 return markupStack.Count > 0 ? (IEnumerable<object>)markupStack.Peek().dependencies : Array.Empty<object>();
             }
         }
@@ -75,7 +73,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public static IDisposable PushFile(object file)
         {
-            var markupStack = t_markupStacks.Value;
+            var markupStack = s_stack.Value;
             var inclusionStack = new Stack<object>();
             inclusionStack.Push(file);
             markupStack.Push((file, new HashSet<object>(), inclusionStack));
@@ -89,7 +87,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public static IDisposable PushInclusion(object file)
         {
-            var inclusionStack = t_markupStacks.Value.Peek().inclusionStack;
+            var inclusionStack = s_stack.Value.Peek().inclusionStack;
             inclusionStack.Push(file);
 
             return new DelegatingDisposable(() => inclusionStack.Pop());
@@ -100,7 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// </summary>
         public static void PushDependency(object file)
         {
-            t_markupStacks.Value.Peek().dependencies.Add(file);
+            s_stack.Value.Peek().dependencies.Add(file);
         }
 
         /// <summary>
@@ -110,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             dependencyChain = null;
 
-            var markupStack = t_markupStacks.Value;
+            var markupStack = s_stack.Value;
             var inclusionStack = markupStack.Count > 0 ? markupStack.Peek().inclusionStack : null;
             if (inclusionStack != null && inclusionStack.Contains(file))
             {

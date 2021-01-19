@@ -11,7 +11,7 @@ using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContentValidator
+    internal class ContentValidator : ICollectionFactory
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
         // Learn content: "learningpath", "module", "moduleunit"
@@ -27,7 +27,6 @@ namespace Microsoft.Docs.Build
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
         private readonly PublishUrlMap _publishUrlMap;
-        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new();
 
         public ContentValidator(
             Config config,
@@ -48,15 +47,16 @@ namespace Microsoft.Docs.Build
             _validator = new Validator(
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
-                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList));
+                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
+                this);
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
         {
             // validate image link and altText here
-            if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
+            if (TryCreateValidationContext(file, out var validationContext))
             {
-                var item = new Link
+                var item = new LinkNode
                 {
                     UrlLink = link,
                     AltText = altText,
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem)
+        public void ValidateCodeBlock(FilePath file, CodeBlockNode codeBlockItem)
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
@@ -88,9 +88,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateHierarchy(List<HierarchyModel> models)
+        public void ValidateHierarchy(List<HierarchyNode> models)
         {
-            Write(_validator.ValidateHierarchy(models, new ValidationContext { DocumentType = "learn" }).GetAwaiter().GetResult());
+            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                var textItem = new TextItem()
+                var textItem = new TextNode()
                 {
                     Content = content,
                     SourceInfo = new SourceInfo(file),
@@ -255,7 +255,10 @@ namespace Microsoft.Docs.Build
 
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                validationContext.ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups);
+                validationContext = validationContext with
+                {
+                    ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups),
+                };
                 List<(string, object)> usages = zonePivotUsages.Select(u => (u.Value, (object)u.Source!)).ToList();
                 Write(_validator.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
             }
@@ -264,6 +267,11 @@ namespace Microsoft.Docs.Build
         public void PostValidate()
         {
             Write(_validator.PostValidate().GetAwaiter().GetResult());
+        }
+
+        public IProducerConsumerCollection<T> CreateCollection<T>()
+        {
+            return new ScopedConcurrentBag<T>();
         }
 
         private void Write(IEnumerable<ValidationError> validationErrors)

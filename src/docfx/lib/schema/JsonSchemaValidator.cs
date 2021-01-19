@@ -19,9 +19,10 @@ namespace Microsoft.Docs.Build
         private readonly MicrosoftGraphAccessor? _microsoftGraphAccessor;
         private readonly MonikerProvider? _monikerProvider;
         private readonly CustomRuleProvider? _customRuleProvider;
-        private readonly ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)> _metadataBuilder = new();
 
-        private static readonly ThreadLocal<FilePath?> t_filePath = new();
+        private readonly Scoped<ListBuilder<(JsonSchema schema, string key, string moniker, JToken value, SourceInfo? source)>> _metadataBuilder = new();
+
+        private static readonly ThreadLocal<FilePath?> s_filePath = new();
 
         public JsonSchema Schema => _schema;
 
@@ -45,13 +46,13 @@ namespace Microsoft.Docs.Build
             {
                 if (filePath != null)
                 {
-                    t_filePath.Value = filePath;
+                    s_filePath.Value = filePath;
                 }
                 return Validate(_schema, token, schemaMap);
             }
             finally
             {
-                t_filePath.Value = null;
+                s_filePath.Value = null;
             }
         }
 
@@ -737,7 +738,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDocsetUnique(JsonSchema schema, string propertyPath, JObject map)
         {
-            var monikers = _monikerProvider?.GetFileLevelMonikers(ErrorBuilder.Null, t_filePath.Value!).ToList();
+            var monikers = _monikerProvider?.GetFileLevelMonikers(ErrorBuilder.Null, s_filePath.Value!).ToList();
             if (monikers == null || !monikers.Any())
             {
                 // Use empty string as default moniker if content versioning not enabled for this docset
@@ -753,16 +754,16 @@ namespace Microsoft.Docs.Build
                         if (_schema.Rules.TryGetValue(docsetUniqueKey, out var customRules) &&
                             customRules.TryGetValue("duplicate-attribute", out var customRule) && // code of Errors.DuplicateAttribute
                             _customRuleProvider != null &&
-                            t_filePath.Value != null &&
-                            !_customRuleProvider.IsEnable(t_filePath.Value, customRule, moniker))
+                            s_filePath.Value != null &&
+                            !_customRuleProvider.IsEnable(s_filePath.Value, customRule, moniker))
                         {
                             continue;
                         }
-                        else
-                        {
-                            _metadataBuilder.Add(
-                            (schema, JsonUtility.AddToPropertyPath(propertyPath, docsetUniqueKey), moniker, value, JsonUtility.GetSourceInfo(value)));
-                        }
+
+                        var key = JsonUtility.AddToPropertyPath(propertyPath, docsetUniqueKey);
+                        var sourceInfo = JsonUtility.GetSourceInfo(value);
+
+                        Watcher.Write(() => _metadataBuilder.Value.Add((schema, key, moniker, value, sourceInfo)));
                     }
                 }
             }
@@ -770,7 +771,7 @@ namespace Microsoft.Docs.Build
 
         private void PostValidateDocsetUnique(List<Error> errors)
         {
-            var validatedMetadata = _metadataBuilder.AsList();
+            var validatedMetadata = _metadataBuilder.Value.AsList();
             var validatedMetadataGroups = validatedMetadata
                 .Where(k => IsStrictHaveValue(k.value))
                 .GroupBy(
@@ -909,7 +910,7 @@ namespace Microsoft.Docs.Build
                 return CustomRuleProvider.ApplyCustomRule(
                     error,
                     customRule,
-                    t_filePath.Value == null ? null : _customRuleProvider?.IsEnable(t_filePath.Value, customRule));
+                    s_filePath.Value == null ? null : _customRuleProvider?.IsEnable(s_filePath.Value, customRule));
             }
 
             return error;

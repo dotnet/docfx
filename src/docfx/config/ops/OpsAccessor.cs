@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -48,14 +49,16 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
 
-        private readonly Action<HttpRequestMessage> _credentialProvider;
+        private static int s_validationRulesetReported;
+
+        private readonly CredentialHandler _credentialHandler;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new();
 
-        public OpsAccessor(ErrorBuilder errors, Action<HttpRequestMessage> credentialProvider)
+        public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
             _errors = errors;
-            _credentialProvider = credentialProvider;
+            _credentialHandler = credentialHandler;
         }
 
         public async Task<string> GetDocsetInfo(string repositoryUrl)
@@ -138,14 +141,12 @@ namespace Microsoft.Docs.Build
 
         public async Task<string> HierarchyDrySync(string body)
         {
-            using var request = new HttpRequestMessage
+            var response = await SendRequest(() => new HttpRequestMessage
             {
                 RequestUri = new Uri($"{BuildServiceEndpoint()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
                 Method = HttpMethod.Post,
                 Content = new StringContent(body, Encoding.UTF8, "application/json"),
-            };
-
-            var response = await SendRequest(request);
+            });
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
         }
 
@@ -153,10 +154,13 @@ namespace Microsoft.Docs.Build
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
             var url = $"{BuildServiceEndpoint()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
 
-            var response = await SendRequest(request);
+            var response = await SendRequest(() =>
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.TryAddWithoutValidation("Referer", "https://tcexplorer.azurewebsites.net");
+                return request;
+            });
 
             Console.WriteLine("[LearnValidationPlugin] check {0} call: {1}", type, url);
             Console.WriteLine("[LearnValidationPlugin] check {0} result: {1}", type, response.IsSuccessStatusCode);
@@ -171,15 +175,20 @@ namespace Microsoft.Docs.Build
         {
             Debug.Assert(routePath.StartsWith("/"));
             var url = BuildServiceEndpoint(environment) + routePath;
-            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            if (headers != null)
-            {
-                foreach (var (key, value) in headers)
-                {
-                    request.Headers.TryAddWithoutValidation(key, value);
-                }
-            }
-            var response = await SendRequest(request, environment);
+            var response = await SendRequest(
+                () =>
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Get, url);
+                        if (headers != null)
+                        {
+                            foreach (var (key, value) in headers)
+                            {
+                                request.Headers.TryAddWithoutValidation(key, value);
+                            }
+                        }
+                        return request;
+                    },
+                environment);
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -203,13 +212,18 @@ namespace Microsoft.Docs.Build
                        .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
                        .ExecuteAsync(async () =>
                        {
-                           using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                           var response = await SendRequest(
+                               () =>
+                                   {
+                                       var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                           request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
-                           request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
-
-                           var response = await SendRequest(request, environment);
-                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
+                                       request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
+                                       request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
+                                       return request;
+                                   },
+                               environment);
+                           if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
+                               Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
                            {
                                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
                            }
@@ -295,19 +309,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request, DocsEnvironment? environment = null)
+        private async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> httpRequestFactory, DocsEnvironment? environment = null)
         {
-            using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
+            return await _credentialHandler.SendRequest(httpRequestFactory, async request =>
             {
                 // Default header which allows fallback to public data when credential is not provided.
                 request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", true.ToString());
 
-                _credentialProvider?.Invoke(request);
-
                 await FillOpsToken(request, environment);
 
                 return await _http.SendAsync(request);
-            }
+            });
         }
 
         private static string BuildServiceEndpoint(DocsEnvironment? environment = null)
@@ -374,17 +386,13 @@ namespace Microsoft.Docs.Build
                 // For development usage
                 try
                 {
-                    var token = EnvironmentVariable.DocsOpsToken;
-                    if (string.IsNullOrEmpty(token))
+                    var tokenTask = (environment ?? DocsEnvironment) switch
                     {
-                        var tokenTask = (environment ?? DocsEnvironment) switch
-                        {
-                            DocsEnvironment.Prod => s_opsTokenProd,
-                            DocsEnvironment.PPE => s_opsTokenSandbox,
-                            _ => throw new InvalidOperationException(),
-                        };
-                        token = await tokenTask.Value;
-                    }
+                        DocsEnvironment.Prod => s_opsTokenProd,
+                        DocsEnvironment.PPE => s_opsTokenSandbox,
+                        _ => throw new InvalidOperationException(),
+                    };
+                    var token = await tokenTask.Value;
 
                     request.Headers.Add("X-OP-BuildUserToken", token);
                 }

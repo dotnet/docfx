@@ -200,6 +200,7 @@ intellisense
 interop
 interoperability
 iparser
+IProgress
 ipsom
 ipsum
 ipynb
@@ -220,6 +221,7 @@ ituple
 itype
 ivalidation
 ivalidator
+IWork
 ixref
 jarray
 javascript
@@ -533,6 +535,7 @@ dryrun
 bak
 cwe
 dfp
+IRequest
 IRest
 isb
 IValidate
@@ -565,3 +568,19 @@ Quickenshtein
 IFunction
 TChange
 vsthrd
+IAsync
+IDid
+IProducer
+msys
+Arity
+csholmq
+dataprep
+devitpro
+mediaplayer
+powerbi
+roslyn
+smb
+testdata
+vsts
+windowsserverdocs
+csv

@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TocLoader
     {
-        private readonly PathString _docsetPath;
+        private readonly BuildOptions _buildOptions;
         private readonly Input _input;
         private readonly LinkResolver _linkResolver;
         private readonly XrefResolver _xrefResolver;
@@ -27,17 +27,15 @@ namespace Microsoft.Docs.Build
         private readonly IReadOnlyDictionary<string, JoinTOCConfig> _joinTOCConfigs;
         private readonly BuildScope _buildScope;
 
-        private readonly MemoryCache<FilePath, (TocNode, List<FilePath>, List<FilePath>, List<FilePath>)> _cache =
-                     new MemoryCache<FilePath, (TocNode, List<FilePath>, List<FilePath>, List<FilePath>)>();
+        private readonly MemoryCache<FilePath, Watch<(TocNode, List<FilePath>, List<FilePath>, List<FilePath>)>> _cache = new();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
         private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
-        private static readonly AsyncLocal<ImmutableStack<FilePath>> t_recursionDetector =
-                            new AsyncLocal<ImmutableStack<FilePath>> { Value = ImmutableStack<FilePath>.Empty };
+        private static readonly AsyncLocal<ImmutableStack<FilePath>> s_recursionDetector = new();
 
         public TocLoader(
-            PathString docsetPath,
+            BuildOptions buildOptions,
             Input input,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
@@ -49,7 +47,7 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             BuildScope buildScope)
         {
-            _docsetPath = docsetPath;
+            _buildOptions = buildOptions;
             _input = input;
             _linkResolver = linkResolver;
             _xrefResolver = xrefResolver;
@@ -86,17 +84,16 @@ namespace Microsoft.Docs.Build
             return TocHrefType.RelativeFile;
         }
 
-        public (TocNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages)
-            Load(FilePath file)
+        public (TocNode node, List<FilePath> referencedFiles, List<FilePath> referencedTocs, List<FilePath> servicePages) Load(FilePath file)
         {
-            return _cache.GetOrAdd(file, _ =>
+            return _cache.GetOrAdd(file, _ => new(() =>
             {
                 var referencedFiles = new List<FilePath>();
                 var referencedTocs = new List<FilePath>();
                 var (node, servicePages) = LoadTocFile(file, file, referencedFiles, referencedTocs);
 
                 return (node, referencedFiles, referencedTocs, servicePages);
-            });
+            })).Value;
         }
 
         private TocNode JoinToc(TocNode referenceToc, string topLevelTocFilePath, JoinTOCConfig joinTOCConfig)
@@ -113,10 +110,10 @@ namespace Microsoft.Docs.Build
             {
                 // convert href in TopLevelTOC to one that relative to ReferenceTOC
                 var referenceTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.ReferenceToc) ?? ".";
-                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
+                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, referenceTOCRelativeDir));
 
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(joinTOCConfig.TopLevelToc) ?? ".";
-                var topLevelTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, topLevelTOCRelativeDir));
+                var topLevelTOCFullPath = Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, topLevelTOCRelativeDir));
 
                 var hrefFullPath = Path.GetFullPath(Path.Combine(topLevelTOCFullPath, node.Href.Value));
 
@@ -159,9 +156,9 @@ namespace Microsoft.Docs.Build
             var servicePages = new List<FilePath>();
 
             // add to parent path
-            t_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
+            s_recursionDetector.Value ??= ImmutableStack<FilePath>.Empty;
 
-            var recursionDetector = t_recursionDetector.Value!;
+            var recursionDetector = s_recursionDetector.Value!;
             if (recursionDetector.Contains(file))
             {
                 throw Errors.Link.CircularReference(new SourceInfo(file, 1, 1), file, recursionDetector).ToException();
@@ -170,7 +167,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 recursionDetector = recursionDetector.Push(file);
-                t_recursionDetector.Value = recursionDetector;
+                s_recursionDetector.Value = recursionDetector;
 
                 var node = _parser.Parse(file, _errors);
 
@@ -179,16 +176,21 @@ namespace Microsoft.Docs.Build
                 {
                     if (joinTOCConfig.TopLevelToc != null)
                     {
-                        node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
+                        var topLevelTocFullPath = Path.Combine(_buildOptions.DocsetPath, joinTOCConfig.TopLevelToc);
 
-                        // Generate Service Page.
-                        var servicePage = new ServicePageGenerator(_docsetPath, _input, joinTOCConfig, _buildScope, _parser, _errors);
-
-                        foreach (var item in node.Items)
+                        if (File.Exists(topLevelTocFullPath))
                         {
-                            servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                            node = JoinToc(node, joinTOCConfig.TopLevelToc, joinTOCConfig);
+
+                            // Generate Service Page.
+                            var servicePage = new ServicePageGenerator(_buildOptions.DocsetPath, _input, joinTOCConfig, _buildScope, _parser, _errors);
+
+                            foreach (var item in node.Items)
+                            {
+                                servicePage.GenerateServicePageFromTopLevelTOC(item, servicePages);
+                            }
+                            AddOverviewPage(node);
                         }
-                        AddOverviewPage(node);
                     }
                 }
 
@@ -203,7 +205,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_recursionDetector.Value = recursionDetector.Pop();
+                s_recursionDetector.Value = recursionDetector.Pop();
             }
         }
 

@@ -21,10 +21,17 @@ namespace Microsoft.Docs.Build
 
         public static ExternalXrefMap Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
-            using (Progress.Start("Loading xref map"))
-            {
-                return new ExternalXrefMap(config.Xref.AsParallel().AsOrdered().Select(url => LoadXrefMap(errors, fileResolver, url)));
-            }
+            using var scope = Progress.Start("Loading xref map");
+
+            var xrefMaps = new ExternalXrefMap[config.Xref.Length];
+
+            ParallelUtility.ForEach(
+                scope,
+                errors,
+                Enumerable.Range(0, xrefMaps.Length),
+                i => xrefMaps[i] = LoadXrefMap(errors, fileResolver, config.Xref[i]));
+
+            return new ExternalXrefMap(xrefMaps);
         }
 
         internal static ExternalXrefMap LoadJsonFile(
@@ -161,25 +168,15 @@ namespace Microsoft.Docs.Build
                             }
                             else if (string.IsNullOrEmpty(repositoryUrl) && reader.ValueTextEquals(s_repositoryUrlBytes) && reader.Read())
                             {
-                                if (reader.TokenType == JsonTokenType.String)
-                                {
-                                    repositoryUrl = Encoding.UTF8.GetString(reader.ValueSpan);
-                                }
-                                else
-                                {
-                                    throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
-                                }
+                                repositoryUrl = reader.TokenType == JsonTokenType.String
+                                    ? Encoding.UTF8.GetString(reader.ValueSpan)
+                                    : throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
                             }
                             else if (string.IsNullOrEmpty(docsetName) && reader.ValueTextEquals(s_docsetNameBytes) && reader.Read())
                             {
-                                if (reader.TokenType == JsonTokenType.String)
-                                {
-                                    docsetName = Encoding.UTF8.GetString(reader.ValueSpan);
-                                }
-                                else
-                                {
-                                    throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
-                                }
+                                docsetName = reader.TokenType == JsonTokenType.String
+                                    ? Encoding.UTF8.GetString(reader.ValueSpan)
+                                    : throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
                             }
                         }
                         break;
@@ -209,11 +206,11 @@ namespace Microsoft.Docs.Build
         private static string ReadJsonFragment(Stream stream, long start, long end)
         {
             var offset = 0;
-            var bytesRead = 0;
             var bytesToRead = (int)(end - start);
             var bytes = new byte[bytesToRead];
             stream.Position = start;
 
+            int bytesRead;
             while (bytesToRead > 0 && (bytesRead = stream.Read(bytes, offset, bytesToRead)) > 0)
             {
                 offset += bytesRead;

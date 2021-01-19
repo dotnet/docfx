@@ -13,14 +13,17 @@ namespace Microsoft.Docs.Build
         // NOTE: This line assumes each build runs in a new process
         private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories = new();
 
+        private readonly ErrorBuilder _errors;
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
         private readonly Repository? _repository;
         private readonly FileResolver _fileResolver;
 
-        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
+        public PackageResolver(
+            ErrorBuilder errors, string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
         {
+            _errors = errors;
             _docsetPath = docsetPath;
             _config = config;
             _fetchOptions = fetchOptions;
@@ -102,7 +105,11 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(gitPath))
             {
-                DeleteIfExist(gitDocfxHead);
+                if (File.Exists(gitDocfxHead))
+                {
+                    File.Delete(gitDocfxHead);
+                }
+
                 using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                 {
                     InitFetchCheckoutGitRepository(gitPath, url, committish, depthOne);
@@ -126,15 +133,15 @@ namespace Microsoft.Docs.Build
             var fetchOption = "--update-head-ok --prune --force";
             var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
 
+            // Remove git lock files if previous build was killed during git operation
+            DeleteLockFiles(Path.Combine(cwd, ".git"));
+
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
             GitUtility.AddRemote(cwd, "origin", url);
 
-            // Remove git lock files if previous build was killed during git operation
-            DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
-            DeleteIfExist(Path.Combine(cwd, ".git/shallow.lock"));
-
             var succeeded = false;
+            var branchUsed = committish;
             foreach (var branch in GitUtility.GetFallbackBranch(committish))
             {
                 try
@@ -145,7 +152,7 @@ namespace Microsoft.Docs.Build
                     }
                     GitUtility.Fetch(_config, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
                     succeeded = true;
-                    committish = branch;
+                    branchUsed = branch;
                     break;
                 }
                 catch (InvalidOperationException)
@@ -171,13 +178,18 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            if (branchUsed != committish)
+            {
+                _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish, branchUsed));
+            }
+
             try
             {
-                GitUtility.Checkout(cwd, committish, "--force");
+                GitUtility.Checkout(cwd, branchUsed, "--force");
             }
             catch (InvalidOperationException ex)
             {
-                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
+                throw Errors.Config.CommittishNotFound(url, branchUsed).ToException(ex);
             }
         }
 
@@ -250,11 +262,14 @@ namespace Microsoft.Docs.Build
             return new PathString(Path.Combine(AppData.GitRoot, $"{PathUtility.UrlToShortName(url)}-{branch}"));
         }
 
-        private static void DeleteIfExist(string path)
+        private static void DeleteLockFiles(string path)
         {
-            if (File.Exists(path))
+            if (Directory.Exists(path))
             {
-                File.Delete(path);
+                foreach (var file in Directory.GetFiles(path, "*.lock"))
+                {
+                    File.Delete(file);
+                }
             }
         }
     }

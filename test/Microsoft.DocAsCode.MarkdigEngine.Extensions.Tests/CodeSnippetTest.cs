@@ -683,7 +683,7 @@ public static void Foo()
    }
 }";
 
-            const string expected = @"<table>
+            const string Expected = @"<table>
 <thead>
 <tr>
 <th>Code in table</th>
@@ -738,7 +738,7 @@ public static void Foo()
 </tbody>
 </table>
 ";
-            TestUtility.VerifyMarkup(root, expected, files: new Dictionary<string, string>
+            TestUtility.VerifyMarkup(root, Expected, files: new Dictionary<string, string>
             {
                 { "api.json", apiJsonContent },
             });

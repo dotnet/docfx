@@ -91,3 +91,197 @@ inputs:
   b.png.md:
   b.png:
 outputs:
+---
+# Isolate bookmark validation state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      a.md: "[](b.md#anchor-missing)"
+      b.md: "## anchor"
+  - expectDiagnostics: 
+      a.md: [{ "code": "bookmark-not-found" }]
+  - editFiles:
+      a.md: "[](b.md#anchor)"
+  - expectDiagnostics: 
+      a.md: []
+  - editFiles:
+      b.md: "## anchor-1"
+  - expectDiagnostics: 
+      a.md: [{ "code": "bookmark-not-found" }]
+---
+# Isolate metadata state between builds
+languageServer:
+  - openFiles:
+      docfx.yml: |
+        globalMetadata:
+          title: {}
+      a.md:
+  - expectDiagnostics:
+      docfx.yml: [{ "code": "violate-schema" }]
+  - editFiles:
+      docfx.yml:
+      a.md: |
+        ---
+        title: {}
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "violate-schema" }]
+---
+# Isolate xref state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      a.md: |
+        ---
+        uid: a
+        ---
+      b.md: '<xref:a>'
+  - expectDiagnostics:
+      b.md: []
+  - editFiles:
+      a.md: |
+        ---
+        uid: a-changed
+        ---
+  - expectDiagnostics:
+      b.md: [{ "code": "xref-not-found" }]
+  - editFiles:
+      b.md: '<xref:a-changed>'
+  - expectDiagnostics:
+      b.md: []
+---
+# Isolate YAML state between builds
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "xref" },
+        "markdown": { "contentType": "markdown" }
+      },
+      "required": ["markdown"]
+    }
+languageServer:
+  - openFiles:
+      a.yml: |
+        #YamlMime:TestData
+        uid: a
+        xref: b
+        markdown: md1
+      b.yml: |
+        #YamlMime:TestData
+        uid: b
+        xref: a
+        markdown: md2
+  - expectDiagnostics:
+      a.yml: []
+      b.yml: []
+  - editFiles:
+      a.yml: |
+        #YamlMime:TestData
+        uid: a-changed
+        xref: b-changed
+      b.yml: |
+        #YamlMime:TestData
+        markdown: '[!include[](a.md)]'
+  - expectDiagnostics:
+      a.yml: [{ "code": "missing-attribute" }, { "code": "xref-not-found" }]
+      b.yml: [{ "code": "include-not-found" }]
+---
+# Isolate TOC state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      TOC.yml: |
+        items:
+        - href: b.md
+      a.md:
+  - expectDiagnostics:
+      TOC.yml: [{ "code": "file-not-found" }, { "code": "missing-attribute" }]
+  - editFiles:
+      TOC.yml: |
+        items:
+        - href: a.md
+          name: a
+  - expectDiagnostics:
+      TOC.yml: []
+---
+# Isolate metadata validation state between builds
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { "docsetUnique": ["title"] }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: a
+        ---
+      b.md: |
+        ---
+        title: a
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-attribute" }]
+      b.md: [{ "code": "duplicate-attribute" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: []
+      b.md: []
+---
+# Isolate unique validation state between builds
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "message": "Title '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "exclusions": [
+              "includes",
+              "landingPage",
+              "hubPage",
+              "toc"
+            ]
+          }
+        ]
+      }
+    }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: title 1
+        ---
+      b.md: |
+        ---
+        title: title 1
+        ---
+      c.md: |
+        ---
+        title: title 1
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-titles" }]
+      b.md: [{ "code": "duplicate-titles" }]
+      c.md: [{ "code": "duplicate-titles" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-titles" , "message": "Title 'title 1' is duplicated with other articles: 'a.md(2,8), c.md(2,8)'" }]
+      b.md: []
+      c.md: [{ "code": "duplicate-titles" , "message": "Title 'title 1' is duplicated with other articles: 'a.md(2,8), c.md(2,8)'" }]

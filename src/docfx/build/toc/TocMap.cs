@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
         private readonly PublishUrlMap _publishUrlMap;
 
-        private readonly Lazy<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
+        private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
         public TocMap(
             Config config,
@@ -84,14 +84,14 @@ namespace Microsoft.Docs.Build
         /// </summary>
         internal FilePath? FindNearestToc(FilePath file)
         {
-            var result = FindNearestToc(
+            var (toc, hasReferencedTocs) = FindNearestToc(
                 file,
                 _tocs.Value.tocs,
                 _tocs.Value.docToTocs,
                 file => file.Path);
 
-            _contentValidator.ValidateTocMissing(file, result.hasReferencedTocs);
-            return result.toc;
+            _contentValidator.ValidateTocMissing(file, hasReferencedTocs);
+            return toc;
         }
 
         /// <summary>

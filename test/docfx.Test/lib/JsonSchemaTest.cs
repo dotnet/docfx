@@ -432,9 +432,9 @@ namespace Microsoft.Docs.Build
             var payloads = Enumerable.Range(0, jsons.Length).Select(i => (meta: JsonUtility.Parse(new ErrorList(), jsons[i].Replace('\'', '"'), new($"file{i + 1}")), filepath: new FilePath($"file{i + 1}")));
             var jsonSchemaValidator = new JsonSchemaValidator(jsonSchema, null);
 
-            foreach (var payload in payloads)
+            foreach (var (meta, filepath) in payloads)
             {
-                jsonSchemaValidator.Validate(payload.meta, payload.filepath);
+                jsonSchemaValidator.Validate(meta, filepath);
             }
 
             var errors = jsonSchemaValidator.PostValidate();

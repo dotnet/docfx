@@ -15,6 +15,8 @@ namespace Microsoft.Docs.Build
 
         public bool NoDryRun { get; set; }
 
+        public bool NoSingleFile { get; set; }
+
         public bool DryRunOnly { get; set; }
 
         public bool NoDrySync { get; set; } = true;
@@ -26,6 +28,8 @@ namespace Microsoft.Docs.Build
         public bool Temp { get; set; }
 
         public bool UsePhysicalInput { get; set; }
+
+        public bool NoCache { get; set; }
 
         public string Locale { get; set; }
 

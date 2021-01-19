@@ -19,7 +19,19 @@ namespace Microsoft.Docs.Build
 
         private static readonly HashSet<string> s_globalAllowedAttributes = new(StringComparer.OrdinalIgnoreCase)
         {
-            "name", "id", "class", "itemid", "itemprop", "itemref", "itemscope", "itemtype", "part", "slot", "spellcheck", "title", "role",
+            "name",
+            "id",
+            "class",
+            "itemid",
+            "itemprop",
+            "itemref",
+            "itemscope",
+            "itemtype",
+            "part",
+            "slot",
+            "spellcheck",
+            "title",
+            "role",
         };
 
         // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
@@ -104,18 +116,18 @@ namespace Microsoft.Docs.Build
             { "strike", null },
         };
 
-        private static string[] s_inlineTags = new[]
-            {
-                "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
-                "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
-                "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
-                "var", "video", "wbr",
-            };
+        private static readonly string[] s_inlineTags = new[]
+        {
+            "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
+            "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
+            "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
+            "var", "video", "wbr",
+        };
 
-        private static string[] s_selfClosingTags = new[]
-            {
-                "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
-            };
+        private static readonly string[] s_selfClosingTags = new[]
+        {
+            "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
+        };
 
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
@@ -316,7 +328,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (attribute.NameIs("data-throw-if-not-resolved"))
                 {
-                    suppressXrefNotFound = bool.TryParse(attribute.Value.Span, out var warn) ? !warn : false;
+                    suppressXrefNotFound = bool.TryParse(attribute.Value.Span, out var warn) && !warn;
                 }
             }
 
@@ -365,13 +377,9 @@ namespace Microsoft.Docs.Build
                     }
                     continue;
                 }
-                else if (value.Type == JTokenType.Boolean)
-                {
-                    content = (bool)value ? "true" : "false";
-                }
                 else
                 {
-                    content = value.ToString();
+                    content = value.Type == JTokenType.Boolean ? (bool)value ? "true" : "false" : value.ToString();
                 }
 
                 result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(content)}\" />");
