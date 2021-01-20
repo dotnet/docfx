@@ -14,12 +14,7 @@ inputs:
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -64,12 +59,7 @@ inputs:
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
             "severity": "WARNING",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -114,12 +104,7 @@ inputs:
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
             "severity": "ERROR",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -188,12 +173,7 @@ inputs:
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -235,12 +215,7 @@ inputs:
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }

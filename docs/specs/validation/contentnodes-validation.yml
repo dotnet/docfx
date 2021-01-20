@@ -15,15 +15,7 @@ inputs:
             "message": "The tabbed conceptual syntax is deprecated and should not be added to this repository.",
             "code": "tabbed-conceptual-not-allowed",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc",
-              "redirection",
-              "inclusion",
-              "conceptual"
-            ]
+            "contentTypes": ["learningpath"]
           }
         ]
       }

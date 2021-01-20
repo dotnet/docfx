@@ -306,7 +306,7 @@ namespace Microsoft.Docs.Build
             documentType = _documentProvider.GetPageType(file);
             if (isInclude && documentType == "conceptual")
             {
-                documentType = "includes";
+                documentType = "include";
                 return true;
             }
 
