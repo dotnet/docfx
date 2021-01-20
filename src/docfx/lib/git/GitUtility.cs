@@ -252,13 +252,13 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var gitConfigs = (
+            var (cmd, secret) = (
                 from http in config.Http
                 where url.StartsWith(http.Key)
                 from header in http.Value.Headers
-                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
+                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
 
-            return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
+            return (cmd, new string[] { secret });
 
             static string GetSecretFromHeader(KeyValuePair<string, string> header)
             {

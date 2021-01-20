@@ -122,7 +122,7 @@ inputs:
           {
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
-            "exclusions": [],
+            "contentTypes": ["conceptual"],
             "severity": "WARNING",
             "code": "h1-missing"
           }

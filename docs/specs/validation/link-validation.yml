@@ -12,12 +12,7 @@ inputs:
             "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -90,12 +85,7 @@ inputs:
             "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -162,12 +152,7 @@ inputs:
             "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
             "code": "image-alt-text-duplicated",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -212,12 +197,7 @@ inputs:
             "message": "Missing alternate text for image with link '{0}'. AltText is required for accessibility.",
             "code": "missing-image-altText",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -262,12 +242,7 @@ inputs:
             "message": "AltText {0} is out of range at {1} characters. AltText must be between {2} and {3} characters.",
             "code": "image-altText-with-badlength",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ],
+            "contentTypes": ["conceptual"],
             "minAltTextLength": 10,
             "maxAltTextLength": 20
           }
@@ -317,12 +292,7 @@ inputs:
             "message": "AltText {0} is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
             "code": "altText-equal-filename",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -367,12 +337,7 @@ inputs:
             "message": "Image '{0}' is inline with text.",
             "code": "image-inline",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -430,12 +395,7 @@ inputs:
             "message": "Redirected link '{0}' will be broken in isolated environments. Replace with a relative link.",
             "code": "redirected-link",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ],
+            "contentTypes": ["conceptual"],
             "linkTypes": [
                "aka.ms", 
                "FWLinks"
