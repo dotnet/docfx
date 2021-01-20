@@ -796,6 +796,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error RepositoryOwnerPermissionInsufficient(string? repoOwner, string? dependentRepoOrg, string? dependentRepoName, string dependentRepoUrl)
                 => new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", $"Docs Build cannot access CRR repo {dependentRepoUrl} using the access token from user {repoOwner} because {repoOwner} does not have Read access to the CRR repo. Please ask {repoOwner} to contact the admins of the CRR repo {dependentRepoUrl} to get Read permission. Don't know who to contact? This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/");
+
+            /// <summary>
+            /// The branch used to reference the dependency repository doesn't match the real used branch
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DependencyRepositoryBranchNotMatch(string repoUrl, string branch, string fallbackBranch)
+                => new Error(ErrorLevel.Suggestion, "dependency-repository-branch-not-match", $"The branch({branch}) used to reference in the dependency repository '{repoUrl}' does not match. Please confirm with cross reference repo and update '{branch}' to '{fallbackBranch}' in this repo config file.");
         }
 
         public static class Template
