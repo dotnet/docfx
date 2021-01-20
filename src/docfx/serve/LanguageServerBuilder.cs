@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerBuilder
     {
+        private const int DebounceTimeout = 500;
+
         private readonly ILogger _logger;
         private readonly Builder _builder;
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
@@ -93,7 +95,7 @@ namespace Microsoft.Docs.Build
             {
                 while (true)
                 {
-                    using var timeout = new CancellationTokenSource(1000);
+                    using var timeout = new CancellationTokenSource(DebounceTimeout);
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();
