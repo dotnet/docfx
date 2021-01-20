@@ -12,7 +12,7 @@ inputs:
           {
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
-            "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
+            "contentTypes": ["conceptual"],
             "severity": "WARNING",
             "code": "h1-missing"
           }
@@ -40,7 +40,7 @@ inputs:
           {
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
-            "exclusions": [],
+            "contentTypes": ["conceptual"],
             "severity": "WARNING",
             "code": "h1-missing"
           }
@@ -81,11 +81,7 @@ inputs:
             "message": "Bad {0} format. Use hashes to create H1(#) or H2(##)",
             "code": "headings-with-underline",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -147,12 +143,7 @@ inputs:
             "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
             "code": "heading-skipped",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -237,12 +228,7 @@ inputs:
             "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
             "code": "heading-skipped",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -293,12 +279,7 @@ inputs:
             "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
             "code": "heading-skipped",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -348,12 +329,7 @@ inputs:
             "message": "Skipped heading: {0} followed by heading: {1}. Headings must increment with no skipped levels",
             "code": "heading-skipped",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -407,11 +383,7 @@ inputs:
             "message": "H1 headings aren't allowed in included files. Every parent file should have an H1.",
             "code": "h1-in-include",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -448,11 +420,7 @@ inputs:
             "message": "Empty {0}. Headings must have content.",
             "code": "heading-empty",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -507,12 +475,7 @@ inputs:
             "message": "{0} contains no content. Add content or remove the unused heading.",
             "code": "heading-no-content",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -568,12 +531,7 @@ inputs:
             "message": "{0} contains no content. Add content or remove the unused heading.",
             "code": "heading-no-content",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -612,11 +570,7 @@ inputs:
             "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -724,11 +678,7 @@ inputs:
             "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -781,11 +731,7 @@ inputs:
             "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "WARNING",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -818,12 +764,7 @@ inputs:
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading",
             "code": "h1-missing",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -874,12 +815,7 @@ inputs:
             "message": "H1 in zone '{0}'. H1 is only allowed in Docs zones.",
             "code": "h1-in-zone",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -945,12 +881,7 @@ inputs:
             "message": "Multiple H1s are not allowed. You can only have one top-level heading",
             "code": "multiple-h1s",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -1068,12 +999,7 @@ inputs:
             "message": "H1 '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-h1",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ],
+            "contentTypes": ["conceptual"],
             "canonicalVersionOnly": true
           }
         ]
@@ -1139,12 +1065,7 @@ inputs:
             "message": "H1 '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-h1",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ],
+            "contentTypes": ["conceptual"],
             "canonicalVersionOnly": true
           }
         ]
@@ -1231,12 +1152,7 @@ inputs:
             "message": "H1 '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-h1",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ],
+            "contentTypes": ["conceptual"],
             "canonicalVersionOnly": true
           }
         ]
@@ -1270,12 +1186,7 @@ inputs:
             "code": "disallowed-heading",
             "severity": "SUGGESTION",
             "disallowed": ["Feedback", "Is this page helpful?"],
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -1312,12 +1223,7 @@ inputs:
             "message": "H1s are not allowed in moniker sections. Each article should have one and only one H1.",
             "code": "h1-in-moniker",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -1351,12 +1257,7 @@ inputs:
             "message": "H1 '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-h1",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -1391,12 +1292,7 @@ inputs:
             "message": "Duplicate heading: {0}. Each heading in an article must be unique.",
             "code": "h2-duplicated",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -1430,12 +1326,7 @@ inputs:
             "message": "H1 '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-h1",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -1481,12 +1372,7 @@ inputs:
             "message": "Duplicate heading: {0}.",
             "code": "h2-duplicated",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes", 
-              "landingpage", 
-              "hubpage", 
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }

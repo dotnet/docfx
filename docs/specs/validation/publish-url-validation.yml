@@ -34,13 +34,7 @@ inputs:
             "message": "Article URL '{0}' is '{1}' levels deep. For SEO, URLs should be '{2}' levels or fewer.",
             "code": "path-too-deep",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc",
-              "redirection"
-            ],
+            "contentTypes": ["conceptual"],
             "maxLevel": 4
           }
         ]
@@ -103,13 +97,7 @@ inputs:
             "message": "Article URL '{0}' contains duplicated text '{1}'. For SEO, article URLs should not contain duplication.",
             "code": "path-duplication",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "inclusion",
-              "landingpage",
-              "hubpage",
-              "toc",
-              "redirection"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }

@@ -680,10 +680,7 @@ inputs:
           {
             "type": "ImageAltTextBadLength",
             "message": "Alt text {0} is out of range at {1} characters. Alt text must be between {2} and {3} characters.",
-            "exclusions": [
-              "hubpage",
-              "landingpage"
-            ],
+            "contentTypes": ["moduleunit"],
             "severity": "SUGGESTION",
             "code": "alt-text-bad-length",
             "disabled": false,
