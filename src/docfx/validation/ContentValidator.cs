@@ -17,7 +17,7 @@ namespace Microsoft.Docs.Build
         // Learn content: "learningpath", "module", "moduleunit"
         private static readonly string[] s_supportedPageTypes =
         {
-            "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups", "post",
+            "conceptual", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups", "post",
         };
 
         private readonly Config _config;
@@ -298,17 +298,7 @@ namespace Microsoft.Docs.Build
 
         private bool TryGetValidationDocumentType(FilePath file, [NotNullWhen(true)] out string? documentType)
         {
-            return TryGetValidationDocumentType(file, false, out documentType);
-        }
-
-        private bool TryGetValidationDocumentType(FilePath file, bool isInclude, [NotNullWhen(true)] out string? documentType)
-        {
             documentType = _documentProvider.GetPageType(file);
-            if (isInclude && documentType == "conceptual")
-            {
-                documentType = "include";
-                return true;
-            }
 
             return documentType != null && s_supportedPageTypes.Contains(documentType);
         }
