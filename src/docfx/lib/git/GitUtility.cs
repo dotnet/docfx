@@ -245,7 +245,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string cmd, string? secret) GetGitCommandLineConfig(string url, PreloadConfig config)
+        private static (string? cmd, string? secret) GetGitCommandLineConfig(string url, PreloadConfig config)
         {
             if (config is null)
             {
