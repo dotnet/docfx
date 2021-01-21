@@ -253,9 +253,7 @@ namespace Microsoft.Docs.Build
             }
 
             var (cmd, secret) = (
-                from http in config.Http
-                where url.StartsWith(http.Key)
-                from header in http.Value.Headers
+                from header in config.GetHttpConfig(url)?.Headers
                 select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
 
             return (cmd, secret);
