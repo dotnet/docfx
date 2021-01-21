@@ -252,10 +252,15 @@ namespace Microsoft.Docs.Build
                 return default;
             }
 
-            var (cmd, secret) = (
-                from header in config.GetHttpConfig(url)?.Headers
-                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
+            var httpConfig = config.GetHttpConfig(url);
+            if (httpConfig is null)
+            {
+                return default;
+            }
 
+            var (cmd, secret) = (
+                from header in httpConfig.Headers
+                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
             return (cmd, secret);
 
             static string GetSecretFromHeader(KeyValuePair<string, string> header)
