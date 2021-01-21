@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
         public static void SanitizeErrorMessage()
         {
             var ex = Assert.Throws<InvalidOperationException>(
-                () => ProcessUtility.Execute("git", "rev-pa", secrets: new[] { "rev" }));
+                () => ProcessUtility.Execute("git", "rev-pa", secret: "rev"));
 
             Assert.DoesNotContain("rev", ex.Message);
             Assert.Contains("***", ex.Message);

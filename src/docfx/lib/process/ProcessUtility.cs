@@ -6,7 +6,6 @@ using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,9 +19,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string[]? secrets = null)
+        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null)
         {
-            var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
+            var sanitizedCommandLineArgs = secret != null ? HideSecret(commandLineArgs, secret) : commandLineArgs;
 
             using (PerfScope.Start($"Executing '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'"))
             {
@@ -51,7 +50,7 @@ namespace Microsoft.Docs.Build
                 if (process.ExitCode != 0)
                 {
                     var errorData = error.ToString();
-                    var sanitizedErrorData = secrets != null ? secrets.Aggregate(errorData, HideSecrets) : errorData;
+                    var sanitizedErrorData = secret != null ? HideSecret(errorData, secret) : errorData;
 
                     throw new InvalidOperationException(
                         $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: " +
@@ -61,7 +60,7 @@ namespace Microsoft.Docs.Build
                 return result.ToString();
             }
 
-            static string HideSecrets(string arg, string secret)
+            static string HideSecret(string arg, string secret)
             {
                 return arg.Replace(secret, secret.Length > 10 ? secret[0..3] + "***" + secret[^3..] : "***");
             }
