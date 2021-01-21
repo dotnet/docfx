@@ -256,7 +256,7 @@ namespace Microsoft.Docs.Build
                 from http in config.Http
                 where url.StartsWith(http.Key)
                 from header in http.Value.Headers
-                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
+                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).LastOrDefault();
 
             return (cmd, new string[] { secret });
 
