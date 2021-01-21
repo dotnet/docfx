@@ -82,6 +82,7 @@ cwd
 daringfireball
 datalist
 datetime
+debounce
 dedent
 dedup
 dependencymap
