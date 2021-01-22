@@ -14,7 +14,12 @@ namespace Microsoft.Docs.Build
     {
         public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, Package package, Repository? repository)
         {
-            var opDirRelativeToPackage = Path.GetRelativePath(package.BasePath, repository?.Path ?? package.BasePath);
+            if (repository is null)
+            {
+                return default;
+            }
+
+            var opDirRelativeToPackage = Path.GetRelativePath(package.BasePath, repository.Path);
             var fullPath = new PathString(Path.Combine(package.BasePath, opDirRelativeToPackage, ".openpublishing.publish.config.json"));
             if (!package.Exists(fullPath))
             {

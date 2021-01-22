@@ -48,9 +48,6 @@ namespace Microsoft.Docs.Build
             Package package,
             CredentialProvider? getCredential = null)
         {
-            // load and trace entry repository
-            Telemetry.SetRepository(repository?.Url, repository?.Branch);
-
             var docfxConfig = LoadConfig(errors, package);
             if (docfxConfig is null)
             {
