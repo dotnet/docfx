@@ -884,3 +884,18 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":".openpublishing.redirection.json","line":2,"column":67}
     {"message_severity":"warning","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":"a/b/.openpublishing.redirection.json","line":2,"end_column":60}
+---
+# File not found for a registered redirection file2.
+repos:
+  https://github.com/redirection/multiple-redirection-files-file-not-found2:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": "a/b/.openpublishing.redirection.test.json",
+        }
+      a/docfx.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[System.String]'.","file":".openpublishing.publish.config.json","line":3,"column":66}
+    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[System.String]'.","file":".openpublishing.publish.config.json","line":3,"column":66,}
