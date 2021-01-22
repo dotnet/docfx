@@ -281,4 +281,4 @@ repos:
 outputs:
   .errors.log: |
     {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66}
-    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66,}
+    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66}
