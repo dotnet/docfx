@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
 
             var (http, secret) = GetGitCommandLineConfig(url, config);
 
-            ExecuteNonQuery(path, $"{http} fetch --progress {options} \"{url}\" {refspecs}", secret);
+            ExecuteNonQuery(path, $"{http} -c core.longpaths=true fetch --progress {options} \"{url}\" {refspecs}", secret);
         }
 
         /// <summary>
