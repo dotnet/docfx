@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerBuilder
     {
+        private const int DebounceTimeout = 500;
+
         private readonly ILogger _logger;
         private readonly Builder _builder;
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
@@ -93,7 +95,7 @@ namespace Microsoft.Docs.Build
             {
                 while (true)
                 {
-                    using var timeout = new CancellationTokenSource(1000);
+                    using var timeout = new CancellationTokenSource(DebounceTimeout);
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();
@@ -119,8 +121,7 @@ namespace Microsoft.Docs.Build
         {
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupByFile = from error in errors
-                                         let source = error.Source
-                                         where source != null
+                                         let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
             foreach (var diagnostics in diagnosticsGroupByFile)

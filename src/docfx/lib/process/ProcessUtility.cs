@@ -6,7 +6,6 @@ using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,10 +19,9 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Start a new process and wait for its execution to complete
         /// </summary>
-        public static string Execute(
-            string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, bool shellExecute = false, string[]? secrets = null)
+        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null)
         {
-            var sanitizedCommandLineArgs = secrets != null ? secrets.Aggregate(commandLineArgs, HideSecrets) : commandLineArgs;
+            var sanitizedCommandLineArgs = secret != null ? HideSecret(commandLineArgs, secret) : commandLineArgs;
 
             using (PerfScope.Start($"Executing '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'"))
             {
@@ -32,43 +30,27 @@ namespace Microsoft.Docs.Build
                     FileName = fileName,
                     WorkingDirectory = cwd ?? ".",
                     Arguments = commandLineArgs,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = stdout,
+                    RedirectStandardError = true,
                 };
-
-                if (shellExecute)
-                {
-                    psi.UseShellExecute = true;
-                    psi.CreateNoWindow = true;
-                    psi.WindowStyle = ProcessWindowStyle.Hidden;
-                }
-                else
-                {
-                    psi.RedirectStandardOutput = true;
-                    psi.RedirectStandardError = true;
-                }
 
                 using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
 
                 var error = new StringBuilder();
                 var result = new StringBuilder();
 
-                if (shellExecute)
-                {
-                    process.WaitForExit();
-                }
-                else
-                {
-                    var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
-                    var pipeOutput = stdout
-                        ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
-                        : Task.Run(() => PipeStream(process.StandardOutput, Console.Out));
+                var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
+                var pipeOutput = stdout
+                    ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
+                    : Task.CompletedTask;
 
-                    Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
-                }
+                Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
 
                 if (process.ExitCode != 0)
                 {
                     var errorData = error.ToString();
-                    var sanitizedErrorData = secrets != null ? secrets.Aggregate(errorData, HideSecrets) : errorData;
+                    var sanitizedErrorData = secret != null ? HideSecret(errorData, secret) : errorData;
 
                     throw new InvalidOperationException(
                         $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: " +
@@ -78,7 +60,7 @@ namespace Microsoft.Docs.Build
                 return result.ToString();
             }
 
-            static string HideSecrets(string arg, string secret)
+            static string HideSecret(string arg, string secret)
             {
                 return arg.Replace(secret, secret.Length > 10 ? secret[0..3] + "***" + secret[^3..] : "***");
             }

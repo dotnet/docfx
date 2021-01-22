@@ -78,15 +78,17 @@ outputs:
 # Publish manifest contains theme_branch if template branch is not main or master
 repos:
   https://docs.com/markdown-note:
-  - files:
-      docsets.yml:
-      a/docfx.yml: 'template: https://docs.com/template#master'
-      b/docfx.yml: 'template: https://docs.com/template#main'
-      c/docfx.yml: 'template: https://docs.com/template#test'
+    - files:
+        docsets.yml:
+        a/docfx.yml: 'template: https://docs.com/template#master'
+        b/docfx.yml: 'template: https://docs.com/template#main'
+        c/docfx.yml: 'template: https://docs.com/template#test'
   https://docs.com/template#main:
-  - files:
+    - files:
+  https://docs.com/template#master:
+    - files:
   https://docs.com/template#test:
-  - files:
+    - files:
 outputs:
   a/.publish.json: '{"theme_branch": undefined}'
   b/.publish.json: '{"theme_branch": undefined}'

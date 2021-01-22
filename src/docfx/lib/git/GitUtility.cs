@@ -18,8 +18,6 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal static partial class GitUtility
     {
-        internal static bool ForceShellExecute { get; set; }
-
         public static PathString? FindRepository(string? path)
         {
             var repoPath = path;
@@ -159,9 +157,9 @@ namespace Microsoft.Docs.Build
             // Allow test to proxy remotes to local folder
             url = TestQuirks.GitRemoteProxy?.Invoke(url) ?? url;
 
-            var (http, secrets) = GetGitCommandLineConfig(url, config);
+            var (http, secret) = GetGitCommandLineConfig(url, config);
 
-            ExecuteNonQuery(path, $"{http} fetch --progress {options} \"{url}\" {refspecs}", secrets);
+            ExecuteNonQuery(path, $"{http} fetch --progress {options} \"{url}\" {refspecs}", secret);
         }
 
         /// <summary>
@@ -225,12 +223,12 @@ namespace Microsoft.Docs.Build
             return Regex.Replace(url, @"^((http|https):\/\/)([^\/\s]+@)?([\S]+?)(\.git)?$", "$1$4");
         }
 
-        private static void ExecuteNonQuery(string cwd, string commandLineArgs, string[]? secrets = null)
+        private static void ExecuteNonQuery(string cwd, string commandLineArgs, string? secret = null)
         {
-            Execute(cwd, commandLineArgs, stdout: false, secrets);
+            Execute(cwd, commandLineArgs, stdout: false, secret);
         }
 
-        private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string[]? secrets = null)
+        private static string Execute(string cwd, string commandLineArgs, bool stdout = true, string? secret = null)
         {
             if (!Directory.Exists(cwd))
             {
@@ -239,11 +237,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                // git.exe on Windows sometimes hangs at [detect_msys_tty](https://github.com/git-for-windows/git/blob/main/compat/winansi.c#L571)
-                // This change forces git to run in shell https://github.com/git-for-windows/git/issues/2376
-                var shellExecute = !stdout && ForceShellExecute && RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, shellExecute, secrets);
+                return ProcessUtility.Execute("git", commandLineArgs, cwd, stdout, secret);
             }
             catch (Win32Exception ex) when (ProcessUtility.IsExeNotFoundException(ex))
             {
@@ -251,20 +245,23 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string cmd, string[] secrets) GetGitCommandLineConfig(string url, PreloadConfig config)
+        private static (string? cmd, string? secret) GetGitCommandLineConfig(string url, PreloadConfig config)
         {
             if (config is null)
             {
                 return default;
             }
 
-            var gitConfigs = (
-                from http in config.Http
-                where url.StartsWith(http.Key)
-                from header in http.Value.Headers
-                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).ToArray();
+            var httpConfig = config.GetHttpConfig(url);
+            if (httpConfig is null)
+            {
+                return default;
+            }
 
-            return (string.Join(' ', gitConfigs.Select(item => item.cmd)), gitConfigs.Select(item => item.secret).ToArray());
+            var (cmd, secret) = (
+                from header in httpConfig.Headers
+                select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
+            return (cmd, secret);
 
             static string GetSecretFromHeader(KeyValuePair<string, string> header)
             {

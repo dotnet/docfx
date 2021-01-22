@@ -213,3 +213,12 @@ languageServer:
   - deleteFiles:
       - .git/test.md
   - expectNoNotification: true
+---
+# Publish diagnosics with no source file to .openpublishing.publish.config.json
+inputs:
+  .openpublishing.publish.config.json:
+languageServer:
+  - openFiles:
+      .openpublishing.publish.config.json: "{}"
+  - expectDiagnostics:
+     .openpublishing.publish.config.json: [{"code": "config-not-found"}]

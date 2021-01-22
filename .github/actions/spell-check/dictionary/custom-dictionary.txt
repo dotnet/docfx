@@ -82,6 +82,7 @@ cwd
 daringfireball
 datalist
 datetime
+debounce
 dedent
 dedup
 dependencymap
@@ -573,3 +574,14 @@ IDid
 IProducer
 msys
 Arity
+csholmq
+dataprep
+devitpro
+mediaplayer
+powerbi
+roslyn
+smb
+testdata
+vsts
+windowsserverdocs
+csv

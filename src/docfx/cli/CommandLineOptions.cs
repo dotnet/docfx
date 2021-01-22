@@ -31,6 +31,10 @@ namespace Microsoft.Docs.Build
 
         public bool LanguageServer { get; init; }
 
+        public int Port { get; init; }
+
+        public string? Address { get; init; }
+
         public string? Template { get; init; }
 
         public string? TemplateBasePath { get; init; }
