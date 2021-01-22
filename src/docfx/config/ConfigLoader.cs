@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, Package package)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package);
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package, ".");
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>

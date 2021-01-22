@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     internal static class OpsConfigLoader
     {
         public static OpsConfig? LoadOpsConfig(
-            ErrorBuilder errors, Package package, string workingDirectory = ".")
+            ErrorBuilder errors, Package package, string workingDirectory)
         {
             var fullPath = new PathString(Path.Combine(package.BasePath, workingDirectory, ".openpublishing.publish.config.json"));
             if (!package.Exists(fullPath))
