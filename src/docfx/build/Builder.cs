@@ -72,7 +72,8 @@ namespace Microsoft.Docs.Build
         private DocsetBuilder[] LoadDocsets()
         {
             _progressReporter.Report("Loading docsets...");
-            var docsets = ConfigLoader.FindDocsets(_errors, _package, _options);
+            var repository = Repository.Create(_package.BasePath);
+            var docsets = ConfigLoader.FindDocsets(_errors, _package, _options, repository);
             if (docsets.Length == 0)
             {
                 _errors.Add(Errors.Config.ConfigNotFound(_options.WorkingDirectory));
@@ -81,6 +82,7 @@ namespace Microsoft.Docs.Build
             return (from docset in docsets
                     let item = DocsetBuilder.Create(
                         _errors,
+                        repository,
                         docset.docsetPath,
                         docset.outputPath,
                         _package.CreateSubPackage(docset.docsetPath),
