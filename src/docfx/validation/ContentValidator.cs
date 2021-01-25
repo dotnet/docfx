@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
                 this);
         }
 
-        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
+        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isInHtml, bool isImage, string? linkText, string? altText, int imageIndex)
         {
             // validate image link and altText here
             if (TryCreateValidationContext(file, out var validationContext))
@@ -59,6 +59,7 @@ namespace Microsoft.Docs.Build
                 var item = new LinkNode
                 {
                     UrlLink = link,
+                    LinkText = linkText,
                     AltText = altText,
                     IsImage = isImage,
                     IsInlineImage = origin.IsInlineImage(imageIndex),
@@ -67,6 +68,7 @@ namespace Microsoft.Docs.Build
                     Monikers = origin.GetZoneLevelMonikers(),
                     ZonePivots = origin.GetZonePivots(),
                     TabbedConceptualHeader = origin.GetTabId(),
+                    IsInHtmlBlock = isInHtml,
                 };
                 Write(_validator.ValidateLink(item, validationContext).GetAwaiter().GetResult());
             }

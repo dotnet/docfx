@@ -170,6 +170,27 @@ namespace Microsoft.Docs.Build
             return sb.ToString();
         }
 
+        private string? GetLinkText(string url, MarkdownObject markdownObject)
+        {
+            if (markdownObject is LinkInline {IsImage: false} link)
+            {
+                    if (link.FirstChild != null && link.FirstChild.NextSibling == null)
+                    {
+                        return link.FirstChild.ToString();
+                    }
+                    if (link.FirstChild == null)
+                    {
+                        return link.Title;
+                    }
+            }
+            else if (markdownObject is HtmlInline aLink)
+            {
+                return ToPlainText(aLink.Parent);
+            }
+            return null;
+        }
+
+
         private MarkdownPipeline CreateMarkdownPipeline()
         {
             return CreateMarkdownPipelineBuilder().Build();
@@ -331,14 +352,19 @@ namespace Microsoft.Docs.Build
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, true, altText, imageIndex);
-            var link = GetLink(href, origin);
+            var isInHtml = origin is HtmlBlock || origin is HtmlInline;
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, isInHtml, true,  null, altText, imageIndex);
+            var status = s_status.Value!.Peek();
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
+            status.Errors.AddIfNotNull(error);
             return link;
         }
 
         private string GetLink(SourceInfo<string> href, MarkdownObject origin)
         {
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, false, null, -1);
+            var isInHtml = origin is HtmlBlock || origin is HtmlInline;
+            var linkText = GetLinkText(href.Value, origin);
+            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, isInHtml, false, linkText, null, -1);
             var status = s_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
