@@ -412,7 +412,6 @@ outputs:
     {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=389595' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=666' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":55}
   file1.json:
-
 ---
 # Validate secure link
 inputs:
@@ -446,15 +445,12 @@ inputs:
     <a href="http://docs.microsoft.com/test">inline html link</a>
     [external link](http://www.google.com)
     ![image link](http://technet.com/index-hero.jpg)
-
-
 outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://docs.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://docs.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":40}
     {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://technet.com/index-hero.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
   file1.json:
-
 ---
 # Validate html link
 inputs:
@@ -478,13 +474,11 @@ inputs:
     [external link](https://aka.ms/az-learn)
     <a href="http://docs.microsoft.com/test">inline html link</a>
     ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
-
 outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"html-link","message":"HTML link http://docs.microsoft.com/test is not allowed. Use a Markdown link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":40}
 
   file1.json:
-
 ---
 # Validate link locales
 inputs:
@@ -520,7 +514,6 @@ outputs:
     {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://docs.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":41}
 
   file1.json:
-
 ---
 # Validate link preview not set
 inputs:
@@ -552,7 +545,6 @@ outputs:
 
   file1.json:
 ---
-
 # Validate link text not set
 inputs:
   docfx.yml: |
@@ -575,16 +567,8 @@ inputs:
     [external link](http://docs.microsoft.com/tr-tr)
     <a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
     [](http://docs.microsoft.com/tr-tr)
-    [](http://docs.microsoft.com/tr-tr "title")
     ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
-
-
-
 outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"link-text-missing","message":"Missing link text for link 'http://docs.microsoft.com/tr-tr'. Add appropriate text. ","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
-
   file1.json:
----
-
-

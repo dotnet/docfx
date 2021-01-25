@@ -174,18 +174,7 @@ namespace Microsoft.Docs.Build
         {
             if (markdownObject is LinkInline {IsImage: false} link)
             {
-                    if (link.FirstChild != null && link.FirstChild.NextSibling == null)
-                    {
-                        return link.FirstChild.ToString();
-                    }
-                    if (link.FirstChild == null)
-                    {
-                        return link.Title;
-                    }
-            }
-            else if (markdownObject is HtmlInline aLink)
-            {
-                return ToPlainText(aLink.Parent);
+                return ToPlainText(markdownObject);
             }
             return null;
         }
