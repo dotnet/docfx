@@ -26,12 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dotnet.ProjInfo" Version="0.9.0" />
-    <PackageReference Include="FSharp.Compiler.Service" Version="34.1.1" />
-    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" Version="34.1.1">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Dotnet.ProjInfo" version="0.9.0" />
+    <PackageReference Include="FSharp.Compiler.Service" version="17.0.1" />
+    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" version="17.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472'">
