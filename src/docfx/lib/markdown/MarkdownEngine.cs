@@ -15,7 +15,9 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
@@ -170,16 +172,6 @@ namespace Microsoft.Docs.Build
             return sb.ToString();
         }
 
-        private string? GetLinkText(string url, MarkdownObject markdownObject)
-        {
-            if (markdownObject is LinkInline {IsImage: false} link)
-            {
-                return ToPlainText(markdownObject);
-            }
-            return null;
-        }
-
-
         private MarkdownPipeline CreateMarkdownPipeline()
         {
             return CreateMarkdownPipelineBuilder().Build();
@@ -329,39 +321,76 @@ namespace Microsoft.Docs.Build
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
-        private string GetImageLink(string path, MarkdownObject origin, string? altText)
+        private string GetImageLink(string path, MarkdownObject origin, string? altText, bool? isIcon)
         {
             if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
             {
                 altText = ToPlainText(origin);
             }
-
-            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText, -1);
+            var node = new ImageLinkNode
+            {
+                UrlLink = path,
+                ImageLinkType = isIcon == true ? ImageLinkType.Icon : ImageLinkType.Default,
+                AltText = altText,
+                IsInline = origin.IsInlineImage(-1),
+                SourceInfo = origin.GetSourceInfo(),
+                ParentSourceInfoList = origin.GetInclusionStack(),
+                Monikers = origin.GetZoneLevelMonikers(),
+                ZonePivots = origin.GetZonePivots(),
+                TabbedConceptualHeader = origin.GetTabId(),
+            };
+            return GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), node);
         }
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            var isInHtml = origin is HtmlBlock || origin is HtmlInline;
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, isInHtml, true,  null, altText, imageIndex);
-            var status = s_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
-            status.Errors.AddIfNotNull(error);
-            return link;
+            var node = new ImageLinkNode
+            {
+                UrlLink = href,
+                ImageLinkType = ImageLinkType.Default,
+                AltText = altText,
+                IsInline = origin.IsInlineImage(imageIndex),
+                SourceInfo = href.Source,
+                ParentSourceInfoList = origin.GetInclusionStack(),
+                Monikers = origin.GetZoneLevelMonikers(),
+                ZonePivots = origin.GetZonePivots(),
+                TabbedConceptualHeader = origin.GetTabId(),
+            };
+            return GetLink(href, node);
         }
 
-        private string GetLink(SourceInfo<string> href, MarkdownObject origin)
+        private string GetLink(SourceInfo<string> link, MarkdownObject origin)
         {
-            var isInHtml = origin is HtmlBlock || origin is HtmlInline;
-            var linkText = GetLinkText(href.Value, origin);
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, isInHtml, false, linkText, null, -1);
-            var status = s_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
-            status.Errors.AddIfNotNull(error);
-
-            return link;
+            var node = new HyperLinkNode
+            {
+                UrlLink = link,
+                LinkText = ToPlainText(origin),
+                HyperLinkType = origin switch
+                {
+                    AutolinkInline => HyperLinkType.AutoLink,
+                    HtmlBlock or HtmlInline => HyperLinkType.HtmlAnchor,
+                    _ => HyperLinkType.Default,
+                },
+                SourceInfo = link.Source,
+                ParentSourceInfoList = origin.GetInclusionStack(),
+                Monikers = origin.GetZoneLevelMonikers(),
+                ZonePivots = origin.GetZonePivots(),
+                TabbedConceptualHeader = origin.GetTabId(),
+            };
+            return GetLink(link, node);
         }
 
         private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
+
+        private string GetLink(SourceInfo<string> href, LinkNode linkNode)
+        {
+            _contentValidator.ValidateLink(GetRootFilePath(), linkNode);
+            var status = s_status.Value!.Peek();
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
+            status.Errors.AddIfNotNull(error);
+            return link;
+
+        }
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {

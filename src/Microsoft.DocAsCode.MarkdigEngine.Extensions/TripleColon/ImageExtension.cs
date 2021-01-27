@@ -98,15 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var htmlAttributes = new HtmlAttributes();
 
-            // alt is allowed to be empty for icon type image
-            if (string.IsNullOrEmpty(alt) && currentType == "icon")
-            {
-                htmlAttributes.AddProperty("src", _context.GetLink(src, obj));
-            }
-            else
-            {
-                htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt));
-            }
+            htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt, currentType == "icon"));
 
             if (currentType == "icon")
             {

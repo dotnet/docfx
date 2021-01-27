@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// <param name="path">Path of the link</param>
         /// <param name="origin">The original markdown element that triggered the read request.</param>
         /// <returns>Image url bound to the path</returns>
-        public delegate string GetImageLinkDelegate(string path, MarkdownObject origin, string altText);
+        public delegate string GetImageLinkDelegate(string path, MarkdownObject origin, string altText, bool? isIcon = null);
 
         /// <summary>
         /// Reads a file as text.
@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _getToken = getToken ?? (_ => null);
             ReadFile = readFile ?? ((a, b, c) => (a, a));
             GetLink = getLink ?? ((a, b) => a);
-            GetImageLink = getImageLink ?? ((a, b, c) => a);
+            GetImageLink = getImageLink ?? ((a, b, c, d) => a);
             LogInfo = logInfo ?? ((a, b, c, d) => { });
             LogSuggestion = logSuggestion ?? ((a, b, c, d) => { });
             LogWarning = logWarning ?? ((a, b, c, d) => { });
