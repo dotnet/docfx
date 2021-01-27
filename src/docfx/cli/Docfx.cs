@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -52,117 +53,110 @@ namespace Microsoft.Docs.Build
 
         internal static int Run(string[] args, Package? package = null)
         {
-            if (args.Length == 1 && args[0] == "--version")
-            {
-                Console.WriteLine(GetDocfxVersion());
-                return 0;
-            }
-
-            var (command, options) = ParseCommandLineOptions(args);
-            if (string.IsNullOrEmpty(command))
-            {
-                return 1;
-            }
-
             CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
+            ThreadPool.SetMinThreads(minThreads, minThreads);
 
-            using (Log.BeginScope(options.Verbose))
+            return new RootCommand()
             {
-                Log.Write($"docfx: {GetDocfxVersion()}");
-                Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
-                Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
-                Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
-
-                var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
-                ThreadPool.SetMinThreads(minThreads, minThreads);
-
-                return command switch
-                {
-                    "new" => New.Run(options),
-                    "restore" => Restore.Run(options),
-                    "build" => Builder.Run(options, package),
-                    "serve" => Serve.Run(options, package),
-                    _ => false,
-                } ? 1 : 0;
-            }
+                NewCommand(),
+                RestoreCommand(),
+                BuildCommand(package),
+                ServeCommand(package),
+            }.Invoke(args);
         }
 
-        private static (string command, CommandLineOptions options) ParseCommandLineOptions(string[] args)
+        private static Command NewCommand()
         {
-            var command = "build";
-            var options = new CommandLineOptions();
-
-            if (args.Length == 0)
-            {
-                // Show usage when just running `docfx`
-                args = new[] { "--help" };
-            }
-
-            try
-            {
-                ArgumentSyntax.Parse(args, syntax =>
-                {
-                    // Handle parse errors by us
-                    syntax.HandleErrors = false;
-
-                    // new command
-                    syntax.DefineCommand("new", ref command, "Creates a new docset.");
-                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place generated output.");
-                    syntax.DefineOption("force", ref options.Force, "Forces content to be generated even if it would change existing files.");
-                    syntax.DefineParameter("type", ref options.TemplateName, "Docset template name");
-
-                    // restore command
-                    syntax.DefineCommand("restore", ref command, "Restores dependencies before build.");
-                    DefineCommonOptions(syntax, options);
-
-                    // build command
-                    syntax.DefineCommand("build", ref command, "Builds a docset.");
-                    syntax.DefineOptionList("file", ref options.Files, "Build only the specified files.");
-                    syntax.DefineOption("o|output", ref options.Output, "Output directory in which to place built artifacts.");
-
-                    syntax.DefineOption(
-                        "output-type",
-                        ref options.OutputType,
-                        value => Enum.TryParse<OutputType>(value, ignoreCase: true, out var result) ? result : default,
-                        "Output directory in which to place built artifacts.");
-
-                    syntax.DefineOption("dry-run", ref options.DryRun, "Do not produce build artifact and only produce validation result.");
-                    syntax.DefineOption("no-dry-sync", ref options.NoDrySync, "Do not run dry sync for learn validation.");
-                    syntax.DefineOption("no-restore", ref options.NoRestore, "Do not restore dependencies before build.");
-                    syntax.DefineOption("no-cache", ref options.NoCache, "Always fetch latest dependencies in build.");
-                    syntax.DefineOption(
-                        "template-base-path",
-                        ref options.TemplateBasePath,
-                        "The base path used for referencing the template resource file when applying liquid.");
-                    DefineCommonOptions(syntax, options);
-
-                    // serve command
-                    syntax.DefineCommand("serve", ref command, "Serves content in a docset.");
-                    syntax.DefineOption("language-server", ref options.LanguageServer, "Starts a language server");
-                    DefineCommonOptions(syntax, options);
-                });
-
-                if (options.Stdin && Console.ReadLine() is string stdin)
-                {
-                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
-                }
-
-                return (command, options);
-            }
-            catch (ArgumentSyntaxException ex)
-            {
-                Console.Write(ex.Message);
-                return default;
-            }
+            var command = CreateCommand("new", "Creates a new docset.", New.Run);
+            command.AddOption(new Option<string>(
+                new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
+            command.AddOption(new Option<bool>(
+                "--force", "Forces content to be generated even if it would change existing files."));
+            command.AddArgument(new Argument<string>("templateName", "Docset template name") { Arity = ArgumentArity.ZeroOrOne });
+            return command;
         }
 
-        private static void DefineCommonOptions(ArgumentSyntax syntax, CommandLineOptions options)
+        private static Command RestoreCommand()
         {
-            syntax.DefineOption("v|verbose", ref options.Verbose, "Enable diagnostics console output.");
-            syntax.DefineOption("log", ref options.Log, "Enable logging to the specified file path.");
-            syntax.DefineOption("stdin", ref options.Stdin, "Enable additional config in JSON one liner using standard input.");
-            syntax.DefineOption("template", ref options.Template, "The directory or git repository that contains website template.");
-            syntax.DefineParameter("directory", ref options.WorkingDirectory, "A directory that contains docfx.yml/docfx.json.");
+            var command = CreateCommand("restore", "Restores dependencies before build.", Restore.Run);
+            DefineCommonCommands(command);
+            return command;
+        }
+
+        private static Command BuildCommand(Package? package)
+        {
+            var command = CreateCommand("build", "Builds a docset.", options => Builder.Run(options, package));
+            DefineCommonCommands(command);
+            command.AddOption(new Option<string[]>(
+                new[] { "--file", "--files" }, "Build only the specified files."));
+            command.AddOption(new Option<string>(
+                new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
+            command.AddOption(new Option<OutputType>(
+                "--output-type", "Output directory in which to place built artifacts."));
+            command.AddOption(new Option<bool>(
+                "--dry-run", "Do not produce build artifact and only produce validation result."));
+            command.AddOption(new Option<bool>(
+                "--no-dry-sync", "Do not run dry sync for learn validation."));
+            command.AddOption(new Option<bool>(
+                "--no-restore", "Do not restore dependencies before build."));
+            command.AddOption(new Option<bool>(
+                "--no-cache", "Always fetch latest dependencies in build."));
+            command.AddOption(new Option<string>(
+                "--template-base-path", "The base path used for referencing the template resource file when applying liquid."));
+            return command;
+        }
+
+        private static Command ServeCommand(Package? package)
+        {
+            var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
+            DefineCommonCommands(command);
+            command.AddOption(new Option<bool>(
+                "--language-server", "Starts a language server"));
+            command.AddOption(new Option<string>(
+                "--address", () => "0.0.0.0", "The address used to serve"));
+            command.AddOption(new Option<int>(
+                "--port", () => 8080, "The port used to communicate with the client"));
+            command.AddOption(new Option<bool>(
+                "--no-cache", "Always fetch latest dependencies in build."));
+            return command;
+        }
+
+        private static Command CreateCommand(string name, string description, Func<CommandLineOptions, bool> run)
+        {
+            return new Command(name, description)
+            {
+                Handler = CommandHandler.Create<CommandLineOptions>(options =>
+                {
+                    using (Log.BeginScope(options.Verbose))
+                    {
+                        if (options.Stdin && Console.ReadLine() is string stdin)
+                        {
+                            options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
+                        }
+                        Log.Write($"docfx: {GetDocfxVersion()}");
+                        Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
+                        Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
+                        Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
+
+                        return run(options) ? 1 : 0;
+                    }
+                }),
+            };
+        }
+
+        private static void DefineCommonCommands(Command command)
+        {
+            command.AddArgument(new Argument<string>("directory", "A directory that contains docfx.yml/docfx.json.") { Arity = ArgumentArity.ZeroOrOne });
+
+            command.AddOption(new Option<bool>(
+                "--stdin", "Enable additional config in JSON one liner using standard input."));
+            command.AddOption(new Option<bool>(
+                new[] { "-v", "--verbose" }, "Enable diagnostics console output."));
+            command.AddOption(new Option<string>(
+                "--log", "Enable logging to the specified file path."));
+            command.AddOption(new Option<string>(
+                "--template", "The directory or git repository that contains website template."));
         }
 
         private static void PrintFatalErrorMessage(Exception exception)
@@ -214,7 +208,7 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
                 var issueUrl =
                     $"https://github.com/dotnet/docfx/issues/new?title={HttpUtility.UrlEncode(title)}&body={HttpUtility.UrlEncode(body)}";
 
-                Process.Start(new ProcessStartInfo { FileName = issueUrl, UseShellExecute = true });
+                System.Diagnostics.Process.Start(new ProcessStartInfo { FileName = issueUrl, UseShellExecute = true });
             }
             catch
             {
@@ -264,7 +258,7 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
         {
             try
             {
-                var process = Process.Start(
+                var process = System.Diagnostics.Process.Start(
                     new ProcessStartInfo { FileName = "dotnet", Arguments = "--version", RedirectStandardOutput = true });
                 process?.WaitForExit(2000);
                 return process?.StandardOutput.ReadToEnd().Trim();
@@ -279,7 +273,7 @@ Run `{Environment.CommandLine}` in `{Directory.GetCurrentDirectory()}`
         {
             try
             {
-                var process = Process.Start(
+                var process = System.Diagnostics.Process.Start(
                     new ProcessStartInfo { FileName = "git", Arguments = "--version", RedirectStandardOutput = true });
                 process?.WaitForExit(2000);
                 return process?.StandardOutput.ReadToEnd().Trim();

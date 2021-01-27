@@ -219,9 +219,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        System.Console.WriteLine($"Link `{href}` cannot be resolved");
-                        return (Errors.Link.FileNotFound(
-                            new SourceInfo<string>(path, href)), null, query, fragment, linkType);
+                        return (Errors.Link.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, linkType);
                     }
 
                     return (null, file, query, fragment, linkType);

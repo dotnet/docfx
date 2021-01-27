@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerBuilder
     {
+        private const int DebounceTimeout = 500;
+
         private readonly ILogger _logger;
         private readonly Builder _builder;
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
@@ -32,6 +34,7 @@ namespace Microsoft.Docs.Build
             CommandLineOptions options,
             DiagnosticPublisher diagnosticPublisher,
             LanguageServerPackage languageServerPackage,
+            LanguageServerCredentialProvider languageServerCredentialProvider,
             ILanguageServerNotificationListener notificationListener,
             IServiceProvider serviceProvider)
         {
@@ -43,7 +46,7 @@ namespace Microsoft.Docs.Build
             _notificationListener = notificationListener;
             _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<LanguageServerBuilder>();
-            _builder = new(options, _languageServerPackage);
+            _builder = new(options, _languageServerPackage, languageServerCredentialProvider.GetCredentials);
         }
 
         public void QueueBuild()
@@ -60,13 +63,21 @@ namespace Microsoft.Docs.Build
                     await WaitToTriggerBuild(cancellationToken);
 
                     using var progressReporter = await CreateProgressReporter();
+
                     progressReporter.Report("Start build...");
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+
+                    // This is to avoid the task await deadlock in the credential refresh scenario
+                    // The progress reporter create request task can only be completed when the current build done if there is no `Task.Yield`
+                    // The current build can only be completed when the credential refresh request response get handled.
+                    // But the responses of language server are handled sequentially, which cause the deadlock.
+                    await Task.Yield();
                     _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
                     _notificationListener.OnNotificationHandled();
+
                     progressReporter.Report("Build finished");
                 }
                 catch (Exception ex)
@@ -84,7 +95,7 @@ namespace Microsoft.Docs.Build
             {
                 while (true)
                 {
-                    using var timeout = new CancellationTokenSource(1000);
+                    using var timeout = new CancellationTokenSource(DebounceTimeout);
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();
@@ -99,15 +110,18 @@ namespace Microsoft.Docs.Build
         {
             var languageServer = _serviceProvider.GetService<ILanguageServer>();
             Debug.Assert(languageServer != null);
-            return new LanguageServerProgressReporter(await languageServer.WorkDoneManager.Create(new WorkDoneProgressBegin()));
+            return new LanguageServerProgressReporter(await languageServer.WorkDoneManager.Create(
+                new WorkDoneProgressBegin()
+                {
+                    Title = "Docs real-time validation",
+                }));
         }
 
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupByFile = from error in errors
-                                         let source = error.Source
-                                         where source != null
+                                         let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
             foreach (var diagnostics in diagnosticsGroupByFile)

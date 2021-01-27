@@ -13,14 +13,17 @@ namespace Microsoft.Docs.Build
         // NOTE: This line assumes each build runs in a new process
         private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories = new();
 
+        private readonly ErrorBuilder _errors;
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
         private readonly Repository? _repository;
         private readonly FileResolver _fileResolver;
 
-        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
+        public PackageResolver(
+            ErrorBuilder errors, string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
         {
+            _errors = errors;
             _docsetPath = docsetPath;
             _config = config;
             _fetchOptions = fetchOptions;
@@ -138,6 +141,7 @@ namespace Microsoft.Docs.Build
             GitUtility.AddRemote(cwd, "origin", url);
 
             var succeeded = false;
+            var branchUsed = committish;
             foreach (var branch in GitUtility.GetFallbackBranch(committish))
             {
                 try
@@ -148,7 +152,7 @@ namespace Microsoft.Docs.Build
                     }
                     GitUtility.Fetch(_config, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
                     succeeded = true;
-                    committish = branch;
+                    branchUsed = branch;
                     break;
                 }
                 catch (InvalidOperationException)
@@ -174,13 +178,18 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            if (branchUsed != committish)
+            {
+                _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish, branchUsed));
+            }
+
             try
             {
-                GitUtility.Checkout(cwd, committish, "--force");
+                GitUtility.Checkout(cwd, branchUsed, "--force");
             }
             catch (InvalidOperationException ex)
             {
-                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
+                throw Errors.Config.CommittishNotFound(url, branchUsed).ToException(ex);
             }
         }
 

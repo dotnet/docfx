@@ -16,12 +16,7 @@ inputs:
             "message": "Title '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-titles",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -80,12 +75,7 @@ inputs:
             "message": "Title '{0}' is duplicated with other articles: '{1}'",
             "code": "duplicate-titles",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -162,12 +152,7 @@ inputs:
             "code": "duplicate-titles",
             "severity": "SUGGESTION",
             "canonicalVersionOnly" : true,
-            "exclusions": [
-              "includes",
-              "landingPage",
-              "hubPage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,13 +11,13 @@ using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContentValidator
+    internal class ContentValidator : ICollectionFactory
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
         // Learn content: "learningpath", "module", "moduleunit"
         private static readonly string[] s_supportedPageTypes =
         {
-            "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups", "post",
+            "conceptual", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups", "post",
         };
 
         private readonly Config _config;
@@ -47,7 +48,7 @@ namespace Microsoft.Docs.Build
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
-                new ValidationCollectionFactory());
+                this);
         }
 
         public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
@@ -268,6 +269,11 @@ namespace Microsoft.Docs.Build
             Write(_validator.PostValidate().GetAwaiter().GetResult());
         }
 
+        public IProducerConsumerCollection<T> CreateCollection<T>()
+        {
+            return new ScopedConcurrentBag<T>();
+        }
+
         private void Write(IEnumerable<ValidationError> validationErrors)
         {
             _errors.AddRange(validationErrors.Select(ToError));
@@ -292,17 +298,7 @@ namespace Microsoft.Docs.Build
 
         private bool TryGetValidationDocumentType(FilePath file, [NotNullWhen(true)] out string? documentType)
         {
-            return TryGetValidationDocumentType(file, false, out documentType);
-        }
-
-        private bool TryGetValidationDocumentType(FilePath file, bool isInclude, [NotNullWhen(true)] out string? documentType)
-        {
             documentType = _documentProvider.GetPageType(file);
-            if (isInclude && documentType == "conceptual")
-            {
-                documentType = "includes";
-                return true;
-            }
 
             return documentType != null && s_supportedPageTypes.Contains(documentType);
         }

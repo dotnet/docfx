@@ -82,6 +82,7 @@ cwd
 daringfireball
 datalist
 datetime
+debounce
 dedent
 dedup
 dependencymap
@@ -535,6 +536,7 @@ dryrun
 bak
 cwe
 dfp
+IRequest
 IRest
 isb
 IValidate
@@ -570,3 +572,16 @@ vsthrd
 IAsync
 IDid
 IProducer
+msys
+Arity
+csholmq
+dataprep
+devitpro
+mediaplayer
+powerbi
+roslyn
+smb
+testdata
+vsts
+windowsserverdocs
+csv
