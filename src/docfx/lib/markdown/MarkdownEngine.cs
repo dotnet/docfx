@@ -358,7 +358,7 @@ namespace Microsoft.Docs.Build
                 HyperLinkType = origin switch
                 {
                     AutolinkInline => HyperLinkType.AutoLink,
-                    HtmlBlock or HtmlInline => HyperLinkType.HtmlAnchor,
+                    HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
                     _ => HyperLinkType.Default,
                 },
             };
@@ -369,7 +369,7 @@ namespace Microsoft.Docs.Build
 
         private string GetLink(SourceInfo<string> href, MarkdownObject origin, LinkNode outer)
         {
-            // fullfill common field of LinkNode
+            // fill common field of LinkNode
             var node = outer with
             {
                 SourceInfo = href.Source,
