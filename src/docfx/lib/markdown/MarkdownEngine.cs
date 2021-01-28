@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -15,7 +16,6 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
 using Validations.DocFx.Adapter;
@@ -321,7 +321,7 @@ namespace Microsoft.Docs.Build
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
-        private string GetImageLink(string path, MarkdownObject origin, string? altText, bool? isIcon)
+        private string GetImageLink(string path, MarkdownObject origin, string? altText, string imageType)
         {
             if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
             {
@@ -330,7 +330,7 @@ namespace Microsoft.Docs.Build
             var node = new ImageLinkNode
             {
                 UrlLink = path,
-                ImageLinkType = isIcon == true ? ImageLinkType.Icon : ImageLinkType.Default,
+                ImageLinkType = Enum.TryParse(imageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
                 AltText = altText,
                 IsInline = origin.IsInlineImage(-1),
             };
@@ -351,10 +351,14 @@ namespace Microsoft.Docs.Build
 
         private string GetLink(SourceInfo<string> link, MarkdownObject origin)
         {
+            if (origin is LinkInline linkInline)
+            {
+                Debug.Assert(!linkInline.IsImage);
+            }
             var node = new HyperLinkNode
             {
                 UrlLink = link,
-                LinkText = (origin is LinkInline { IsImage: false }) ? ToPlainText(origin) : null,
+                LinkText = (origin is LinkInline) ? ToPlainText(origin) : null,
                 HyperLinkType = origin switch
                 {
                     AutolinkInline => HyperLinkType.AutoLink,

@@ -218,6 +218,8 @@ inputs:
     <img src="pig4.jpg" alt=""></img>
 
     ![`test alt text quote`](pig1.jpg)
+
+    :::image type="icon" source="pig1.jpg" alt-text="":::
 outputs:
   pig1.jpg:
   pig2.jpg:

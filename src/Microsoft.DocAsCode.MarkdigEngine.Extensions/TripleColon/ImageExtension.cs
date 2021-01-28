@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var htmlAttributes = new HtmlAttributes();
 
-            htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt, currentType == "icon"));
+            htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt, currentType));
 
             if (currentType == "icon")
             {
