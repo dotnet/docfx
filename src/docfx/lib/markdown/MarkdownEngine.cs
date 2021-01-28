@@ -364,7 +364,7 @@ namespace Microsoft.Docs.Build
             var node = new HyperLinkNode
             {
                 UrlLink = link,
-                LinkText = ToPlainText(origin),
+                LinkText = (origin is LinkInline {IsImage: false}) ? ToPlainText(origin) : null,
                 HyperLinkType = origin switch
                 {
                     AutolinkInline => HyperLinkType.AutoLink,
