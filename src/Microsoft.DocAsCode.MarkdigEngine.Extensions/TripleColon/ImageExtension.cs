@@ -147,7 +147,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             else if (!string.IsNullOrEmpty(currentLightbox))
             {
                 var lightboxHtmlAttributes = new HtmlAttributes();
-                var path = _context.GetLink(currentLightbox, obj);
+                var path = _context.GetImageLink(currentLightbox, obj, alt);
                 lightboxHtmlAttributes.AddProperty("href", $"{path}#lightbox");
                 lightboxHtmlAttributes.AddProperty("data-linktype", $"relative-path");
                 renderer.Write("<a").WriteAttributes(lightboxHtmlAttributes).WriteLine(">");

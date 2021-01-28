@@ -333,13 +333,8 @@ namespace Microsoft.Docs.Build
                 ImageLinkType = isIcon == true ? ImageLinkType.Icon : ImageLinkType.Default,
                 AltText = altText,
                 IsInline = origin.IsInlineImage(-1),
-                SourceInfo = origin.GetSourceInfo(),
-                ParentSourceInfoList = origin.GetInclusionStack(),
-                Monikers = origin.GetZoneLevelMonikers(),
-                ZonePivots = origin.GetZonePivots(),
-                TabbedConceptualHeader = origin.GetTabId(),
             };
-            return GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), node);
+            return GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, node);
         }
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
@@ -350,13 +345,8 @@ namespace Microsoft.Docs.Build
                 ImageLinkType = ImageLinkType.Default,
                 AltText = altText,
                 IsInline = origin.IsInlineImage(imageIndex),
-                SourceInfo = href.Source,
-                ParentSourceInfoList = origin.GetInclusionStack(),
-                Monikers = origin.GetZoneLevelMonikers(),
-                ZonePivots = origin.GetZonePivots(),
-                TabbedConceptualHeader = origin.GetTabId(),
             };
-            return GetLink(href, node);
+            return GetLink(href, origin, node);
         }
 
         private string GetLink(SourceInfo<string> link, MarkdownObject origin)
@@ -364,32 +354,35 @@ namespace Microsoft.Docs.Build
             var node = new HyperLinkNode
             {
                 UrlLink = link,
-                LinkText = (origin is LinkInline {IsImage: false}) ? ToPlainText(origin) : null,
+                LinkText = (origin is LinkInline { IsImage: false }) ? ToPlainText(origin) : null,
                 HyperLinkType = origin switch
                 {
                     AutolinkInline => HyperLinkType.AutoLink,
                     HtmlBlock or HtmlInline => HyperLinkType.HtmlAnchor,
                     _ => HyperLinkType.Default,
                 },
-                SourceInfo = link.Source,
+            };
+            return GetLink(link, origin, node);
+        }
+
+        private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
+
+        private string GetLink(SourceInfo<string> href, MarkdownObject origin, LinkNode outer)
+        {
+            // fullfill common field of LinkNode
+            var node = outer with
+            {
+                SourceInfo = href.Source,
                 ParentSourceInfoList = origin.GetInclusionStack(),
                 Monikers = origin.GetZoneLevelMonikers(),
                 ZonePivots = origin.GetZonePivots(),
                 TabbedConceptualHeader = origin.GetTabId(),
             };
-            return GetLink(link, node);
-        }
-
-        private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
-
-        private string GetLink(SourceInfo<string> href, LinkNode linkNode)
-        {
-            _contentValidator.ValidateLink(GetRootFilePath(), linkNode);
+            _contentValidator.ValidateLink(GetRootFilePath(), node);
             var status = s_status.Value!.Peek();
             var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
             return link;
-
         }
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
