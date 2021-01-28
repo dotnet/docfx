@@ -52,11 +52,11 @@ namespace Microsoft.Docs.Build
             var result = new StringBuilder(1024);
             var xrefmap = model is JObject obj && obj.TryGetValue("_xrefmap", out var item) && item is JObject map ? map : null;
             context.Push(model);
-            Render(template, result, context, xrefmap);
+            Render(errors, template, result, context, xrefmap);
             return result.ToString();
         }
 
-        private void Render(BlockToken block, StringBuilder result, Stack<JToken> context, JObject? xrefmap)
+        private void Render(ErrorBuilder errors, BlockToken block, StringBuilder result, Stack<JToken> context, JObject? xrefmap)
         {
             foreach (var child in block.Children)
             {
@@ -70,10 +70,13 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case PartialToken partial:
-                        var template = GetTemplate(partial.Content.ToString()) ?? GetTemplate($"{partial.Content}.tmpl.partial") ??
-                            throw Errors.Template.MustacheNotFound($"{partial.Content}.tmpl.partial").ToException();
-
-                        Render(template, result, context, xrefmap);
+                        var template = GetTemplate(partial.Content.ToString()) ?? GetTemplate($"{partial.Content}.tmpl.partial");
+                        if (template == null)
+                        {
+                            errors.Add(Errors.Template.MustacheNotFound($"{partial.Content}.tmpl.partial"));
+                            break;
+                        }
+                        Render(errors, template, result, context, xrefmap);
                         break;
 
                     case InvertedSectionToken invertedSection:
@@ -82,7 +85,7 @@ namespace Microsoft.Docs.Build
                             case null:
                             case JValue value when !IsTruthy(value):
                             case JArray array when array.Count == 0:
-                                Render(invertedSection, result, context, xrefmap);
+                                Render(errors, invertedSection, result, context, xrefmap);
                                 break;
                         }
                         break;
@@ -99,14 +102,14 @@ namespace Microsoft.Docs.Build
                                 foreach (var item in array)
                                 {
                                     context.Push(item);
-                                    Render(section, result, context, xrefmap);
+                                    Render(errors, section, result, context, xrefmap);
                                     context.Pop();
                                 }
                                 break;
 
                             default:
                                 context.Push(property);
-                                Render(section, result, context, xrefmap);
+                                Render(errors, section, result, context, xrefmap);
                                 context.Pop();
                                 break;
                         }
