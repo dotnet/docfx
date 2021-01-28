@@ -321,7 +321,7 @@ namespace Microsoft.Docs.Build
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
-        private string GetImageLink(string path, MarkdownObject origin, string? altText, string imageType)
+        private string GetImageLink(string path, MarkdownObject origin, string? altText, string? imageType)
         {
             if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
             {
