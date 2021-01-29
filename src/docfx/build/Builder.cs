@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,8 +27,7 @@ namespace Microsoft.Docs.Build
 
         public static bool Run(CommandLineOptions options, Package? package = null)
         {
-            var stopwatch = Stopwatch.StartNew();
-
+            var operation = Telemetry.StartOperation("build");
             using var errors = new ErrorWriter(options.Log);
 
             var files = options.Files?.Select(Path.GetFullPath).ToArray();
@@ -38,8 +36,7 @@ namespace Microsoft.Docs.Build
 
             new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
 
-            Telemetry.TrackOperationTime("build", stopwatch.Elapsed);
-            Log.Important($"Build done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            operation.Complete();
 
             errors.PrintSummary();
             return errors.HasError;

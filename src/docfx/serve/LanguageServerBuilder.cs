@@ -65,6 +65,8 @@ namespace Microsoft.Docs.Build
                     using var progressReporter = await CreateProgressReporter();
 
                     progressReporter.Report("Start build...");
+                    var operation = Telemetry.StartOperation("realTimeBuild");
+
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
 
@@ -73,9 +75,12 @@ namespace Microsoft.Docs.Build
                     // The current build can only be completed when the credential refresh request response get handled.
                     // But the responses of language server are handled sequentially, which cause the deadlock.
                     await Task.Yield();
+                    Telemetry.SetIsRealTimeBuild();
                     _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
+
+                    operation.Complete();
                     _notificationListener.OnNotificationHandled();
 
                     progressReporter.Report("Build finished");
@@ -83,6 +88,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     _logger.LogCritical(ex, "Failed to handle build request");
+                    Telemetry.TrackException(ex);
                 }
             }
         }
