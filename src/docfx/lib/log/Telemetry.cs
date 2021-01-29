@@ -95,9 +95,9 @@ namespace Microsoft.Docs.Build
             s_branch = CoalesceEmpty(branch);
         }
 
-        public static void SetIsRealTimeBuild()
+        public static void SetIsRealTimeBuild(bool isRealTimeBuild)
         {
-            s_isRealTimeBuild.Value = true;
+            s_isRealTimeBuild.Value = isRealTimeBuild;
         }
 
         public static void TrackDocfxConfig(string docsetName, JObject docfxConfig)
