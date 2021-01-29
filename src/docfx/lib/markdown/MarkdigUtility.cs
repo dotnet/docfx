@@ -241,6 +241,8 @@ namespace Microsoft.Docs.Build
                     YamlFrontMatterBlock _ => false,
                     HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
                     LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => true,
+                    LinkInline linkInline when linkInline.IsImage => true,
+                    LiteralInline literal when !string.IsNullOrWhiteSpace(literal.Content.Text) => true,
                     LeafInline _ => true,
                     _ => false,
                 };

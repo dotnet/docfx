@@ -358,7 +358,7 @@ namespace Microsoft.Docs.Build
             var node = new HyperLinkNode
             {
                 UrlLink = link,
-                LinkText = (origin is LinkInline) ? ToPlainText(origin) : null,
+                IsVisible = MarkdigUtility.IsVisible(origin),
                 HyperLinkType = origin switch
                 {
                     AutolinkInline => HyperLinkType.AutoLink,

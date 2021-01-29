@@ -570,6 +570,7 @@ inputs:
     <a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
     [](http://docs.microsoft.com/tr-tr)
     ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
+    [![](https://google.com/media/4-metrics-data.png "Screenshot of Storage Explorer displaying the minute metrics data for blobs")](/media/4-metrics-data.png#lightbox)
 outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"link-text-missing","message":"Missing link text for link 'http://docs.microsoft.com/tr-tr'. Add appropriate text. ","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
