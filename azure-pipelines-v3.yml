@@ -9,6 +9,7 @@ pr:
 variables:
   dotnetVersion: 5.0.100
   runCodesignValidationInjection: false
+  NugetSecurityAnalysisWarningLevel: none
 
 jobs:
 
