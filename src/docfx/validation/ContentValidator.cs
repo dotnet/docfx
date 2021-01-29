@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -51,24 +52,11 @@ namespace Microsoft.Docs.Build
                 this);
         }
 
-        public void ValidateLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, bool isImage, string? altText, int imageIndex)
+        public void ValidateLink(FilePath file, LinkNode node)
         {
-            // validate image link and altText here
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                var item = new LinkNode
-                {
-                    UrlLink = link,
-                    AltText = altText,
-                    IsImage = isImage,
-                    IsInlineImage = origin.IsInlineImage(imageIndex),
-                    SourceInfo = link.Source,
-                    ParentSourceInfoList = origin.GetInclusionStack(),
-                    Monikers = origin.GetZoneLevelMonikers(),
-                    ZonePivots = origin.GetZonePivots(),
-                    TabbedConceptualHeader = origin.GetTabId(),
-                };
-                Write(_validator.ValidateLink(item, validationContext).GetAwaiter().GetResult());
+                Write(_validator.ValidateLink(node, validationContext).GetAwaiter().GetResult());
             }
         }
 
