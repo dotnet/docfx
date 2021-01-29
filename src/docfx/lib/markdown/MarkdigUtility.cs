@@ -242,6 +242,7 @@ namespace Microsoft.Docs.Build
                     HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
                     LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => true,
                     LinkInline linkInline when linkInline.IsImage => true,
+                    TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension => true,
                     LiteralInline literal when !string.IsNullOrWhiteSpace(literal.Content.Text) => true,
                     LeafInline _ => true,
                     _ => false,

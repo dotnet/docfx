@@ -38,6 +38,7 @@ namespace Microsoft.Docs.Build
         [InlineData("  \n <!--comments \n--> \n  ", false)]
         [InlineData("  \n <!--comments \n--> <div>text</div>\n  ", true)]
         [InlineData("[![](image.png)](https://github.com)", true)]
+        [InlineData("[:::image type=\"content\" source=\"img.png\" alt-text=\"Azure\":::](./media/how-to-read-replica-portal/list-replica.png#lightbox)", true)]
         public static void IsVisibleTest(string markdownContent, bool expectedVisible)
         {
             var markdownDocument = Markdig.Markdown.Parse(markdownContent, s_markdownPipeline);
