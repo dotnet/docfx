@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 
 open System.IO
 open System.Collections.Generic
-open FSharp.Compiler.SourceCodeServices
+open Microsoft.FSharp.Compiler.SourceCodeServices
 open Microsoft.DocAsCode.Metadata.ManagedReference
 
 
