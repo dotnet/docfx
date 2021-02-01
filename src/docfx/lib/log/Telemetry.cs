@@ -253,19 +253,11 @@ namespace Microsoft.Docs.Build
         }
 
         private static string GetTimeBucket(TimeSpan value)
-        {
-            if (value.TotalSeconds < 0.5)
+            => value.TotalSeconds switch
             {
-                return "small";
-            }
-            else if (value.TotalSeconds < 20)
-            {
-                return "middle";
-            }
-            else
-            {
-                return "large";
-            }
-        }
+                < 0.5 => "small",
+                < 20 => "middle",
+                _ => "large",
+            };
     }
 }
