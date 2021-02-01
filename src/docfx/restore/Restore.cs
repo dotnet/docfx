@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         public static bool Run(CommandLineOptions options)
         {
-            var stopwatch = Stopwatch.StartNew();
+            var operation = Telemetry.StartOperation("restore");
             using var errors = new ErrorWriter(options.Log);
 
             var package = new LocalPackage(options.WorkingDirectory);
@@ -33,8 +32,7 @@ namespace Microsoft.Docs.Build
                 RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
             });
 
-            Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-            Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            operation.Complete();
             errors.PrintSummary();
             return errors.HasError;
         }
