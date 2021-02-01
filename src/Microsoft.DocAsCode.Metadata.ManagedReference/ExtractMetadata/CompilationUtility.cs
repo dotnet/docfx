@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     using Microsoft.CodeAnalysis;
 
@@ -17,6 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     internal static class CompilationUtility
     {
         private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
+        private static readonly Lazy<MetadataReference> SystemMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location));
 
         public static Compilation CreateCompilationFromCsharpCode(string code)
         {
@@ -27,7 +29,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     "cs.temp.dll",
                     options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: new[] { MscorlibMetadataReference.Value });
+                    references: new[] { MscorlibMetadataReference.Value, SystemMetadataReference.Value });
                 return compilation;
             }
             catch (Exception e)
