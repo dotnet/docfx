@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task StartLanguageServer(HttpContext context, CommandLineOptions options, Package? package)
         {
-            // The SynchronizationContext is lost here, verbose needs to be reset
+            // The execution context is lost here, verbose needs to be reset
             using (Log.BeginScope(options.Verbose))
             {
                 if (context.WebSockets.IsWebSocketRequest)
