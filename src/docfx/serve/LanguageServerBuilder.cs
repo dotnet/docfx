@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
 {
     internal class LanguageServerBuilder
     {
+        private const int DebounceTimeout = 500;
+
         private readonly ILogger _logger;
         private readonly Builder _builder;
         private readonly Channel<bool> _buildChannel = Channel.CreateUnbounded<bool>();
@@ -63,6 +65,8 @@ namespace Microsoft.Docs.Build
                     using var progressReporter = await CreateProgressReporter();
 
                     progressReporter.Report("Start build...");
+                    var operation = Telemetry.StartOperation("realTimeBuild");
+
                     var errors = new ErrorList();
                     var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
 
@@ -71,9 +75,12 @@ namespace Microsoft.Docs.Build
                     // The current build can only be completed when the credential refresh request response get handled.
                     // But the responses of language server are handled sequentially, which cause the deadlock.
                     await Task.Yield();
+                    Telemetry.SetIsRealTimeBuild(true);
                     _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
                     PublishDiagnosticsParams(errors, filesToBuild);
+
+                    operation.Complete();
                     _notificationListener.OnNotificationHandled();
 
                     progressReporter.Report("Build finished");
@@ -81,6 +88,11 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     _logger.LogCritical(ex, "Failed to handle build request");
+                    Telemetry.TrackException(ex);
+                }
+                finally
+                {
+                    Telemetry.SetIsRealTimeBuild(false);
                 }
             }
         }
@@ -93,7 +105,7 @@ namespace Microsoft.Docs.Build
             {
                 while (true)
                 {
-                    using var timeout = new CancellationTokenSource(1000);
+                    using var timeout = new CancellationTokenSource(DebounceTimeout);
                     using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
                     await _buildChannel.Reader.ReadAsync(cts.Token);
                     _notificationListener.OnNotificationHandled();

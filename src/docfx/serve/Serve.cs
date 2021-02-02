@@ -36,15 +36,19 @@ namespace Microsoft.Docs.Build
 
         private static async Task StartLanguageServer(HttpContext context, CommandLineOptions options, Package? package)
         {
-            if (context.WebSockets.IsWebSocketRequest)
+            // The execution context is lost here, verbose needs to be reset
+            using (Log.BeginScope(options.Verbose))
             {
-                using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                var stream = webSocket.AsStream();
-                await LanguageServerHost.RunLanguageServer(options, PipeReader.Create(stream), PipeWriter.Create(stream), package);
-            }
-            else
-            {
-                context.Response.StatusCode = 400;
+                if (context.WebSockets.IsWebSocketRequest)
+                {
+                    using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    var stream = webSocket.AsStream();
+                    await LanguageServerHost.RunLanguageServer(options, PipeReader.Create(stream), PipeWriter.Create(stream), package);
+                }
+                else
+                {
+                    context.Response.StatusCode = 400;
+                }
             }
         }
     }

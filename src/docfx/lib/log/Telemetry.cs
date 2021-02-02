@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -26,35 +28,54 @@ namespace Microsoft.Docs.Build
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
         private static readonly MetricConfiguration s_metricConfiguration = new(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
-        private static readonly Metric s_operationTimeMetric =
-            s_telemetryClient.GetMetric(new MetricIdentifier(null, $"Time", "Name", "OS", "Version", "Repo", "Branch", "CorrelationId"), s_metricConfiguration);
+        private static readonly Metric s_operationStartMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(null, $"OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
+                s_metricConfiguration);
+
+        private static readonly Metric s_operationEndMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(null, $"OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
+                s_metricConfiguration);
 
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_fileLogCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_buildFileTypeCountMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                new MetricIdentifier(
+                    null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_githubRateLimitMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, "GitHubRateLimit", "Remaining", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                new MetricIdentifier(null, "GitHubRateLimit", "Remaining", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_markdownElementCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, "MarkdownElement", "ElementType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId"),
+                    null,
+                    "MarkdownElement",
+                    "ElementType",
+                    "FileExtension",
+                    "DocumentType",
+                    "MimeType",
+                    "OS",
+                    "Version",
+                    "Repo",
+                    "Branch",
+                    "CorrelationId",
+                    "SessionId"),
                 s_metricConfiguration);
 
         private static readonly string s_version =
@@ -62,87 +83,119 @@ namespace Microsoft.Docs.Build
 
         private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
         private static readonly string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
+        private static readonly string s_sessionId = EnvironmentVariable.SessionId ?? "<null>";
+        private static readonly AsyncLocal<bool> s_isRealTimeBuild = new();
 
         private static string s_repo = "<null>";
         private static string s_branch = "<null>";
-
-        static Telemetry()
-        {
-            s_telemetryClient.Context.GlobalProperties["OS"] = s_os;
-            s_telemetryClient.Context.GlobalProperties["Version"] = s_version;
-            s_telemetryClient.Context.GlobalProperties["CorrelationId"] = s_correlationId;
-        }
 
         public static void SetRepository(string? repo, string? branch)
         {
             s_repo = CoalesceEmpty(repo);
             s_branch = CoalesceEmpty(branch);
-            s_telemetryClient.Context.GlobalProperties["Repo"] = s_repo;
-            s_telemetryClient.Context.GlobalProperties["Branch"] = s_branch;
+        }
+
+        public static void SetIsRealTimeBuild(bool isRealTimeBuild)
+        {
+            s_isRealTimeBuild.Value = isRealTimeBuild;
         }
 
         public static void TrackDocfxConfig(string docsetName, JObject docfxConfig)
         {
-            var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
-            var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
-            if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
+            if (!s_isRealTimeBuild.Value)
             {
-                var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;
-                TryRemoveNestedObject(newValue!);
-                docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
+                var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
+                var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
+                if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
+                {
+                    var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;
+                    TryRemoveNestedObject(newValue!);
+                    docfxConfigTelemetryValue = JsonUtility.Serialize(newValue!);
+                }
+
+                var properties = new Dictionary<string, string>
+                {
+                    ["DocsetName"] = docsetName,
+                    ["Config"] = docfxConfigTelemetryValue,
+                    ["ContentHash"] = hashCode,
+                };
+
+                TrackEvent("docfx.json", properties);
             }
-
-            var properties = new Dictionary<string, string>
-            {
-                ["DocsetName"] = docsetName,
-                ["Config"] = docfxConfigTelemetryValue,
-                ["ContentHash"] = hashCode,
-            };
-
-            TrackEvent("docfx.json", properties);
         }
 
-        public static void TrackOperationTime(string name, TimeSpan duration)
+        public static DelegatingCompletable StartOperation(string name)
         {
-            s_operationTimeMetric.TrackValue(duration.TotalMilliseconds, name, s_os, s_version, s_repo, s_branch, s_correlationId);
+            var stopwatch = Stopwatch.StartNew();
+            s_operationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId);
+            return new DelegatingCompletable(() =>
+            {
+                Log.Important($"{name} done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+                s_operationEndMetric.TrackValue(
+                    stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId);
+            });
         }
 
         public static void TrackErrorCount(string code, ErrorLevel level, string? name)
         {
-            s_errorCountMetric.TrackValue(1, code, level.ToString(), CoalesceEmpty(name), "User", s_os, s_version, s_repo, s_branch, s_correlationId);
+            if (!s_isRealTimeBuild.Value)
+            {
+                s_errorCountMetric.TrackValue(
+                    1, code, level.ToString(), CoalesceEmpty(name), "User", s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+            }
         }
 
         public static void TrackFileLogCount(ErrorLevel level, FilePath? filePath)
         {
-            if (filePath != null)
+            if (!s_isRealTimeBuild.Value && filePath != null)
             {
-                s_fileLogCountMetric.TrackValue(1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId);
+                s_fileLogCountMetric.TrackValue(
+                    1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
             }
         }
 
         public static void TrackGitHubRateLimit(string? remaining)
         {
-            s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId);
+            if (!s_isRealTimeBuild.Value)
+            {
+                s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+            }
         }
 
         public static void TrackBuildFileTypeCount(FilePath file, ContentType contentType, string? mime)
         {
-            var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
+            if (!s_isRealTimeBuild.Value)
+            {
+                var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
 
-            s_buildFileTypeCountMetric.TrackValue(
-                1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId);
+                s_buildFileTypeCountMetric.TrackValue(
+                    1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+            }
         }
 
         public static void TrackMarkdownElement(FilePath file, ContentType contentType, string? mime, Dictionary<string, int> elementCount)
         {
-            var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
-            var documentType = contentType.ToString();
-            var mimeType = CoalesceEmpty(mime);
-
-            foreach (var (elementType, value) in elementCount)
+            if (!s_isRealTimeBuild.Value)
             {
-                s_markdownElementCountMetric.TrackValue(
-                    value, CoalesceEmpty(elementType), fileExtension, documentType, mimeType, s_os, s_version, s_repo, s_branch, s_correlationId);
+                var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
+                var documentType = contentType.ToString();
+                var mimeType = CoalesceEmpty(mime);
+
+                foreach (var (elementType, value) in elementCount)
+                {
+                    s_markdownElementCountMetric.TrackValue(
+                        value,
+                        CoalesceEmpty(elementType),
+                        fileExtension,
+                        documentType,
+                        mimeType,
+                        s_os,
+                        s_version,
+                        s_repo,
+                        s_branch,
+                        s_correlationId,
+                        s_sessionId);
+                }
             }
         }
 
@@ -198,5 +251,13 @@ namespace Microsoft.Docs.Build
                 }
             }
         }
+
+        private static string GetTimeBucket(TimeSpan value)
+            => value.TotalSeconds switch
+            {
+                < 0.5 => "small",
+                < 20 => "middle",
+                _ => "large",
+            };
     }
 }

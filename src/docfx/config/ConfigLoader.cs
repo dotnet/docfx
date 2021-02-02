@@ -14,9 +14,10 @@ namespace Microsoft.Docs.Build
 {
     internal static class ConfigLoader
     {
-        public static (string docsetPath, string? outputPath)[] FindDocsets(ErrorBuilder errors, Package package, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(
+            ErrorBuilder errors, Package package, CommandLineOptions options, Repository? repository)
         {
-            var glob = FindDocsetsGlob(errors, package);
+            var glob = FindDocsetsGlob(errors, package, repository);
             if (glob is null)
             {
                 return new[] { (package.BasePath.Value, options.Output) };
@@ -39,6 +40,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
             ErrorBuilder errors,
+            Repository? repository,
             string docsetPath,
             string? outputPath,
             CommandLineOptions options,
@@ -46,10 +48,6 @@ namespace Microsoft.Docs.Build
             Package package,
             CredentialProvider? getCredential = null)
         {
-            // load and trace entry repository
-            var repository = Repository.Create(package.BasePath);
-            Telemetry.SetRepository(repository?.Url, repository?.Branch);
-
             var docfxConfig = LoadConfig(errors, package);
             if (docfxConfig is null)
             {
@@ -157,9 +155,9 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, Package package)
+        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, Package package, Repository? repository)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package);
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package, repository);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
