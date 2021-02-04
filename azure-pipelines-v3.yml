@@ -9,6 +9,7 @@ pr:
 variables:
   dotnetVersion: 5.0.100
   runCodesignValidationInjection: false
+  NugetSecurityAnalysisWarningLevel: none
 
 jobs:
 
@@ -121,7 +122,6 @@ jobs:
   # Upload code coverage to codecov.io
   - bash: |
       bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    condition: false # temporary disable for running failures
     displayName: 'Upload to codecov.io'
     env:
       CODECOV_TOKEN: $(CODECOV_TOKEN)
@@ -166,33 +166,34 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
   dependsOn: WindowsBuild
   pool:
     name: DocFX
   strategy:
     matrix:
-      DocsRoot:
-        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
       azure-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 90 --regression-rules
       sql-docs-pr:
         params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-rules
       docs:
         params: https://github.com/dotnet/docs --timeout 60 --regression-rules
+      learn-pr:
+        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
       windowsserverdocs-pr:
         params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-rules
       VBA-Docs:
         params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
       azure-devops-docs-pr:
         params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
-      vsts-docs-pr:
-        params: https://dev.azure.com/mseng/TechnicalContent/_git/vsts-docs-pr --timeout 30
       AspNetCore.Docs:
         params: https://github.com/dotnet/AspNetCore.Docs --timeout 30 --output-html
       microsoft-365-docs-pr.zh-CN:
         params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --timeout 25
       powerbi-docs-pr.de-DE:
         params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
+      PowerShell-Docs:
+        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
       roslyn-api-docs:
         params: https://github.com/dotnet/roslyn-api-docs --branch live --timeout 105
       azure-docs-rest-apis:
@@ -207,14 +208,10 @@ jobs:
         params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
       test:
         params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync
-      dryrun.azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-rules
-      dryrun.bot-docs-pr:
-        params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
-      learn-pr:
-        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
-      PowerShell-Docs:
-        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
+      DocsRoot:
+        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
+      windows-compatibility:
+        params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
       azure-docs-cli:
         params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
       dataprep-dotnet-pr:
@@ -223,6 +220,13 @@ jobs:
         params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
       quantum-docs-pr:
         params: https://github.com/MicrosoftDocs/quantum-docs-pr --timeout 30 --branch main
+      microsoft-graph-docs:
+        params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
+      # dry-runs
+      dryrun.bot-docs-pr:
+        params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
+      dryrun.azure-docs-pr:
+        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-rules
 
   steps:
   # Install .NET Core sdk

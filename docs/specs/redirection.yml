@@ -884,3 +884,45 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":".openpublishing.redirection.json","line":2,"column":67}
     {"message_severity":"warning","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":"a/b/.openpublishing.redirection.json","line":2,"end_column":60}
+---
+# case insensitive for redirection_files on windows/mac
+os: windows, mac
+repos:
+  https://github.com/redirection/case-insensitive-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.a.json",
+            "a/b/.openpublishing.redirection.A.json"
+            ]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.A.json: |
+        {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  a/.publish.json: |
+    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
+---
+# case sensitive for redirection_files on linux
+os: linux
+repos:
+  https://github.com/redirection/case-sensitive-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.a.json",
+            "a/b/.openpublishing.redirection.A.json"
+            ]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.A.json: |
+        {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.a.json' registered in .openpublishing.publish.json is not found in the repo."}
+  a/.publish.json: |
+    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}

@@ -119,7 +119,7 @@ namespace Microsoft.Docs.Build
 
             Console.WriteLine($"Restoring dependencies in \"{output}\"");
 
-            options.WorkingDirectory = output;
+            options.Directory = output;
             return Restore.Run(options);
         }
     }

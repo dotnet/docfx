@@ -19,6 +19,8 @@ namespace Microsoft.Docs.Build
 
         public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
 
+        public static string? SessionId => GetValue("DOCFX_SESSION_ID");
+
         private static string? GetValue(string name)
         {
             var value = Environment.GetEnvironmentVariable(name);

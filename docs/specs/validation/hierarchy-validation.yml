@@ -13,15 +13,7 @@ inputs:
             "message": "Module '{0}' is not mapped to the Azure sandbox. To use the sandbox in its child unit, you must first submit an onboarding request.",
             "code": "sandbox-not-mapping",
             "severity": "Error",
-            "exclusions": [
-                "includes",
-                "landingpage",
-                "hubpage",
-                "toc",
-                "redirection",
-                "inclusion",
-                "conceptual"
-            ]
+            "contentTypes": ["learningpath", "module", "moduleunit"]
           }
         ]
       }

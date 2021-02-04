@@ -3,18 +3,21 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class ConfigLoader
     {
-        public static (string docsetPath, string? outputPath)[] FindDocsets(ErrorBuilder errors, Package package, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(
+            ErrorBuilder errors, Package package, CommandLineOptions options, Repository? repository)
         {
-            var glob = FindDocsetsGlob(errors, package);
+            var glob = FindDocsetsGlob(errors, package, repository);
             if (glob is null)
             {
                 return new[] { (package.BasePath.Value, options.Output) };
@@ -36,12 +39,15 @@ namespace Microsoft.Docs.Build
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
-            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions, Package package)
+            ErrorBuilder errors,
+            Repository? repository,
+            string docsetPath,
+            string? outputPath,
+            CommandLineOptions options,
+            FetchOptions fetchOptions,
+            Package package,
+            CredentialProvider? getCredential = null)
         {
-            // load and trace entry repository
-            var repository = Repository.Create(package.BasePath);
-            Telemetry.SetRepository(repository?.Url, repository?.Branch);
-
             var docfxConfig = LoadConfig(errors, package);
             if (docfxConfig is null)
             {
@@ -64,16 +70,22 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = new CredentialProvider((url, _) => preloadConfig.GetHttpConfig(url));
-            var opsAccessor = new OpsAccessor(errors, credentialProvider);
+            var credentialProviders = new List<CredentialProvider>();
+            if (getCredential != null)
+            {
+                credentialProviders.Add(getCredential);
+            }
+            credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.GetHttpConfig(url)));
+            var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
+            var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 
             PackageResolver? packageResolver = default;
             var fallbackDocsetPath = new Lazy<string?>(
                 () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
-            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialHandler, configAdapter, fetchOptions);
 
-            packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
+            packageResolver = new PackageResolver(errors, docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 
             var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, package);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
@@ -143,9 +155,9 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, Package package)
+        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, Package package, Repository? repository)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package);
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package, repository);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
