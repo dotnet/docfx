@@ -1380,7 +1380,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var enumType = GetTypeSyntax(namedType);
             if (EqualityComparer<T>.Default.Equals(value, default))
             {
-                return Array.Empty<ExpressionSyntax>();
+                string defaultFlagName = flags.FirstOrDefault(f => EqualityComparer<T>.Default.Equals(f.Value, default)).Name;
+                return defaultFlagName != null ? new[] { GetFlagExpression(defaultFlagName) } : Array.Empty<ExpressionSyntax>();
             }
             List<(string Name, T Value)> sortedFlags = flags.OrderByDescending(p => p.Value).ToList();
             if (sortedFlags.Count == 0)
@@ -1392,11 +1393,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (!EqualityComparer<T>.Default.Equals(flagValue, default) && EnumOps.HasAllFlags(value, flagValue))
                 {
-                    results.Add(SyntaxFactory.MemberAccessExpression(
-                                     SyntaxKind.SimpleMemberAccessExpression,
-                                     enumType,
-                                     SyntaxFactory.Token(SyntaxKind.DotToken),
-                                     SyntaxFactory.IdentifierName(flagName)));
+                    results.Add(GetFlagExpression(flagName));
                     value = EnumOps.ClearFlags(value, flagValue);
                 }
             }
@@ -1410,6 +1407,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     enumType));
             }
             return results;
+
+            ExpressionSyntax GetFlagExpression(string flagName) => SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                enumType,
+                SyntaxFactory.Token(SyntaxKind.DotToken),
+                SyntaxFactory.IdentifierName(flagName));
         }
 
         private static ExpressionSyntax GetLiteralExpressionCore(object value, ITypeSymbol type)
