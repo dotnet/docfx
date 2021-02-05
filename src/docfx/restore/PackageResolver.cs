@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 PackageType.Git => DownloadGitRepository(package, options),
                 _ => Path.Combine(_docsetPath, package.Path),
             };
-            if (!Directory.Exists(packagePath) && !options.HasFlag(PackageFetchOptions.IgnoreDirectoryNonExisted))
+            if (!Directory.Exists(packagePath) && !options.HasFlag(PackageFetchOptions.IgnoreDirectoryNonExistedError))
             {
                 throw Errors.Config.DirectoryNotFound(packagePath).ToException();
             }
