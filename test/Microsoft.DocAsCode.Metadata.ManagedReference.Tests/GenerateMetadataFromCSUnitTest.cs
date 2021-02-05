@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
@@ -25,8 +24,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {
-        private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
-
         [Fact]
         [Trait("Related", "Attribute")]
         public void TestGenerateMetadataAsyncWithFuncVoidReturn()

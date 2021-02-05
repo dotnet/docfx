@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.VisualBasic;
     using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
@@ -23,8 +22,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromVBUnitTest
     {
-        private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
-
         [Trait("Related", "Generic")]
         [Fact]
         public void TestGenereateMetadataWithClass()
