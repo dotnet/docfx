@@ -22,5 +22,10 @@ namespace Microsoft.Docs.Build
         /// Ignore the package resolved directory not existed error
         /// </summary>
         IgnoreDirectoryNonExisted = 0b0010,
+
+        /// <summary>
+        /// Ignore the branch fallback when restore the package
+        /// </summary>
+        IgnoreBranchFallback = 0b0100,
     }
 }

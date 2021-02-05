@@ -85,10 +85,11 @@ namespace Microsoft.Docs.Build
                     path.Url,
                     path.Branch,
                     options.HasFlag(PackageFetchOptions.DepthOne),
-                    path is DependencyConfig dependency && dependency.IncludeInBuild))).Value;
+                    path is DependencyConfig dependency && dependency.IncludeInBuild,
+                    options.HasFlag(PackageFetchOptions.IgnoreBranchFallback)))).Value;
         }
 
-        private PathString DownloadGitRepositoryCore(string url, string committish, bool depthOne, bool fetchContributionBranch)
+        private PathString DownloadGitRepositoryCore(string url, string committish, bool depthOne, bool fetchContributionBranch, bool ignoreBranchFallback)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -112,7 +113,7 @@ namespace Microsoft.Docs.Build
 
                 using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                 {
-                    InitFetchCheckoutGitRepository(gitPath, url, committish, depthOne);
+                    InitFetchCheckoutGitRepository(gitPath, url, committish, depthOne, ignoreBranchFallback);
                 }
                 File.WriteAllText(gitDocfxHead, committish);
                 Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
@@ -128,7 +129,7 @@ namespace Microsoft.Docs.Build
             return gitPath;
         }
 
-        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, bool depthOne)
+        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, bool depthOne, bool ignoreBranchFallback)
         {
             var fetchOption = "--update-head-ok --prune --force";
             var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
@@ -178,7 +179,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (branchUsed != committish)
+            if ((branchUsed != committish) && !ignoreBranchFallback)
             {
                 _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish, branchUsed));
             }

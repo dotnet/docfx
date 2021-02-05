@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                yield return (config.Template, PackageFetchOptions.DepthOne);
+                yield return (config.Template, PackageFetchOptions.DepthOne | PackageFetchOptions.IgnoreBranchFallback);
             }
         }
     }
