@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
@@ -15,6 +14,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.Helpers;
 
     public class CSYamlModelGenerator : SimpleYamlModelGenerator
     {
@@ -936,27 +936,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             switch (namedType.EnumUnderlyingType.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, namedType);
                 case SpecialType.System_Byte:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, namedType);
                 case SpecialType.System_Int16:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, namedType);
                 case SpecialType.System_UInt16:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, namedType);
                 case SpecialType.System_Int32:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, namedType);
                 case SpecialType.System_UInt32:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, namedType);
                 case SpecialType.System_Int64:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, namedType);
                 case SpecialType.System_UInt64:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, namedType);
                 default:
                     return Array.Empty<ExpressionSyntax>();
             }
         }
 
-        private static IEnumerable<ExpressionSyntax> FilterFlagsImpl<T>(IEnumerable<(string Name, T Value)> flags, T value, INamedTypeSymbol namedType) where T : unmanaged
+        private static IEnumerable<ExpressionSyntax> GetFlagExpressions<T>(IEnumerable<(string Name, T Value)> flags, T value, INamedTypeSymbol namedType) where T : unmanaged
         {
             var enumType = GetTypeSyntax(namedType);
             if (EqualityComparer<T>.Default.Equals(value, default))
@@ -971,13 +971,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var results = new List<ExpressionSyntax>();
             foreach (var (flagName, flagValue) in sortedFlags)
             {
-                if (!EqualityComparer<T>.Default.Equals(flagValue, default) && HasAllFlags(value, flagValue))
+                if (!EqualityComparer<T>.Default.Equals(flagValue, default) && EnumOps.HasAllFlags(value, flagValue))
                 {
                     results.Add(SyntaxFactory.MemberAccessExpression(
                                      SyntaxKind.SimpleMemberAccessExpression,
                                      enumType,
                                      SyntaxFactory.IdentifierName(flagName)));
-                    value = ClearFlags(value, flagValue);
+                    value = EnumOps.ClearFlags(value, flagValue);
                 }
             }
             results.Reverse();
@@ -990,43 +990,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         namedType.EnumUnderlyingType)));
             }
             return results;
-        }
-
-        private static unsafe bool HasAllFlags<T>(T value, T flags) where T : unmanaged
-        {
-            if (sizeof(T) == 1)
-                return (Unsafe.As<T, byte>(ref value) | Unsafe.As<T, byte>(ref flags)) == Unsafe.As<T, byte>(ref value);
-            else if (sizeof(T) == 2)
-                return (Unsafe.As<T, ushort>(ref value) | Unsafe.As<T, ushort>(ref flags)) == Unsafe.As<T, ushort>(ref value);
-            else if (sizeof(T) == 4)
-                return (Unsafe.As<T, uint>(ref value) | Unsafe.As<T, uint>(ref flags)) == Unsafe.As<T, uint>(ref value);
-            else if (sizeof(T) == 8)
-                return (Unsafe.As<T, ulong>(ref value) | Unsafe.As<T, ulong>(ref flags)) == Unsafe.As<T, ulong>(ref value);
-
-            throw new NotSupportedException();
-        }
-
-        private static unsafe T ClearFlags<T>(T value, T flags) where T : unmanaged
-        {
-            if (sizeof(T) == 1)
-            {
-                var result = (byte)(Unsafe.As<T, byte>(ref value) & ~Unsafe.As<T, byte>(ref flags));
-                return Unsafe.As<byte, T>(ref result);
-            }
-            else if (sizeof(T) == 2) {
-                var result = (ushort)(Unsafe.As<T, ushort>(ref value) & ~Unsafe.As<T, ushort>(ref flags));
-                return Unsafe.As<ushort, T>(ref result);
-            }
-            else if (sizeof(T) == 4) {
-                var result = Unsafe.As<T, uint>(ref value) & ~Unsafe.As<T, uint>(ref flags);
-                return Unsafe.As<uint, T>(ref result);
-            }
-            else if (sizeof(T) == 8) {
-                var result = Unsafe.As<T, ulong>(ref value) & ~Unsafe.As<T, ulong>(ref flags);
-                return Unsafe.As<ulong, T>(ref result);
-            }
-
-            throw new NotSupportedException();
         }
 
         public static ExpressionSyntax GetLiteralExpressionCore(object value, ITypeSymbol type)
