@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
@@ -892,15 +893,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 var pairs = from member in namedType.GetMembers().OfType<IFieldSymbol>()
                             where member.IsConst && member.HasConstantValue
-                            select new { member.Name, member.ConstantValue };
+                            select (member.Name, member.ConstantValue);
                 if (isFlags)
                 {
-                    var exprs = (from pair in pairs
-                                 where HasFlag(namedType.EnumUnderlyingType, value, pair.ConstantValue)
+                    pairs = pairs.OrderByDescending(p => p.ConstantValue);
+
+                    var exprs = (from name in FilterFlags(pairs, value, type)
                                  select SyntaxFactory.MemberAccessExpression(
                                      SyntaxKind.SimpleMemberAccessExpression,
                                      enumType,
-                                     SyntaxFactory.IdentifierName(pair.Name))).ToList();
+                                     SyntaxFactory.IdentifierName(name))).ToList();
                     if (exprs.Count > 0)
                     {
                         return exprs.Aggregate<ExpressionSyntax>((x, y) =>
@@ -935,93 +937,96 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static bool HasFlag(ITypeSymbol type, object value, object constantValue)
+        private static IEnumerable<string> FilterFlags(IEnumerable<(string Name, object ConstantValue)> pairs, object value, ITypeSymbol type)
         {
             switch (type.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    {
-                        var v = (sbyte)value;
-                        var cv = (sbyte)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value);
                 case SpecialType.System_Byte:
-                    {
-                        var v = (byte)value;
-                        var cv = (byte)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value);
                 case SpecialType.System_Int16:
-                    {
-                        var v = (short)value;
-                        var cv = (short)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value);
                 case SpecialType.System_UInt16:
-                    {
-                        var v = (ushort)value;
-                        var cv = (ushort)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value);
                 case SpecialType.System_Int32:
-                    {
-                        var v = (int)value;
-                        var cv = (int)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value);
                 case SpecialType.System_UInt32:
-                    {
-                        var v = (uint)value;
-                        var cv = (uint)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value);
                 case SpecialType.System_Int64:
-                    {
-                        var v = (long)value;
-                        var cv = (long)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value);
                 case SpecialType.System_UInt64:
-                    {
-                        var v = (ulong)value;
-                        var cv = (ulong)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value);
                 default:
-                    return false;
+                    return Array.Empty<string>();
             }
+
+            static IEnumerable<string> FilterFlagsImpl<T>(IEnumerable<(string Name, T ConstantValue)> pairs, T value) where T : unmanaged
+            {
+                List<(string Name, T ConstantValue)> sortedPairs = pairs.OrderByDescending(p => p.ConstantValue).ToList();
+                if (sortedPairs.Count() == 0)
+                {
+                    return Array.Empty<string>();
+                }
+                if (EqualityComparer<T>.Default.Equals(value, default))
+                {
+                    var (name, constantValue) = sortedPairs.Last();
+                    if (EqualityComparer<T>.Default.Equals(constantValue, default(T)))
+                        return new[] { name };
+                    return Array.Empty<string>();
+                }
+                var results = new List<string>();
+                T remainder = value;
+                foreach (var (name, constantValue) in sortedPairs)
+                {
+                    if (!EqualityComparer<T>.Default.Equals(constantValue, default) && HasAllFlags(value, constantValue))
+                    {
+                        results.Add(name);
+                        value = ClearFlags(value, constantValue);
+
+                        remainder = ClearFlags(remainder, constantValue);
+                    }
+                }
+                results.Reverse();
+                return results;
+            }
+        }
+
+        private static unsafe bool HasAllFlags<T>(T value, T flags) where T : unmanaged
+        {
+            if (sizeof(T) == 1)
+                return (Unsafe.As<T, byte>(ref value) | Unsafe.As<T, byte>(ref flags)) == Unsafe.As<T, byte>(ref value);
+            else if (sizeof(T) == 2)
+                return (Unsafe.As<T, ushort>(ref value) | Unsafe.As<T, ushort>(ref flags)) == Unsafe.As<T, ushort>(ref value);
+            else if (sizeof(T) == 4)
+                return (Unsafe.As<T, uint>(ref value) | Unsafe.As<T, uint>(ref flags)) == Unsafe.As<T, uint>(ref value);
+            else if (sizeof(T) == 8)
+                return (Unsafe.As<T, ulong>(ref value) | Unsafe.As<T, ulong>(ref flags)) == Unsafe.As<T, ulong>(ref value);
+
+            throw new NotSupportedException();
+        }
+
+        private static unsafe T ClearFlags<T>(T value, T flags) where T : unmanaged
+        {
+            if (sizeof(T) == 1)
+            {
+                var result = (byte)(Unsafe.As<T, byte>(ref value) & ~Unsafe.As<T, byte>(ref flags));
+                return Unsafe.As<byte, T>(ref result);
+            }
+            else if (sizeof(T) == 2) {
+                var result = (ushort)(Unsafe.As<T, ushort>(ref value) & ~Unsafe.As<T, ushort>(ref flags));
+                return Unsafe.As<ushort, T>(ref result);
+            }
+            else if (sizeof(T) == 4) {
+                var result = Unsafe.As<T, uint>(ref value) & ~Unsafe.As<T, uint>(ref flags);
+                return Unsafe.As<uint, T>(ref result);
+            }
+            else if (sizeof(T) == 8) {
+                var result = Unsafe.As<T, ulong>(ref value) & ~Unsafe.As<T, ulong>(ref flags);
+                return Unsafe.As<ulong, T>(ref result);
+            }
+
+            throw new NotSupportedException();
         }
 
         public static ExpressionSyntax GetLiteralExpressionCore(object value, ITypeSymbol type)
