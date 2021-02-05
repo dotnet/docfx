@@ -896,7 +896,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             select (member.Name, member.ConstantValue);
                 if (isFlags)
                 {
-                    var exprs = GetFlagExpressions(pairs, value, type).ToList();
+                    var exprs = GetFlagExpressions(pairs, value, namedType).ToList();
                     if (exprs.Count > 0)
                     {
                         return exprs.Aggregate((x, y) =>
@@ -931,34 +931,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static IEnumerable<ExpressionSyntax> GetFlagExpressions(IEnumerable<(string Name, object ConstantValue)> flags, object value, ITypeSymbol type)
+        private static IEnumerable<ExpressionSyntax> GetFlagExpressions(IEnumerable<(string Name, object ConstantValue)> flags, object value, INamedTypeSymbol namedType)
         {
-            switch (type.SpecialType)
+            switch (namedType.EnumUnderlyingType.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, namedType);
                 case SpecialType.System_Byte:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, namedType);
                 case SpecialType.System_Int16:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, namedType);
                 case SpecialType.System_UInt16:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, namedType);
                 case SpecialType.System_Int32:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, namedType);
                 case SpecialType.System_UInt32:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, namedType);
                 case SpecialType.System_Int64:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, namedType);
                 case SpecialType.System_UInt64:
-                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, type);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, namedType);
                 default:
                     return Array.Empty<ExpressionSyntax>();
             }
         }
 
-        private static IEnumerable<ExpressionSyntax> FilterFlagsImpl<T>(IEnumerable<(string Name, T Value)> flags, T value, ITypeSymbol type) where T : unmanaged
+        private static IEnumerable<ExpressionSyntax> FilterFlagsImpl<T>(IEnumerable<(string Name, T Value)> flags, T value, INamedTypeSymbol namedType) where T : unmanaged
         {
-            var namedType = (INamedTypeSymbol)type;
             var enumType = GetTypeSyntax(namedType);
             if (EqualityComparer<T>.Default.Equals(value, default))
             {
