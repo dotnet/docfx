@@ -129,4 +129,10 @@
     <value>Type name contains lowercase letters</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="MustBeExpressionFormat" xml:space="preserve">
+    <value>Parameter must be expression</value>
+  </data>
+  <data name="MustBeExpressionTitle" xml:space="preserve">
+    <value>Parameter must be expression</value>
+  </data>
 </root>
