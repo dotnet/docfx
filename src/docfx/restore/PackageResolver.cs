@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                 PackageType.Git => DownloadGitRepository(package, options),
                 _ => Path.Combine(_docsetPath, package.Path),
             };
-            if (!Directory.Exists(packagePath) && !options.HasFlag(PackageFetchOptions.IgnoreDirectoryNonExisted))
+            if (!Directory.Exists(packagePath) && !options.HasFlag(PackageFetchOptions.IgnoreDirectoryNonExistedError))
             {
                 throw Errors.Config.DirectoryNotFound(packagePath).ToException();
             }
@@ -84,11 +84,11 @@ namespace Microsoft.Docs.Build
                 DownloadGitRepositoryCore(
                     path.Url,
                     path.Branch,
-                    options.HasFlag(PackageFetchOptions.DepthOne),
-                    path is DependencyConfig dependency && dependency.IncludeInBuild))).Value;
+                    path is DependencyConfig dependency && dependency.IncludeInBuild,
+                    options))).Value;
         }
 
-        private PathString DownloadGitRepositoryCore(string url, string committish, bool depthOne, bool fetchContributionBranch)
+        private PathString DownloadGitRepositoryCore(string url, string committish, bool fetchContributionBranch, PackageFetchOptions options)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -112,7 +112,7 @@ namespace Microsoft.Docs.Build
 
                 using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                 {
-                    InitFetchCheckoutGitRepository(gitPath, url, committish, depthOne);
+                    InitFetchCheckoutGitRepository(gitPath, url, committish, options);
                 }
                 File.WriteAllText(gitDocfxHead, committish);
                 Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
@@ -128,10 +128,10 @@ namespace Microsoft.Docs.Build
             return gitPath;
         }
 
-        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, bool depthOne)
+        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, PackageFetchOptions options)
         {
             var fetchOption = "--update-head-ok --prune --force";
-            var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
+            var depthOneOption = $"--depth {(options.HasFlag(PackageFetchOptions.DepthOne) ? "1" : "99999999")}";
 
             // Remove git lock files if previous build was killed during git operation
             DeleteLockFiles(Path.Combine(cwd, ".git"));
@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (branchUsed != committish)
+            if ((branchUsed != committish) && !options.HasFlag(PackageFetchOptions.IgnoreBranchFallbackError))
             {
                 _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish, branchUsed));
             }
