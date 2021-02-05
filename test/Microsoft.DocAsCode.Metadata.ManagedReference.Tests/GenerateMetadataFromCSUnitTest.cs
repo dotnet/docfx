@@ -2474,7 +2474,7 @@ namespace Test1
             Assert.Equal("TestAttribute", @class.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal(@"[Serializable]
-[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Module | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Interface | AttributeTargets.Parameter | AttributeTargets.Delegate | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter | AttributeTargets.All, Inherited = true, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
 [TypeConverter(typeof(TestAttribute))]
 [TypeConverter(typeof(TestAttribute[]))]
 [Test(""test"")]
