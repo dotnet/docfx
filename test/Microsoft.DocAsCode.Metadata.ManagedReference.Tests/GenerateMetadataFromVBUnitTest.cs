@@ -1389,7 +1389,7 @@ End Namespace
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
             Assert.Equal(@"<Serializable>
-<AttributeUsage(AttributeTargets.Assembly Or AttributeTargets.Module Or AttributeTargets.Class Or AttributeTargets.Struct Or AttributeTargets.Enum Or AttributeTargets.Constructor Or AttributeTargets.Method Or AttributeTargets.Property Or AttributeTargets.Field Or AttributeTargets.Event Or AttributeTargets.Interface Or AttributeTargets.Parameter Or AttributeTargets.Delegate Or AttributeTargets.ReturnValue Or AttributeTargets.GenericParameter Or AttributeTargets.All, Inherited:=True, AllowMultiple:=True)>
+<AttributeUsage(AttributeTargets.All, Inherited:=True, AllowMultiple:=True)>
 <TypeConverter(GetType(TestAttribute))>
 <Test(""test"")>
 <Test(New Integer() {1, 2, 3})>

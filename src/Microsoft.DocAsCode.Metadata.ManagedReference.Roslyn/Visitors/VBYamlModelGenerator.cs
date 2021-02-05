@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.Helpers;
 
     public class VBYamlModelGenerator : SimpleYamlModelGenerator
     {
@@ -1311,16 +1312,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 var pairs = from member in namedType.GetMembers().OfType<IFieldSymbol>()
                             where member.IsConst && member.HasConstantValue
-                            select new { member.Name, member.ConstantValue };
+                            select (member.Name, member.ConstantValue);
                 if (isFlags)
                 {
-                    var exprs = (from pair in pairs
-                                 where HasFlag(namedType.EnumUnderlyingType, value, pair.ConstantValue)
-                                 select SyntaxFactory.MemberAccessExpression(
-                                     SyntaxKind.SimpleMemberAccessExpression,
-                                     enumType,
-                                     SyntaxFactory.Token(SyntaxKind.DotToken),
-                                     SyntaxFactory.IdentifierName(pair.Name))).ToList();
+                    var exprs = GetFlagExpressions(pairs, value, namedType).ToList();
                     if (exprs.Count > 0)
                     {
                         return exprs.Aggregate<ExpressionSyntax>(SyntaxFactory.OrExpression);
@@ -1355,93 +1350,66 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static bool HasFlag(ITypeSymbol type, object value, object constantValue)
+        private static IEnumerable<ExpressionSyntax> GetFlagExpressions(IEnumerable<(string Name, object ConstantValue)> flags, object value, INamedTypeSymbol namedType)
         {
-            switch (type.SpecialType)
+            switch (namedType.EnumUnderlyingType.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    {
-                        var v = (sbyte)value;
-                        var cv = (sbyte)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, namedType);
                 case SpecialType.System_Byte:
-                    {
-                        var v = (byte)value;
-                        var cv = (byte)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, namedType);
                 case SpecialType.System_Int16:
-                    {
-                        var v = (short)value;
-                        var cv = (short)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, namedType);
                 case SpecialType.System_UInt16:
-                    {
-                        var v = (ushort)value;
-                        var cv = (ushort)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, namedType);
                 case SpecialType.System_Int32:
-                    {
-                        var v = (int)value;
-                        var cv = (int)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, namedType);
                 case SpecialType.System_UInt32:
-                    {
-                        var v = (uint)value;
-                        var cv = (uint)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, namedType);
                 case SpecialType.System_Int64:
-                    {
-                        var v = (long)value;
-                        var cv = (long)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, namedType);
                 case SpecialType.System_UInt64:
-                    {
-                        var v = (ulong)value;
-                        var cv = (ulong)constantValue;
-                        if (cv == 0)
-                        {
-                            return v == 0;
-                        }
-                        return (v & cv) == cv;
-                    }
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, namedType);
                 default:
-                    return false;
+                    return Array.Empty<ExpressionSyntax>();
             }
+        }
+
+        private static IEnumerable<ExpressionSyntax> GetFlagExpressions<T>(IEnumerable<(string Name, T Value)> flags, T value, INamedTypeSymbol namedType) where T : unmanaged
+        {
+            var enumType = GetTypeSyntax(namedType);
+            if (EqualityComparer<T>.Default.Equals(value, default))
+            {
+                return Array.Empty<ExpressionSyntax>();
+            }
+            List<(string Name, T Value)> sortedFlags = flags.OrderByDescending(p => p.Value).ToList();
+            if (sortedFlags.Count == 0)
+            {
+                return Array.Empty<ExpressionSyntax>();
+            }
+            var results = new List<ExpressionSyntax>();
+            foreach (var (flagName, flagValue) in sortedFlags)
+            {
+                if (!EqualityComparer<T>.Default.Equals(flagValue, default) && EnumOps.HasAllFlags(value, flagValue))
+                {
+                    results.Add(SyntaxFactory.MemberAccessExpression(
+                                     SyntaxKind.SimpleMemberAccessExpression,
+                                     enumType,
+                                     SyntaxFactory.Token(SyntaxKind.DotToken),
+                                     SyntaxFactory.IdentifierName(flagName)));
+                    value = EnumOps.ClearFlags(value, flagValue);
+                }
+            }
+            results.Reverse();
+            if (!EqualityComparer<T>.Default.Equals(value, default))
+            {
+                results.Add(SyntaxFactory.CTypeExpression(
+                    GetLiteralExpressionCore(
+                        value,
+                        namedType.EnumUnderlyingType),
+                    enumType));
+            }
+            return results;
         }
 
         private static ExpressionSyntax GetLiteralExpressionCore(object value, ITypeSymbol type)
