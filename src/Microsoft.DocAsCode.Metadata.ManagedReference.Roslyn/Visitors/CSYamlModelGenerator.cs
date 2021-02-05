@@ -896,17 +896,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             select (member.Name, member.ConstantValue);
                 if (isFlags)
                 {
-                    pairs = pairs.OrderByDescending(p => p.ConstantValue);
-
-                    var exprs = (from name in FilterFlags(pairs, value, type)
-                                 select SyntaxFactory.MemberAccessExpression(
-                                     SyntaxKind.SimpleMemberAccessExpression,
-                                     enumType,
-                                     SyntaxFactory.IdentifierName(name))).ToList();
+                    var exprs = GetFlagExpressions(pairs, value, type).ToList();
                     if (exprs.Count > 0)
                     {
-                        return exprs.Aggregate<ExpressionSyntax>((x, y) =>
-                            SyntaxFactory.BinaryExpression(SyntaxKind.BitwiseOrExpression, x, y));
+                        return exprs.Aggregate((x, y) =>
+                                SyntaxFactory.BinaryExpression(SyntaxKind.BitwiseOrExpression, x, y));
                     }
                 }
                 else
@@ -937,59 +931,66 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static IEnumerable<string> FilterFlags(IEnumerable<(string Name, object ConstantValue)> pairs, object value, ITypeSymbol type)
+        private static IEnumerable<ExpressionSyntax> GetFlagExpressions(IEnumerable<(string Name, object ConstantValue)> flags, object value, ITypeSymbol type)
         {
             switch (type.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, type);
                 case SpecialType.System_Byte:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, type);
                 case SpecialType.System_Int16:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, type);
                 case SpecialType.System_UInt16:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, type);
                 case SpecialType.System_Int32:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, type);
                 case SpecialType.System_UInt32:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, type);
                 case SpecialType.System_Int64:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, type);
                 case SpecialType.System_UInt64:
-                    return FilterFlagsImpl(pairs.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value);
+                    return FilterFlagsImpl(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, type);
                 default:
-                    return Array.Empty<string>();
+                    return Array.Empty<ExpressionSyntax>();
             }
+        }
 
-            static IEnumerable<string> FilterFlagsImpl<T>(IEnumerable<(string Name, T ConstantValue)> pairs, T value) where T : unmanaged
+        private static IEnumerable<ExpressionSyntax> FilterFlagsImpl<T>(IEnumerable<(string Name, T Value)> flags, T value, ITypeSymbol type) where T : unmanaged
+        {
+            var namedType = (INamedTypeSymbol)type;
+            var enumType = GetTypeSyntax(namedType);
+            if (EqualityComparer<T>.Default.Equals(value, default))
             {
-                List<(string Name, T ConstantValue)> sortedPairs = pairs.OrderByDescending(p => p.ConstantValue).ToList();
-                if (sortedPairs.Count() == 0)
-                {
-                    return Array.Empty<string>();
-                }
-                if (EqualityComparer<T>.Default.Equals(value, default))
-                {
-                    var (name, constantValue) = sortedPairs.Last();
-                    if (EqualityComparer<T>.Default.Equals(constantValue, default(T)))
-                        return new[] { name };
-                    return Array.Empty<string>();
-                }
-                var results = new List<string>();
-                T remainder = value;
-                foreach (var (name, constantValue) in sortedPairs)
-                {
-                    if (!EqualityComparer<T>.Default.Equals(constantValue, default) && HasAllFlags(value, constantValue))
-                    {
-                        results.Add(name);
-                        value = ClearFlags(value, constantValue);
-
-                        remainder = ClearFlags(remainder, constantValue);
-                    }
-                }
-                results.Reverse();
-                return results;
+                return Array.Empty<ExpressionSyntax>();
             }
+            List<(string Name, T Value)> sortedFlags = flags.OrderByDescending(p => p.Value).ToList();
+            if (sortedFlags.Count == 0)
+            {
+                return Array.Empty<ExpressionSyntax>();
+            }
+            var results = new List<ExpressionSyntax>();
+            foreach (var (flagName, flagValue) in sortedFlags)
+            {
+                if (!EqualityComparer<T>.Default.Equals(flagValue, default) && HasAllFlags(value, flagValue))
+                {
+                    results.Add(SyntaxFactory.MemberAccessExpression(
+                                     SyntaxKind.SimpleMemberAccessExpression,
+                                     enumType,
+                                     SyntaxFactory.IdentifierName(flagName)));
+                    value = ClearFlags(value, flagValue);
+                }
+            }
+            results.Reverse();
+            if (!EqualityComparer<T>.Default.Equals(value, default))
+            {
+                results.Add(SyntaxFactory.CastExpression(
+                    enumType,
+                    GetLiteralExpressionCore(
+                        value,
+                        namedType.EnumUnderlyingType)));
+            }
+            return results;
         }
 
         private static unsafe bool HasAllFlags<T>(T value, T flags) where T : unmanaged
