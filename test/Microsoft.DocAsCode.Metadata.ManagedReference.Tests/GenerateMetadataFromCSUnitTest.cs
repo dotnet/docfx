@@ -2548,7 +2548,7 @@ public object Property
         }
 
         [Fact]
-        public void TestGenerateMetadataWithDefaultEnumFlagsValues()
+        public void TestGenerateMetadataWithDefaultParameterEnumFlagsValues()
         {
             string code = @"
 using System;
@@ -2574,7 +2574,7 @@ namespace Test1
         }
 
         [Fact]
-        public void TestGenerateMetadataWithDefaultEnumValues()
+        public void TestGenerateMetadataWithDefaultParameterEnumValues()
         {
             string code = @"
 using System;
