@@ -2548,6 +2548,58 @@ public object Property
         }
 
         [Fact]
+        public void TestGenerateMetadataWithDefaultEnumFlagsValues()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC) { }
+        public void Undefined2(ConsoleKey key = (ConsoleKey)0) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var defined = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(defined);
+            Assert.Equal(@"public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var undefined = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(undefined);
+            Assert.Equal(@"public void Undefined2(ConsoleKey key = (ConsoleKey)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithDefaultEnumValues()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None) { }
+        public void Undefined2(AttributeTargets targets = (AttributeTargets)0) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var defined = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(defined);
+            Assert.Equal(@"public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var undefined = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(undefined);
+            Assert.Equal(@"public void Undefined2(AttributeTargets targets = (AttributeTargets)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
         public void TestGenerateMetadataWithFieldHasDefaultValue()
         {
             string code = @"
