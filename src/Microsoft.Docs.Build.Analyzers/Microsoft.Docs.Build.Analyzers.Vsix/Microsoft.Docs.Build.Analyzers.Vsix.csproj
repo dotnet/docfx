@@ -33,7 +33,6 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers.CodeFixes\Microsoft.Docs.Build.Analyzers.CodeFixes.csproj" />
     <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers.csproj" />
   </ItemGroup>
 

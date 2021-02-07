@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers.CodeFixes\Microsoft.Docs.Build.Analyzers.CodeFixes.csproj" />
     <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers.csproj" />
   </ItemGroup>
 

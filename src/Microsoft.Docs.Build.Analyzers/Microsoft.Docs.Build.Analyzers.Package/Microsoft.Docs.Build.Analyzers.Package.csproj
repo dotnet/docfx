@@ -11,7 +11,6 @@
     <PackageId>Microsoft.Docs.Build.Analyzers</PackageId>
     <PackageVersion>1.0.0.0</PackageVersion>
     <Authors>fan</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
     <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
     <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
     <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
@@ -26,7 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers.CodeFixes\Microsoft.Docs.Build.Analyzers.CodeFixes.csproj" />
     <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers.csproj" />
   </ItemGroup>
 
@@ -37,7 +35,6 @@
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(OutputPath)\Microsoft.Docs.Build.Analyzers.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\Microsoft.Docs.Build.Analyzers.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
 
