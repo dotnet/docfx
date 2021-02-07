@@ -31,6 +31,9 @@ namespace Microsoft.Docs.Build
         [Option("no-dry-sync")]
         public bool NoDrySync { get; set; }
 
+        [Option("profile")]
+        public bool Profile { get; set; }
+
         [Option("regression-rules")]
         public bool RegressionRules { get; set; }
 
