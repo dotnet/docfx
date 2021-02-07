@@ -557,6 +557,9 @@ $(function () {
           tocrel = tocPath.substr(0, index + 1);
         }
         var currentHref = util.getAbsolutePath(window.location.pathname);
+        if(!currentHref.endsWith('.html')) {
+          currentHref += '.html';
+        }
         $('#sidetoc').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
           if (util.isRelativePath(href)) {
