@@ -49,4 +49,8 @@
     <ProjectReference Include="../Microsoft.Docs.LearnValidation/Microsoft.Docs.LearnValidation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../Microsoft.Docs.Build.Analyzer/Microsoft.Docs.Build.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
 </Project>

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers.csproj" />
+    <ProjectReference Include="..\Microsoft.Docs.Build.Analyzer\Microsoft.Docs.Build.Analyzer.csproj" />
   </ItemGroup>
 
 </Project>

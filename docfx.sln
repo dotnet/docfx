@@ -23,9 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Markdig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.LearnValidation", "src\Microsoft.Docs.LearnValidation\Microsoft.Docs.LearnValidation.csproj", "{92FB16D7-A628-41FA-89C1-E2905A8032F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Build.Analyzers", "src\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers.csproj", "{7B826106-8413-4C32-995F-181B35E28A1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Build.Analyzer", "src\Microsoft.Docs.Build.Analyzer\Microsoft.Docs.Build.Analyzer.csproj", "{7B826106-8413-4C32-995F-181B35E28A1B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Build.Analyzers.Test", "src\Microsoft.Docs.Build.Analyzers\Microsoft.Docs.Build.Analyzers.Test\Microsoft.Docs.Build.Analyzers.Test.csproj", "{4A5A56C9-C9D3-47D1-9D46-BAF7B6FBF1D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Build.Analyzer.Test", "src\Microsoft.Docs.Build.Analyzer.Test\Microsoft.Docs.Build.Analyzer.Test.csproj", "{4A5A56C9-C9D3-47D1-9D46-BAF7B6FBF1D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
