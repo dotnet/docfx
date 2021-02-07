@@ -88,20 +88,29 @@ namespace Microsoft.Docs.Build.Analyzers {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter must be expression.
+        ///   Looks up a localized string similar to Parameter should be interpolated string expression.
         /// </summary>
-        internal static string MustBeExpressionFormat {
+        internal static string ShouldBeInterpolatedStringTitle {
             get {
-                return ResourceManager.GetString("MustBeExpressionFormat", resourceCulture);
+                return ResourceManager.GetString("ShouldBeInterpolatedStringTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter must be expression.
+        ///   Looks up a localized string similar to Parameter should be member access.
         /// </summary>
-        internal static string MustBeExpressionTitle {
+        internal static string ShouldBeMemberAccessExpressionTitle {
             get {
-                return ResourceManager.GetString("MustBeExpressionTitle", resourceCulture);
+                return ResourceManager.GetString("ShouldBeMemberAccessExpressionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter should be plain string.
+        /// </summary>
+        internal static string ShouldBePlainStringTitle {
+            get {
+                return ResourceManager.GetString("ShouldBePlainStringTitle", resourceCulture);
             }
         }
     }

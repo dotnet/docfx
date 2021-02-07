@@ -129,10 +129,13 @@
     <value>Type name contains lowercase letters</value>
     <comment>The title of the diagnostic.</comment>
   </data>
-  <data name="MustBeExpressionFormat" xml:space="preserve">
-    <value>Parameter must be expression</value>
+  <data name="ShouldBeInterpolatedStringTitle" xml:space="preserve">
+    <value>Parameter should be interpolated string expression</value>
   </data>
-  <data name="MustBeExpressionTitle" xml:space="preserve">
-    <value>Parameter must be expression</value>
+  <data name="ShouldBeMemberAccessExpressionTitle" xml:space="preserve">
+    <value>Parameter should be member access</value>
+  </data>
+  <data name="ShouldBePlainStringTitle" xml:space="preserve">
+    <value>Parameter should be plain string</value>
   </data>
 </root>

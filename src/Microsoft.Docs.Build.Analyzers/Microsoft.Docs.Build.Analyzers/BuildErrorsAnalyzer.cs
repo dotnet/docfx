@@ -17,11 +17,17 @@ namespace Microsoft.Docs.Build.Analyzers
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
         private const string Category = "Naming";
 
-        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.MustBeExpressionTitle), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.MustBeExpressionFormat), Resources.ResourceManager, typeof(Resources));
-        private static readonly DiagnosticDescriptor ParameterRule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        private static readonly LocalizableString ShouldBeInterpolatedStringTitle = new LocalizableResourceString(nameof(Resources.ShouldBeInterpolatedStringTitle), Resources.ResourceManager, typeof(Resources));
+        public static readonly DiagnosticDescriptor ShouldBeInterpolatedStringRule = new DiagnosticDescriptor(DiagnosticId, ShouldBeInterpolatedStringTitle, ShouldBeInterpolatedStringTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(ParameterRule); } }
+        private static readonly LocalizableString ShouldBeMemberAccessExpressionTitle = new LocalizableResourceString(nameof(Resources.ShouldBeMemberAccessExpressionTitle), Resources.ResourceManager, typeof(Resources));
+        public static readonly DiagnosticDescriptor ShouldBeMemberAccessExpressionRule = new DiagnosticDescriptor(DiagnosticId, ShouldBeMemberAccessExpressionTitle, ShouldBeMemberAccessExpressionTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+
+        private static readonly LocalizableString ShouldBePlainStringTitle = new LocalizableResourceString(nameof(Resources.ShouldBePlainStringTitle), Resources.ResourceManager, typeof(Resources));
+        public static readonly DiagnosticDescriptor ShouldBePlainStringRule = new DiagnosticDescriptor(DiagnosticId, ShouldBePlainStringTitle, ShouldBePlainStringTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+
+
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(ShouldBeInterpolatedStringRule, ShouldBeMemberAccessExpressionRule, ShouldBePlainStringRule); } }
 
         public override void Initialize(AnalysisContext context)
         {
@@ -35,6 +41,7 @@ namespace Microsoft.Docs.Build.Analyzers
 
         private void AnalyzeTree(SyntaxTreeAnalysisContext context)
         {
+            // TODO only apply on Errors.cs
             var root = context.Tree.GetRoot();
             var errorClasses = from c in root.DescendantNodes().OfType<ClassDeclarationSyntax>()
                                where c.Identifier.ValueText != "Errors" // exclude root class
@@ -47,13 +54,25 @@ namespace Microsoft.Docs.Build.Analyzers
                                 select newError;
                 foreach (var error in newErrors)
                 {
-                    if (error.ArgumentList.Arguments[1].Expression is not InterpolatedStringExpressionSyntax msg)
+                    if (error.ArgumentList.Arguments[0].Expression is not MemberAccessExpressionSyntax level)
                     {
-                        var diagnostic = Diagnostic.Create(ParameterRule, error.ArgumentList.Arguments[1].Expression.GetLocation());
+                        var diagnostic = Diagnostic.Create(ShouldBeMemberAccessExpressionRule, error.ArgumentList.Arguments[0].Expression.GetLocation());
 
                         context.ReportDiagnostic(diagnostic);
+                    }
 
-                        continue;
+                    if (error.ArgumentList.Arguments[1].Expression is not LiteralExpressionSyntax code)
+                    {
+                        var diagnostic = Diagnostic.Create(ShouldBePlainStringRule, error.ArgumentList.Arguments[1].Expression.GetLocation());
+
+                        context.ReportDiagnostic(diagnostic);
+                    }
+
+                    if (error.ArgumentList.Arguments[2].Expression is not InterpolatedStringExpressionSyntax msg)
+                    {
+                        var diagnostic = Diagnostic.Create(ShouldBeInterpolatedStringRule, error.ArgumentList.Arguments[2].Expression.GetLocation());
+
+                        context.ReportDiagnostic(diagnostic);
                     }
                 }
             }
