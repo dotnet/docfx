@@ -39,7 +39,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover" --no-restore
       publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
@@ -74,7 +74,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover" --no-restore
       publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
@@ -109,7 +109,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover" --no-restore
       publishTestResults: true
     env:
       AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
