@@ -58,7 +58,9 @@ namespace Microsoft.Docs.Build
                 foreach (var branch in new[] { fallbackBranch, "main" })
                 {
                     if (packageResolver.TryResolvePackage(
-                        new PackagePath(fallbackRemote, branch), PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError, out var fallbackRepoPath))
+                        new PackagePath(fallbackRemote, branch),
+                        PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError,
+                        out var fallbackRepoPath))
                     {
                         return Path.Combine(fallbackRepoPath, docsetSourceFolder);
                     }
