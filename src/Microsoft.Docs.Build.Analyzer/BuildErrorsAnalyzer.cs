@@ -15,17 +15,17 @@ namespace Microsoft.Docs.Build.Analyzers
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
         // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Localizing%20Analyzers.md for more on localization
-        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
         private const string Category = "Naming";
+        private readonly LocalizableString _description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
 
         private static readonly LocalizableString ShouldBeInterpolatedStringTitle = new LocalizableResourceString(nameof(Resources.ShouldBeInterpolatedStringTitle), Resources.ResourceManager, typeof(Resources));
-        public static readonly DiagnosticDescriptor ShouldBeInterpolatedStringRule = new DiagnosticDescriptor(DiagnosticId, ShouldBeInterpolatedStringTitle, ShouldBeInterpolatedStringTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        public static readonly DiagnosticDescriptor ShouldBeInterpolatedStringRule = new DiagnosticDescriptor(DiagnosticId, ShouldBeInterpolatedStringTitle, ShouldBeInterpolatedStringTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: _description);
 
         private static readonly LocalizableString ShouldBeMemberAccessExpressionTitle = new LocalizableResourceString(nameof(Resources.ShouldBeMemberAccessExpressionTitle), Resources.ResourceManager, typeof(Resources));
-        public static readonly DiagnosticDescriptor ShouldBeMemberAccessExpressionRule = new DiagnosticDescriptor(DiagnosticId, ShouldBeMemberAccessExpressionTitle, ShouldBeMemberAccessExpressionTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        public static readonly DiagnosticDescriptor ShouldBeMemberAccessExpressionRule = new DiagnosticDescriptor(DiagnosticId, ShouldBeMemberAccessExpressionTitle, ShouldBeMemberAccessExpressionTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: _description);
 
         private static readonly LocalizableString ShouldBePlainStringTitle = new LocalizableResourceString(nameof(Resources.ShouldBePlainStringTitle), Resources.ResourceManager, typeof(Resources));
-        public static readonly DiagnosticDescriptor ShouldBePlainStringRule = new DiagnosticDescriptor(DiagnosticId, ShouldBePlainStringTitle, ShouldBePlainStringTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        public static readonly DiagnosticDescriptor ShouldBePlainStringRule = new DiagnosticDescriptor(DiagnosticId, ShouldBePlainStringTitle, ShouldBePlainStringTitle, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: _description);
 
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(ShouldBeInterpolatedStringRule, ShouldBeMemberAccessExpressionRule, ShouldBePlainStringRule); } }
