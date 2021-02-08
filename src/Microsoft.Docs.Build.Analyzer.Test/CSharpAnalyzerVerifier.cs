@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -49,8 +52,6 @@ namespace Microsoft.Docs.Build.Analyzers.Test
                         var compilationOptions = project.CompilationOptions;
                         if (compilationOptions != null)
                         {
-                            compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
-                            compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
                             solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
                         }
                     }
