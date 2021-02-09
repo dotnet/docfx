@@ -585,3 +585,5 @@ testdata
 vsts
 windowsserverdocs
 csv
+nettrace
+speedscope

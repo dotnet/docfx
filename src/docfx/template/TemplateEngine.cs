@@ -46,7 +46,7 @@ namespace Microsoft.Docs.Build
             if (template.Type == PackageType.None)
             {
                 template = new("_themes");
-                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExisted;
+                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExistedError;
             }
 
             _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
