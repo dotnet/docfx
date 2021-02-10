@@ -1385,7 +1385,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var negativeFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) < 0);
             var positiveFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) > 0);
-            var sortedFlags = negativeFlags.OrderBy(p => p.Value).Concat(positiveFlags.OrderByDescending(p => p.Value)).ToList();
+            var sortedFlags = negativeFlags.OrderByDescending(p => p.Value).Concat(positiveFlags.OrderByDescending(p => p.Value)).ToList();
             if (sortedFlags.Count == 0)
             {
                 return Array.Empty<ExpressionSyntax>();
