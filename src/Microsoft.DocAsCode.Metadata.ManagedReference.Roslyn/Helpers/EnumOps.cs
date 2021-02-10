@@ -22,27 +22,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.Helpers
         public static unsafe T ClearFlags<T>(T value, T flags) where T : unmanaged
         {
             if (sizeof(T) == 1)
-            {
-                var result = (byte)(Unsafe.As<T, byte>(ref value) & ~Unsafe.As<T, byte>(ref flags));
-                return Unsafe.As<byte, T>(ref result);
-            }
+                return UnsafeValue.As<byte, T>((byte)(Unsafe.As<T, byte>(ref value) & ~Unsafe.As<T, byte>(ref flags)));
             else if (sizeof(T) == 2)
-            {
-                var result = (ushort)(Unsafe.As<T, ushort>(ref value) & ~Unsafe.As<T, ushort>(ref flags));
-                return Unsafe.As<ushort, T>(ref result);
-            }
+                return UnsafeValue.As<short, T>((short)(Unsafe.As<T, short>(ref value) & ~Unsafe.As<T, short>(ref flags)));
             else if (sizeof(T) == 4)
-            {
-                var result = Unsafe.As<T, uint>(ref value) & ~Unsafe.As<T, uint>(ref flags);
-                return Unsafe.As<uint, T>(ref result);
-            }
+                return UnsafeValue.As<int, T>(Unsafe.As<T, int>(ref value) & ~Unsafe.As<T, int>(ref flags));
             else if (sizeof(T) == 8)
-            {
-                var result = Unsafe.As<T, ulong>(ref value) & ~Unsafe.As<T, ulong>(ref flags);
-                return Unsafe.As<ulong, T>(ref result);
-            }
+                return UnsafeValue.As<long, T>(Unsafe.As<T, long>(ref value) & ~Unsafe.As<T, long>(ref flags));
 
             throw new NotSupportedException();
+        }
+        private static class UnsafeValue
+        {
+            public static TTo As<TFrom, TTo>(TFrom source) => Unsafe.As<TFrom, TTo>(ref source);
         }
     }
 }
