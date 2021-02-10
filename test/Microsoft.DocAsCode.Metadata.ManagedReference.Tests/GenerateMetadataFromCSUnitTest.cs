@@ -2600,6 +2600,119 @@ namespace Test1
         }
 
         [Fact]
+        public void TestGenerateMetadataWithDefaultParameterNullablePrimitive()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void PrimitiveNull(int? i = null) { }
+        public void PrimitiveDefault(int? i = 0) { }
+        public void PrimitiveValue(int? i = 123) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var primitiveNull = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(primitiveNull);
+            Assert.Equal(@"public void PrimitiveNull(int? i = null)", primitiveNull.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var primitiveDefault = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(primitiveDefault);
+            Assert.Equal(@"public void PrimitiveDefault(int? i = 0)", primitiveDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var primitiveValue = output.Items[0].Items[0].Items[2];
+            Assert.NotNull(primitiveValue);
+            Assert.Equal(@"public void PrimitiveValue(int? i = 123)", primitiveValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithDefaultParameterNullableEnum()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void EnumNull(ConsoleSpecialKey? key = null) { }
+        public void EnumDefault(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlC) { }
+        public void EnumValue(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlBreak) { }
+        public void EnumUndefinedDefault(ConsoleKey? key = (ConsoleKey)0) { }
+        public void EnumUndefinedValue(ConsoleKey? key = (ConsoleKey)999) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var flagsNull = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(flagsNull);
+            Assert.Equal(@"public void EnumNull(ConsoleSpecialKey? key = null)", flagsNull.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var flagsDefault = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(flagsDefault);
+            Assert.Equal(@"public void EnumDefault(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlC)", flagsDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var flagsValue = output.Items[0].Items[0].Items[2];
+            Assert.NotNull(flagsValue);
+            Assert.Equal(@"public void EnumValue(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlBreak)", flagsValue.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var enumUndefinedDefault = output.Items[0].Items[0].Items[3];
+            Assert.NotNull(enumUndefinedDefault);
+            Assert.Equal(@"public void EnumUndefinedDefault(ConsoleKey? key = (ConsoleKey)0)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var enumUndefinedValue = output.Items[0].Items[0].Items[4];
+            Assert.NotNull(enumUndefinedValue);
+            Assert.Equal(@"public void EnumUndefinedValue(ConsoleKey? key = (ConsoleKey)999)", enumUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithDefaultParameterNullableEnumFlags()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void FlagsNull(Base64FormattingOptions? options = null) { }
+        public void FlagsDefault(Base64FormattingOptions? options = Base64FormattingOptions.None) { }
+        public void FlagsValue(Base64FormattingOptions? options = Base64FormattingOptions.InsertLineBreaks) { }
+        public void FlagsUndefinedDefault(AttributeTargets? targets = (AttributeTargets)0) { }
+        public void FlagsUndefinedValue(AttributeTargets? targets = (AttributeTargets)65536) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var enumNull = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(enumNull);
+            Assert.Equal(@"public void FlagsNull(Base64FormattingOptions? options = null)", enumNull.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var enumDefault = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(enumDefault);
+            Assert.Equal(@"public void FlagsDefault(Base64FormattingOptions? options = Base64FormattingOptions.None)", enumDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var enumValue = output.Items[0].Items[0].Items[2];
+            Assert.NotNull(enumValue);
+            Assert.Equal(@"public void FlagsValue(Base64FormattingOptions? options = Base64FormattingOptions.InsertLineBreaks)", enumValue.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var flagsUndefinedDefault = output.Items[0].Items[0].Items[3];
+            Assert.NotNull(flagsUndefinedDefault);
+            Assert.Equal(@"public void FlagsUndefinedDefault(AttributeTargets? targets = (AttributeTargets)0)", flagsUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var flagsUndefinedValue = output.Items[0].Items[0].Items[4];
+            Assert.NotNull(flagsUndefinedValue);
+            Assert.Equal(@"public void FlagsUndefinedValue(AttributeTargets? targets = (AttributeTargets)65536)", flagsUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
         public void TestGenerateMetadataWithFieldHasDefaultValue()
         {
             string code = @"
