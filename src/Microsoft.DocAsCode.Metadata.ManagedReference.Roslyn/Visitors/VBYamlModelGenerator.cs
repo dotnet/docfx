@@ -1355,19 +1355,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             switch (namedType.EnumUnderlyingType.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    return GetFlagExpressions(flags.Select(p => (p.Name, (byte)(sbyte)p.ConstantValue)), (byte)(sbyte)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (sbyte)p.ConstantValue)), (sbyte)value, namedType);
                 case SpecialType.System_Byte:
                     return GetFlagExpressions(flags.Select(p => (p.Name, (byte)p.ConstantValue)), (byte)value, namedType);
                 case SpecialType.System_Int16:
-                    return GetFlagExpressions(flags.Select(p => (p.Name, (ushort)(short)p.ConstantValue)), (ushort)(short)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (short)p.ConstantValue)), (short)value, namedType);
                 case SpecialType.System_UInt16:
                     return GetFlagExpressions(flags.Select(p => (p.Name, (ushort)p.ConstantValue)), (ushort)value, namedType);
                 case SpecialType.System_Int32:
-                    return GetFlagExpressions(flags.Select(p => (p.Name, (uint)(int)p.ConstantValue)), (uint)(int)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (int)p.ConstantValue)), (int)value, namedType);
                 case SpecialType.System_UInt32:
                     return GetFlagExpressions(flags.Select(p => (p.Name, (uint)p.ConstantValue)), (uint)value, namedType);
                 case SpecialType.System_Int64:
-                    return GetFlagExpressions(flags.Select(p => (p.Name, (ulong)(long)p.ConstantValue)), (ulong)(long)value, namedType);
+                    return GetFlagExpressions(flags.Select(p => (p.Name, (long)p.ConstantValue)), (long)value, namedType);
                 case SpecialType.System_UInt64:
                     return GetFlagExpressions(flags.Select(p => (p.Name, (ulong)p.ConstantValue)), (ulong)value, namedType);
                 default:
@@ -1383,7 +1383,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 string defaultFlagName = flags.FirstOrDefault(f => EqualityComparer<T>.Default.Equals(f.Value, default)).Name;
                 return defaultFlagName != null ? new[] { GetFlagExpression(defaultFlagName) } : Array.Empty<ExpressionSyntax>();
             }
-            List<(string Name, T Value)> sortedFlags = flags.OrderByDescending(p => p.Value).ToList();
+            var negativeFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) < 0);
+            var positiveFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) >= 0);
+            var sortedFlags = negativeFlags.OrderBy(p => p.Value).Concat(positiveFlags.OrderByDescending(p => p.Value)).ToList();
             if (sortedFlags.Count == 0)
             {
                 return Array.Empty<ExpressionSyntax>();
