@@ -2557,8 +2557,8 @@ namespace Test1
 {
     public class Test
     {
-        public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC) { }
-        public void Undefined2(ConsoleKey key = (ConsoleKey)0) { }
+        public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None) { }
+        public void Undefined(AttributeTargets targets = (AttributeTargets)0) { }
     }
 }
 ";
@@ -2566,11 +2566,11 @@ namespace Test1
 
             var defined = output.Items[0].Items[0].Items[0];
             Assert.NotNull(defined);
-            Assert.Equal(@"public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
 
             var undefined = output.Items[0].Items[0].Items[1];
             Assert.NotNull(undefined);
-            Assert.Equal(@"public void Undefined2(ConsoleKey key = (ConsoleKey)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"public void Undefined(AttributeTargets targets = (AttributeTargets)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -2583,8 +2583,8 @@ namespace Test1
 {
     public class Test
     {
-        public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None) { }
-        public void Undefined2(AttributeTargets targets = (AttributeTargets)0) { }
+        public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC) { }
+        public void Undefined(ConsoleKey key = (ConsoleKey)0) { }
     }
 }
 ";
@@ -2592,11 +2592,11 @@ namespace Test1
 
             var defined = output.Items[0].Items[0].Items[0];
             Assert.NotNull(defined);
-            Assert.Equal(@"public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
 
             var undefined = output.Items[0].Items[0].Items[1];
             Assert.NotNull(undefined);
-            Assert.Equal(@"public void Undefined2(AttributeTargets targets = (AttributeTargets)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"public void Undefined(ConsoleKey key = (ConsoleKey)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
