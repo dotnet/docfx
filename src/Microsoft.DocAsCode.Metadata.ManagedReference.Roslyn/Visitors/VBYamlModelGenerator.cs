@@ -1384,7 +1384,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return defaultFlagName != null ? new[] { GetFlagExpression(defaultFlagName) } : Array.Empty<ExpressionSyntax>();
             }
             var negativeFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) < 0);
-            var positiveFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) >= 0);
+            var positiveFlags = flags.Where(p => Comparer<T>.Default.Compare(p.Value, default) > 0);
             var sortedFlags = negativeFlags.OrderBy(p => p.Value).Concat(positiveFlags.OrderByDescending(p => p.Value)).ToList();
             if (sortedFlags.Count == 0)
             {
@@ -1393,7 +1393,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var results = new List<ExpressionSyntax>();
             foreach (var (flagName, flagValue) in sortedFlags)
             {
-                if (!EqualityComparer<T>.Default.Equals(flagValue, default) && EnumOps.HasAllFlags(value, flagValue))
+                if (EnumOps.HasAllFlags(value, flagValue))
                 {
                     results.Add(GetFlagExpression(flagName));
                     value = EnumOps.ClearFlags(value, flagValue);
