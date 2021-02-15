@@ -12,7 +12,7 @@ We write this tool for good extensibility, so our implementation should obey fol
     * Support markdown syntax extension.
     * Support validation extension.
 2.  Correctness:
-    We follow GFM syntax, but when some rules is too hard to implement, just breaking.
+    We follow GFM syntax, but when some rules are too hard to implement, just breaking.
 3.  Performance:
     Performance is not our major concern.
 
