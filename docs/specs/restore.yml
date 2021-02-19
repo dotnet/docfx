@@ -388,7 +388,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"restore-dependent-repository-failed","message":"Failed to restore dependent repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
 ---
-# Show error for repository owner account SSO issue
+# [skip] Show error for repository owner account SSO issue
 repos:
   https://github.com/MicrosoftDocs/ppe-test-sso-2406:
     - files:
