@@ -1,14 +1,16 @@
 ---
 # note token text can be replaced by template
+noDryRun: true
+noCache: true
 repos:
   https://docs.com/markdown-note:
   - files:
       docfx.yml: |
-        template: https://docs.com/template/token
+        template: https://docs.com/template/token#main
       docs/a.md: |
         >[!NOTE]
         >note
-  https://docs.com/template/token:
+  https://docs.com/template/token#master:
   - files:
       ContentTemplate/token.json: |
         { "note": "<p>my note</p>" }
