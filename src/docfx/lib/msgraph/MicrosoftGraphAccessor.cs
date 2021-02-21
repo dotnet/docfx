@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Graph;
@@ -25,10 +26,11 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientCertThumbprint) &&
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _microsoftGraphAuthenticationProvider = new(config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, config.MicrosoftGraphClientSecret);
+                var clientCert = GetCertificateFromStoreByThumbprint(config.MicrosoftGraphClientCertThumbprint);
+                _microsoftGraphAuthenticationProvider = new(config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, clientCert);
                 _msGraphClient = new(_microsoftGraphAuthenticationProvider);
             }
         }
@@ -88,6 +90,27 @@ namespace Microsoft.Docs.Build
             finally
             {
                 _syncRoot.Release();
+            }
+        }
+
+        private static X509Certificate2 GetCertificateFromStoreByThumbprint(string certThumbprint)
+        {
+            using var store = new X509Store(StoreLocation.LocalMachine);
+            try
+            {
+                store.Open(OpenFlags.ReadOnly);
+
+                var matchedCerts = store.Certificates.Find(X509FindType.FindByThumbprint, certThumbprint, validOnly: true);
+                if (matchedCerts.Count == 0)
+                {
+                    throw new InvalidOperationException($"Cannot find certificate with thumbprint '{certThumbprint}'");
+                }
+
+                return matchedCerts[0];
+            }
+            finally
+            {
+                store.Close();
             }
         }
     }
