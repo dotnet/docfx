@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
                         manifestFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, _config.BasePath, ".manifest.json")),
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
-                        noDrySync: _config.NoDrySync,
+                        noDrySync: true,
                         isSharedItem: IsSharedItem,
                         learnServiceAccessor: _learnServiceAccessor);
                 }
