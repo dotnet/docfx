@@ -240,10 +240,10 @@ namespace Microsoft.Docs.Build
                     ThematicBreakBlock _ => false,
                     YamlFrontMatterBlock _ => false,
                     HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
-                    LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => true,
+                    LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => false,
                     LinkInline linkInline when linkInline.IsImage => true,
                     TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension => true,
-                    LiteralInline literal when !string.IsNullOrWhiteSpace(literal.Content.Text) => true,
+                    LiteralInline literal when string.IsNullOrWhiteSpace(literal.Content.ToString()) => false,
                     LeafInline _ => true,
                     _ => false,
                 };

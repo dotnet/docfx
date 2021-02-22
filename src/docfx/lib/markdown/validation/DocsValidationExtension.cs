@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -29,6 +30,7 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockNode codeBlockItem)>();
+                var tableNodes = new List<TableNode>();
 
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
@@ -55,6 +57,8 @@ namespace Microsoft.Docs.Build
 
                     BuildCodeBlockNodes(node, codeBlockNodes, isCanonicalVersion);
 
+                    BuildTableNodes(node, markdownEngine, tableNodes, isCanonicalVersion);
+
                     return false;
                 });
 
@@ -64,6 +68,11 @@ namespace Microsoft.Docs.Build
                 foreach (var (_, codeBlockItem) in codeBlockNodes)
                 {
                     contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
+                }
+
+                foreach (var tableItem in tableNodes)
+                {
+                    contentValidator.ValidateTable(currentFile, tableItem);
                 }
             });
         }
@@ -230,6 +239,127 @@ namespace Microsoft.Docs.Build
 
                 return content.ToString();
             }
+        }
+
+        private static void BuildTableNodes(MarkdownObject node, MarkdownEngine markdownEngine, List<TableNode> tableNodes, bool isCanonicalVersion)
+        {
+            TableNode tableNode = null;
+            switch (node)
+            {
+                case Table table:
+                    var parsedNode = TryParseTable(table);
+                    tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with
+                    {
+                        RowHeaders = parsedNode.RowHeaders,
+                        ColumnHeaders = parsedNode.ColumnHeaders,
+                        IsSuccessParsed = parsedNode.IsSuccessParsed,
+                    };
+                    break;
+                case ParagraphBlock:
+                    if (TryDetectTable((ParagraphBlock)node, markdownEngine))
+                    {
+                        tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with { IsSuccessParsed = false };
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (tableNode != null)
+            {
+                tableNodes.Add(tableNode);
+            }
+        }
+
+        private static TableNode TryParseTable(Table table)
+        {
+            if (table.Count == 0)
+            {
+                return new TableNode { IsSuccessParsed = false, };
+            }
+            var columnHeaders = new List<TableCellNode>();
+            var rowHeaders = new List<TableCellNode>();
+            var columnHeaderRow = (TableRow)table.First();
+            foreach (TableCell cell in columnHeaderRow)
+            {
+                columnHeaders.Add(ParseCell(cell));
+            }
+            foreach (TableRow row in table)
+            {
+                if (row.Count == 0)
+                {
+                    rowHeaders.Add(new TableCellNode { IsVisible = false });
+                }
+                else
+                {
+                    rowHeaders.Add(ParseCell((TableCell)row.First()));
+                }
+            }
+            return new TableNode
+            {
+                ColumnHeaders = columnHeaders.ToArray(),
+                RowHeaders = rowHeaders.ToArray(),
+                IsSuccessParsed = true,
+            };
+        }
+
+        private static TableCellNode ParseCell(TableCell cell)
+        {
+            if (cell == null || cell.Count == 0)
+            {
+                return new TableCellNode
+                {
+                    IsVisible = false,
+                    IsEmphasis = false,
+                };
+            }
+            var block = cell.LastChild;
+            var isVisible = MarkdigUtility.IsVisible(block);
+            var isEmphasis = false;
+            MarkdigUtility.Visit(block, node =>
+            {
+                var innerEmphasis = node switch
+                {
+                    ParagraphBlock paragraph when paragraph.Inline.FindDescendants<EmphasisInline>().Any() => true,
+                    _ => false,
+                };
+                return isEmphasis = isEmphasis || innerEmphasis;
+            });
+            var cellNode = new TableCellNode
+            {
+                IsVisible = isVisible,
+                IsEmphasis = isEmphasis,
+            };
+            return cellNode;
+        }
+
+        private static bool TryDetectTable(ParagraphBlock paragraph, MarkdownEngine markdownEngine)
+        {
+            if (!paragraph.Inline.FindDescendants<LineBreakInline>().Any())
+            {
+                return false;
+            }
+
+            var plainText = markdownEngine.ToPlainText(paragraph);
+
+            var lines = plainText.Split("\n").ToList();
+            bool tableHeaderExist = false;
+            int tableDelimiterExistLine = 0;
+            foreach (var line in lines)
+            {
+                if (line.Contains("|"))
+                {
+                    tableDelimiterExistLine++;
+                    var cells = line.Split("|");
+                    foreach (var cell in cells)
+                    {
+                        if (cell.Contains("-"))
+                        {
+                            tableHeaderExist = true;
+                        }
+                    }
+                }
+            }
+            return tableHeaderExist && (tableDelimiterExistLine >= 2);
         }
     }
 }
