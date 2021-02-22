@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
 
             var allDocsets = JsonConvert.DeserializeAnonymousType(
                 File.ReadAllText("C:/docsetinfo.json"),
-                Enumerable.Repeat(new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template = false } }, 1).ToDictionary(_ => "", StringComparer.OrdinalIgnoreCase));
+                Enumerable.Repeat(new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "" } }, 1).ToDictionary(_ => "", StringComparer.OrdinalIgnoreCase));
 
             var docsets = allDocsets[repository];
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
