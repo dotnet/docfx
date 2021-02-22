@@ -83,12 +83,12 @@ namespace Microsoft.Docs.Build
 
         public async Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple)
         {
-            return await FetchValidationRules($"/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
+            return await FetchValidationRules($"/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
         }
 
         public async Task<string> GetBuildValidationRules((string repositoryUrl, string branch) tuple)
         {
-            return await FetchValidationRules($"/route/validationmgt/rulesets/buildrules", tuple.repositoryUrl, tuple.branch);
+            return await FetchValidationRules($"/rulesets/buildrules", tuple.repositoryUrl, tuple.branch);
         }
 
         public async Task<string> GetAllowlists()
@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
         public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
         {
-            var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
+            var metadataRules = FetchValidationRules($"/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
             var allowlists = FetchTaxonomies();
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
@@ -117,14 +117,14 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetRegressionAllContentRules()
         {
             return await FetchValidationRules(
-                "/route/validationmgt/rulesets/contentrules?name=_regression_all_",
+                "/rulesets/contentrules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
         }
 
         public async Task<string> GetRegressionAllMetadataSchema()
         {
             var metadataRules = FetchValidationRules(
-                "/route/validationmgt/rulesets/metadatarules?name=_regression_all_",
+                "/rulesets/metadatarules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
 
             var allowlists = FetchTaxonomies(DocsEnvironment.PPE);
@@ -135,7 +135,7 @@ namespace Microsoft.Docs.Build
         public async Task<string> GetRegressionAllBuildRules()
         {
             return await FetchValidationRules(
-                "/route/validationmgt/rulesets/buildrules?name=_regression_all_",
+                "/rulesets/buildrules?name=_regression_all_",
                 environment: DocsEnvironment.PPE);
         }
 
@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 Debug.Assert(routePath.StartsWith("/"));
-                var url = BuildServiceEndpoint(environment) + routePath;
+                var url = "https://docsvalidation.azurefd.net" + routePath;
                 using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Fetching '{url}'"))
                 {
                     using var response = await HttpPolicyExtensions

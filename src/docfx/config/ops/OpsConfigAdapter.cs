@@ -86,6 +86,8 @@ namespace Microsoft.Docs.Build
                 throw Errors.Config.DocsetNotProvisioned(name).ToException();
             }
 
+            var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
+
             var xrefHostName = GetXrefHostName(docset.site_name, branch);
             return JsonConvert.SerializeObject(new
             {
@@ -95,10 +97,15 @@ namespace Microsoft.Docs.Build
                 basePath = docset.base_path.ValueWithLeadingSlash,
                 xrefHostName,
                 monikerDefinition = "C:/monikerdefinition.json",
+                markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
-                    OpsMetadataApi
-                }
+                    OpsMetadataApi,
+                    $"{MetadataSchemaApi}{metadataServiceQueryParams}",
+                },
+                allowlists = AllowlistsApi,
+                sandboxEnabledModuleList = SandboxEnabledModuleListApi,
             });
         }
 
