@@ -211,6 +211,15 @@ inputs:
     |-|-------|-------|-|-------|
     |A|B|C|D|E|
 outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  g.json:
+  h.json:
+  i.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"d.md"}
     {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"g.md"}

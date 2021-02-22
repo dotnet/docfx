@@ -243,7 +243,7 @@ namespace Microsoft.Docs.Build
 
         private static void BuildTableNodes(MarkdownObject node, MarkdownEngine markdownEngine, List<TableNode> tableNodes, bool isCanonicalVersion)
         {
-            TableNode tableNode = null;
+            TableNode? tableNode = null;
             switch (node)
             {
                 case Table table:
