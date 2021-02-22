@@ -4,7 +4,6 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Graph;
@@ -21,10 +20,10 @@ namespace Microsoft.Docs.Build
 
         private AuthenticationResult? _authenticationResult;
 
-        public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, X509Certificate2 clientCert)
+        public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientSecret)
         {
             _cca = ConfidentialClientApplicationBuilder.Create(clientId)
-                .WithCertificate(clientCert)
+                .WithClientSecret(clientSecret)
                 .WithAuthority(new Uri($"https://login.microsoftonline.com/{tenantId}/v2.0"))
                 .WithRedirectUri("http://www.microsoft.com")
                 .Build();
