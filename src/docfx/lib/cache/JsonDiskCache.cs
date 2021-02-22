@@ -36,6 +36,8 @@ namespace Microsoft.Docs.Build
 
             if (File.Exists(_cachePath))
             {
+                Log.Write($"Using {typeof(TValue)} cache file: '{_cachePath}'");
+
                 var cacheFile = ProcessUtility.ReadJsonFile<CacheFile>(_cachePath);
 
                 foreach (var item in cacheFile.Items)
