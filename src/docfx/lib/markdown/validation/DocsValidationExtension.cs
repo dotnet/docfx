@@ -342,24 +342,22 @@ namespace Microsoft.Docs.Build
             var plainText = markdownEngine.ToPlainText(paragraph);
 
             var lines = plainText.Split("\n").ToList();
-            bool tableHeaderExist = false;
-            int tableDelimiterExistLine = 0;
+            var tableDelimiterExistLine = 0;
+            var tableHeaderExist = false;
             foreach (var line in lines)
             {
-                if (line.Contains("|"))
+                var cells = line.Split("|");
+                if (!cells.Any())
                 {
-                    tableDelimiterExistLine++;
-                    var cells = line.Split("|");
-                    foreach (var cell in cells)
-                    {
-                        if (cell.Contains("-"))
-                        {
-                            tableHeaderExist = true;
-                        }
-                    }
+                    continue;
+                }
+                tableHeaderExist = tableHeaderExist || cells.Any(c => c.Contains("-"));
+                if (++tableDelimiterExistLine >= 2 && tableHeaderExist)
+                {
+                    return true;
                 }
             }
-            return tableHeaderExist && (tableDelimiterExistLine >= 2);
+            return false;
         }
     }
 }
