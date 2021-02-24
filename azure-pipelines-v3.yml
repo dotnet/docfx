@@ -76,15 +76,11 @@ jobs:
       publishTestResults: true
 
 # Test and deploy on windows
+
 - job: WindowsBuild
   pool:
     vmImage: 'windows-latest'
   steps:
-
-  - task: CredScan@2
-    displayName: Security - CredScan
-    inputs:
-      toolMajorVersion: 'V2'
 
   # Install .NET Core sdk
   - task: UseDotNet@2
@@ -119,16 +115,34 @@ jobs:
   - powershell: ./build.ps1
     displayName: Build Binaries
 
+  # Build RegressionTest into Artifact 
+  - powershell: |
+      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o ./drop/RegressionTest
+    displayName: Build RegressionTest into Artifact 
+
+  # Publish RegressionTest binary
+  - publish: ./drop/RegressionTest
+    displayName: Publish RegressionTest binary
+    artifact: RegressionTest
+
+  # Run SDL tools
+  - task: CredScan@2
+    displayName: Security - CredScan
+    inputs:
+      toolMajorVersion: 'V2'
+
   - task: RoslynAnalyzers@2
     displayName: Security - RoslynAnalyzers
     inputs:
       userProvideBuildInfo: 'auto'
+
   - task: BinSkim@3
     displayName: Security - BinSkim
     inputs:
       InputType: 'Basic'
       Function: 'analyze'
       AnalyzeTarget: 'drop/docfx-bin/*.dll;drop/docfx-bin/*.exe'
+
   - task: SdtReport@1
     displayName: Security - SdtReport
     inputs:
@@ -148,6 +162,7 @@ jobs:
       Semmle: false
       TSLint: false
       ToolLogsNotFoundAction: 'Standard'
+
   - task: PublishSecurityAnalysisLogs@2
     displayName: Security - Publish Scan Results
     inputs:
@@ -155,6 +170,7 @@ jobs:
       ArtifactType: 'Container'
       AllTools: true
       ToolLogsNotFoundAction: 'Standard'
+
   - task: PostAnalysis@1
     displayName: Security - PostAnalysis
     inputs:
@@ -173,16 +189,6 @@ jobs:
       Semmle: false
       TSLint: false
       ToolLogsNotFoundAction: 'Standard'
-
-  # Build RegressionTest into Artifact 
-  - powershell: |
-      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o ./drop/RegressionTest
-    displayName: Build RegressionTest into Artifact 
-
-  # Publish RegressionTest binary
-  - publish: ./drop/RegressionTest
-    displayName: Publish RegressionTest binary
-    artifact: RegressionTest
 
   # Push to azure devops feed
   - task: NuGetCommand@2
