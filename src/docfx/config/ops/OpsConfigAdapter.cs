@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -123,15 +122,6 @@ namespace Microsoft.Docs.Build
                 allowlists = AllowlistsApi,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
             });
-        }
-
-        private static string NormalizeRepositoryUrl(string repositoryUrl)
-        {
-            if (repositoryUrl.StartsWith("https://github.com/"))
-            {
-                return repositoryUrl;
-            }
-
         }
 
         private static Task<string> GetOpsMetadata()
