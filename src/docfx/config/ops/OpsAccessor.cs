@@ -32,12 +32,11 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        // TODO: use Azure front door endpoint when it is stable
         private static readonly string s_docsProdServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
+            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://buildapi.docs.microsoft.com";
 
         private static readonly string s_docsPPEServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
+            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://BuildApiPubDev.azurefd.net";
 
         private static readonly string s_docsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
