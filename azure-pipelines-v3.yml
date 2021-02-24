@@ -81,6 +81,11 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  - task: CredScan@2
+    displayName: Security - CredScan
+    inputs:
+      toolMajorVersion: 'V2'
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
@@ -113,6 +118,61 @@ jobs:
   # Build Binaries
   - powershell: ./build.ps1
     displayName: Build Binaries
+
+  - task: RoslynAnalyzers@2
+    displayName: Security - RoslynAnalyzers
+    inputs:
+      userProvideBuildInfo: 'auto'
+  - task: BinSkim@3
+    displayName: Security - BinSkim
+    inputs:
+      InputType: 'Basic'
+      Function: 'analyze'
+      AnalyzeTarget: 'drop/docfx-bin/*.dll;drop/docfx-bin/*.exe'
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    inputs:
+      AllTools: false
+      APIScan: false
+      BinSkim: true
+      CodesignValidation: false
+      CredScan: true
+      FortifySCA: false
+      FxCop: false
+      ModernCop: false
+      MSRD: false
+      PoliCheck: false
+      RoslynAnalyzers: true
+      RoslynAnalyzersBreakOn: 'Error'
+      SDLNativeRules: false
+      Semmle: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    inputs:
+      AllTools: false
+      APIScan: false
+      BinSkim: true
+      CodesignValidation: false
+      CredScan: true
+      FortifySCA: false
+      FxCop: false
+      ModernCop: false
+      PoliCheck: false
+      RoslynAnalyzers: true
+      RoslynAnalyzersBreakOn: 'Error'
+      SDLNativeRules: false
+      Semmle: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
 
   # Build RegressionTest into Artifact 
   - powershell: |
