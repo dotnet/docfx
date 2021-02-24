@@ -40,9 +40,7 @@ namespace Microsoft.Docs.Build
         private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
         public MarkdownEngine(
-            Config config,
             Input input,
-            FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             DocumentProvider documentProvider,
@@ -63,8 +61,6 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
 
             _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
-
-
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
