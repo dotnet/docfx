@@ -131,11 +131,6 @@ jobs:
     inputs:
       toolMajorVersion: 'V2'
 
-  - task: RoslynAnalyzers@2
-    displayName: Security - RoslynAnalyzers
-    inputs:
-      userProvideBuildInfo: 'auto'
-
   - task: BinSkim@3
     displayName: Security - BinSkim
     inputs:
@@ -147,20 +142,7 @@ jobs:
     displayName: Security - SdtReport
     inputs:
       AllTools: false
-      APIScan: false
-      BinSkim: true
-      CodesignValidation: false
       CredScan: true
-      FortifySCA: false
-      FxCop: false
-      ModernCop: false
-      MSRD: false
-      PoliCheck: false
-      RoslynAnalyzers: true
-      RoslynAnalyzersBreakOn: 'Error'
-      SDLNativeRules: false
-      Semmle: false
-      TSLint: false
       ToolLogsNotFoundAction: 'Standard'
 
   - task: PublishSecurityAnalysisLogs@2
@@ -175,19 +157,7 @@ jobs:
     displayName: Security - PostAnalysis
     inputs:
       AllTools: false
-      APIScan: false
-      BinSkim: true
-      CodesignValidation: false
       CredScan: true
-      FortifySCA: false
-      FxCop: false
-      ModernCop: false
-      PoliCheck: false
-      RoslynAnalyzers: true
-      RoslynAnalyzersBreakOn: 'Error'
-      SDLNativeRules: false
-      Semmle: false
-      TSLint: false
       ToolLogsNotFoundAction: 'Standard'
 
   # Push to azure devops feed
