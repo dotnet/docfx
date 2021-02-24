@@ -84,6 +84,7 @@ jobs:
   # Run CredScan
   - task: CredScan@2
     displayName: Security - CredScan
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       toolMajorVersion: 'V2'
 
@@ -112,6 +113,7 @@ jobs:
   # Run SDL tools
   - task: BinSkim@3
     displayName: Security - BinSkim
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       InputType: 'Basic'
       Function: 'analyze'
@@ -122,13 +124,16 @@ jobs:
 
   - task: SdtReport@1
     displayName: Security - SdtReport
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       AllTools: false
       CredScan: true
+      BinSkim: true
       ToolLogsNotFoundAction: 'Standard'
 
   - task: PublishSecurityAnalysisLogs@2
     displayName: Security - Publish Scan Results
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       ArtifactName: 'CodeAnalysisLogs'
       ArtifactType: 'Container'
@@ -137,9 +142,11 @@ jobs:
 
   - task: PostAnalysis@1
     displayName: Security - PostAnalysis
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       AllTools: false
       CredScan: true
+      BinSkim: true
       ToolLogsNotFoundAction: 'Standard'
 
   # Upload code coverage to codecov.io
