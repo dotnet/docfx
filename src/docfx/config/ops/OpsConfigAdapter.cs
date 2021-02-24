@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -79,6 +78,21 @@ namespace Microsoft.Docs.Build
                 File.ReadAllText("C:/docsetinfo.json"),
                 Enumerable.Repeat(new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "" } }, 1)
                 .ToDictionary(_ => "")).ToDictionary(kvp => kvp.Key, kvp => kvp.Value, StringComparer.OrdinalIgnoreCase);
+
+            if (!repository.StartsWith("https://github.com/"))
+            {
+                if (!allDocsets.ContainsKey(repository))
+                {
+                    var repositoryUri = new Uri(repository);
+                    var uriSchemePrefix = Uri.UriSchemeHttp + Uri.SchemeDelimiter;
+                    repository = new Uri(new Uri(new Uri(uriSchemePrefix + repositoryUri.Host), "DefaultCollection") + repositoryUri.AbsolutePath).AbsoluteUri;
+                }
+            }
+
+            if (!allDocsets.ContainsKey(repository))
+            {
+                throw new InvalidOperationException($"Docet info not found for {repository}");
+            }
 
             var docsets = allDocsets[repository];
             var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
