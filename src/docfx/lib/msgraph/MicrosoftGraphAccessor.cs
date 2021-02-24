@@ -29,10 +29,8 @@ namespace Microsoft.Docs.Build
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientCertificate) &&
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var clientCert = new X509Certificate2(
-                    Convert.FromBase64String(config.MicrosoftGraphClientCertificate),
-                    password: string.Empty);
-                _microsoftGraphAuthenticationProvider = new(config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, clientCert);
+                _microsoftGraphAuthenticationProvider = new(
+                    config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, config.MicrosoftGraphClientCertificate);
                 _msGraphClient = new(_microsoftGraphAuthenticationProvider);
             }
         }
