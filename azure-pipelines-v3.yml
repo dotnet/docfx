@@ -81,6 +81,13 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      toolMajorVersion: 'V2'
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
@@ -102,6 +109,45 @@ jobs:
       command: test
       arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
       publishTestResults: true
+
+  # Run SDL tools
+  - task: BinSkim@3
+    displayName: Security - BinSkim
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      InputType: 'Basic'
+      Function: 'analyze'
+      AnalyzeTarget: >
+        src/docfx/bin/Release/net5.0/docfx.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
+
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      AllTools: false
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      AllTools: false
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
 
   # Upload code coverage to codecov.io
   - bash: |
