@@ -115,7 +115,10 @@ jobs:
     inputs:
       InputType: 'Basic'
       Function: 'analyze'
-      AnalyzeTarget: 'src/docfx/bin/*/docfx.dll;src/docfx/bin/*/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;src/docfx/bin/*/Microsoft.Docs.LearnValidation.dll;'
+      AnalyzeTarget: >
+        src/docfx/bin/Release/net5.0/docfx.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
 
   - task: SdtReport@1
     displayName: Security - SdtReport
