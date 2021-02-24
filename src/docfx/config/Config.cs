@@ -292,7 +292,7 @@ namespace Microsoft.Docs.Build
         public string MicrosoftGraphClientId { get; init; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
 
         /// <summary>
-        /// The thumbprint of the client cert that can be used to access the Microsoft Graph API.
+        /// The base64 encoded client cert that can be used to access the Microsoft Graph API.
         /// </summary>
         public string MicrosoftGraphClientCertificate { get; init; } = "";
 
