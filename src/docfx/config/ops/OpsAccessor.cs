@@ -39,9 +39,6 @@ namespace Microsoft.Docs.Build
         private static readonly string s_docsPPEServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
 
-        private static readonly string s_docsInternalServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
-
         private static readonly string s_docsPerfServiceEndpoint =
             Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
@@ -328,7 +325,6 @@ namespace Microsoft.Docs.Build
             {
                 DocsEnvironment.Prod => s_docsProdServiceEndpoint,
                 DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
-                DocsEnvironment.Internal => s_docsInternalServiceEndpoint,
                 DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
@@ -340,7 +336,6 @@ namespace Microsoft.Docs.Build
             {
                 DocsEnvironment.Prod => TaxonomyServiceProdPath,
                 DocsEnvironment.PPE => TaxonomyServicePPEPath,
-                DocsEnvironment.Internal => TaxonomyServicePPEPath,
                 DocsEnvironment.Perf => TaxonomyServicePPEPath,
                 _ => throw new NotSupportedException(),
             };

@@ -139,7 +139,7 @@ inputs:
     monikerRange:
       'a.md': '> netcore-1.0 || < invalid-moniker'
     http:
-      https://op-build-prod.azurewebsites.net:
+      https://op-build-sandbox2.azurewebsites.net:
         headers:
           X-OP-BuildUserToken: invalid-token
   a.md:
@@ -147,10 +147,10 @@ languageServer:
   - openFiles:
       a.md:
   - expectGetCredentialRequest:
-      url: https://op-build-prod.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
+      url: https://op-build-sandbox2.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
     response:
       http:
-        https://op-build-prod.azurewebsites.net:
+        https://op-build-sandbox2.azurewebsites.net:
           headers:
             X-OP-BuildUserToken: "{DOCS_OPS_TOKEN}"
   - expectDiagnostics:
