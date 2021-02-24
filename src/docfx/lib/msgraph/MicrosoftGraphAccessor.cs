@@ -26,10 +26,12 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraphClientCertThumbprint) &&
+                !string.IsNullOrEmpty(config.MicrosoftGraphClientCertificate) &&
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var clientCert = GetCertificateFromStoreByThumbprint(config.MicrosoftGraphClientCertThumbprint);
+                var clientCert = new X509Certificate2(
+                    Convert.FromBase64String(config.MicrosoftGraphClientCertificate),
+                    password: string.Empty);
                 _microsoftGraphAuthenticationProvider = new(config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, clientCert);
                 _msGraphClient = new(_microsoftGraphAuthenticationProvider);
             }
@@ -90,27 +92,6 @@ namespace Microsoft.Docs.Build
             finally
             {
                 _syncRoot.Release();
-            }
-        }
-
-        private static X509Certificate2 GetCertificateFromStoreByThumbprint(string certThumbprint)
-        {
-            using var store = new X509Store(StoreLocation.LocalMachine);
-            try
-            {
-                store.Open(OpenFlags.ReadOnly);
-
-                var matchedCerts = store.Certificates.Find(X509FindType.FindByThumbprint, certThumbprint, false);
-                if (matchedCerts.Count == 0)
-                {
-                    throw new InvalidOperationException($"Cannot find certificate with thumbprint '{certThumbprint}'");
-                }
-
-                return matchedCerts[0];
-            }
-            finally
-            {
-                store.Close();
             }
         }
     }

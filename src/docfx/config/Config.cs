@@ -294,7 +294,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The thumbprint of the client cert that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphClientCertThumbprint { get; init; } = "";
+        public string MicrosoftGraphClientCertificate { get; init; } = "";
 
         /// <summary>
         /// A file containing a map of file path to the original file path.
