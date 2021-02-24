@@ -82,6 +82,12 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    inputs:
+      toolMajorVersion: 'V2'
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
@@ -104,39 +110,13 @@ jobs:
       arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
       publishTestResults: true
 
-  # Upload code coverage to codecov.io
-  - bash: |
-      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    displayName: 'Upload to codecov.io'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
-
-  # Build Binaries
-  - powershell: ./build.ps1
-    displayName: Build Binaries
-
-  # Build RegressionTest into Artifact 
-  - powershell: |
-      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o ./drop/RegressionTest
-    displayName: Build RegressionTest into Artifact 
-
-  # Publish RegressionTest binary
-  - publish: ./drop/RegressionTest
-    displayName: Publish RegressionTest binary
-    artifact: RegressionTest
-
   # Run SDL tools
-  - task: CredScan@2
-    displayName: Security - CredScan
-    inputs:
-      toolMajorVersion: 'V2'
-
   - task: BinSkim@3
     displayName: Security - BinSkim
     inputs:
       InputType: 'Basic'
       Function: 'analyze'
-      AnalyzeTarget: 'drop/docfx-bin/*.dll;drop/docfx-bin/*.exe'
+      AnalyzeTarget: 'src/docfx/bin/*.dll;src/docfx/bin/*.exe'
 
   - task: SdtReport@1
     displayName: Security - SdtReport
@@ -159,6 +139,27 @@ jobs:
       AllTools: false
       CredScan: true
       ToolLogsNotFoundAction: 'Standard'
+
+  # Upload code coverage to codecov.io
+  - bash: |
+      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+    displayName: 'Upload to codecov.io'
+    env:
+      CODECOV_TOKEN: $(CODECOV_TOKEN)
+
+  # Build Binaries
+  - powershell: ./build.ps1
+    displayName: Build Binaries
+
+  # Build RegressionTest into Artifact 
+  - powershell: |
+      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o ./drop/RegressionTest
+    displayName: Build RegressionTest into Artifact 
+
+  # Publish RegressionTest binary
+  - publish: ./drop/RegressionTest
+    displayName: Publish RegressionTest binary
+    artifact: RegressionTest
 
   # Push to azure devops feed
   - task: NuGetCommand@2
