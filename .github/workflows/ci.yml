@@ -1,0 +1,32 @@
+name: Test
+
+on:
+  push:
+    branches: [ v3 ]
+  pull_request:
+    branches: [ v3 ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: init code ql
+      uses: github/codeql-action/init@v1
+      with:
+        languages: 'csharp'
+
+    - name: install dotnet
+      uses: actions/setup-dotnet@v1
+
+    - run: dotnet test -c Release
+
+    - name: codeql
+      uses: github/codeql-action/analyze@v1
