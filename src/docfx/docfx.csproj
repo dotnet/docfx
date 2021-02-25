@@ -40,7 +40,7 @@
 
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
-    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-alpha-00527-aff342c" PrivateAssets="all" />
+    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-alpha-00535-5d83802" PrivateAssets="all" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" PrivateAssets="all" />
   </ItemGroup>
 
