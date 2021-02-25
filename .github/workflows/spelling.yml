@@ -1,9 +1,12 @@
-name: Spell checking
-on: [push, pull_request]
-
+name: Spell Check
+on:
+  push:
+    branches: [ v3 ]
+  pull_request:
+    branches: [ v3 ]
 jobs:
   build:
-    name: Spell checking
+    name: Spell Check
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.0.0

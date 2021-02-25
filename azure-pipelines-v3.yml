@@ -6,83 +6,17 @@ trigger:
     - v3-release
 pr:
 - v3
+
 variables:
-  dotnetVersion: 5.0.100
-  runCodesignValidationInjection: false
-  NugetSecurityAnalysisWarningLevel: none
+- group: devresourcekeyvault
+- name: dotnetVersion
+  value: 5.0.100
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
 
 jobs:
-
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
-
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
 
 # Test and deploy on windows
 - job: WindowsBuild
@@ -90,6 +24,13 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      toolMajorVersion: 'V2'
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
@@ -97,27 +38,54 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
       publishTestResults: true
     env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken-Sandbox)
+
+  # Run SDL tools
+  - task: BinSkim@3
+    displayName: Security - BinSkim
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      InputType: 'Basic'
+      Function: 'analyze'
+      AnalyzeTarget: >
+        src/docfx/bin/Release/net5.0/docfx.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
+
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      AllTools: false
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      AllTools: false
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
 
   # Upload code coverage to codecov.io
   - bash: |
@@ -164,7 +132,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+  condition: eq('true', 'false')
   dependsOn: WindowsBuild
   pool:
     name: DocFX
@@ -255,7 +223,7 @@ jobs:
     env:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken-Sandbox)
+      AZURE_DEVOPS_TOKEN: $(vsoTestToken-Sandbox)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
