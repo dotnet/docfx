@@ -1,0 +1,12 @@
+name: Commitlint
+on:
+  pull_request:
+    branches: [ v3 ]
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: wagoid/commitlint-github-action@v2
