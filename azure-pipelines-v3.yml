@@ -38,20 +38,15 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
       publishTestResults: true
+    env:
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken-Sandbox)
 
   # Run SDL tools
   - task: BinSkim@3
