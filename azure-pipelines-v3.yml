@@ -18,63 +18,6 @@ variables:
 
 jobs:
 
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
@@ -194,7 +137,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+  condition: eq('true', 'false')
   dependsOn: WindowsBuild
   pool:
     name: DocFX
