@@ -2,6 +2,8 @@ name: CodeQL
 on:
   push:
     branches: [ v3 ]
+  schedule:
+    - cron: '0 0 * * 0'
 jobs:
   analyze:
     name: CodeQL
