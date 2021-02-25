@@ -1,8 +1,6 @@
 name: Test
 
 on:
-  push:
-    branches: [ v3 ]
   pull_request:
     branches: [ v3 ]
 
@@ -17,16 +15,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-    - name: init code ql
-      uses: github/codeql-action/init@v1
+    - uses: github/codeql-action/init@v1
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       with:
         languages: 'csharp'
 
-    - name: install dotnet
-      uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v1
 
     - run: dotnet test -c Release
 
-    - name: codeql
-      uses: github/codeql-action/analyze@v1
+    - uses: github/codeql-action/analyze@v1
+      if: ${{ matrix.os == 'ubuntu-latest' }}
