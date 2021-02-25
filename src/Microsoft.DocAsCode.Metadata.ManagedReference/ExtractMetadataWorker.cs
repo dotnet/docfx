@@ -355,7 +355,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         
                         if (mta != null)
                         {
-                            MergeCommentsHelper.MergeComments(mta.Item1, commentFiles);
+                            MergeCommentsHelper.MergeComments(options, mta.Item1, commentFiles);
                             projectMetadataList.Add(mta.Item1);
                         }
                     }
