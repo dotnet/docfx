@@ -53,6 +53,11 @@ jobs:
       arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
       publishTestResults: true
 
+  # Upload code coverage to codecov.io
+  - bash: |
+      bash <(curl -s https://codecov.io/bash) -v
+    displayName: 'Upload to codecov.io'
+
   # Run SDL tools
   - task: BinSkim@3
     displayName: Security - BinSkim
@@ -91,13 +96,6 @@ jobs:
       CredScan: true
       BinSkim: true
       ToolLogsNotFoundAction: 'Standard'
-
-  # Upload code coverage to codecov.io
-  - bash: |
-      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    displayName: 'Upload to codecov.io'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
 
   # Build Binaries
   - powershell: ./build.ps1
