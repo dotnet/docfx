@@ -8,7 +8,7 @@ pr:
 - v3
 
 variables:
-- group: docs-build-pipeline-ci
+- group: devresourcekeyvault
 - name: dotnetVersion
   value: 5.0.100
 - name: runCodesignValidationInjection
