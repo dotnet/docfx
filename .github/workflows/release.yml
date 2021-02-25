@@ -34,5 +34,5 @@ jobs:
       shell: pwsh
       run: |
         nuget sources update -Name docs-public-packages -username docascode -password ${{ secrets.AZURE_DEVOPS_FEED_TOKEN }}
-        nuget push -Source docs-public-packages -ApiKey az drop/**/*.nupkg
+        nuget push -Source docs-public-packages -ApiKey az drop/**/*.nupkg -SkipDuplicate
 
