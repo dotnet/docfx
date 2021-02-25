@@ -30,8 +30,6 @@ function publishBinaryPackages() {
         $packageName = "docfx-$rid-$version"
         Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
         New-Item -Path "$stagingPath" -Name "$packageName.zip.sha256" -Force -ItemType "file" -Value (Get-FileHash "$stagingPath/$packageName.zip").Hash
-        Copy-Item "$stagingPath/$packageName.zip" "$stagingPath/docfx-$rid-latest.zip" 
-        Copy-Item "$stagingPath/$packageName.zip.sha256" "$stagingPath/docfx-$rid-latest.zip.sha256" 
     }
 }
 

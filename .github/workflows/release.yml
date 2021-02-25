@@ -1,0 +1,38 @@
+name: Docfx V3 Release
+on:
+  push:
+    branches: [ v3-release ]
+jobs:
+  build:
+    name: Release
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-dotnet@v1
+    - name: Build
+      shell: pwsh
+      run: ./build.ps1
+      id: build-binaries
+    - name: Test
+      run: dotnet test -c Release
+    - name: Create GtiHub release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: ${{ env.GitAssemblyInformationalVersion }}
+        title: Version ${{ env.GitAssemblyInformationalVersion }}
+        prerelease: true
+        files: |
+          drop/docfx-bin/staging/**/*
+    - name: Set up nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.x'
+    - name: Publish nuget package
+      shell: pwsh
+      run: |
+        nuget sources update -Name docs-public-packages -username docascode -password ${{ secrets.AZURE_DEVOPS_FEED_TOKEN }}
+        nuget push -Source docs-public-packages -ApiKey az drop/**/*.nupkg
+
