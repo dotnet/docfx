@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
 
             static string HideSecret(string arg, string secret)
             {
-                return arg.Replace(secret, secret.Length > 10 ? secret[0..3] + "***" + secret[^3..] : "***");
+                return arg.Replace(secret, secret.Length > 10 ? secret[0..2] + "***" + secret[^2..] : "***");
             }
 
             static void PipeStream(TextReader input, TextWriter output1, TextWriter? output2 = null)
