@@ -1,31 +1,17 @@
 name: Test
-
 on:
   pull_request:
     branches: [ v3 ]
-
 jobs:
   test:
     name: Test
     runs-on: ${{ matrix.os }}
-
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-
-    - uses: github/codeql-action/init@v1
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      with:
-        languages: 'csharp'
-
     - uses: actions/setup-dotnet@v1
-
     - run: dotnet test -c Release
-
-    - uses: github/codeql-action/analyze@v1
-      if: ${{ matrix.os == 'ubuntu-latest' }}
