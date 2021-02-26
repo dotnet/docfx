@@ -1,4 +1,4 @@
-name: Docfx V3 Release
+name: Release
 on:
   push:
     branches: [ v3-release ]
