@@ -21,7 +21,7 @@ jobs:
       # if: ${{ env.BUILD_REASON != 'pull_request' }}
       shell: pwsh
       run: |
-        $packagesBasePath = "$drop\docfx-bin"
+        $packagesBasePath = "drop\docfx-bin"
         New-Item -Path $packagesBasePath -ItemType "directory" -ErrorAction SilentlyContinue
         $stagingPath = "$packagesBasePath\staging"
         New-Item -Path $stagingPath -ItemType "directory" -ErrorAction SilentlyContinue
