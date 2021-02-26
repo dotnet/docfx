@@ -1,7 +1,7 @@
 name: Docfx V3 Release
 on:
-  push:
-    branches: [ v3-release, release-action, 928PJY:release-action ] # adding release-action for testing
+  pull_request:
+    branches: [ v3 ] # for testing
 jobs:
   build:
     name: Release
