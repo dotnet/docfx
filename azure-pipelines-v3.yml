@@ -47,6 +47,7 @@ jobs:
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken-Sandbox)
+      MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
 
   # Run SDL tools
   - task: BinSkim@3
