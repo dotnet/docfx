@@ -11,9 +11,8 @@ jobs:
       with:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v1
-    - name: Donet pack
-      shell: pwsh
-      run: dotnet pack -c Release -o drop
+    - run: dotnet test -c Release
+    - run: dotnet pack -c Release -o drop
     - name: Publish binary packages
       shell: pwsh
       run: |
@@ -33,8 +32,6 @@ jobs:
           Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
           New-Item -Path "$stagingPath" -Name "$packageName.zip.sha256" -Force -ItemType "file" -Value (Get-FileHash "$stagingPath/$packageName.zip").Hash
         }
-    - name: Test
-      run: dotnet test -c Release
     - name: Create GitHub release
       uses: marvinpinto/action-automatic-releases@latest
       with:
@@ -44,8 +41,7 @@ jobs:
         prerelease: true
         files: |
           drop/docfx-bin/staging/**/*
-    - name: Publish nuget package
-      run: |
+    - run: |
         dotnet nuget update source docs-public-packages --username docascode --password ${{ secrets.AZURE_DEVOPS_FEED_TOKEN }}
         dotnet nuget push --source docs-public-packages --api-key az drop/**/*.nupkg --skip-duplicate
 
