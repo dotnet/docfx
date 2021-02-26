@@ -32,19 +32,9 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        // TODO: use Azure front door endpoint when it is stable
-        private static readonly string s_docsProdServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://op-build-prod.azurewebsites.net";
-
-        private static readonly string s_docsPPEServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://op-build-sandbox2.azurewebsites.net";
-
-        private static readonly string s_docsInternalServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_INTERNAL_SERVICE_ENDPOINT") ?? "https://op-build-internal.azurewebsites.net";
-
-        private static readonly string s_docsPerfServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
-
+        private static readonly string s_docsProdServiceEndpoint = "https://buildapi.docs.microsoft.com";
+        private static readonly string s_docsPPEServiceEndpoint = "https://BuildApiPubDev.azurefd.net";
+        private static readonly string s_docsPerfServiceEndpoint = "https://op-build-perf.azurewebsites.net";
         private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
@@ -328,7 +318,6 @@ namespace Microsoft.Docs.Build
             {
                 DocsEnvironment.Prod => s_docsProdServiceEndpoint,
                 DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
-                DocsEnvironment.Internal => s_docsInternalServiceEndpoint,
                 DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
@@ -340,7 +329,6 @@ namespace Microsoft.Docs.Build
             {
                 DocsEnvironment.Prod => TaxonomyServiceProdPath,
                 DocsEnvironment.PPE => TaxonomyServicePPEPath,
-                DocsEnvironment.Internal => TaxonomyServicePPEPath,
                 DocsEnvironment.Perf => TaxonomyServicePPEPath,
                 _ => throw new NotSupportedException(),
             };

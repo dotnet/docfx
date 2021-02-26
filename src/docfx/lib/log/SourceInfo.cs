@@ -75,10 +75,6 @@ namespace Microsoft.Docs.Build
 
         public override string ToString()
         {
-            if (ApexValidationExtension.ForceSourceInfoToStringFilePathOnly)
-            {
-                return File.ToString();
-            }
             return Line <= 1 && Column <= 1 ? File.ToString() : $"{File}({Line},{Column})";
         }
 
