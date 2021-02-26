@@ -32,15 +32,9 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private static readonly string s_docsProdServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://buildapi.docs.microsoft.com";
-
-        private static readonly string s_docsPPEServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://BuildApiPubDev.azurefd.net";
-
-        private static readonly string s_docsPerfServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
-
+        private static readonly string s_docsProdServiceEndpoint = "https://buildapi.docs.microsoft.com";
+        private static readonly string s_docsPPEServiceEndpoint = "https://BuildApiPubDev.azurefd.net";
+        private static readonly string s_docsPerfServiceEndpoint = "https://op-build-perf.azurewebsites.net";
         private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
