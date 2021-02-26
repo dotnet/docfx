@@ -29,17 +29,11 @@ namespace Microsoft.Docs.Build
             "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product";
 
         private const string SandboxEnabledModuleListPath = "https://docs.microsoft.com/api/resources/sandbox/verify";
+        private const string DocsProdServiceEndpoint = "https://buildapi.docs.microsoft.com";
+        private const string DocsPPEServiceEndpoint = "https://BuildApiPubDev.azurefd.net";
+        private const string DocsPerfServiceEndpoint = "https://op-build-perf.azurewebsites.net";
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
-
-        private static readonly string s_docsProdServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PROD_SERVICE_ENDPOINT") ?? "https://buildapi.docs.microsoft.com";
-
-        private static readonly string s_docsPPEServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PPE_SERVICE_ENDPOINT") ?? "https://BuildApiPubDev.azurefd.net";
-
-        private static readonly string s_docsPerfServiceEndpoint =
-            Environment.GetEnvironmentVariable("DOCS_PERF_SERVICE_ENDPOINT") ?? "https://op-build-perf.azurewebsites.net";
 
         private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
@@ -322,9 +316,9 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => s_docsProdServiceEndpoint,
-                DocsEnvironment.PPE => s_docsPPEServiceEndpoint,
-                DocsEnvironment.Perf => s_docsPerfServiceEndpoint,
+                DocsEnvironment.Prod => DocsProdServiceEndpoint,
+                DocsEnvironment.PPE => DocsPPEServiceEndpoint,
+                DocsEnvironment.Perf => DocsPerfServiceEndpoint,
                 _ => throw new NotSupportedException(),
             };
         }
