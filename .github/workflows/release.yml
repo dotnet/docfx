@@ -1,7 +1,7 @@
 name: Docfx V3 Release
 on:
   push:
-    branches: [ v3-release, release-action ] # for testing
+    branches: [ v3-release ]
 jobs:
   build:
     name: Release
@@ -12,13 +12,11 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v1
     - name: Donet pack
-      # if: ${{ env.BUILD_REASON != 'pull_request' }}
       shell: pwsh
       run: |
         Remove-Item drop -Force -Recurse -ErrorAction Ignore
         dotnet pack -c Release -o drop
     - name: Publish binary packages
-      # if: ${{ env.BUILD_REASON != 'pull_request' }}
       shell: pwsh
       run: |
         $packagesBasePath = "drop\docfx-bin"
