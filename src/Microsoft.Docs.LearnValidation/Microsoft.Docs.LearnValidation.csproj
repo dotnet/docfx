@@ -11,6 +11,8 @@
     <PackageReference Include="Microsoft.DocsLearning.Hierarchy.DataContract" Version="1.0.20230.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="RestSharp" Version="106.11.7" />
+    <PackageReference Include="System.Net.Http" Version="4.3.2" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
 </Project>
