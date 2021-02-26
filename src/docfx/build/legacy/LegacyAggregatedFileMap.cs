@@ -61,7 +61,7 @@ namespace Microsoft.Docs.Build
                         [context.Config.Name] = new
                         {
                             docset_name = context.Config.Name,
-                            docset_path_to_root = string.Empty,
+                            docset_path_to_root = "",
                         },
                     },
                 });

@@ -7,6 +7,8 @@ namespace Microsoft.Docs.Build
     {
         string Uid { get; }
 
+        string? SchemaType { get; }
+
         string Href { get; }
 
         FilePath? DeclaringFile { get; }

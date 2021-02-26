@@ -14,23 +14,36 @@ namespace Microsoft.Docs.Build
         [InlineData(
             @"
 {
-      'references':[
-        {
-          'uid': 'a',
-          'href': 'https://docs.com/docs/a',
-          'name': 'Title from yaml header a'
-        },
-        {
-          'uid': 'b',
-          'href': 'https://docs.com/docs/b',
-          'name': 'Title from yaml header b'
-        }
-      ]
+        'references':[
+            {
+                'uid': 'a',
+                'href': 'https://docs.com/docs/a',
+                'name': 'Title from yaml header a'
+            },
+            {
+                'uid': 'b',
+                'href': 'https://docs.com/docs/b',
+                'name': 'Title from yaml header b'
+            }
+        ],
+        'external_xrefs':[
+            {
+                'uid': 'c',
+                'repositoryUrl': 'c_repo',
+                'count': 1
+            },
+            {
+                'uid': 'd',
+                'repositoryUrl': 'd_repo',
+                'count': 2
+            }
+        ]
     }
-", "a", "b")]
+", new string[] { "a", "b" }, new string[] { "c", "d" })]
+
         [InlineData(
-            @"{'references':[{'uid': 'a','href': 'https://docs.com/docs/a','name': 'Title from yaml header a'},{'uid': 'b','href': 'https://docs.com/docs/b','name': 'Title from yaml header b'}]}",
-            "a", "b")]
+            @"{'references':[{'uid': 'a','href': 'https://docs.com/docs/a','name': 'Title from yaml header a'},{'uid': 'b','href': 'https://docs.com/docs/b','name': 'Title from yaml header b'}],'external_xrefs':[{'uid':'c','repositoryUrl':'c_repo','count':1},{'uid':'d','repositoryUrl':'d_repo','count':2}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
+
         [InlineData(
             @"{'references':[ { 'uid': 'a',
 'href': 'https://docs.com/docs/a',
@@ -38,20 +51,35 @@ namespace Microsoft.Docs.Build
 {
 'uid': 'b',
 'href': 'https://docs.com/docs/b',
-'name': 'Title from yaml header b' } ]
-}",
-            "a", "b")]
-        [InlineData(@"{'references':[{'uid': 'a', 'prop': {'test':1}}, {'uid': 'b', 'prop': {'test':2}}]}", "a", "b")]
-        public void LoadXrefMapFile(string json, params string[] uids)
+'name': 'Title from yaml header b' } ],
+        'external_xrefs':[ { 'uid': 'c',
+'repositoryUrl': 'c_repo',
+'count': 1
+},
+{
+'uid': 'd',
+'repositoryUrl': 'd_repo',
+'count': 2
+}]}",
+            new string[] { "a", "b" }, new string[] { "c", "d" })]
+
+        [InlineData(@"{'references':[{'uid': 'a', 'prop': {'test':1}}, {'uid': 'b', 'prop': {'test':2}}], 'external_xrefs':[{'uid':'c','prop': {'test':1}},{'uid':'d','prop': {'test':2}}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
+        public void LoadXrefMapFile(string json, string[] uids, string[] externalUids)
         {
             var filePath = WriteJsonToTempFile(json);
             var result = ExternalXrefMapLoader.LoadJsonFile(filePath);
             var resultUids = new List<string>();
-            foreach (var (uid, spec) in result)
+            var resultExternalUids = new List<string>();
+            foreach (var (_, spec) in result.externalXrefSpec)
             {
                 resultUids.Add(((ExternalXrefSpec)spec.Value).Uid);
             }
+            foreach (var xref in result.externalXref)
+            {
+                resultExternalUids.Add(xref.Uid);
+            }
             Assert.Equal(uids, resultUids);
+            Assert.Equal(externalUids, resultExternalUids);
         }
 
         private static string WriteJsonToTempFile(string json)

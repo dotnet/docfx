@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         private static void WriteSection(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
         {
             var attribute = string.IsNullOrEmpty(obj.SectionAttributeString) ?
-                        string.Empty :
+                        "" :
                         $" {obj.SectionAttributeString}";
             renderer.Write("<div").Write(attribute).WriteAttributes(obj).WriteLine(">");
             var savedImplicitParagraph = renderer.ImplicitParagraph;
@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         private static void WriteVideo(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
         {
-            var modifiedLink = string.Empty;
+            var modifiedLink = "";
 
             if (!string.IsNullOrWhiteSpace(obj?.VideoLink))
             {

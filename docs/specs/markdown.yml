@@ -795,3 +795,20 @@ inputs:
     tel:
 outputs:
   index.json: 
+---
+# Report correct line number for unknown-language-code in token
+inputs:
+  docfx.yml: |
+    files: a.md
+  a.md: |
+    [!INCLUDE[](b.md)]
+  b.md: |
+    line 1
+    :::code id="id" language="unknown" source="b.unknown":::
+  b.unknown: codesnippet
+outputs:
+  a.json:
+  .errors.log: |
+    { "code": "unknown-language-code", "file": "b.md", "line": 2, "column": 1 }
+    { "code": "invalid-code", "file": "b.md", "line": 2, "column": 1 }
+---

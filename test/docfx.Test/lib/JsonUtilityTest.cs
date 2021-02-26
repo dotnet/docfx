@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public void TestEmptyString()
         {
-            var json = string.Empty;
+            var json = "";
             var exception = Assert.Throws<DocfxException>(() => JsonUtility.Parse(new ErrorList(), json, null));
         }
 

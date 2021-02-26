@@ -1,19 +1,29 @@
 # TOC splitItemsBy produces multiple output TOCs with correct link and _tocRel
-inputs:
-  docfx.yml:
-  TOC.yml: |
-    splitItemsBy: name
-    items:
-    - name: 1
-      href: a.md
-      items:
-      - name: 1-1
-        href: b.md
-    - name: 2
-      href: c.md
-  a.md:
-  b.md:
-  c.md:
+repos:
+  https://github.com/ops/split-toc-default-by-name:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            {
+              "build_source_folder": ".", 
+              "SplitTOC": ["TOC.yml"]
+            }
+          ]
+        }
+      docfx.yml:
+      TOC.yml: |
+        items:
+        - name: 1
+          href: a.md
+          items:
+          - name: 1-1
+            href: b.md
+        - name: 2
+          href: c.md
+      a.md:
+      b.md:
+      c.md:
 outputs:
   a.json: '{ "_tocRel": "_splitted/1/toc.json" }'
   b.json: '{ "_tocRel": "_splitted/1/toc.json" }'
@@ -44,41 +54,61 @@ outputs:
     }
 ---
 # TOC splitItemsBy respect metadata config
-inputs:
-  docfx.yml: |
-    fileMetadata:
-      key:
-        _splitted/**/TOC.yml: value
-  TOC.yml: |
-    splitItemsBy: name
-    items:
-    - name: 1
-      items:
-      - name: 1-1
+repos:
+  https://github.com/ops/split-toc-respect-metadata-config:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            {
+              "build_source_folder": ".", 
+              "SplitTOC": ["TOC.yml"]
+            }
+          ]
+        }
+      docfx.yml: |
+        fileMetadata:
+          key:
+            _splitted/**/TOC.yml: value
+      TOC.yml: |
+        items:
+        - name: 1
+          items:
+          - name: 1-1
 outputs:
   toc.json:
   _splitted/1/toc.json: |
     { "metadata": { "key": "value" } }
 ---
 # TOC splitItemsBy respect content route config
-inputs:
-  docfx.json: |
-    {
-      "content":[
+repos:
+  https://github.com/ops/split-toc-respect-content-route-config:
+  - files:
+      .openpublishing.publish.config.json: |
         {
-          "files": ["**/TOC.yml"],
-          "src": ".",
-          "dest": "toc-dest"
+          "docsets_to_publish": [
+            {
+              "build_source_folder": ".", 
+              "SplitTOC": ["TOC.yml"]
+            }
+          ]
         }
-      ]
-    }
+      docfx.json: |
+        {
+          "content":[
+            {
+              "files": ["**/TOC.yml"],
+              "src": ".",
+              "dest": "toc-dest"
+            }
+          ]
+        }
     
-  TOC.yml: |
-    splitItemsBy: name
-    items:
-    - name: 1
-      items:
-      - name: 1-1
+      TOC.yml: |
+        items:
+        - name: 1
+          items:
+          - name: 1-1
 outputs:
   toc-dest/toc.json:
   toc-dest/_splitted/1/toc.json:
@@ -171,6 +201,7 @@ repos:
       docfx.yml:
       .openpublishing.publish.config.json: |
         {
+          "docsets_to_publish": [{  "build_source_folder": ".", "SplitTOC": ["a/TOC.yml", "b/TOC.yml"]}],
           "JoinTOCPlugin": [
             {
               "ConceptualTOC": "b/TOC.yml",
@@ -181,7 +212,6 @@ repos:
           ]
         }
       a/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: a
           items:
@@ -190,7 +220,6 @@ repos:
           items:
           - name: b-b
       b/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: 1
           items:
@@ -214,7 +243,7 @@ repos:
       test/docfx.yml:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "test"}],
+          "docsets_to_publish": [{  "build_source_folder": "test", "SplitTOC": ["a/TOC.yml", "b/TOC.yml"]}],
           "JoinTOCPlugin": [
             {
               "ConceptualTOC": "test/b/TOC.yml",
@@ -225,7 +254,6 @@ repos:
           ]
         }
       test/a/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: a
           items:
@@ -234,7 +262,6 @@ repos:
           items:
           - name: b-b
       test/b/TOC.yml: |
-        splitItemsBy: name
         items:
         - name: 1
           items:

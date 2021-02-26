@@ -19,13 +19,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = new Dictionary<string, string>();
-            var src = string.Empty;
-            var title = string.Empty;
-            var maxWidth = string.Empty;
-            var thumbnail = string.Empty;
-            var uploadDate = string.Empty;
-            var duration = string.Empty;
-            var type = string.Empty;
+            var src = "";
+            var title = "";
+            var maxWidth = "";
+            var thumbnail = "";
+            var uploadDate = "";
+            var duration = "";
+            var type = "";
 
             foreach (var attribute in attributes)
             {

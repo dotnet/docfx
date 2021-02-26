@@ -11,6 +11,7 @@ using System.Text;
 using Markdig.Helpers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
+using Markdig.Syntax;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -86,7 +87,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "handlebars", new string[] { "hbs" } },
             { "haskell", new string[] { "hs" } },
             { "html", new string[] { "jsp", "asp", "aspx", "ascx" } },
-            { "cshtml", new string[] { "aspx-cs", "aspx-csharp" } },
+            { "cshtml", new string[] { "aspx-cs", "aspx-csharp", "razor" } },
             { "vbhtml", new string[] { "aspx-vb" } },
             { "java", new string[] { "gradle" } },
             { "javascript", new string[] { "js", "node", "json" } },
@@ -141,7 +142,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new[]
                 {
                     "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript",
-                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript",
+                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript", "scss",
                 },
                 new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(
@@ -169,7 +170,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineTemplate, VBCodeSnippetRegionRegionEndLineTemplate, false));
             AddExtractorItems(
-                new[] { "css" },
+                new[] { "css", "scss" },
                 new CodeSnippetExtractor(CSSCodeSnippetRegionStartLineTemplate, CSSCodeSnippetRegionEndLineTemplate, false));
 
             static void BuildFileExtensionLanguageMap()
@@ -234,7 +235,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             return s_languageByFileExtension.TryGetValue(extension, out var result) ? result : null;
         }
 
-        public string GetContent(string content, CodeSnippet obj)
+        public string GetContent(string content, CodeSnippet obj, MarkdownObject source)
         {
             var allLines = ReadAllLines(content).ToArray();
 
@@ -255,7 +256,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     _context.LogWarning(
                         "unknown-language-code",
                         $"Unrecognized language value '{lang}' in code snippet '{obj.TagName}' in file '{obj.CodePath}'. Your code snippet might not render correctly. If this is the case, you can request a new value or use range instead.",
-                        obj);
+                        source);
                 }
 
                 var tagWithPrefix = TagPrefix + obj.TagName;
@@ -287,7 +288,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange { Start = 0, End = allLines.Length } });
             }
 
-            return string.Empty;
+            return "";
         }
 
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
@@ -304,7 +305,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             codeSnippet.SetAttributeString();
 
             renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
-            renderer.WriteEscape(GetContent(content, codeSnippet));
+            renderer.WriteEscape(GetContent(content, codeSnippet, codeSnippet));
             renderer.Write("</code></pre>");
         }
 
@@ -318,7 +319,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             catch (JsonReaderException ex)
             {
                 _context.LogError("not-notebook-content", "Not a valid Notebook. " + ex.ToString(), obj);
-                return string.Empty;
+                return "";
             }
 
             var sourceJsonPath = $"$..cells[?(@.metadata.name=='{tagName}')].source";
@@ -330,13 +331,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             catch (JsonException)
             {
                 _context.LogError("multiple-tags-with-same-name", $"Multiple entries with the name '{tagName}' where found in the notebook.", obj);
-                return string.Empty;
+                return "";
             }
 
             if (sourceObject == null)
             {
                 _context.LogError("tag-not-found", $"The name '{tagName}' is not present in the notebook file.", obj);
-                return string.Empty;
+                return "";
             }
 
             var showCode = new StringBuilder();

@@ -1,0 +1,157 @@
+---
+# Exceed max file error: Suggestions
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    MaxFileSuggestions: 2
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="pig1":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="pig2" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![pig3](pig3.jpg)
+    
+    <img src="pig4.jpg" alt="pig4"></img>
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+    {"message_severity":"info","code":"exceed-max-file-errors","message":"Suggestion count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
+# Exceed max file error: Warning
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    MaxFileWarnings: 2
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "WARNING"
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="pig1":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="pig2" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![pig3](pig3.jpg)
+    
+    <img src="pig4.jpg" alt="pig4"></img>
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"warning","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+    {"message_severity":"info","code":"exceed-max-file-errors","message":"Warning count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
+# Exceed max file error: Error
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    MaxFileErrors: 2
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "ERROR"
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="pig1":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="pig2" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![pig3](pig3.jpg)
+    
+    <img src="pig4.jpg" alt="pig4"></img>
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  .errors.log: |
+    {"message_severity":"error","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"error","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+    {"message_severity":"info","code":"exceed-max-file-errors","message":"Error count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
+---
+# Exceed max file error: Info
+noDryRun: true
+inputs:
+  docfx.yml: |
+    MaxFileInfos: 2
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    <br2/>
+    <br2/>
+    <br2/>
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"end_line":1,"column":2,"end_column":5}
+    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"end_line":2,"column":2,"end_column":5}
+    {"message_severity":"info","code":"exceed-max-file-errors","message":"Info count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
+
+---

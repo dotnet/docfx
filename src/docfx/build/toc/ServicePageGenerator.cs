@@ -26,10 +26,7 @@ namespace Microsoft.Docs.Build
             _joinTOCConfig = joinTOCConfig;
         }
 
-        public void GenerateServicePageFromTopLevelTOC(
-            TableOfContentsNode node,
-            List<FilePath> results,
-            string directoryName = "")
+        public void GenerateServicePageFromTopLevelTOC(TableOfContentsNode node, List<FilePath> results, string directoryName = "")
         {
             if (string.IsNullOrEmpty(node.Name))
             {
@@ -38,75 +35,18 @@ namespace Microsoft.Docs.Build
 
             var filename = Regex.Replace(node.Name, @"\s+", "");
 
-            if (node.LandingPageType.Value != null)
+            var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
+            var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
+            var nodeHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, node.Href.Value ?? ""));
+
+            if (string.IsNullOrEmpty(node.Href.Value) || !File.Exists(nodeHrefFullPath))
             {
-                var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                TryToGenerateServicePageForItem(node, directoryName, filename, referenceTOCFullPath, results);
+            }
 
-                var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
-                var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
-
-                var pageType = node.LandingPageType.Value;
-                FilePath servicePagePath;
-                if (pageType == LandingPageType.Root)
-                {
-                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"));
-                }
-                else
-                {
-                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
-                }
-
-                var name = node.Name;
-                var fullName = node.Name;
-                var uid = node.Uid;
-                var href = node.Href;
-
-                var children = new List<ServicePageItem>();
-                foreach (var item in node.Items)
-                {
-                    ServicePageItem child;
-                    var childName = item.Value.Name.Value;
-                    var childHref = item.Value.Href.Value;
-                    var childUid = item.Value.Uid.Value;
-
-                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
-
-                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
-                    {
-                        childHref = null;
-                    }
-
-                    if (!string.IsNullOrEmpty(childHref))
-                    {
-                        if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
-                        {
-                            var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
-                            var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
-                            var hrefRelativePathToReferenceTOC = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
-                            childHref = hrefRelativePathToReferenceTOC;
-                        }
-
-                        child = new ServicePageItem(childName, childHref, null);
-                    }
-                    else
-                    {
-                        child = new ServicePageItem(childName, null, childUid);
-                    }
-
-                    children.Add(child);
-                }
-
-                var langs = new List<string?>();
-                if (_joinTOCConfig.ContainerPageMetadata != null)
-                {
-                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out var lang);
-                    langs = lang?.ToObject<List<string?>>();
-                }
-
-                results.Add(servicePagePath);
-                var servicePageToken = new ServicePageModel(name, fullName, href, uid, children, langs, pageType);
-                _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
+            if (!string.IsNullOrEmpty(node.Href.Value))
+            {
+                node.Uid = node.Uid.With(null);
             }
 
             foreach (var item in node.Items)
@@ -120,6 +60,113 @@ namespace Microsoft.Docs.Build
                     GenerateServicePageFromTopLevelTOC(item, results, $"{directoryName}/{filename}");
                 }
             }
+        }
+
+        private void TryToGenerateServicePageForItem(
+            TableOfContentsNode node,
+            string directoryName,
+            string filename,
+            string referenceTOCFullPath,
+            List<FilePath> results)
+        {
+            if (node.LandingPageType.Value != null)
+            {
+                var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var pageType = node.LandingPageType.Value;
+                FilePath servicePagePath;
+                if (pageType == LandingPageType.Root)
+                {
+                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"));
+                }
+                else
+                {
+                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
+                }
+
+                if (string.IsNullOrEmpty(node.Href.Value))
+                {
+                    var servicePageFullPath = Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path)) ?? _docsetPath;
+                    var referenceTocFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, _joinTOCConfig.ReferenceToc ?? ".")));
+                    var hrefRelativeToReferenceTOC = Path.GetRelativePath(referenceTocFullPath ?? ".", servicePageFullPath);
+                    node.Href = node.Href.With(hrefRelativeToReferenceTOC);
+                }
+
+                var name = node.Name;
+                var fullName = node.Name;
+                var children = new List<ServicePageItem>();
+                foreach (var item in node.Items)
+                {
+                    ServicePageItem child;
+                    var childName = item.Value.Name.Value;
+                    var childHref = item.Value.Href.Value;
+                    var childUid = item.Value.Uid.Value;
+                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
+                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
+                    {
+                        childHref = null;
+                    }
+
+                    if (item.Value.LandingPageType.Value != null)
+                    {
+                        if (!string.IsNullOrEmpty(childHref))
+                        {
+                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                        }
+                        else
+                        {
+                            // generate href for it based on service-page path
+                            if (pageType == LandingPageType.Root)
+                            {
+                                childHref = $"./{Regex.Replace(childName, @"\s+", "")}.yml";
+                            }
+                            else
+                            {
+                                childHref = $"{Regex.Replace(name, @"\s+", "")}/{Regex.Replace(childName, @"\s+", "")}.yml";
+                            }
+                        }
+                        child = new ServicePageItem(childName, childHref, null);
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(childHref))
+                        {
+                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                            child = new ServicePageItem(childName, childHref, null);
+                        }
+                        else
+                        {
+                            child = new ServicePageItem(childName, null, childUid);
+                        }
+                    }
+
+                    children.Add(child);
+                }
+
+                var langs = new List<string?>();
+                if (_joinTOCConfig.ContainerPageMetadata != null)
+                {
+                    _joinTOCConfig.ContainerPageMetadata.TryGetValue("langs", out var lang);
+                    langs = lang?.ToObject<List<string?>>();
+                }
+
+                results.Add(servicePagePath);
+                var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
+                _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
+            }
+        }
+
+        private string? GetHrefRelativeToServicePage(string childHref, string referenceTOCFullPath, FilePath servicePagePath)
+        {
+            if (!(childHref.StartsWith("~/") || childHref.StartsWith("~\\")))
+            {
+                var hrefFileFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, childHref));
+                var servicePageFullPath = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(_docsetPath, servicePagePath.Path))) ?? _docsetPath;
+                var hrefRelativePathToServicePage = Path.GetRelativePath(servicePageFullPath, hrefFileFullPath);
+                childHref = hrefRelativePathToServicePage;
+            }
+
+            return childHref;
         }
     }
 }

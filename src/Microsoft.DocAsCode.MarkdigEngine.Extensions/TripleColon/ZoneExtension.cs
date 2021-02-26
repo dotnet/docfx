@@ -27,8 +27,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             htmlAttributes = null;
             renderProperties = null;
-            var target = string.Empty;
-            var pivot = string.Empty;
+            var target = "";
+            var pivot = "";
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;

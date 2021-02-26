@@ -596,7 +596,7 @@ inputs:
     - 1.xrefmap.json
   1.xrefmap.json: |
     {
-      "repositoryUrl": "a_repo",
+      "repository_url": "a_repo",
       "references":[{
           "uid": "a"
       }]
@@ -1837,6 +1837,119 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
     {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+---
+# support SDP validation validateExternalXrefs
+repos:
+  https://docs.com/test-valdiate-external-xref:
+    - files:
+        docfx.yml: |
+          name: docset_a
+          xref:
+          - 1.xrefmap.json
+        1.xrefmap.json: |
+          {
+            "repository_url": "b_repository_url",
+            "docset_name": "docset_b",
+            "references":[
+              {"uid": "c"},
+              {"uid": "d"}
+            ],
+            "external_xrefs":[
+              {"uid": "nofound",
+                "docsetName": "docset_a",
+                "count": 1}
+            ]
+          }
+        docs/a.yml: |
+          ### YamlMime:TestData1
+          uid: a
+          ref_other: ["b", "c", "d"]
+        docs/b.yml: |
+          ### YamlMime:TestData1
+          uid: b
+          ref_other: ["c"]
+        _themes/ContentTemplate/schemas/TestData1.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid"},
+              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
+            }
+          }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  .xrefmap.json: |
+    {
+      "docset_name": "docset_a",
+      "repository_url": "https://docs.com/test-valdiate-external-xref",
+      "external_xrefs":[
+        {"uid": "c", 
+          "docsetName": "docset_b",
+          "count": 2},
+        {"uid": "d", 
+          "docsetName": "docset_b",
+          "count": 1}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+---
+# support SDP validation validateExternalXrefs, locale build
+locale: zh-cn
+repos:
+  https://docs.com/test-valdiate-external-xref.zh-cn:
+    - files:
+        docfx.yml: |
+          name: docset_a
+          xref:
+          - 1.xrefmap.json
+        1.xrefmap.json: |
+          {
+            "repository_url": "b_repository_url",
+            "docset_name": "docset_b",
+            "references":[
+              {"uid": "c"},
+              {"uid": "d"}
+            ],
+            "external_xrefs":[
+              {"uid": "nofound",
+                "docsetName": "docset_a",
+                "count": 1}
+            ]
+          }
+        docs/a.yml: |
+          ### YamlMime:TestData1
+          uid: a
+          ref_other: ["b", "c", "d"]
+        docs/b.yml: |
+          ### YamlMime:TestData1
+          uid: b
+          ref_other: ["c"]
+        _themes/ContentTemplate/schemas/TestData1.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid"},
+              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
+            }
+          }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  .xrefmap.json: |
+    {
+      "docset_name": "docset_a",
+      "repository_url": "https://docs.com/test-valdiate-external-xref.zh-cn",
+      "external_xrefs":[
+        {"uid": "c", 
+          "docsetName": "docset_b",
+          "count": 2},
+        {"uid": "d", 
+          "docsetName": "docset_b",
+          "count": 1}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # multiple duplicated uids with the same MonkerList
 inputs:
