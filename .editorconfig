@@ -258,6 +258,8 @@ dotnet_diagnostic.IDE0055.severity = default
 # IDE0061: Use block body for local functions
 dotnet_diagnostic.IDE0061.severity = default
 
+dotnet_diagnostic.BuildErrorsAnalyzer.severity = error
+
 # Test specific diagnostic settings
 [test/**.cs]
 
