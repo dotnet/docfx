@@ -13,9 +13,7 @@ jobs:
     - uses: actions/setup-dotnet@v1
     - name: Donet pack
       shell: pwsh
-      run: |
-        Remove-Item drop -Force -Recurse -ErrorAction Ignore
-        dotnet pack -c Release -o drop
+      run: dotnet pack -c Release -o drop
     - name: Publish binary packages
       shell: pwsh
       run: |
