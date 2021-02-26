@@ -51,5 +51,5 @@ jobs:
     - name: Publish nuget package
       run: |
         dotnet nuget update source docs-public-packages --username docascode --password ${{ secrets.AZURE_DEVOPS_FEED_TOKEN }}
-        dotnet nuget push --source docs-public-packages --api-key az drop/**/*.nupkg
+        dotnet nuget push --source docs-public-packages --api-key az drop/**/*.nupkg --skip-duplicate
 
