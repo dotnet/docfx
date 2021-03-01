@@ -1,8 +1,21 @@
-Version Notes (Current Version: v2.57)
+Version Notes (Current Version: v2.56.7)
 =======================================
 
-v2.57(Pre-release)
+v2.56.7
 -----------
+1. Page UI updates:
+    1. Support more inheritance levels in UI. Thanks @georgius! (#6880)
+    2. Fix AnchorJS links hover issue. (#6910)
+2. Remove warning of `$schema` in JSON schema element. Thanks @kzu! (#6927)
+3. Fix MacOS case insensitive issue. Thanks @georgius! (#6888)
+4. Fix `hasAttribute` not working in API filter. (#5159)
+5. Fix xref service calls with empty uid. (#6917)
+6. Fix grammar issue in documentation. (#7063)
+7. Package updates:
+    1. Upgrade axios to 0.21.1 (#6969)
+    2. Upgrade iTextSharp to 5.5.12 (#7104)
+    3. Upgrade YamlDotNet.Signed to 5.1.0 (#7107)
+    4. Revert FSharp.Compiler.Service back to 17.0.1 as its references are missing on myget (#7029)
 
 v2.56.6
 -----------
