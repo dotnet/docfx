@@ -1,0 +1,47 @@
+name: Release
+on:
+  push:
+    branches: [ v3-release ]
+jobs:
+  build:
+    name: Release
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-dotnet@v1
+    - run: dotnet test -c Release
+    - run: dotnet pack -c Release -o drop
+    - name: Publish binary packages
+      shell: pwsh
+      run: |
+        $packagesBasePath = "drop\docfx-bin"
+        New-Item -Path $packagesBasePath -ItemType "directory" -ErrorAction SilentlyContinue
+        $stagingPath = "$packagesBasePath\staging"
+        New-Item -Path $stagingPath -ItemType "directory" -ErrorAction SilentlyContinue
+        $rids = @("win7-x64", "osx-x64", "linux-x64") # Microsoft.ChakraCore doesn't provide win-x64 runtime build, using win7-x64
+        foreach ($rid in $rids)
+        {
+          dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false
+          if ($rid -eq "win7-x64") {
+            $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
+            Write-Host "package version: $version"
+          }
+          $packageName = "docfx-$rid-$version"
+          Compress-Archive -Path "$packagesBasePath/$rid/*" -DestinationPath "$stagingPath/$packageName.zip" -Update
+          New-Item -Path "$stagingPath" -Name "$packageName.zip.sha256" -Force -ItemType "file" -Value (Get-FileHash "$stagingPath/$packageName.zip").Hash
+        }
+    - name: Create GitHub release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: ${{ env.GitAssemblyInformationalVersion }}
+        title: Version ${{ env.GitAssemblyInformationalVersion }}
+        prerelease: true
+        files: |
+          drop/docfx-bin/staging/**/*
+    - run: |
+        dotnet nuget update source docs-public-packages --username docascode --password ${{ secrets.AZURE_DEVOPS_FEED_TOKEN }}
+        dotnet nuget push --source docs-public-packages --api-key az drop/**/*.nupkg --skip-duplicate
+
