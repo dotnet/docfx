@@ -457,11 +457,39 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}.");
 
             /// <summary>
-            /// Failed to parse moniker string.
+            /// Failed to parse moniker string: moniker is not defined.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeInvalid(SourceInfo? operand, FormattableString message)
-                => new Error(ErrorLevel.Error, "moniker-range-invalid", message, operand);
+            public static Error MonikerRangeMissing(SourceInfo? operand, string moniker)
+                => new Error(ErrorLevel.Error, "moniker-range-missing", $"Invalid moniker range '{operand}': Moniker '{moniker}' is not defined.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: parse ends before reaching end of string
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeUnrecognized(SourceInfo? operand, string rangeString)
+                => new Error(ErrorLevel.Error, "moniker-range-unrecognized", $"Parse ends before reaching end of string, unrecognized string: '{rangeString}'.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: expect a comparator set
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeMissComparator(SourceInfo? operand, string rangeString)
+                => new Error(ErrorLevel.Error, "moniker-range-miss-comparator", $"Expect a comparator set, but got '{rangeString}'.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: expect a moniker string
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeMissMoniker(SourceInfo? operand, string rangeString)
+                => new Error(ErrorLevel.Error, "moniker-range-miss-moniker", $"Expect a moniker string, but got '{rangeString}'.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: Moniker key is not defined.
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeKeyUndefined(SourceInfo? operand, string key)
+                => new Error(ErrorLevel.Error, "moniker-range-key-undefined", $"Invalid monikers: Moniker '{key}' is not defined.", operand);
 
             /// <summary>
             /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -761,7 +789,7 @@ namespace Microsoft.Docs.Build
             /// Html Attribute value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
+                => new Error(ErrorLevel.Info, "disallowed-html-attribute", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
         }
 
         public static class DependencyRepository

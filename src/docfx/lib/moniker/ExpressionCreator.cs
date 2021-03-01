@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(rangeErrors);
             if (!string.IsNullOrWhiteSpace(rangeString))
             {
-                errors.Add(Errors.Versioning.MonikerRangeInvalid(source, $"Parse ends before reaching end of string, unrecognized string: '{rangeString}'."));
+                errors.Add(Errors.Versioning.MonikerRangeUnrecognized(source, rangeString));
             }
 
             return (errors, expression);
@@ -75,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             if (result is null)
             {
-                errors.Add(Errors.Versioning.MonikerRangeInvalid(source, $"Expect a comparator set, but got '{rangeString}'."));
+                errors.Add(Errors.Versioning.MonikerRangeMissComparator(source, rangeString));
             }
             return (errors, result);
         }
@@ -101,7 +101,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                error = Errors.Versioning.MonikerRangeInvalid(source, $"Expect a moniker string, but got '{rangeString}'.");
+                error = Errors.Versioning.MonikerRangeMissMoniker(source, rangeString);
                 return false;
             }
         }
