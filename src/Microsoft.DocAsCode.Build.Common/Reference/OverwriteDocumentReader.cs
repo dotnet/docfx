@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
+    using Constants = Microsoft.DocAsCode.DataContracts.Common.Constants;
     using YamlDeserializer = Microsoft.DocAsCode.YamlSerialization.YamlDeserializer;
 
     public class OverwriteDocumentReader

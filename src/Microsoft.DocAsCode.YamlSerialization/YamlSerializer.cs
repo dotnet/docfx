@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
             }
             else
             {
-                return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip));
+                return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip), new Dictionary<Type, string>());
             }
         }
 
