@@ -277,7 +277,7 @@ namespace Microsoft.Docs.Build
                         {
                             foreach (var child in containerInline)
                             {
-                                if (child != current && child.IsVisible())
+                                if (child.IsVisible())
                                 {
                                     return true;
                                 }
