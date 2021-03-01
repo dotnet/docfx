@@ -313,7 +313,7 @@ outputs:
   .errors.log: |
     {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
     {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
     {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
 ---
 # markdown table with styles is allowed
@@ -520,10 +520,10 @@ outputs:
   docs/c.json: |
     { "conceptual": "<p><a><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":27}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":27}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":27}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":27}
 ---
 # yaml header shouldn't be array
 inputs:

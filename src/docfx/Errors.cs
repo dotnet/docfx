@@ -460,7 +460,7 @@ namespace Microsoft.Docs.Build
             /// Failed to parse moniker string: moniker is not defined.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeMissing(SourceInfo? operand, string moniker)
+            public static Error MonikerRangeMissing(SourceInfo<string?> operand, string moniker)
                 => new Error(ErrorLevel.Error, "moniker-range-missing", $"Invalid moniker range '{operand}': Moniker '{moniker}' is not defined.", operand);
 
             /// <summary>
