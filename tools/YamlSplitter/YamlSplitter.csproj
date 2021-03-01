@@ -8,7 +8,7 @@
     <PackageReference Include="Markdig" Version="0.20.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.5" />
-    <PackageReference Include="YamlDotNet.Signed" Version="4.2.2" />
+    <PackageReference Include="YamlDotNet.Signed" Version="5.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj" />
