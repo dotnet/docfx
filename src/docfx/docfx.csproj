@@ -35,6 +35,7 @@
     <PackageReference Include="Stubble.Core" Version="1.9.3" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
     <PackageReference Include="YamlDotNet" Version="9.1.4" />
+    <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
   </ItemGroup>
 
   <ItemGroup>
