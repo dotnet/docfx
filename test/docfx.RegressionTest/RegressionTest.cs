@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
         private static async Task Main(string[] args)
         {
             using var http = new HttpClient();
-            http.DefaultRequestHeaders.Authorization = new("Bearer", Environment.GetEnvironmentVariable("System.AccessToken"));
+            http.DefaultRequestHeaders.Authorization = new("Bearer", Environment.GetEnvironmentVariable("SYSTEM_ACCESSTOKEN"));
             http.DefaultRequestHeaders.Accept.Add(new("application/json"));
             var endpoints = await (await http.GetAsync(
                 "https://dev.azure.com/ceapex/Engineering/_apis/serviceendpoint/endpoints?endpointNames=Engineering&api-version=6.1-preview.4"))

@@ -21,3 +21,5 @@ jobs:
   # dotnet test
   - powershell: dotnet run
     workingDirectory: test/docfx.RegressionTest
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
