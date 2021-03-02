@@ -3,7 +3,6 @@ trigger: none
 pr: none
 
 variables:
-- group: devresourcekeyvault
 - name: dotnetVersion
   value: 5.0.100
 - name: runCodesignValidationInjection
