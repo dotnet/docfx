@@ -43,7 +43,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments: -c Release
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken-Sandbox)
@@ -87,13 +87,6 @@ jobs:
       CredScan: true
       BinSkim: true
       ToolLogsNotFoundAction: 'Standard'
-
-  # Upload code coverage to codecov.io
-  - bash: |
-      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    displayName: 'Upload to codecov.io'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
 
   # Build RegressionTest into Artifact 
   - powershell: |
