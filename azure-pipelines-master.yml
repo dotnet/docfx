@@ -39,7 +39,7 @@ steps:
     arguments: '.\node_modules\gulp\bin\gulp.js master:build'
     workingFolder: tools/Deployment
   env:
-    TOKEN: $(OpenpublishbuildServiceAcountGithubToken)
+    TOKEN: $(ServiceAccountGithubToken)
 
 - task: EsrpCodeSigning@1
   displayName: Sign docfx executables and dlls
