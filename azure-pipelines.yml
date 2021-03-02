@@ -1,3 +1,5 @@
+# This YAML is used for the docfx v2 gated checkin CI(https://docfx.visualstudio.com/docfx/_build?definitionId=2&_a=summary), that is a public CI, available for the public contributor
+
 trigger:
   batch: true
   branches:

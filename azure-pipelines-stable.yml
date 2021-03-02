@@ -1,6 +1,13 @@
+# This YAML is used for the docfx v2 daily pre-release CI (https://dev.azure.com/ceapex/Engineering/_build?definitionId=1743&_a=summary)
+
 pool:
   name: Hosted Windows 2019 with VS2019
   vmImage: 'windows-2019'
+
+variables:
+- group: docfx-v2-pipeline-kv
+- name: NUGETEXE
+  value: nuget
 
 steps:
 
@@ -160,6 +167,8 @@ steps:
     filename: node
     arguments: '.\node_modules\gulp\bin\gulp.js dev:release'
     workingFolder: tools/Deployment
+  env:
+    AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
 
 - task: PublishBuildArtifacts@1
   condition: always()
