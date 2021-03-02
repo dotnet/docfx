@@ -783,7 +783,7 @@ namespace Microsoft.Docs.Build
             /// Html Tag value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
+                => new Error(ErrorLevel.Info, "disallowed-html-tag", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
 
             /// <summary>
             /// Html Attribute value must be in allowed list

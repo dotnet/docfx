@@ -311,10 +311,10 @@ outputs:
   docs/a.json: |
     { "conceptual": "<div></div><p>body</p>" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
     {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
 ---
 # markdown table with styles is allowed
 inputs:
@@ -389,7 +389,7 @@ outputs:
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/a.md","line":4,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/d.md","line":1,"column":1}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
 ---
 # only validate bookmarks when the referenced file existed
 inputs:
