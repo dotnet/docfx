@@ -215,4 +215,4 @@ steps:
     NUGETAPIKEY: $(NugetAPIKey)
     CHOCO_TOKEN: $(ChocoleteyPublishToken)
     AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
-    TOKEN: $(OpenpublishbuildServiceAcountGithubToken)
+    TOKEN: $(ServiceAccountGithubToken)
