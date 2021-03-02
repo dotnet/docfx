@@ -15,6 +15,8 @@ jobs:
 # Test and deploy on windows
 - job: OnboardLGTM
   timeoutInMinutes: 360
+  pool:
+    vmImage: 'windows-latest'
   steps:
 
   # Install .NET Core sdk
