@@ -1,0 +1,45 @@
+# daily trigger
+trigger: none
+pr: none
+
+variables:
+- group: devresourcekeyvault
+- name: dotnetVersion
+  value: 5.0.100
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
+
+jobs:
+
+# Test and deploy on windows
+- job: OnboardLGTM
+  timeoutInMinutes: 360
+  steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+  
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+  
+  - task: Semmle@0
+    displayName: Security - LGTM
+    env: 
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    inputs:
+      toolVersion: 'LatestPreRelease'
+      sourceCodeDirectory: '$(Build.SourcesDirectory)'
+      language: 'csharp'
+      cleanupBuildCommands: 'dotnet clean'
+      buildCommands: 'dotnet build'
+      querySuite: 'Required'
+      timeout: '7200'
+      ram: '16384'
+      addProjectDirToScanningExclusionList: true
