@@ -1,3 +1,10 @@
+# This YAML is used for the docfx v2 master release CI (https://dev.azure.com/ceapex/Engineering/_build?definitionId=1503&_a=summary)
+
+variables:
+- group: docfx-v2-pipeline-kv
+- name: NUGETEXE
+  value: nuget
+
 pool:
   name: Hosted Windows 2019 with VS2019
 
@@ -31,6 +38,8 @@ steps:
     filename: node
     arguments: '.\node_modules\gulp\bin\gulp.js master:build'
     workingFolder: tools/Deployment
+  env:
+    TOKEN: $(OpenpublishbuildServiceAcountGithubToken)
 
 - task: EsrpCodeSigning@1
   displayName: Sign docfx executables and dlls
@@ -203,4 +212,7 @@ steps:
     arguments: '.\node_modules\gulp\bin\gulp.js master:release'
     workingFolder: tools/Deployment
   env:
-    NUGETAPIKEY: $(NUGETAPIKEY)
+    NUGETAPIKEY: $(NugetAPIKey)
+    CHOCO_TOKEN: $(ChocoleteyPublishToken)
+    AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
+    TOKEN: $(OpenpublishbuildServiceAcountGithubToken)
