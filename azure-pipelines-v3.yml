@@ -24,10 +24,6 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  # Run Component Detection
-  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-    displayName: 'Component Detection'
-
   # Run CredScan
   - task: CredScan@2
     displayName: Security - CredScan
@@ -108,6 +104,10 @@ jobs:
   - publish: ./drop/RegressionTest
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
+
+  # Run Component Detection
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Detection'
 
 # Run RegressionTest
 - job: RunRegressionTest
