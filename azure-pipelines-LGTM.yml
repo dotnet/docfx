@@ -16,7 +16,7 @@ variables:
 - name: LGTM.UploadSnapshot
   value: true
 - name: Semmle.SkipAnalysis
-  value: true
+  value: false
 
 jobs:
 
@@ -47,3 +47,22 @@ jobs:
       timeout: '7200'
       ram: '16384'
       addProjectDirToScanningExclusionList: true
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    inputs:
+      Semmle: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    inputs:
+      Semmle: true
+      ToolLogsNotFoundAction: 'Standard'
