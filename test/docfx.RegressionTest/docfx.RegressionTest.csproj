@@ -5,10 +5,6 @@
     <IsPackable>false</IsPackable>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="../../src/docfx/bin/$(Configuration)/$(TargetFramework)/*.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
@@ -17,10 +13,6 @@
 
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
   </ItemGroup>
 
 </Project>
