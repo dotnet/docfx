@@ -105,6 +105,11 @@ jobs:
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
 
+  # Run Component Detection
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Detection'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
 # Run RegressionTest
 - job: RunRegressionTest
   condition: eq('true', 'false')
