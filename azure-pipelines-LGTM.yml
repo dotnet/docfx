@@ -9,6 +9,14 @@ variables:
   value: false
 - name: NugetSecurityAnalysisWarningLevel
   value: none
+- name: LGTM.SnapshotIdentifiers
+  value: Build=Full
+- name: LGTM.SnapshotMetadata
+  value: Owner=OPSBuild
+- name: LGTM.UploadSnapshot
+  value: true
+- name: Semmle.SkipAnalysis
+  value: true
 
 jobs:
 
@@ -25,11 +33,6 @@ jobs:
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
-  
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-  
   - task: Semmle@0
     displayName: Security - LGTM
     env: 
