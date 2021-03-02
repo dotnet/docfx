@@ -16,7 +16,7 @@ jobs:
   steps:
 
   - checkout: self
-    depth: 1
+    fetchDepth: 1
 
   # dotnet test
   - powershell: dotnet run
