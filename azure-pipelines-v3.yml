@@ -15,11 +15,8 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  - checkout: self
-    fetchDepth: 1
-
-  # dotnet test
-  - powershell: dotnet run
-    workingDirectory: test/docfx.RegressionTest
-    env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  - checkout: none
+  - task: GitHubComment@0
+    inputs:
+      gitHubConnection: Engineering
+      comment: Hi **GitHub**
