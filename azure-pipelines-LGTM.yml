@@ -15,7 +15,7 @@ variables:
 - name: LGTM.SnapshotMetadata
   value: Owner=OPSBuild
 - name: LGTM.UploadSnapshot
-  value: true
+  value: false
 - name: Semmle.SkipAnalysis
   value: false
 
