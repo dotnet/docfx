@@ -24,7 +24,7 @@ jobs:
 - job: OnboardLGTM
   timeoutInMinutes: 360
   pool:
-    vmImage: 'windows-latest'
+    name: DocFX
   steps:
 
   # Install .NET Core sdk
