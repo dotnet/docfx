@@ -19,5 +19,6 @@ jobs:
       run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutput=TestResults/
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
+      if: ${{ matrix.os == 'macos-latest' }}
       with:
         directory: ./test/docfx.Test/TestResults/
