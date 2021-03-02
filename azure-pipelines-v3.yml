@@ -24,6 +24,10 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  # Run Component Detection
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Detection'
+
   # Run CredScan
   - task: CredScan@2
     displayName: Security - CredScan
@@ -202,7 +206,3 @@ jobs:
       AZURE_DEVOPS_TOKEN: $(vsoTestToken-Sandbox)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
-
-  # Run Component Detection
-  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-    displayName: 'Component Detection'
