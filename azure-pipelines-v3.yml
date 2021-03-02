@@ -15,6 +15,9 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  - checkout: self
+    depth: 1
+
   # dotnet test
   - powershell: dotnet run
     workingDirectory: test/docfx.RegressionTest
