@@ -7,15 +7,6 @@ trigger:
 pr:
 - v3
 
-variables:
-- group: devresourcekeyvault
-- name: dotnetVersion
-  value: 5.0.100
-- name: runCodesignValidationInjection
-  value: false
-- name: NugetSecurityAnalysisWarningLevel
-  value: none
-
 jobs:
 
 # Test and deploy on windows
@@ -23,20 +14,6 @@ jobs:
   pool:
     vmImage: 'windows-latest'
   steps:
-
-  # Run CredScan
-  - task: CredScan@2
-    displayName: Security - CredScan
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    inputs:
-      toolMajorVersion: 'V2'
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
 
   # dotnet test
   - powershell: dotnet run
