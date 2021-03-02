@@ -27,13 +27,13 @@ namespace Microsoft.Docs.Build
             {
                 var currentFile = ((SourceInfo)InclusionContext.File).File;
 
-                var documentNodes = new List<ContentNode>();
+                var documentNodes = new List<ContentNode>(); // lgtm [cs/unused-collection]
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockNode codeBlockItem)>();
 
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
 
-                var zonePivotUsages = new List<SourceInfo<string>>();
+                var zonePivotUsages = new List<SourceInfo<string>>(); // lgtm [cs/unused-collection]
 
                 document.Visit(node =>
                 {

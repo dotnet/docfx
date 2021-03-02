@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
             IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap)
         {
-            var aggregatedFileMapItems = new List<(string path, object item)>();
+            var aggregatedFileMapItems = new List<(string path, object item)>(); // lgtm [cs/unused-collection]
 
             foreach (var (path, (fileMapItem, monikers))
                 in items.GroupBy(x => x.legacyFilePathRelativeToBaseFolder)

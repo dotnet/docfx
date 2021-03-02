@@ -1,0 +1,7 @@
+queries:
+  - exclude: "*"
+  # Then include all queries tagged 'security' and 'correctness', and with a severity of
+  # 'error'.
+  - include:           
+      tags:
+        - "sdl-recommended"
