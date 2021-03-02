@@ -1,0 +1,69 @@
+# daily trigger
+trigger: none
+pr: none
+
+variables:
+- group: devresourcekeyvault
+- name: dotnetVersion
+  value: 5.0.100
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
+- name: LGTM.SnapshotIdentifiers
+  value: Build=Full
+- name: LGTM.SnapshotMetadata
+  value: Owner=OPSBuild
+- name: LGTM.UploadSnapshot
+  value: false
+- name: Semmle.SkipAnalysis
+  value: false
+
+jobs:
+
+# Test and deploy on windows
+- job: OnboardLGTM
+  timeoutInMinutes: 360
+  pool:
+    name: DocFX
+  steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+  - task: Semmle@0
+    displayName: Security - LGTM
+    env: 
+      SYSTEM_ACCESSTOKEN: $(MICROSOFT_PAT_TOKEN)
+    inputs:
+      toolVersion: 'LatestPreRelease'
+      sourceCodeDirectory: '$(Build.SourcesDirectory)'
+      language: 'csharp'
+      cleanupBuildCommands: 'dotnet clean'
+      buildCommands: 'dotnet build'
+      querySuite: 'Required'
+      timeout: '7200'
+      ram: '16384'
+      addProjectDirToScanningExclusionList: true
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    inputs:
+      Semmle: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    inputs:
+      Semmle: true
+      ToolLogsNotFoundAction: 'Standard'
