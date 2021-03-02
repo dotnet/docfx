@@ -34,6 +34,10 @@ jobs:
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'restore'
+
   - task: Semmle@0
     displayName: Security - LGTM
     env: 
