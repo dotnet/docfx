@@ -1,5 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <BuildDocToolPrefix Condition="'$(BuildDocToolPrefix)' == '' and '$(OS)' != 'Windows_NT'">mono</BuildDocToolPrefix>
+    <_BuildDocToolPrefixFinal Condition="'$(BuildDocToolPrefix)' != ''">&quot;$(BuildDocToolPrefix)&quot; </_BuildDocToolPrefixFinal>
     <BuildDocToolPath>$(MSBuildThisFileDirectory)..\tools\docfx.exe</BuildDocToolPath>
     <DocfxConfigFile Condition=" '$(DocfxConfigFile)' == '' ">$(MSBuildProjectDirectory)/docfx.json</DocfxConfigFile>
     <PreviewPort Condition=" '$(PreviewPort)' == '' ">8002</PreviewPort>
@@ -7,7 +9,7 @@
     <PreviewOutputFolder Condition=" '$(PreviewOutputFolder)' == '' ">$(OutputFolder)/_site</PreviewOutputFolder>
     <MetadataOutputFolder Condition=" '$(MetadataOutputFolder)' == '' ">$(OutputFolder)</MetadataOutputFolder>
     <LogFile Condition=" '$(LogFile)' == '' ">log.txt</LogFile>
-    <LogLevel Condition=" '$(LogLevel)' == '' ">Verbose</LogLevel>
+    <LogLevel Condition=" '$(LogLevel)' == '' ">Warning</LogLevel>
     <BuildDocFx Condition=" '$(BuildDocFx)' == '' ">true</BuildDocFx>
     <BuildDocFx Condition=" '$(BuildingForLiveUnitTesting)' == 'true' ">false</BuildDocFx>
 
@@ -38,7 +40,7 @@
   </Target>
   <Target Name="DocPreview" Condition="'$(BuildDocFx)' == 'true'">
     <Exec Condition="$(IsServing)" Command="start cmd /c &quot;&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; --serve -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;&quot;" />
-    <Exec Condition="!$(IsServing)" Command="&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
+    <Exec Condition="!$(IsServing)" Command="$(_BuildDocToolPrefixFinal)&quot;$(BuildDocToolPath)&quot; build &quot;$(DocfxConfigFile)&quot; -o &quot;$(PreviewOutputFolder)&quot; --template &quot;$(DocTemplate)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;" />
   </Target>
 
   <!-- ************************************************************************* -->
@@ -46,13 +48,13 @@
   <!-- ************************************************************************* -->
   <Target Name="DocGenerateMetadata" Condition="'$(BuildDocFx)' == 'true'">
     <PropertyGroup>
-      <DocGenerateCommand>&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(MetadataOutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
+      <DocGenerateCommand>$(_BuildDocToolPrefixFinal)&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(MetadataOutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
       <DocGenerateCommand Condition="$(RebuildDoc)">$(DocGenerateCommand) -f</DocGenerateCommand>
       <DocGenerateCommand Condition="'$(DocTemplate)' != ''">$(DocGenerateCommand) --template &quot;$(DocTemplate)&quot; </DocGenerateCommand>
       <DocGenerateCommand Condition="'$(DocParameters)' != ''">$(DocGenerateCommand) $(DocParameters)</DocGenerateCommand>
     </PropertyGroup>
     <Message Condition="!Exists($(DocfxConfigFile))" Text="Init docfx config files" />
-    <Exec Condition="!Exists($(DocfxConfigFile))" Command="&quot;$(BuildDocToolPath)&quot; init -o &quot;$(MSBuildProjectDirectory)&quot; -q --apiGlobPattern **.csproj --apiSourceFolder &quot;$(MSBuildProjectDirectory)&quot;" />
+    <Exec Condition="!Exists($(DocfxConfigFile))" Command="$(_BuildDocToolPrefixFinal)&quot;$(BuildDocToolPath)&quot; init -o &quot;$(MSBuildProjectDirectory)&quot; -q --apiGlobPattern **.csproj --apiSourceFolder &quot;$(MSBuildProjectDirectory)&quot;" />
     <Message Text="Executing $(DocGenerateCommand)" />
     <Exec Command="$(DocGenerateCommand)"></Exec>
   </Target>
