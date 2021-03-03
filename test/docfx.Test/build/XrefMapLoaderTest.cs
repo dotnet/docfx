@@ -65,15 +65,27 @@ namespace Microsoft.Docs.Build
             new string[] { "a", "b" }, new string[] { "c", "d" })]
 
         [InlineData(@"{'references':[{'uid': 'a', 'prop': {'test':1}}, {'uid': 'b', 'prop': {'test':2}}], 'external_xrefs':[{'uid':'c','prop': {'test':1}},{'uid':'d','prop': {'test':2}}]}", new string[] { "a", "b" }, new string[] { "c", "d" })]
-        public void LoadXrefMapFile(string json, string[] uids, string[] externalUids)
+        [InlineData("", default, default, true)]
+        [InlineData("{'reference':", default, default, true)]
+        public void LoadXrefMapFile(string json, string[] uids, string[] externalUids, bool throwError = false)
         {
             var filePath = WriteJsonToTempFile(json);
             var xrefSpecs = new Dictionary<string, Lazy<ExternalXrefSpec>>();
             var externalXrefs = new List<ExternalXref>();
-            ExternalXrefMapLoader.LoadJsonFile(xrefSpecs, externalXrefs, new FileResolver(new LocalPackage()), new SourceInfo<string>(filePath));
 
-            Assert.Equal(uids, xrefSpecs.Keys);
-            Assert.Equal(externalUids, externalXrefs.Select(item => item.Uid));
+            if (throwError)
+            {
+                var error = Assert.Throws<InvalidOperationException>(() => ExternalXrefMapLoader.LoadJsonFile(xrefSpecs, externalXrefs, new FileResolver(new LocalPackage()), new SourceInfo<string>(filePath)));
+
+                Assert.Equal($"Json reader failed to read invalid xrefmap: '{json.Replace('\'', '"')}'", error.Message);
+            }
+            else
+            {
+                ExternalXrefMapLoader.LoadJsonFile(xrefSpecs, externalXrefs, new FileResolver(new LocalPackage()), new SourceInfo<string>(filePath));
+
+                Assert.Equal(uids, xrefSpecs.Keys);
+                Assert.Equal(externalUids, externalXrefs.Select(item => item.Uid));
+            }
         }
 
         private static string WriteJsonToTempFile(string json)

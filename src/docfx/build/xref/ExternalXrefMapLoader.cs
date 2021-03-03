@@ -147,58 +147,65 @@ namespace Microsoft.Docs.Build
             var reader = new Utf8JsonReader(content, isFinalBlock: true, default);
             var inReferencesObj = true;
 
-            while (reader.Read())
+            try
             {
-                switch (reader.TokenType)
+                while (reader.Read())
                 {
-                    case JsonTokenType.PropertyName:
-                        if (reader.ValueTextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
-                        {
-                            stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
-                        }
-                        if (stack.Count == 1)
-                        {
-                            if (reader.ValueTextEquals(s_referencesBytes))
+                    switch (reader.TokenType)
+                    {
+                        case JsonTokenType.PropertyName:
+                            if (reader.ValueTextEquals(s_uidBytes) && reader.Read() && reader.TokenType == JsonTokenType.String && stack.TryPop(out var top))
                             {
-                                inReferencesObj = true;
+                                stack.Push((Encoding.UTF8.GetString(reader.ValueSpan), top.start));
                             }
-                            else if (reader.ValueTextEquals(s_externalXrefsBytes))
+                            if (stack.Count == 1)
                             {
-                                inReferencesObj = false;
+                                if (reader.ValueTextEquals(s_referencesBytes))
+                                {
+                                    inReferencesObj = true;
+                                }
+                                else if (reader.ValueTextEquals(s_externalXrefsBytes))
+                                {
+                                    inReferencesObj = false;
+                                }
+                                else if (string.IsNullOrEmpty(repositoryUrl) && reader.ValueTextEquals(s_repositoryUrlBytes) && reader.Read())
+                                {
+                                    repositoryUrl = reader.TokenType == JsonTokenType.String
+                                        ? Encoding.UTF8.GetString(reader.ValueSpan)
+                                        : throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
+                                }
+                                else if (string.IsNullOrEmpty(docsetName) && reader.ValueTextEquals(s_docsetNameBytes) && reader.Read())
+                                {
+                                    docsetName = reader.TokenType == JsonTokenType.String
+                                        ? Encoding.UTF8.GetString(reader.ValueSpan)
+                                        : throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
+                                }
                             }
-                            else if (string.IsNullOrEmpty(repositoryUrl) && reader.ValueTextEquals(s_repositoryUrlBytes) && reader.Read())
-                            {
-                                repositoryUrl = reader.TokenType == JsonTokenType.String
-                                    ? Encoding.UTF8.GetString(reader.ValueSpan)
-                                    : throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
-                            }
-                            else if (string.IsNullOrEmpty(docsetName) && reader.ValueTextEquals(s_docsetNameBytes) && reader.Read())
-                            {
-                                docsetName = reader.TokenType == JsonTokenType.String
-                                    ? Encoding.UTF8.GetString(reader.ValueSpan)
-                                    : throw Errors.JsonSchema.UnexpectedType(new SourceInfo<string>(filePath), "string", reader.TokenType).ToException();
-                            }
-                        }
-                        break;
+                            break;
 
-                    case JsonTokenType.StartObject:
-                        stack.Push((null, (int)reader.TokenStartIndex));
-                        break;
+                        case JsonTokenType.StartObject:
+                            stack.Push((null, (int)reader.TokenStartIndex));
+                            break;
 
-                    case JsonTokenType.EndObject:
-                        if (stack.TryPop(out var item) && item.uid != null)
-                        {
-                            if (inReferencesObj)
+                        case JsonTokenType.EndObject:
+                            if (stack.TryPop(out var item) && item.uid != null)
                             {
-                                xrefSpecPos.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
+                                if (inReferencesObj)
+                                {
+                                    xrefSpecPos.Add((item.uid, item.start, (int)reader.TokenStartIndex + 1));
+                                }
+                                else
+                                {
+                                    xrefPos.Add((item.start, (int)reader.TokenStartIndex + 1));
+                                }
                             }
-                            else
-                            {
-                                xrefPos.Add((item.start, (int)reader.TokenStartIndex + 1));
-                            }
-                        }
-                        break;
+                            break;
+                    }
                 }
+            }
+            catch (JsonException)
+            {
+                throw new InvalidOperationException($"Json reader failed to read invalid xrefmap: '{Encoding.UTF8.GetString(content)}'");
             }
             return (xrefSpecPos, xrefPos, repositoryUrl, docsetName);
         }
