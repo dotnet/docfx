@@ -52,6 +52,7 @@ jobs:
   - task: PublishCodeCoverageResults@1
     displayName: uplodoad code coverage result
     inputs:
+      codeCoverageTool: cobertura
       summaryFileLocation: test/**/coverage.cobertura.xml
 
   # Run SDL tools
