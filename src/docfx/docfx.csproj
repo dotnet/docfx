@@ -41,8 +41,7 @@
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" PrivateAssets="all" />
-    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-alpha-00535-8e1988e" PrivateAssets="all" />
-    <AdditionalFiles Include="BuildErrorsAnalyzer.Settings.xml" />
+    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-alpha-00542-296506e" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
