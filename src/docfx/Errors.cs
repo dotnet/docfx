@@ -258,8 +258,7 @@ namespace Microsoft.Docs.Build
             {
                 display ??= obj => obj?.ToString();
                 var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Append(current).Select(file => $"'{display(file)}'"));
-                var code = "circular-reference";
-                return new Error(ErrorLevel.Error, code, $"Build has identified file(s) referencing each other: {dependencyChain}.", source);
+                return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}.", source);
             }
 
             /// <summary>
