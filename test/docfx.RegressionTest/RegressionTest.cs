@@ -29,6 +29,15 @@ namespace Microsoft.Docs.Build
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
+        private static readonly HttpClient s_http = new Func<HttpClient>(() =>
+        {
+            var httpClientHandler = new HttpClientHandler
+            {
+                CheckCertificateRevocationList = true,
+            };
+            return new HttpClient(httpClientHandler);
+        })();
+
         private static string s_repositoryName = "";
         private static string s_repository = "";
 
@@ -469,12 +478,11 @@ namespace Microsoft.Docs.Build
 
         private static async Task SendGitHubPullRequestComments(int prNumber, string body)
         {
-            using var http = new HttpClient();
-            http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-            http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
+            s_http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
+            s_http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
 
             using var content = new StringContent(JsonConvert.SerializeObject(new { body }), Encoding.UTF8, "application/json");
-            var response = await http.PostAsync(
+            var response = await s_http.PostAsync(
                 new Uri($"https://api.github.com/repos/dotnet/docfx/issues/{prNumber}/comments"),
                 content);
 
