@@ -93,7 +93,7 @@ namespace Microsoft.Docs.Build
             _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _publishUrlMap);
             _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(_jsonSchemaTransformer));
             _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider);
-            _markdownEngine = new(_config, _input, _fileResolver, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
+            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
             _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
             _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
             _tocParser = new(_input, _markdownEngine);
