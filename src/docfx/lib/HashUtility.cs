@@ -12,31 +12,31 @@ namespace Microsoft.Docs.Build
     {
         public static string GetMd5Hash(string input)
         {
-            using var md5 = MD5.Create();
+            using var md5 = MD5.Create(); // lgtm [cs/weak-crypto]
             return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
         public static string GetMd5HashShort(string input)
         {
-            using var md5 = MD5.Create();
+            using var md5 = MD5.Create(); // lgtm [cs/weak-crypto]
             return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4);
         }
 
         public static Guid GetMd5Guid(string input)
         {
-            using var md5 = MD5.Create();
+            using var md5 = MD5.Create(); // lgtm [cs/weak-crypto]
             return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
         public static string GetSha1Hash(string input)
         {
-            using var sha1 = new SHA1CryptoServiceProvider();
+            using var sha1 = new SHA1CryptoServiceProvider(); // lgtm [cs/weak-crypto]
             return ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
         public static string GetSha1Hash(Stream input)
         {
-            using var sha1 = SHA1.Create();
+            using var sha1 = SHA1.Create(); // lgtm [cs/weak-crypto]
             return ToHexString(sha1.ComputeHash(input));
         }
 
