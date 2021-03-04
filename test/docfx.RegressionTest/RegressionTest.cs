@@ -469,10 +469,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task SendGitHubPullRequestComments(int prNumber, string body)
         {
-            using var http = new HttpClient(new HttpClientHandler
-            {
-                CheckCertificateRevocationList = true,
-            });
+            using var http = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
             http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
             http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
 
