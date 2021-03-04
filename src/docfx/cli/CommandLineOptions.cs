@@ -1,27 +1,53 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1401:FieldsMustBePrivate", Justification = "<Skipping>")]
     internal class CommandLineOptions
     {
-        public string? Output;
-        public string? Log;
-        public bool Verbose;
-        public OutputType? OutputType;
-        public bool DryRun;
-        public bool NoDrySync;
-        public bool Stdin;
-        public bool Force;
-        public bool NoCache;
-        public bool NoRestore;
-        public string? Template;
+        public string? Output { get; init; }
 
-        public JObject? StdinConfig;
+        public string? Log { get; init; }
+
+        public bool Verbose { get; init; }
+
+        public OutputType? OutputType { get; init; }
+
+        public bool DryRun { get; set; }
+
+        public bool NoDrySync { get; init; }
+
+        public bool Stdin { get; init; }
+
+        public bool Force { get; init; }
+
+        public bool NoCache { get; init; }
+
+        public bool NoRestore { get; init; }
+
+        public bool LanguageServer { get; init; }
+
+        public int Port { get; init; }
+
+        public string? Address { get; init; }
+
+        public string? Template { get; init; }
+
+        public string? TemplateBasePath { get; init; }
+
+        public IReadOnlyList<string>? Files { get; init; }
+
+        public string? TemplateName { get; init; }
+
+        public string? Directory { private get; set; }
+
+        public string WorkingDirectory => Directory ?? ".";
+
+        public JObject? StdinConfig { get; set; }
 
         public JObject ToJObject()
         {
@@ -33,7 +59,7 @@ namespace Microsoft.Docs.Build
 
             if (Output != null)
             {
-                config["outputPath"] = Output;
+                config["outputPath"] = Path.GetFullPath(Output);
             }
 
             if (OutputType != null)
@@ -43,7 +69,16 @@ namespace Microsoft.Docs.Build
 
             if (Template != null)
             {
-                config["template"] = Template;
+                config["template"] = new PackagePath(Template).Type switch
+                {
+                    PackageType.Folder => Path.GetFullPath(Template),
+                    _ => Template,
+                };
+            }
+
+            if (TemplateBasePath != null)
+            {
+                config["templateBasePath"] = TemplateBasePath;
             }
 
             return config;

@@ -5,25 +5,29 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ContentValidator
+    internal class ContentValidator : ICollectionFactory
     {
         // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
         // Learn content: "learningpath", "module", "moduleunit"
-        private static readonly string[] s_supportedPageTypes = { "conceptual", "includes", "toc", "redirection", "learningpath", "module", "moduleunit" };
+        private static readonly string[] s_supportedPageTypes =
+        {
+            "conceptual", "toc", "redirection", "learningpath", "module", "moduleunit", "zonepivotgroups", "post",
+        };
 
+        private readonly Config _config;
         private readonly Validator _validator;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly Lazy<PublishUrlMap> _publishUrlMap;
-        private readonly ConcurrentHashSet<(FilePath, SourceInfo<string>)> _links = new ConcurrentHashSet<(FilePath, SourceInfo<string>)>();
+        private readonly ZonePivotProvider _zonePivotProvider;
+        private readonly PublishUrlMap _publishUrlMap;
 
         public ContentValidator(
             Config config,
@@ -31,39 +35,32 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
-            Lazy<PublishUrlMap> publishUrlMap)
+            ZonePivotProvider zonePivotProvider,
+            PublishUrlMap publishUrlMap)
         {
+            _config = config;
             _errors = errors;
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
+            _zonePivotProvider = zonePivotProvider;
             _publishUrlMap = publishUrlMap;
 
             _validator = new Validator(
-                fileResolver.ResolveFilePath(config.MarkdownValidationRules),
-                fileResolver.ResolveFilePath(config.Allowlists),
-                fileResolver.ResolveFilePath(config.Disallowlists));
+                fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
+                fileResolver.ResolveFilePath(_config.Allowlists),
+                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
+                this);
         }
 
-        public void ValidateImageLink(FilePath file, SourceInfo<string> link, MarkdownObject origin, string? altText, int imageIndex)
+        public void ValidateLink(FilePath file, LinkNode node)
         {
-            // validate image link and altText here
-            if (_links.TryAdd((file, link)) && TryCreateValidationContext(file, out var validationContext))
+            if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateLink(
-                    new Link
-                    {
-                        UrlLink = link,
-                        AltText = altText,
-                        IsImage = true,
-                        IsInlineImage = origin.IsInlineImage(imageIndex),
-                        SourceInfo = link.Source,
-                        ParentSourceInfoList = origin.GetInclusionStack(),
-                        Monikers = origin.GetZoneLevelMonikers(),
-                    }, validationContext).GetAwaiter().GetResult());
+                Write(_validator.ValidateLink(node, validationContext).GetAwaiter().GetResult());
             }
         }
 
-        public void ValidateCodeBlock(FilePath file, CodeBlockItem codeBlockItem)
+        public void ValidateCodeBlock(FilePath file, CodeBlockNode codeBlockItem)
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
@@ -75,8 +72,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateHeadings(nodes, validationContext).GetAwaiter().GetResult());
+                Write(_validator.ValidateContentNodes(nodes, validationContext).GetAwaiter().GetResult());
             }
+        }
+
+        public void ValidateHierarchy(List<HierarchyNode> models)
+        {
+            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
@@ -89,7 +91,7 @@ namespace Microsoft.Docs.Build
             if (TryGetValidationDocumentType(file, out var documentType))
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
-                var canonicalVersion = _publishUrlMap.Value.GetCanonicalVersion(file);
+                var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
                 var isCanonicalVersion = monikers.IsCanonicalVersion(canonicalVersion);
                 var titleItem = new TitleItem
                 {
@@ -127,18 +129,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                using var reader = new StringReader(content);
-                var lineCount = 1;
-                string? line = null;
-                while ((line = reader.ReadLine()) != null)
+                var textItem = new TextNode()
                 {
-                    var item = new TextItem()
-                    {
-                        Content = line,
-                        SourceInfo = new SourceInfo(file, lineCount++, 0),
-                    };
-                    Write(_validator.ValidateText(item, validationContext).GetAwaiter().GetResult());
-                }
+                    Content = content,
+                    SourceInfo = new SourceInfo(file),
+                };
+
+                Write(_validator.ValidateText(textItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -183,7 +180,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TableOfContentsNode> node)
+        public void ValidateTocBreadcrumbLinkExternal(FilePath file, SourceInfo<TocNode> node)
         {
             if (!string.IsNullOrEmpty(node.Value?.Href)
                 && TryCreateValidationContext(file, false, out var validationContext))
@@ -215,38 +212,81 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void ValidateZonePivotDefinition(FilePath file, ZonePivotGroupDefinition definition)
+        {
+            if (TryCreateValidationContext(file, false, out var validationContext))
+            {
+                Write(_validator.ValidateZonePivot(definition, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
+        public void ValidateZonePivots(FilePath file, List<SourceInfo<string>> zonePivotUsages)
+        {
+            // Build types other than Docs is not supported
+            if (_config.UrlType != UrlType.Docs)
+            {
+                return;
+            }
+
+            // No need to run validation if pivot not used in this page
+            if (!zonePivotUsages.Any())
+            {
+                return;
+            }
+
+            var zonePivotGroup = _zonePivotProvider.TryGetZonePivotGroups(file);
+            if (zonePivotGroup == null)
+            {
+                // Unable to load definition file or group
+                return;
+            }
+
+            if (TryCreateValidationContext(file, false, out var validationContext))
+            {
+                validationContext = validationContext with
+                {
+                    ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups),
+                };
+                List<(string, object)> usages = zonePivotUsages.Select(u => (u.Value, (object)u.Source!)).ToList();
+                Write(_validator.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
         public void PostValidate()
         {
             Write(_validator.PostValidate().GetAwaiter().GetResult());
         }
 
+        public IProducerConsumerCollection<T> CreateCollection<T>()
+        {
+            return new ScopedConcurrentBag<T>();
+        }
+
         private void Write(IEnumerable<ValidationError> validationErrors)
         {
-            _errors.AddRange(validationErrors.Select(e => new Error(GetLevel(e.Severity), e.Code, $"{e.Message}", (SourceInfo?)e.SourceInfo)));
+            _errors.AddRange(validationErrors.Select(ToError));
 
-            static ErrorLevel GetLevel(ValidationSeverity severity) =>
-                severity switch
+            static Error ToError(ValidationError e)
+            {
+                var level = e.Severity switch
                 {
                     ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
                     ValidationSeverity.WARNING => ErrorLevel.Warning,
                     ValidationSeverity.ERROR => ErrorLevel.Error,
                     _ => ErrorLevel.Off,
                 };
+
+                var source = e.SourceInfo is SourceInfo sourceInfo
+                    ? e.LineOffset > 0 || e.ColumnOffset > 0 ? sourceInfo.WithOffset(e.LineOffset + 1, e.ColumnOffset + 1) : sourceInfo
+                    : null;
+
+                return new Error(level, e.Code, $"{e.Message}", source);
+            }
         }
 
         private bool TryGetValidationDocumentType(FilePath file, [NotNullWhen(true)] out string? documentType)
         {
-            return TryGetValidationDocumentType(file, false, out documentType);
-        }
-
-        private bool TryGetValidationDocumentType(FilePath file, bool isInclude, [NotNullWhen(true)] out string? documentType)
-        {
             documentType = _documentProvider.GetPageType(file);
-            if (isInclude && documentType == "conceptual")
-            {
-                documentType = "includes";
-                return true;
-            }
 
             return documentType != null && s_supportedPageTypes.Contains(documentType);
         }

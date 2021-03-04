@@ -2,29 +2,28 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
 {
-    internal class Error
+    internal record Error
     {
-        public static readonly IEqualityComparer<Error> Comparer = new EqualityComparer();
+        public ErrorLevel Level { get; init; }
 
-        public ErrorLevel Level { get; }
+        public string Code { get; init; }
 
-        public string Code { get; }
+        public string Message { get; init; }
 
-        public string Message { get; }
+        public string? MsAuthor { get; init; }
 
-        public string? PropertyPath { get; }
+        public string? PropertyPath { get; init; }
 
-        public SourceInfo? Source { get; }
+        public SourceInfo? Source { get; init; }
 
-        public PathString? OriginalPath { get; }
+        public PathString? OriginalPath { get; init; }
 
-        public bool PullRequestOnly { get; }
+        public bool PullRequestOnly { get; init; }
 
-        public object?[] MessageArguments { get; }
+        public object?[] MessageArguments { get; init; } = Array.Empty<object?>();
 
         public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null)
         {
@@ -34,88 +33,6 @@ namespace Microsoft.Docs.Build
             MessageArguments = message.GetArguments();
             Source = source;
             PropertyPath = propertyPath;
-        }
-
-        private Error(
-            ErrorLevel level,
-            string code,
-            string message,
-            object?[] messageArguments,
-            SourceInfo? source,
-            string? propertyPath,
-            PathString? originalPath,
-            bool pullRequestOnly)
-        {
-            Level = level;
-            Code = code;
-            Message = message;
-            MessageArguments = messageArguments;
-            Source = source;
-            PropertyPath = propertyPath;
-            OriginalPath = originalPath;
-            PullRequestOnly = pullRequestOnly;
-        }
-
-        public Error WithCustomRule(CustomRule customRule, bool? enabled = null)
-        {
-            var level = customRule.Severity ?? Level;
-
-            if (level != ErrorLevel.Off && customRule.ExcludeMatches(OriginalPath ?? Source?.File?.Path ?? ""))
-            {
-                level = ErrorLevel.Off;
-            }
-
-            if (enabled != null && !enabled.Value)
-            {
-                level = ErrorLevel.Off;
-            }
-
-            var message = Message;
-
-            if (!string.IsNullOrEmpty(customRule.Message))
-            {
-                try
-                {
-                    message = string.Format(customRule.Message, MessageArguments);
-                }
-                catch (FormatException)
-                {
-                    message += "ERROR: custom message format is invalid, e.g., too many parameters {n}.";
-                }
-            }
-
-            message = string.IsNullOrEmpty(customRule.AdditionalMessage) ?
-                message : $"{message}{(message.EndsWith('.') ? "" : ".")} {customRule.AdditionalMessage}";
-
-            return new Error(
-                level,
-                string.IsNullOrEmpty(customRule.Code) ? Code : customRule.Code,
-                message,
-                MessageArguments,
-                Source,
-                PropertyPath,
-                OriginalPath,
-                customRule.PullRequestOnly);
-        }
-
-        public Error WithLevel(ErrorLevel level)
-        {
-            return level == Level ? this : new Error(level, Code, Message, MessageArguments, Source, PropertyPath, OriginalPath, PullRequestOnly);
-        }
-
-        public Error WithOriginalPath(PathString? originalPath)
-        {
-            return originalPath == OriginalPath ? this : new Error(Level, Code, Message, MessageArguments, Source, PropertyPath, originalPath, PullRequestOnly);
-        }
-
-        public Error WithSource(SourceInfo? source)
-        {
-            return new Error(Level, Code, Message, MessageArguments, source, PropertyPath, OriginalPath, PullRequestOnly);
-        }
-
-        public Error WithPropertyPath(string? propertyPath)
-        {
-            return new Error(Level, Code, Message, MessageArguments, Source, propertyPath, OriginalPath, PullRequestOnly);
         }
 
         public override string ToString()
@@ -140,49 +57,15 @@ namespace Microsoft.Docs.Build
                 log_item_type = "user",
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
                 property_path = PropertyPath,
+                ms_author = MsAuthor,
                 date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
-            });
+            }).Replace("\"ms_author\"", "\"ms.author\"");
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
         {
-            return new DocfxException(isError ? WithLevel(ErrorLevel.Error) : this, innerException);
-        }
-
-        private class EqualityComparer : IEqualityComparer<Error>
-        {
-            public bool Equals(Error? x, Error? y)
-            {
-                if (ReferenceEquals(x, y))
-                {
-                    return true;
-                }
-
-                if (x is null || y is null)
-                {
-                    return false;
-                }
-
-                return x.Level == y.Level &&
-                       x.Code == y.Code &&
-                       x.Message == y.Message &&
-                       x.PropertyPath == y.PropertyPath &&
-                       x.Source == y.Source &&
-                       x.OriginalPath == y.OriginalPath &&
-                       x.PullRequestOnly == y.PullRequestOnly;
-            }
-
-            public int GetHashCode(Error obj)
-            {
-                return HashCode.Combine(
-                    obj.Level,
-                    obj.Code,
-                    obj.Message,
-                    obj.PropertyPath,
-                    obj.Source,
-                    obj.OriginalPath,
-                    obj.PullRequestOnly);
-            }
+            var error = isError && Level != ErrorLevel.Error ? this with { Level = ErrorLevel.Error } : this;
+            return new DocfxException(error, innerException);
         }
     }
 }

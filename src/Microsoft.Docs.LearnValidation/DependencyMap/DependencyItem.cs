@@ -9,13 +9,13 @@ namespace Microsoft.Docs.LearnValidation
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class DependencyItem
     {
-        public string FromFilePath { get; set; }
+        public string FromFilePath { get; set; } = "";
 
-        public string ToFilePath { get; set; }
+        public string ToFilePath { get; set; } = "";
 
-        public string DependencyType { get; set; }
+        public string DependencyType { get; set; } = "";
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Version { get; set; }
+        public string? Version { get; set; }
     }
 }

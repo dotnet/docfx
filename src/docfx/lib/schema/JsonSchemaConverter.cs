@@ -21,6 +21,7 @@ namespace Microsoft.Docs.Build
 
             var result = new JsonSchema();
             serializer.Populate(reader, result);
+            result.SchemaResolver = JsonSchemaResolver.Current;
             return result;
         }
 

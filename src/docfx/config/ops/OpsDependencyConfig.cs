@@ -10,14 +10,14 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsDependencyConfig
     {
-        public PathString PathToRoot { get; private set; }
+        public PathString PathToRoot { get; init; }
 
-        public string Url { get; private set; } = "";
+        public string Url { get; init; } = "";
 
-        public string Branch { get; private set; } = "main";
+        public string Branch { get; init; } = "main";
 
-        public Dictionary<string, string> BranchMapping { get; private set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> BranchMapping { get; init; } = new Dictionary<string, string>();
 
-        public bool IncludeInBuild { get; private set; }
+        public bool IncludeInBuild { get; init; }
     }
 }

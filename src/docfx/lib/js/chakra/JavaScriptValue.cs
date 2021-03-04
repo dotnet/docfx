@@ -18,7 +18,7 @@ namespace ChakraHost.Hosting
         /// <summary>
         /// The reference.
         /// </summary>
-        private readonly IntPtr reference;
+        private readonly IntPtr _reference;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptValue"/> struct.
@@ -26,7 +26,7 @@ namespace ChakraHost.Hosting
         /// <param name="reference">The reference.</param>
         private JavaScriptValue(IntPtr reference)
         {
-            this.reference = reference;
+            _reference = reference;
         }
 
         /// <summary>
@@ -47,8 +47,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValue value;
-                Native.ThrowIfError(Native.JsGetUndefinedValue(out value));
+                Native.ThrowIfError(Native.JsGetUndefinedValue(out var value));
                 return value;
             }
         }
@@ -63,8 +62,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValue value;
-                Native.ThrowIfError(Native.JsGetNullValue(out value));
+                Native.ThrowIfError(Native.JsGetNullValue(out var value));
                 return value;
             }
         }
@@ -79,8 +77,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValue value;
-                Native.ThrowIfError(Native.JsGetTrueValue(out value));
+                Native.ThrowIfError(Native.JsGetTrueValue(out var value));
                 return value;
             }
         }
@@ -95,8 +92,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValue value;
-                Native.ThrowIfError(Native.JsGetFalseValue(out value));
+                Native.ThrowIfError(Native.JsGetFalseValue(out var value));
                 return value;
             }
         }
@@ -111,8 +107,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValue value;
-                Native.ThrowIfError(Native.JsGetGlobalObject(out value));
+                Native.ThrowIfError(Native.JsGetGlobalObject(out var value));
                 return value;
             }
         }
@@ -122,7 +117,7 @@ namespace ChakraHost.Hosting
         /// </summary>
         public bool IsValid
         {
-            get { return reference != IntPtr.Zero; }
+            get { return _reference != IntPtr.Zero; }
         }
 
         /// <summary>
@@ -136,8 +131,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValueType type;
-                Native.ThrowIfError(Native.JsGetValueType(this, out type));
+                Native.ThrowIfError(Native.JsGetValueType(this, out var type));
                 return type;
             }
         }
@@ -153,8 +147,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                int length;
-                Native.ThrowIfError(Native.JsGetStringLength(this, out length));
+                Native.ThrowIfError(Native.JsGetStringLength(this, out var length));
                 return length;
             }
         }
@@ -169,8 +162,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptValue prototypeReference;
-                Native.ThrowIfError(Native.JsGetPrototype(this, out prototypeReference));
+                Native.ThrowIfError(Native.JsGetPrototype(this, out var prototypeReference));
                 return prototypeReference;
             }
 
@@ -190,8 +182,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                bool allowed;
-                Native.ThrowIfError(Native.JsGetExtensionAllowed(this, out allowed));
+                Native.ThrowIfError(Native.JsGetExtensionAllowed(this, out var allowed));
                 return allowed;
             }
         }
@@ -206,8 +197,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                bool hasExternalData;
-                Native.ThrowIfError(Native.JsHasExternalData(this, out hasExternalData));
+                Native.ThrowIfError(Native.JsHasExternalData(this, out var hasExternalData));
                 return hasExternalData;
             }
         }
@@ -222,8 +212,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                IntPtr data;
-                Native.ThrowIfError(Native.JsGetExternalData(this, out data));
+                Native.ThrowIfError(Native.JsGetExternalData(this, out var data));
                 return data;
             }
 
@@ -243,8 +232,7 @@ namespace ChakraHost.Hosting
         /// <returns>The converted value.</returns>
         public static JavaScriptValue FromBoolean(bool value)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsBoolToBoolean(value, out reference));
+            Native.ThrowIfError(Native.JsBoolToBoolean(value, out var reference));
             return reference;
         }
 
@@ -258,8 +246,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new <c>Number</c> value.</returns>
         public static JavaScriptValue FromDouble(double value)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsDoubleToNumber(value, out reference));
+            Native.ThrowIfError(Native.JsDoubleToNumber(value, out var reference));
             return reference;
         }
 
@@ -273,8 +260,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new <c>Number</c> value.</returns>
         public static JavaScriptValue FromInt32(int value)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsIntToNumber(value, out reference));
+            Native.ThrowIfError(Native.JsIntToNumber(value, out var reference));
             return reference;
         }
 
@@ -288,8 +274,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new <c>String</c> value.</returns>
         public static JavaScriptValue FromString(string value)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsPointerToString(value, new UIntPtr((uint)value.Length), out reference));
+            Native.ThrowIfError(Native.JsPointerToString(value, new UIntPtr((uint)value.Length), out var reference));
             return reference;
         }
 
@@ -302,8 +287,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new <c>Object</c>.</returns>
         public static JavaScriptValue CreateObject()
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateObject(out reference));
+            Native.ThrowIfError(Native.JsCreateObject(out var reference));
             return reference;
         }
 
@@ -320,8 +304,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new <c>Object</c>.</returns>
         public static JavaScriptValue CreateExternalObject(IntPtr data, JavaScriptObjectFinalizeCallback finalizer)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateExternalObject(data, finalizer, out reference));
+            Native.ThrowIfError(Native.JsCreateExternalObject(data, finalizer, out var reference));
             return reference;
         }
 
@@ -335,8 +318,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new function object.</returns>
         public static JavaScriptValue CreateFunction(JavaScriptNativeFunction function)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateFunction(function, IntPtr.Zero, out reference));
+            Native.ThrowIfError(Native.JsCreateFunction(function, IntPtr.Zero, out var reference));
             return reference;
         }
 
@@ -351,8 +333,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new function object.</returns>
         public static JavaScriptValue CreateFunction(JavaScriptNativeFunction function, IntPtr callbackData)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateFunction(function, callbackData, out reference));
+            Native.ThrowIfError(Native.JsCreateFunction(function, callbackData, out var reference));
             return reference;
         }
 
@@ -366,8 +347,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new array object.</returns>
         public static JavaScriptValue CreateArray(uint length)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateArray(length, out reference));
+            Native.ThrowIfError(Native.JsCreateArray(length, out var reference));
             return reference;
         }
 
@@ -381,8 +361,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new error object.</returns>
         public static JavaScriptValue CreateError(JavaScriptValue message)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateError(message, out reference));
+            Native.ThrowIfError(Native.JsCreateError(message, out var reference));
             return reference;
         }
 
@@ -396,8 +375,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new error object.</returns>
         public static JavaScriptValue CreateRangeError(JavaScriptValue message)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateRangeError(message, out reference));
+            Native.ThrowIfError(Native.JsCreateRangeError(message, out var reference));
             return reference;
         }
 
@@ -411,8 +389,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new error object.</returns>
         public static JavaScriptValue CreateReferenceError(JavaScriptValue message)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateReferenceError(message, out reference));
+            Native.ThrowIfError(Native.JsCreateReferenceError(message, out var reference));
             return reference;
         }
 
@@ -426,8 +403,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new error object.</returns>
         public static JavaScriptValue CreateSyntaxError(JavaScriptValue message)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateSyntaxError(message, out reference));
+            Native.ThrowIfError(Native.JsCreateSyntaxError(message, out var reference));
             return reference;
         }
 
@@ -441,8 +417,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new error object.</returns>
         public static JavaScriptValue CreateTypeError(JavaScriptValue message)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateTypeError(message, out reference));
+            Native.ThrowIfError(Native.JsCreateTypeError(message, out var reference));
             return reference;
         }
 
@@ -456,8 +431,7 @@ namespace ChakraHost.Hosting
         /// <returns>The new error object.</returns>
         public static JavaScriptValue CreateUriError(JavaScriptValue message)
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsCreateURIError(message, out reference));
+            Native.ThrowIfError(Native.JsCreateURIError(message, out var reference));
             return reference;
         }
 
@@ -472,8 +446,7 @@ namespace ChakraHost.Hosting
         /// <returns>The object's new reference count.</returns>
         public uint AddRef()
         {
-            uint count;
-            Native.ThrowIfError(Native.JsAddRef(this, out count));
+            Native.ThrowIfError(Native.JsAddRef(this, out var count));
             return count;
         }
 
@@ -486,8 +459,7 @@ namespace ChakraHost.Hosting
         /// <returns>The object's new reference count.</returns>
         public uint Release()
         {
-            uint count;
-            Native.ThrowIfError(Native.JsRelease(this, out count));
+            Native.ThrowIfError(Native.JsRelease(this, out var count));
             return count;
         }
 
@@ -500,8 +472,7 @@ namespace ChakraHost.Hosting
         /// <returns>The converted value.</returns>
         public bool ToBoolean()
         {
-            bool value;
-            Native.ThrowIfError(Native.JsBooleanToBool(this, out value));
+            Native.ThrowIfError(Native.JsBooleanToBool(this, out var value));
             return value;
         }
 
@@ -520,8 +491,7 @@ namespace ChakraHost.Hosting
         /// <returns>The <c>double</c> value.</returns>
         public double ToDouble()
         {
-            double value;
-            Native.ThrowIfError(Native.JsNumberToDouble(this, out value));
+            Native.ThrowIfError(Native.JsNumberToDouble(this, out var value));
             return value;
         }
 
@@ -540,8 +510,7 @@ namespace ChakraHost.Hosting
         /// <returns>The <c>int</c> value.</returns>
         public int ToInt32()
         {
-            int value;
-            Native.ThrowIfError(Native.JsNumberToInt(this, out value));
+            Native.ThrowIfError(Native.JsNumberToInt(this, out var value));
             return value;
         }
 
@@ -560,9 +529,7 @@ namespace ChakraHost.Hosting
         /// <returns>The string.</returns>
         public new string ToString()
         {
-            IntPtr buffer;
-            UIntPtr length;
-            Native.ThrowIfError(Native.JsStringToPointer(this, out buffer, out length));
+            Native.ThrowIfError(Native.JsStringToPointer(this, out var buffer, out var length));
             return Marshal.PtrToStringUni(buffer, (int)length);
         }
 
@@ -575,8 +542,7 @@ namespace ChakraHost.Hosting
         /// <returns>The converted value.</returns>
         public JavaScriptValue ConvertToBoolean()
         {
-            JavaScriptValue booleanReference;
-            Native.ThrowIfError(Native.JsConvertValueToBoolean(this, out booleanReference));
+            Native.ThrowIfError(Native.JsConvertValueToBoolean(this, out var booleanReference));
             return booleanReference;
         }
 
@@ -589,8 +555,7 @@ namespace ChakraHost.Hosting
         /// <returns>The converted value.</returns>
         public JavaScriptValue ConvertToNumber()
         {
-            JavaScriptValue numberReference;
-            Native.ThrowIfError(Native.JsConvertValueToNumber(this, out numberReference));
+            Native.ThrowIfError(Native.JsConvertValueToNumber(this, out var numberReference));
             return numberReference;
         }
 
@@ -603,8 +568,7 @@ namespace ChakraHost.Hosting
         /// <returns>The converted value.</returns>
         public JavaScriptValue ConvertToString()
         {
-            JavaScriptValue stringReference;
-            Native.ThrowIfError(Native.JsConvertValueToString(this, out stringReference));
+            Native.ThrowIfError(Native.JsConvertValueToString(this, out var stringReference));
             return stringReference;
         }
 
@@ -617,8 +581,7 @@ namespace ChakraHost.Hosting
         /// <returns>The converted value.</returns>
         public JavaScriptValue ConvertToObject()
         {
-            JavaScriptValue objectReference;
-            Native.ThrowIfError(Native.JsConvertValueToObject(this, out objectReference));
+            Native.ThrowIfError(Native.JsConvertValueToObject(this, out var objectReference));
             return objectReference;
         }
 
@@ -643,8 +606,7 @@ namespace ChakraHost.Hosting
         /// <returns>The property descriptor.</returns>
         public JavaScriptValue GetOwnPropertyDescriptor(JavaScriptPropertyId propertyId)
         {
-            JavaScriptValue descriptorReference;
-            Native.ThrowIfError(Native.JsGetOwnPropertyDescriptor(this, propertyId, out descriptorReference));
+            Native.ThrowIfError(Native.JsGetOwnPropertyDescriptor(this, propertyId, out var descriptorReference));
             return descriptorReference;
         }
 
@@ -657,8 +619,7 @@ namespace ChakraHost.Hosting
         /// <returns>An array of property names.</returns>
         public JavaScriptValue GetOwnPropertyNames()
         {
-            JavaScriptValue propertyNamesReference;
-            Native.ThrowIfError(Native.JsGetOwnPropertyNames(this, out propertyNamesReference));
+            Native.ThrowIfError(Native.JsGetOwnPropertyNames(this, out var propertyNamesReference));
             return propertyNamesReference;
         }
 
@@ -672,8 +633,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the object (or a prototype) has the property.</returns>
         public bool HasProperty(JavaScriptPropertyId propertyId)
         {
-            bool hasProperty;
-            Native.ThrowIfError(Native.JsHasProperty(this, propertyId, out hasProperty));
+            Native.ThrowIfError(Native.JsHasProperty(this, propertyId, out var hasProperty));
             return hasProperty;
         }
 
@@ -687,8 +647,7 @@ namespace ChakraHost.Hosting
         /// <returns>The value of the property.</returns>
         public JavaScriptValue GetProperty(JavaScriptPropertyId id)
         {
-            JavaScriptValue propertyReference;
-            Native.ThrowIfError(Native.JsGetProperty(this, id, out propertyReference));
+            Native.ThrowIfError(Native.JsGetProperty(this, id, out var propertyReference));
             return propertyReference;
         }
 
@@ -717,8 +676,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the property was deleted.</returns>
         public JavaScriptValue DeleteProperty(JavaScriptPropertyId propertyId, bool useStrictRules)
         {
-            JavaScriptValue returnReference;
-            Native.ThrowIfError(Native.JsDeleteProperty(this, propertyId, useStrictRules, out returnReference));
+            Native.ThrowIfError(Native.JsDeleteProperty(this, propertyId, useStrictRules, out var returnReference));
             return returnReference;
         }
 
@@ -733,8 +691,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the property was defined.</returns>
         public bool DefineProperty(JavaScriptPropertyId propertyId, JavaScriptValue propertyDescriptor)
         {
-            bool result;
-            Native.ThrowIfError(Native.JsDefineProperty(this, propertyId, propertyDescriptor, out result));
+            Native.ThrowIfError(Native.JsDefineProperty(this, propertyId, propertyDescriptor, out var result));
             return result;
         }
 
@@ -748,8 +705,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the object has an value at the specified index.</returns>
         public bool HasIndexedProperty(JavaScriptValue index)
         {
-            bool hasProperty;
-            Native.ThrowIfError(Native.JsHasIndexedProperty(this, index, out hasProperty));
+            Native.ThrowIfError(Native.JsHasIndexedProperty(this, index, out var hasProperty));
             return hasProperty;
         }
 
@@ -763,8 +719,7 @@ namespace ChakraHost.Hosting
         /// <returns>The retrieved value.</returns>
         public JavaScriptValue GetIndexedProperty(JavaScriptValue index)
         {
-            JavaScriptValue propertyReference;
-            Native.ThrowIfError(Native.JsGetIndexedProperty(this, index, out propertyReference));
+            Native.ThrowIfError(Native.JsGetIndexedProperty(this, index, out var propertyReference));
             return propertyReference;
         }
 
@@ -808,8 +763,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the values are equal.</returns>
         public bool Equals(JavaScriptValue other)
         {
-            bool equals;
-            Native.ThrowIfError(Native.JsEquals(this, other, out equals));
+            Native.ThrowIfError(Native.JsEquals(this, other, out var equals));
             return equals;
         }
 
@@ -828,8 +782,7 @@ namespace ChakraHost.Hosting
         /// <returns>Whether the values are strictly equal.</returns>
         public bool StrictEquals(JavaScriptValue other)
         {
-            bool equals;
-            Native.ThrowIfError(Native.JsStrictEquals(this, other, out equals));
+            Native.ThrowIfError(Native.JsStrictEquals(this, other, out var equals));
             return equals;
         }
 
@@ -867,14 +820,12 @@ namespace ChakraHost.Hosting
         /// <returns>The <c>Value</c> returned from the function invocation.</returns>
         public JavaScriptValue ConstructObject(params JavaScriptValue[] arguments)
         {
-            JavaScriptValue returnReference;
-
             if (arguments.Length > ushort.MaxValue)
             {
                 throw new ArgumentOutOfRangeException("arguments");
             }
 
-            Native.ThrowIfError(Native.JsConstructObject(this, arguments, (ushort)arguments.Length, out returnReference));
+            Native.ThrowIfError(Native.JsConstructObject(this, arguments, (ushort)arguments.Length, out var returnReference));
             return returnReference;
         }
     }

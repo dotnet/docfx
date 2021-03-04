@@ -7,7 +7,7 @@ namespace Microsoft.Docs.LearnValidation
 {
     public static class Utility
     {
-        private static readonly Regex s_sshGitUrlRegex = new Regex(@"git@(?<host>.+?):(?<userName>.+?)\/(?<repoName>.+)\.git", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_sshGitUrlRegex = new(@"git@(?<host>.+?):(?<userName>.+?)\/(?<repoName>.+)\.git", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Transform SSH URL to Https URL

@@ -13,9 +13,8 @@ namespace Microsoft.Docs.Build
     {
         private readonly Input _input;
         private readonly bool _dryRun;
-        private readonly ActionBlock<Action> _queue = new ActionBlock<Action>(
-            action => action(),
-            new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
+        private readonly ActionBlock<Action> _queue = new(
+            action => action(), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
 
         public string OutputPath { get; }
 
@@ -36,7 +35,7 @@ namespace Microsoft.Docs.Build
 
             _queue.Post(() =>
             {
-                using var writer = new StreamWriter(GetDestinationPath(destRelativePath));
+                using var writer = new StreamWriter(EnsureDestinationPath(destRelativePath));
                 JsonUtility.Serialize(writer, graph);
             });
         }
@@ -53,7 +52,7 @@ namespace Microsoft.Docs.Build
             {
                 _queue.Post(() =>
                 {
-                    File.WriteAllText(GetDestinationPath(destRelativePath), text);
+                    File.WriteAllText(EnsureDestinationPath(destRelativePath), text);
                 });
             }
         }
@@ -70,10 +69,10 @@ namespace Microsoft.Docs.Build
             {
                 _queue.Post(() =>
                 {
-                    File.WriteAllLines(GetDestinationPath(destRelativePaths[0]), lines);
+                    File.WriteAllLines(EnsureDestinationPath(destRelativePaths[0]), lines);
                     for (var i = 1; i < destRelativePaths.Length; i++)
                     {
-                        File.Copy(GetDestinationPath(destRelativePaths[0]), GetDestinationPath(destRelativePaths[i]), overwrite: true);
+                        File.Copy(EnsureDestinationPath(destRelativePaths[0]), EnsureDestinationPath(destRelativePaths[i]), overwrite: true);
                     }
                 });
             }
@@ -89,7 +88,7 @@ namespace Microsoft.Docs.Build
 
             _queue.Post(() =>
             {
-                var targetPhysicalPath = GetDestinationPath(destRelativePath);
+                var targetPhysicalPath = EnsureDestinationPath(destRelativePath);
                 if (_input.TryGetPhysicalPath(file) is PathString sourcePhysicalPath)
                 {
                     File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
@@ -113,7 +112,7 @@ namespace Microsoft.Docs.Build
 
             _queue.Post(() =>
             {
-                var targetPhysicalPath = GetDestinationPath(destRelativePath);
+                var targetPhysicalPath = EnsureDestinationPath(destRelativePath);
                 var sourcePhysicalPath = package.TryGetPhysicalPath(sourcePath);
                 if (sourcePhysicalPath != null)
                 {
@@ -134,13 +133,13 @@ namespace Microsoft.Docs.Build
             _queue.Completion.Wait();
         }
 
-        private string GetDestinationPath(string destRelativePath)
+        private string EnsureDestinationPath(string destRelativePath)
         {
             Debug.Assert(!Path.IsPathRooted(destRelativePath));
 
             var destinationPath = Path.Combine(OutputPath, destRelativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destinationPath)));
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destinationPath)) ?? ".");
 
             return destinationPath;
         }

@@ -11,8 +11,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     public class ZoneExtension : ITripleColonExtensionInfo
     {
-        private static readonly Regex pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
-        private static readonly Regex pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
+        private static readonly Regex s_pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
+        private static readonly Regex s_pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
 
         public string Name => "zone";
 
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         target = value;
                         break;
                     case "pivot":
-                        if (!pivotRegex.IsMatch(value))
+                        if (!s_pivotRegex.IsMatch(value))
                         {
                             logError($"Invalid pivot \"{value}\". Pivot must be a comma-delimited list of pivot names. Pivot names must be lower-case and contain only letters, numbers or dashes.");
                             return false;
@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (string.IsNullOrEmpty(target) && string.IsNullOrEmpty(pivot))
             {
-                logError("Either target or privot must be specified.");
+                logError("Either target or pivot must be specified.");
                 return false;
             }
             if (target == "pdf" && !string.IsNullOrEmpty(pivot))
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (!string.IsNullOrEmpty(pivot))
             {
                 htmlAttributes.AddClass("has-pivot");
-                htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(pivotReplaceCommasRegex, " "));
+                htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(s_pivotReplaceCommasRegex, " "));
             }
             return true;
         }

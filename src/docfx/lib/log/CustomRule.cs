@@ -8,40 +8,35 @@ using Newtonsoft.Json;
 namespace Microsoft.Docs.Build
 {
     [JsonConverter(typeof(ShortHandConverter))]
-    internal class CustomRule
+    internal record CustomRule
     {
-        public ErrorLevel? Severity { get; private set; }
+        public ErrorLevel? Severity { get; init; }
 
-        public string? Code { get; private set; }
+        public string? Code { get; init; }
 
-        public string? AdditionalMessage { get; private set; }
+        public string? AdditionalMessage { get; init; }
 
-        public string? Message { get; private set; }
+        public string? Message { get; init; }
 
-        public bool CanonicalVersionOnly { get; private set; }
+        public string? PropertyPath { get; init; }
 
-        public bool PullRequestOnly { get; private set; }
+        public bool CanonicalVersionOnly { get; init; }
+
+        public bool PullRequestOnly { get; init; }
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Exclude { get; private set; } = Array.Empty<string>();
+        public string[] Exclude { get; init; } = Array.Empty<string>();
 
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? ContentTypes { get; private set; }
+        public string[]? ContentTypes { get; init; }
+
+        public bool Disabled { get; init; }
 
         private Func<string, bool>? _globMatcherCache;
 
         public CustomRule() { }
 
         public CustomRule(ErrorLevel? severity) => Severity = severity;
-
-        public CustomRule(ErrorLevel? severity, string? code, string? additionalMessage, bool canonicalVersionOnly, bool pullRequestOnly)
-        {
-            Severity = severity;
-            Code = code;
-            AdditionalMessage = additionalMessage;
-            CanonicalVersionOnly = canonicalVersionOnly;
-            PullRequestOnly = pullRequestOnly;
-        }
 
         public bool ExcludeMatches(string file)
         {

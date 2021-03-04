@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     public class TabGroupAggregator : BlockAggregator<HeadingBlock>
     {
-        private static readonly Regex HrefRegex = new Regex(
+        private static readonly Regex s_hrefRegex = new Regex(
             @"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
 
         protected override bool AggregateCore(HeadingBlock headBlock, BlockAggregateContext context)
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         pair = temp;
                         list.Clear();
                         break;
-                    case ThematicBreakBlock hr:
+                    case ThematicBreakBlock:
                         offset++;
                         list.Add(block);
                         goto case null;
@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 Line = pair.Item3.Line,
                 Span = pair.Item3.Span,
             };
-            var content = new TabContentBlock(blocks);
+            var content = new TabContentBlock(blocks, string.IsNullOrEmpty(pair.Item2) ? pair.Item1 : pair.Item1 + "/" + pair.Item2);
 
             return new TabItemBlock(
                 pair.Item1,
@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var child = block.Inline.FirstChild;
             if (child != null && child.NextSibling == null && child is LinkInline link)
             {
-                var m = HrefRegex.Match(link.Url);
+                var m = s_hrefRegex.Match(link.Url);
                 if (m.Success)
                 {
                     return Tuple.Create(m.Groups["id"].Value, m.Groups["condition"].Value, link);

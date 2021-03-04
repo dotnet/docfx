@@ -9,14 +9,14 @@ namespace Microsoft.Docs.Build
     /// <summary>
     /// Represents a serializable machine independent file identifier.
     /// </summary>
-    internal class FilePath : IEquatable<FilePath>, IComparable<FilePath>
+    internal record FilePath : IComparable<FilePath>
     {
         private readonly int _hashCode;
 
         /// <summary>
         /// Gets the file path relative to the main docset.
         /// </summary>
-        public PathString Path { get; }
+        public PathString Path { get; init; }
 
         /// <summary>
         /// Gets the file format.
@@ -98,11 +98,6 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Generated, path, default, default, default);
         }
 
-        public FilePath WithPath(PathString path)
-        {
-            return path == Path ? this : new FilePath(Origin, path, DependencyName, IsGitCommit, RedirectionMonikers);
-        }
-
         /// <summary>
         /// Gets a value indicating whether it's an experimental content
         /// </summary>
@@ -110,10 +105,6 @@ namespace Microsoft.Docs.Build
         {
             return System.IO.Path.GetFileNameWithoutExtension(Path).EndsWith(".experimental", PathUtility.PathComparison);
         }
-
-        public static bool operator ==(FilePath? a, FilePath? b) => Equals(a, b);
-
-        public static bool operator !=(FilePath? a, FilePath? b) => !Equals(a, b);
 
         public override string ToString()
         {
@@ -147,28 +138,9 @@ namespace Microsoft.Docs.Build
             return tags.Length > 0 ? $"{Path} {tags}" : $"{Path}";
         }
 
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as FilePath);
-        }
-
         public override int GetHashCode()
         {
             return _hashCode;
-        }
-
-        public bool Equals(FilePath? other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return Path.Equals(other.Path) &&
-                   DependencyName.Equals(other.DependencyName) &&
-                   other.Origin == Origin &&
-                   IsGitCommit == other.IsGitCommit &&
-                   RedirectionMonikers == other.RedirectionMonikers;
         }
 
         public int CompareTo(FilePath? other)

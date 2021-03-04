@@ -122,7 +122,7 @@ inputs:
           {
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
-            "exclusions": [],
+            "contentTypes": ["conceptual"],
             "severity": "WARNING",
             "code": "h1-missing"
           }
@@ -142,6 +142,7 @@ outputs:
     }
 ---
 # Json schema docset unique: the attribute value must be unique within docset
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -189,6 +190,7 @@ outputs:
   b.json:
 ---
 # Json schema docset unique: global metadata and file metadata
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -211,6 +213,7 @@ outputs:
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"docfx.yml","line":3,"column":16}
 ---
 # Json schema docset unique: monikers set on file-level
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json

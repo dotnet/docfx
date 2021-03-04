@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Table of contents
         /// </summary>
-        TableOfContents,
+        Toc,
 
         /// <summary>
         /// Static resources copied to output

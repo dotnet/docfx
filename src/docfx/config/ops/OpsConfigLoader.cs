@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ECMA2Yaml;
@@ -11,33 +12,39 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, string workingDirectory)
+        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, Package package, Repository? repository)
         {
-            var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
-            if (!File.Exists(fullPath))
+            if (repository is null)
             {
                 return default;
             }
 
-            var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
-            return JsonUtility.Deserialize<OpsConfig>(errors, File.ReadAllText(fullPath), filePath);
+            var opDirRelativeToPackage = Path.GetRelativePath(package.BasePath, repository.Path);
+            var fullPath = new PathString(Path.Combine(package.BasePath, opDirRelativeToPackage, ".openpublishing.publish.config.json"));
+            if (!package.Exists(fullPath))
+            {
+                return default;
+            }
+
+            var filePath = new FilePath(Path.GetRelativePath(package.BasePath, fullPath));
+            return JsonUtility.Deserialize<OpsConfig>(errors, package.ReadString(fullPath), filePath);
         }
 
         public static (string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(
-            ErrorBuilder errors, string docsetPath, Repository? repository)
+            ErrorBuilder errors, Repository? repository, Package package)
         {
             if (repository is null)
             {
                 return (default, default, default);
             }
 
-            var opsConfig = LoadOpsConfig(errors, repository.Path);
+            var opsConfig = LoadOpsConfig(errors, package, repository);
             if (opsConfig is null)
             {
                 return (default, default, default);
             }
 
-            var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
+            var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, package.BasePath));
             return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder);
         }
 
@@ -65,6 +72,7 @@ namespace Microsoft.Docs.Build
             result["editRepositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors;
             result["fallbackRepository"] = dependencies.FirstOrDefault(
                 dep => dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase)).obj;
+            result["redirectionFiles"] = JToken.FromObject(opsConfig.RedirectionFiles);
 
             var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(
                 config => config.BuildSourceFolder.FolderEquals(buildSourceFolder));
@@ -82,7 +90,17 @@ namespace Microsoft.Docs.Build
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
 
-                result["splitTOC"] = JArray.FromObject(docsetConfig.SplitTOC);
+                var splitTOCSet = new HashSet<PathString>(docsetConfig.SplitTOC);
+
+                foreach (var item in opsConfig.SplitTOC)
+                {
+                    if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
+                    {
+                        splitTOCSet.Add(splitTOCRelativeToDocset);
+                    }
+                }
+
+                result["splitTOC"] = JArray.FromObject(splitTOCSet);
             }
 
             var joinTOCPluginConfig = docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>();
@@ -180,12 +198,14 @@ namespace Microsoft.Docs.Build
                     var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
                     var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
                     conceptualToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ConceptualTOCUrl;
-
-                    if (!string.IsNullOrEmpty(config.ReferenceTOCUrl))
-                    {
-                        refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
-                    }
                     conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
+                }
+
+                if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
+                {
+                    var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
+                    var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
+                    refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
                 }
 
                 var item = new JObject();

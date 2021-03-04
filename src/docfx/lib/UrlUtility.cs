@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                 @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };
+        private static readonly char[] s_queryFragmentLeadingChars = new[] { '#', '?' };
 
         /// <summary>
         /// Split href to path, fragment and query
@@ -40,11 +40,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = url.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = url.Substring(fragmentIndex);
+                fragment = url[fragmentIndex..];
                 var queryIndex = url.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex, fragmentIndex - queryIndex);
+                    query = url[queryIndex..fragmentIndex];
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = url.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex);
+                    query = url[queryIndex..];
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -80,16 +80,19 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string? sourceQuery = null, string? sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string? sourceQuery, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
             var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
-            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
-            foreach (var key in sourceQueryParameters.AllKeys)
+            var sourceQueryParameters = sourceQuery is null ? null : HttpUtility.ParseQueryString(sourceQuery);
+            if (sourceQueryParameters != null)
             {
-                targetQueryParameters[key] = sourceQueryParameters[key];
+                foreach (var key in sourceQueryParameters.AllKeys)
+                {
+                    targetQueryParameters[key] = sourceQueryParameters[key];
+                }
             }
 
             var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : "";
@@ -304,7 +307,7 @@ namespace Microsoft.Docs.Build
 
             var firstSegment = path.Substring(0, slashIndex);
             return LocalizationUtility.IsValidLocale(firstSegment)
-                ? $"{path.Substring(firstSegment.Length)}"
+                ? $"{path[firstSegment.Length..]}"
                 : $"/{path}";
         }
 

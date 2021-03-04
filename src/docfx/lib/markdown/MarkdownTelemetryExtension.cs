@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
             return builder.Use(document =>
             {
                 var file = ((SourceInfo)InclusionContext.File).File;
+                var rootFile = ((SourceInfo)InclusionContext.RootFile).File;
                 var elementCount = new Dictionary<string, int>();
 
                 document.Visit(node =>
@@ -28,7 +29,7 @@ namespace Microsoft.Docs.Build
                     return false;
                 });
 
-                Telemetry.TrackMarkdownElement(file, documentProvider.GetContentType(file), documentProvider.GetMime(file), elementCount);
+                Telemetry.TrackMarkdownElement(file, documentProvider.GetContentType(rootFile), documentProvider.GetMime(rootFile), elementCount);
             });
         }
 
@@ -36,15 +37,15 @@ namespace Microsoft.Docs.Build
         {
             return node switch
             {
-                ThematicBreakBlock thematicBreak => "ThematicBreak",
+                ThematicBreakBlock => "ThematicBreak",
                 HeadingBlock headingBlock => headingBlock.HeaderChar == '#' ? "ATXHeading" : "SetextHeading",
-                FencedCodeBlock fencedCodeBlock => "FencedCode",
-                YamlFrontMatterBlock yamlFrontMatterBlock => "YamlHeader",
-                CodeBlock codeBlock => "IndentedCode",
-                HtmlBlock htmlBlock => "HTML",
-                LinkReferenceDefinition linkReferenceDefinition => "LinkReferenceDefinition",
-                ParagraphBlock paragraphBlock => "Paragraph",
-                BlankLineBlock blankLineBlock => "BlankLine",
+                FencedCodeBlock => "FencedCode",
+                YamlFrontMatterBlock => "YamlHeader",
+                CodeBlock => "IndentedCode",
+                HtmlBlock => "HTML",
+                LinkReferenceDefinition => "LinkReferenceDefinition",
+                ParagraphBlock => "Paragraph",
+                BlankLineBlock => "BlankLine",
                 QuoteSectionNoteBlock quoteSectionNoteBlock =>
                     quoteSectionNoteBlock.QuoteType switch
                     {
@@ -54,29 +55,29 @@ namespace Microsoft.Docs.Build
                         QuoteSectionNoteType.MarkdownQuote => "BlockQuote",
                         _ => quoteSectionNoteBlock.QuoteType.ToString(),
                     },
-                ListBlock listBlock => "List",
-                CodeSnippet codeSnippet => "CodeSnippet",
-                Table table => "Table",
-                TabGroupBlock tabGroupBlock => "TabbedContent",
-                MonikerRangeBlock monikerRangeBlock => "MonikerRange",
-                RowBlock rowBlock => "Row",
-                NestedColumnBlock nestedColumnBlock => "NestedColumn",
+                ListBlock => "List",
+                CodeSnippet => "CodeSnippet",
+                Table => "Table",
+                TabGroupBlock => "TabbedContent",
+                MonikerRangeBlock => "MonikerRange",
+                RowBlock => "Row",
+                NestedColumnBlock => "NestedColumn",
                 TripleColonBlock tripleColonBlock => $"TripleColon{StringUtility.UpperCaseFirstChar(tripleColonBlock.Extension.Name)}",
-                InclusionBlock inclusionBlock => "IncludeFile",
-                InclusionInline inclusionInline => "IncludeFile",
-                EmojiInline emojiInline => "Emoji",
+                InclusionBlock => "IncludeFile",
+                InclusionInline => "IncludeFile",
+                EmojiInline => "Emoji",
                 LiteralInline literalInline => literalInline.IsFirstCharacterEscaped ? "BackslashEscape" : "TextualContent",
-                HtmlEntityInline htmlEntityInline => "HTMLEntity",
-                CodeInline codeInline => "CodeSpan",
+                HtmlEntityInline => "HTMLEntity",
+                CodeInline => "CodeSpan",
                 EmphasisInline emphasisInline => emphasisInline.DelimiterCount == 2 ? "StrongEmphasis" : "Emphasis",
                 LinkInline linkInline when linkInline.IsImage => "Image",
                 LinkInline linkInline when linkInline.IsAutoLink => "Autolink",
-                LinkInline linkInline => "Link",
-                AutolinkInline autolinkInline => "Autolink",
-                HtmlInline htmlInline => "RawHTML",
+                LinkInline => "Link",
+                AutolinkInline => "Autolink",
+                HtmlInline => "RawHTML",
                 LineBreakInline linkBreakInline => linkBreakInline.IsHard ? "HardLineBreak" : "SoftLineBreak",
-                XrefInline xrefInline => "Xref",
-                NolocInline nolocInline => "Noloc",
+                XrefInline => "Xref",
+                NolocInline => "Noloc",
                 _ => node.GetType().Name,
             };
         }

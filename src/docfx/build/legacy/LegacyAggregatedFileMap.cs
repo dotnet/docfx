@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class LegacyAggregatedFileMap
     {
         public static void Convert(
-            Context context,
+            LegacyContext context,
             IEnumerable<(string legacyFilePathRelativeToBaseFolder, LegacyFileMapItem fileMapItem)> items,
             Dictionary<string, List<LegacyDependencyMapItem>> dependencyMap)
         {

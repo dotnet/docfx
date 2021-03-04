@@ -30,8 +30,7 @@ namespace Microsoft.Docs.Build
                         return null;
                     }
 
-                    return properties.FirstOrDefault(p => p.Key == "data-target").Value ??
-                          (properties.Any(p => p.Key == "data-pivot") ? "pivot" : null);
+                    return properties.FirstOrDefault(p => p.Key == "data-target").Value;
                 }
             }
 
@@ -49,6 +48,32 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        public static IReadOnlyCollection<string>? GetZonePivots(this MarkdownObject obj)
+        {
+            foreach (var item in obj.GetPathToRootInclusive())
+            {
+                if (item is TripleColonBlock block && block.Extension is ZoneExtension zone && block.Attributes.TryGetValue("pivot", out var pivot) &&
+                    (!block.Attributes.TryGetValue("target", out var target) || string.Equals(target, "docs", StringComparison.OrdinalIgnoreCase)))
+                {
+                    return pivot.Split(",").Select(x => x.Trim()).ToList();
+                }
+            }
+
+            return default;
+        }
+
+        public static string? GetTabId(this MarkdownObject obj)
+        {
+            foreach (var parent in obj.GetPathToRootInclusive())
+            {
+                if (parent is TabContentBlock content)
+                {
+                    return content.Id;
+                }
+            }
+            return null;
         }
 
         public static IEnumerable<MarkdownObject> GetPathToRootInclusive(this MarkdownObject obj)
@@ -158,8 +183,7 @@ namespace Microsoft.Docs.Build
                     case ContainerInline inline:
                         foreach (var child in inline)
                         {
-                            var replacement = ReplaceCore(child, action) as Inline;
-                            if (replacement is null)
+                            if (ReplaceCore(child, action) is not Inline replacement)
                             {
                                 child.Remove();
                             }
@@ -217,6 +241,9 @@ namespace Microsoft.Docs.Build
                     YamlFrontMatterBlock _ => false,
                     HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
                     LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => true,
+                    LinkInline linkInline when linkInline.IsImage => true,
+                    TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension => true,
+                    LiteralInline literal when !string.IsNullOrWhiteSpace(literal.Content.Text) => true,
                     LeafInline _ => true,
                     _ => false,
                 };
@@ -229,15 +256,12 @@ namespace Microsoft.Docs.Build
 
         public static bool IsInlineImage(this MarkdownObject node, int imageIndex)
         {
-            switch (node)
+            return node switch
             {
-                case Inline inline:
-                    return inline.IsInlineImage();
-                case HtmlBlock htmlBlock:
-                    return htmlBlock.IsInlineImage(imageIndex);
-                default:
-                    return false;
-            }
+                Inline inline => inline.IsInlineImage(),
+                HtmlBlock htmlBlock => htmlBlock.IsInlineImage(imageIndex),
+                _ => false,
+            };
         }
 
         private static bool IsInlineImage(this Inline node)

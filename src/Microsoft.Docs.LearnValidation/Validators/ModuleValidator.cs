@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.TripleCrown.Hierarchy.DataContract.Common;
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
@@ -23,57 +22,27 @@ namespace Microsoft.Docs.LearnValidation
             {
                 var itemValid = true;
                 var module = item as ModuleValidateModel;
-                var result = module.ValidateMetadata();
-                if (!string.IsNullOrEmpty(result))
+
+                // when badge is defined in another module, but that module has error when SDP validating
+                if (module?.Achievement is string achievementUID && !fullItemsDict.ContainsKey(achievementUID))
                 {
                     itemValid = false;
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_MetadataError, file: item.SourceRelativePath, result);
                 }
 
-                if (module.Achievement == null)
-                {
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_NoBadgeBind, file: item.SourceRelativePath);
-                }
-                else if (module.Achievement is string achievementUID)
-                {
-                    if (!fullItemsDict.ContainsKey(achievementUID))
-                    {
-                        itemValid = false;
-                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_BadgeNotFound, file: item.SourceRelativePath, achievementUID);
-                    }
-                    else if (!(fullItemsDict[achievementUID] is AchievementValidateModel achievement) || achievement.Type != AchievementType.Badge)
-                    {
-                        itemValid = false;
-                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_NonSupportedAchievementType, file: item.SourceRelativePath, achievementUID);
-                    }
-                }
-
-                var childrenCantFind = module.Units.Where(u => !fullItemsDict.ContainsKey(u));
-                var childrenNotUnit = module.Units.Except(childrenCantFind).Where(u =>
-                {
-                    if (fullItemsDict[u].Parent != null)
-                    {
-                        itemValid = false;
-                        Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_MultiParents, file: item.SourceRelativePath, fullItemsDict[u].Uid, fullItemsDict[u].Parent?.Uid, module.Uid);
-                    }
-                    else
-                    {
-                        fullItemsDict[u].Parent = module;
-                    }
-                    return !(fullItemsDict[u] is UnitValidateModel);
-                })
-                .Select(c => fullItemsDict[c]).ToList();
-
-                if (childrenCantFind.Any())
+                // module has child unit, but that unit has error when SDP validating
+                var childrenCantFind = module?.Units.Where(u => !fullItemsDict.ContainsKey(u));
+                if (childrenCantFind != null && childrenCantFind.Any())
                 {
                     itemValid = false;
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_ChildrenNotFound, file: item.SourceRelativePath, string.Join(",", childrenCantFind));
                 }
 
-                if (childrenNotUnit.Any())
+                var validUnits = childrenCantFind is null ? module?.Units : module?.Units.Except(childrenCantFind);
+                if (validUnits != null && module != null)
                 {
-                    itemValid = false;
-                    Logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_NonSupportedChildrenType, file: item.SourceRelativePath, string.Join(",", childrenNotUnit.Select(c => c.Uid)));
+                    foreach (var unit in validUnits)
+                    {
+                        fullItemsDict[unit].Parent = module;
+                    }
                 }
 
                 item.IsValid = itemValid;

@@ -19,20 +19,21 @@ using Polly.Extensions.Http;
 
 namespace Microsoft.Docs.Build
 {
-    internal sealed class GitHubAccessor : IDisposable
+    internal sealed class GitHubAccessor
     {
-        private static readonly Uri s_url = new Uri("https://api.github.com/graphql");
+        private static readonly Uri s_url = new("https://api.github.com/graphql");
 
         private readonly HttpClient? _httpClient;
-        private readonly SemaphoreSlim _syncRoot = new SemaphoreSlim(1, 1);
-        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new ConcurrentHashSet<(string owner, string name)>();
+        private readonly HttpClientHandler _httpClientHandler = new() { CheckCertificateRevocationList = true };
+        private readonly SemaphoreSlim _syncRoot = new(1, 1);
+        private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new();
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
 
         private volatile Error? _fatalError;
 
         public GitHubAccessor(Config config)
         {
-            _userCache = new JsonDiskCache<Error, string, GitHubUser>(
+            _userCache = new(
                 AppData.GitHubUserCachePath,
                 TimeSpan.FromHours(config.GithubUserCacheExpirationInHours),
                 StringComparer.OrdinalIgnoreCase,
@@ -40,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.GithubToken))
             {
-                _httpClient = new HttpClient();
+                _httpClient = new HttpClient(_httpClientHandler);
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
             }
@@ -76,12 +77,6 @@ namespace Microsoft.Docs.Build
         public Error[] Save()
         {
             return _userCache.Save();
-        }
-
-        public void Dispose()
-        {
-            _httpClient?.Dispose();
-            _syncRoot.Dispose();
         }
 
         private async Task<(Error?, GitHubUser?)> GetUserByLoginCore(string login)

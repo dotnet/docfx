@@ -40,10 +40,10 @@ namespace Microsoft.Docs.Build
             var documentsToTocs = new Dictionary<string, string[]> { { file, tocs } };
 
             // test multiple reference case
-            Assert.Equal(expectedTocPath, TableOfContentsMap.FindNearestToc(file, tocs, documentsToTocs, _ => _).toc);
+            Assert.Equal(expectedTocPath, TocMap.FindNearestToc(file, tocs, documentsToTocs, _ => _).toc);
 
             // test orphan case
-            Assert.Equal(expectedOrphanTocPath, TableOfContentsMap.FindNearestToc(file, tocs, new Dictionary<string, string[]>(), _ => _).toc);
+            Assert.Equal(expectedOrphanTocPath, TocMap.FindNearestToc(file, tocs, new Dictionary<string, string[]>(), _ => _).toc);
         }
     }
 }

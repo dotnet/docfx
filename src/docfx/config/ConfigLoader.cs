@@ -3,44 +3,34 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using System.IO.Enumeration;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal static class ConfigLoader
     {
-        public static (string docsetPath, string? outputPath)[] FindDocsets(ErrorBuilder errors, string workingDirectory, CommandLineOptions options)
+        public static (string docsetPath, string? outputPath)[] FindDocsets(
+            ErrorBuilder errors, Package package, CommandLineOptions options, Repository? repository)
         {
-            var glob = FindDocsetsGlob(errors, workingDirectory);
+            var glob = FindDocsetsGlob(errors, package, repository);
             if (glob is null)
             {
-                return new[] { (workingDirectory, options.Output) };
+                return new[] { (package.BasePath.Value, options.Output) };
             }
 
-            var files = new FileSystemEnumerable<string>(
-                workingDirectory,
-                (ref FileSystemEntry entry) => entry.ToFullPath(),
-                new EnumerationOptions { RecurseSubdirectories = true })
-            {
-                ShouldRecursePredicate = (ref FileSystemEntry entry) => entry.FileName[0] != '.',
-                ShouldIncludePredicate = (ref FileSystemEntry entry) =>
-                {
-                    return !entry.IsDirectory && (
-                        entry.FileName.Equals("docfx.json", StringComparison.OrdinalIgnoreCase) ||
-                        entry.FileName.Equals("docfx.yml", StringComparison.OrdinalIgnoreCase));
-                },
-            };
+            var files = package.GetFiles(allowedFileNames: new string[] { "docfx.json", "docfx.yml" });
 
             return (
                 from file in files
-                let configPath = Path.GetRelativePath(workingDirectory, file)
-                where glob(configPath)
-                let docsetPath = Path.GetDirectoryName(file)
-                let docsetFolder = Path.GetRelativePath(workingDirectory, docsetPath)
+                where glob(file)
+                let fullPath = package.GetFullFilePath(file)
+                let docsetPath = Path.GetDirectoryName(fullPath)
+                let docsetFolder = Path.GetDirectoryName(file)
                 let outputPath = string.IsNullOrEmpty(options.Output) ? null : Path.Combine(options.Output, docsetFolder)
                 select (docsetPath, outputPath)).Distinct().ToArray();
         }
@@ -49,16 +39,19 @@ namespace Microsoft.Docs.Build
         /// Load the config under <paramref name="docsetPath"/>
         /// </summary>
         public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
-            ErrorBuilder errors, DisposableCollector disposables, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+            ErrorBuilder errors,
+            Repository? repository,
+            string docsetPath,
+            string? outputPath,
+            CommandLineOptions options,
+            FetchOptions fetchOptions,
+            Package package,
+            CredentialProvider? getCredential = null)
         {
-            // load and trace entry repository
-            var repository = Repository.Create(docsetPath);
-            Telemetry.SetRepository(repository?.Url, repository?.Branch);
-
-            var docfxConfig = LoadConfig(errors, docsetPath);
+            var docfxConfig = LoadConfig(errors, package);
             if (docfxConfig is null)
             {
-                throw Errors.Config.ConfigNotFound(docsetPath).ToException();
+                throw Errors.Config.ConfigNotFound(package.BasePath).ToException();
             }
 
             var unionProperties = new string[] { "xref" };
@@ -67,9 +60,9 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
-            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, docsetPath, repository);
+            var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, package);
 
-            var globalConfig = LoadConfig(errors, AppData.Root);
+            var globalConfig = LoadConfig(errors, package, new PathString(AppData.Root));
 
             // Preload
             var preloadConfigObject = new JObject();
@@ -77,19 +70,24 @@ namespace Microsoft.Docs.Build
             var preloadConfig = JsonUtility.ToObject<PreloadConfig>(errors, preloadConfigObject);
 
             // Download dependencies
-            var credentialProvider = preloadConfig.GetCredentialProvider();
-            var opsAccessor = new OpsAccessor(errors, credentialProvider);
+            var credentialProviders = new List<CredentialProvider>();
+            if (getCredential != null)
+            {
+                credentialProviders.Add(getCredential);
+            }
+            credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.GetHttpConfig(url)));
+            var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
+            var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
 
             PackageResolver? packageResolver = default;
             var fallbackDocsetPath = new Lazy<string?>(
                 () => LocalizationUtility.GetFallbackDocsetPath(docsetPath, repository, preloadConfig.FallbackRepository, packageResolver!));
-            var fileResolver = new FileResolver(docsetPath, fallbackDocsetPath, credentialProvider, configAdapter, fetchOptions);
+            var fileResolver = new FileResolver(package, fallbackDocsetPath, credentialHandler, configAdapter, fetchOptions);
 
-            packageResolver = new PackageResolver(docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
-            disposables.Add(packageResolver);
+            packageResolver = new PackageResolver(errors, docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 
-            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig);
+            var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, package);
             var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
 
             // Create full config
@@ -101,9 +99,9 @@ namespace Microsoft.Docs.Build
             return (config, buildOptions, packageResolver, fileResolver, opsAccessor);
         }
 
-        private static JObject? LoadConfig(ErrorBuilder errors, string directory)
+        private static JObject? LoadConfig(ErrorBuilder errors, Package package, PathString directory = default)
         {
-            var config = PathUtility.LoadYamlOrJson<JObject>(errors, directory, "docfx");
+            var config = package.TryLoadYamlOrJson<JObject>(errors, "docfx", directory);
             if (config is null)
             {
                 return null;
@@ -157,9 +155,9 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, string workingDirectory)
+        private static Func<string, bool>? FindDocsetsGlob(ErrorBuilder errors, Package package, Repository? repository)
         {
-            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, workingDirectory);
+            var opsConfig = OpsConfigLoader.LoadOpsConfig(errors, package, repository);
             if (opsConfig != null && opsConfig.DocsetsToPublish.Length > 0)
             {
                 return docsetFolder =>
@@ -174,7 +172,7 @@ namespace Microsoft.Docs.Build
                 };
             }
 
-            var config = PathUtility.LoadYamlOrJson<DocsetsConfig>(errors, workingDirectory, "docsets");
+            var config = package.TryLoadYamlOrJson<DocsetsConfig>(errors, "docsets");
             if (config != null)
             {
                 return GlobUtility.CreateGlobMatcher(config.Docsets, config.Exclude);
@@ -189,11 +187,24 @@ namespace Microsoft.Docs.Build
                 from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
                 let key = entry.Key.ToString()
                 where key.StartsWith("DOCFX_")
-                let configKey = StringUtility.ToCamelCase('_', key.Substring("DOCFX_".Length))
-                let values = entry.Value?.ToString()?.Split(';', StringSplitOptions.RemoveEmptyEntries)
-                where values != null
-                let configValue = values.Length == 1 ? (object)values[0] : values
-                select new JProperty(configKey, configValue));
+                let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
+                let configValue = entry.Value?.ToString()
+                where !string.IsNullOrEmpty(configValue)
+                select new JProperty(configKey, GetJsonValue(configValue)));
+        }
+
+        private static object GetJsonValue(string value)
+        {
+            try
+            {
+                return JObject.Parse(value);
+            }
+            catch (Exception)
+            {
+            }
+
+            var values = value.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            return values.Length == 1 ? values[0] : values;
         }
     }
 }

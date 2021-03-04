@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
     internal static class LegacyDependencyMap
     {
         public static Dictionary<string, List<LegacyDependencyMapItem>> Convert(
-            string docsetPath, Context context, DependencyMap dependencyMap)
+            string docsetPath, LegacyContext context, DependencyMap dependencyMap)
         {
             using (Progress.Start("Convert Legacy Dependency Map"))
             {

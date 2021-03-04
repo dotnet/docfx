@@ -17,5 +17,15 @@ namespace Microsoft.Docs.Build
         /// Uses --depth 1 to fetch git repositories.
         /// </summary>
         DepthOne = 0b0001,
+
+        /// <summary>
+        /// Ignore the package resolved directory not existed error
+        /// </summary>
+        IgnoreDirectoryNonExistedError = 0b0010,
+
+        /// <summary>
+        /// Ignore the branch fallback error when restore the package
+        /// </summary>
+        IgnoreBranchFallbackError = 0b0100,
     }
 }

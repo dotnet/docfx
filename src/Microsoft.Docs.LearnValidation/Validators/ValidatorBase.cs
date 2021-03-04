@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public abstract bool Validate(Dictionary<string, IValidateModel> fullItemsDict);
 
-        protected abstract HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem);
+        protected virtual HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem) => throw new NotImplementedException();
 
         protected virtual void ExtractItems()
         {
@@ -45,13 +46,13 @@ namespace Microsoft.Docs.LearnValidation
             Parallel.For(0, ManifestItems.Count, i =>
             {
                 var manifestItem = ManifestItems[i];
-                var path = Path.Combine(BathPath, manifestItem.Output.MetadataOutput.RelativePath);
+                var path = Path.Combine(BathPath, manifestItem?.Output?.MetadataOutput?.RelativePath ?? "");
                 if (!File.Exists(path))
                 {
-                    path = manifestItem.Output.MetadataOutput.LinkToPath;
+                    path = manifestItem?.Output?.MetadataOutput?.LinkToPath ?? "";
                 }
                 var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
-                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem);
+                var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem ?? new LegacyManifestItem());
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
                 items[i] = (IValidateModel)hierarchyItem;
             });

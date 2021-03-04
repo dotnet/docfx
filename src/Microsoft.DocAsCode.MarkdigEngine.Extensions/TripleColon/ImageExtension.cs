@@ -29,7 +29,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var src = "";
             var alt = "";
             var type = "";
-            var loc_scope = "";
             foreach (var attribute in attributes)
             {
                 var name = attribute.Key;
@@ -43,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         type = value;
                         break;
                     case "loc-scope":
-                        loc_scope = value;
+                        var loc_scope = value;
                         break;
                     case "source":
                         src = value;
@@ -99,15 +98,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             var htmlAttributes = new HtmlAttributes();
 
-            // alt is allowed to be empty for icon type image
-            if (string.IsNullOrEmpty(alt) && currentType == "icon")
-            {
-                htmlAttributes.AddProperty("src", _context.GetLink(src, obj));
-            }
-            else
-            {
-                htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt));
-            }
+            htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt, currentType));
 
             if (currentType == "icon")
             {
@@ -125,14 +116,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (!bool.TryParse(currentBorderStr, out var currentBorder))
             {
-                if (currentType == "icon")
-                {
-                    currentBorder = false;
-                }
-                else
-                {
-                    currentBorder = true;
-                }
+                currentBorder = currentType != "icon";
             }
 
             if (currentBorder)

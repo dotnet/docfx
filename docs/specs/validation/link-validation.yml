@@ -1,0 +1,577 @@
+# Content Validation - image altText duplicated
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextDuplicated",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
+            "code": "image-alt-text-duplicated",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="test alt text":::
+
+    :::image source="pig2.jpg" alt-text="test alt text":::
+
+    :::image source="pig1.jpg" alt-text="unique alt text":::
+
+    :::image type="complex" source="pig1.jpg" alt-text="test alt text1" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    :::image type="complex" source="pig2.jpg" alt-text="test alt text1" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![test alt text2](pig1.jpg)
+    ![test alt text2](pig2.jpg)
+
+    <img src="pig1.jpg" alt="test alt text3"></img>
+    <img src="pig2.jpg" alt="test alt text3"></img>
+  b.md: |
+    ::: zone pivot="netcore-1"
+    ![alt text](pig1.jpg)
+    ![alt text 2](pig2.jpg)
+    ::: zone-end
+    ::: zone pivot="netcore-2"
+    ![alt text](pig2.jpg)
+    ![alt text 3](pig3.jpg)
+    ::: zone-end
+    ::: zone pivot="netcore-1,netcore-3"
+    ![alt text](pig3.jpg)
+    ::: zone-end
+outputs:
+  a.json:
+  b.json:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text1' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":15,"end_line":15,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":16,"end_line":16,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":18,"end_line":18,"column":11,"end_column":19}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'test alt text3' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":19,"end_line":19,"column":11,"end_column":19}
+    {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"b.md","line":10,"end_line":10,"column":1,"end_column":1}
+---
+# Content Validation - image altText duplicated, consider tabbed conceptual
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextDuplicated",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
+            "code": "image-alt-text-duplicated",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  a.md: |
+    # alttext duplicate, null and non-null tabbed conceptual
+    :::image source="pig3.jpg" alt-text="duplicate_alt_text":::
+    # [a2](#tab/win2)
+    :::image source="pig1.jpg" alt-text="duplicate_alt_text":::
+    ![duplicate_alt_text](pig1.jpg)
+    <img src="pig1.jpg" alt="duplicate_alt_text"></img>
+    ---
+
+    # alttext not duplicate
+    # [a](#tab/win)
+    :::image source="pig1.jpg" alt-text="alt_text":::
+    ![alt_text](pig1.jpg)
+    <img src="pig1.jpg" alt="alt_text"></img>
+    # [b](#tab/linux)
+    :::image source="pig2.jpg" alt-text="alt_text":::
+    ![alt_text](pig2.jpg)
+    <img src="pig2.jpg" alt="alt_text"></img>
+    ---
+    
+    # alttext duplicate, parent and child tabbed conceptual
+    # [a3](#tab/win3)
+    :::image source="pig1.jpg" alt-text="duplicate_alt_text_2":::
+    # [ab/a3](#tab/azure/win3)
+    :::image source="pig2.jpg" alt-text="duplicate_alt_text_2":::
+    ![duplicate_alt_text_2](pig2.jpg)
+    <img src="pig2.jpg" alt="duplicate_alt_text_2"></img>
+    ---
+outputs:
+  a.json:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":2,"end_line":2}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":7,"end_line":7}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":8,"end_line":8}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":9,"end_line":9}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":22,"end_line":22}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":27,"end_line":27}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":28,"end_line":28}
+    {"message_severity":"suggestion","code":"image-alt-text-duplicated","message":"Alt text 'duplicate_alt_text_2' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":29,"end_line":29} 
+---
+# Content Validation - image altText duplicated in includes
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    exclude:
+      - b.md
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextDuplicated",
+            "message": "Alt text {0} is duplicated. Within an article, alt text must be unique.",
+            "code": "image-alt-text-duplicated",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    hello
+    ![alt text](pig1.jpg)
+    include b
+    [!include[](b.md)]
+  b.md: |
+    hello
+    ![alt text](pig2.jpg)
+    <img src="pig3.jpg" alt="alt text"></img>
+    :::image type="content" source="pig4.jpg" alt-text="alt text":::
+outputs:
+  a.json:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text' is duplicated. Within an article, alt text must be unique.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(2,1)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(3,11)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":3,"end_line":3,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-alt-text-duplicated","message":"Alt text 'alt text'(a.md(4,1) -> b.md(4,1)) is duplicated. Within an article, alt text must be unique.","file":"b.md","line":4,"end_line":4,"column":1,"end_column":1}
+---
+# Content Validation - image altText missing
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageAltTextMissing",
+            "message": "Missing alternate text for image with link '{0}'. AltText is required for accessibility.",
+            "code": "missing-image-altText",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![](pig3.jpg)
+
+    <img src="pig4.jpg" alt=""></img>
+
+    ![`test alt text quote`](pig1.jpg)
+
+    :::image type="icon" source="pig1.jpg" alt-text="":::
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  .errors.log: |
+    {"message_severity":"error","log_item_type":"user","code":"invalid-image","message":"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"error","log_item_type":"user","code":"invalid-image","message":"alt-text is a required attribute. Please ensure you have specified an alt-text attribute.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"missing-image-altText","message":"Missing alternate text for image with link 'pig3.jpg'. AltText is required for accessibility.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"missing-image-altText","message":"Missing alternate text for image with link 'pig4.jpg'. AltText is required for accessibility.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+---
+# Content Validation - image altText bad length
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextBadLength",
+            "message": "AltText {0} is out of range at {1} characters. AltText must be between {2} and {3} characters.",
+            "code": "image-altText-with-badlength",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"],
+            "minAltTextLength": 10,
+            "maxAltTextLength": 20
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="short":::
+    :::image type="content" source="pig1.jpg" alt-text="longlonglonglonglonglong":::
+
+    :::image type="complex" source="pig1.jpg" alt-text="short" loc-scope="azure"::: 
+    text
+    :::image-end:::
+    :::image type="complex" source="pig1.jpg" alt-text="longlonglonglonglonglong" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![short](pig1.jpg)
+    ![longlonglonglonglonglong](pig1.jpg)
+
+    <img src="pig1.jpg" alt="short"></img>
+    <img src="pig1.jpg" alt="longlonglonglonglonglong"></img>
+outputs:
+  pig1.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":12,"end_line":12,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":11,"end_line":11,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":15,"end_line":15,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":14,"end_line":14,"column":11,"end_column":19}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'short' is out of range at 5 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"image-altText-with-badlength","message":"AltText 'longlonglonglonglonglong' is out of range at 24 characters. AltText must be between 10 and 20 characters.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+---
+# Content Validation - image altText equals file name
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.md: |
+    :::image type="content" source="pig1.jpg" alt-text="pig1":::
+
+    :::image type="complex" source="pig2.jpg" alt-text="pig2" loc-scope="azure"::: 
+    text
+    :::image-end:::
+
+    ![pig3](pig3.jpg)
+    
+    <img src="pig4.jpg" alt="pig4"></img>
+outputs:
+  pig1.jpg:
+  pig2.jpg:
+  pig3.jpg:
+  pig4.jpg:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig1' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig2' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":7,"end_line":7,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"altText-equal-filename","message":"AltText 'pig4' is the same as the image file name. This redundancy adds no value for users of screen readers. For accessibility, add more descriptive altText.","file":"a.md","line":9,"end_line":9,"column":11,"end_column":19}
+---
+# Content Validation - inline image
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "name": "Images",
+            "type": "ImageInline",
+            "message": "Image '{0}' is inline with text.",
+            "code": "image-inline",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.jpg:
+  a.md: |
+    # :::image type="content" source="a.jpg" alt-text="in heading"::: Heading 1
+
+    ## ![in heading 2](a.jpg) Heading 2
+
+    | C1 | C2 |
+    |----|----|
+    | :::image type="content" source="a.jpg" alt-text="in table"::: | In Table |
+
+    [![image in link](a.jpg) in link](a.jpg) <img src="a.jpg" alt="html img"> <span><img src="a.jpg" alt="img in span"></span>
+
+    <p><img src="a.jpg" alt="not inline"></p>
+
+    <p><img src="a.jpg" alt="inline"> This image is inline</p>
+
+    <img src="a.jpg" alt="only html img">
+
+    <div>
+      <p><img src="a.jpg" alt="not inline"></p>
+      <img src="a.jpg" alt="still not inline"/>
+      <p><span><img src="a.jpg" alt="inline"></span> This image is inline</p>
+      <img src="a.jpg" alt="inline"/><img src="a.jpg" alt="inline"/>
+      <p>some text</p>
+    </div>
+outputs:
+  a.json:
+  a.jpg:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":1,"end_line":1,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":3,"end_line":3,"column":4,"end_column":4}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":7,"end_line":7,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":2,"end_column":2}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":52,"end_column":57}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":9,"end_line":9,"column":91,"end_column":96}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":13,"end_line":13,"column":14,"end_column":19}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":20,"end_line":20,"column":22,"end_column":27}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":21,"end_line":21,"column":13,"end_column":18}
+    {"message_severity":"suggestion","code":"image-inline","message":"Image 'a.jpg' is inline with text.","file":"a.md","line":21,"end_line":21,"column":44,"end_column":49}
+---
+# Validate redirected link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "DisallowedLink",
+            "message": "Redirected link '{0}' will be broken in isolated environments. Replace with a relative link.",
+            "code": "redirected-link",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"],
+            "linkTypes": [
+               "aka.ms", 
+               "FWLinks"
+            ]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [external link](https://go.microsoft.com/fwlink/p/?LinkId=389595)
+    <a href="https://go.microsoft.com/fwlink/p/?LinkId=666">inline html link</a>
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=389595' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=666' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":55}
+  file1.json:
+---
+# Validate secure link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "SecureLinks",
+            "message": "Link '{0}' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.",
+            "code": "insecure-link",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"],
+            "domains": [
+              "microsoft.com",
+              "office.com",
+              "msdn.com",
+              "aka.ms",
+              "visualstudio.com",
+              "azure.com",
+              "technet.com"
+            ]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [external link](http://docs.microsoft.com/test)
+    <a href="http://docs.microsoft.com/test">inline html link</a>
+    [external link](http://www.google.com)
+    ![image link](http://technet.com/index-hero.jpg)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://docs.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://docs.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":40}
+    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://technet.com/index-hero.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+  file1.json:
+---
+# Validate html link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "HtmlLinks",
+            "message": "HTML link {0} is not allowed. Use a Markdown link.",
+            "code": "html-link",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [external link](https://aka.ms/az-learn)
+    <a href="http://docs.microsoft.com/test">inline html link</a>
+    ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"html-link","message":"HTML link http://docs.microsoft.com/test is not allowed. Use a Markdown link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":40}
+
+  file1.json:
+---
+# Validate link locales
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "LocalesInLink",
+            "message": "Link '{0}' contains locale code '{1}'. For localizability, remove '{1}' from links to most Microsoft sites.",
+            "code": "hard-coded-locale",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"],
+            "domains": [
+              "docs.microsoft.com",
+              "msdn.microsoft.com",
+              "technet.microsoft.com",
+              "partner.microsoft.com"
+            ],
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [external link](http://docs.microsoft.com/tr-tr)
+    <a href="http://docs.microsoft.com/tr-tr">inline html link</a>
+    [external link](http://docs.microsoft.com/nolocale)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://docs.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://docs.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":41}
+
+  file1.json:
+---
+# Validate link preview not set
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "PreserveViewNotSet",
+            "message": "Did you mean to link to a specific version? If so, add &preserve-view=true to the url: {0}",
+            "code": "preserve-view-not-set",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [external link](https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15)
+    <a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
+    [relative link](/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":114}
+    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: /en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
+
+  file1.json:
+---
+# Validate link text not set
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "LinkTextPresent",
+            "message": "Missing link text for link '{0}'. Add appropriate text. ",
+            "code": "link-text-missing",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [external link](http://docs.microsoft.com/tr-tr)
+    <a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
+    [](http://docs.microsoft.com/tr-tr)
+    ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
+    [![](https://google.com/media/4-metrics-data.png "Screenshot of Storage Explorer displaying the minute metrics data for blobs")](/media/4-metrics-data.png#lightbox)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"link-text-missing","message":"Missing link text for link 'http://docs.microsoft.com/tr-tr'. Add appropriate text. ","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
+  file1.json:

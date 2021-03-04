@@ -28,7 +28,7 @@ repos:
           "properties": {
             "api_name": { "htmlMetaName": "APIName" }
           },
-          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url"]
+          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url", "github_contributors"]
         }
   https://docs.com/theme:
   - files:
@@ -70,7 +70,7 @@ outputs:
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/e88185569e9862b31cce708c78de92c3be696df6/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/3a174518dadf39d8ec448a4090a8105e2bdf6336/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
@@ -231,7 +231,7 @@ inputs:
   docs/a.md:
 outputs:
   .errors.log: |
-    { "message_severity": "warning", "code": "output-path-conflict" }
+    { "message_severity": "warning", "code": "redirected-file-not-removed" }
 ---
 # Redirection file href shouldn't have extension
 inputs:
@@ -276,6 +276,7 @@ outputs:
     {"files":[{"asset_id":"docs/a.json","original":"docs/a.yml","source_relative_path":"docs/a.yml","original_type":"ContextObject","type":"Toc"}]}
 ---
 # Do not copy resource when the selfContained is false
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     files: a.png

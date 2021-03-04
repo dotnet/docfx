@@ -1,0 +1,424 @@
+# Support ECMA2Yaml ops config
+os: windows, osx
+noInputCheck: true
+repos:
+  https://github.com/ops/ecma-yaml:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "cat",
+            "SplitTOC": ["api/toc.yml"]
+          }],
+          "ECMA2Yaml": {
+            "SourceXmlFolder": "cat/xml",
+            "OutputYamlFolder": "cat/api",
+            "Flatten": true,
+            "SDPMode": true,
+          },
+        }
+      cat/docfx.yml: |
+        files: '**/*.{md,yml}'
+        template: ../_themes
+        monikerDefinition: monikerDefinition.json
+      cat/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "cat-1.0", "product_name": "CAT" }
+          ]
+        }
+      cat/xml/ns-CatLibrary.xml: |
+        <Namespace Name="CatLibrary">
+          <Docs>
+            <summary>To be added.</summary>
+            <remarks>To be added.</remarks>
+          </Docs>
+        </Namespace>
+      cat/xml/CatLibrary/Cat`2.xml: |
+        <Type Name="Cat&lt;T,K&gt;" FullName="CatLibrary.Cat&lt;T,K&gt;">
+          <TypeSignature Language="C#" Value="public class Cat&lt;T,K&gt; where T : class, new() where K : struct" />
+          <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit Cat`2&lt;class .ctor T, struct .ctor (class System.ValueType) K&gt; extends System.Object" />
+          <TypeSignature Language="DocId" Value="T:CatLibrary.Cat`2" />
+          <AssemblyInfo>
+            <AssemblyName>CatLibrary</AssemblyName>
+            <AssemblyVersion>1.0.0.0</AssemblyVersion>
+          </AssemblyInfo>
+          <TypeParameters>
+            <TypeParameter Name="T">
+            </TypeParameter>
+            <TypeParameter Name="K">
+            </TypeParameter>
+          </TypeParameters>
+          <Base>
+            <BaseTypeName>System.Object</BaseTypeName>
+          </Base>
+          <Interfaces />
+          <Docs>
+            <typeparam name="T">This type should be class and can new instance.</typeparam>
+            <typeparam name="K">This type is a struct type, class type can't be used for this parameter.</typeparam>
+          </Docs>
+          <Members>
+            <Member MemberName=".ctor">
+              <MemberSignature Language="C#" Value="public Cat (T thisType);" />
+              <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(!T thisType) cil managed" />
+              <MemberSignature Language="DocId" Value="M:CatLibrary.Cat`2.#ctor(`0)" />
+              <MemberType>Constructor</MemberType>
+              <AssemblyInfo>
+                <AssemblyName>CatLibrary</AssemblyName>
+                <AssemblyVersion>1.0.0.0</AssemblyVersion>
+              </AssemblyInfo>
+              <Parameters>
+                <Parameter Name="thisType" Type="T" />
+              </Parameters>
+              <Docs>
+                <param name="thisType">This parameter type defined by class.</param>
+                <summary>
+                    Constructor with one generic parameter.
+                    </summary>
+                <remarks>To be added.</remarks>
+                <exception cref="T:None.Existing.Ex">This exception type does not exist.</exception>
+              </Docs>
+            </Member>
+          </Members>
+        </Type>
+      cat/xml/FrameworksIndex/cat-1.0.xml: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <Framework Name="cat-1.0">
+          <Assemblies>
+            <Assembly Name="CatLibrary" Version="1.0.0.0" />
+          </Assemblies>
+          <Namespace Name="CatLibrary">
+            <Type Name="CatLibrary.Cat`2" Id="T:CatLibrary.Cat`2">
+              <Member Id="M:CatLibrary.Cat`2.#ctor(`0)" />
+            </Type>
+          </Namespace>
+        </Framework>
+      _themes/ContentTemplate/schemas/NetNamespace.schema.json: |
+        {}
+      _themes/ContentTemplate/schemas/NetMember.schema.json: |
+        {}
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+  cat/api/_splitted/catlibrary/toc.json:
+  cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
+  cat/8069edc7/api/catlibrary.json:
+  cat/api/toc.json:
+---
+# Support ECMA2Yaml fallback
+os: windows, osx
+noInputCheck: true
+repos:
+  https://github.com/ops/ecma-yaml.zh-cn:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "cat",
+            "SplitTOC": ["api/toc.yml"],
+            "ECMA2Yaml": {
+              "SourceXmlFolder": "cat/xml",
+              "OutputYamlFolder": "cat/api",
+              "Flatten": true,
+              "SDPMode": true,
+            }
+          }]
+        }
+      cat/docfx.yml: |
+        files: '**/*.{md,yml}'
+        template: ../_themes
+        monikerDefinition: monikerDefinition.json
+      cat/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "cat-1.0", "product_name": "CAT" }
+          ]
+        }
+      cat/xml/ns-CatLibrary.xml: |
+        <Namespace Name="CatLibrary">
+          <Docs>
+            <summary>To be added.</summary>
+            <remarks>To be added.</remarks>
+          </Docs>
+        </Namespace>
+      cat/xml/FrameworksIndex/cat-1.0.xml: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <Framework Name="cat-1.0">
+          <Assemblies>
+            <Assembly Name="CatLibrary" Version="1.0.0.0" />
+          </Assemblies>
+          <Namespace Name="CatLibrary">
+            <Type Name="CatLibrary.Cat`2" Id="T:CatLibrary.Cat`2">
+              <Member Id="M:CatLibrary.Cat`2.#ctor(`0)" />
+            </Type>
+          </Namespace>
+        </Framework>
+      _themes/ContentTemplate/schemas/NetNamespace.schema.json: |
+        {}
+      _themes/ContentTemplate/schemas/NetMember.schema.json: |
+        {}
+  https://github.com/ops/ecma-yaml:
+  - files:
+      cat/xml/CatLibrary/Cat`2.xml: |
+        <Type Name="Cat&lt;T,K&gt;" FullName="CatLibrary.Cat&lt;T,K&gt;">
+          <TypeSignature Language="C#" Value="public class Cat&lt;T,K&gt; where T : class, new() where K : struct" />
+          <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit Cat`2&lt;class .ctor T, struct .ctor (class System.ValueType) K&gt; extends System.Object" />
+          <TypeSignature Language="DocId" Value="T:CatLibrary.Cat`2" />
+          <AssemblyInfo>
+            <AssemblyName>CatLibrary</AssemblyName>
+            <AssemblyVersion>1.0.0.0</AssemblyVersion>
+          </AssemblyInfo>
+          <TypeParameters>
+            <TypeParameter Name="T">
+            </TypeParameter>
+            <TypeParameter Name="K">
+            </TypeParameter>
+          </TypeParameters>
+          <Base>
+            <BaseTypeName>System.Object</BaseTypeName>
+          </Base>
+          <Interfaces />
+          <Docs>
+            <typeparam name="T">This type should be class and can new instance.</typeparam>
+            <typeparam name="K">This type is a struct type, class type can't be used for this parameter.</typeparam>
+          </Docs>
+          <Members>
+            <Member MemberName=".ctor">
+              <MemberSignature Language="C#" Value="public Cat (T thisType);" />
+              <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(!T thisType) cil managed" />
+              <MemberSignature Language="DocId" Value="M:CatLibrary.Cat`2.#ctor(`0)" />
+              <MemberType>Constructor</MemberType>
+              <AssemblyInfo>
+                <AssemblyName>CatLibrary</AssemblyName>
+                <AssemblyVersion>1.0.0.0</AssemblyVersion>
+              </AssemblyInfo>
+              <Parameters>
+                <Parameter Name="thisType" Type="T" />
+              </Parameters>
+              <Docs>
+                <param name="thisType">This parameter type defined by class.</param>
+                <summary>
+                    Constructor with one generic parameter.
+                    </summary>
+                <remarks>To be added.</remarks>
+                <exception cref="T:None.Existing.Ex">This exception type does not exist.</exception>
+              </Docs>
+            </Member>
+          </Members>
+        </Type>
+      
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
+    {"message_severity":"error","code":"fallback-error","message":"Error(s) from 'en-us' repository caused this build failure, please check 'en-us' build report."}
+  cat/api/_splitted/catlibrary/toc.json:
+  cat/8069edc7/api/catlibrary.json:
+  cat/api/toc.json:
+---
+# Run ECMA2Yaml multiple times
+# Support ECMA2Yaml.id to configure toc output path
+# warn on duplciated xml files
+os: windows, osx
+noInputCheck: true
+repos:
+  https://github.com/ops/ecma-yaml:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "cat",
+            "SplitTOC": ["api/toc.yml", "api/copied-mouse/toc.yml"]
+          }],
+          "ECMA2Yaml": [
+            {
+              "SourceXmlFolder": "cat/xml",
+              "OutputYamlFolder": "cat/api",
+              "Flatten": true,
+              "SDPMode": true,
+            },
+            {
+              "id": "copied-mouse",
+              "SourceXmlFolder": "cat/mouse/xml",
+              "OutputYamlFolder": "cat/api",
+              "Flatten": true,
+              "SDPMode": true,
+            },
+            {
+              "SourceXmlFolder": "non-existing/xml",
+              "OutputYamlFolder": "non-existing/api",
+              "Flatten": true,
+              "SDPMode": true,
+            }
+          ]
+        }
+      cat/docfx.yml: |
+        files: '**/*.{md,yml}'
+        template: ../_themes
+        monikerDefinition: monikerDefinition.json
+      cat/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "cat-1.0", "product_name": "CAT" }
+          ]
+        }
+      cat/xml/ns-CatLibrary.xml: |
+        <Namespace Name="CatLibrary">
+          <Docs>
+            <summary>To be added.</summary>
+            <remarks>To be added.</remarks>
+          </Docs>
+        </Namespace>
+      cat/xml/CatLibrary/Cat`2.xml: |
+        <Type Name="Cat&lt;T,K&gt;" FullName="CatLibrary.Cat&lt;T,K&gt;">
+          <TypeSignature Language="C#" Value="public class Cat&lt;T,K&gt; where T : class, new() where K : struct" />
+          <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit Cat`2&lt;class .ctor T, struct .ctor (class System.ValueType) K&gt; extends System.Object" />
+          <TypeSignature Language="DocId" Value="T:CatLibrary.Cat`2" />
+          <AssemblyInfo>
+            <AssemblyName>CatLibrary</AssemblyName>
+            <AssemblyVersion>1.0.0.0</AssemblyVersion>
+          </AssemblyInfo>
+          <TypeParameters>
+            <TypeParameter Name="T">
+            </TypeParameter>
+            <TypeParameter Name="K">
+            </TypeParameter>
+          </TypeParameters>
+          <Base>
+            <BaseTypeName>System.Object</BaseTypeName>
+          </Base>
+          <Interfaces />
+          <Docs>
+            <typeparam name="T">This type should be class and can new instance.</typeparam>
+            <typeparam name="K">This type is a struct type, class type can't be used for this parameter.</typeparam>
+          </Docs>
+          <Members>
+            <Member MemberName=".ctor">
+              <MemberSignature Language="C#" Value="public Cat (T thisType);" />
+              <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(!T thisType) cil managed" />
+              <MemberSignature Language="DocId" Value="M:CatLibrary.Cat`2.#ctor(`0)" />
+              <MemberType>Constructor</MemberType>
+              <AssemblyInfo>
+                <AssemblyName>CatLibrary</AssemblyName>
+                <AssemblyVersion>1.0.0.0</AssemblyVersion>
+              </AssemblyInfo>
+              <Parameters>
+                <Parameter Name="thisType" Type="T" />
+              </Parameters>
+              <Docs>
+                <param name="thisType">This parameter type defined by class.</param>
+                <summary>
+                    Constructor with one generic parameter.
+                    </summary>
+                <remarks>To be added.</remarks>
+                <exception cref="T:None.Existing.Ex">This exception type does not exist.</exception>
+              </Docs>
+            </Member>
+          </Members>
+        </Type>
+      cat/xml/FrameworksIndex/cat-1.0.xml: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <Framework Name="cat-1.0">
+          <Assemblies>
+            <Assembly Name="CatLibrary" Version="1.0.0.0" />
+          </Assemblies>
+          <Namespace Name="CatLibrary">
+            <Type Name="CatLibrary.Cat`2" Id="T:CatLibrary.Cat`2">
+              <Member Id="M:CatLibrary.Cat`2.#ctor(`0)" />
+            </Type>
+          </Namespace>
+        </Framework>
+      # copied mouse section
+      cat/mouse/xml/ns-CatLibrary.xml: |
+        <Namespace Name="CatLibrary">
+          <Docs>
+            <summary>To be added.</summary>
+            <remarks>To be added.</remarks>
+          </Docs>
+        </Namespace>
+      cat/mouse/xml/CatLibrary/Cat`2.xml: |
+        <Type Name="Cat&lt;T,K&gt;" FullName="CatLibrary.Cat&lt;T,K&gt;">
+          <TypeSignature Language="C#" Value="public class Cat&lt;T,K&gt; where T : class, new() where K : struct" />
+          <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit Cat`2&lt;class .ctor T, struct .ctor (class System.ValueType) K&gt; extends System.Object" />
+          <TypeSignature Language="DocId" Value="T:CatLibrary.Cat`2" />
+          <AssemblyInfo>
+            <AssemblyName>CatLibrary</AssemblyName>
+            <AssemblyVersion>1.0.0.0</AssemblyVersion>
+          </AssemblyInfo>
+          <TypeParameters>
+            <TypeParameter Name="T">
+            </TypeParameter>
+            <TypeParameter Name="K">
+            </TypeParameter>
+          </TypeParameters>
+          <Base>
+            <BaseTypeName>System.Object</BaseTypeName>
+          </Base>
+          <Interfaces />
+          <Docs>
+            <typeparam name="T">This type should be class and can new instance.</typeparam>
+            <typeparam name="K">This type is a struct type, class type can't be used for this parameter.</typeparam>
+          </Docs>
+          <Members>
+            <Member MemberName=".ctor">
+              <MemberSignature Language="C#" Value="public Cat (T thisType);" />
+              <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(!T thisType) cil managed" />
+              <MemberSignature Language="DocId" Value="M:CatLibrary.Cat`2.#ctor(`0)" />
+              <MemberType>Constructor</MemberType>
+              <AssemblyInfo>
+                <AssemblyName>CatLibrary</AssemblyName>
+                <AssemblyVersion>1.0.0.0</AssemblyVersion>
+              </AssemblyInfo>
+              <Parameters>
+                <Parameter Name="thisType" Type="T" />
+              </Parameters>
+              <Docs>
+                <param name="thisType">This parameter type defined by class.</param>
+                <summary>
+                    Constructor with one generic parameter.
+                    </summary>
+                <remarks>To be added.</remarks>
+                <exception cref="T:None.Existing.Ex">This exception type does not exist.</exception>
+              </Docs>
+            </Member>
+          </Members>
+        </Type>
+      cat/mouse/xml/FrameworksIndex/cat-1.0.xml: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <Framework Name="cat-1.0">
+          <Assemblies>
+            <Assembly Name="CatLibrary" Version="1.0.0.0" />
+          </Assemblies>
+          <Namespace Name="CatLibrary">
+            <Type Name="CatLibrary.Cat`2" Id="T:CatLibrary.Cat`2">
+              <Member Id="M:CatLibrary.Cat`2.#ctor(`0)" />
+            </Type>
+          </Namespace>
+        </Framework>
+      _themes/ContentTemplate/schemas/NetNamespace.schema.json: |
+        {}
+      _themes/ContentTemplate/schemas/NetMember.schema.json: |
+        {}
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2'."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'CatLibrary.Cat`2.#ctor*'."}
+    {"message_severity":"error","code":"schema-not-found","message":"Unknown schema 'NetType'.","file":"cat/xml/CatLibrary/Cat`2.xml","line":0,"column":0}
+    {"message_severity":"warning","code":"duplicate-source-map-item","message":"'api/CatLibrary.yml' is duplicated from 'mouse/xml/ns-CatLibrary.xml', 'xml/ns-CatLibrary.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplicate-source-map-item","message":"'api/CatLibrary.Cat-2.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
+    {"message_severity":"warning","code":"duplicate-source-map-item","message":"'api/CatLibrary.Cat-2.-ctor.yml' is duplicated from 'mouse/xml/CatLibrary/Cat`2.xml', 'xml/CatLibrary/Cat`2.xml'","line":0,"column":0}
+
+  cat/api/_splitted/catlibrary/toc.json:
+  cat/api/copied-mouse/_splitted/catlibrary/toc.json:
+  cat/8069edc7/api/catlibrary.cat-2.-ctor.json:
+  cat/8069edc7/api/catlibrary.json:
+  cat/api/toc.json:
+  cat/api/copied-mouse/toc.json:

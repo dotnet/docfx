@@ -342,6 +342,7 @@ outputs:
 ---
 # Define duplicate uid in conceptual and SDP 
 # should output error and uid cannot be resolved
+noSingleFile: true
 repos:
   https://docs.com/define-duplciate-uid#master:
     - files:
@@ -609,7 +610,7 @@ inputs:
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
-        "uid": { "contentType": "uid", "UIDGlobalUnique": true }
+        "uid": { "contentType": "uid", "uidGlobalUnique": true }
       }
     }
 outputs:
@@ -1581,9 +1582,13 @@ outputs:
   136a42ac/docs/a.json:
   136a42ac/docs/b.json:
   4667fedf/docs/a.json:
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1', 'name 2'."}
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different descriptions: '<p>test 1</p>\n', '<p>test 2 <a href=\"b.json\">name b</a></p>\n'."}
+  .xrefmap.json: |
+    {
+      "references": [
+        { "uid": "a", "name": "name 2", "description": "<p>test 2 <a href=\"b.json\">name b</a></p>" },
+        { "uid": "b", "name": "name b" }
+      ]
+    }
 ---
 # referencing multiple version, using uid with intersection for toc & SDP
 inputs:
@@ -1614,7 +1619,6 @@ inputs:
   docs/v1/b.yml: |
     ### YamlMime:TestPage
       xref: a
-  docs/v2/a.yml: |
   docs/v2/a.yml: |
     ### YamlMime:TestData
     uid: a
@@ -1655,8 +1659,6 @@ outputs:
   4667fedf/docs/a.json:
   4667fedf/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # can cross version referencing single-version uid
 inputs:
@@ -1753,8 +1755,6 @@ outputs:
   439a76d0/v3/b.raw.page.json: |
     {"content": "<a href=\"../v2/a.json\" data-linktype=\"relative-path\"> name 2.0 </a>"}
   439a76d0/v3/b.mta.json:
-  .errors.log: |
-    {"message_severity":"info","code":"xref-property-conflict","message":"UID 'a' is defined with different names: 'name 1.0', 'name 2.0'."}
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:
@@ -1807,6 +1807,7 @@ outputs:
   docs/c.json:
 ---
 # support uid reference count validation 2
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.yml: |
@@ -1835,10 +1836,11 @@ outputs:
   docs/b.json:
   docs/c.json:
   .errors.log: |
-    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be <= 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
-    {"message_severity":"warning","code":"reference-count-invalid","message":"UID 'a' reference count should be >= 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2,"column":6}
+    {"message_severity":"warning","code":"max-reference-count-invalid","message":"UID 'a' reference count should not be more than 1, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
+    {"message_severity":"warning","code":"min-reference-count-invalid","message":"UID 'a' reference count should be least 3, but now is 2 ('docs/b.yml(2,12)', 'docs/c.yml(2,12)').","file":"docs/a.yml","line":2}
 ---
 # support SDP validation validateExternalXrefs
+noSingleFile: true
 repos:
   https://docs.com/test-valdiate-external-xref:
     - files:
@@ -1851,12 +1853,13 @@ repos:
             "repository_url": "b_repository_url",
             "docset_name": "docset_b",
             "references":[
-              {"uid": "c"},
-              {"uid": "d"}
+              {"uid": "c", "schemaType": "c-type"},
+              {"uid": "d", "schemaType": "d-type"}
             ],
             "external_xrefs":[
               {"uid": "nofound",
                 "docsetName": "docset_a",
+                "schemaType": "a-type",
                 "count": 1}
             ]
           }
@@ -1885,16 +1888,19 @@ outputs:
       "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
+          "schemaType": "c-type",
           "count": 2},
         {"uid": "d", 
           "docsetName": "docset_b",
+          "schemaType": "d-type",
           "count": 1}
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # support SDP validation validateExternalXrefs, locale build
+noSingleFile: true
 locale: zh-cn
 repos:
   https://docs.com/test-valdiate-external-xref.zh-cn:
@@ -1908,12 +1914,13 @@ repos:
             "repository_url": "b_repository_url",
             "docset_name": "docset_b",
             "references":[
-              {"uid": "c"},
-              {"uid": "d"}
+              {"uid": "c", "schemaType": "c-type"},
+              {"uid": "d", "schemaType": "d-type"}
             ],
             "external_xrefs":[
               {"uid": "nofound",
                 "docsetName": "docset_a",
+                "schemaType": "a-type",
                 "count": 1}
             ]
           }
@@ -1942,14 +1949,16 @@ outputs:
       "external_xrefs":[
         {"uid": "c", 
           "docsetName": "docset_b",
+          "schemaType": "c-type",
           "count": 2},
         {"uid": "d", 
           "docsetName": "docset_b",
+          "schemaType": "d-type",
           "count": 1}
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
 ---
 # multiple duplicated uids with the same MonkerList
 inputs:
@@ -1976,3 +1985,42 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":4,"column":8}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":2,"column":6}
+---
+# Xref markdown property output absolute url for TSType mime
+repos:
+  https://docs.com/test-valdiate-external-xref.zh-cn#live:
+    - files:
+        docfx.yml: |
+        docs/c/c.md: |
+          ---
+          title: Title from yaml header c
+          uid: c
+          ---
+        docs/a/a/a.json: |
+          {
+            "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TSType.json",
+            "uid": "a",
+            "summary": "@c Hello docfx!"
+          }
+        docs/b/b.md: |
+          Link to @a?displayProperty=summary
+        _themes/ContentTemplate/schemas/TSType.schema.json: |
+          {
+            "properties": {
+              "summary": { "contentType": "Markdown" },
+              "uid": { "contentType": "uid" }
+            },
+            "xrefProperties": ["summary"]
+          }
+outputs:
+  docs/a/a/a.json:
+  docs/c/c.json:
+  docs/b/b.json: |
+    {"conceptual": "<p>Link to <a href=\"../a/a/a\" data-linktype=\"relative-path\">&lt;p&gt;&lt;a href=&quot;/docs/c/c&quot;&gt;Title from yaml header c&lt;/a&gt; Hello docfx!&lt;/p&gt;\n</a></p>\n"}
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid":"a","summary":"<p><a href=\"/docs/c/c\">Title from yaml header c</a> Hello docfx!</p>"},
+        {"uid": "c", "href": "https://docs.com/docs/c/c", "name": "Title from yaml header c"}
+      ]
+    }

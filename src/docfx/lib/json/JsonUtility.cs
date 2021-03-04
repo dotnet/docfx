@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class JsonUtility
     {
-        public static readonly JTokenDeepEqualsComparer DeepEqualsComparer = new JTokenDeepEqualsComparer();
+        public static readonly JTokenDeepEqualsComparer DeepEqualsComparer = new();
 
         private static readonly NamingStrategy s_namingStrategy = new CamelCaseNamingStrategy();
         private static readonly JsonConverter[] s_jsonConverters =
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             new JTokenJsonConverter { },
         };
 
-        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_serializer = JsonSerializer.Create(new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_serializerCheckingAdditional = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_serializerCheckingAdditional = JsonSerializer.Create(new()
         {
             CheckAdditionalContent = true,
             NullValueHandling = NullValueHandling.Ignore,
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_schemaValidationSerializer = JsonSerializer.Create(new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static readonly JsonSerializer s_indentSerializer = JsonSerializer.Create(new()
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
@@ -64,11 +64,11 @@ namespace Microsoft.Docs.Build
             ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
         });
 
-        private static readonly ThreadLocal<Stack<Status>> t_status = new ThreadLocal<Stack<Status>>(() => new Stack<Status>());
+        private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
         internal static JsonSerializer Serializer => s_serializer;
 
-        internal static Status? State => t_status.Value!.TryPeek(out var result) ? result : null;
+        internal static Status? State => s_status.Value!.TryPeek(out var result) ? result : null;
 
         static JsonUtility()
         {
@@ -139,7 +139,7 @@ namespace Microsoft.Docs.Build
             {
                 var status = new Status { FilePath = file };
 
-                t_status.Value!.Push(status);
+                s_status.Value!.Push(status);
 
                 return (checkAdditionalContent
                     ? s_serializerCheckingAdditional.Deserialize<T>(reader)
@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_status.Value!.Pop();
+                s_status.Value!.Pop();
             }
         }
 
@@ -192,7 +192,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 var status = new Status { Reader = new JTokenReader(token) };
-                t_status.Value!.Push(status);
+                s_status.Value!.Push(status);
 
                 var value = s_schemaValidationSerializer.Deserialize(status.Reader, type);
                 errors.AddRange(status.Errors);
@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
             }
             finally
             {
-                t_status.Value!.Pop();
+                s_status.Value!.Pop();
             }
         }
 
@@ -218,7 +218,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 using var reader = new JsonTextReader(json) { DateParseHandling = DateParseHandling.None };
-                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls(errors);
+                return SetSourceInfo(JToken.ReadFrom(reader), file).RemoveNulls(errors, file);
             }
             catch (JsonReaderException ex)
             {
@@ -341,7 +341,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Report warnings for null values inside arrays and remove nulls inside arrays.
         /// </summary>
-        public static JToken RemoveNulls(this JToken root, ErrorBuilder errors)
+        public static JToken RemoveNulls(this JToken root, ErrorBuilder errors, FilePath? file)
         {
             var nullArrayNodes = new List<(JToken, string)>();
 
@@ -354,7 +354,14 @@ namespace Microsoft.Docs.Build
             }
 
             // treat null JToken as empty JObject since it is from user input
-            return IsNullOrUndefined(root) ? new JObject() : root;
+            if (IsNullOrUndefined(root))
+            {
+                var result = new JObject();
+                SetSourceInfo(result, file is null ? null : new SourceInfo(file));
+                return result;
+            }
+
+            return root;
 
             void RemoveNullsCore(JToken token, string? name)
             {
@@ -436,7 +443,7 @@ namespace Microsoft.Docs.Build
             var properties = new SortedList<string, JProperty>();
             foreach (var property in obj.Properties())
             {
-                properties.Add(property.Name, !(property.Value is JObject childObj) ? property : new JProperty(property.Name, SortProperties(childObj)));
+                properties.Add(property.Name, property.Value is not JObject childObj ? property : new JProperty(property.Name, SortProperties(childObj)));
             }
 
             return new JObject(properties.Values);
@@ -495,7 +502,7 @@ namespace Microsoft.Docs.Build
         private static JToken SetSourceInfo(JToken token, FilePath file, SourceInfo? keySourceInfo = null)
         {
             var lineInfo = (IJsonLineInfo)token;
-            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition, keySourceInfo);
+            var sourceInfo = new SourceInfo(file, lineInfo.LineNumber, lineInfo.LinePosition) { KeySourceInfo = keySourceInfo };
             SetSourceInfo(token, sourceInfo);
 
             switch (token)
@@ -527,7 +534,7 @@ namespace Microsoft.Docs.Build
             {
                 if (args?.ErrorContext.Error is JsonReaderException || args?.ErrorContext.Error is JsonSerializationException)
                 {
-                    var state = t_status.Value!.Peek();
+                    var state = s_status.Value!.Peek();
                     state.Errors.Add(Errors.Json.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
                     args.ErrorContext.Handled = true;
                 }

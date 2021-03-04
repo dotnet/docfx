@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public CodeExtension(MarkdownContext context)
         {
             _context = context;
-            _codeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
+            _codeSnippetRenderer = new(_context);
         }
 
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             block.Attributes.TryGetValue("id", out var currentId); // it's okay if this is null
             block.Attributes.TryGetValue("range", out var currentRange); // it's okay if this is null
             block.Attributes.TryGetValue("source", out var currentSource); // source has already been checked above
-            var (code, codePath) = _context.ReadFile(currentSource, block);
+            var (code, codePath) = _context.ReadFile(currentSource, block, true);
             if (string.IsNullOrEmpty(code))
             {
                 logWarning($"The code snippet \"{currentSource}\" could not be found.");

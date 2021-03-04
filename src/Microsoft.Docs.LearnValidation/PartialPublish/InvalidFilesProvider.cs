@@ -30,20 +30,22 @@ namespace Microsoft.Docs.LearnValidation
             // Mark modules
             foreach (var module in modules)
             {
+                if (module is null)
+                {
+                    continue;
+                }
+
                 if (!module.IsValid || module.Units.Any(u => !uidMapping[u].IsValid))
                 {
                     if (module.IsValid)
                     {
                         module.IsValid = false;
-                        var invalidUnits = module.Units.Where(u => !uidMapping[u].IsValid);
-                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Module_InvalidChildren, file: module.SourceRelativePath, string.Join(",", invalidUnits));
                     }
 
                     foreach (var unitUid in module.Units.Where(u => uidMapping.ContainsKey(u) && uidMapping[u].IsValid))
                     {
                         var unit = uidMapping[unitUid];
                         unit.IsValid = false;
-                        _logger.Log(LearnErrorLevel.Error, LearnErrorCode.TripleCrown_Unit_InvalidParent, file: unit.SourceRelativePath, module.Uid);
                     }
                 }
 
@@ -67,6 +69,11 @@ namespace Microsoft.Docs.LearnValidation
             // Mark learningpath
             foreach (var learningpath in learningpaths)
             {
+                if (learningpath is null)
+                {
+                    continue;
+                }
+
                 var modulesNeedCheck = learningpath.Modules.Where(m => !uidMapping.ContainsKey(m) || !uidMapping[m].IsValid).ToList();
                 var moduleCantFallback = modulesNeedCheck.Where(m => !_learnValidationHelper.IsModule(m)).ToList();
                 if (moduleCantFallback.Any())

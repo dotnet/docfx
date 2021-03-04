@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     public class MonikerRangeParserTest
     {
-        private readonly MonikerDefinitionModel _monikerDefinition = new MonikerDefinitionModel
+        private readonly MonikerDefinitionModel _monikerDefinition = new()
         {
             Monikers =
             {
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 
         public MonikerRangeParserTest()
         {
-            _monikerRangeParser = new MonikerRangeParser(_monikerDefinition);
+            _monikerRangeParser = new(_monikerDefinition);
         }
 
         [Theory]
@@ -140,7 +140,7 @@ namespace Microsoft.Docs.Build
             monikerRangeParser.Parse(errors, new SourceInfo<string>("netcore-1.0"));
             Assert.Collection(errors, error =>
             {
-                Assert.Equal("moniker-range-invalid", error.Code);
+                Assert.Equal("moniker-range-missing", error.Code);
                 Assert.Equal("Invalid moniker range 'netcore-1.0': Moniker 'netcore-1.0' is not defined.", error.Message);
             });
         }

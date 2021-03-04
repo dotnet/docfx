@@ -15,18 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _blocks = blocks;
         }
 
-        public Block CurrentBlock
-        {
-            get
-            {
-                if (_currentBlockIndex < 0 || _currentBlockIndex > _blocks.Count)
-                {
-                    return null;
-                }
-
-                return _blocks[_currentBlockIndex];
-            }
-        }
+        public Block CurrentBlock => _currentBlockIndex < 0 || _currentBlockIndex > _blocks.Count ? null : _blocks[_currentBlockIndex];
 
         public void AggregateTo(Block block, int blockCount)
         {
@@ -41,12 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public Block LookAhead(int offset)
         {
             var index = _currentBlockIndex + offset;
-            if (index >= _blocks.Count)
-            {
-                return null;
-            }
-
-            return _blocks[index];
+            return index >= _blocks.Count ? null : _blocks[index];
         }
 
         internal bool NextBlock()

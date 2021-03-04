@@ -42,6 +42,7 @@ outputs:
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
 # Template could be a local folder
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     files: '*'
@@ -59,7 +60,7 @@ outputs:
 inputs:
   docfx.yml: |
     xref: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/xrefmap.json
-  a.md: '@System.String'
+  a.md: "@System.String"
 outputs:
   a.json: |
     { "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
@@ -68,7 +69,7 @@ outputs:
 inputs:
   docfx.yml: |
     extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/extend.yml
-  a.md: '@System.String'
+  a.md: "@System.String"
 outputs:
   a.json: |
     { "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
@@ -151,7 +152,7 @@ inputs:
   docfx.yml: |
     dependencies:
       dep: https://github.com/docascode/docfx-test-dependencies#restore/long-path
-  docs/test.md: 
+  docs/test.md:
     "[!INCLUDE[](~/dep/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-\
     file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-tes\
     t-for-l/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-\
@@ -198,13 +199,13 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrcontent/b
-              branch: master
+              branch: main
               includeInBuild: true
             crrc: https://docs.com/crrcontent/c
         docs/a.md:
   https://docs.com/crrcontent/b:
     - files:
-        folder/b.md: 
+        folder/b.md:
         folder/image.png: xxx
   https://docs.com/crrcontent/c:
     - files:
@@ -228,7 +229,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrcontent/2
-              branch: master
+              branch: main
               includeInBuild: true
             crrc:
               url: https://docs.com/crrcontent/3
@@ -255,7 +256,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrmetadata/2
-              branch: master
+              branch: main
               includeInBuild: true
         docs/b.md:
   https://docs.com/crrmetadata/2:
@@ -278,7 +279,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrmoniker/2
-              branch: master
+              branch: main
               includeInBuild: true
           monikerDefinition: monikerDefinition.json
         docs/b.md:
@@ -310,7 +311,7 @@ repos:
           dependencies:
             crrb:
               url: https://docs.com/crrsame/b
-              branch: master
+              branch: main
               includeInBuild: true
             crrc:
               url: https://docs.com/crrsame/c
@@ -364,116 +365,3 @@ outputs:
         "docs/a.md": [{ "source": "docs/b.md", "type": "file" }]
       }
     }
----
-# Show error for system service account SSO issue
-repos:
-  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
-    - files:
-        docs/a.md: a2
-inputs:
-  docfx.yml: |
-    docsGitTokenType: "SystemServiceAccount"
-    http:
-          https://github.com/Microsoft/templates.docs.msft:
-            headers:
-              authorization: {GIT_TOKEN_HTTP_AUTH_SSO_DISABLED}
-    dependencies:
-            crrb:
-              url: https://github.com/Microsoft/templates.docs.msft
-              branch: master
-environments:
-  - GIT_TOKEN_HTTP_AUTH_SSO_DISABLED
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"restore-dependent-repository-failed","message":"Failed to restore dependent repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
----
-# Show error for repository owner account SSO issue
-repos:
-  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
-    - files:
-        docs/a.md: a2
-inputs:
-  docfx.yml: |
-    docsGitTokenType: "RepositoryOwnerAccount"
-    docsRepositoryOwnerName: "test-repo-owner"
-    http:
-          https://github.com/:
-            headers:
-              authorization: {GIT_TOKEN_HTTP_AUTH_SSO_DISABLED}
-    dependencies:
-            crra:
-              url: https://github.com/microsoft/azure-cseries-preview
-              branch: master
-environments:
-  - GIT_TOKEN_HTTP_AUTH_SSO_DISABLED
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"repository-owner-sso-issue","message":"Owner of https://github.com/MicrosoftDocs/ppe-test-sso-2406 repository does not have access to https://github.com/microsoft/azure-cseries-preview. Please ask the repository owner 'test-repo-owner' to re-authorize his/her GitHub account to Docs Build (reference: https://teams.microsoft.com/l/message/19:7ecffca1166a4a3986fed528cf0870ee@thread.skype/1590030602688?tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47&groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&parentMessageId=1590030602688&teamName=Docs%20Support&channelName=General&createdTime=1590030602688)."}
----
-# Show error for system service account with insufficient permission on template repository
-repos:
-  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
-    - files:
-        docs/a.md: a2
-inputs:
-  docfx.yml: |
-    docsGitTokenType: "SystemServiceAccount"
-    http:
-          https://github.com/Microsoft/templates.docs.msft:
-            headers:
-              authorization: {GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION}
-    dependencies:
-            crra:
-              url: https://github.com/Microsoft/templates.docs.msft
-              branch: master
-environments:
-  - GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"restore-dependent-repository-failed","message":"Failed to restore dependent repository `https://github.com/Microsoft/templates.docs.msft#master`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report."}
----
-# Show error for system service account with insufficient permission on non-template repository
-repos:
-  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
-    - files:
-        docs/a.md: a2
-inputs:
-  docfx.yml: |
-    docsGitTokenType: "SystemServiceAccount"
-    docsRepositoryOwnerName: "test-repo-owner"
-    http:
-          https://github.com/:
-            headers:
-              authorization: {GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION}
-    dependencies:
-            crra:
-              url: https://github.com/sharanya-dev/test-samples
-              branch: master
-environments:
-  - GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"service-account-permission-insufficient","message":"Docs Build service account cannot access repository 'https://github.com/sharanya-dev/test-samples'. Please ask repository owner 'test-repo-owner' to grant 'write' permission to all service accounts under 'MicrosoftDocs' organization to 'https://github.com/sharanya-dev/test-samples'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#microsoftdocs. For any support, please open a ticket in https://SiteHelp."}
----
-# Show error for repository owner account with insufficient permission on CRR
-repos:
-  https://github.com/MicrosoftDocs/ppe-test-sso-2406:
-    - files:
-        docs/a.md: a2
-inputs:
-  docfx.yml: |
-    docsGitTokenType: "RepositoryOwnerAccount"
-    docsRepositoryOwnerName: "test-repo-owner"
-    http:
-          https://github.com/:
-            headers:
-              authorization: {GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION}
-    dependencies:
-            crra:
-              url: https://github.com/sharanya-dev/test-samples
-              branch: master
-environments:
-  - GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"repository-owner-permission-insufficient","message":"Docs Build cannot access CRR repo https://github.com/sharanya-dev/test-samples using the access token from user test-repo-owner because test-repo-owner does not have Read access to the CRR repo. Please ask test-repo-owner to contact the admins of the CRR repo https://github.com/sharanya-dev/test-samples to get Read permission. Don't know who to contact? This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/sharanya-dev/repos/test-samples/permissions/"}

@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
 {
     internal static class LegacyManifest
     {
-        public static void Convert(string docsetPath, Context context, Dictionary<FilePath, PublishItem> fileManifests)
+        public static void Convert(string docsetPath, LegacyContext context, Dictionary<FilePath, PublishItem> fileManifests)
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
 
         private static void ConvertDocumentToLegacyManifestItem(
             string docsetPath,
-            Context context,
+            LegacyContext context,
             KeyValuePair<FilePath, PublishItem> fileManifest,
             DictionaryBuilder<string, MonikerList> dictionaryBuilder,
             ListBuilder<(LegacyManifestItem manifestItem, FilePath doc, MonikerList monikers)> listBuilder)
@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
                 output.ResourceOutput = resourceOutput;
             }
 
-            if (contentType == ContentType.TableOfContents)
+            if (contentType == ContentType.Toc)
             {
                 output.TocOutput = new LegacyManifestOutputItem
                 {
@@ -159,7 +159,7 @@ namespace Microsoft.Docs.Build
             ContentType.Page => mime ?? "Conceptual",
             ContentType.Redirection => "Conceptual", // todo: support reference redirection
             ContentType.Resource => "Resource",
-            ContentType.TableOfContents => "Toc",
+            ContentType.Toc => "Toc",
             _ => "",
         };
 
@@ -170,18 +170,13 @@ namespace Microsoft.Docs.Build
                 return "Toc";
             }
 
-            switch (type)
+            return type switch
             {
-                case ContentType.Page:
-                case ContentType.Redirection: // todo: support reference redirection
-                    return "Content";
-                case ContentType.Resource:
-                    return "Resource";
-                case ContentType.TableOfContents:
-                    return "Toc";
-                default:
-                    return "";
-            }
+                ContentType.Page or ContentType.Redirection => "Content",
+                ContentType.Resource => "Resource",
+                ContentType.Toc => "Toc",
+                _ => "",
+            };
         }
     }
 }

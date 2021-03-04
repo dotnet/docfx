@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class ShortHandConverter : JsonConverter
     {
-        private static readonly ConcurrentDictionary<Type, Type> s_shortHandType = new ConcurrentDictionary<Type, Type>();
+        private static readonly ConcurrentDictionary<Type, Type> s_shortHandType = new();
 
         public override bool CanWrite => false;
 

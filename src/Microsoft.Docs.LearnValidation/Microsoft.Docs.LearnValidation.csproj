@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <nullable>disable</nullable>
+    <TargetFramework>net5.0</TargetFramework>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <nullable>enable</nullable>
   </PropertyGroup>
 
   <ItemGroup>

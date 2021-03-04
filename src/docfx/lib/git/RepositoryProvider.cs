@@ -8,12 +8,12 @@ using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class RepositoryProvider : IDisposable
+    internal class RepositoryProvider
     {
         private readonly ErrorBuilder _errors;
 
-        private readonly ConcurrentDictionary<string, Repository?> _repositories = new ConcurrentDictionary<string, Repository?>(PathUtility.PathComparer);
-        private readonly ConcurrentDictionary<PathString, GitCommitLoader> _commitLoaders = new ConcurrentDictionary<PathString, GitCommitLoader>();
+        private readonly ConcurrentDictionary<string, Repository?> _repositories = new(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<PathString, GitCommitLoader> _commitLoaders = new();
 
         public Repository? Repository { get; }
 
@@ -63,14 +63,6 @@ namespace Microsoft.Docs.Build
             foreach (var p in _commitLoaders.Values)
             {
                 p.Save();
-            }
-        }
-
-        public void Dispose()
-        {
-            foreach (var provider in _commitLoaders.Values)
-            {
-                provider.Dispose();
             }
         }
 

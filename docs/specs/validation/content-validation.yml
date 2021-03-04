@@ -41,10 +41,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":4,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":4,"column":2}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
 ---
 # Suppress disallowed HTML on archive content
 inputs:
@@ -76,32 +76,29 @@ inputs:
             "code": "sensitive-language",
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"],
+            "contentTypes": ["conceptual"],
             "exceptions":["tree/master"],
             "docfxOverride": true
           }
         ]
       }
     }
-  file1.md: There is master in the content, this will error
-  file2.md: There is#whitelist-with-special chars in the content, this will error
-  file3.md: This is no sensitive language in this file, something like masterclass is ok.
-  file4.md: Blacklist at the start, ends with Master
-  file5.md: tree/master is valid
+  file1.md: |
+    There is master in the content, this will error
+    There is#whitelist-with-special chars in the content, this will error
+    This is no sensitive language in this file, something like masterclass is ok.
+    Blacklist at the start, ends with Master
+    tree/master is valid
   a/b/c/file.md: skipped bad language check for master due to exclusion
   n/m/o/file.md: not skipped bad language check for master due to exclusion
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'whitelist' is sensitive and should not be used in content or code.","file":"file2.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'blacklist' is sensitive and should not be used in content or code.","file":"file4.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file4.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":1,"end_line":1,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'whitelist' is sensitive and should not be used in content or code.","file":"file1.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'blacklist' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
-  file2.json:
-  file3.json:
-  file4.json:
-  file5.json:
   a/b/c/file.json:
   n/m/o/file.json:
 ---
@@ -123,7 +120,7 @@ inputs:
             "code": "sensitive-language",
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"],
+            "contentTypes": ["conceptual"],
             "docfxOverride": false
           }
         ]
@@ -133,9 +130,41 @@ inputs:
   a/b/c/file.md: skipped bad language check for master due to exclusion
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":1,"end_line":1,"column":0,"end_column":0}
-    {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","file":"docfx.yml","line":4,"end_line":4,"column":5,"end_column":5}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
   a/b/c/file.json:
 ---
+# support new `post` page type
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "text": {
+        "rules": [
+          {
+            "type": "SensitiveLanguage",
+            "message": "Term '{0}' is sensitive and should not be used in content or code.",
+            "code": "sensitive-language",
+            "severity": "SUGGESTION",
+            "disallowed": ["master", "blacklist", "whitelist"],
+            "contentTypes": ["post"]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    ---
+    title: 10 Reasons to Give Your Startup the Microsoft Ventures Accelerator Advantage
+    ms.date: 9/28/2018
+    ms.author: startupsblogadmin
+    display-author: Microsoft Startups
+    layout: Post
+    ---
+    There is master in the content, this will error
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":8,"end_line":8,"column":1,"end_column":1}
+  file1.json:

@@ -15,16 +15,15 @@ namespace Microsoft.Docs.Build
     internal static class LocalizationUtility
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentHashSet<Repository> s_fetchedLocalizationRepositories = new ConcurrentHashSet<Repository>();
+        private static readonly ConcurrentHashSet<Repository> s_fetchedLocalizationRepositories = new();
 
-        private static readonly HashSet<string> s_locales = new HashSet<string>(
+        private static readonly HashSet<string> s_locales = new(
             CultureInfo.GetCultures(CultureTypes.AllCultures).Except(
                 CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
-                    new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }),
-            StringComparer.OrdinalIgnoreCase);
+                new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }), StringComparer.OrdinalIgnoreCase);
 
-        private static readonly Regex s_nameWithLocale = new Regex(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
-        private static readonly Regex s_lrmAdjustment = new Regex(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
+        private static readonly Regex s_nameWithLocale = new(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_lrmAdjustment = new(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
         public static bool IsValidLocale(string locale) => s_locales.Contains(locale);
 
@@ -58,7 +57,10 @@ namespace Microsoft.Docs.Build
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
                 foreach (var branch in new[] { fallbackBranch, "main" })
                 {
-                    if (packageResolver.TryResolvePackage(new PackagePath(fallbackRemote, branch), PackageFetchOptions.None, out var fallbackRepoPath))
+                    if (packageResolver.TryResolvePackage(
+                        new PackagePath(fallbackRemote, branch),
+                        PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError,
+                        out var fallbackRepoPath))
                     {
                         return Path.Combine(fallbackRepoPath, docsetSourceFolder);
                     }
@@ -154,7 +156,7 @@ namespace Microsoft.Docs.Build
             var match = s_nameWithLocale.Match(name);
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
-                locale = match.Groups[1].Value.Substring(1).ToLowerInvariant();
+                locale = match.Groups[1].Value[1..].ToLowerInvariant();
                 nameWithoutLocale = name.Substring(0, name.Length - match.Groups[1].Value.Length).ToLowerInvariant();
                 return true;
             }
@@ -162,17 +164,6 @@ namespace Microsoft.Docs.Build
             nameWithoutLocale = null;
             locale = null;
             return false;
-        }
-
-        private static string AppendLocale(string name, string locale)
-        {
-            var newLocale = $".{locale}";
-            if (name.EndsWith(newLocale, StringComparison.OrdinalIgnoreCase))
-            {
-                return name;
-            }
-
-            return $"{name}{newLocale}";
         }
     }
 }

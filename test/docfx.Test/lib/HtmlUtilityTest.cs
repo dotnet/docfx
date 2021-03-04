@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, (_, foo) => link));
 
             Assert.Equal(output, actual);
         }
@@ -90,10 +90,10 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref uid='hello'>", "a", "b", "<a href='a'>b</a>")]
         [InlineData("<xref href='hello'>x</xref>", "a", "b", "<a href='a'>b</a>")]
         [InlineData("<xref href='hello' uid='hello'>", "a", "b", "<a href='a'>b</a>")]
-        [InlineData(@"<xref href='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
-        [InlineData(@"<xref uid='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
-        [InlineData(@"<xref href='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&")]
-        [InlineData(@"<xref uid='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&")]
+        [InlineData(@"<xref href='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&amp;")]
+        [InlineData(@"<xref uid='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&amp;")]
+        [InlineData(@"<xref href='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&amp;")]
+        [InlineData(@"<xref uid='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&amp;")]
         [InlineData(@"<xref href='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         [InlineData(@"<xref uid='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)

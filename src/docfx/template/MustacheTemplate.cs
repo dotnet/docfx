@@ -16,23 +16,20 @@ namespace Microsoft.Docs.Build
 {
     internal class MustacheTemplate
     {
-        private static readonly Tags s_defaultTags = new Tags("{{", "}}");
+        private static readonly Tags s_defaultTags = new("{{", "}}");
 
         private readonly JObject? _global;
         private readonly Package _package;
         private readonly PathString _baseDirectory;
-        private readonly Lazy<JsonSchemaTransformer>? _jsonSchemaTransformer;
         private readonly ParserPipeline _parserPipeline;
 
-        private readonly ConcurrentDictionary<string, BlockToken?> _templates = new ConcurrentDictionary<string, BlockToken?>();
+        private readonly ConcurrentDictionary<string, BlockToken?> _templates = new();
 
-        public MustacheTemplate(
-            Package package, string? baseDirectory = null, JObject? global = null, Lazy<JsonSchemaTransformer>? jsonSchemaTransformer = null)
+        public MustacheTemplate(Package package, string? baseDirectory = null, JObject? global = null)
         {
             _global = global;
             _package = package;
             _baseDirectory = baseDirectory is null ? default : new PathString(baseDirectory);
-            _jsonSchemaTransformer = jsonSchemaTransformer;
             _parserPipeline = new ParserPipelineBuilder().Build();
         }
 
@@ -42,19 +39,24 @@ namespace Microsoft.Docs.Build
                    _package.Exists(_baseDirectory.Concat(new PathString($"{templateName}.tmpl")));
         }
 
-        public string Render(string templateName, JToken model, FilePath? file = null)
+        public string Render(ErrorBuilder errors, string templateName, JToken model)
         {
             var context = new Stack<JToken>();
-            var template = GetTemplate($"{templateName}.primary.tmpl") ?? GetTemplate($"{templateName}.tmpl") ??
-                throw Errors.Template.MustacheNotFound($"{templateName}.tmpl").ToException();
+            var template = GetTemplate($"{templateName}.primary.tmpl") ?? GetTemplate($"{templateName}.tmpl");
+            if (template == null)
+            {
+                errors.Add(Errors.Template.MustacheNotFound($"{templateName}.tmpl"));
+                return "";
+            }
 
             var result = new StringBuilder(1024);
+            var xrefmap = model is JObject obj && obj.TryGetValue("_xrefmap", out var item) && item is JObject map ? map : null;
             context.Push(model);
-            Render(template, result, context, file);
+            Render(errors, template, result, context, xrefmap);
             return result.ToString();
         }
 
-        private void Render(BlockToken block, StringBuilder result, Stack<JToken> context, FilePath? file)
+        private void Render(ErrorBuilder errors, BlockToken block, StringBuilder result, Stack<JToken> context, JObject? xrefmap)
         {
             foreach (var child in block.Children)
             {
@@ -68,25 +70,28 @@ namespace Microsoft.Docs.Build
                         break;
 
                     case PartialToken partial:
-                        var template = GetTemplate(partial.Content.ToString()) ?? GetTemplate($"{partial.Content}.tmpl.partial") ??
-                            throw Errors.Template.MustacheNotFound($"{partial.Content}.tmpl.partial").ToException();
-
-                        Render(template, result, context, file);
+                        var template = GetTemplate(partial.Content.ToString()) ?? GetTemplate($"{partial.Content}.tmpl.partial");
+                        if (template == null)
+                        {
+                            errors.Add(Errors.Template.MustacheNotFound($"{partial.Content}.tmpl.partial"));
+                            break;
+                        }
+                        Render(errors, template, result, context, xrefmap);
                         break;
 
                     case InvertedSectionToken invertedSection:
-                        switch (Lookup(context, invertedSection.SectionName, file))
+                        switch (Lookup(context, invertedSection.SectionName, xrefmap))
                         {
                             case null:
                             case JValue value when !IsTruthy(value):
                             case JArray array when array.Count == 0:
-                                Render(invertedSection, result, context, file);
+                                Render(errors, invertedSection, result, context, xrefmap);
                                 break;
                         }
                         break;
 
                     case SectionToken section:
-                        var property = Lookup(context, section.SectionName, file);
+                        var property = Lookup(context, section.SectionName, xrefmap);
                         switch (property)
                         {
                             case null:
@@ -97,21 +102,21 @@ namespace Microsoft.Docs.Build
                                 foreach (var item in array)
                                 {
                                     context.Push(item);
-                                    Render(section, result, context, file);
+                                    Render(errors, section, result, context, xrefmap);
                                     context.Pop();
                                 }
                                 break;
 
                             default:
                                 context.Push(property);
-                                Render(section, result, context, file);
+                                Render(errors, section, result, context, xrefmap);
                                 context.Pop();
                                 break;
                         }
                         break;
 
                     case InterpolationToken interpolationToken:
-                        if (Lookup(context, interpolationToken.Content.ToString(), file) is JToken text)
+                        if (Lookup(context, interpolationToken.Content.ToString(), xrefmap) is JToken text)
                         {
                             var content = interpolationToken.EscapeResult
                                 ? WebUtility.HtmlEncode(text.ToString())
@@ -124,7 +129,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private JToken? Lookup(Stack<JToken> tokens, string name, FilePath? file)
+        private JToken? Lookup(Stack<JToken> tokens, string name, JObject? xrefmap)
         {
             if (name == ".")
             {
@@ -135,7 +140,7 @@ namespace Microsoft.Docs.Build
             {
                 if (!name.Contains('.'))
                 {
-                    var result = GetProperty(token, name, file);
+                    var result = GetProperty(token, name, xrefmap);
                     if (result != null)
                     {
                         return result;
@@ -147,7 +152,7 @@ namespace Microsoft.Docs.Build
                     var keys = name.Split('.', StringSplitOptions.RemoveEmptyEntries);
                     for (var i = 0; i < keys.Length; i++)
                     {
-                        result = GetProperty(result, keys[i], file);
+                        result = GetProperty(result, keys[i], xrefmap);
                         if (result is null)
                         {
                             // Skip looking up parent context for the last segment,
@@ -170,17 +175,31 @@ namespace Microsoft.Docs.Build
             return null;
         }
 
-        private JToken? GetProperty(JToken token, string key, FilePath? file = null)
+        private JToken? GetProperty(JToken token, string key, JObject? xrefmap)
         {
             return token switch
             {
                 JObject _ when _global != null && key == "__global" => _global,
                 JObject obj => obj.GetValue(key, StringComparison.Ordinal),
                 JArray array when int.TryParse(key, out var index) && index >= 0 && index < array.Count => array[index],
-                JValue value when _jsonSchemaTransformer != null && file != null && value.Value is string str && key == "__xrefspec"
-                    => _jsonSchemaTransformer.Value.GetMustacheXrefSpec(file, str),
+                JValue value when value.Value is string str && key == "__xrefspec" => GetMustacheXrefSpec(xrefmap, str),
                 _ => null,
             };
+        }
+
+        private static JToken GetMustacheXrefSpec(JObject? xrefmap, string uid)
+        {
+            if (xrefmap != null && xrefmap.TryGetValue(uid, out var result))
+            {
+                // Ensure these well known properties does not fallback to mustache parent variable scope
+                result["uid"] ??= null;
+                result["name"] ??= result["uid"] ?? null;
+                result["href"] ??= null;
+
+                return result;
+            }
+
+            return new JObject { ["uid"] = uid, ["name"] = null, ["href"] = null };
         }
 
         private static bool IsTruthy(JValue value)

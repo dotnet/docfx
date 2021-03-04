@@ -4,14 +4,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Docs.MetadataService.Models;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
     internal static class OpsMetadataRuleConverter
     {
-        private static readonly Dictionary<string, string[]> s_ruleNameConvert = new Dictionary<string, string[]>()
+        private static readonly Dictionary<string, string[]> s_ruleNameConvert = new()
         {
             { "Kind", new string[] { "unexpected-type" } },
             { "Match", new string[] { "invalid-value" } },
@@ -38,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var allowlists = JsonConvert.DeserializeObject<Allowlists>(allowlistsContent);
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
 
             var schema = new
             {
@@ -70,14 +72,14 @@ namespace Microsoft.Docs.Build
                     relativeMaxDate = GetRelativeMaxDate(rulesInfo),
                     relativeMinDate = GetRelativeMinDate(rulesInfo),
                     replacedBy = GetReplacedBy(rulesInfo),
-                    microsoftAlias = GetMicrosoftAlias(rulesInfo, allowlists),
+                    microsoftAlias = GetMicrosoftAlias(rulesInfo, taxonomies),
                     minLength = GetMinLength(rulesInfo),
                     maxLength = GetMaxLength(rulesInfo),
                 };
 
                 var propertyJson =
                     JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                if (!string.Equals("{}", propertyJson))
+                if (propertyJson != "{}")
                 {
                     schema.properties.Add(attribute, property);
                 }
@@ -114,9 +116,9 @@ namespace Microsoft.Docs.Build
 
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
-                    TryGetAllowlist(attribute, listRuleInfo.List, allowlists, 0, out var allowlist))
+                    TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var taxonomy))
                 {
-                    schema.enumDependencies.Add($"{attribute}[0]", allowlist);
+                    schema.enumDependencies.Add($"{attribute}[0]", taxonomy);
 
                     if (rulesInfo.TryGetValue("Match", out var matchRuleInfo) &&
                         !string.IsNullOrEmpty(matchRuleInfo.Value) &&
@@ -161,45 +163,63 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetAllowlist(
-            string parentName, string? listId, Allowlists allowlists, int index, out Dictionary<string, EnumDependenciesSchema?> allowList)
+        private static bool TryGetTaxonomy(string attribute, string? listId, Taxonomies taxonomies, out Dictionary<string, EnumDependenciesSchema?> taxonomy)
         {
-            allowList = new Dictionary<string, EnumDependenciesSchema?>();
-
-            if (!string.IsNullOrEmpty(listId) && allowlists.TryGetValue(listId, out var mainAllowlist))
+            if (string.IsNullOrEmpty(listId) || !taxonomies.TryGetValue(listId["list:".Length..], out var subTaxonomy))
             {
-                if (string.IsNullOrEmpty(mainAllowlist.DependentAttribute))
-                {
-                    allowList = mainAllowlist.Values.Keys.ToDictionary(validValue => validValue, validValue => (EnumDependenciesSchema?)null);
-                    return true;
-                }
+                taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+                return false;
+            }
 
-                if (string.Equals(parentName, mainAllowlist.DependentAttribute))
-                {
-                    index++;
-                }
-
-                foreach (var (validValue, subListId) in mainAllowlist.Values)
-                {
-                    if (TryGetAllowlist(mainAllowlist.DependentAttribute, subListId, allowlists, index, out var subAllowList))
-                    {
-                        allowList.Add(validValue, new EnumDependenciesSchema() { { $"{mainAllowlist.DependentAttribute}[{index}]", subAllowList } });
-                    }
-                }
-
+            if (string.IsNullOrEmpty(subTaxonomy.NestedValue))
+            {
+                taxonomy = subTaxonomy.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
                 return true;
             }
 
-            return false;
+            var nestedValue = subTaxonomy.NestedValue;
+            var index = 0;
+
+            if (string.Equals("slug", nestedValue, StringComparison.OrdinalIgnoreCase))
+            {
+                index = 1;
+                nestedValue = attribute;
+            }
+
+            // msService => ms.service, msSubService => ms.subservice
+            var strBuilder = new StringBuilder();
+            var strIdx = 0;
+            for (; strIdx < nestedValue.Length; strIdx++)
+            {
+                if (char.IsUpper(nestedValue[strIdx]))
+                {
+                    strBuilder.Append('.');
+                    break;
+                }
+                strBuilder.Append(nestedValue[strIdx]);
+            }
+            nestedValue = strBuilder.Append(nestedValue[strIdx..]).ToString().ToLowerInvariant();
+
+            taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+            foreach (var (key, value) in subTaxonomy.NestedTaxonomy.dic)
+            {
+                // replace "(empty)" by ""
+                var clearTaxonomy = value.ToDictionary(
+                    x => string.Equals("(empty)", x, StringComparison.OrdinalIgnoreCase) ? string.Empty : x, x => (EnumDependenciesSchema?)null);
+
+                taxonomy.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
+            }
+            return true;
         }
 
-        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Allowlists allowlists)
+        private static object? GetMicrosoftAlias(Dictionary<string, OpsMetadataRule> rulesInfo, Taxonomies taxonomies)
         {
             if (rulesInfo.TryGetValue("MicrosoftAlias", out var microsoftAliasRuleInfo) &&
                 !string.IsNullOrEmpty(microsoftAliasRuleInfo.AllowedDLs) &&
-                allowlists.TryGetValue(microsoftAliasRuleInfo.AllowedDLs, out var allowlist))
+                taxonomies.TryGetValue(microsoftAliasRuleInfo.AllowedDLs["list:".Length..], out var taxonomy) &&
+                string.IsNullOrEmpty(taxonomy.NestedValue))
             {
-                return new { allowedDLs = allowlist.Values.Keys.ToList() };
+                return new { allowedDLs = taxonomy.NestedTaxonomy.list };
             }
 
             return null;

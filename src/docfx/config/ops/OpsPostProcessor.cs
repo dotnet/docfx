@@ -2,29 +2,33 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
+using System.Linq;
 using Microsoft.Docs.LearnValidation;
 
 namespace Microsoft.Docs.Build
 {
     internal class OpsPostProcessor
     {
-        private static readonly object s_lock = new object();
+        private static readonly object s_lock = new();
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
         private readonly ErrorBuilder _errors;
         private readonly ILearnServiceAccessor _learnServiceAccessor;
+        private readonly ExternalXref[] _externalXrefs;
 
         public OpsPostProcessor(
             Config config,
             ErrorBuilder errors,
             BuildOptions buildOptions,
-            ILearnServiceAccessor learnServiceAccessor)
+            ILearnServiceAccessor learnServiceAccessor,
+            ExternalXref[] externalXrefs)
         {
             _config = config;
             _errors = errors;
             _buildOptions = buildOptions;
             _learnServiceAccessor = learnServiceAccessor;
+            _externalXrefs = externalXrefs;
         }
 
         public void Run()
@@ -44,19 +48,16 @@ namespace Microsoft.Docs.Build
                 lock (s_lock)
                 {
                     LearnValidationEntry.Run(
-                        repoUrl: _buildOptions.Repository?.Url,
-                        repoBranch: _buildOptions.Repository?.Branch,
+                        repoUrl: _buildOptions.Repository?.Url ?? "",
+                        repoBranch: _buildOptions.Repository?.Branch ?? "",
                         docsetName: _config.Name,
-                        docsetPath: _buildOptions.DocsetPath,
                         docsetOutputPath: _buildOptions.OutputPath,
                         publishFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, ".publish.json")),
-                        dependencyFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, "full-dependent-list.txt")),
                         manifestFilePath: Path.GetFullPath(Path.Combine(_buildOptions.OutputPath, _config.BasePath, ".manifest.json")),
-                        environment: OpsAccessor.DocsEnvironment.ToString(),
                         isLocalizationBuild: _buildOptions.IsLocalizedBuild,
                         writeLog: LogError,
-                        fallbackDocsetPath: _buildOptions.FallbackDocsetPath,
                         noDrySync: _config.NoDrySync,
+                        isSharedItem: IsSharedItem,
                         learnServiceAccessor: _learnServiceAccessor);
                 }
             }
@@ -73,6 +74,11 @@ namespace Microsoft.Docs.Build
                 LearnErrorLevel.Warning => ErrorLevel.Warning,
                 _ => ErrorLevel.Off,
             };
+        }
+
+        private bool IsSharedItem(string uid, string schemaType)
+        {
+            return _externalXrefs.Any(xref => xref.Uid == uid && schemaType == xref.SchemaType);
         }
     }
 }

@@ -176,6 +176,7 @@ outputs:
 # Apply template and produce html page with versioning
 # 1. Link should be resolved to the physical relative path
 # 2. Asset_id should should contains group prefix
+usePhysicalInput: true
 inputs:
   docfx.yml: |
     outputType: html
@@ -383,3 +384,20 @@ outputs:
   .lunr.json: |
     { "version": "2.3.8", "fields": ["title", "body"] }
 ---
+# Liquid with register tag
+inputs:
+  docfx.yml: |
+    outputType: html
+    templateBasePath: /dev
+  docs/a.md:
+  _themes/Conceptual.html.liquid: |
+    {% js test.js %}
+    {% style test.css %}
+    {{content}}
+  _themes/test.js:
+  _themes/test.css:
+outputs:
+  docs/a.html: |
+    <script src='/dev/test.js' ></script>
+    <link rel="stylesheet" href="/dev/test.css">
+    <div></div>

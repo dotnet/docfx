@@ -1,0 +1,170 @@
+{
+  "ms.author": {
+    "nestedValue": "",
+    "nestedTaxonomy": [
+      "amlstudiodocs",
+      "apimpm",
+      "archiveddocs",
+      "azfuncdf",
+      "betafred",
+      "dotnetcontent",
+      "hisdocs",
+      "ncldev"
+    ]
+  },
+  "ms.devlang": {
+    "nestedValue": "",
+    "nestedTaxonomy": [
+      "azurecli",
+      "brainscript",
+      "c",
+      "cli",
+      "cpp",
+      "csharp",
+      "dotnet",
+      "fsharp"
+    ]
+  },
+  "ms.prod": {
+    "nestedValue": "msTechnology",
+    "nestedTaxonomy": {
+      ".net": [
+        "(empty)",
+        "csharp-interactive",
+        "devlang-csharp",
+        "devlang-fsharp"
+      ],
+      ".net-core": [
+        "(empty)",
+        "devlang-cpp",
+        "devlang-csharp",
+        "devlang-fsharp",
+        "devlang-javascript",
+        "devlang-python"
+      ],
+      ".net-core-technologies": [
+        "(empty)",
+        "devlang-cpp",
+        "devlang-csharp",
+        "devlang-fsharp",
+        "devlang-javascript",
+        "devlang-python",
+        "devlang-visual-basic",
+        "dotnet-asp5"
+      ],
+      ".net-framework": [
+        "(empty)",
+        "devlang-cpp",
+        "devlang-csharp",
+        "devlang-fsharp",
+        "devlang-javascript"
+      ]
+    }
+  },
+  "ms.service": {
+    "nestedValue": "msSubService",
+    "nestedTaxonomy": {
+      "3d-data-preparation": [
+        "(empty)"
+      ],
+      "active-directory": [
+        "(empty)",
+        "app-mgmt",
+        "app-provisioning",
+        "authentication",
+        "azuread-dev"
+      ],
+      "architecture-center": [
+        "(empty)",
+        "asc-for-iot",
+        "attestation",
+        "cloud-fundamentals",
+        "enterprise-cloud-adoption",
+        "example-scenario"
+      ],
+      "automation": [
+        "(empty)",
+        "change-inventory-management",
+        "dsc",
+        "process-automation",
+        "shared-capabilities",
+        "update-management"
+      ]
+    }
+  },
+  "ms.topic": {
+    "nestedValue": "",
+    "nestedTaxonomy": [
+      "archived",
+      "article",
+      "best-practice",
+      "callback",
+      "checklist",
+      "class",
+      "conceptual"
+    ]
+  },
+  "devlang": {
+    "nestedValue": "",
+    "nestedTaxonomy": [
+      "al-language",
+      "aspx",
+      "aspx-csharp",
+      "aspx-vb",
+      "azcopy",
+      "azurecli",
+      "azurepowershell"
+    ]
+  },
+  "product": {
+    "nestedValue": "slug",
+    "nestedTaxonomy": {
+      "azure": [
+        "azue-speech-translation",
+        "azure-active-directory",
+        "azure-active-directory-b2c",
+        "azure-active-directory-domain",
+        "azure-advisor",
+        "azure-analysis-services",
+        "azure-anomaly-detector",
+        "azure-api-apps",
+        "azure-api-fhir",
+        "azure-api-management"
+      ],
+      "dotnet": [
+        "aspnet",
+        "aspnet-core",
+        "dotnet-core",
+        "dotnet-standard",
+        "ef-core",
+        "mlnet",
+        "xamarin"
+      ],
+      "dynamics": [],
+      "dynamics-365": [
+        "customer-voice",
+        "dynamics-business-central",
+        "dynamics-commerce",
+        "dynamics-cust-insights",
+        "dynamics-customer-engagement",
+        "dynamics-customer-service",
+        "dynamics-cust-svc-insights",
+        "dynamics-field-service"
+      ],
+      "expression": [
+        "expression-studio"
+      ],
+      "m365": [
+        "m365-ems",
+        "m365-ems-cloud-app-security",
+        "m365-information-protection",
+        "m365-security-center",
+        "m365-security-score"
+      ],
+      "mem": [
+        "mem-configuration-manager",
+        "mem-intune"
+      ]
+    }
+  }
+}

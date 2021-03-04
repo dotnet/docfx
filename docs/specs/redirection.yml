@@ -207,6 +207,7 @@ outputs:
     }
 ---
 # Show warning if two or more files redirect to the same file with document id
+noSingleFile: true
 inputs:
   docsets.yml:
   sccm/docfx.yml: |
@@ -236,9 +237,9 @@ inputs:
       a.md:
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","file":"redirections.yml","line":2,"column":22}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","file":"redirections.yml","line":3,"column":7}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","file":"redirections.yml","line":4,"column":8}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'.","file":"redirections.yml","line":2,"column":22}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'.","file":"redirections.yml","line":3,"column":7}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'.","file":"redirections.yml","line":4,"column":8}
 ---
 # The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
 inputs:
@@ -369,7 +370,7 @@ outputs:
   azure/active-directory-b2c/test.json: |
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
-# Hub/Landing page is treated as *.md when calculating document id
+# Hub/Landing/Architecture page is treated as *.md when calculating document id
 os: windows, osx
 inputs:
   docfx.yml: |
@@ -384,15 +385,21 @@ inputs:
     ### YamlMime:Hub
   articles/active-directory-b2c/test.yml : |
     ### YamlMime:landing
+  articles/active-directory-b2c/architecture.yml : |
+    ### YamlMime:Architecture
   _themes/ContentTemplate/schemas/Hub.schema.json:
   _themes/ContentTemplate/Hub.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Landing.schema.json:
   _themes/ContentTemplate/Landing.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/Architecture.schema.json:
+  _themes/ContentTemplate/Architecture.html.primary.tmpl:
 outputs:
   azure/active-directory-b2c/index.json: |
     {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
   azure/active-directory-b2c/test.json: |
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
+  azure/active-directory-b2c/architecture.json: |
+    {"metadata": { "document_id": "a482b6c7-7a1c-c123-0a93-28c4565cc43b", "document_version_independent_id": "0ea6a82f-f89d-1b92-3e01-06fbf8d4bf6a"}}
 ---
 # index.yml's document id also follows the redirection rules
 # trailing 'index' redirect-to will be trimmed
@@ -416,6 +423,7 @@ outputs:
     {"metadata":{ "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}}
 ---
 # redirection defined in markdown yaml metadata is not supported
+noSingleFile: true
 inputs:
   docfx.yml:
   redirections.yml: |
@@ -430,7 +438,7 @@ outputs:
   docs/b.json:
   .errors.log: |
     {"message_severity":"warning","code":"attribute-reserved","message":"Attribute redirect_url is reserved for use by Docs.","file":"docs/b.md","line":2,"column":1}
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/a.json': 'docs/a.md [redirection]', 'docs/a.md'."}
+    {"message_severity":"warning","code":"redirected-file-not-removed"}
 ---
 # document_id of .yml redirections are calculated as .md
 inputs:
@@ -497,7 +505,7 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: a.md [redirection] --> a.md [redirection].","file":"redirections.json","line":5,"column":26}
     {"message_severity":"warning","code":"circular-redirection","message":"Build has identified circular redirection: b.md [redirection] --> b.md [redirection].","file":"redirections.json","line":10,"column":26}
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'a.json': 'a.md [redirection]', 'a.md'."}
+    {"message_severity":"warning","code":"redirected-file-not-removed"}
 ---
 # Warn on circular redirection without document id
 inputs:
@@ -668,7 +676,7 @@ repos:
 outputs:
   .publish.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","line":1,"column":39}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'.","line":1,"column":39}
 ---
 # The 'sourth-path' and 'redirect-url' are both null
 repos:
@@ -680,7 +688,7 @@ repos:
 outputs:
   .publish.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'source_path or redirect_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'.","line":0,"column":0}
 ---
 # exclude_monikers should take effect on config monikers as well
 repos:
@@ -710,3 +718,211 @@ repos:
         }
 outputs:
   bdc0b3f1/docs/v1/a.json:
+---
+# Multiple Redirection Files
+repos:
+  https://github.com/redirection/multiple-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            ".openpublishing.redirection.test.json",
+            "a/.openpublishing.redirection.test.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      .openpublishing.redirection.test.json: |
+        {
+          "redirections": [{"source_path": "c.md", "redirect_url": "/cc"}]
+        }
+      a/docfx.yml:
+      a/.openpublishing.redirection.test.json: |
+        {
+           "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/b/.openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+outputs:
+  a/.publish.json: |
+    {
+      "files": [
+        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "source_path": "b.md", "locale": "en-us", "redirect_url": "/bb"},
+        {"url": "/b/a", "source_path": "b/a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b/b", "source_path": "b/b.md", "locale": "en-us", "redirect_url": "/bb"}
+      ]
+    }
+---
+# Multiple Redirection Files with source_path_from_root
+repos:
+  https://github.com/redirection/multiple-redirection-files-source-path-from-root:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {"source_path": "a/a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  a/.publish.json: |
+    {
+      "files": [
+        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}
+      ]
+    }
+---
+# File not found for a registered redirection file.
+repos:
+  https://github.com/redirection/multiple-redirection-files-file-not-found:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      a/docfx.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.json' registered in .openpublishing.publish.json is not found in the repo."}
+---
+# source_path and source_path_from_root exist at the same time
+repos:
+  https://github.com/redirection/two-path-at-the-same-time:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": [{"source_path": "c.md", "source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  a/.publish.json:
+  .errors.log: |
+    {"message_severity":"error","code":"source-path-conflict","message":"A redirection item cannot contain 'source_path' and 'source_path_from_root' at the same time.","file":"a/b/.openpublishing.redirection.json","line":1,"column":99}
+---
+# redirection conflicts for multiple redirection files
+repos:
+  https://github.com/redirection/multiple-redirection-files-redirection-conflict:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [{"source_path": "a/a.md", "redirect_url": "/aa"}]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": 
+          [{"source_path_from_root": "/a/a.md", "redirect_url": "/aa"}]
+        }
+outputs:
+  a/.publish.json:
+  .errors.log: |
+    {"message_severity":"error","code":"redirection-conflict","message":"The 'a.md' appears twice or more in the redirection mappings.","file":"a/b/.openpublishing.redirection.json","line":2,"column":61}
+---
+# redirection syntax check
+repos:
+  https://github.com/redirection/multiple-redirection-files-redirection-syntax-check:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [{"source_path": "/a/a.md", "redirect_url": "/aa"}]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": 
+          [{"source_path_from_root": "a/a.md", "redirect_url": "/aa"}]
+        }
+outputs:
+  a/.publish.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":".openpublishing.redirection.json","line":2,"column":67}
+    {"message_severity":"warning","code":"redirection-path-syntax-error","message":"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.","file":"a/b/.openpublishing.redirection.json","line":2,"end_column":60}
+---
+# case insensitive for redirection_files on windows/mac
+os: windows, mac
+repos:
+  https://github.com/redirection/case-insensitive-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.a.json",
+            "a/b/.openpublishing.redirection.A.json"
+            ]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.A.json: |
+        {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  a/.publish.json: |
+    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
+---
+# case sensitive for redirection_files on linux
+os: linux
+repos:
+  https://github.com/redirection/case-sensitive-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            "a/b/.openpublishing.redirection.a.json",
+            "a/b/.openpublishing.redirection.A.json"
+            ]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.A.json: |
+        {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.a.json' registered in .openpublishing.publish.json is not found in the repo."}
+  a/.publish.json: |
+    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}

@@ -75,13 +75,15 @@
     {
         "description": "escaped pointer ref",
         "schema": {
-            "tilda~field": {"type": "integer"},
-            "slash/field": {"type": "integer"},
-            "percent%field": {"type": "integer"},
+            "definitions": {
+                "tilde~field": {"type": "integer"},
+                "slash/field": {"type": "integer"},
+                "percent%field": {"type": "integer"}
+            },
             "properties": {
-                "tilda": {"$ref": "#/tilda~0field"},
-                "slash": {"$ref": "#/slash~1field"},
-                "percent": {"$ref": "#/percent%25field"}
+                "tilde": {"$ref": "#/definitions/tilde~0field"},
+                "slash": {"$ref": "#/definitions/slash~1field"},
+                "percent": {"$ref": "#/definitions/percent%25field"}
             }
         },
         "tests": [
@@ -91,8 +93,8 @@
                 "valid": false
             },
             {
-                "description": "tilda invalid",
-                "data": {"tilda": "aoeu"},
+                "description": "tilde invalid",
+                "data": {"tilde": "aoeu"},
                 "valid": false
             },
             {
@@ -106,8 +108,8 @@
                 "valid": true
             },
             {
-                "description": "tilda valid",
-                "data": {"tilda": 123},
+                "description": "tilde valid",
+                "data": {"tilde": 123},
                 "valid": true
             },
             {
@@ -194,6 +196,31 @@
         "schema": {
             "properties": {
                 "$ref": {"type": "string"}
+            }
+        },
+        "tests": [
+            {
+                "description": "property named $ref valid",
+                "data": {"$ref": "a"},
+                "valid": true
+            },
+            {
+                "description": "property named $ref invalid",
+                "data": {"$ref": 2},
+                "valid": false
+            }
+        ]
+    },
+    {
+        "description": "property named $ref, containing an actual $ref",
+        "schema": {
+            "properties": {
+                "$ref": {"$ref": "#/definitions/is-string"}
+            },
+            "definitions": {
+                "is-string": {
+                    "type": "string"
+                }
             }
         },
         "tests": [

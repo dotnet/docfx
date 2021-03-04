@@ -36,7 +36,7 @@ namespace Microsoft.Docs.Build
             {
                 return null;
             }
-            return header.Substring(YamlMimePrefix.Length).Trim();
+            return header[YamlMimePrefix.Length..].Trim();
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static JToken Parse(ErrorBuilder errors, TextReader input, FilePath? file)
         {
-            return ParseCore(errors, input, file).RemoveNulls(errors);
+            return ParseCore(errors, input, file).RemoveNulls(errors, file);
         }
 
         private static string? ReadDocumentType(TextReader reader)
@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             {
                 if (line.StartsWith("documentType:"))
                 {
-                    return line.Substring("documentType:".Length).Trim();
+                    return line["documentType:".Length..].Trim();
                 }
             }
             return null;
@@ -184,7 +184,10 @@ namespace Microsoft.Docs.Build
 
         private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file, SourceInfo? keySourceInfo = null)
         {
-            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column, keySourceInfo);
+            return file is null ? null : new SourceInfo(file, node.Start.Line, node.Start.Column, node.End.Line, node.End.Column)
+            {
+                KeySourceInfo = keySourceInfo,
+            };
         }
 
         private static JToken ParseScalar(string value)

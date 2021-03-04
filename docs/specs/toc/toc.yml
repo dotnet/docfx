@@ -711,7 +711,7 @@ outputs:
     {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
   .errors.log: |
     {"message_severity":"warning","code":"yaml-duplicate-key","message":"Key 'topicHref' is already defined, remove the duplicate key.","file":"docs/TOC.yml","line":3,"column":3}
-    {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists.","file":"docs/TOC.yml","line":4,"column":12}
+    {"message_severity":"warning","code":"toc-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists.","file":"docs/TOC.yml","line":4,"column":12}
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
@@ -890,7 +890,7 @@ outputs:
   docs/f1/toc.json: |
     { "items":[{"name":"TOC Reference"}] }
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Unable to find either toc.yml or toc.md inside ../f2/ Please make sure the file exists.","file":"docs/f1/TOC.md","line":1,"column":3}
+    {"message_severity":"warning","code":"toc-not-found","message":"Unable to find either toc.yml or toc.md inside ../f2/ Please make sure the file exists.","file":"docs/f1/TOC.md","line":1,"column":3}
 ---
 # Toc with null value
 inputs:
@@ -1082,6 +1082,7 @@ outputs:
     { "items": [{ "maintainContext": true, "expanded": true, "displayName": "display name" }] }
 ---
 # conflicted toc files will be removed from toc map
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/TOC.yml: |
@@ -1098,6 +1099,7 @@ outputs:
     {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'."}
 ---
 # validate bookmarks in toc
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.md: |

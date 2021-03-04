@@ -12,13 +12,11 @@ namespace Microsoft.Docs.Build
     /// </summary>
     internal class DependencyMapBuilder
     {
-        private readonly ConcurrentHashSet<DependencyItem> _dependencyItems = new ConcurrentHashSet<DependencyItem>();
         private readonly SourceMap _sourceMap;
 
-        public DependencyMapBuilder(SourceMap sourceMap)
-        {
-            _sourceMap = sourceMap;
-        }
+        private readonly Scoped<ConcurrentHashSet<DependencyItem>> _dependencyItems = new();
+
+        public DependencyMapBuilder(SourceMap sourceMap) => _sourceMap = sourceMap;
 
         public void AddDependencyItem(FilePath from, FilePath? to, DependencyType type, bool transitive = false)
         {
@@ -34,11 +32,13 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            _dependencyItems.TryAdd(new DependencyItem(
+            var item = new DependencyItem(
                 fromOriginalPath is null ? from : fromOriginalPath,
                 toOriginalPath is null ? to : toOriginalPath,
                 type,
-                transitive));
+                transitive);
+
+            Watcher.Write(() => _dependencyItems.Value.TryAdd(item));
         }
 
         public DependencyMap Build()
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
         private Dictionary<FilePath, HashSet<DependencyItem>> Flatten()
         {
             var result = new Dictionary<FilePath, HashSet<DependencyItem>>();
-            var graph = _dependencyItems
+            var graph = _dependencyItems.Value
                 .GroupBy(k => k.From)
                 .ToDictionary(k => k.Key);
 

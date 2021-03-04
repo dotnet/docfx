@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     public class TripleColonBlockParser : BlockParser
     {
-        private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
+        private static readonly IDictionary<string, string> s_emptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
         private readonly MarkdownContext _context;
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
 
@@ -238,7 +238,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public static bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, bool selfClosing, Action<string> logError)
         {
-            attributes = EmptyAttributes;
+            attributes = s_emptyAttributes;
             while (true)
             {
                 ExtensionsHelper.SkipSpaces(ref slice);
@@ -271,7 +271,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                     }
                 }
 
-                if (attributes == EmptyAttributes)
+                if (attributes == s_emptyAttributes)
                 {
                     attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 }

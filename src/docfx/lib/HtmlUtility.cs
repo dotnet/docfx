@@ -17,9 +17,21 @@ namespace Microsoft.Docs.Build
     {
         public delegate void TransformHtmlDelegate(ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token);
 
-        private static readonly HashSet<string> s_globalAllowedAttributes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> s_globalAllowedAttributes = new(StringComparer.OrdinalIgnoreCase)
         {
-            "name", "id", "class", "itemid", "itemprop", "itemref", "itemscope", "itemtype", "part", "slot", "spellcheck", "title", "role",
+            "name",
+            "id",
+            "class",
+            "itemid",
+            "itemprop",
+            "itemref",
+            "itemscope",
+            "itemtype",
+            "part",
+            "slot",
+            "spellcheck",
+            "title",
+            "role",
         };
 
         // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
@@ -104,18 +116,18 @@ namespace Microsoft.Docs.Build
             { "strike", null },
         };
 
-        private static string[] s_inlineTags = new[]
-            {
-                "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
-                "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
-                "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
-                "var", "video", "wbr",
-            };
+        private static readonly string[] s_inlineTags = new[]
+        {
+            "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
+            "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
+            "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
+            "var", "video", "wbr",
+        };
 
-        private static string[] s_selfClosingTags = new[]
-            {
-                "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
-            };
+        private static readonly string[] s_selfClosingTags = new[]
+        {
+            "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "link", "meta", "param", "source",
+        };
 
         public static string TransformHtml(string html, TransformHtmlDelegate transform)
         {
@@ -247,19 +259,21 @@ namespace Microsoft.Docs.Build
         public static void TransformLink(
             ref HtmlToken token,
             MarkdownObject? block,
-            Func<SourceInfo<string>, string> transformLink,
+            Func<SourceInfo<string>, MarkdownObject?, string> transformLink,
             Func<SourceInfo<string>, MarkdownObject?, string?, int, string>? transformImageLink = null)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
                 if (IsLink(ref token, attribute))
                 {
-                    var source = block?.GetSourceInfo()?.WithOffset(attribute.ValueRange);
+                    var source = new SourceInfo<string>(
+                        HttpUtility.HtmlDecode(attribute.Value.ToString()),
+                        block?.GetSourceInfo()?.WithOffset(attribute.ValueRange));
                     var link = HttpUtility.HtmlEncode(
                         !IsImage(ref token, attribute) || transformImageLink == null
-                            ? transformLink(new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source))
+                            ? transformLink(source, block)
                             : transformImageLink(
-                                new SourceInfo<string>(HttpUtility.HtmlDecode(attribute.Value.ToString()), source),
+                                source,
                                 block,
                                 token.GetAttributeValueByName("alt"),
                                 token.Range.Start.Index));
@@ -298,11 +312,11 @@ namespace Microsoft.Docs.Build
             {
                 if (attribute.NameIs("data-raw-html"))
                 {
-                    rawHtml = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                    rawHtml = attribute.Value.ToString();
                 }
                 else if (attribute.NameIs("data-raw-source"))
                 {
-                    rawSource = HttpUtility.HtmlDecode(attribute.Value.ToString());
+                    rawSource = attribute.Value.ToString();
                 }
                 else if (attribute.NameIs("href"))
                 {
@@ -314,7 +328,7 @@ namespace Microsoft.Docs.Build
                 }
                 else if (attribute.NameIs("data-throw-if-not-resolved"))
                 {
-                    suppressXrefNotFound = bool.TryParse(attribute.Value.Span, out var warn) ? !warn : false;
+                    suppressXrefNotFound = bool.TryParse(attribute.Value.Span, out var warn) && !warn;
                 }
             }
 
@@ -327,12 +341,15 @@ namespace Microsoft.Docs.Build
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
                 ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
-                : $"<a href='{HttpUtility.HtmlEncode(resolvedHref)}'>{HttpUtility.HtmlEncode(display)}</a>";
+                : StringUtility.Html($"<a href='{resolvedHref}'>{display}</a>");
 
             token = new HtmlToken(resolvedNode);
 
             string GetDefaultResolvedNode()
-                => $"<span class=\"xref\">{(!string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid))}</span>";
+            {
+                var content = !string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
+                return StringUtility.Html($"<span class=\"xref\">{content}</span>");
+            }
         }
 
         public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
@@ -360,13 +377,9 @@ namespace Microsoft.Docs.Build
                     }
                     continue;
                 }
-                else if (value.Type == JTokenType.Boolean)
-                {
-                    content = (bool)value ? "true" : "false";
-                }
                 else
                 {
-                    content = value.ToString();
+                    content = value.Type == JTokenType.Boolean ? (bool)value ? "true" : "false" : value.ToString();
                 }
 
                 result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(content)}\" />");
@@ -472,7 +485,7 @@ namespace Microsoft.Docs.Build
                         break;
                     case LinkType.AbsolutePath:
                         token.SetAttributeValue("data-linktype", "absolute-path");
-                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissing(href, locale));
+                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
                         break;
                     case LinkType.RelativePath:
                         token.SetAttributeValue("data-linktype", "relative-path");
@@ -484,8 +497,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string AddLocaleIfMissing(string href, string locale)
+        private static string AddLocaleIfMissingForAbsolutePath(string href, string locale)
         {
+            // should not add locale for api links
+            if (href.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            {
+                return href;
+            }
+
             var pos = href.IndexOfAny(new[] { '/', '\\' }, 1);
             if (pos >= 1)
             {
@@ -494,7 +513,8 @@ namespace Microsoft.Docs.Build
                     return href;
                 }
             }
-            return '/' + locale + href;
+
+            return $"/{locale}{href}";
         }
 
         private static bool IsLink(ref HtmlToken token, in HtmlAttribute attribute)

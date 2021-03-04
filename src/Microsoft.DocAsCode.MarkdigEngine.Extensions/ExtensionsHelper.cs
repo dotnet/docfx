@@ -59,8 +59,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 if (n[0] == '#')
                 {
                     return n[1] == 'x'
-                        ? ((char)Convert.ToInt32(n.Substring(2), 16)).ToString()
-                        : ((char)Convert.ToInt32(n.Substring(1))).ToString();
+                        ? ((char)Convert.ToInt32(n[2..], 16)).ToString()
+                        : ((char)Convert.ToInt32(n[1..])).ToString();
                 }
                 return "";
             });
@@ -226,15 +226,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             slice.NextChar();
             SkipWhitespace(ref slice);
 
-            string includedFilePath;
-            if (slice.CurrentChar == '<')
-            {
-                includedFilePath = TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true);
-            }
-            else
-            {
-                includedFilePath = TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
-            }
+            var includedFilePath = slice.CurrentChar == '<'
+                ? TryGetStringBeforeChars(new char[] { ')', '>' }, ref slice, breakOnWhitespace: true)
+                : TryGetStringBeforeChars(new char[] { ')' }, ref slice, breakOnWhitespace: true);
 
             if (includedFilePath == null)
             {
@@ -243,7 +237,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (includedFilePath.Length >= 1 && includedFilePath.First() == '<' && slice.CurrentChar == '>')
             {
-                includedFilePath = includedFilePath.Substring(1, includedFilePath.Length - 1).Trim();
+                includedFilePath = includedFilePath[1..].Trim();
             }
 
             if (slice.CurrentChar == ')')
@@ -263,11 +257,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 {
                     if (title.Length >= 2 && title.First() == '\'' && title.Last() == '\'')
                     {
-                        title = title.Substring(1, title.Length - 2).Trim();
+                        title = title[1..^1].Trim();
                     }
                     else if (title.Length >= 2 && title.First() == '\"' && title.Last() == '\"')
                     {
-                        title = title.Substring(1, title.Length - 2).Trim();
+                        title = title[1..^1].Trim();
                     }
                     path = includedFilePath;
                     slice.NextChar();

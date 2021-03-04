@@ -8,11 +8,11 @@ namespace Microsoft.Docs.Build
 {
     internal class ExpressionCreator
     {
-        private static readonly Regex s_orSymbolRegex = new Regex(@"^\s*(?<or>\|\|)", RegexOptions.Compiled);
-        private static readonly Regex s_operatorSymbolRegex = new Regex(@"^\s*(?<operator>\=|[\>\<]\=?)", RegexOptions.Compiled);
-        private static readonly Regex s_monikerSymbolRegex = new Regex(@"^\s*(?<moniker>[\w\-\.]+)", RegexOptions.Compiled);
+        private static readonly Regex s_orSymbolRegex = new(@"^\s*(?<or>\|\|)", RegexOptions.Compiled);
+        private static readonly Regex s_operatorSymbolRegex = new(@"^\s*(?<operator>\=|[\>\<]\=?)", RegexOptions.Compiled);
+        private static readonly Regex s_monikerSymbolRegex = new(@"^\s*(?<moniker>[\w\-\.]+)", RegexOptions.Compiled);
 
-        private static readonly Dictionary<string, ComparatorOperatorType> s_operatorMap = new Dictionary<string, ComparatorOperatorType>
+        private static readonly Dictionary<string, ComparatorOperatorType> s_operatorMap = new()
         {
             { "=", ComparatorOperatorType.EqualTo },
             { ">", ComparatorOperatorType.GreaterThan },
@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             errors.AddRange(rangeErrors);
             if (!string.IsNullOrWhiteSpace(rangeString))
             {
-                errors.Add(Errors.Versioning.MonikerRangeInvalid(source, $"Parse ends before reaching end of string, unrecognized string: '{rangeString}'."));
+                errors.Add(Errors.Versioning.MonikerRangeUnrecognized(source, rangeString));
             }
 
             return (errors, expression);
@@ -69,20 +69,13 @@ namespace Microsoft.Docs.Build
                 }
                 else if (comparator != null)
                 {
-                    if (result != null)
-                    {
-                        result = new LogicExpression(result, LogicOperatorType.And, comparator);
-                    }
-                    else
-                    {
-                        result = comparator;
-                    }
+                    result = result != null ? new LogicExpression(result, LogicOperatorType.And, comparator) : comparator;
                 }
             }
 
             if (result is null)
             {
-                errors.Add(Errors.Versioning.MonikerRangeInvalid(source, $"Expect a comparator set, but got '{rangeString}'."));
+                errors.Add(Errors.Versioning.MonikerRangeMissComparator(source, rangeString));
             }
             return (errors, result);
         }
@@ -108,7 +101,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                error = Errors.Versioning.MonikerRangeInvalid(source, $"Expect a moniker string, but got '{rangeString}'.");
+                error = Errors.Versioning.MonikerRangeMissMoniker(source, rangeString);
                 return false;
             }
         }
@@ -146,7 +139,7 @@ namespace Microsoft.Docs.Build
             if (match.Length > 0)
             {
                 value = match.Groups[1].Value;
-                rangeString = rangeString.Substring(match.Length);
+                rangeString = rangeString[match.Length..];
                 return true;
             }
 

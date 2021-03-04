@@ -259,15 +259,15 @@ inputs:
     ---
     metaKey: metaValue
     ---
-    # This is *a* title using @b &
+    # This is *a* title using @b & `<`
     
     body
 outputs:
   docs/a.json: |
     {
       "conceptual": "<p>body</p>",
-      "title": "This is a title using @b &",
-      "rawTitle": "<h1 id=\"this-is-a-title-using--\">This is <em>a</em> title using @b &amp;</h1>",
+      "title": "This is a title using @b & <",
+      "rawTitle": "<h1 id=\"this-is-a-title-using---\">This is <em>a</em> title using @b &amp; <code>&lt;</code></h1>",
       "metaKey": "metaValue"
     }
 ---
@@ -311,10 +311,10 @@ outputs:
   docs/a.json: |
     { "conceptual": "<div></div><p>body</p>" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
 ---
 # markdown table with styles is allowed
 inputs:
@@ -355,6 +355,7 @@ outputs:
     { "conceptual": "<p>http://*.windowsupdate.microsoft.com</p>" }
 ---
 # validate internal/external bookmarks in markdown documents
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -388,7 +389,7 @@ outputs:
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/a.md","line":4,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/d.md","line":1,"column":1}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
 ---
 # only validate bookmarks when the referenced file existed
 inputs:
@@ -411,6 +412,7 @@ outputs:
     {"conceptual": "<p><a href=\"/en-us/c\" data-linktype=\"absolute-path\">external link</a></p>"}
 ---
 # do not output file if bookmark-not-found is treated as error
+noSingleFile: true
 inputs:
   docfx.yml: |
     rules:
@@ -427,6 +429,7 @@ outputs:
     {"message_severity":"error","code":"bookmark-not-found","message":"Cannot find bookmark '#bookmark' in 'docs/b.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # Bookmark suggestion and validation
+noSingleFile: true
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -517,10 +520,10 @@ outputs:
   docs/c.json: |
     { "conceptual": "<p><a><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":27}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":27}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":27}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":27}
 ---
 # yaml header shouldn't be array
 inputs:
@@ -678,6 +681,7 @@ outputs:
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'b.md/'.","file":"docs/a.md","line":1,"column":1}
 ---
 # resource inclusion with relative path outside docset
+usePhysicalInput: true
 inputs:
   docsets.yml: |
     docsets: new-hope/new-hope/*
@@ -786,7 +790,7 @@ inputs:
     b  
 outputs:
   a.json: |
-    { "conceptual": "<p><a href=\"#to\" name=\"to\">to</a></p><p>a<br></br>b</p>" }
+    { "conceptual": "<p><a href=\"#to\" name=\"to\">to</a></p><p>a<br/>b</p>" }
 ---
 # Skip resolvement of autolink `tel` to avoid `file-not-found`
 inputs:
@@ -811,4 +815,28 @@ outputs:
   .errors.log: |
     { "code": "unknown-language-code", "file": "b.md", "line": 2, "column": 1 }
     { "code": "invalid-code", "file": "b.md", "line": 2, "column": 1 }
+---
+# Treat standalone include as block inside table cell
+inputs:
+  docfx.yml:
+  a.md: |
+    a | b
+    --|--
+    [!INCLUDE[](block.md)] | inline [!INCLUDE[](block.md)]
+  block.md: |
+   - foo
+   - bar
+outputs:
+  a.json: |
+    {
+      "conceptual": "
+        <table>
+          <thead><tr><th>a</th><th>b</th></tr></thead>
+          <tbody><tr>
+            <td><ul><li>foo</li><li>bar</li></ul></td>
+            <td>inline - foo - bar</td>
+          </tr></tbody>
+        </table>"
+    }
+  block.json:
 ---

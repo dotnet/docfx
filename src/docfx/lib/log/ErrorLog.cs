@@ -2,126 +2,127 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
     internal class ErrorLog : ErrorBuilder
     {
         private readonly ErrorBuilder _errors;
-        private readonly Config _config;
-        private readonly SourceMap? _sourceMap;
-        private readonly Dictionary<string, SourceInfo<CustomRule>> _customRules = new Dictionary<string, SourceInfo<CustomRule>>();
+        private readonly PathString _docsetBasePath;
 
-        private readonly ErrorSink _errorSink = new ErrorSink();
-        private readonly ConcurrentDictionary<FilePath, ErrorSink> _fileSink = new ConcurrentDictionary<FilePath, ErrorSink>();
+        private readonly Scoped<ErrorSink> _errorSink = new();
+        private readonly Scoped<ConcurrentDictionary<FilePath, ErrorSink>> _fileSink = new();
 
-        public override bool HasError => _errors.HasError;
+        public Config? Config { get; set; }
 
-        public override bool FileHasError(FilePath file) => _fileSink.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
+        public SourceMap? SourceMap { get; set; }
 
-        public ErrorLog(
-            ErrorBuilder errors,
-            Config config,
-            SourceMap? sourceMap = null,
-            Dictionary<string, ValidationRules>? contentValidationRules = null)
+        public MetadataProvider? MetadataProvider { get; set; }
+
+        public CustomRuleProvider? CustomRuleProvider { get; set; }
+
+        public override bool HasError => _errorSink.Value.ErrorCount > 0 || _fileSink.Value.Values.Any(file => file.ErrorCount > 0);
+
+        public override bool FileHasError(FilePath file) => _fileSink.Value.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
+
+        public ErrorLog(ErrorBuilder errors, string workingDirectory, string docsetPath)
         {
             _errors = errors;
-            _config = config;
-            _sourceMap = sourceMap;
-            _customRules = MergeCustomRules(config, contentValidationRules);
+            _docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
         }
 
         public override void Add(Error error)
         {
-            if (_customRules.TryGetValue(error.Code, out var customRule))
+            if (error.Source?.File is FilePath source)
             {
-                error = error.WithCustomRule(customRule);
+                try
+                {
+                    var msAuthor = MetadataProvider?.GetMetadata(Null, source).MsAuthor;
+                    if (msAuthor != default)
+                    {
+                        error = error with { MsAuthor = msAuthor };
+                    }
+                }
+                catch
+                {
+                }
             }
+
+            error = CustomRuleProvider?.ApplyCustomRule(error) ?? error;
 
             if (error.Level == ErrorLevel.Off)
             {
                 return;
             }
 
-            if (_config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
+            if (error.Source != null && SourceMap != null)
             {
-                error = error.WithLevel(ErrorLevel.Error);
+                error = error with { OriginalPath = SourceMap.GetOriginalFilePath(error.Source.File)?.Path };
             }
 
-            if (error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
+            var config = Config;
+            if (config != null)
             {
-                if (error.Level == ErrorLevel.Error)
+                if (config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
                 {
-                    Add(Errors.Logging.FallbackError(_config.DefaultLocale));
+                    error = error with { Level = ErrorLevel.Error };
                 }
-                return;
-            }
 
-            if (error.Source != null)
-            {
-                error = error.WithOriginalPath(_sourceMap?.GetOriginalFilePath(error.Source.File)?.Path);
-            }
-
-            var errorSink = error.Source?.File is null ? _errorSink : _fileSink.GetOrAdd(error.Source.File, _ => new ErrorSink());
-
-            switch (errorSink.Add(error.Source?.File is null ? null : _config, error))
-            {
-                case ErrorSinkResult.Ok:
-                    _errors.Add(error);
-                    break;
-
-                case ErrorSinkResult.Exceed when error.Source?.File != null:
-                    var maxAllowed = error.Level switch
+                if (error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
+                {
+                    if (error.Level == ErrorLevel.Error)
                     {
-                        ErrorLevel.Error => _config.MaxFileErrors,
-                        ErrorLevel.Warning => _config.MaxFileWarnings,
-                        ErrorLevel.Suggestion => _config.MaxFileSuggestions,
-                        ErrorLevel.Info => _config.MaxFileInfos,
-                        _ => 0,
-                    };
-                    _errors.Add(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
-                    break;
+                        Add(Errors.Logging.FallbackError(config.DefaultLocale));
+                    }
+                    return;
+                }
             }
+
+            Watcher.Write(() =>
+            {
+                var errorSink = error.Source?.File is null ? _errorSink.Value : _fileSink.Value.GetOrAdd(error.Source.File, _ => new ErrorSink());
+
+                switch (errorSink.Add(error.Source?.File is null ? null : config, error))
+                {
+                    case ErrorSinkResult.Ok:
+                        AddError(error);
+                        break;
+
+                    case ErrorSinkResult.Exceed when error.Source?.File != null && config != null:
+                        var maxAllowed = error.Level switch
+                        {
+                            ErrorLevel.Error => config.MaxFileErrors,
+                            ErrorLevel.Warning => config.MaxFileWarnings,
+                            ErrorLevel.Suggestion => config.MaxFileSuggestions,
+                            ErrorLevel.Info => config.MaxFileInfos,
+                            _ => 0,
+                        };
+                        AddError(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
+                        break;
+                }
+            });
         }
 
-        private Dictionary<string, SourceInfo<CustomRule>> MergeCustomRules(Config? config, Dictionary<string, ValidationRules>? validationRules)
+        private void AddError(Error error)
         {
-            var customRules = config != null ? new Dictionary<string, SourceInfo<CustomRule>>(_config.Rules) : new Dictionary<string, SourceInfo<CustomRule>>();
+            // Convert from path relative to docset to path relative to working directory
+            if (!_docsetBasePath.IsDefault)
+            {
+                if (error.Source != null)
+                {
+                    var path = _docsetBasePath.Concat(error.Source.File.Path);
+                    error = error with { Source = error.Source with { File = error.Source.File with { Path = path } } };
+                }
 
-            if (validationRules == null)
-            {
-                return customRules;
+                if (error.OriginalPath != null)
+                {
+                    error = error with { OriginalPath = _docsetBasePath.Concat(error.OriginalPath.Value) };
+                }
             }
 
-            foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => !rule.DocfxOverride))
-            {
-                if (customRules.ContainsKey(validationRule.Code))
-                {
-                    Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code, customRules[validationRule.Code].Source));
-                    customRules.Remove(validationRule.Code);
-                }
-            }
-            foreach (var validationRule in validationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly))
-            {
-                if (customRules.TryGetValue(validationRule.Code, out var customRule))
-                {
-                    customRules[validationRule.Code] = new SourceInfo<CustomRule>(
-                        new CustomRule(
-                            customRule.Value.Severity,
-                            customRule.Value.Code,
-                            customRule.Value.AdditionalMessage,
-                            customRule.Value.CanonicalVersionOnly,
-                            validationRule.PullRequestOnly), customRule.Source);
-                }
-                else
-                {
-                    customRules.Add(validationRule.Code, new SourceInfo<CustomRule>(new CustomRule(null, null, null, false, validationRule.PullRequestOnly)));
-                }
-            }
-            return customRules;
+            _errors.Add(error);
         }
     }
 }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -67,19 +68,12 @@ namespace Microsoft.Docs.Build
         public void LoadXrefMapFile(string json, string[] uids, string[] externalUids)
         {
             var filePath = WriteJsonToTempFile(json);
-            var result = ExternalXrefMapLoader.LoadJsonFile(filePath);
-            var resultUids = new List<string>();
-            var resultExternalUids = new List<string>();
-            foreach (var (_, spec) in result.externalXrefSpec)
-            {
-                resultUids.Add(((ExternalXrefSpec)spec.Value).Uid);
-            }
-            foreach (var xref in result.externalXref)
-            {
-                resultExternalUids.Add(xref.Uid);
-            }
-            Assert.Equal(uids, resultUids);
-            Assert.Equal(externalUids, resultExternalUids);
+            var xrefSpecs = new Dictionary<string, Lazy<ExternalXrefSpec>>();
+            var externalXrefs = new List<ExternalXref>();
+            ExternalXrefMapLoader.LoadJsonFile(xrefSpecs, externalXrefs, new FileResolver(new LocalPackage()), new SourceInfo<string>(filePath));
+
+            Assert.Equal(uids, xrefSpecs.Keys);
+            Assert.Equal(externalUids, externalXrefs.Select(item => item.Uid));
         }
 
         private static string WriteJsonToTempFile(string json)

@@ -33,18 +33,18 @@ namespace Microsoft.Docs.Build
             _repositoryProvider = repositoryProvider;
         }
 
-        public ContributionInfo? GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
+        public (ContributionInfo?, string?[]?) GetContributionInfo(ErrorBuilder errors, FilePath file, SourceInfo<string> authorName)
         {
             var fullPath = _input.TryGetOriginalPhysicalPath(file);
             if (fullPath is null)
             {
-                return null;
+                return (null, null);
             }
 
             var (repo, _, commits) = _repositoryProvider.GetCommitHistory(fullPath.Value);
             if (repo is null)
             {
-                return null;
+                return (null, null);
             }
 
             var updatedDateTime = GetUpdatedAt(file, repo, commits);
@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
             if (!_config.ResolveGithubUsers)
             {
-                return contributionInfo;
+                return (contributionInfo, null);
             }
 
             var contributionCommits = commits;
@@ -73,6 +73,7 @@ namespace Microsoft.Docs.Build
 
             // Resolve contributors from commits
             var contributors = new List<Contributor>();
+            var githubContributors = new List<string>();
             if (UrlUtility.TryParseGitHubUrl(_config.EditRepositoryUrl, out var repoOwner, out var repoName) ||
                 UrlUtility.TryParseGitHubUrl(repo.Url, out repoOwner, out repoName))
             {
@@ -81,9 +82,13 @@ namespace Microsoft.Docs.Build
                     var (error, githubUser) = _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
                     errors.AddIfNotNull(error);
                     var contributor = githubUser?.ToContributor();
-                    if (!string.IsNullOrEmpty(contributor?.Name) && !excludes.Contains(contributor.Name))
+                    if (!string.IsNullOrEmpty(contributor?.Name))
                     {
-                        contributors.Add(contributor);
+                        if (!excludes.Contains(contributor.Name))
+                        {
+                            contributors.Add(contributor);
+                        }
+                        githubContributors.Add(contributor.Name);
                     }
                 }
             }
@@ -105,7 +110,7 @@ namespace Microsoft.Docs.Build
             contributionInfo.Author = author;
             contributionInfo.Contributors = contributors.Distinct().ToArray();
 
-            return contributionInfo;
+            return (contributionInfo, githubContributors.Distinct().ToArray());
         }
 
         public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
@@ -124,7 +129,9 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            return _input.TryGetOriginalPhysicalPath(file) is PathString physicalPath ? File.GetLastWriteTimeUtc(physicalPath) : default;
+            return _input.TryGetOriginalPhysicalPath(file) is PathString
+                ? _input.GetLastWriteTimeUtc(file)
+                : default;
         }
 
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate)

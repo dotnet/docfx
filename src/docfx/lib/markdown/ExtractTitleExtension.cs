@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                             }
                             return obj;
 
-                        case LeafBlock _ when obj.IsVisible():
+                        case LeafBlock when obj.IsVisible():
                             hasVisibleNodes = true;
                             return obj;
 

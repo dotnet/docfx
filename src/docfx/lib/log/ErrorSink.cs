@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Docs.Build
@@ -12,7 +13,7 @@ namespace Microsoft.Docs.Build
     {
         private const int MaxRemoveDeduplicationLogCount = 300;
 
-        private readonly HashSet<Error> _errors = new HashSet<Error>(Error.Comparer);
+        private readonly HashSet<Error> _errors = new();
 
         private bool _exceedMax;
 
@@ -53,7 +54,7 @@ namespace Microsoft.Docs.Build
                     return ErrorSinkResult.Ignore;
                 }
 
-                if (!_errors.Add(error))
+                if (!_errors.Add(error with { MessageArguments = Array.Empty<string>() }))
                 {
                     return ErrorSinkResult.Ignore;
                 }

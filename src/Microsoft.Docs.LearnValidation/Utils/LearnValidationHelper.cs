@@ -5,7 +5,7 @@ namespace Microsoft.Docs.LearnValidation
 {
     public class LearnValidationHelper
     {
-        private const string _defaultLocale = "en-us";
+        private const string DefaultLocale = "en-us";
 
         private readonly ILearnServiceAccessor _learnServiceAccessor;
         private readonly string _branch;
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.LearnValidation
 
             foreach (var branch in fallbackBranchs)
             {
-                if (_learnServiceAccessor.CheckLearnPathItemExist(branch, _defaultLocale, uid, type).Result)
+                if (_learnServiceAccessor.CheckLearnPathItemExist(branch, DefaultLocale, uid, type).Result)
                 {
                     return true;
                 }

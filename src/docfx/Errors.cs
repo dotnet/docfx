@@ -104,8 +104,8 @@ namespace Microsoft.Docs.Build
             /// Validation rule is not overridable in docfx config.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RuleOverrideInvalid(string code, SourceInfo? source)
-                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.", source);
+            public static Error RuleOverrideInvalid(string code)
+                => new Error(ErrorLevel.Warning, "rule-override-invalid", $"Validation rule '{code}' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.");
         }
 
         public static class Json
@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error DocsetNotProvisioned(string name)
-                => new Error(ErrorLevel.Warning, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.");
+                => new Error(ErrorLevel.Error, "docset-not-provisioned", $"Cannot build docset '{name}' because it isn't provisioned. Please go to Docs Portal (https://ops.microsoft.com) to provision first.");
 
             /// <summary>
             /// Used invalid glob pattern in configuration.
@@ -257,7 +257,7 @@ namespace Microsoft.Docs.Build
             public static Error CircularReference<T>(SourceInfo? source, T current, IEnumerable<T> recursionDetector, Func<T, string?>? display = null)
             {
                 display ??= obj => obj?.ToString();
-                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Concat(new[] { current }).Select(file => $"'{display(file)}'"));
+                var dependencyChain = string.Join(" --> ", recursionDetector.Reverse().Append(current).Select(file => $"'{display(file)}'"));
                 return new Error(ErrorLevel.Error, "circular-reference", $"Build has identified file(s) referencing each other: {dependencyChain}.", source);
             }
 
@@ -331,9 +331,37 @@ namespace Microsoft.Docs.Build
 
             public static Error CircularRedirection(SourceInfo? source, IEnumerable<FilePath> redirectionChain)
                 => new Error(ErrorLevel.Warning, "circular-redirection", $"Build has identified circular redirection: {string.Join(" --> ", redirectionChain)}.", source);
+
+            /// <summary>
+            /// The redirected file is not removed from the source repo.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectedFileNotRemoved(FilePath path)
+                => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{path}' is still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
+
+            /// <summary>
+            /// A redirection file registered in .openpublishing.publish.json is not found in the repo.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectionFileNotFound(string path)
+                => new Error(ErrorLevel.Error, "redirection-file-not-found", $"Redirection file '{path}' registered in .openpublishing.publish.json is not found in the repo.");
+
+            /// <summary>
+            /// A redirection item cannot contain ‘source_path’ and ‘source_path_from_root’ at the same time.
+            /// </summary>
+            /// /// Behavior: ✔️ Message: ✔️
+            public static Error SourcePathConflict(SourceInfo<string> source)
+                => new Error(ErrorLevel.Error, "source-path-conflict", $"A redirection item cannot contain 'source_path' and 'source_path_from_root' at the same time.", source);
+
+            /// <summary>
+            /// Check redirection source path syntax.
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
         }
 
-        public static class TableOfContents
+        public static class Toc
         {
             /// <summary>
             /// In yaml-format toc, topicHref SHOULD reference an article,
@@ -354,8 +382,8 @@ namespace Microsoft.Docs.Build
             /// Toc inclusion with relative folder, no toc.{md,yml} file in corresponding folder.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error FileNotFound(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "file-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists.", source);
+            public static Error TocNotFound(SourceInfo<string> source)
+                => new Error(ErrorLevel.Warning, "toc-not-found", $"Unable to find either toc.yml or toc.md inside {source} Please make sure the file exists.", source);
 
             /// <summary>
             /// In markdown-format toc, used wrong toc syntax.
@@ -395,8 +423,8 @@ namespace Microsoft.Docs.Build
             public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
                => new Error(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
 
-            public static Error UidNotFound(string uid, IEnumerable<string?> repositories)
-                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' not found, which is referenced by repository {StringUtility.Join(repositories)}.");
+            public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaType)
+                => new Error(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
 
             /// <summary>
             /// The same uid of the same version is defined in multiple places
@@ -404,36 +432,15 @@ namespace Microsoft.Docs.Build
             ///   - both files with no monikers defined same uid
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts)
-                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid);
+            public static Error DuplicateUid(SourceInfo<string> uid, IEnumerable<SourceInfo> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "duplicate-uid", $"UID '{uid}' is duplicated in {StringUtility.Join(conflicts)}.", uid, propertyPath);
 
             /// <summary>
             /// The same uid is defined in multiple docsets
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl)
-            {
-                FormattableString message;
-                if (string.IsNullOrEmpty(repositoryUrl))
-                {
-                    message = $"UID '{uid}' is duplicated globally.";
-                }
-                else
-                {
-                    message = $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.";
-                }
-
-                return new Error(ErrorLevel.Warning, "duplicate-uid-global", message, uid);
-            }
-
-            /// <summary>
-            /// Same uid defined within different versions with different values of the same xref property.
-            /// Examples:
-            ///   - Same uid defined in multiple .md files with different versions have different titles.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error XrefPropertyConflict(string uid, string propertyName, IEnumerable<string?> conflicts)
-                => new Error(ErrorLevel.Info, "xref-property-conflict", $"UID '{uid}' is defined with different {propertyName}s: {StringUtility.Join(conflicts)}.");
+            public static Error DuplicateUidGlobal(SourceInfo<string> uid, string? repositoryUrl, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "duplicate-uid-global", $"UID '{uid}' is duplicated globally in repository '{repositoryUrl}'.", uid, propertyPath);
         }
 
         public static class Versioning
@@ -450,11 +457,39 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}.");
 
             /// <summary>
-            /// Failed to parse moniker string.
+            /// Failed to parse moniker string: moniker is not defined.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeInvalid(SourceInfo? operand, FormattableString message)
-                => new Error(ErrorLevel.Error, "moniker-range-invalid", message, operand);
+            public static Error MonikerRangeMissing(SourceInfo<string?> operand, string moniker)
+                => new Error(ErrorLevel.Error, "moniker-range-missing", $"Invalid moniker range '{operand}': Moniker '{moniker}' is not defined.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: parse ends before reaching end of string
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeUnrecognized(SourceInfo? operand, string rangeString)
+                => new Error(ErrorLevel.Error, "moniker-range-unrecognized", $"Parse ends before reaching end of string, unrecognized string: '{rangeString}'.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: expect a comparator set
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeMissComparator(SourceInfo? operand, string rangeString)
+                => new Error(ErrorLevel.Error, "moniker-range-miss-comparator", $"Expect a comparator set, but got '{rangeString}'.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: expect a moniker string
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeMissMoniker(SourceInfo? operand, string rangeString)
+                => new Error(ErrorLevel.Error, "moniker-range-miss-moniker", $"Expect a moniker string, but got '{rangeString}'.", operand);
+
+            /// <summary>
+            /// Failed to parse moniker string: Moniker key is not defined.
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error MonikerRangeKeyUndefined(SourceInfo? operand, string key)
+                => new Error(ErrorLevel.Error, "moniker-range-key-undefined", $"Invalid monikers: Moniker '{key}' is not defined.", operand);
 
             /// <summary>
             /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -479,8 +514,26 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-range-out-of-scope", $"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '{configMonikerRange}' is {StringUtility.Join(configMonikers)}, while file monikers is {StringUtility.Join(fileMonikers)}.", source);
         }
 
+        public static class ZonePivot
+        {
+            public static Error ZonePivotGroupDefinitionNotFound(FilePath file, string publishUrl)
+                => new Error(ErrorLevel.Suggestion, "zone-pivot-definition-not-found", $"No source file is present for '{publishUrl}'. To use zone pivots, you must first define the zone pivot groups in zone-pivot-groups.yml or specify a file by 'zone_pivot_group_filename' metadata. Cross docset reference to zone pivot groups definition not supported by docfx.", new SourceInfo(file));
+
+            public static Error ZonePivotGroupDefinitionConflict(FilePath file, string publishUrl)
+                => new Error(ErrorLevel.Suggestion, "zone-pivot-definition-conflict", $"Multiple source files are present for '{publishUrl}'.", new SourceInfo(file));
+
+            public static Error ZonePivotGroupNotFound(SourceInfo? source, string groupId, FilePath? definitionFile)
+                => new Error(ErrorLevel.Suggestion, "pivot-group-not-found", $"Pivot group '{groupId}' isn't defined in '{definitionFile}'. Make sure every pivot group you reference in your content has been properly defined.", source);
+
+            public static Error ZonePivotGroupNotSpecified(SourceInfo? source)
+                => new Error(ErrorLevel.Suggestion, "zone-pivot-group-missing", $"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.", source);
+        }
+
         public static class Markdown
         {
+            public static Error IncludeInvalid(SourceInfo<string?> source)
+                => new Error(ErrorLevel.Warning, "include-invalid", $"Invalid include link extension: '{source}'.", source);
+
             public static Error IncludeNotFound(SourceInfo<string?> source)
                 => new Error(ErrorLevel.Error, "include-not-found", $"Invalid include link: '{source}'.", source);
         }
@@ -523,11 +576,18 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Warning, "array-length-invalid", $"Array '{propName}' length should be {criteria}.", source, propName);
 
             /// <summary>
-            /// Array conditional check not within min or max value
+            /// Array conditional check not within min value
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error ArrayCheckInvalid(SourceInfo? source, string propName, string message)
-                => new Error(ErrorLevel.Warning, "array-check-invalid", $"{message}", source, propName);
+            public static Error ArrayMinCheckInvalid(SourceInfo? source, string propertyPath, int value)
+                => new Error(ErrorLevel.Warning, "array-min-check-invalid", $"The array must have least {value} matched item(s).", source, propertyPath);
+
+            /// <summary>
+            /// Array conditional check not within max value
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error ArrayMaxCheckInvalid(SourceInfo? source, string propertyPath, int value)
+                => new Error(ErrorLevel.Warning, "array-max-check-invalid", $"The array must not have more than {value} matched item(s).", source, propertyPath);
 
             /// <summary>
             /// Array items not unique.
@@ -570,6 +630,20 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ❌
             public static Error NumberInvalid(SourceInfo? source, double value, string criteria, string propName)
                 => new Error(ErrorLevel.Warning, "number-invalid", $"Number '{value}' should be {criteria}.", source, propName);
+
+            /// <summary>
+            /// Data does not match exactly one subschema
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error OneOfFailed(SourceInfo? source, string propName, object value)
+                => new Error(ErrorLevel.Warning, "one-of-failed", $"Invalid value for '{propName}': '{value}'.", source, propName);
+
+            /// <summary>
+            /// Data matches subschema
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error NotFailed(SourceInfo? source, string propName, object value)
+                => new Error(ErrorLevel.Warning, "not-failed", $"Invalid value for '{propName}': '{value}'.", source, propName);
 
             /// <summary>
             /// A required attribute is missing.
@@ -638,18 +712,19 @@ namespace Microsoft.Docs.Build
             /// The attribute value is duplicated within docset
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public const string DuplicateAttributeCode = "duplicate-attribute";
-
             public static Error DuplicateAttribute(SourceInfo? source, string name, object value, IEnumerable<SourceInfo> duplicatedSources)
                 => new Error(
                     ErrorLevel.Suggestion,
-                    DuplicateAttributeCode,
+                    "duplicate-attribute",
                     $"Attribute '{name}' with value '{value}' is duplicated in {StringUtility.Join(duplicatedSources)}.",
                     source,
                     name);
 
-            public static Error ReferenceCountInvalid(SourceInfo<string>? source, string criteria, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
-                => new Error(ErrorLevel.Warning, "reference-count-invalid", $"UID '{source}' reference count should be {criteria}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
+            public static Error MinReferenceCountInvalid(SourceInfo<string>? source, int? minReferenceCount, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "min-reference-count-invalid", $"UID '{source}' reference count should be least {minReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
+
+            public static Error MaxReferenceCountInvalid(SourceInfo<string>? source, int? maxReferenceCount, IEnumerable<SourceInfo?> conflicts, string? propertyPath)
+                => new Error(ErrorLevel.Warning, "max-reference-count-invalid", $"UID '{source}' reference count should not be more than {maxReferenceCount}, but now is {conflicts.Count()} ({StringUtility.Join(conflicts)}).", source, propertyPath);
         }
 
         public static class Metadata
@@ -708,13 +783,13 @@ namespace Microsoft.Docs.Build
             /// Html Tag value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
+                => new Error(ErrorLevel.Info, "disallowed-html-tag", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
 
             /// <summary>
             /// Html Attribute value must be in allowed list
             /// </summary>
             public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
-                => new Error(ErrorLevel.Info, "disallowed-html", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
+                => new Error(ErrorLevel.Info, "disallowed-html-attribute", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
         }
 
         public static class DependencyRepository
@@ -749,6 +824,13 @@ namespace Microsoft.Docs.Build
             /// Behavior: ✔️ Message: ✔️
             public static Error RepositoryOwnerPermissionInsufficient(string? repoOwner, string? dependentRepoOrg, string? dependentRepoName, string dependentRepoUrl)
                 => new Error(ErrorLevel.Error, "repository-owner-permission-insufficient", $"Docs Build cannot access CRR repo {dependentRepoUrl} using the access token from user {repoOwner} because {repoOwner} does not have Read access to the CRR repo. Please ask {repoOwner} to contact the admins of the CRR repo {dependentRepoUrl} to get Read permission. Don't know who to contact? This page contains admin information of the CRR repo if it is owned by Microsoft: https://repos.opensource.microsoft.com/{dependentRepoOrg}/repos/{dependentRepoName}/permissions/");
+
+            /// <summary>
+            /// The branch used to reference the dependency repository doesn't match the real used branch
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error DependencyRepositoryBranchNotMatch(string repoUrl, string branch, string fallbackBranch)
+                => new Error(ErrorLevel.Suggestion, "dependency-repository-branch-not-match", $"The branch({branch}) used to reference in the dependency repository '{repoUrl}' does not match. Please confirm with cross reference repo and update '{branch}' to '{fallbackBranch}' in this repo config file.");
         }
 
         public static class Template
@@ -765,7 +847,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ❌ Message: ❌
             public static Error MustacheNotFound(string templateFileName)
-                => new Error(ErrorLevel.Error, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
+                => new Error(ErrorLevel.Warning, "mustache-not-found", $"Mustache template is not found at '{templateFileName}'.");
         }
 
         public static class SourceMap
