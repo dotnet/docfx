@@ -10,7 +10,7 @@ pr:
 variables:
 - group: devresourcekeyvault
 - name: dotnetVersion
-  value: 5.0.100
+  value: 5.0.200
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel
@@ -43,7 +43,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      arguments: -c Release -warnAsError /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
