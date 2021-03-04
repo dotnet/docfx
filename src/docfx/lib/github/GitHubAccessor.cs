@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.GithubToken))
             {
-                _httpClient = new HttpClient(_httpClientHandler);
+                _httpClient = new HttpClient(_httpClientHandler); 
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
             }
