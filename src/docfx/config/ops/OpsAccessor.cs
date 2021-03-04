@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         private readonly CredentialHandler _credentialHandler;
         private readonly ErrorBuilder _errors;
-        private readonly HttpClient _http = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
+        private readonly HttpClient _http = new(new HttpClientHandler { CheckCertificateRevocationList = true });
 
         public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
