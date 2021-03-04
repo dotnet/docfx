@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Markdig;
@@ -255,8 +256,8 @@ namespace Microsoft.Docs.Build
                         IsSuccessParsed = parsedNode.IsSuccessParsed,
                     };
                     break;
-                case ParagraphBlock:
-                    if (TryDetectTable((ParagraphBlock)node, markdownEngine))
+                case ParagraphBlock paragraphBlock:
+                    if (TryDetectTable(paragraphBlock, markdownEngine))
                     {
                         tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with { IsSuccessParsed = false };
                     }
@@ -272,10 +273,6 @@ namespace Microsoft.Docs.Build
 
         private static TableNode TryParseTable(Table table)
         {
-            if (table.Count == 0)
-            {
-                return new TableNode { IsSuccessParsed = false, };
-            }
             var columnHeaders = new List<TableCellNode>();
             var rowHeaders = new List<TableCellNode>();
             var columnHeaderRow = (TableRow)table.First();
@@ -285,14 +282,7 @@ namespace Microsoft.Docs.Build
             }
             foreach (TableRow row in table)
             {
-                if (row.Count == 0)
-                {
-                    rowHeaders.Add(new TableCellNode { IsVisible = false });
-                }
-                else
-                {
-                    rowHeaders.Add(ParseCell((TableCell)row.First()));
-                }
+                rowHeaders.Add(ParseCell((TableCell)row.First()));
             }
             return new TableNode
             {
@@ -304,14 +294,6 @@ namespace Microsoft.Docs.Build
 
         private static TableCellNode ParseCell(TableCell cell)
         {
-            if (cell == null || cell.Count == 0)
-            {
-                return new TableCellNode
-                {
-                    IsVisible = false,
-                    IsEmphasis = false,
-                };
-            }
             var block = cell.LastChild;
             var isVisible = MarkdigUtility.IsVisible(block);
             var isEmphasis = false;
@@ -339,22 +321,59 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            var plainText = markdownEngine.ToPlainText(paragraph);
-
-            var lines = plainText.Split("\n").ToList();
             var tableDelimiterExistLine = 0;
             var tableHeaderExist = false;
-            foreach (var line in lines)
+
+            var inlines = new List<Inline>();
+            var child = paragraph.Inline.LastChild;
+            var stack = new Stack<Inline>();
+            while (child != null)
             {
-                var cells = line.Split("|");
-                if (!cells.Any())
+                stack.Push(child);
+                child = child.PreviousSibling;
+            }
+            while (stack.Count > 0)
+            {
+                child = stack.Pop();
+                switch (child)
                 {
-                    continue;
-                }
-                tableHeaderExist = tableHeaderExist || cells.Any(c => c.Contains("-"));
-                if (++tableDelimiterExistLine >= 2 && tableHeaderExist)
-                {
-                    return true;
+                    case ContainerInline containerInline:
+                        child = containerInline.LastChild;
+                        while (child != null)
+                        {
+                            stack.Push(child);
+                            child = child.PreviousSibling;
+                        }
+                        break;
+                    case LineBreakInline:
+                        foreach (var line in inlines)
+                        {
+                            switch (line)
+                            {
+                                case PipeTableDelimiterInline:
+                                    tableDelimiterExistLine++;
+                                    break;
+                                case LiteralInline literalInline:
+                                    var text = literalInline.Content.Text;
+                                    tableHeaderExist = tableHeaderExist || text.Contains("-");
+                                    if (text.Contains("|"))
+                                    {
+                                        tableDelimiterExistLine++;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if (tableDelimiterExistLine >= 2 && tableHeaderExist)
+                            {
+                                return true;
+                            }
+                        }
+                        inlines.Clear();
+                        break;
+                    default:
+                        inlines.Add(child);
+                        break;
                 }
             }
             return false;

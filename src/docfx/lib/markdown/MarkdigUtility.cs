@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
                     LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => false,
                     LinkInline linkInline when linkInline.IsImage => true,
                     TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension => true,
-                    LiteralInline literal when string.IsNullOrWhiteSpace(literal.Content.ToString()) => false,
+                    LiteralInline literal when literal.Content.IsEmptyOrWhitespace() => false,
                     LeafInline _ => true,
                     _ => false,
                 };
