@@ -26,7 +26,7 @@ variables:
 jobs:
 
 # Test and deploy on windows
-- job: OnboardLGTM
+- job: Security Checks
   timeoutInMinutes: 360
   pool:
     vmImage: 'windows-latest'
