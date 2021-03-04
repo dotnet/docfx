@@ -1,5 +1,10 @@
 # daily trigger
-trigger: none
+trigger:
+  batch: true
+  branches:
+    include:
+    - v3
+    - v3-release
 pr: none
 
 variables:
@@ -27,15 +32,33 @@ jobs:
     name: DocFX
   steps:
 
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    inputs:
+      toolMajorVersion: 'V2'
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
+
   - task: DotNetCoreCLI@2
     inputs:
-      command: 'restore'
+      command: 'build'
+
+  # Run SDL tools
+  - task: BinSkim@3
+    displayName: Security - BinSkim
+    inputs:
+      InputType: 'Basic'
+      Function: 'analyze'
+      AnalyzeTarget: >
+        src/docfx/bin/Release/net5.0/docfx.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
 
   - task: Semmle@0
     displayName: Security - LGTM
@@ -51,10 +74,13 @@ jobs:
       timeout: '7200'
       ram: '16384'
       addProjectDirToScanningExclusionList: true
+
   - task: SdtReport@1
     displayName: Security - SdtReport
     inputs:
       Semmle: true
+      CredScan: true
+      BinSkim: true
       ToolLogsNotFoundAction: 'Standard'
 
   - task: PublishSecurityAnalysisLogs@2
@@ -69,4 +95,6 @@ jobs:
     displayName: Security - PostAnalysis
     inputs:
       Semmle: true
+      CredScan: true
+      BinSkim: true
       ToolLogsNotFoundAction: 'Standard'
