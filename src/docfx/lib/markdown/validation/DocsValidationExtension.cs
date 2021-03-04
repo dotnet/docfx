@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Markdig;
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
 
                     BuildCodeBlockNodes(node, codeBlockNodes, isCanonicalVersion);
 
-                    BuildTableNodes(node, markdownEngine, tableNodes, isCanonicalVersion);
+                    BuildTableNodes(node, tableNodes, isCanonicalVersion);
 
                     return false;
                 });
@@ -242,7 +241,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void BuildTableNodes(MarkdownObject node, MarkdownEngine markdownEngine, List<TableNode> tableNodes, bool isCanonicalVersion)
+        private static void BuildTableNodes(MarkdownObject node, List<TableNode> tableNodes, bool isCanonicalVersion)
         {
             TableNode? tableNode = null;
             switch (node)
@@ -257,7 +256,7 @@ namespace Microsoft.Docs.Build
                     };
                     break;
                 case ParagraphBlock paragraphBlock:
-                    if (TryDetectTable(paragraphBlock, markdownEngine))
+                    if (TryDetectTable(paragraphBlock))
                     {
                         tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with { IsSuccessParsed = false };
                     }
@@ -299,11 +298,11 @@ namespace Microsoft.Docs.Build
             var isEmphasis = false;
             MarkdigUtility.Visit(block, node =>
             {
-                var innerEmphasis = node switch
+                var innerEmphasis = false;
+                if (node is ParagraphBlock paragraphBlock)
                 {
-                    ParagraphBlock paragraph when paragraph.Inline.FindDescendants<EmphasisInline>().Any() => true,
-                    _ => false,
-                };
+                    innerEmphasis = paragraphBlock.Inline.FindDescendants<EmphasisInline>().Where(x => x.DelimiterCount >= 2).Any();
+                }
                 return isEmphasis = isEmphasis || innerEmphasis;
             });
             var cellNode = new TableCellNode
@@ -314,7 +313,7 @@ namespace Microsoft.Docs.Build
             return cellNode;
         }
 
-        private static bool TryDetectTable(ParagraphBlock paragraph, MarkdownEngine markdownEngine)
+        private static bool TryDetectTable(ParagraphBlock paragraph)
         {
             if (!paragraph.Inline.FindDescendants<LineBreakInline>().Any())
             {
