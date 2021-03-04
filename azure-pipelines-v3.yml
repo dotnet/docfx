@@ -43,7 +43,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release -warnAsError /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
@@ -96,7 +96,7 @@ jobs:
 
   # Build RegressionTest into Artifact 
   - powershell: |
-      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o ./drop/RegressionTest
+      dotnet build ./test/docfx.RegressionTest -warnAsError -c Release -r win7-x64 -o ./drop/RegressionTest
     displayName: Build RegressionTest into Artifact 
 
   # Publish RegressionTest binary
