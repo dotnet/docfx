@@ -11,8 +11,8 @@ jobs:
       with:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v1
-    - run: dotnet test -c Release
-    - run: dotnet pack -c Release -o drop
+    - run: dotnet test -warnAsError -c Release
+    - run: dotnet pack -warnAsError -c Release -o drop
     - name: Publish binary packages
       shell: pwsh
       run: |
@@ -23,7 +23,7 @@ jobs:
         $rids = @("win7-x64", "osx-x64", "linux-x64") # Microsoft.ChakraCore doesn't provide win-x64 runtime build, using win7-x64
         foreach ($rid in $rids)
         {
-          dotnet publish src\docfx\docfx.csproj -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false
+          dotnet publish src\docfx\docfx.csproj -warnAsError -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false
           if ($rid -eq "win7-x64") {
             $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
             Write-Host "package version: $version"

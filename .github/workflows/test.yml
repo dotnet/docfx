@@ -19,7 +19,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
     - name: Dotnet Test
-      run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       if: ${{ matrix.os == 'macos-latest' }}
