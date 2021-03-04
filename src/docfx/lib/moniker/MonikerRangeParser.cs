@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (!_monikersEvaluator.MonikerMap.ContainsKey(key))
                     {
-                        errors.Add(Errors.Versioning.MonikerRangeKeyUndefined(moniker, key));
+                        errors.Add(Errors.Versioning.MonikerRangeInvalid(moniker, $"Moniker '{key}' is not defined."));
                     }
                     else
                     {
