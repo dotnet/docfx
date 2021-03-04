@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
             var redirectUrl = _redirectionProvider.GetRedirectUrl(errors, file);
             var (documentId, documentVersionIndependentId) = _documentProvider.GetDocumentId(_redirectionProvider.GetOriginalFile(file));
 
-            var publishMetadata = new JObject // lgtm [cs/unused-collection]
+            var publishMetadata = new JObject
             {
                 ["redirect_url"] = redirectUrl,
                 ["document_id"] = documentId,

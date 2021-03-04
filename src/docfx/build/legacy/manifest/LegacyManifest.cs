@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
         {
             using (Progress.Start("Convert Legacy Manifest"))
             {
-                var itemsToPublish = new List<LegacyItemToPublish> // lgtm [cs/unused-collection]
+                var itemsToPublish = new List<LegacyItemToPublish>
                 {
                     new LegacyItemToPublish { RelativePath = "filemap.json", Type = "filemap" },
                 };
