@@ -6,83 +6,17 @@ trigger:
     - v3-release
 pr:
 - v3
+
 variables:
-  dotnetVersion: 5.0.100
-  runCodesignValidationInjection: false
-  NugetSecurityAnalysisWarningLevel: none
+- group: devresourcekeyvault
+- name: dotnetVersion
+  value: 5.0.200
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
 
 jobs:
-
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
-
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
 
 # Test and deploy on windows
 - job: WindowsBuild
@@ -90,6 +24,13 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      toolMajorVersion: 'V2'
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
@@ -97,42 +38,65 @@ jobs:
       packageType: sdk
       version: $(dotnetVersion)
 
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
     inputs:
       command: test
-      arguments: -c Release --no-restore /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       publishTestResults: true
     env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
+  
+  - task: PublishCodeCoverageResults@1
+    displayName: uplodoad code coverage result
+    inputs:
+      codeCoverageTool: cobertura
+      summaryFileLocation: test/**/coverage.cobertura.xml
 
-  # Upload code coverage to codecov.io
-  - bash: |
-      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    displayName: 'Upload to codecov.io'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
+  # Run SDL tools
+  - task: BinSkim@3
+    displayName: Security - BinSkim
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      InputType: 'Basic'
+      Function: 'analyze'
+      AnalyzeTarget: >
+        src/docfx/bin/Release/net5.0/docfx.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
 
-  # Build Binaries
-  - powershell: ./build.ps1
-    displayName: Build Binaries
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      AllTools: false
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      AllTools: false
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
 
   # Build RegressionTest into Artifact 
   - powershell: |
-      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o ./drop/RegressionTest
+      dotnet build ./test/docfx.RegressionTest -warnAsError -c Release -r win7-x64 -o ./drop/RegressionTest
     displayName: Build RegressionTest into Artifact 
 
   # Publish RegressionTest binary
@@ -140,31 +104,14 @@ jobs:
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
 
-  # Push to azure devops feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish NuGet Packages
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      publishFeedCredentials: docs-public-packages
-      nugetFeedType: external
-      allowPackageConflicts: true
-
-  # Publish binary packages to production
-  - task: AzureFileCopy@3
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish Binary Packages To Production
-    inputs:
-      azureSubscription: Open Publishing - Build Production
-      sourcePath: drop/docfx-bin/staging
-      destination: AzureBlob
-      storage: opsbuildk8sprod
-      containerName: docfx-bin
+  # Run Component Detection
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Detection'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+  condition: eq('true', 'false')
   dependsOn: WindowsBuild
   pool:
     name: DocFX
@@ -255,7 +202,7 @@ jobs:
     env:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      AZURE_DEVOPS_TOKEN: $(vsoTestToken)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09

@@ -29,7 +29,7 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -48,7 +48,7 @@ inputs:
     ms.author: over123
     ---
 environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
+  - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json: |
     { "ms.author": "over123" }
@@ -58,7 +58,7 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -82,7 +82,7 @@ cache:
       "items": [{ "alias": "over123", "id": "1" }]
     }
 environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
+  - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json: |
     { "ms.author": "over123" }
@@ -92,7 +92,7 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -116,7 +116,7 @@ cache:
       "items": [{ "alias": "over123" }]
     }
 environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
+  - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json:
   .errors.log: |
@@ -127,7 +127,7 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -146,7 +146,7 @@ inputs:
     ms.author: yufeih
     ---
 environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
+  - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json: |
     { "ms.author": "yufeih" }
@@ -156,7 +156,7 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientSecret: {MICROSOFT_GRAPH_CLIENT_SECRET}
+    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -175,7 +175,7 @@ inputs:
     ms.author: abc1234cba
     ---
 environments:
-  - MICROSOFT_GRAPH_CLIENT_SECRET
+  - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json:
   .errors.log: |
