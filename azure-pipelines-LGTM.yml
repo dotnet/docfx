@@ -32,22 +32,23 @@ jobs:
     vmImage: 'windows-latest'
   steps:
 
-  # Run CredScan
-  - task: CredScan@2
-    displayName: Security - CredScan
-    inputs:
-      toolMajorVersion: 'V2'
-
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
-
   - task: DotNetCoreCLI@2
+    displayName: dotnet build -c Release
     inputs:
       command: 'build'
+      arguments: '-c Release'
+
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    inputs:
+      toolMajorVersion: 'V2'
 
   # Run SDL tools
   - task: BinSkim@3
