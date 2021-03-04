@@ -21,10 +21,17 @@ namespace Microsoft.Docs.Build
 
         public static ExternalXrefMap Load(Config config, FileResolver fileResolver, ErrorBuilder errors)
         {
-            using (Progress.Start("Loading xref map"))
-            {
-                return new ExternalXrefMap(config.Xref.AsParallel().AsOrdered().Select(url => LoadXrefMap(errors, fileResolver, url)));
-            }
+            using var scope = Progress.Start("Loading xref map");
+
+            var xrefMaps = new ExternalXrefMap[config.Xref.Length];
+
+            ParallelUtility.ForEach(
+                scope,
+                errors,
+                Enumerable.Range(0, xrefMaps.Length),
+                i => xrefMaps[i] = LoadXrefMap(errors, fileResolver, config.Xref[i]));
+
+            return new ExternalXrefMap(xrefMaps);
         }
 
         internal static ExternalXrefMap LoadJsonFile(

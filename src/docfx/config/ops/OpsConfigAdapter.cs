@@ -144,7 +144,6 @@ namespace Microsoft.Docs.Build
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
-                    DocsEnvironment.Internal => "ppe.docs.azure.cn",
                     DocsEnvironment.Perf => "ppe.docs.azure.cn",
                     _ => throw new NotSupportedException(),
                 },
@@ -152,7 +151,6 @@ namespace Microsoft.Docs.Build
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
                     DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
-                    DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
                     DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
                     _ => throw new NotSupportedException(),
                 },
@@ -171,7 +169,6 @@ namespace Microsoft.Docs.Build
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
                     DocsEnvironment.PPE => "ppe.docs.microsoft.com",
-                    DocsEnvironment.Internal => "ppe.docs.microsoft.com",
                     DocsEnvironment.Perf => "ppe.docs.microsoft.com",
                     _ => throw new NotSupportedException(),
                 },

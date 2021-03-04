@@ -133,9 +133,9 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
-                { "MICROSOFT_GRAPH_CLIENT_SECRET", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_SECRET") },
+                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
+                { "MICROSOFT_GRAPH_CLIENT_CERTIFICATE", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_CERTIFICATE") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
-                { "GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION") },
             };
 
             var missingVariables = spec.Environments.Where(env => !variables.TryGetValue(env, out var value) || string.IsNullOrEmpty(value));
@@ -196,7 +196,7 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package)
         {
-            await using var client = new LanguageServerTestClient(docsetPath, package);
+            await using var client = new LanguageServerTestClient(docsetPath, package, spec.NoCache);
 
             foreach (var command in spec.LanguageServer)
             {
@@ -225,6 +225,7 @@ namespace Microsoft.Docs.Build
                         "--log", Path.Combine(randomOutputPath, ".errors.log"),
                         dryRun ? "--dry-run" : null,
                         spec.NoRestore ? "--no-restore" : null,
+                        spec.NoCache ? "--no-cache" : null,
                         spec.NoDrySync ? "--no-dry-sync" : null,
                     }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
@@ -251,7 +252,7 @@ namespace Microsoft.Docs.Build
             // each file build result is the same as expected output. Implies dryRun.
             var commandLine = new CommandLineOptions
             {
-                WorkingDirectory = docsetPath,
+                Directory = docsetPath,
                 Output = outputPath,
                 DryRun = true,
                 NoRestore = spec.NoRestore,

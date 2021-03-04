@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -16,7 +17,7 @@ using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
-using Validations.DocFx.Adapter;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -32,7 +33,6 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
-        private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
         private readonly MarkdownPipeline[] _pipelines;
 
         private readonly PublishUrlMap _publishUrlMap;
@@ -40,9 +40,7 @@ namespace Microsoft.Docs.Build
         private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
         public MarkdownEngine(
-            Config config,
             Input input,
-            FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             DocumentProvider documentProvider,
@@ -63,17 +61,6 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
 
             _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
-
-            if (!string.IsNullOrEmpty(config.MarkdownValidationRules))
-            {
-                _validatorProvider = new(
-                    new ContentValidationContext(
-                        fileResolver.ResolveFilePath(config.MarkdownValidationRules),
-                        fileResolver.ResolveFilePath(config.Allowlists),
-                        ""),
-                    new ContentValidationLogger(_markdownContext));
-            }
-
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
@@ -206,7 +193,6 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry(_documentProvider)
                 .UseMonikerZone(ParseMonikerRange)
-                .UseApexValidation(_validatorProvider, GetLayout)
 
                 // Extensions before this line sees inclusion AST twice:
                 // - Once AST for the entry file without InclusionBlock expanded
@@ -301,11 +287,6 @@ namespace Microsoft.Docs.Build
             return s_status.Value!.Peek().Conceptual;
         }
 
-        private string? GetLayout(FilePath path)
-        {
-            return _metadataProvider.GetMetadata(GetErrors(), path).Layout;
-        }
-
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
         {
             var status = s_status.Value!.Peek();
@@ -319,34 +300,73 @@ namespace Microsoft.Docs.Build
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
-        private string GetImageLink(string path, MarkdownObject origin, string? altText)
+        private string GetImageLink(string path, MarkdownObject origin, string? altText, string? imageType)
         {
             if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
             {
                 altText = ToPlainText(origin);
             }
-
-            return GetImageLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, altText, -1);
+            var node = new ImageLinkNode
+            {
+                UrlLink = path,
+                ImageLinkType = Enum.TryParse(imageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
+                AltText = altText,
+                IsInline = origin.IsInlineImage(-1),
+            };
+            return GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, node);
         }
 
         private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
         {
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, true, altText, imageIndex);
-            var link = GetLink(href, origin);
-            return link;
+            var node = new ImageLinkNode
+            {
+                UrlLink = href,
+                ImageLinkType = ImageLinkType.Default,
+                AltText = altText,
+                IsInline = origin.IsInlineImage(imageIndex),
+            };
+            return GetLink(href, origin, node);
         }
 
-        private string GetLink(SourceInfo<string> href, MarkdownObject origin)
+        private string GetLink(SourceInfo<string> link, MarkdownObject origin)
         {
-            _contentValidator.ValidateLink(GetRootFilePath(), href, origin, false, null, -1);
-            var status = s_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
-            status.Errors.AddIfNotNull(error);
-
-            return link;
+            if (origin is LinkInline linkInline)
+            {
+                Debug.Assert(!linkInline.IsImage);
+            }
+            var node = new HyperLinkNode
+            {
+                UrlLink = link,
+                IsVisible = MarkdigUtility.IsVisible(origin),
+                HyperLinkType = origin switch
+                {
+                    AutolinkInline => HyperLinkType.AutoLink,
+                    HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
+                    _ => HyperLinkType.Default,
+                },
+            };
+            return GetLink(link, origin, node);
         }
 
         private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
+
+        private string GetLink(SourceInfo<string> href, MarkdownObject origin, LinkNode outer)
+        {
+            // fill common field of LinkNode
+            var node = outer with
+            {
+                SourceInfo = href.Source,
+                ParentSourceInfoList = origin.GetInclusionStack(),
+                Monikers = origin.GetZoneLevelMonikers(),
+                ZonePivots = origin.GetZonePivots(),
+                TabbedConceptualHeader = origin.GetTabId(),
+            };
+            _contentValidator.ValidateLink(GetRootFilePath(), node);
+            var status = s_status.Value!.Peek();
+            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
+            status.Errors.AddIfNotNull(error);
+            return link;
+        }
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
         {

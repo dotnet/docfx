@@ -4,8 +4,10 @@
 using System;
 using System.Linq;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Renderers;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 namespace Microsoft.Docs.Build
@@ -42,6 +44,10 @@ namespace Microsoft.Docs.Build
                 switch (obj)
                 {
                     case InclusionBlock inclusionBlock:
+                        ExpandInclusionBlock(context, inclusionBlock, pipeline, inlinePipeline, errors);
+                        return true;
+
+                    case InclusionInline inclusionInline when TryConvertToInclusionBlock(inclusionInline) is InclusionBlock inclusionBlock:
                         ExpandInclusionBlock(context, inclusionBlock, pipeline, inlinePipeline, errors);
                         return true;
 
@@ -122,6 +128,27 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private static InclusionBlock? TryConvertToInclusionBlock(InclusionInline inline)
+        {
+            // If a table cell contains only an InclusionInline token,
+            // treat that InclusionInline as InclusionBlock to allow list inside table.
+            if (inline.Parent is ContainerInline containerInline &&
+                containerInline.ParentBlock is ParagraphBlock paragraphBlock &&
+                paragraphBlock.Parent is TableCell tableCell &&
+                tableCell.Count == 1 &&
+                containerInline.All(child => child == inline || IsEmptyLiteralInline(child)))
+            {
+                var inclusionBlock = new InclusionBlock(null) { Title = inline.Title, IncludedFilePath = inline.IncludedFilePath };
+                tableCell.RemoveAt(0);
+                tableCell.Add(inclusionBlock);
+                return inclusionBlock;
+            }
+
+            return null;
+
+            static bool IsEmptyLiteralInline(Inline inline) => inline is LiteralInline literal && literal.Content.IsEmptyOrWhitespace();
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline(MarkdownPipelineBuilder existingBuilder, bool inlineOnly = false)

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,10 +13,14 @@ namespace Microsoft.Docs.Build
     {
         public static bool Run(CommandLineOptions options)
         {
-            var stopwatch = Stopwatch.StartNew();
+            var operation = Telemetry.StartOperation("restore");
             using var errors = new ErrorWriter(options.Log);
 
-            var docsets = ConfigLoader.FindDocsets(errors, new LocalPackage(options.WorkingDirectory), options);
+            var package = new LocalPackage(options.WorkingDirectory);
+            var repository = Repository.Create(package.BasePath);
+            Telemetry.SetRepository(repository?.Url, repository?.Branch);
+
+            var docsets = ConfigLoader.FindDocsets(errors, package, options, repository);
             if (docsets.Length == 0)
             {
                 errors.Add(Errors.Config.ConfigNotFound(options.WorkingDirectory));
@@ -26,17 +29,16 @@ namespace Microsoft.Docs.Build
 
             Parallel.ForEach(docsets, docset =>
             {
-                RestoreDocset(errors, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
+                RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
             });
 
-            Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-            Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            operation.Complete();
             errors.PrintSummary();
             return errors.HasError;
         }
 
         public static void RestoreDocset(
-            ErrorBuilder errors, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+            ErrorBuilder errors, Repository? repository, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
             var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
@@ -44,7 +46,7 @@ namespace Microsoft.Docs.Build
             {
                 // load configuration from current entry or fallback repository
                 var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
-                    errorLog, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath)));
+                    errorLog, repository, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath)));
 
                 if (errorLog.HasError)
                 {
@@ -97,7 +99,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                yield return (config.Template, PackageFetchOptions.DepthOne);
+                yield return (config.Template, PackageFetchOptions.DepthOne | PackageFetchOptions.IgnoreBranchFallbackError);
             }
         }
     }

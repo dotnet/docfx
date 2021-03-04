@@ -29,7 +29,6 @@ namespace Microsoft.Docs.Build
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
-        private static (bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
         private static string s_repositoryName = "";
         private static string s_repository = "";
 
@@ -39,7 +38,7 @@ namespace Microsoft.Docs.Build
                 Run,
                 _ =>
                 {
-                    SendPullRequestComments("regression-test argument exception");
+                    SendPullRequestComments(new() { CrashMessage = "regression-test argument exception" });
                     return -9999;
                 });
         }
@@ -54,11 +53,10 @@ namespace Microsoft.Docs.Build
 
                 EnsureTestData(opts, workingFolder);
                 Test(opts, workingFolder);
-                PushChanges(workingFolder);
             }
             catch (Exception ex)
             {
-                SendPullRequestComments(ex.ToString());
+                SendPullRequestComments(new() { CrashMessage = ex.ToString() });
                 throw;
             }
             return 0;
@@ -89,16 +87,22 @@ namespace Microsoft.Docs.Build
 
             static string GetDocfxConfig(Options opts)
             {
+                var http = new Dictionary<string, object>();
+                if (!string.IsNullOrEmpty(s_githubToken))
+                {
+                    http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
+                }
+                if (!string.IsNullOrEmpty(s_azureDevopsToken))
+                {
+                    http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
+                }
+
                 var docfxConfig = JObject.FromObject(new
                 {
-                    http = new Dictionary<string, object>
-                    {
-                        ["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) },
-                        ["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) },
-                    },
-                    maxFileWarnings = 1000,
-                    maxFileSuggestions = 1000,
-                    maxFileInfos = 1000,
+                    http,
+                    maxFileWarnings = 10000,
+                    maxFileSuggestions = 10000,
+                    maxFileInfos = 10000,
                     updateTimeAsCommitBuildTime = true,
                     githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
@@ -143,15 +147,18 @@ namespace Microsoft.Docs.Build
 
         private static bool Test(Options opts, string workingFolder)
         {
+            var testResult = new RegressionTestResult();
             var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder);
 
             Clean(outputPath);
-            var buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
+            Build(testResult, repositoryPath, outputPath, opts, docfxConfig);
 
-            Compare(opts, workingFolder, outputPath, baseLinePath, buildTime);
+            Compare(testResult, opts, workingFolder, outputPath, baseLinePath);
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"Test Pass {workingFolder}");
             Console.ResetColor();
+
+            PushChanges(testResult, workingFolder);
             return true;
         }
 
@@ -201,12 +208,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, Options opts, string docfxConfig)
+        private static void Build(RegressionTestResult testResult, string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
             var templateOption = opts.PublicTemplate ? "--template https://static.docs.com/ui/latest" : "";
             var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
+            var diagnosticPort = $"docfx-regression-test-{Guid.NewGuid()}.sock";
+            var traceFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.nettrace");
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
@@ -215,19 +224,41 @@ namespace Microsoft.Docs.Build
                 cwd: repositoryPath,
                 allowExitCodes: new int[] { 0 });
 
-            return Exec(
+            var profiler = opts.Profile
+                ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
+                : null;
+
+            testResult.BuildTime = Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"build -o \"{outputPath}\" {logOption} {templateOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
-                cwd: repositoryPath);
+                cwd: repositoryPath,
+                env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null);
+
+            if (profiler != null)
+            {
+                profiler.WaitForExit();
+
+                Console.WriteLine($"##vso[artifact.upload artifactname=trace;]{traceFile}");
+
+                var speedScopeFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.speedscope.json");
+                Process.Start("dotnet-trace", $"convert --format Speedscope \"{traceFile}\"").WaitForExit();
+
+                testResult.HotMethods = string.Join('\n', SpeedScope.FindHotMethods(speedScopeFile).Select(item => $"{item.percentage,3}% | {item.method}"));
+
+                Console.WriteLine();
+                Console.WriteLine("Performance Sampling Result");
+                Console.WriteLine("---------------------------");
+                Console.WriteLine(testResult.HotMethods);
+            }
         }
 
-        private static void Compare(Options opts, string workingFolder, string outputPath, string existingOutputPath, TimeSpan buildTime)
+        private static void Compare(RegressionTestResult testResult, Options opts, string workingFolder, string outputPath, string existingOutputPath)
         {
             // For temporary normalize: use 'NormalizeJsonFiles' for output files
             Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: opts.ErrorLevel);
 
-            if (buildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
+            if (testResult.BuildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
             {
                 Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
                 Console.WriteLine($"Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
@@ -253,7 +284,11 @@ namespace Microsoft.Docs.Build
                 var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
                 process.WaitForExit();
 
-                s_testResult = (process.ExitCode == 0, buildTime, opts.Timeout, diff, totalLines);
+                testResult.Succeeded = process.ExitCode == 0;
+                testResult.Timeout = opts.Timeout;
+                testResult.Diff = diff;
+                testResult.MoreLines = totalLines;
+
                 watch.Stop();
                 Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
 
@@ -262,7 +297,7 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}", diffFile);
+                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
                 Console.WriteLine($"##vso[task.complete result=Failed]Test failed, see the logs under /Summary/Build artifacts for details");
             }
             else
@@ -272,11 +307,11 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void PushChanges(string workingFolder)
+        private static void PushChanges(RegressionTestResult testResult, string workingFolder)
         {
             if (s_isPullRequest)
             {
-                SendPullRequestComments();
+                SendPullRequestComments(testResult);
             }
             else
             {
@@ -289,20 +324,21 @@ namespace Microsoft.Docs.Build
             string arguments = "",
             string? stdin = null,
             string? cwd = null,
+            Dictionary<string, string>? env = null,
             bool ignoreError = false,
             bool redirectStandardError = false,
             int[]? allowExitCodes = null,
             params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
-            var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
+            var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrWhiteSpace(secret) ? arg : arg.Replace(secret, "***"));
             allowExitCodes ??= new int[] { 0, 1 };
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
             Console.ResetColor();
 
-            var process = Process.Start(new ProcessStartInfo
+            var psi = new ProcessStartInfo
             {
                 FileName = fileName,
                 Arguments = arguments,
@@ -310,13 +346,24 @@ namespace Microsoft.Docs.Build
                 UseShellExecute = false,
                 RedirectStandardError = redirectStandardError,
                 RedirectStandardInput = !string.IsNullOrEmpty(stdin),
-            }) ?? throw new InvalidOperationException();
+            };
+
+            if (env != null)
+            {
+                foreach (var (key, value) in env)
+                {
+                    psi.EnvironmentVariables[key] = value;
+                }
+            }
+
+            var process = Process.Start(psi) ?? throw new InvalidOperationException();
 
             if (!string.IsNullOrEmpty(stdin))
             {
                 process.StandardInput.Write(stdin);
                 process.StandardInput.Close();
             }
+
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
@@ -358,8 +405,12 @@ namespace Microsoft.Docs.Build
 
         private static string GetGitCommandLineAuthorization()
         {
-            var azureReposBasicAuth = $"-c http.https://dev.azure.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_azureDevopsToken)}\"";
-            var githubBasicAuth = $"-c http.https://github.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_githubToken)}\"";
+            var azureReposBasicAuth = string.IsNullOrEmpty(s_azureDevopsToken)
+                ? "" : $"-c http.https://dev.azure.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_azureDevopsToken)}\"";
+
+            var githubBasicAuth = string.IsNullOrEmpty(s_githubToken)
+                ? "" : $"-c http.https://github.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_githubToken)}\"";
+
             return $"{azureReposBasicAuth} {githubBasicAuth}";
         }
 
@@ -368,32 +419,51 @@ namespace Microsoft.Docs.Build
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        private static void SendPullRequestComments(string? crashedMessage = null)
+        private static void SendPullRequestComments(RegressionTestResult testResult)
         {
-            var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
-            if (s_testResult.succeeded && !isTimeout && crashedMessage == null)
+            var isTimeout = testResult.BuildTime.TotalSeconds > testResult.Timeout;
+            if (testResult.Succeeded && !isTimeout && testResult.CrashMessage == null)
             {
                 return;
             }
 
-            var statusIcon = crashedMessage != null
-                             ? "🚗🌳💥🤕🚑"
-                             : isTimeout
-                               ? "🧭"
-                               : "⚠";
+            var body = new StringBuilder();
+            body.Append("<details><summary>");
+            body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "🧭" : "⚠");
+            body.Append($"<a href='{s_repository}'>{s_repositoryName}</a>");
+            body.Append($"({testResult.BuildTime}");
 
-            var summary = $"{statusIcon}" +
-                          $"<a href='{s_repository}'>{s_repositoryName}</a>" +
-                          (crashedMessage != null
-                          ? ""
-                          : $"({s_testResult.buildTime}{(isTimeout ? $" | exceed {s_testResult.timeout}s" : "")}" +
-                            $"{(s_testResult.succeeded ? "" : $", {s_testResult.moreLines} more diff")}" +
-                            $")");
-            var body = $"<details><summary>{summary}</summary>\n\n```diff\n{crashedMessage ?? s_testResult.diff}\n```\n\n</details>";
+            if (isTimeout)
+            {
+                body.Append($" | exceed {testResult.Timeout}s");
+            }
+            if (testResult.MoreLines > 0)
+            {
+                body.Append($", {testResult.MoreLines} more diff");
+            }
+
+            body.Append(")</summary>\n\n");
+
+            if (!string.IsNullOrEmpty(testResult.CrashMessage))
+            {
+                body.Append($"```\n{testResult.CrashMessage}\n\n```");
+            }
+
+            if (!string.IsNullOrEmpty(testResult.Diff))
+            {
+                body.Append($"```diff\n{testResult.Diff}\n\n```");
+            }
+
+            if (isTimeout && !string.IsNullOrEmpty(testResult.HotMethods))
+            {
+                body.Append($"```csharp\n{testResult.HotMethods}\n\n```");
+            }
+
+            body.Append("\n\n</details>");
 
             if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_NUMBER") ?? "", out var prNumber))
             {
-                SendGitHubPullRequestComments(prNumber, body).GetAwaiter().GetResult();
+                SendGitHubPullRequestComments(prNumber, body.ToString()).GetAwaiter().GetResult();
             }
         }
 

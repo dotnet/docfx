@@ -37,14 +37,7 @@ namespace Microsoft.Docs.Build
                 jsArg.AsObject().Set("__global", _global);
             }
 
-            try
-            {
-                return ToJToken(method.Invoke(jsArg));
-            }
-            catch (JavaScriptException jse)
-            {
-                throw new JavaScriptEngineException(jse.Error.ToString() + "\n" + jse.CallStack);
-            }
+            return ToJToken(method.Invoke(jsArg));
         }
 
         private JsValue Run(PathString scriptPath)

@@ -76,7 +76,7 @@ inputs:
             "code": "sensitive-language",
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"],
+            "contentTypes": ["conceptual"],
             "exceptions":["tree/master"],
             "docfxOverride": true
           }
@@ -120,7 +120,7 @@ inputs:
             "code": "sensitive-language",
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"],
+            "contentTypes": ["conceptual"],
             "docfxOverride": false
           }
         ]
@@ -150,7 +150,7 @@ inputs:
             "code": "sensitive-language",
             "severity": "SUGGESTION",
             "disallowed": ["master", "blacklist", "whitelist"],
-            "exclusions": ["includes"]
+            "contentTypes": ["post"]
           }
         ]
       }

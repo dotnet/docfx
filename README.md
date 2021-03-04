@@ -20,9 +20,7 @@ dotnet tool update -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs.
 
 ## Binary Builds
 
-- [win-x64](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip) ([checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip.sha256))
-- [osx-x64](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.zip) ([checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.sha256))
-- [linux-x64](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip) ([checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip.sha256))
+[Release page](https://github.com/dotnet/docfx/releases)
 
 ## Contributing
 
