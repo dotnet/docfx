@@ -35,15 +35,6 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private static readonly HttpClient _http = new Func<HttpClient>(() =>
-        {
-            var httpClientHandler = new HttpClientHandler
-            {
-                CheckCertificateRevocationList = true,
-            };
-            return new HttpClient(httpClientHandler);
-        })();
-
         private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
         private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
@@ -52,6 +43,10 @@ namespace Microsoft.Docs.Build
 
         private readonly CredentialHandler _credentialHandler;
         private readonly ErrorBuilder _errors;
+        private readonly HttpClient _http = new HttpClient(new HttpClientHandler
+        {
+            CheckCertificateRevocationList = true,
+        });
 
         public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
