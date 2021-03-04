@@ -38,6 +38,12 @@ jobs:
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
+
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk 3.1.0 for LGTM'
+    inputs:
+      packageType: sdk
+      version: 3.1.0
   - task: DotNetCoreCLI@2
     displayName: dotnet build -c Release
     inputs:
