@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             _cca = ConfidentialClientApplicationBuilder.Create(clientId)
                 .WithCertificate(_clientCertificate)
                 .WithAuthority(new Uri($"https://login.microsoftonline.com/{tenantId}/v2.0"))
-                .WithRedirectUri("http://www.microsoft.com")
+                .WithRedirectUri("https://www.microsoft.com")
                 .Build();
         }
 
