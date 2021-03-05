@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
     public class MarkdigMarkdownRenderer : DfmMarkdownRenderer
     {
-        private static HttpClient _client = new HttpClient();
+        private static readonly HttpClient _client = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
         private static readonly string _requestTemplate = "https://xref.docs.microsoft.com/query?uid={0}";
         private static DfmRenderer _dfmHtmlRender = new DfmRenderer();
         private static readonly Regex _headingRegex = new Regex(@"^(?<pre> *#{1,6}(?<whitespace> *))(?<text>[^\n]+?)(?<post>(?: +#*)? *(?:\n+|$))", RegexOptions.Compiled);
