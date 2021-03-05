@@ -1,0 +1,107 @@
+# daily trigger
+trigger:
+  batch: true
+  branches:
+    include:
+    - v3
+    - v3-release
+pr: none
+
+variables:
+- name: dotnetVersion
+  value: 5.0.100
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
+- name: LGTM.SnapshotIdentifiers
+  value: Build=Full
+- name: LGTM.SnapshotMetadata
+  value: Owner=OPSBuild
+- name: LGTM.UploadSnapshot
+  value: true
+- name: Semmle.SkipAnalysis
+  value: false
+
+jobs:
+
+# Test and deploy on windows
+- job: Security Checks
+  timeoutInMinutes: 360
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk 3.1 for LGTM'
+    inputs:
+      packageType: sdk
+      version: 3.1.404
+  - task: DotNetCoreCLI@2
+    displayName: dotnet build -c Release
+    inputs:
+      command: 'build'
+      arguments: '-c Release'
+
+  # Run CredScan
+  - task: CredScan@2
+    displayName: Security - CredScan
+    inputs:
+      toolMajorVersion: 'V2'
+
+  # Run SDL tools
+  - task: BinSkim@3
+    displayName: Security - BinSkim
+    inputs:
+      InputType: 'Basic'
+      Function: 'analyze'
+      AnalyzeTarget: >
+        src/docfx/bin/Release/net5.0/docfx.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
+
+  - task: Semmle@0
+    displayName: Security - LGTM
+    env: 
+      SYSTEM_ACCESSTOKEN: $(MICROSOFT_PAT_TOKEN)
+    inputs:
+      toolVersion: 'LatestPreRelease'
+      sourceCodeDirectory: '$(Build.SourcesDirectory)'
+      language: 'csharp'
+      cleanupBuildCommands: 'dotnet clean'
+      buildCommands: 'dotnet build'
+      querySuite: 'Required'
+      timeout: '7200'
+      ram: '16384'
+      addProjectDirToScanningExclusionList: true
+
+  - task: SdtReport@1
+    displayName: Security - SdtReport
+    inputs:
+      Semmle: true
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: Security - Publish Scan Results
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: true
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: Security - PostAnalysis
+    inputs:
+      Semmle: true
+      CredScan: true
+      BinSkim: true
+      ToolLogsNotFoundAction: 'Standard'

@@ -136,7 +136,6 @@ namespace Microsoft.Docs.Build
                         }
                         Log.Write($"docfx: {GetDocfxVersion()}");
                         Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
-                        Log.Write($"Validations.DocFx.Adapter: {GetVersion(typeof(Validations.DocFx.Adapter.IValidationContext))}");
                         Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
 
                         return run(options) ? 1 : 0;

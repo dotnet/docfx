@@ -153,8 +153,8 @@ outputs:
   pig4.jpg:
   a.json:
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"end_line":1,"column":2,"end_column":5}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"end_line":2,"column":2,"end_column":5}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"end_line":1,"column":2,"end_column":5}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"end_line":2,"column":2,"end_column":5}
     {"message_severity":"info","code":"exceed-max-file-errors","message":"Info count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
 
 ---

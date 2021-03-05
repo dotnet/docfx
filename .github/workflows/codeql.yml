@@ -1,0 +1,19 @@
+name: CodeQL
+on:
+  push:
+    branches: [ v3 ]
+  schedule:
+    - cron: '0 0 * * 0'
+jobs:
+  analyze:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: github/codeql-action/init@v1
+      with:
+        languages: 'csharp'
+    - uses: github/codeql-action/autobuild@v1
+    - uses: github/codeql-action/analyze@v1

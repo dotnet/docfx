@@ -223,6 +223,13 @@ namespace Microsoft.Docs.Build
                 eventTelemetry.Properties[property.Key] = property.Value;
             }
 
+            eventTelemetry.Properties["OS"] = s_os;
+            eventTelemetry.Properties["Version"] = s_version;
+            eventTelemetry.Properties["Repo"] = s_repo;
+            eventTelemetry.Properties["Branch"] = s_branch;
+            eventTelemetry.Properties["CorrelationId"] = s_correlationId;
+            eventTelemetry.Properties["SessionId"] = s_sessionId;
+
             s_telemetryClient.TrackEvent(eventTelemetry);
         }
 
