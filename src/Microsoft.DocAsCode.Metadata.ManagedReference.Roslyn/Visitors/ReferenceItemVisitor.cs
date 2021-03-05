@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (symbol.IsTupleType)
             {
-                symbol = symbol.TupleUnderlyingType;
+                symbol = symbol.TupleUnderlyingType ?? symbol;
             }
             if (symbol.IsGenericType)
             {
@@ -709,10 +709,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             });
         }
 
-        protected override void AddLinkItems(INamedTypeSymbol symbol, bool withGenericeParameter)
+        protected override void AddLinkItems(INamedTypeSymbol symbol, bool withGenericParameter)
         {
             var id = VisitorHelper.GetId(symbol);
-            if (withGenericeParameter)
+            if (withGenericParameter)
             {
                 ReferenceItem.Parts[SyntaxLanguage.VB].Add(new LinkItem
                 {
