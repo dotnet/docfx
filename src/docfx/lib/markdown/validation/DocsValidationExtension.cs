@@ -353,7 +353,7 @@ namespace Microsoft.Docs.Build
                                     tableDelimiterExistLine++;
                                     break;
                                 case LiteralInline literalInline:
-                                    var text = literalInline.Content.Text;
+                                    var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
                                     tableHeaderExist = tableHeaderExist || text.Contains("-");
                                     if (text.Contains("|"))
                                     {
