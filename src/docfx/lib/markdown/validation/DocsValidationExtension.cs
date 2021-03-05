@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.CommandLine.Parsing;
 using System.Linq;
 using System.Text;
 using Markdig;
@@ -324,6 +325,7 @@ namespace Microsoft.Docs.Build
             var tableHeaderExist = false;
 
             var inlines = new List<Inline>();
+            var lineFinish = false;
             var child = paragraph.Inline.LastChild;
             var stack = new Stack<Inline>();
             while (child != null)
@@ -337,6 +339,10 @@ namespace Microsoft.Docs.Build
                 switch (child)
                 {
                     case ContainerInline containerInline:
+                        if (containerInline is PipeTableDelimiterInline)
+                        {
+                            inlines.Add(containerInline);
+                        }
                         child = containerInline.LastChild;
                         while (child != null)
                         {
@@ -345,34 +351,40 @@ namespace Microsoft.Docs.Build
                         }
                         break;
                     case LineBreakInline:
-                        foreach (var line in inlines)
-                        {
-                            switch (line)
-                            {
-                                case PipeTableDelimiterInline:
-                                    tableDelimiterExistLine++;
-                                    break;
-                                case LiteralInline literalInline:
-                                    var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
-                                    tableHeaderExist = tableHeaderExist || text.Contains("-");
-                                    if (text.Contains("|"))
-                                    {
-                                        tableDelimiterExistLine++;
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            if (tableDelimiterExistLine >= 2 && tableHeaderExist)
-                            {
-                                return true;
-                            }
-                        }
-                        inlines.Clear();
+                        lineFinish = true;
                         break;
                     default:
                         inlines.Add(child);
                         break;
+                }
+                if (lineFinish)
+                {
+                    foreach (var line in inlines)
+                    {
+                        var containsTableDelimiter = false;
+                        switch (line)
+                        {
+                            case PipeTableDelimiterInline:
+                                 containsTableDelimiter = true;
+                                 break;
+                            case LiteralInline literalInline:
+                                 var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
+                                 tableHeaderExist = tableHeaderExist || text.Contains("-");
+                                 if (text.Contains("|"))
+                                 {
+                                    containsTableDelimiter = true;
+                                 }
+                                 break;
+                            default:
+                                 break;
+                        }
+                        if (containsTableDelimiter && ++tableDelimiterExistLine >= 2 && tableHeaderExist)
+                        {
+                            return true;
+                        }
+                    }
+                    inlines.Clear();
+                    lineFinish = false;
                 }
             }
             return false;
