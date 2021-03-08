@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public SourceInfo<string> Href { get; init; }
 
-        public LinkElementType? ElementType { get; init; }
+        public LinkElementType ElementType { get; init; }
 
         public MarkdownObject? MarkdownObject { get; init; }
 

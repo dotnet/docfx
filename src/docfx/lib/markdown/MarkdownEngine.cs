@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -327,7 +326,7 @@ namespace Microsoft.Docs.Build
             ValidateLink(link);
 
             var status = s_status.Value!.Peek();
-            var (error, result, _) = _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath());
+            var (error, result, _) = _linkResolver.ResolveLink(link.Href, link.ElementType, GetFilePath(link.Href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
             return result;
         }

@@ -38,6 +38,12 @@ namespace Microsoft.Docs.Build
                 new MetricIdentifier(null, $"OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
                 s_metricConfiguration);
 
+        private static readonly Metric s_externalLinkMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(
+                    null, $"ExternalLink", "ElementType", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                s_metricConfiguration);
+
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
@@ -134,6 +140,15 @@ namespace Microsoft.Docs.Build
                 s_operationEndMetric.TrackValue(
                     stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId);
             });
+        }
+
+        public static void TrackExternalLink(LinkElementType elementType, string scheme, string host)
+        {
+            if (!s_isRealTimeBuild.Value)
+            {
+                s_externalLinkMetric.TrackValue(
+                    1, elementType.ToString(), CoalesceEmpty(scheme), CoalesceEmpty(host), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+            }
         }
 
         public static void TrackErrorCount(string code, ErrorLevel level, string? name)
