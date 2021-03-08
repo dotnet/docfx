@@ -210,6 +210,12 @@ inputs:
     |Column1|Column2|Column3|Column4|Column5| 
     |-|-------|-------|-|-------|
     |A|B|C|D|E|
+  j.md: |
+    This constructs a `BlockEncodingReflection` unitary $U=P\cdot V\cdot P^\dagger$ that encodes some
+    operator $H=\sum_{j}|\alpha_j|U_j$ of interest that is a linear combination of
+    unitaries. Typically, $P$ is a state preparation unitary such that
+    $P\ket{0}\_a\sum_j\sqrt{\alpha_j/\|\vec\alpha\|\_2}\ket{j}\_a$,
+    and $V=\sum_{j}\ket{j}\bra{j}\_a\otimes U_j$.
 outputs:
   a.json:
   b.json:
@@ -220,8 +226,10 @@ outputs:
   g.json:
   h.json:
   i.json:
+  j.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"d.md"}
+    {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"f.md"}
     {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"g.md"}
     {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"h.md"}
     {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"i.md"}

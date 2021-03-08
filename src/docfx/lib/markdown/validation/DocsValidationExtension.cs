@@ -333,6 +333,7 @@ namespace Microsoft.Docs.Build
                 stack.Push(child);
                 child = child.PreviousSibling;
             }
+            var pipeDelimiterCount = new List<int>();
             while (stack.Count > 0)
             {
                 child = stack.Pop();
@@ -359,39 +360,45 @@ namespace Microsoft.Docs.Build
                 }
                 if (lineFinish || stack.Count == 0)
                 {
-                    var containsTableDelimiter = false;
+                    var totalText = new StringBuilder();
                     foreach (var line in inlines)
                     {
                         switch (line)
                         {
                             case PipeTableDelimiterInline:
-                                if (!containsTableDelimiter)
-                                {
-                                    containsTableDelimiter = true;
-                                    tableDelimiterExistLine++;
-                                }
+                                totalText.Append('|');
                                 break;
                             case LiteralInline literalInline:
                                 var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
-                                var regex = new Regex(@"^[|:-]*$");
-                                tableHeaderExist = tableHeaderExist || regex.IsMatch(text);
-                                if (text.Contains("|") && !containsTableDelimiter)
-                                {
-                                    containsTableDelimiter = true;
-                                    tableDelimiterExistLine++;
-                                }
+                                totalText.Append(text);
                                 break;
                             default:
                                 break;
                         }
-                        if (tableDelimiterExistLine >= 2 && tableHeaderExist)
-                        {
-                            return true;
-                        }
+                    }
+                    var regex = new Regex(@"^[|:-]*$");
+                    var lineText = totalText.ToString();
+                    tableHeaderExist = tableHeaderExist || regex.IsMatch(lineText);
+                    if (lineText.Contains("|"))
+                    {
+                        pipeDelimiterCount.Add(lineText.Count(x => x == '|'));
+                        tableDelimiterExistLine++;
+                    }
+                    else
+                    {
+                        pipeDelimiterCount.Add(0);
+                    }
+                    if (tableDelimiterExistLine >= 2 && tableHeaderExist)
+                    {
+                       return true;
                     }
                     inlines.Clear();
                     lineFinish = false;
                 }
+            }
+            if (tableDelimiterExistLine >= 2 && pipeDelimiterCount.TrueForAll(x => x >= 2))
+            {
+                return true;
             }
             return false;
         }
