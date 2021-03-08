@@ -142,7 +142,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = _documentProvider.GetSiteUrl(file);
 
             // Self reference, don't build the file, leave href as is
-            if (file == hrefRelativeTo)
+            if (file == inclusionRoot)
             {
                 var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(siteUrl);
 
@@ -185,7 +185,7 @@ namespace Microsoft.Docs.Build
             switch (linkType)
             {
                 case LinkType.SelfBookmark:
-                    return (null, referencingFile, query, fragment, linkType);
+                    return (null, inclusionRoot, query, fragment, linkType);
 
                 case LinkType.WindowsAbsolutePath:
                     return (Errors.Link.LocalFilePath(href), null, null, null, linkType);
@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
                     {
                         // https://tools.ietf.org/html/rfc2396#section-4.2
                         // a hack way to process empty href
-                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
+                        return (null, inclusionRoot, query, fragment, LinkType.SelfBookmark);
                     }
 
                     // resolve file
