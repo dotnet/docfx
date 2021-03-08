@@ -20,7 +20,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.4.1",
+    "bootstrap": "^4.6.0",
     "highlightjs": "~9.12.0",
     "jquery": "~3.5.1",
     "js-url": "1.8.6",
