@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.CommandLine.Parsing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Markdig;
 using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
@@ -373,7 +373,8 @@ namespace Microsoft.Docs.Build
                                 break;
                             case LiteralInline literalInline:
                                 var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
-                                tableHeaderExist = tableHeaderExist || text.Contains("-");
+                                var regex = new Regex(@"^[|:-]*$");
+                                tableHeaderExist = tableHeaderExist || regex.IsMatch(text);
                                 if (text.Contains("|") && !containsTableDelimiter)
                                 {
                                     containsTableDelimiter = true;
