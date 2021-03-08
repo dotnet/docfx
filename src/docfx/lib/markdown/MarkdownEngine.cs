@@ -18,6 +18,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 using Microsoft.Docs.Validation;
+using Validations.DocFx.Adapter;
 
 namespace Microsoft.Docs.Build
 {
@@ -33,6 +34,7 @@ namespace Microsoft.Docs.Build
         private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
+        private readonly OnlineServiceMarkdownValidatorProvider? _validatorProvider;
         private readonly MarkdownPipeline[] _pipelines;
 
         private readonly PublishUrlMap _publishUrlMap;
@@ -40,7 +42,9 @@ namespace Microsoft.Docs.Build
         private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
         public MarkdownEngine(
+            Config config,
             Input input,
+            FileResolver fileResolver,
             LinkResolver linkResolver,
             XrefResolver xrefResolver,
             DocumentProvider documentProvider,
@@ -61,6 +65,17 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
 
             _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
+
+            if (!string.IsNullOrEmpty(config.MarkdownValidationRules))
+            {
+                _validatorProvider = new(
+                    new ContentValidationContext(
+                        fileResolver.ResolveFilePath(config.MarkdownValidationRules),
+                        fileResolver.ResolveFilePath(config.Allowlists),
+                        ""),
+                    new ContentValidationLogger(_markdownContext));
+            }
+
             _pipelines = new[]
             {
                 CreateMarkdownPipeline(),
@@ -193,6 +208,7 @@ namespace Microsoft.Docs.Build
                 .UseNoloc()
                 .UseTelemetry(_documentProvider)
                 .UseMonikerZone(ParseMonikerRange)
+                .UseApexValidation(_validatorProvider, GetLayout)
 
                 // Extensions before this line sees inclusion AST twice:
                 // - Once AST for the entry file without InclusionBlock expanded
@@ -285,6 +301,11 @@ namespace Microsoft.Docs.Build
         private static ConceptualModel? GetConceptual()
         {
             return s_status.Value!.Peek().Conceptual;
+        }
+
+        private string? GetLayout(FilePath path)
+        {
+            return _metadataProvider.GetMetadata(GetErrors(), path).Layout;
         }
 
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
