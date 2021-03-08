@@ -357,28 +357,33 @@ namespace Microsoft.Docs.Build
                         inlines.Add(child);
                         break;
                 }
-                if (lineFinish)
+                if (lineFinish || stack.Count == 0)
                 {
+                    var containsTableDelimiter = false;
                     foreach (var line in inlines)
                     {
-                        var containsTableDelimiter = false;
                         switch (line)
                         {
                             case PipeTableDelimiterInline:
-                                 containsTableDelimiter = true;
-                                 break;
-                            case LiteralInline literalInline:
-                                 var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
-                                 tableHeaderExist = tableHeaderExist || text.Contains("-");
-                                 if (text.Contains("|"))
-                                 {
+                                if (!containsTableDelimiter)
+                                {
                                     containsTableDelimiter = true;
-                                 }
-                                 break;
+                                    tableDelimiterExistLine++;
+                                }
+                                break;
+                            case LiteralInline literalInline:
+                                var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
+                                tableHeaderExist = tableHeaderExist || text.Contains("-");
+                                if (text.Contains("|") && !containsTableDelimiter)
+                                {
+                                    containsTableDelimiter = true;
+                                    tableDelimiterExistLine++;
+                                }
+                                break;
                             default:
-                                 break;
+                                break;
                         }
-                        if (containsTableDelimiter && ++tableDelimiterExistLine >= 2 && tableHeaderExist)
+                        if (tableDelimiterExistLine >= 2 && tableHeaderExist)
                         {
                             return true;
                         }
