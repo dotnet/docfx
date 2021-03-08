@@ -587,3 +587,4 @@ windowsserverdocs
 csv
 nettrace
 speedscope
+dns
