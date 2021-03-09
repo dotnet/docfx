@@ -30,30 +30,30 @@ namespace Microsoft.Docs.Build
 
         private static readonly Metric s_operationStartMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, $"OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
+                new MetricIdentifier(null, "OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_operationEndMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, $"OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
+                new MetricIdentifier(null, "OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_externalLinkMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"ExternalLink", "AttributeType", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "ExternalLink", "AttributeType", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_fileLogCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_buildFileTypeCountMetric =
