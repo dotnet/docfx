@@ -41,12 +41,18 @@ jobs:
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
-  
+
+  - task: reportgenerator@4
+    displayName: merge test results
+    inputs:
+      reports: test/**/coverage.cobertura.xml
+      targetdir: $(Pipeline.Workspace)/coveragereport
+
   - task: PublishCodeCoverageResults@1
     displayName: uplodoad code coverage result
     inputs:
       codeCoverageTool: cobertura
-      summaryFileLocation: test/docfx.Test/coverage.cobertura.xml
+      summaryFileLocation: $(Pipeline.Workspace)/coveragereport/Cobertura.xml
 
   # Build RegressionTest into Artifact 
   - powershell: |
@@ -128,9 +134,6 @@ jobs:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
 
   steps:
-  # skip repo fetch, for the binary will be used to run this test
-  - checkout: none
-
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
