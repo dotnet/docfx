@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("test!!!!");
             var options = DocfxFlavoredMarked.CreateDefaultOptions();
             options.ShouldExportSourceInfo = true;
-            var groupId = "uBn0rykxXo";
+            var groupId = "aupEkulau5";
             string actual;
             try
             {
@@ -81,7 +81,7 @@ content-b
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("test!!!!");
             var options = DocfxFlavoredMarked.CreateDefaultOptions();
             options.ShouldExportSourceInfo = true;
-            var groupId = "uBn0rykxXo";
+            var groupId = "aupEkulau5";
             string actual;
             try
             {
