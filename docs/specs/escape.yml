@@ -23,7 +23,7 @@ outputs:
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;amp;b'>a&amp;amp;b.md</a>
-          <a href=''>http://foo%20bä</a>
+          <a href='http://xn--foo%20b-cxa'>http://foo%20bä</a>
           <a href='a++.png'>a++.png</a>
         </p>"
     }
@@ -62,6 +62,8 @@ outputs:
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
     }
   a++.png:
+  .errors.log: |
+    { "message_severity":"warning", "code":"file-not-found", "file":"links.md", "line":5 }
 ---
 # Handle encoding for html links
 inputs:
