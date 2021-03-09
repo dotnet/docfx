@@ -492,7 +492,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var fileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
                     Logger.LogVerbose($"New assembly info added: '{hashPart}'. Detailed file version: '{fileVersion}'");
                 }
-                result = builder.ToString().GetMd5String();
+                result = HashUtility.GetSha256HashString(builder.ToString());
             }
 
             Logger.LogVerbose($"Plugin hash is '{result}'");

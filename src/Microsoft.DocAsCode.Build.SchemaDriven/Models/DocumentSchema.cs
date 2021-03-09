@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             schema.MetadataReference = pointer;
             schema.AllowOverwrite = CheckOverwriteAbility(schema);
-            schema.Hash = JsonUtility.Serialize(jObject).GetMd5String();
+            schema.Hash = HashUtility.GetSha256HashString(JsonUtility.Serialize(jObject));
 
             return schema;
         }
