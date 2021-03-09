@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
 
         public string? MonikerGroup => _monikers is null || _monikers.Length == 0
             ? null
-            : s_monikerGroupCache.GetOrAdd(this, HashUtility.GetMd5HashShort(string.Join(',', _monikers)));
+            : s_monikerGroupCache.GetOrAdd(this, HashUtility.GetSha256HashShort(string.Join(',', _monikers)));
 
         public override string ToString() => _monikers is null ? "" : string.Join(", ", _monikers);
 

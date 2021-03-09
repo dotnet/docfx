@@ -174,10 +174,10 @@ inputs:
     title: title 1
     ---
 outputs:
-  976da3a9/docs/b.json:
-  976da3a9/docs/c.json:
-  9d4e15fd/docs/a.json:
-  9d4e15fd/docs/b.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/b.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/c.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/b.json:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/c.md","line":2,"end_line":2,"column":8,"end_column":15}

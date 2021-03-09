@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
         private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Package package)
             CreateDocset(TestData test, DocfxTestSpec spec)
         {
-            var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetMd5HashShort(test.Content)}";
+            var testName = $"{Path.GetFileName(test.FilePath)}-{test.Ordinal:D2}-{HashUtility.GetSha256HashShort(test.Content)}";
             var basePath = Path.GetFullPath(Path.Combine(spec.Temp ? Path.GetTempPath() : "docfx-tests", testName));
             var outputPath = Path.GetFullPath(Path.Combine(basePath, "outputs"));
             var markerPath = Path.Combine(basePath, "marker");

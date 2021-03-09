@@ -113,6 +113,7 @@ documentdb
 domaininfo
 dotnet
 dotnetfoundation
+ecc
 embeddedvideo
 emoji
 endregion
@@ -155,6 +156,7 @@ hdinsight
 hehe
 herohua
 highlightjs
+Hmlr
 homepage
 howto
 href

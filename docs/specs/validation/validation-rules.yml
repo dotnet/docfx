@@ -146,10 +146,10 @@ outputs:
     {"message_severity":"suggestion","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
     {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
     {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/a.md","line":2,"end_line":2,"column":8,"end_column":9}
-  9d4e15fd/docs/a.json:
-  9d4e15fd/docs/b.json:
-  976da3a9/docs/a.json:
-  976da3a9/docs/b.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/b.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/a.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/b.json:
 ---
 # Hidden PR only validation rule result
 inputs:
