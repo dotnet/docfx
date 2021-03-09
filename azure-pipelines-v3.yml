@@ -46,7 +46,7 @@ jobs:
     displayName: uplodoad code coverage result
     inputs:
       codeCoverageTool: cobertura
-      summaryFileLocation: test/**/coverage.cobertura.xml
+      summaryFileLocation: test/docfx.Test/coverage.cobertura.xml
 
   # Build RegressionTest into Artifact 
   - powershell: |
@@ -128,6 +128,9 @@ jobs:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
 
   steps:
+  # skip repo fetch, for the binary will be used to run this test
+  - checkout: none
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
