@@ -347,10 +347,10 @@ repos:
       monikerDefinition.json: |
         {"monikers": [{ "moniker_name": "v-1.1", "product_name": "test"}]}
 outputs:
-  66ff1b75/a.json:
-  66ff1b75/toc.json: |
+  9a8a132fad3d6da570bf0fd55ce47c58/a.json:
+  9a8a132fad3d6da570bf0fd55ce47c58/toc.json: |
     {"items": [{ "name": "1", "href": "a", "monikers": ["v-1.1"] }]}
-  66ff1b75/_splitted/1/toc.json: |
+  9a8a132fad3d6da570bf0fd55ce47c58/_splitted/1/toc.json: |
     {
       "items": [
         {

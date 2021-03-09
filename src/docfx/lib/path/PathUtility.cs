@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
         {
             url = RemoveQueryForBlobUrl(url);
 
-            var hash = HashUtility.GetMd5HashShort(url);
+            var hash = HashUtility.GetSha256HashShort(url);
 
             // Trim https://
             var index = url.IndexOf(':');
