@@ -195,7 +195,7 @@ content-a
 # <a id=""x""></a>[title-b](#tab/b/c)
 content-b
 - - -";
-            var groupId = "CeZOj-G++Q";
+            var groupId = "bHGHmlrG6S";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -230,7 +230,7 @@ content-a
 # [title-b](#tab/b/a)
 content-b
 - - -";
-            var groupId = "CeZOj-G++Q";
+            var groupId = "bHGHmlrG6S";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">

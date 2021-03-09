@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         [Trait("Related", "TabGroup")]
         public void Test_General()
         {
-            var groupId = "CeZOj-G++Q";
+            var groupId = "bHGHmlrG6S";
             TestMarkupInGeneral(
                 @"Tab group test case
 # [title-a](#tab/a)
@@ -47,7 +47,7 @@ content-b
         [Trait("Related", "TabGroup")]
         public void Test_TabGroup_Combining()
         {
-            var groupId = "CeZOj-G++Q";
+            var groupId = "bHGHmlrG6S";
             TestMarkupInGeneral(
                 @"# [title-a or b](#tab/a+b)
 content-a or b
@@ -100,7 +100,7 @@ content-b or c
         [Fact]
         public void TestTableInTabGroup()
         {
-            var groupId = "CeZOj-G++Q";
+            var groupId = "bHGHmlrG6S";
             TestMarkupInGeneral(@"# [title](#tab/id)
 
 a | b
