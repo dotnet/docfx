@@ -3,10 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    internal enum LinkElementType
+    internal enum LinkAttributeType
     {
         Href,
-        Image,
+        ImageSrc,
         Src,
     }
 }

@@ -5,11 +5,11 @@ using Markdig.Syntax;
 
 namespace Microsoft.Docs.Build
 {
-    internal record LinkInfo
+    internal class LinkInfo
     {
         public SourceInfo<string> Href { get; init; }
 
-        public LinkElementType ElementType { get; init; }
+        public LinkAttributeType AttributeType { get; init; }
 
         public MarkdownObject? MarkdownObject { get; init; }
 

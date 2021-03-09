@@ -409,7 +409,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Href:
 
                     // TODO: Not all links are used as anchor, determine link element type based on schema
-                    var (error, link, _) = _linkResolver.ResolveLink(content, LinkElementType.Href, file, file);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, LinkAttributeType.Href, file, file);
                     errors.AddIfNotNull(error);
                     return link;
 
@@ -432,7 +432,7 @@ namespace Microsoft.Docs.Build
                         HtmlUtility.TransformLink(ref token, null, link =>
                         {
                             var source = new SourceInfo<string>(link.Href, content.Source?.WithOffset(link.Href.Source));
-                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, link.ElementType, file, file);
+                            var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, link.AttributeType, file, file);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
                         });

@@ -448,7 +448,7 @@ namespace Microsoft.Docs.Build
                 var topicHrefType = GetHrefType(topicHref);
                 Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsTocIncludeHref(topicHrefType));
 
-                var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, LinkElementType.Href, filePath, rootPath);
+                var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, LinkAttributeType.Href, filePath, rootPath);
                 _errors.AddIfNotNull(error);
 
                 if (resolvedFile != null && addToReferencedFiles)

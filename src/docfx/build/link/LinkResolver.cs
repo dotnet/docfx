@@ -74,7 +74,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string link, FilePath? file) ResolveLink(
-            SourceInfo<string> href, LinkElementType elementType, FilePath referencingFile, FilePath inclusionRoot)
+            SourceInfo<string> href, LinkAttributeType attributeType, FilePath referencingFile, FilePath inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
                 return (xrefError, resolvedHref ?? href, declaringFile);
             }
 
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, elementType, referencingFile, inclusionRoot);
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, attributeType, referencingFile, inclusionRoot);
 
             inclusionRoot ??= referencingFile;
             if (!isCrossReference)
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources.Value;
 
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
-            SourceInfo<string> href, LinkElementType elementType, FilePath hrefRelativeTo, FilePath inclusionRoot)
+            SourceInfo<string> href, LinkAttributeType attributeType, FilePath hrefRelativeTo, FilePath inclusionRoot)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
             var (error, file, query, fragment, linkType) = TryResolveFile(inclusionRoot, hrefRelativeTo, decodedHref);
@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                     return (error, "", fragment, linkType, null, false);
                 }
 
-                Telemetry.TrackExternalLink(elementType, uri.Scheme, uri.DnsSafeHost);
+                Telemetry.TrackExternalLink(attributeType, uri.Scheme, uri.DnsSafeHost);
 
                 var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
                 return (error, resolvedHref, fragment, LinkType.AbsolutePath, null, false);

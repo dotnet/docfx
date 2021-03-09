@@ -193,7 +193,7 @@ namespace Microsoft.Docs.Build
             {
                 var (breadcrumbError, breadcrumbPath, _) = _linkResolver.ResolveLink(
                     userMetadata.BreadcrumbPath,
-                    LinkElementType.Href,
+                    LinkAttributeType.Href,
                     userMetadata.BreadcrumbPath.Source is null ? file : userMetadata.BreadcrumbPath.Source.File,
                     file);
                 errors.AddIfNotNull(breadcrumbError);

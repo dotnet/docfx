@@ -304,7 +304,7 @@ namespace Microsoft.Docs.Build
             return GetLink(new()
             {
                 Href = new(path, origin.GetSourceInfo()),
-                ElementType = LinkElementType.Href,
+                AttributeType = LinkAttributeType.Href,
                 MarkdownObject = origin,
             });
         }
@@ -314,7 +314,7 @@ namespace Microsoft.Docs.Build
             return GetLink(new()
             {
                 Href = new(path, origin.GetSourceInfo()),
-                ElementType = LinkElementType.Image,
+                AttributeType = LinkAttributeType.ImageSrc,
                 MarkdownObject = origin,
                 AltText = altText ?? (origin is LinkInline linkInline && linkInline.IsImage ? ToPlainText(origin) : null),
                 ImageType = imageType,
@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
             ValidateLink(link);
 
             var status = s_status.Value!.Peek();
-            var (error, result, _) = _linkResolver.ResolveLink(link.Href, link.ElementType, GetFilePath(link.Href), GetRootFilePath());
+            var (error, result, _) = _linkResolver.ResolveLink(link.Href, link.AttributeType, GetFilePath(link.Href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
             return result;
         }
@@ -338,9 +338,9 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var node = link.ElementType switch
+            var node = link.AttributeType switch
             {
-                LinkElementType.Href => (LinkNode)new HyperLinkNode
+                LinkAttributeType.Href => (LinkNode)new HyperLinkNode
                 {
                     IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
                     HyperLinkType = link.MarkdownObject switch
@@ -350,7 +350,7 @@ namespace Microsoft.Docs.Build
                         _ => HyperLinkType.Default,
                     },
                 },
-                LinkElementType.Image => new ImageLinkNode
+                LinkAttributeType.ImageSrc => new ImageLinkNode
                 {
                     ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
                     AltText = link.AltText,

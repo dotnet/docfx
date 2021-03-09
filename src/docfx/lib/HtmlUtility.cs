@@ -259,7 +259,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
-                if (GetLinkElementType(ref token, attribute) is LinkElementType elementType)
+                if (GetLinkAttributeType(ref token, attribute) is LinkAttributeType attributeType)
                 {
                     var href = new SourceInfo<string>(
                         HttpUtility.HtmlDecode(attribute.Value.ToString()),
@@ -269,8 +269,8 @@ namespace Microsoft.Docs.Build
                     {
                         Href = href,
                         MarkdownObject = block,
-                        ElementType = elementType,
-                        AltText = elementType == LinkElementType.Image ? token.GetAttributeValueByName("alt") : null,
+                        AttributeType = attributeType,
+                        AltText = attributeType == LinkAttributeType.ImageSrc ? token.GetAttributeValueByName("alt") : null,
                         HtmlSourceIndex = token.Range.Start.Index,
                     });
 
@@ -467,7 +467,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
-                if (attribute.Value.Length <= 0 || GetLinkElementType(ref token, attribute) is null)
+                if (attribute.Value.Length <= 0 || GetLinkAttributeType(ref token, attribute) is null)
                 {
                     continue;
                 }
@@ -513,16 +513,16 @@ namespace Microsoft.Docs.Build
             return $"/{locale}{href}";
         }
 
-        private static LinkElementType? GetLinkElementType(ref HtmlToken token, in HtmlAttribute attribute)
+        private static LinkAttributeType? GetLinkAttributeType(ref HtmlToken token, in HtmlAttribute attribute)
         {
             if (token.NameIs("a") && attribute.NameIs("href"))
             {
-                return LinkElementType.Href;
+                return LinkAttributeType.Href;
             }
 
             if (attribute.NameIs("src"))
             {
-                return (token.NameIs("img") || token.NameIs("image")) ? LinkElementType.Image : LinkElementType.Src;
+                return (token.NameIs("img") || token.NameIs("image")) ? LinkAttributeType.ImageSrc : LinkAttributeType.Src;
             }
 
             return null;
