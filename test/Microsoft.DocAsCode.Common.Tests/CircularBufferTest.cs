@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             var task = Task.Run(() =>
             {
                 using var stream = cs.CreateReaderView();
-                return SHA1.Create().ComputeHash(stream);
+                return SHA256.Create().ComputeHash(stream);
             });
             byte[] expected;
             using (var ds = new CompositeStream(ms, cs.CreateWriterView()))
@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.Common.Tests
                     sw.WriteLine($"Line {i}: test!");
                 }
                 sw.Flush();
-                expected = SHA1.Create().ComputeHash(ms.ToArray());
+                expected = SHA256.Create().ComputeHash(ms.ToArray());
             }
             Assert.Equal(expected, await task);
         }

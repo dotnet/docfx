@@ -287,7 +287,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             Task<byte[]> hashTask;
             unresolvedXRefs = new List<XRefDetails>();
-            using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
+            using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithSha256Hash(out hashTask))
             {
                 using var sw = new StreamWriter(stream);
                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))

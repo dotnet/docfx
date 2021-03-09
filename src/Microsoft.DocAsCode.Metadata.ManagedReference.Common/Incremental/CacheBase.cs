@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var checksum = buildInfo.CheckSum;
                 try
                 {
-                    var resultCorrupted = GetMd5(buildInfo.OutputFolder, buildInfo.RelativeOutputFiles) != checksum;
+                    var resultCorrupted = GetHash(buildInfo.OutputFolder, buildInfo.RelativeOutputFiles) != checksum;
 
                     if (!resultCorrupted && checksum != null)
                     {
@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected virtual void SaveConfig(string key, BuildInfo config)
         {
-            config.CheckSum = GetMd5(config.OutputFolder, config.RelativeOutputFiles);
+            config.CheckSum = GetHash(config.OutputFolder, config.RelativeOutputFiles);
             _configs[key] = config;
             CleanupConfig();
 
@@ -151,16 +151,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new Dictionary<string, BuildInfo>();
         }
 
-        private static string GetMd5(string rootFolder, IEnumerable<string> relativeFilePath)
+        private static string GetHash(string rootFolder, IEnumerable<string> relativeFilePath)
         {
             if (relativeFilePath == null) return null;
             var files = (from p in relativeFilePath select Path.Combine(rootFolder, p)).ToList();
 
-            MD5 md5 = MD5.Create();
-
             using FileCollectionStream reader = new FileCollectionStream(files);
-            var hash = md5.ComputeHash(reader);
-            return BitConverter.ToString(hash).Replace("-", "");
+            return HashUtility.GetSha256HashString(reader);
         }
 
         class FileCollectionStream : Stream
