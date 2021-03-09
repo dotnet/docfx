@@ -43,13 +43,13 @@ jobs:
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
 
   - task: reportgenerator@4
-    displayName: merge test results
+    displayName: Merge Test Results
     inputs:
       reports: test/**/coverage.cobertura.xml
       targetdir: $(Pipeline.Workspace)/coveragereport
 
   - task: PublishCodeCoverageResults@1
-    displayName: uplodoad code coverage result
+    displayName: Upload Code Coverage Result
     inputs:
       codeCoverageTool: cobertura
       summaryFileLocation: $(Pipeline.Workspace)/coveragereport/Cobertura.xml
