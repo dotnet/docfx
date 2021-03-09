@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Dfm
                 md += terminator.SourceInfo.Markdown;
                 offset++;
             }
-            var groupId = (items[0].SourceInfo.File ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
+            var groupId = HashUtility.GetSha256HashString(items[0].SourceInfo.File ?? string.Empty).Replace("/", "-").Remove(10);
             context.AggregateTo(
                 new DfmTabGroupBlockToken(
                     DfmTabGroupBlockRule.Instance,

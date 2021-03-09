@@ -16,9 +16,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public DateTime LastModifiedTime { get; set; }
         /// <summary>
-        /// MD5 string of the file content
+        /// Hash string of the file content
         /// </summary>
-        public string MD5 { get; set; }
+        public string Hash { get; set; }
 
         /// <summary>
         /// Whether the file is from source or dependency

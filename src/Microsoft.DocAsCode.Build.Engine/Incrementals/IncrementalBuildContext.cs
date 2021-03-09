@@ -269,7 +269,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         _changeDict[file] = ChangeKindWithDependency.Deleted;
                     }
-                    else if (current.LastModifiedTime > checkTime && current.MD5 != last.MD5)
+                    else if (current.LastModifiedTime > checkTime && current.Hash != last.Hash)
                     {
                         _changeDict[file] = ChangeKindWithDependency.Updated;
                     }
@@ -352,16 +352,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                     if (!TryGetFileAttributeFromLast(key, out FileAttributeItem item))
                     {
-                        string md5;
+                        string hash;
                         using (var fs = File.OpenRead(f.FullPath))
                         {
-                            md5 = Convert.ToBase64String(MD5.Create().ComputeHash(fs));
+                            hash = HashUtility.GetSha256HashString(fs);
                         }
                         fileAttributes[key] = new FileAttributeItem
                         {
                             File = key,
                             LastModifiedTime = File.GetLastWriteTimeUtc(f.FullPath),
-                            MD5 = md5,
+                            Hash = hash,
                             IsFromSource = f.IsFromSource,
                         };
                     }
@@ -371,7 +371,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         {
                             File = item.File,
                             LastModifiedTime = item.LastModifiedTime,
-                            MD5 = item.MD5,
+                            Hash = item.Hash,
                             IsFromSource = f.IsFromSource,
                         };
                     }
@@ -428,7 +428,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         File = node,
                         LastModifiedTime = File.GetLastWriteTimeUtc(fullPath),
-                        MD5 = StringExtension.GetMd5String(File.ReadAllText(fullPath)),
+                        Hash = HashUtility.GetSha256HashString(File.ReadAllText(fullPath)),
                     };
                 }
             }
@@ -614,7 +614,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     });
                 string configStr = json + "|" + markdownServiceContextHash;
                 Logger.LogVerbose($"Config content: {configStr}");
-                return configStr.GetMd5String();
+                return HashUtility.GetSha256HashString(configStr);
             }
         }
 
@@ -628,7 +628,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     json = JsonConvert.SerializeObject(fileMetadata, IncrementalUtility.FileMetadataJsonSerializationSettings);
                 }
                 Logger.LogVerbose($"FileMetadata content: {json}");
-                return json.GetMd5String();
+                return HashUtility.GetSha256HashString(json);
             }
         }
 
