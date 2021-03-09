@@ -24,8 +24,6 @@ namespace Microsoft.Docs.Build
                 @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly char[] s_queryFragmentLeadingChars = new[] { '#', '?' };
-
         /// <summary>
         /// Split href to path, fragment and query
         /// </summary>
@@ -183,46 +181,14 @@ namespace Microsoft.Docs.Build
                 return LinkType.RelativePath;
             }
 
-            var ch = link[0];
-
-            if (ch == '/' || ch == '\\')
+            return link[0] switch
             {
-                if (link.Length > 1 && (link[1] == '/' || link[1] == '\\'))
-                {
-                    return LinkType.External;
-                }
-                return LinkType.AbsolutePath;
-            }
-
-            // If it is a windows rooted path like C:
-            if (link.Length > 2 && link[1] == ':')
-            {
-                return LinkType.WindowsAbsolutePath;
-            }
-
-            if (Uri.TryCreate(link, UriKind.Absolute, out _))
-            {
-                return LinkType.External;
-            }
-
-            if (ch == '#')
-            {
-                return LinkType.SelfBookmark;
-            }
-
-            // Uri.TryCreate does not handle some common errors like http:docs.com, so specialize them here
-            if (char.IsLetter(ch))
-            {
-                var colonIndex = link.IndexOf(':');
-                if (colonIndex > 0
-                    && link.IndexOfAny(s_queryFragmentLeadingChars) is var queryOrFragmentIndex
-                    && (queryOrFragmentIndex < 0 || colonIndex < queryOrFragmentIndex))
-                {
-                    return LinkType.External;
-                }
-            }
-
-            return LinkType.RelativePath;
+                '/' or '\\' => LinkType.AbsolutePath,
+                '#' => LinkType.SelfBookmark,
+                _ => Uri.TryCreate(link, UriKind.Absolute, out var uri)
+                    ? uri.Scheme == Uri.UriSchemeFile ? LinkType.WindowsAbsolutePath : LinkType.External
+                    : LinkType.RelativePath,
+            };
         }
 
         public static bool IsHttp(string str)

@@ -18,8 +18,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             Func<ErrorBuilder> getErrors,
-            Func<SourceInfo<string>, MarkdownObject, string> getLink,
-            Func<SourceInfo<string>, MarkdownObject, string?, int, string> getImageLink,
+            Func<LinkInfo, string> getLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
         {
             return builder.Use(document =>
@@ -54,7 +53,7 @@ namespace Microsoft.Docs.Build
                 // The following code ensures we preserve the original html when changing links.
                 return HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                 {
-                    HtmlUtility.TransformLink(ref token, block, getLink!, getImageLink!);
+                    HtmlUtility.TransformLink(ref token, block, getLink!);
                     HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
 
                     if (scanTags)

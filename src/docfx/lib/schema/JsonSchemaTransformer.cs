@@ -407,7 +407,6 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-
                     var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
                     errors.AddIfNotNull(error);
                     return link;
@@ -428,9 +427,9 @@ namespace Microsoft.Docs.Build
 
                     return HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
                     {
-                        HtmlUtility.TransformLink(ref token, null, (href, _) =>
+                        HtmlUtility.TransformLink(ref token, null, link =>
                         {
-                            var source = new SourceInfo<string>(href, content.Source?.WithOffset(href.Source));
+                            var source = new SourceInfo<string>(link.Href, content.Source?.WithOffset(link.Href.Source));
                             var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);
                             errors.AddIfNotNull(htmlError);
                             return htmlLink;
