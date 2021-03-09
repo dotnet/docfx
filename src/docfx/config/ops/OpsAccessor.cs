@@ -35,9 +35,10 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private static readonly SecretClient s_secretClient = new(new("https://docfx.vault.azure.net"), new DefaultAzureCredential());
-        private static readonly Lazy<Task<string>> s_opsTokenProd = new(() => GetSecret("OpsBuildTokenProd"));
-        private static readonly Lazy<Task<string>> s_opsTokenSandbox = new(() => GetSecret("OpsBuildTokenSandbox"));
+        private static readonly SecretClient s_secretClientPublic = new(new("https://docfxdevkvpub.vault.azure.net/"), new DefaultAzureCredential());
+        private static readonly SecretClient s_secretClientPubDev = new(new("https://docfxdevkvpubdev.vault.azure.net/"), new DefaultAzureCredential());
+        private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken"));
+        private static readonly Lazy<Task<string>> s_opsTokenPubDev = new(() => GetSecret("OpsBuildUserToken", isPubDev: true));
 
         private static int s_validationRulesetReported;
 
@@ -344,9 +345,9 @@ namespace Microsoft.Docs.Build
             return DocsEnvironment;
         }
 
-        private static async Task<string> GetSecret(string secret)
+        private static async Task<string> GetSecret(string secret, bool isPubDev = false)
         {
-            var response = await s_secretClient.GetSecretAsync(secret);
+            var response = await (isPubDev ? s_secretClientPubDev.GetSecretAsync(secret) : s_secretClientPublic.GetSecretAsync(secret));
             if (response.Value is null)
             {
                 throw new HttpRequestException(response.GetRawResponse().ToString());
@@ -376,8 +377,8 @@ namespace Microsoft.Docs.Build
                 {
                     var tokenTask = (environment ?? DocsEnvironment) switch
                     {
-                        DocsEnvironment.Prod => s_opsTokenProd,
-                        DocsEnvironment.PPE => s_opsTokenSandbox,
+                        DocsEnvironment.Prod => s_opsTokenPublic,
+                        DocsEnvironment.PPE => s_opsTokenPubDev,
                         _ => throw new InvalidOperationException(),
                     };
                     var token = await tokenTask.Value;

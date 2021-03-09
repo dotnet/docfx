@@ -1,0 +1,243 @@
+# Table validation - missing column header
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "tables": {
+        "rules": [
+          {
+            "type": "MissingColumnHeaders",
+            "message": "Column headers are required for tables. Add appropriate header text.",
+            "code": "column-header-missing",
+            "severity": "SUGGESTION",
+            "contentTypes": [
+              "conceptual",
+              "toc",
+              "redirection",
+              "learningpath",
+              "module",
+              "moduleunit",
+              "zonepivotgroups",
+              "post"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    | _Field_ | **Description** |
+    |---|---|
+    | **Subscription** | A valid and active Azure subscription. |
+  b.md: |
+    > [!div class=""mx-tableFixed""]
+    > |Parameter      |Description|
+    > |---------------|-----------|
+    > |--name (required)      |Enter a 6-50 characters-long unique name for your Event Hubs namespace. The name should contain only letters, numbers, and hyphens. It should start with a letter and end with a letter or number.|
+  c.md: |
+    This is some text. More text.
+
+    |Column1|Column2|Column3|Column4|Column5| 
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  d.md: |
+    This is some text. More text.
+
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  e.md: |
+    This is some text. More text.
+
+    ||Column2|Column3|Column4|Column5| 
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  f.md: |
+    | Property | `AzureADMyOrg` | `AzureADMultipleOrgs` | `AzureADandPersonalMicrosoftAccount` and `PersonalMicrosoftAccount` |
+    |--------------|---------------|----------------|----------------|
+    | A | B | C | D |
+    | A | B | C | D |
+  g.md: |
+    | |
+    |--|
+    |If your administrator has turned on the new **My Apps** preview experience for your organization, you’ll now see a banner at the top of the **My Apps** page that says, **An updated My Applications experience is available**. If you select **Try It**, you’ll immediately go you to the new URL (myapplications.microsoft.com) and the updated experience. After that, every time you return to the **My Apps** page, you'll automatically go to the new experience.<br><br>To stop using the new experience, you can select **Yes** from the **Leave new experience** banner at the top of the new **My Apps** page. You’ll immediately return to the old URL (myapps.microsoft.com) and experience. After that, every time you return to the **My Apps** page, you'll automatically go to the old experience.|
+    |
+  h.md: |
+    Delivery slots:
+
+    | |**Monday**|**Tuesday**|**Wednesday**|**Thursday**|
+    |-|-------|-------|-------|-------|
+    |**09:00 - 11:00**|B|C|D|E|
+    |**09:00 - 11:00**|B|C|D|E|
+    |**09:00 - 11:00**|B|C|D|E|
+    |**09:00 - 11:00**|B|C|D|E|
+  i.md: |
+    | |**Monday**|**Tuesday**|**Wednesday**|**Thursday**|
+    |-|-------|-------|-------|-------|
+    |**09:00 - 11:00**|B|C|D|E|
+    |09:00 - 11:00|B|C|D|E|
+    |**09:00 - 11:00**|B|C|D|E|
+    |**09:00 - 11:00**|B|C|D|E|
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  g.json:
+  h.json:
+  i.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"column-header-missing","message":"Column headers are required for tables. Add appropriate header text.","file":"e.md"}
+    {"message_severity":"suggestion","code":"column-header-missing","message":"Column headers are required for tables. Add appropriate header text.","file":"g.md"}
+    {"message_severity":"suggestion","code":"column-header-missing","message":"Column headers are required for tables. Add appropriate header text.","file":"i.md"}
+---
+# Table validation - text inclusion
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "tables": {
+        "rules": [
+          {
+            "type": "MissingColumnHeaders",
+            "message": "Column headers are required for tables. Add appropriate header text.",
+            "code": "column-header-missing",
+            "severity": "SUGGESTION",
+            "contentTypes": [
+              "conceptual",
+              "toc",
+              "redirection",
+              "learningpath",
+              "module",
+              "moduleunit",
+              "zonepivotgroups",
+              "post"
+            ]
+          }
+        ]
+      }
+    }
+  a.md: |
+    |[!INCLUDE[include1](b.md)]|TEXT|C|  
+    |------------|-----------------------------|---------------------------------|  
+    |Move|ALT|ALT|
+  b.md: |
+    this is an incluede title
+  c.md: |
+    ||TEXT|C|  
+    |------------|-----------------------------|---------------------------------|  
+    |[!INCLUDE[include1](b.md)]|ALT|ALT|
+  d.md: |
+    **this is an incluede title**
+  e.md: |
+    ||TEXT|C|  
+    |------------|-----------------------------|---------------------------------|  
+    |[!INCLUDE[include1](d.md)]|ALT|ALT|
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"column-header-missing","message":"Column headers are required for tables. Add appropriate header text.","file":"c.md"}
+
+ 
+---
+# Table validation - invalid table
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "tables": {
+        "rules": [
+          {
+            "type": "MissingTableHeaders",
+            "message": "Table headers are required for tables. Add appropriate table header.",
+            "code": "table-header-missing",
+            "severity": "SUGGESTION",
+            "contentTypes": [
+              "conceptual",
+              "toc",
+              "redirection",
+              "learningpath",
+              "module",
+              "moduleunit",
+              "zonepivotgroups",
+              "post"
+             ]
+            }
+          ]
+        }
+      }
+  a.md: |
+    To get a more concise view, you can send the output from the `Get-AzResourceGroup` to the `Format-Table` cmdlet using a pipe '|'.
+  b.md: |
+    > [!div class=""mx-tableFixed""]
+    > |Parameter      |Description|
+    > |---------------|-----------|
+    > |--name (required)      |Enter a 6-50 characters-long unique name for your Event Hubs namespace. The name should contain only letters, numbers, and hyphens. It should start with a letter and end with a letter or number.|
+  c.md: |
+    |Column1|Column2|Column3|Column4|Column5| 
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|    
+  d.md: |
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  e.md: |
+    YEAR[S] | MONTH[S] | WEEK[S] | DAY[S] | HOUR[S] | MINUTE[S] | SECOND[S] | 
+    MILLISECOND[S] | MICROSECOND[S] 
+  f.md: |
+    **Clients** – Windows XP | Windows Vista | Windows 7 | Windows 7 SP1 | Windows 8 
+    **Servers** – Windows Server 2003 | Windows Server 2008 | Windows Server 2008 R2 |DAY[S] | HOUR[S] | MINUTE[S] | SECOND[S] | 
+    **Clients** – Windows XP | Windows Vista | Windows 7 | Windows 7 SP1 | Windows 8 
+    **Servers** – Windows Server 2003 | Windows Server 2008 | Windows Server 2008 R2 | 
+  g.md: |
+    |A|B|C|D|E|    
+    |Column1|Column2|Column3|Column4|Column5| 
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  h.md: |
+    This is some text. More text.
+    |Column1|Column2|Column3|Column4|Column5| 
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  i.md: |
+    > This is some text. More text.
+    |Column1|Column2|Column3|Column4|Column5| 
+    |-|-------|-------|-|-------|
+    |A|B|C|D|E|
+  j.md: |
+    This constructs a `BlockEncodingReflection` unitary $U=P\cdot V\cdot P^\dagger$ that encodes some
+    operator $H=\sum_{j}|\alpha_j|U_j$ of interest that is a linear combination of
+    unitaries. Typically, $P$ is a state preparation unitary such that
+    $P\ket{0}\_a\sum_j\sqrt{\alpha_j/\|\vec\alpha\|\_2}\ket{j}\_a$,
+    and $V=\sum_{j}\ket{j}\bra{j}\_a\otimes U_j$.
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  d.json:
+  e.json:
+  f.json:
+  g.json:
+  h.json:
+  i.json:
+  j.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"d.md"}
+    {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"f.md"}
+    {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"g.md"}
+    {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"h.md"}
+    {"message_severity":"suggestion","code":"table-header-missing","message":"Table headers are required for tables. Add appropriate table header.","file":"i.md"}
+
+
+
+
+
+
+
+

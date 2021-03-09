@@ -53,7 +53,13 @@ outputs:
 # Links to self bookmarks in the included file
 inputs:
   docfx.yml: |
+    monikerRange:
+      'docs/a.md': 'netcore-1.0'
     files: docs/a.md
+    monikerDefinition: 'monikerDefinition.json'
+    fileMetadata:
+      monikerRange:
+        docs/**: 'netcore-1.0'
   docs/a.md: |
     # heading
     [!INCLUDE[](includes/b.md)]
@@ -64,8 +70,14 @@ inputs:
     Link to [valid parent](../a.md#heading)
     Link to [invalid self](#heading1)
     Link to [invalid parent](../a.md#heading2)
+  monikerDefinition.json: |
+    {
+      "monikers": [
+        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" }
+      ]
+    }
 outputs:
-  docs/a.json: |
+  136a42ac/docs/a.json: |
     {
       "conceptual": "
         <h2 id=\"test\">test</h2>
