@@ -467,28 +467,30 @@ namespace Microsoft.Docs.Build
         {
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
-                if (attribute.Value.Length <= 0 || GetLinkAttributeType(ref token, attribute) is null)
+                if (attribute.Value.Length > 0 && GetLinkAttributeType(ref token, attribute) is LinkAttributeType attributeType)
                 {
-                    continue;
-                }
+                    var href = attribute.Value.ToString();
 
-                var href = attribute.Value.ToString();
-
-                switch (UrlUtility.GetLinkType(href))
-                {
-                    case LinkType.SelfBookmark:
-                        token.SetAttributeValue("data-linktype", "self-bookmark");
-                        break;
-                    case LinkType.AbsolutePath:
-                        token.SetAttributeValue("data-linktype", "absolute-path");
-                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
-                        break;
-                    case LinkType.RelativePath:
-                        token.SetAttributeValue("data-linktype", "relative-path");
-                        break;
-                    case LinkType.External:
-                        token.SetAttributeValue("data-linktype", "external");
-                        break;
+                    switch (UrlUtility.GetLinkType(href))
+                    {
+                        case LinkType.SelfBookmark:
+                            token.SetAttributeValue("data-linktype", "self-bookmark");
+                            break;
+                        case LinkType.AbsolutePath:
+                            token.SetAttributeValue("data-linktype", "absolute-path");
+                            token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
+                            break;
+                        case LinkType.RelativePath:
+                            token.SetAttributeValue("data-linktype", "relative-path");
+                            break;
+                        case LinkType.External:
+                            token.SetAttributeValue("data-linktype", "external");
+                            if (Uri.TryCreate(href, UriKind.Absolute, out var uri))
+                            {
+                                Telemetry.TrackExternalLink(attributeType, uri.Scheme, uri.DnsSafeHost);
+                            }
+                            break;
+                    }
                 }
             }
         }
