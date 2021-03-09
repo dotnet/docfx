@@ -409,7 +409,7 @@ namespace Microsoft.Docs.Build
                 case JsonSchemaContentType.Href:
 
                     // TODO: Not all links are used as anchor, determine link element type based on schema
-                    var (error, link, _) = _linkResolver.ResolveLink(content, LinkElementType.Anchor, file, file);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, LinkElementType.Href, file, file);
                     errors.AddIfNotNull(error);
                     return link;
 

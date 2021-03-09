@@ -23,7 +23,7 @@ outputs:
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;amp;b'>a&amp;amp;b.md</a>
-          <a href='http://xn--foo%20b-cxa'>http://foo%20bä</a>
+          <a href=''>http://foo%20bä</a>
           <a href='a++.png'>a++.png</a>
         </p>"
     }
@@ -71,7 +71,7 @@ inputs:
     <a href='a&b.md'>a&b.md</a>
     <a href='a&amp;b.md'>a&amp;b.md</a>
     <a href='a&amp;amp;b.md'>a&amp;amp;b.md</a>
-    <a href='http://foo%20b&auml;'>http://foo%20b&auml;</a>
+    <a href=''>http://foo%20b&auml;</a>
     <a href='a++.png'>a++.png</a>
   'a b.md':
   a&b.md:
@@ -86,7 +86,7 @@ outputs:
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;b'>a&amp;b.md</a>
           <a href='a&amp;amp;b'>a&amp;amp;b.md</a>
-          <a href='http://foo%20b&#228;'>http://foo%20bä</a>
+          <a href=''>http://foo%20bä</a>
           <a href='a++.png'>a++.png</a>
         </p>"
     }

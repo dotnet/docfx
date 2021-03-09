@@ -5,8 +5,8 @@ namespace Microsoft.Docs.Build
 {
     internal enum LinkElementType
     {
-        Anchor,
-        Iframe,
+        Href,
         Image,
+        Src,
     }
 }

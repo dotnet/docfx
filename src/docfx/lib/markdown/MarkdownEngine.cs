@@ -304,7 +304,7 @@ namespace Microsoft.Docs.Build
             return GetLink(new()
             {
                 Href = new(path, origin.GetSourceInfo()),
-                ElementType = LinkElementType.Anchor,
+                ElementType = LinkElementType.Href,
                 MarkdownObject = origin,
             });
         }
@@ -340,7 +340,7 @@ namespace Microsoft.Docs.Build
 
             var node = link.ElementType switch
             {
-                LinkElementType.Anchor => (LinkNode)new HyperLinkNode
+                LinkElementType.Href => (LinkNode)new HyperLinkNode
                 {
                     IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
                     HyperLinkType = link.MarkdownObject switch

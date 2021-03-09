@@ -261,18 +261,20 @@ namespace Microsoft.Docs.Build
             {
                 if (GetLinkElementType(ref token, attribute) is LinkElementType elementType)
                 {
+                    var href = new SourceInfo<string>(
+                        HttpUtility.HtmlDecode(attribute.Value.ToString()),
+                        block?.GetSourceInfo()?.WithOffset(attribute.ValueRange));
+
                     var link = transformLink(new()
                     {
-                        Href = new(
-                            HttpUtility.HtmlDecode(attribute.Value.ToString()),
-                            block?.GetSourceInfo()?.WithOffset(attribute.ValueRange)),
-
+                        Href = href,
+                        MarkdownObject = block,
                         ElementType = elementType,
                         AltText = elementType == LinkElementType.Image ? token.GetAttributeValueByName("alt") : null,
                         HtmlSourceIndex = token.Range.Start.Index,
                     });
 
-                    attribute = attribute.WithValue(link);
+                    attribute = attribute.WithValue(HttpUtility.HtmlEncode(link));
                 }
             }
         }
@@ -515,17 +517,12 @@ namespace Microsoft.Docs.Build
         {
             if (token.NameIs("a") && attribute.NameIs("href"))
             {
-                return LinkElementType.Anchor;
+                return LinkElementType.Href;
             }
 
-            if ((token.NameIs("img") || token.NameIs("image")) && attribute.NameIs("src"))
+            if (attribute.NameIs("src"))
             {
-                return LinkElementType.Image;
-            }
-
-            if (token.NameIs("iframe") && attribute.NameIs("src"))
-            {
-                return LinkElementType.Iframe;
+                return (token.NameIs("img") || token.NameIs("image")) ? LinkElementType.Image : LinkElementType.Src;
             }
 
             return null;
