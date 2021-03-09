@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             int startSpan,
             int offset)
         {
-            var groupId = GetMd5String(items[0]?.Content?.ToString() ?? "").Replace("/", "-").Remove(10);
+            var groupId = GetHashString(items[0]?.Content?.ToString() ?? "").Replace("/", "-").Remove(10);
 
             context.AggregateTo(
                 new TabGroupBlock(
@@ -81,16 +81,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 offset);
         }
 
-        private static string GetMd5String(string content)
+        private static string GetHashString(string content)
         {
-            using var ms = new MemoryStream();
-            using (var writer = new StreamWriter(ms, Encoding.Unicode, 0x100, true))
-            {
-                writer.Write(content);
-            }
-
-            using var md5 = MD5.Create();
-            return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
+            using var sha256 = SHA256.Create();
+            return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(content)));
         }
 
         private static TabItemBlock CreateTabItem(
