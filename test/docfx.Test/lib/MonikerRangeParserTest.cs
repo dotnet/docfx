@@ -117,14 +117,14 @@ namespace Microsoft.Docs.Build
         }
 
         [Theory]
-        [InlineData("netcore-xp", "Invalid moniker range 'netcore-xp': Moniker 'netcore-xp' is not defined.")]
-        [InlineData("netcore-1.0 < || netcore-2.0", "Expect a moniker string, but got ' || netcore-2.0'.")]
-        [InlineData(">netcore&-1.0", "Parse ends before reaching end of string, unrecognized string: '&-1.0'.")]
-        [InlineData(">=>netcore&-1.0", "Expect a moniker string, but got '>netcore&-1.0'.")]
-        [InlineData(">netcore<-1.0", "Invalid moniker range '>netcore<-1.0': Moniker 'netcore' is not defined.")]
-        [InlineData(">netcore<-1.0 ||| >netcore-2.0", "Expect a comparator set, but got '| >netcore-2.0'.")]
-        [InlineData(">netcore<-1.0 || ||", "Expect a comparator set, but got ' ||'.")]
-        [InlineData(">netcore<-1.0 || <", "Expect a moniker string, but got ''.")]
+        [InlineData("netcore-xp", "Invalid moniker range: 'netcore-xp'. Moniker 'netcore-xp' is not defined.")]
+        [InlineData("netcore-1.0 < || netcore-2.0", "Invalid moniker range: Expect a moniker string, but got ' || netcore-2.0'.")]
+        [InlineData(">netcore&-1.0", "Invalid moniker range: Parse ends before reaching end of string, unrecognized string: '&-1.0'.")]
+        [InlineData(">=>netcore&-1.0", "Invalid moniker range: Expect a moniker string, but got '>netcore&-1.0'.")]
+        [InlineData(">netcore<-1.0", "Invalid moniker range: '>netcore<-1.0'. Moniker 'netcore' is not defined.")]
+        [InlineData(">netcore<-1.0 ||| >netcore-2.0", "Invalid moniker range: Expect a comparator set, but got '| >netcore-2.0'.")]
+        [InlineData(">netcore<-1.0 || ||", "Invalid moniker range: Expect a comparator set, but got ' ||'.")]
+        [InlineData(">netcore<-1.0 || <", "Invalid moniker range: Expect a moniker string, but got ''.")]
         public void InvalidMonikerRange(string rangeString, string errorMessage)
         {
             var errors = new ErrorList();
@@ -140,8 +140,8 @@ namespace Microsoft.Docs.Build
             monikerRangeParser.Parse(errors, new SourceInfo<string>("netcore-1.0"));
             Assert.Collection(errors, error =>
             {
-                Assert.Equal("moniker-range-missing", error.Code);
-                Assert.Equal("Invalid moniker range 'netcore-1.0': Moniker 'netcore-1.0' is not defined.", error.Message);
+                Assert.Equal("moniker-range-invalid", error.Code);
+                Assert.Equal("Invalid moniker range: 'netcore-1.0'. Moniker 'netcore-1.0' is not defined.", error.Message);
             });
         }
     }
