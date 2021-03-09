@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static readonly HttpClient _sharedClient =
             new Func<HttpClient>(() =>
             {
-                var client = new HttpClient();
+                var client = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 return client;
