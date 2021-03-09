@@ -252,6 +252,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public void ValidateTable(FilePath file, TableNode tableNode)
+        {
+            if (TryCreateValidationContext(file, false, out var validationContext))
+            {
+                Write(_validator.ValidateTable(tableNode, validationContext).GetAwaiter().GetResult());
+            }
+        }
+
         public void PostValidate()
         {
             Write(_validator.PostValidate().GetAwaiter().GetResult());
