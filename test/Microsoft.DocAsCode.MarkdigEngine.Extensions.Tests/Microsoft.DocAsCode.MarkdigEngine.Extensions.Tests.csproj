@@ -1,10 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Shared\test.base.props" />
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj" />
   </ItemGroup>
