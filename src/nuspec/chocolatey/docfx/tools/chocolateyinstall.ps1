@@ -4,14 +4,14 @@ $packageName= 'DocFX'
 $version    = 'v2.1'
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 $url        = "https://github.com/dotnet/docfx/releases/download/$version/docfx.zip"
-$sha1       = 'B301E4B421B8CD6FCA8A3E915E8A9D3CA1A0ED0D'
+$hash       = '7abd6dc579bdea1a74bed7beac1a770d13a88d8bcc44fadf509b8d5400fe1333'
 
 $packageArgs = @{
   packageName   = $packageName
   unzipLocation = $toolsDir
   url           = $url
-  checksum      = $sha1
-  checksumType  = 'sha1'
+  checksum      = $hash
+  checksumType  = 'SHA256'
 }
 
 Install-ChocolateyZipPackage @packageArgs
