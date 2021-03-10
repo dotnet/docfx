@@ -55,6 +55,5 @@ namespace Microsoft.Docs.LearnValidation
 
         [JsonProperty("points", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public int Points { get; set; } = 0;
-
     }
 }
