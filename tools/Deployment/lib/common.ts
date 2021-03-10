@@ -6,7 +6,7 @@ import * as path from "path";
 
 import * as cp from "child-process-promise";
 import * as jszip from "jszip";
-import * as sha1 from "sha1";
+import * as crypto from "crypto";
 import * as moment from "moment-timezone";
 
 export class Common {
@@ -65,7 +65,7 @@ export class Common {
         fs.writeFileSync(targetPath, buffer);
     }
 
-    static computeSha1FromZip(zipPath: string): string {
+    static computeSha256FromZip(zipPath: string): string {
         Guard.argumentNotNullOrEmpty(zipPath, "zipPath");
 
         if (!fs.existsSync(zipPath)) {
@@ -73,7 +73,7 @@ export class Common {
         }
 
         let buffer = fs.readFileSync(zipPath);
-        return sha1(buffer);
+        return crypto.createHash('sha256').update(buffer).digest('hex');
     }
 
     static getVersionFromReleaseNote(releaseNotePath: string): string {
