@@ -26,7 +26,7 @@ variables:
 jobs:
 
 # Test and deploy on windows
-- job: Security Checks
+- job: SecurityChecks
   timeoutInMinutes: 360
   pool:
     vmImage: 'windows-latest'
