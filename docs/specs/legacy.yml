@@ -313,39 +313,39 @@ inputs:
       ]
     }
 outputs:
-  docs/4667fedf/a.mta.json:
-  docs/4667fedf/a.raw.page.json:
-  docs/9d4e15fd/a.mta.json:
-  docs/9d4e15fd/a.raw.page.json:
+  docs/ecc061f43156f37be077db42abf8301a/a.mta.json:
+  docs/ecc061f43156f37be077db42abf8301a/a.raw.page.json:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.mta.json:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.raw.page.json:
   full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
-        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"},
-        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"4667fedf/a.mta.json"},".raw.page.json":{"relative_path":"4667fedf/a.raw.page.json"}},"group":"4667fedf"}
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"17b9fe681514513cbf7d5c90e32f107a/a.mta.json"},".raw.page.json":{"relative_path":"17b9fe681514513cbf7d5c90e32f107a/a.raw.page.json"}},"group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"ecc061f43156f37be077db42abf8301a/a.mta.json"},".raw.page.json":{"relative_path":"ecc061f43156f37be077db42abf8301a/a.raw.page.json"}},"group":"ecc061f43156f37be077db42abf8301a"}
       ],
       "groups":[
-        {"group":"4667fedf","monikers":["netcore-2.0"]},
-        {"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}
+        {"group":"17b9fe681514513cbf7d5c90e32f107a","monikers":["netcore-1.0","netcore-1.1"]},
+        {"group":"ecc061f43156f37be077db42abf8301a","monikers":["netcore-2.0"]}
       ]
     }
   docs/filemap.json: |
     {
       "file_mapping":{
-        "docs/v1/a.md:< netcore-2.0":{
-          "type":"Content",
-          "output_relative_path":"9d4e15fd/a.html",
-          "asset_id":"a",
-          "version": "< netcore-2.0",
-          "monikers":["netcore-1.0","netcore-1.1"],
-          "is_moniker_range": true
-        },
         "docs/v2/a.md:netcore-2.0":{
           "type":"Content",
-          "output_relative_path":"4667fedf/a.html",
+          "output_relative_path":"ecc061f43156f37be077db42abf8301a/a.html",
           "asset_id":"a",
           "version": "netcore-2.0",
           "monikers":["netcore-2.0"],
+          "is_moniker_range": true
+        },
+        "docs/v1/a.md:< netcore-2.0":{
+          "type":"Content",
+          "output_relative_path":"17b9fe681514513cbf7d5c90e32f107a/a.html",
+          "asset_id":"a",
+          "version": "< netcore-2.0",
+          "monikers":["netcore-1.0","netcore-1.1"],
           "is_moniker_range": true
         }
       }
@@ -376,11 +376,11 @@ inputs:
       ]
     }
 outputs:
-  docs/136a42ac/toc.json:
-  docs/136a42ac/f1/a.json: |
+  docs/9b52f68bce2b10c7aa018b696f8ca916/toc.json:
+  docs/9b52f68bce2b10c7aa018b696f8ca916/f1/a.json: |
     {"_tocRel": "../toc.json"}
-  docs/4667fedf/toc.json:
-  docs/4667fedf/f1/a.json: |
+  docs/ecc061f43156f37be077db42abf8301a/toc.json:
+  docs/ecc061f43156f37be077db42abf8301a/f1/a.json: |
     {"_tocRel": "../toc.json"}
   docs/filemap.json:
 ---

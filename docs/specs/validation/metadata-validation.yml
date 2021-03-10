@@ -246,9 +246,9 @@ inputs:
     ---
     Moniker: netcore-3.1
 outputs:
-  e277e62e/docs/v1/a.json:
-  e277e62e/docs/v1/b.json:
-  8cec59bf/docs/v2/a.json:
+  21903d6cbe60219e3923dd4fa60a8a63/docs/v1/a.json:
+  21903d6cbe60219e3923dd4fa60a8a63/docs/v1/b.json:
+  67f101dfae3415437d2d432ac1c314ee/docs/v2/a.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)'.","file":"docs/v1/b.md","line":2,"end_line":2,"column":14,"end_column":15}
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)'.","file":"docs/v1/a.md","line":2,"end_line":2,"column":14,"end_column":15}

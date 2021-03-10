@@ -22,6 +22,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a>test</a>", true)]
         [InlineData("`code`", true)]
         [InlineData("```\ncode\n````", true)]
+        [InlineData("    code", true)]
         [InlineData("<a></a>", true)]
         [InlineData("<a/>", true)]
         [InlineData("<a href=\"https://www.microsoft.com\"></a>", true)]

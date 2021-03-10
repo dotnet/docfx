@@ -38,24 +38,13 @@ Sanitization mode can be configured per JSON schema property:
 ```json
 {
   "contentType": "markdown",
-  "htmlSanitizationMode": "strict",
+  "sanitizationMode": "strict",
 }
 ```
 
 ### Standard HTML tags and attributes sanitization
 
-Use an _allow list_ to sanitize HTML tags and attributes. HTML tags can contain the follow common attributes:
-
-- Attribute names starting with `data-`.
-- Accessibility attributes: `role` and names starting with `aria-`.
-- Standard HTML5 global attributes:
-
-  ```html
-  name, id, itemid, itemprop, itemref, itemscope, itemtype,
-  part, slot, spellcheck, title
-  ```
-
-Each allowed HTML tag can have additional attributes as follows:
+Use an _allow list_ to sanitize HTML tags and attributes:
 
 > NOTE: This list may be adjusted based on docs usage collected from telemetry
 

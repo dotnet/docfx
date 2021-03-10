@@ -35,8 +35,7 @@ namespace Microsoft.Docs.Build
         };
 
         // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap =
-            new Dictionary<string, HashSet<string>?>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, HashSet<string>?> s_allowedTagAttributeMap = new(StringComparer.OrdinalIgnoreCase)
         {
             // Content sectioning
             { "address", null },
@@ -256,29 +255,26 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static void TransformLink(
-            ref HtmlToken token,
-            MarkdownObject? block,
-            Func<SourceInfo<string>, MarkdownObject?, string> transformLink,
-            Func<SourceInfo<string>, MarkdownObject?, string?, int, string>? transformImageLink = null)
+        public static void TransformLink(ref HtmlToken token, MarkdownObject? block, Func<LinkInfo, string> transformLink)
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
-                if (IsLink(ref token, attribute))
+                if (GetLinkAttributeType(ref token, attribute) is LinkAttributeType attributeType)
                 {
-                    var source = new SourceInfo<string>(
+                    var href = new SourceInfo<string>(
                         HttpUtility.HtmlDecode(attribute.Value.ToString()),
                         block?.GetSourceInfo()?.WithOffset(attribute.ValueRange));
-                    var link = HttpUtility.HtmlEncode(
-                        !IsImage(ref token, attribute) || transformImageLink == null
-                            ? transformLink(source, block)
-                            : transformImageLink(
-                                source,
-                                block,
-                                token.GetAttributeValueByName("alt"),
-                                token.Range.Start.Index));
 
-                    attribute = attribute.WithValue(link);
+                    var link = transformLink(new()
+                    {
+                        Href = href,
+                        MarkdownObject = block,
+                        AttributeType = attributeType,
+                        AltText = attributeType == LinkAttributeType.ImageSrc ? token.GetAttributeValueByName("alt") : null,
+                        HtmlSourceIndex = token.Range.Start.Index,
+                    });
+
+                    attribute = attribute.WithValue(HttpUtility.HtmlEncode(link));
                 }
             }
         }
@@ -471,28 +467,30 @@ namespace Microsoft.Docs.Build
         {
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
-                if (attribute.Value.Length <= 0 || !IsLink(ref token, attribute))
+                if (attribute.Value.Length > 0 && GetLinkAttributeType(ref token, attribute) is LinkAttributeType attributeType)
                 {
-                    continue;
-                }
+                    var href = attribute.Value.ToString();
 
-                var href = attribute.Value.ToString();
-
-                switch (UrlUtility.GetLinkType(href))
-                {
-                    case LinkType.SelfBookmark:
-                        token.SetAttributeValue("data-linktype", "self-bookmark");
-                        break;
-                    case LinkType.AbsolutePath:
-                        token.SetAttributeValue("data-linktype", "absolute-path");
-                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
-                        break;
-                    case LinkType.RelativePath:
-                        token.SetAttributeValue("data-linktype", "relative-path");
-                        break;
-                    case LinkType.External:
-                        token.SetAttributeValue("data-linktype", "external");
-                        break;
+                    switch (UrlUtility.GetLinkType(href))
+                    {
+                        case LinkType.SelfBookmark:
+                            token.SetAttributeValue("data-linktype", "self-bookmark");
+                            break;
+                        case LinkType.AbsolutePath:
+                            token.SetAttributeValue("data-linktype", "absolute-path");
+                            token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
+                            break;
+                        case LinkType.RelativePath:
+                            token.SetAttributeValue("data-linktype", "relative-path");
+                            break;
+                        case LinkType.External:
+                            token.SetAttributeValue("data-linktype", "external");
+                            if (Uri.TryCreate(href, UriKind.Absolute, out var uri))
+                            {
+                                Telemetry.TrackExternalLink(attributeType, uri.Scheme, uri.DnsSafeHost);
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -517,14 +515,19 @@ namespace Microsoft.Docs.Build
             return $"/{locale}{href}";
         }
 
-        private static bool IsLink(ref HtmlToken token, in HtmlAttribute attribute)
+        private static LinkAttributeType? GetLinkAttributeType(ref HtmlToken token, in HtmlAttribute attribute)
         {
-            return (token.NameIs("a") && attribute.NameIs("href")) || IsImage(ref token, attribute);
-        }
+            if (token.NameIs("a") && attribute.NameIs("href"))
+            {
+                return LinkAttributeType.Href;
+            }
 
-        private static bool IsImage(ref HtmlToken token, in HtmlAttribute attribute)
-        {
-            return token.NameIs("img") && attribute.NameIs("src") && !attribute.Value.IsEmpty;
+            if (attribute.NameIs("src"))
+            {
+                return (token.NameIs("img") || token.NameIs("image")) ? LinkAttributeType.ImageSrc : LinkAttributeType.Src;
+            }
+
+            return null;
         }
 
         private static bool IsVisible(ref HtmlToken token) => token.Type switch

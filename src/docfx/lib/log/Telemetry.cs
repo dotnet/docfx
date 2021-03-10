@@ -30,24 +30,30 @@ namespace Microsoft.Docs.Build
 
         private static readonly Metric s_operationStartMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, $"OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
+                new MetricIdentifier(null, "OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_operationEndMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, $"OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
+                new MetricIdentifier(null, "OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
+                s_metricConfiguration);
+
+        private static readonly Metric s_externalLinkMetric =
+            s_telemetryClient.GetMetric(
+                new MetricIdentifier(
+                    null, "ExternalLink", "AttributeType", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_fileLogCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_buildFileTypeCountMetric =
@@ -134,6 +140,15 @@ namespace Microsoft.Docs.Build
                 s_operationEndMetric.TrackValue(
                     stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId);
             });
+        }
+
+        public static void TrackExternalLink(LinkAttributeType attributeType, string scheme, string host)
+        {
+            if (!s_isRealTimeBuild.Value)
+            {
+                s_externalLinkMetric.TrackValue(
+                    1, attributeType.ToString(), CoalesceEmpty(scheme), CoalesceEmpty(host), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+            }
         }
 
         public static void TrackErrorCount(string code, ErrorLevel level, string? name)

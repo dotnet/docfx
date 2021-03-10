@@ -69,8 +69,8 @@ namespace Microsoft.Docs.Build
                     registers: registers,
                     errorsOutputMode: ErrorsOutputMode.Rethrow,
                     maxIterations: 0,
-                    timeout: 0,
-                    formatProvider: CultureInfo.InvariantCulture),
+                    formatProvider: CultureInfo.InvariantCulture,
+                    cancellationToken: default),
             };
 
             try

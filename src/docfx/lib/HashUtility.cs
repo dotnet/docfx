@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -16,28 +15,22 @@ namespace Microsoft.Docs.Build
             return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
-        public static string GetMd5HashShort(string input)
-        {
-            using var md5 = MD5.Create();
-            return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)), 4);
-        }
-
         public static Guid GetMd5Guid(string input)
         {
             using var md5 = MD5.Create();
             return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
-        public static string GetSha1Hash(string input)
+        public static string GetSha256Hash(string input)
         {
-            using var sha1 = new SHA1CryptoServiceProvider();
-            return ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(input)));
+            using var sha256 = SHA256.Create();
+            return ToHexString(sha256.ComputeHash(Encoding.UTF8.GetBytes(input)));
         }
 
-        public static string GetSha1Hash(Stream input)
+        public static string GetSha256HashShort(string input)
         {
-            using var sha1 = SHA1.Create();
-            return ToHexString(sha1.ComputeHash(input));
+            using var sha256 = SHA256.Create();
+            return ToHexString(sha256.ComputeHash(Encoding.UTF8.GetBytes(input)), 16);
         }
 
         public static uint GetFnv1A32Hash(ReadOnlySpan<byte> input)
@@ -46,16 +39,6 @@ namespace Microsoft.Docs.Build
             for (var i = 0; i < input.Length; i++)
             {
                 hash = (hash * 16777619) ^ input[i];
-            }
-            return hash;
-        }
-
-        public static ulong GetFnv1A64Hash(ReadOnlySpan<byte> input)
-        {
-            var hash = 14695981039346656037;
-            for (var i = 0; i < input.Length; i++)
-            {
-                hash = (hash * 1099511628211) ^ input[i];
             }
             return hash;
         }
