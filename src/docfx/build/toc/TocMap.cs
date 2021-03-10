@@ -200,6 +200,8 @@ namespace Microsoft.Docs.Build
 
             docToTocs.TrimExcess();
 
+            _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
+
             var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
             return (tocFiles, docToTocs, allServicePages.ToList());

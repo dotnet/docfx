@@ -665,3 +665,129 @@ outputs:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json: |
     {"metadata": {"universal_ref_toc": "/a/b/toc"}}
+---
+# output path conflicts for generated service pages
+repos:
+  https://github.com/ops/service-page-output-path-conflict2:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/test"
+              }]
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/index.md: |
+        # hello world
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client2
+            href: ~/test/index.md
+            landingPageType: Service
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/test/index.json:
+  a/api/bot/toc.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'test/index.json': 'test/index.md', 'test/index.yml [generated]'."}
+---
+# publish url conflicts for generated service pages
+repos:
+  https://github.com/ops/service-page-fix-publish-url-conflicts:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/test"
+            }
+          ]
+        }
+      a/docfx.yml: |
+        monikerRange:
+          'test1/**' : '>= v-0.1 <= v-0.2'
+          'test/**' : '>= v-0.2 <= v-0.3'
+        routes:
+          test1/: docs/
+          test/: docs/
+        monikerDefinition: monikerDefinition.json
+      a/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "v-0.1", "product_name": ".NET Core" },
+            { "moniker_name": "v-0.2", "product_name": ".NET Core" },
+            { "moniker_name": "v-0.3", "product_name": ".NET Core" },
+          ]
+        }
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test1/index.md: |
+        # hello world
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client2
+            href: ~/test1/index.md
+            landingPageType: Service
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/a443e252/docs/index.json: |
+    {"title": "hello world"}
+  a/api/bot/toc.json:
+  a/b8bdb22a/docs/index.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('v-0.2') publish to the same url '/docs/': 'test/index.yml [generated]<'v-0.2', 'v-0.3'>', 'test1/index.md<'v-0.1', 'v-0.2'>'."}
