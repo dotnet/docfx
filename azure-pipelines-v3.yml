@@ -134,10 +134,6 @@ jobs:
         params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
 
   steps:
-  # no need to checkout, exe is already inside regression binary
-  - checkout: self
-    fetchDepth: 0
-
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
