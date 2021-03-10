@@ -21,7 +21,7 @@ variables:
 - name: LGTM.UploadSnapshot
   value: true
 - name: Semmle.SkipAnalysis
-  value: false
+  value: true
 
 jobs:
 
