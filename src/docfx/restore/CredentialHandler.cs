@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
             {
                 using var request = requestFactory();
                 var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
-                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
+                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {PathUtility.RemoveQueryForBlobUrl(url)}'"))
                 {
                     var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
                     FillInCredentials(request, httpConfig);

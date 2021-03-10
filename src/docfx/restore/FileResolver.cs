@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (PerfScope.Start($"Downloading '{url}'"))
+                using (PerfScope.Start($"Downloading '{PathUtility.RemoveQueryForBlobUrl(url)}'"))
                 using (var response = await HttpPolicyExtensions
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
