@@ -135,7 +135,8 @@ jobs:
 
   steps:
   # no need to checkout, exe is already inside regression binary
-  - checkout: none
+  - checkout: self
+    fetchDepth: 0
 
   # Install .NET Core sdk
   - task: UseDotNet@2
