@@ -163,7 +163,7 @@ namespace Microsoft.Docs.Build
         {
             url = RemoveQueryForBlobUrl(url);
 
-            var hash = HashUtility.GetMd5HashShort(url);
+            var hash = HashUtility.GetSha256HashShort(url);
 
             // Trim https://
             var index = url.IndexOf(':');
@@ -211,7 +211,7 @@ namespace Microsoft.Docs.Build
 
         // For azure blob url, url without sas token should identify if the content has changed
         // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
-        private static string RemoveQueryForBlobUrl(string url)
+        public static string RemoveQueryForBlobUrl(string url)
         {
             return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
         }

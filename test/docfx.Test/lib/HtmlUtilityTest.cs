@@ -23,7 +23,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/xxx-yyy/a' />", "<a href='/zh-cn/xxx-yyy/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
-        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='external' />")]
+        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
         public void HtmlAddLinkType(string input, string output)
         {
             var actual = HtmlUtility.TransformHtml(
@@ -78,7 +78,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, (_, foo) => link));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
 
             Assert.Equal(output, actual);
         }
