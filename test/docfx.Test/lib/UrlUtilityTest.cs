@@ -59,6 +59,7 @@ namespace Microsoft.Docs.Build
         [InlineData(@"feedback-url:?query=a", LinkType.External)]
         [InlineData(@"c:/a", LinkType.WindowsAbsolutePath)]
         [InlineData(@"c:\a", LinkType.WindowsAbsolutePath)]
+        [InlineData(@"file://a.md", LinkType.External)]
         public static void GetLinkType(string url, LinkType expected)
         {
             Assert.Equal(expected, UrlUtility.GetLinkType(url));

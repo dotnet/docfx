@@ -181,15 +181,22 @@ namespace Microsoft.Docs.Build
                 return LinkType.RelativePath;
             }
 
+            if (Uri.TryCreate(link, UriKind.Absolute, out var uri))
+            {
+                if (string.IsNullOrEmpty(uri.DnsSafeHost) && uri.Scheme == Uri.UriSchemeFile)
+
+                {
+                    return LinkType.WindowsAbsolutePath;
+                }
+
+                return LinkType.External;
+            }
+
             return link[0] switch
             {
-                '/' or '\\' => link.Length > 1 && (link[1] == '/' || link[1] == '\\')
-                               ? LinkType.External
-                               : LinkType.AbsolutePath,
+                '/' or '\\' => LinkType.AbsolutePath,
                 '#' => LinkType.SelfBookmark,
-                _ => Uri.TryCreate(link, UriKind.Absolute, out var uri)
-                    ? uri.Scheme == Uri.UriSchemeFile ? LinkType.WindowsAbsolutePath : LinkType.External
-                    : LinkType.RelativePath,
+                _ => LinkType.RelativePath,
             };
         }
 
