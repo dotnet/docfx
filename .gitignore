@@ -36,3 +36,4 @@ bower_components
 target
 tools/Deployment/out
 launchSettings.json
+.temp/
