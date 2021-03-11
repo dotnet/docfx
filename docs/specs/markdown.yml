@@ -840,3 +840,13 @@ outputs:
     }
   block.json:
 ---
+# treat iframe src //domain as external link
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    <iframe src='//codepen.io/azuremaps/embed'>
+      See the Pen <a href='https://codepen.io'>CodePen</a>.
+    </iframe>
+outputs:
+  docs/a.json: |
+    {"conceptual": "<iframe src='//codepen.io/azuremaps/embed&rerun-position=hidden&' data-linktype=\"external\">\n  See the Pen <a href='https://codepen.io' data-linktype=\"external\">CodePen</a>.\n</iframe>\n"}
