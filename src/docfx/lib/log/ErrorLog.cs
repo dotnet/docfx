@@ -78,6 +78,11 @@ namespace Microsoft.Docs.Build
                     }
                     return;
                 }
+
+                if (config.DocumentUrls.TryGetValue(error.Code, out var documentUrl))
+                {
+                    error = error with { DocumentUrl = documentUrl };
+                }
             }
 
             Watcher.Write(() =>
