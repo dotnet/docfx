@@ -354,7 +354,9 @@ namespace Microsoft.Docs.Build
                     if (list.Count > 1)
                     {
                         _errors.Add(Errors.Redirection.RedirectionUrlConflict(
-                            list.First().RedirectUrl, list.Select(i => i.RedirectUrl.Source.File.Path).Distinct(), list.Select(i => i.SourcePath)));
+                            list.First().RedirectUrl,
+                            list.Select(i => i.RedirectUrl.Source?.File.Path ?? default).Distinct(),
+                            list.Select(i => i.SourcePath)));
                     }
                 }
                 return (renameHistory, redirectionHistory);
