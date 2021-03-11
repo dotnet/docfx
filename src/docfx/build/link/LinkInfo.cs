@@ -9,7 +9,11 @@ namespace Microsoft.Docs.Build
     {
         public SourceInfo<string> Href { get; init; }
 
-        public LinkAttributeType AttributeType { get; init; }
+        public string TagName { get; init; } = "a";
+
+        public string AttributeName { get; init; } = "href";
+
+        public bool IsImage => TagName == "img" || TagName == "image";
 
         public MarkdownObject? MarkdownObject { get; init; }
 
