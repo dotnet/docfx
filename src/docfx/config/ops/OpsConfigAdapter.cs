@@ -16,6 +16,7 @@ namespace Microsoft.Docs.Build
     internal class OpsConfigAdapter
     {
         public const string BuildConfigApi = "https://ops/buildconfig/";
+
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
@@ -46,7 +47,7 @@ namespace Microsoft.Docs.Build
                 (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
                 (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
-                (RegressionAllAllowlistsApi, _ => _opsAccessor.GetRegressionAllAllowlists()),
+                (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
                 (RegressionAllBuildRulesApi, _ => _opsAccessor.GetRegressionAllBuildRules()),
                 (RegressionAllMetadataSchemaApi, _ => _opsAccessor.GetRegressionAllMetadataSchema()),
