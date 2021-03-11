@@ -185,7 +185,9 @@ namespace Microsoft.Docs.Build
             {
                 if (string.IsNullOrEmpty(uri.DnsSafeHost) && uri.Scheme == Uri.UriSchemeFile)
                 {
-                    return LinkType.WindowsAbsolutePath;
+                    return (uri.AbsolutePath.StartsWith('/') || uri.AbsolutePath.StartsWith('\\'))
+                        ? LinkType.AbsolutePath
+                        : LinkType.WindowsAbsolutePath;
                 }
                 return LinkType.External;
             }
