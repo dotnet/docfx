@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_externalLinkMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, "ExternalLink", "AttributeType", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "ExternalLink", "Tag", "Attribute", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_errorCountMetric =
@@ -142,12 +142,12 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public static void TrackExternalLink(LinkAttributeType attributeType, string scheme, string host)
+        public static void TrackExternalLink(string tag, string attribute, string scheme, string host)
         {
             if (!s_isRealTimeBuild.Value)
             {
                 s_externalLinkMetric.TrackValue(
-                    1, attributeType.ToString(), CoalesceEmpty(scheme), CoalesceEmpty(host), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                    1, tag, attribute, CoalesceEmpty(scheme), CoalesceEmpty(host), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
             }
         }
 
