@@ -183,7 +183,9 @@ namespace Microsoft.Docs.Build
 
             return link[0] switch
             {
-                '/' or '\\' => LinkType.AbsolutePath,
+                '/' or '\\' => link.Length > 1 && (link[1] == '/' || link[1] == '\\')
+                               ? LinkType.External
+                               : LinkType.AbsolutePath,
                 '#' => LinkType.SelfBookmark,
                 _ => Uri.TryCreate(link, UriKind.Absolute, out var uri)
                     ? uri.Scheme == Uri.UriSchemeFile ? LinkType.WindowsAbsolutePath : LinkType.External
