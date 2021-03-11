@@ -319,8 +319,8 @@ namespace Microsoft.Docs.Build
             /// can't decide which entry to use when computing document id.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error RedirectionUrlConflict(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings.", source);
+            public static Error RedirectionUrlConflict(SourceInfo<string> source, IEnumerable<PathString> redirectionFiles, IEnumerable<PathString> redirectionSourcefiles)
+                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"Two or more files are redirected to '{source}' with redirect_document_id set to true. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): {StringUtility.Join(redirectionFiles)}. All the redirection instances that need the change: {StringUtility.Join(redirectionSourcefiles)}", source);
 
             /// <summary>
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true

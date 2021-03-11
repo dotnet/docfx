@@ -352,7 +352,7 @@ outputs:
       }
     }
   .errors.log: |
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/docs/a' appears twice or more in the redirection mappings.","file":"redirections.yml","line":3,"column":21}
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"Two or more files are redirected to '/docs/a' with redirect_document_id set to true. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): 'redirections.yml'. All the redirection instances that need the change: 'docs/v1/a-old.md', 'docs/v2/a-old.md'","line":2,"column":21}
 ---
 # Redirection file with monikers - moniker overlap
 inputs:
