@@ -13,16 +13,21 @@ namespace Microsoft.Docs.Build
 {
     internal static class UrlUtility
     {
-        private static readonly Regex s_gitHubUrlRegex =
-           new Regex(
-               @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-               RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_gitHubUrlRegex = new(
+            @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex s_azureReposUrlRegex =
-            new Regex(
-                @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
-                @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_azureReposUrlRegex = new(
+            @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
+            @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static string SanitizeUrl(string url)
+        {
+            // For azure blob url, url without sas token should identify if the content has changed
+            // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
+            return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
+        }
 
         /// <summary>
         /// Split href to path, fragment and query

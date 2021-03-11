@@ -161,7 +161,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string UrlToShortName(string url)
         {
-            url = RemoveQueryForBlobUrl(url);
+            url = SanitizeUrl(url);
 
             var hash = HashUtility.GetSha256HashShort(url);
 
@@ -207,13 +207,6 @@ namespace Microsoft.Docs.Build
 
             result.Append(hash);
             return result.ToString();
-        }
-
-        // For azure blob url, url without sas token should identify if the content has changed
-        // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
-        public static string RemoveQueryForBlobUrl(string url)
-        {
-            return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
         }
 
         private static bool GetIsCaseSensitive()
