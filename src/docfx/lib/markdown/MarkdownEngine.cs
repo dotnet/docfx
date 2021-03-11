@@ -356,11 +356,6 @@ namespace Microsoft.Docs.Build
                     },
                 };
 
-            if (node is null)
-            {
-                return;
-            }
-
             node = node with
             {
                 UrlLink = link.Href,
