@@ -201,13 +201,11 @@ namespace Microsoft.Docs.Build
             docToTocs.TrimExcess();
 
             var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
-            var keysToRemoveForServicePages = docToTocs.Keys.Where(item => !docToTocsKeys.Contains(item));
-            var filteredServicePages = allServicePages.Where(item => !keysToRemoveForServicePages.Contains(item)).ToList();
             docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
 
             var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
-            return (tocFiles, docToTocs, filteredServicePages);
+            return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
 
             bool ShouldBuildFile(FilePath file)
             {
