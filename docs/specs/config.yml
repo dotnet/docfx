@@ -349,17 +349,19 @@ outputs:
   docs/a.json: |
     { "conceptual": "<p><a href=\"b.md\">b</a></p>" }
 ---
-# Adjust error message using custom errors
+# Adjust error message, document_url using custom errors
 inputs:
   docfx.yml: |
     rules:
       file-not-found:
         severity: error
         additionalMessage: 'NOTE:'
+    documentUrls:
+      file-not-found: 'https://docs.com'
   a.md: a [b](b.md)
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"file-not-found","message":"Invalid file link: 'b.md'. NOTE:","file":"a.md","line":1,"column":3}
+    {"message_severity":"error","code":"file-not-found","message":"Invalid file link: 'b.md'. NOTE:","file":"a.md","line":1,"column":3,"document_url":"https://docs.com"}
 ---
 # Treat warnings as errors
 inputs:

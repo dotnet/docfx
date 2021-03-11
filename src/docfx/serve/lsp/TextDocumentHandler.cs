@@ -76,7 +76,8 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
-        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions>.GetRegistrationOptions()
+        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
         {
             return new TextDocumentChangeRegistrationOptions()
             {
@@ -85,19 +86,26 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        public void SetCapability(SynchronizationCapability capability)
+        TextDocumentOpenRegistrationOptions IRegistration<TextDocumentOpenRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
         {
-        }
-
-        TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions()
-        {
-            return new TextDocumentRegistrationOptions()
+            return new TextDocumentOpenRegistrationOptions()
             {
                 DocumentSelector = _documentSelector,
             };
         }
 
-        TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions()
+        TextDocumentCloseRegistrationOptions IRegistration<TextDocumentCloseRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        {
+            return new TextDocumentCloseRegistrationOptions()
+            {
+                DocumentSelector = _documentSelector,
+            };
+        }
+
+        TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
         {
             return new TextDocumentSaveRegistrationOptions()
             {
