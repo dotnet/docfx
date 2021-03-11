@@ -113,9 +113,9 @@ namespace Microsoft.Docs.Build
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
         {
             var path = type == CheckItemType.Module ? $"modules/{uid}" : $"units/{uid}";
-            var url = $"{BuildApi()}/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
+            var urlPath = $"/route/docs/api/hierarchy/{path}?branch={branch}&locale={locale}";
 
-            return await Fetch(url, value404: "404", middleware: (request, next) =>
+            return await FetchBuild(urlPath, value404: "404", middleware: (request, next) =>
             {
                 request.Headers.Referrer = new("https://tcexplorer.azurewebsites.net");
                 return next(request);
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                return await Fetch(BuildApi(environment) + urlPath, middleware: async (request, next) =>
+                return await FetchBuild(urlPath, environment: environment, middleware: async (request, next) =>
                 {
                     request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                     request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
@@ -164,9 +164,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private Task<string> FetchBuild(string urlPath, string? value404 = null, DocsEnvironment? environment = null)
+        private Task<string> FetchBuild(string urlPath, string? value404 = null, DocsEnvironment? environment = null, HttpMiddleware? middleware = null)
         {
-            return Fetch(BuildApi(environment) + urlPath, value404, BuildMiddleware(environment));
+            return Fetch(BuildApi(environment) + urlPath, value404, BuildMiddleware(environment, middleware));
         }
 
         private Task<string> Fetch(string url, string? value404 = null, HttpMiddleware? middleware = null)
@@ -176,8 +176,6 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(Func<HttpRequestMessage> requestFactory, string? value404 = null, HttpMiddleware? middleware = null)
         {
-            middleware ??= (request, next) => next(request);
-
             using var response = await HttpPolicyExtensions
                .HandleTransientHttpError()
                .Or<OperationCanceledException>()
@@ -185,14 +183,7 @@ namespace Microsoft.Docs.Build
                .RetryAsync(3)
                .ExecuteAsync(() => _credentialHandler.SendRequest(
                    requestFactory,
-                   request => middleware(request, request =>
-                   {
-                       using (PerfScope.Start($"[{nameof(OpsAccessor)}] Fetching '{request.RequestUri}'"))
-                       {
-                           request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
-                           return _http.SendAsync(request);
-                       }
-                   })));
+                   request => middleware != null ? middleware(request, SendRequest) : SendRequest(request)));
 
             if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -200,9 +191,18 @@ namespace Microsoft.Docs.Build
             }
 
             return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+
+            async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
+            {
+                using (PerfScope.Start($"[{nameof(OpsAccessor)}] Fetching '{request.RequestUri}'"))
+                {
+                    request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
+                    return await _http.SendAsync(request);
+                }
+            }
         }
 
-        private static HttpMiddleware BuildMiddleware(DocsEnvironment? environment = null)
+        private static HttpMiddleware BuildMiddleware(DocsEnvironment? environment = null, HttpMiddleware? middleware = null)
         {
             return async (request, next) =>
             {
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return await next(request);
+                return await (middleware != null ? middleware(request, next) : next(request));
             };
         }
 
