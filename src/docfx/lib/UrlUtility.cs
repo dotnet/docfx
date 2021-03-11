@@ -184,11 +184,9 @@ namespace Microsoft.Docs.Build
             if (Uri.TryCreate(link, UriKind.Absolute, out var uri))
             {
                 if (string.IsNullOrEmpty(uri.DnsSafeHost) && uri.Scheme == Uri.UriSchemeFile)
-
                 {
                     return LinkType.WindowsAbsolutePath;
                 }
-
                 return LinkType.External;
             }
 
