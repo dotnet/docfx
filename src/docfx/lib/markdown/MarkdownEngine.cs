@@ -304,7 +304,6 @@ namespace Microsoft.Docs.Build
             return GetLink(new()
             {
                 Href = new(path, origin.GetSourceInfo()),
-                AttributeType = LinkAttributeType.Href,
                 MarkdownObject = origin,
             });
         }
@@ -314,7 +313,8 @@ namespace Microsoft.Docs.Build
             return GetLink(new()
             {
                 Href = new(path, origin.GetSourceInfo()),
-                AttributeType = LinkAttributeType.ImageSrc,
+                TagName = "img",
+                AttributeName = "src",
                 MarkdownObject = origin,
                 AltText = altText ?? (origin is LinkInline linkInline && linkInline.IsImage ? ToPlainText(origin) : null),
                 ImageType = imageType,
@@ -338,9 +338,14 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            var node = link.AttributeType switch
-            {
-                LinkAttributeType.Href => (LinkNode)new HyperLinkNode
+            LinkNode node = link.IsImage
+                ? new ImageLinkNode
+                {
+                    ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
+                    AltText = link.AltText,
+                    IsInline = link.MarkdownObject.IsInlineImage(link.HtmlSourceIndex),
+                }
+                : new HyperLinkNode
                 {
                     IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
                     HyperLinkType = link.MarkdownObject switch
@@ -349,20 +354,7 @@ namespace Microsoft.Docs.Build
                         HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
                         _ => HyperLinkType.Default,
                     },
-                },
-                LinkAttributeType.ImageSrc => new ImageLinkNode
-                {
-                    ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
-                    AltText = link.AltText,
-                    IsInline = link.MarkdownObject.IsInlineImage(link.HtmlSourceIndex),
-                },
-                _ => null,
-            };
-
-            if (node is null)
-            {
-                return;
-            }
+                };
 
             node = node with
             {

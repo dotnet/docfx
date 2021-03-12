@@ -4,6 +4,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -259,7 +260,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (ref var attribute in token.Attributes.Span)
             {
-                if (GetLinkAttributeType(ref token, attribute) is LinkAttributeType attributeType)
+                if (IsLink(ref token, attribute, out var tagName, out var attributeName))
                 {
                     var href = new SourceInfo<string>(
                         HttpUtility.HtmlDecode(attribute.Value.ToString()),
@@ -269,8 +270,9 @@ namespace Microsoft.Docs.Build
                     {
                         Href = href,
                         MarkdownObject = block,
-                        AttributeType = attributeType,
-                        AltText = attributeType == LinkAttributeType.ImageSrc ? token.GetAttributeValueByName("alt") : null,
+                        TagName = tagName,
+                        AttributeName = attributeName,
+                        AltText = token.GetAttributeValueByName("alt"),
                         HtmlSourceIndex = token.Range.Start.Index,
                     });
 
@@ -467,7 +469,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
-                if (attribute.Value.Length > 0 && GetLinkAttributeType(ref token, attribute) is LinkAttributeType attributeType)
+                if (attribute.Value.Length > 0 && IsLink(ref token, attribute, out var tagName, out var attributeName))
                 {
                     var href = attribute.Value.ToString();
 
@@ -487,7 +489,7 @@ namespace Microsoft.Docs.Build
                             token.SetAttributeValue("data-linktype", "external");
                             if (Uri.TryCreate(href, UriKind.Absolute, out var uri))
                             {
-                                Telemetry.TrackExternalLink(attributeType, uri.Scheme, uri.DnsSafeHost);
+                                Telemetry.TrackExternalLink(tagName, attributeName, uri.Scheme, uri.DnsSafeHost);
                             }
                             break;
                     }
@@ -515,19 +517,25 @@ namespace Microsoft.Docs.Build
             return $"/{locale}{href}";
         }
 
-        private static LinkAttributeType? GetLinkAttributeType(ref HtmlToken token, in HtmlAttribute attribute)
+        private static bool IsLink(
+            ref HtmlToken token, in HtmlAttribute attribute, [NotNullWhen(true)] out string? tagName, [NotNullWhen(true)] out string? attributeName)
         {
             if (token.NameIs("a") && attribute.NameIs("href"))
             {
-                return LinkAttributeType.Href;
+                tagName = "a";
+                attributeName = "href";
+                return true;
             }
 
             if (attribute.NameIs("src"))
             {
-                return (token.NameIs("img") || token.NameIs("image")) ? LinkAttributeType.ImageSrc : LinkAttributeType.Src;
+                tagName = token.Name.ToString().Trim().ToLowerInvariant();
+                attributeName = "src";
+                return true;
             }
 
-            return null;
+            tagName = attributeName = null;
+            return false;
         }
 
         private static bool IsVisible(ref HtmlToken token) => token.Type switch

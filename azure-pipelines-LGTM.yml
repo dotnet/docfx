@@ -21,12 +21,12 @@ variables:
 - name: LGTM.UploadSnapshot
   value: true
 - name: Semmle.SkipAnalysis
-  value: false
+  value: true
 
 jobs:
 
 # Test and deploy on windows
-- job: Security Checks
+- job: SecurityChecks
   timeoutInMinutes: 360
   pool:
     vmImage: 'windows-latest'

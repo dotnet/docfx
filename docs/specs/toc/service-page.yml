@@ -788,6 +788,24 @@ outputs:
   a/cfcd556ac4916a1bf6fe758453d01e39/docs/index.json: |
     {"title": "hello world"}
   a/api/bot/toc.json:
-  a/8069154eb87556cbb5b22e5266d4c952/docs/index.json:
   .errors.log: |
     {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('v-0.2') publish to the same url '/docs/': 'test/index.yml [generated]<'v-0.2', 'v-0.3'>', 'test1/index.md<'v-0.1', 'v-0.2'>'."}
+  a/.publish.json: |
+    {
+      "files": [
+        {
+          "url": "/api/bot/toc.json",
+          "path": "api/bot/toc.json",
+          "source_path": "api/bot/TOC.yml"
+        },
+        {
+          "url": "/docs/",
+          "path": "cfcd556ac4916a1bf6fe758453d01e39/docs/index.json",
+          "source_path": "test1/index.md",
+          "config_moniker_range": ">= v-0.1 <= v-0.2",
+          "moniker_group": "cfcd556ac4916a1bf6fe758453d01e39",
+          "_path": "docs/index.json",
+          "monikers": ["v-0.1", "v-0.2"]
+        }
+      ]
+    }
