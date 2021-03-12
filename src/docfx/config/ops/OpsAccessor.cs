@@ -52,11 +52,6 @@ namespace Microsoft.Docs.Build
             return FetchBuild("/v2/monikertrees/allfamiliesproductsmonikers");
         }
 
-        public Task<string> GetDocumentUrls()
-        {
-            return Fetch("https://docsvalidation.azurefd.net/errorcodes");
-        }
-
         public async Task<string[]> GetXrefMaps(string tag, string xrefEndpoint, string xrefMapQueryParams)
         {
             var environment = xrefEndpoint.StartsWith("https://xref.docs.microsoft.com", StringComparison.OrdinalIgnoreCase)

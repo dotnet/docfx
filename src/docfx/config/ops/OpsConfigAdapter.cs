@@ -104,10 +104,6 @@ namespace Microsoft.Docs.Build
             }
 
             var xrefHostName = GetXrefHostName(docset.site_name, branch);
-            var documentUrls = JsonConvert.DeserializeAnonymousType(
-                    await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
-                .ToDictionary(item => item.log_code, item => item.document_url);
-
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
@@ -116,7 +112,6 @@ namespace Microsoft.Docs.Build
                 basePath = docset.base_path.ValueWithLeadingSlash,
                 xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
-                documentUrls,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
