@@ -40,6 +40,7 @@ jobs:
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      DOCS_OPS_TOKEN: $(opBuildUserToken)
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
 
   - task: reportgenerator@4

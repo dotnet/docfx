@@ -121,6 +121,7 @@ enoent
 enotfound
 entrycount
 enum
+eppe
 erl
 erlang
 etag
@@ -590,3 +591,4 @@ csv
 nettrace
 speedscope
 dns
+middleware
