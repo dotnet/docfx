@@ -76,8 +76,7 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
-        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
-            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions>.GetRegistrationOptions()
         {
             return new TextDocumentChangeRegistrationOptions()
             {
@@ -86,26 +85,19 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        TextDocumentOpenRegistrationOptions IRegistration<TextDocumentOpenRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
-            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        public void SetCapability(SynchronizationCapability capability)
         {
-            return new TextDocumentOpenRegistrationOptions()
+        }
+
+        TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions()
+        {
+            return new TextDocumentRegistrationOptions()
             {
                 DocumentSelector = _documentSelector,
             };
         }
 
-        TextDocumentCloseRegistrationOptions IRegistration<TextDocumentCloseRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
-            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
-        {
-            return new TextDocumentCloseRegistrationOptions()
-            {
-                DocumentSelector = _documentSelector,
-            };
-        }
-
-        TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
-            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions()
         {
             return new TextDocumentSaveRegistrationOptions()
             {
