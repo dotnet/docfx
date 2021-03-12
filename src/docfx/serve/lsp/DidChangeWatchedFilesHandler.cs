@@ -64,14 +64,16 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
-        DidChangeWatchedFilesRegistrationOptions
-            IRegistration<DidChangeWatchedFilesRegistrationOptions, DidChangeWatchedFilesCapability>.GetRegistrationOptions(
-            DidChangeWatchedFilesCapability capability, ClientCapabilities clientCapabilities)
+        DidChangeWatchedFilesRegistrationOptions IRegistration<DidChangeWatchedFilesRegistrationOptions>.GetRegistrationOptions()
         {
             return new DidChangeWatchedFilesRegistrationOptions()
             {
                 Watchers = _watcher,
             };
+        }
+
+        public void SetCapability(DidChangeWatchedFilesCapability capability)
+        {
         }
     }
 }
