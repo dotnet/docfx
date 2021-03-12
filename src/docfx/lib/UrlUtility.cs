@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -21,6 +23,8 @@ namespace Microsoft.Docs.Build
             @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
             @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
 
         public static string SanitizeUrl(string? url)
         {
@@ -210,6 +214,59 @@ namespace Microsoft.Docs.Build
             return !string.IsNullOrEmpty(str)
                 && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+        /// <summary>
+        /// Converts an URL to a human readable short name for directory or file
+        /// </summary>
+        public static string UrlToShortName(string url)
+        {
+            url = SanitizeUrl(url);
+
+            var hash = HashUtility.GetSha256HashShort(url);
+
+            // Trim https://
+            var index = url.IndexOf(':');
+            if (index > 0)
+            {
+                url = url[index..];
+            }
+
+            url = url.TrimStart('/', '\\', '.', ':').Trim();
+
+            var result = new StringBuilder();
+
+            // Take the surrounding 4 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
+            var segments = url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries);
+            for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
+            {
+                if (segmentIndex == 4 && segments.Length > 8)
+                {
+                    segmentIndex += segments.Length - 9;
+                    continue;
+                }
+
+                var segment = segments[segmentIndex];
+                for (var charIndex = 0; charIndex < segment.Length; charIndex++)
+                {
+                    var ch = segment[charIndex];
+                    if (charIndex == 8 && segment.Length > 16)
+                    {
+                        result.Append("..");
+                        charIndex += segment.Length - 17;
+                        continue;
+                    }
+                    if (!s_invalidPathChars.Contains(ch))
+                    {
+                        result.Append(ch);
+                    }
+                }
+
+                result.Append('+');
+            }
+
+            result.Append(hash);
+            return result.ToString();
         }
 
         public static bool TryParseGitHubUrl(
