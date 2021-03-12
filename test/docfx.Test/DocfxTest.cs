@@ -133,7 +133,7 @@ namespace Microsoft.Docs.Build
                 { "CACHE_PATH", cachePath },
                 { "STATE_PATH", statePath },
                 { "DOCS_GITHUB_TOKEN", Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") },
-                { "opBuildUserToken", Environment.GetEnvironmentVariable("opBuildUserToken") },
+                { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 { "MICROSOFT_GRAPH_CLIENT_CERTIFICATE", Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_CERTIFICATE") },
                 { "GIT_TOKEN_HTTP_AUTH_SSO_DISABLED", Environment.GetEnvironmentVariable("GIT_TOKEN_HTTP_AUTH_SSO_DISABLED") },
             };

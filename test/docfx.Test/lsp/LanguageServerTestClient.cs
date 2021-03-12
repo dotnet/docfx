@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
                 @params,
                 new Dictionary<string, string>
                 {
-                    { "opBuildUserToken", Environment.GetEnvironmentVariable("opBuildUserToken") },
+                    { "DOCS_OPS_TOKEN", Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN") },
                 });
         }
 

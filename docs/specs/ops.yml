@@ -60,7 +60,7 @@ repos:
   - files:
       token.md: live1
 environments:
-  - opBuildUserToken
+  - DOCS_OPS_TOKEN
 outputs:
   articles/a.json:
   articles/b.json: |

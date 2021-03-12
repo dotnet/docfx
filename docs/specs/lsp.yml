@@ -136,7 +136,7 @@ languageServer:
 # Support refresh op build user token when it expires
 noCache: true
 environments:
-  - opBuildUserToken
+  - DOCS_OPS_TOKEN
 inputs:
   docfx.yml: |
     monikerDefinition: https://ops/monikerDefinition/
@@ -156,7 +156,7 @@ languageServer:
       http:
         https://BuildApiPubDev.azurefd.net:
           headers:
-            X-OP-BuildUserToken: "{opBuildUserToken}"
+            X-OP-BuildUserToken: "{DOCS_OPS_TOKEN}"
   - expectDiagnostics:
       docfx.yml: [{ "code": "moniker-range-invalid" }]
 ---
