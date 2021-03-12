@@ -320,7 +320,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error RedirectionUrlConflict(SourceInfo<string> source, IEnumerable<PathString> redirectionFiles, IEnumerable<PathString> redirectionSourceFiles)
-                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"Two or more files are redirected to '{source}' with redirect_document_id set to true. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): {StringUtility.Join(redirectionFiles)}. All the redirection instances that need the change: {StringUtility.Join(redirectionSourceFiles)}", source);
+                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The following files are redirected to '{source}' with redirect_document_id set to true: {StringUtility.Join(redirectionSourceFiles)}. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): {StringUtility.Join(redirectionFiles)}.", source);
 
             /// <summary>
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
