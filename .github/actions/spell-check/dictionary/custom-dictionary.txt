@@ -121,6 +121,7 @@ enoent
 enotfound
 entrycount
 enum
+eppe
 erl
 erlang
 etag
