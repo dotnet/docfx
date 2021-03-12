@@ -22,11 +22,11 @@ namespace Microsoft.Docs.Build
             @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public static string SanitizeUrl(string url)
+        public static string SanitizeUrl(string? url)
         {
             // For azure blob url, url without sas token should identify if the content has changed
             // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
-            return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
+            return Regex.Replace(url ?? "", @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
         }
 
         /// <summary>

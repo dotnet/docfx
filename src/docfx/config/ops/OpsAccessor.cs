@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
 
             async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
             {
-                using (PerfScope.Start($"[{nameof(OpsAccessor)}] Fetching '{request.RequestUri}'"))
+                using (PerfScope.Start($"[{nameof(OpsAccessor)}] '{request.Method} {UrlUtility.SanitizeUrl(request.RequestUri?.ToString())}'"))
                 {
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
                     return await _http.SendAsync(request);
