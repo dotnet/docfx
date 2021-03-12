@@ -157,9 +157,6 @@ namespace Microsoft.Docs.Build
                      new(ConvertLocation(source.Line), ConvertLocation(source.Column)),
                      new(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
                 Code = error.Code,
-                CodeDescription = error.DocumentUrl != null && Uri.TryCreate(error.DocumentUrl, UriKind.Absolute, out var href)
-                    ? new() { Href = href }
-                    : null,
                 Source = "Docs Validation",
                 Severity = error.Level switch
                 {
