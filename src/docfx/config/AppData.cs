@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetFileDownloadPath(string url)
         {
-            return Path.Combine(DownloadsRoot, PathUtility.UrlToShortName(url));
+            return Path.Combine(DownloadsRoot, UrlUtility.UrlToShortName(url));
         }
 
         public static string GetCommitCachePath(string repositoryUrl)
