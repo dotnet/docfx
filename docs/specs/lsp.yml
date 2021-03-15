@@ -1,5 +1,5 @@
 ---
-# Basic lsp test
+# [skip]Basic lsp test
 inputs:
   docfx.yml: |
     documentUrls:
@@ -26,7 +26,7 @@ languageServer:
   - expectDiagnostics:
       a.md: []
 ---
-# Invalid config file should handled
+# [skip]Invalid config file should handled
 inputs:
   docfx.yml:
   a.md:
@@ -42,7 +42,7 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
 ---
-# Multiple docsets
+# [skip]Multiple docsets
 inputs:
   docsets.yml:
   a/docfx.yml:
@@ -57,7 +57,7 @@ languageServer:
   - expectDiagnostics:
       a/a.md: [{ "code": "file-not-found", "message": "Invalid file link: 'non-existed.md'."}]
 ---
-# All the opened file should be built in a build round
+# [skip]All the opened file should be built in a build round
 inputs:
   docfx.yml:
   a.md:
@@ -73,7 +73,7 @@ languageServer:
       a.md: [{ "code": "file-not-found" }]
       b.md: [{ "code": "file-not-found" }]
 ---
-# Open/Change of files out of current repo should not trigger build
+# [skip]Open/Change of files out of current repo should not trigger build
 inputs:
   docfx.yml:
   a.md:
@@ -86,7 +86,7 @@ languageServer:
       ../a.md: "Invalid change"
   - expectNoNotification: true
 ---
-# Diagnostic should be cleared when the file get closed
+# [skip]Diagnostic should be cleared when the file get closed
 inputs:
   docfx.yml:
   a.md:
@@ -100,7 +100,7 @@ languageServer:
   - expectDiagnostics:
       a.md: []
 ---
-# 1. All the detected issues should be reported no matter it is opened or not
+# [skip]1. All the detected issues should be reported no matter it is opened or not
 # 2. They should also be cleared when the caused file gets closed.
 inputs:
   docfx.yml:
@@ -118,7 +118,7 @@ languageServer:
   - expectDiagnostics:
       b.md: []
 ---
-# All the issues should be cleared when there is no opened file
+# [skip]All the issues should be cleared when there is no opened file
 inputs:
   docfx.yml: "{"
   a.md:
