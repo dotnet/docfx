@@ -203,6 +203,9 @@ namespace Microsoft.Docs.Build
         [InlineData("{'maxItems': 2, 'minItems': 4}", "['a','b','c']",
             @"{'message_severity':'warning','code':'array-length-invalid','message':'Array '' length should be <= 2.','line':1,'column':1}
               {'message_severity':'warning','code':'array-length-invalid','message':'Array '' length should be >= 4.','line':1,'column':1}")]
+        [InlineData("{'items': {'type':'string', 'enum':['a', 'b']}}", "['a','b']", "")]
+        [InlineData("{'items': {'type':'string', 'enum':['a', 'b']}}", "['a','c']",
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for '': 'c'.','line':1,'column':8}")]
 
         // uniqueItems validation
         [InlineData("{'uniqueItems': true}", "[1, 2]", "")]
