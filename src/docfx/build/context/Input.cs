@@ -137,7 +137,9 @@ namespace Microsoft.Docs.Build
         public string ReadString(FilePath file)
         {
             using var reader = ReadText(file);
-            return reader.ReadToEnd();
+            var content = reader.ReadToEnd();
+            Console.WriteLine($"Content of {file}: {content}");
+            return content;
         }
 
         /// <summary>
