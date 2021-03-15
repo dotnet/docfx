@@ -73,7 +73,7 @@ languageServer:
       a.md: [{ "code": "file-not-found" }]
       b.md: [{ "code": "file-not-found" }]
 ---
-# [skip]Open/Change of files out of current repo should not trigger build
+# Open/Change of files out of current repo should not trigger build
 inputs:
   docfx.yml:
   a.md:
@@ -86,7 +86,7 @@ languageServer:
       ../a.md: "Invalid change"
   - expectNoNotification: true
 ---
-# [skip]Diagnostic should be cleared when the file get closed
+# Diagnostic should be cleared when the file get closed
 inputs:
   docfx.yml:
   a.md:
@@ -100,7 +100,7 @@ languageServer:
   - expectDiagnostics:
       a.md: []
 ---
-# [skip]1. All the detected issues should be reported no matter it is opened or not
+# 1. All the detected issues should be reported no matter it is opened or not
 # 2. They should also be cleared when the caused file gets closed.
 inputs:
   docfx.yml:
@@ -118,7 +118,7 @@ languageServer:
   - expectDiagnostics:
       b.md: []
 ---
-# [skip]All the issues should be cleared when there is no opened file
+# All the issues should be cleared when there is no opened file
 inputs:
   docfx.yml: "{"
   a.md:
