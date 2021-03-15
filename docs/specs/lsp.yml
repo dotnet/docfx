@@ -160,7 +160,7 @@ languageServer:
   - expectDiagnostics:
       docfx.yml: [{ "code": "moniker-range-invalid" }]
 ---
-# [skip]File creating and deleting should trigger new build with refreshed build scope
+# File creating and deleting should trigger new build with refreshed build scope
 inputs:
   docfx.yml:
   a.md:
@@ -178,7 +178,7 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
 ---
-# [skip]File Change should trigger new build
+# File Change should trigger new build
 # But in memory content should be used until the user close the in memory file
 inputs:
   docfx.yml:
@@ -199,7 +199,7 @@ languageServer:
   - expectDiagnostics:
       b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
 ---
-# [skip]File changes/create/delete in git folder should not trigger build
+# File changes/create/delete in git folder should not trigger build
 inputs:
   docfx.yml:
   a.md:

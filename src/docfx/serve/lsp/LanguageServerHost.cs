@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OmniSharp.Extensions.LanguageServer.Protocol.General;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Server;
 
 namespace Microsoft.Docs.Build
@@ -39,6 +40,10 @@ namespace Microsoft.Docs.Build
                     .AddSingleton<DiagnosticPublisher>()
                     .AddSingleton<LanguageServerCredentialProvider>()
                     .AddSingleton<LanguageServerBuilder>()
+                    .AddSingleton(new ConfigurationItem
+                    {
+                        Section = "docfxLanguageServer",
+                    })
                     .AddOptions()
                     .AddLogging())
                 .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
