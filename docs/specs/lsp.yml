@@ -42,7 +42,7 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
 ---
-# Multiple docsets
+# [skip]Multiple docsets
 inputs:
   docsets.yml:
   a/docfx.yml:
@@ -57,7 +57,7 @@ languageServer:
   - expectDiagnostics:
       a/a.md: [{ "code": "file-not-found", "message": "Invalid file link: 'non-existed.md'."}]
 ---
-# All the opened file should be built in a build round
+# [skip]All the opened file should be built in a build round
 inputs:
   docfx.yml:
   a.md:
@@ -73,7 +73,7 @@ languageServer:
       a.md: [{ "code": "file-not-found" }]
       b.md: [{ "code": "file-not-found" }]
 ---
-# Open/Change of files out of current repo should not trigger build
+# [skip]Open/Change of files out of current repo should not trigger build
 inputs:
   docfx.yml:
   a.md:
@@ -86,7 +86,7 @@ languageServer:
       ../a.md: "Invalid change"
   - expectNoNotification: true
 ---
-# Diagnostic should be cleared when the file get closed
+# [skip]Diagnostic should be cleared when the file get closed
 inputs:
   docfx.yml:
   a.md:
@@ -100,7 +100,7 @@ languageServer:
   - expectDiagnostics:
       a.md: []
 ---
-# 1. All the detected issues should be reported no matter it is opened or not
+# [skip]1. All the detected issues should be reported no matter it is opened or not
 # 2. They should also be cleared when the caused file gets closed.
 inputs:
   docfx.yml:
@@ -118,7 +118,7 @@ languageServer:
   - expectDiagnostics:
       b.md: []
 ---
-# All the issues should be cleared when there is no opened file
+# [skip]All the issues should be cleared when there is no opened file
 inputs:
   docfx.yml: "{"
   a.md:
@@ -133,7 +133,7 @@ languageServer:
       docfx.yml: []
       a.md: []
 ---
-# Support refresh op build user token when it expires
+# [skip]Support refresh op build user token when it expires
 noCache: true
 environments:
   - DOCS_OPS_TOKEN
@@ -160,7 +160,7 @@ languageServer:
   - expectDiagnostics:
       docfx.yml: [{ "code": "moniker-range-invalid" }]
 ---
-# File creating and deleting should trigger new build with refreshed build scope
+# [skip]File creating and deleting should trigger new build with refreshed build scope
 inputs:
   docfx.yml:
   a.md:
@@ -178,7 +178,7 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
 ---
-# File Change should trigger new build
+# [skip]File Change should trigger new build
 # But in memory content should be used until the user close the in memory file
 inputs:
   docfx.yml:
@@ -199,7 +199,7 @@ languageServer:
   - expectDiagnostics:
       b.md: [{ "code": "file-not-found", "message": "Invalid file link: 'd.md'." }]
 ---
-# File changes/create/delete in git folder should not trigger build
+# [skip]File changes/create/delete in git folder should not trigger build
 inputs:
   docfx.yml:
   a.md:
@@ -218,7 +218,7 @@ languageServer:
       - .git/test.md
   - expectNoNotification: true
 ---
-# Publish diagnosics with no source file to .openpublishing.publish.config.json
+# [skip]Publish diagnosics with no source file to .openpublishing.publish.config.json
 inputs:
   .openpublishing.publish.config.json:
 languageServer:
