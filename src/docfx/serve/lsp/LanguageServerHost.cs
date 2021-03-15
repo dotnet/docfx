@@ -29,7 +29,7 @@ namespace Microsoft.Docs.Build
             var server = await LanguageServer.From(options => options
                 .WithInput(input)
                 .WithOutput(output)
-                .ConfigureLogging(x => x.AddLanguageProtocolLogging())
+                .ConfigureLogging(x => x.AddLanguageProtocolLogging().SetMinimumLevel(LogLevel.Trace))
                 .WithHandler<TextDocumentHandler>()
                 .WithHandler<DidChangeWatchedFilesHandler>()
                 .WithServices(services => services

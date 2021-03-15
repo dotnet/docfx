@@ -18,7 +18,11 @@ namespace Microsoft.Docs.Build
 
         public override bool HasError => _items.Any(item => item.Level == ErrorLevel.Error);
 
-        public override void Add(Error error) => _items.Add(error);
+        public override void Add(Error error)
+        {
+            _items.Add(error);
+            Console.WriteLine($"[ErrorList] Error {error} has been added");
+        }
 
         public override bool FileHasError(FilePath file) => throw new NotSupportedException();
 

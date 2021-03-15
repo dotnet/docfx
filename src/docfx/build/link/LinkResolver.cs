@@ -77,6 +77,7 @@ namespace Microsoft.Docs.Build
         public (Error? error, string link, FilePath? file) ResolveLink(
             SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
+            Console.WriteLine($"Resolving link[1] '{href}' on file '{referencingFile}'");
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
@@ -88,6 +89,8 @@ namespace Microsoft.Docs.Build
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile, inclusionRoot);
+
+            Console.WriteLine($"Resolving link[3] '{href}' on file '{referencingFile}': error({error}), link({link}), file({file}), linkType({linkType})");
 
             inclusionRoot ??= referencingFile;
             if (!isCrossReference)
@@ -122,6 +125,7 @@ namespace Microsoft.Docs.Build
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
             var (error, file, query, fragment, linkType) = TryResolveFile(inclusionRoot, hrefRelativeTo, decodedHref);
 
+            Console.WriteLine($"Resolving link[2] '{href}' on file '{hrefRelativeTo}': error({error}), file({file}), linkType({linkType})");
             if (linkType == LinkType.WindowsAbsolutePath)
             {
                 return (error, "", fragment, linkType, null, false);
