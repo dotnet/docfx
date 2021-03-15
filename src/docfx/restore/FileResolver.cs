@@ -211,12 +211,12 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (PerfScope.Start($"Downloading '{PathUtility.RemoveQueryForBlobUrl(url)}'"))
+                using (PerfScope.Start($"Downloading '{UrlUtility.SanitizeUrl(url)}'"))
                 using (var response = await HttpPolicyExtensions
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
                     .Or<IOException>()
-                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{nameof(FileResolver)}] Retry '{UrlUtility.SanitizeUrl(url)}'"))
                     .ExecuteAsync(() => GetAsync(url, existingEtag)))
                 {
                     if (response.StatusCode == HttpStatusCode.NotModified)
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
-                throw Errors.System.DownloadFailed(url).ToException(ex);
+                throw Errors.System.DownloadFailed(UrlUtility.SanitizeUrl(url)).ToException(ex);
             }
         }
 
