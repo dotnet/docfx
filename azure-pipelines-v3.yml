@@ -36,7 +36,7 @@ jobs:
     displayName: dotnet test
     inputs:
       command: test
-      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --filter "DisplayName~lsp"
+      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --filter "DisplayName~Basic lsp test"
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)

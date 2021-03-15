@@ -1,5 +1,5 @@
 ---
-# [skip]Basic lsp test
+# Basic lsp test
 inputs:
   docfx.yml: |
     documentUrls:
