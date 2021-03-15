@@ -71,7 +71,7 @@ content-a
 # <a id=""x""></a>[title-b](#tab/b/c)
 content-b
 - - -", "test.md");
-            var groupId = "uBn0rykxXo";
+            var groupId = "aupEkulau5";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -108,7 +108,7 @@ content-a
 # [title-b](#tab/b/a)
 content-b
 - - -", "test.md");
-            var groupId = "uBn0rykxXo";
+            var groupId = "aupEkulau5";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -128,10 +128,10 @@ content-b
 <div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""10"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
+<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_aupEkulau5-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_b_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b</a>
+<a href=""#tabpanel_{groupId}-1_b_a"" role=""tab"" aria-controls=""tabpanel_aupEkulau5-1_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}-1_a"" role=""tabpanel"" data-tab=""a"">
@@ -161,7 +161,7 @@ content-a
 # [title-b or c](#tab/b+c)
 content-b or c
 - - -", "test.md");
-            var groupId = "uBn0rykxXo";
+            var groupId = "aupEkulau5";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -181,10 +181,10 @@ content-b or c
 <div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""10"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
+<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_aupEkulau5-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_b+c"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_b+c"" data-tab=""b+c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b or c</a>
+<a href=""#tabpanel_{groupId}-1_b+c"" role=""tab"" aria-controls=""tabpanel_aupEkulau5-1_b+c"" data-tab=""b+c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b or c</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}-1_a"" role=""tabpanel"" data-tab=""a"">

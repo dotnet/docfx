@@ -11,13 +11,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal static class HashStreamHelper
     {
-        public static Stream WithMd5Hash(this Stream stream, out Task<byte[]> hashTask)
+        public static Stream WithSha256Hash(this Stream stream, out Task<byte[]> hashTask)
         {
             var cs = new CircularStream();
             hashTask = Task.Run(() =>
             {
                 using var csr = cs.CreateReaderView();
-                return MD5.Create().ComputeHash(csr);
+                return HashUtility.GetSha256Hash(csr);
             });
             return new CompositeStream(stream, cs.CreateWriterView());
         }

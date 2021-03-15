@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
+        private static readonly HttpClient _client = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
         private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
         private ImmutableArray<string> _xrefMapUrls { get; }
@@ -352,10 +353,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private List<XRefMap> LoadXRefMaps()
         {
-            using var client = new HttpClient();
             Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
             var mapTasks = (from url in _xrefMapUrls
-                select LoadXRefMap(url, client)).ToArray();
+                select LoadXRefMap(url, _client)).ToArray();
             Task.WaitAll(mapTasks);
             return (from t in mapTasks
                 where t.Result != null

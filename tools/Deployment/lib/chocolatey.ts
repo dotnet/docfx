@@ -30,10 +30,10 @@ export class Chocolatey {
         }
 
         let version = Common.getVersionFromReleaseNote(releaseNotePath);
-        let sha1 = Common.computeSha1FromZip(assetZipPath);
+        let hash = Common.computeSha256FromZip(assetZipPath);
         let nupkgName = `docfx.${version}.nupkg`;
 
-        this.updateChocoConfig(chocoScriptPath, chocoNuspecPath, version, sha1);
+        this.updateChocoConfig(chocoScriptPath, chocoNuspecPath, version, hash);
         await this.chocoPackAsync(chocoHomeDir);
         await this.prepareChocoAsync(chocoHomeDir, chocoToken);
 
@@ -48,11 +48,11 @@ export class Chocolatey {
         return Common.execAsync("choco", ["apiKey", "-k", chocoToken, "-source", "https://push.chocolatey.org/", homeDir]);
     }
 
-    private static updateChocoConfig(scriptPath: string, nuspecPath: string, version: string, sha1: string) {
+    private static updateChocoConfig(scriptPath: string, nuspecPath: string, version: string, hash: string) {
         let chocoScriptContent = fs.readFileSync(scriptPath, "utf8");
         chocoScriptContent = chocoScriptContent
             .replace(/v[\d\.]+/, "v" + version)
-            .replace(/(\$sha1\s*=\s*['"])([\d\w]+)(['"])/, `$1${sha1}$3`);
+            .replace(/(\$hash\s*=\s*['"])([\d\w]+)(['"])/, `$1${hash}$3`);
         fs.writeFileSync(scriptPath, chocoScriptContent);
 
         let nuspecContent = fs.readFileSync(nuspecPath, "utf8");

@@ -1,0 +1,42 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+  schedule:
+    - cron: '28 6 * * 5'
+
+jobs:
+  analyze:
+    name: CodeQL
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp', 'javascript' ]
+        
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+
+    - run: npm install
+      working-directory: tools/Deployment
+
+    - run: node .\node_modules\typescript\bin\tsc
+      working-directory: tools/Deployment
+      
+    - run: node .\node_modules\gulp\bin\gulp.js dev
+      working-directory: tools/Deployment
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

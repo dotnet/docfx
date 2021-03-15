@@ -49,12 +49,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             var sb = new StringBuilder();
             using (var templateResource = CreateTemplateResource(_templates))
             {
-                using var md5 = MD5.Create();
                 foreach (var name in from n in templateResource.Names ?? Enumerable.Empty<string>()
                     orderby n
                     select n)
                 {
-                    var hash = Convert.ToBase64String(md5.ComputeHash(templateResource.GetResourceStream(name)));
+                    var hash = HashUtility.GetSha256HashString(templateResource.GetResourceStream(name));
                     sb.Append(name);
                     sb.Append(":");
                     sb.Append(hash);
@@ -63,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            var result = StringExtension.GetMd5String(sb.ToString());
+            var result = HashUtility.GetSha256HashString(sb.ToString());
             Logger.LogVerbose($"Template hash is '{result}'");
             return result;
         }

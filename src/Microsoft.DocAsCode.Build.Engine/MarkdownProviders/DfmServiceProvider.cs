@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 var contentText = content.ToString();
                 Logger.LogVerbose($"Dfm config content: {content}");
-                return contentText.GetMd5String();
+                return HashUtility.GetSha256HashString(contentText);
             }
 
             public MarkupResult Markup(string src, string path)

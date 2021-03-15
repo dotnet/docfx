@@ -9,7 +9,7 @@
   "author": "docfx",
   "license": "MIT",
   "devDependencies": {
-    "bower": "^1.8.7",
+    "bower": "^1.8.12",
     "del": "^2.0.2",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.0",
