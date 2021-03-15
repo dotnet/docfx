@@ -73,7 +73,7 @@ languageServer:
       a.md: [{ "code": "file-not-found" }]
       b.md: [{ "code": "file-not-found" }]
 ---
-# [skip]Open/Change of files out of current repo should not trigger build
+# Open/Change of files out of current repo should not trigger build
 inputs:
   docfx.yml:
   a.md:
@@ -86,7 +86,7 @@ languageServer:
       ../a.md: "Invalid change"
   - expectNoNotification: true
 ---
-# [skip]Diagnostic should be cleared when the file get closed
+# Diagnostic should be cleared when the file get closed
 inputs:
   docfx.yml:
   a.md:

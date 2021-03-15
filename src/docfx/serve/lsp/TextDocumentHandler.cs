@@ -67,6 +67,7 @@ namespace Microsoft.Docs.Build
 
         public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
         {
+            System.Console.WriteLine($"Received file open notification: ${notification.TextDocument.Uri}, {notification.TextDocument.Text}");
             if (!TryUpdatePackage(notification.TextDocument.Uri, notification.TextDocument.Text))
             {
                 _notificationListener.OnNotificationHandled();
