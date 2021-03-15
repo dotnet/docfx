@@ -42,7 +42,7 @@ languageServer:
   - expectDiagnostics:
       a.md: [{ "code": "file-not-found" }]
 ---
-# [skip]Multiple docsets
+# Multiple docsets
 inputs:
   docsets.yml:
   a/docfx.yml:
@@ -57,7 +57,7 @@ languageServer:
   - expectDiagnostics:
       a/a.md: [{ "code": "file-not-found", "message": "Invalid file link: 'non-existed.md'."}]
 ---
-# [skip]All the opened file should be built in a build round
+# All the opened file should be built in a build round
 inputs:
   docfx.yml:
   a.md:
