@@ -218,7 +218,7 @@ languageServer:
       - .git/test.md
   - expectNoNotification: true
 ---
-# [skip]Publish diagnosics with no source file to .openpublishing.publish.config.json
+# Publish diagnosics with no source file to .openpublishing.publish.config.json
 inputs:
   .openpublishing.publish.config.json:
 languageServer:
