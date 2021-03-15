@@ -9,6 +9,7 @@ pr:
 
 variables:
 - group: devresourcekeyvault
+- group: DocfxCIKVPub
 - name: dotnetVersion
   value: 5.0.200
 - name: runCodesignValidationInjection
@@ -165,5 +166,6 @@ jobs:
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+      OP_BUILD_USER_TOKEN: $(OpBuildUserTokenProd)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09

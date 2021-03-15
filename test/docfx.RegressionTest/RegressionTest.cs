@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
         private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
+        private static readonly string? s_opBuildUserToken = Environment.GetEnvironmentVariable("OP_BUILD_USER_TOKEN");
         private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
@@ -92,9 +93,16 @@ namespace Microsoft.Docs.Build
                 {
                     http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
                 }
+
                 if (!string.IsNullOrEmpty(s_azureDevopsToken))
                 {
                     http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
+                }
+
+                if (!string.IsNullOrEmpty(s_opBuildUserToken))
+                {
+                    http["https://buildapi.docs.microsoft.com"] =
+                        new { headers = new Dictionary<string, string> { { "X-OP-BuildUserToken", s_opBuildUserToken } } };
                 }
 
                 var docfxConfig = JObject.FromObject(new
