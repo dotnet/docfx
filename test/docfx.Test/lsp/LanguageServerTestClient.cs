@@ -204,6 +204,7 @@ namespace Microsoft.Docs.Build
         void ILanguageServerNotificationListener.OnNotificationSent()
         {
             Interlocked.Increment(ref _serverNotificationSent);
+            Console.WriteLine($"ServerNotificationSent: {_serverNotificationSent}");
         }
 
         void ILanguageServerNotificationListener.OnNotificationHandled()
@@ -213,6 +214,7 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
+            Console.WriteLine($"ServerNotificationHandled: {_serverNotificationHandled}");
         }
 
         private JToken ApplyCredentialVariables(JToken @params)
@@ -228,6 +230,7 @@ namespace Microsoft.Docs.Build
         private void BeforeSendNotification()
         {
             Interlocked.Increment(ref _clientNotificationSent);
+            Console.WriteLine($"ClientNotificationSent: {_clientNotificationSent}");
             _notificationSync = new TaskCompletionSource();
             _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
         }
@@ -244,6 +247,7 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
+            Console.WriteLine($"ClientNotificationReceived: {_clientNotificationReceived}");
         }
 
         private DocumentUri ToUri(string file)
