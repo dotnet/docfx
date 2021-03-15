@@ -12,7 +12,7 @@ namespace Microsoft.Docs.Build
 {
     public static class OpsConfigAdapterTest
     {
-        [Theory]
+        [SkippableTheory]
         [InlineData(
             "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=master",
             "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
@@ -28,10 +28,7 @@ namespace Microsoft.Docs.Build
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
-            if (string.IsNullOrEmpty(token))
-            {
-                return;
-            }
+            Skip.If(string.IsNullOrEmpty(token));
 
             var credentialHandler = new CredentialHandler((_, _, _) =>
             {

@@ -259,7 +259,7 @@ namespace Microsoft.Docs.Build
 
         private static PathString GetGitRepositoryPath(string url, string branch)
         {
-            return new PathString(Path.Combine(AppData.GitRoot, $"{PathUtility.UrlToShortName(url)}-{branch}"));
+            return new PathString(Path.Combine(AppData.GitRoot, $"{UrlUtility.UrlToShortName(url)}-{branch}"));
         }
 
         private static void DeleteLockFiles(string path)
