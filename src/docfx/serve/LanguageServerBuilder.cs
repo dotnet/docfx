@@ -129,6 +129,11 @@ namespace Microsoft.Docs.Build
 
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
+            Console.WriteLine($"{errors.Count} errors found:");
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error.ToString());
+            }
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupByFile = from error in errors
                                          let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
