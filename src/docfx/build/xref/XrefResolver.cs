@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
             return (error, xrefSpec, href);
         }
 
-        public XrefMapModel ToXrefMapModel(bool isLocalizedBuild)
+        public XrefMapModel ToXrefMapModel()
         {
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
@@ -138,27 +138,24 @@ namespace Microsoft.Docs.Build
             var references = Array.Empty<ExternalXrefSpec>();
             var externalXrefs = Array.Empty<ExternalXref>();
 
-            if (!isLocalizedBuild)
-            {
-                references = _internalXrefMap.Value.Values
-                    .Select(xrefs =>
-                    {
-                        var xref = xrefs.First();
+            references = _internalXrefMap.Value.Values
+                .Select(xrefs =>
+                {
+                    var xref = xrefs.First();
 
-                        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                        // output xref map with URL appending "?branch=master" for master branch
-                        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
-                            ? $"?branch={repositoryBranch}" : "";
+                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
+                    ? $"?branch={repositoryBranch}" : "";
 
-                        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
 
-                        return xref.ToExternalXrefSpec(href);
-                    })
-                    .OrderBy(xref => xref.Uid)
-                    .ToArray();
+                    return xref.ToExternalXrefSpec(href);
+                })
+                .OrderBy(xref => xref.Uid)
+                .ToArray();
 
-                externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
-            }
+            externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
             var model =
                 new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
