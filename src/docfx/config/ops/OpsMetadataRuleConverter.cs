@@ -136,7 +136,8 @@ namespace Microsoft.Docs.Build
 
                 var cleanProperty = property.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value);
                 var propertyJson =
-                    JsonConvert.SerializeObject(cleanProperty, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    JsonConvert.SerializeObject(
+                        cleanProperty, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 if (propertyJson != "{}")
                 {
                     schema.properties.Add(attribute, cleanProperty);
