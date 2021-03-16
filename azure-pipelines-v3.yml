@@ -155,7 +155,7 @@ jobs:
   - task: AzureCLI@2
     displayName: Run regression tests
     inputs:
-      azureSubscription: 'Open Publishing - Build Production'
+      azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
       scriptType: ps
       scriptLocation: inlineScript
       powerShellErrorActionPreference: continue
