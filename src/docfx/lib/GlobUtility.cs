@@ -53,7 +53,7 @@ namespace Microsoft.Docs.Build
         }
 
         public static bool IsGlobString(string str)
-            => s_globChars.Any(@char => str.Contains(@char));
+            => str.IndexOfAny(s_globChars) >= 0;
 
         private static Func<string, bool> CreateGlob(string pattern)
         {
