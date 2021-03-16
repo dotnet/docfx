@@ -114,20 +114,7 @@ namespace Microsoft.Docs.Build
                     // if just plain enum, extend property
                     if (enumValues != null && enumValues.Length > 0)
                     {
-                        var type = GetType(rulesInfo);
-                        if (type != null && type.Contains("array"))
-                        {
-                            var enumType = new
-                            {
-                                type = "string",
-                                @enum = enumValues,
-                            };
-                            property.Add("items", enumType);
-                        }
-                        else
-                        {
-                            property["enum"] = enumValues;
-                        }
+                        SetEnumValues(property, rulesInfo, enumValues);
                     }
                     else
                     {
@@ -155,6 +142,24 @@ namespace Microsoft.Docs.Build
             var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             Log.Write(jsonSchema);
             return jsonSchema;
+        }
+
+        private static void SetEnumValues(Dictionary<string, object?> property, Dictionary<string, OpsMetadataRule> rulesInfo, string[] enumValues)
+        {
+            var type = GetType(rulesInfo);
+            if (type != null && type.Contains("array"))
+            {
+                var enumType = new
+                {
+                    type = new string[] { "string", "null" },
+                    @enum = enumValues,
+                };
+                property.Add("items", enumType);
+            }
+            else
+            {
+                property["enum"] = enumValues;
+            }
         }
 
         private static bool TryGetAttributeCustomRules(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)

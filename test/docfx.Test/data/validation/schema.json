@@ -79,7 +79,10 @@
         "null"
       ],
       "items": {
-        "type": "string",
+        "type": [
+          "string",
+          "null"
+        ],
         "enum": [
           "azure",
           "azue-speech-translation",
