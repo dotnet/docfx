@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error) => Watcher.Write(() =>
         {
-            Console.WriteLine($"[ScopedErrorBuilder] Error {error} has been added");
+            Console.WriteLine($"[ScopedErrorBuilder] Error {error} has been added, current count: {Count}");
             EnsureValue.Add(error);
         });
     }
