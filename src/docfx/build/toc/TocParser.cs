@@ -8,7 +8,7 @@ using System.Linq;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
