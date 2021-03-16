@@ -69,22 +69,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             int startSpan,
             int offset)
         {
-            var groupId = GetHashString(items[0]?.Content?.ToString() ?? "").Replace("/", "-").Remove(10);
-
-            context.AggregateTo(
-                new TabGroupBlock(
-                                groupId,
-                                items.ToImmutableArray(),
-                                startLine,
-                                startSpan,
-                                0),
-                offset);
-        }
-
-        private static string GetHashString(string content)
-        {
-            using var sha256 = SHA256.Create();
-            return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(content)));
+            context.AggregateTo(new TabGroupBlock(items.ToImmutableArray(), startLine, startSpan, 0), offset);
         }
 
         private static TabItemBlock CreateTabItem(
