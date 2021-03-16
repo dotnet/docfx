@@ -130,7 +130,7 @@ namespace Microsoft.Docs.Build
             return (error, xrefSpec, href);
         }
 
-        public XrefMapModel ToXrefMapModel(bool isLocalizedBuild)
+        public XrefMapModel ToXrefMapModel()
         {
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
