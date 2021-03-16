@@ -166,38 +166,7 @@ namespace Microsoft.Docs.Build
                 var tocBuilder = new TocBuilder(_config, _tocLoader, _contentValidator, _metadataProvider, _metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
-                HashSet<FilePath> filesToBuild = new();
-                if (files == null)
-                {
-                    filesToBuild = _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles()).ToHashSet();
-                }
-                else
-                {
-                    var globs = new List<Func<string, bool>>();
-                    foreach (var file in files)
-                    {
-                        if (GlobUtility.IsGlobString(file))
-                        {
-                            globs.Add(GlobUtility.CreateGlobMatcher(Path.Combine(_buildOptions.DocsetPath, file)));
-                        }
-                        else
-                        {
-                            var filePath = FilePath.Content(new PathString(file));
-                            if (_input.Exists(filePath) && _buildScope.Contains(filePath.Path))
-                            {
-                                filesToBuild.Add(filePath);
-                            }
-                        }
-                    }
-
-                    if (globs.Any())
-                    {
-                        filesToBuild.UnionWith(from file in _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles())
-                                        let fullPath = Path.Combine(_buildOptions.DocsetPath, file.Path)
-                                        where globs.Any(glob => glob.Invoke(fullPath))
-                                        select file);
-                    }
-                }
+                var filesToBuild = GetFilesToBuild(files);
 
                 using (var scope = Progress.Start($"Building {filesToBuild.Count} files"))
                 {
@@ -251,6 +220,43 @@ namespace Microsoft.Docs.Build
             {
                 _errors.AddRange(dex);
             }
+        }
+
+        private HashSet<FilePath> GetFilesToBuild(string[]? files)
+        {
+            HashSet<FilePath> filesToBuild = new();
+            if (files == null)
+            {
+                filesToBuild = _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles()).ToHashSet();
+            }
+            else
+            {
+                var globs = new List<Func<string, bool>>();
+                foreach (var file in files)
+                {
+                    if (GlobUtility.IsGlobString(file))
+                    {
+                        globs.Add(GlobUtility.CreateGlobMatcher(Path.Combine(_buildOptions.DocsetPath, file)));
+                    }
+                    else
+                    {
+                        var filePath = FilePath.Content(new PathString(file));
+                        if (_input.Exists(filePath) && _buildScope.Contains(filePath.Path))
+                        {
+                            filesToBuild.Add(filePath);
+                        }
+                    }
+                }
+
+                if (globs.Any())
+                {
+                    filesToBuild.UnionWith(from file in _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles())
+                                           let fullPath = Path.Combine(_buildOptions.DocsetPath, file.Path)
+                                           where globs.Any(glob => glob.Invoke(fullPath))
+                                           select file);
+                }
+            }
+            return filesToBuild;
         }
 
         private void BuildFile(
