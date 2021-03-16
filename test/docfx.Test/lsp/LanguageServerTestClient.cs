@@ -205,7 +205,7 @@ namespace Microsoft.Docs.Build
         {
             Interlocked.Increment(ref _serverNotificationSent);
             Console.WriteLine($"ServerNotificationSent: {_serverNotificationSent}");
-            Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
+            // Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
         }
 
         void ILanguageServerNotificationListener.OnNotificationHandled()
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
                 _notificationSync.TrySetResult();
             }
             Console.WriteLine($"ServerNotificationHandled: {_serverNotificationHandled}");
-            Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
+            // Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
         }
 
         private JToken ApplyCredentialVariables(JToken @params)
@@ -233,7 +233,7 @@ namespace Microsoft.Docs.Build
         {
             Interlocked.Increment(ref _clientNotificationSent);
             Console.WriteLine($"ClientNotificationSent: {_clientNotificationSent}");
-            Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
+            // Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
             _notificationSync = new TaskCompletionSource();
             _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
         }
@@ -251,7 +251,7 @@ namespace Microsoft.Docs.Build
                 _notificationSync.TrySetResult();
             }
             Console.WriteLine($"ClientNotificationReceived: {_clientNotificationReceived}");
-            Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
+            // Console.WriteLine("StackTrace: '{0}'", Environment.StackTrace);
         }
 
         private DocumentUri ToUri(string file)
