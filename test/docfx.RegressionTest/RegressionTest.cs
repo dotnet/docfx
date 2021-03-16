@@ -92,6 +92,7 @@ namespace Microsoft.Docs.Build
                 {
                     http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
                 }
+
                 if (!string.IsNullOrEmpty(s_azureDevopsToken))
                 {
                     http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
