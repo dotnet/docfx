@@ -467,19 +467,19 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "
-        <div class='tabGroup' id='tabgroup_bHGHmlrG6S'>
+        <div class='tabGroup' id='tabgroup_1'>
           <ul role='tablist'>
             <li role='presentation'>
-              <a href='#tabpanel_bHGHmlrG6S_a' role='tab' aria-controls='tabpanel_bHGHmlrG6S_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
+              <a href='#tabpanel_1_a' role='tab' aria-controls='tabpanel_1_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
             </li>
             <li role='presentation'>
-              <a href='#tabpanel_bHGHmlrG6S_b' role='tab' aria-controls='tabpanel_bHGHmlrG6S_b' data-tab='b' tabindex='-1'>b</a>
+              <a href='#tabpanel_1_b' role='tab' aria-controls='tabpanel_1_b' data-tab='b' tabindex='-1'>b</a>
             </li>
           </ul>
-          <section id='tabpanel_bHGHmlrG6S_a' role='tabpanel' data-tab='a'>
+          <section id='tabpanel_1_a' role='tabpanel' data-tab='a'>
             <p>a</p>
           </section>
-          <section id='tabpanel_bHGHmlrG6S_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
+          <section id='tabpanel_1_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
             <p>b</p>
           </section>
         </div>"
