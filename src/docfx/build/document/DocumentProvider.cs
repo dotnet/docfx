@@ -80,6 +80,8 @@ namespace Microsoft.Docs.Build
 
         public RenderType GetRenderType(FilePath path) => GetDocument(path).RenderType;
 
+        public ConcurrentDictionary<FilePath, Watch<Document>> GetAllDocuments() => _documents;
+
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
         public string GetDocsSiteUrl(FilePath path)
         {

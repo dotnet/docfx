@@ -203,9 +203,12 @@ namespace Microsoft.Docs.Build
             var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
             docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
 
+            var allDocsWithoutConflicts = _publishUrlMap.ResolveUrlConflicts(scope, _documentProvider.GetAllDocuments().Keys);
+            docToTocs = docToTocs.Where(doc => allDocsWithoutConflicts.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
+
             var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
-            return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
+            return (tocFiles, docToTocs, allServicePages.Where(item => docToTocs.ContainsKey(item)).ToList());
 
             bool ShouldBuildFile(FilePath file)
             {
