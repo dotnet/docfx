@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.RegressionTest", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions", "src\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj", "{08B96D2C-6C55-40A1-8D68-7F83A7D3B211}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Validators", "src\Microsoft.DocAsCode.MarkdigEngine.Validators\Microsoft.DocAsCode.MarkdigEngine.Validators.csproj", "{E5B96629-1698-4A94-8B96-062CB00D3180}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{84437525-A54B-425D-9DEE-AF190A591E5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.LearnValidation", "src\Microsoft.Docs.LearnValidation\Microsoft.Docs.LearnValidation.csproj", "{92FB16D7-A628-41FA-89C1-E2905A8032F7}"
@@ -93,18 +91,6 @@ Global
 		{08B96D2C-6C55-40A1-8D68-7F83A7D3B211}.Release|x64.Build.0 = Release|Any CPU
 		{08B96D2C-6C55-40A1-8D68-7F83A7D3B211}.Release|x86.ActiveCfg = Release|Any CPU
 		{08B96D2C-6C55-40A1-8D68-7F83A7D3B211}.Release|x86.Build.0 = Release|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Debug|x64.Build.0 = Debug|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Debug|x86.Build.0 = Debug|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Release|x64.ActiveCfg = Release|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Release|x64.Build.0 = Release|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Release|x86.ActiveCfg = Release|Any CPU
-		{E5B96629-1698-4A94-8B96-062CB00D3180}.Release|x86.Build.0 = Release|Any CPU
 		{84437525-A54B-425D-9DEE-AF190A591E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84437525-A54B-425D-9DEE-AF190A591E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84437525-A54B-425D-9DEE-AF190A591E5D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -139,7 +125,6 @@ Global
 		{CECDC553-0AB4-4C3D-B093-F9EAD61A2948} = {D9F346F2-6435-4FD4-8980-33233FC585A6}
 		{09449ABE-6F58-4728-BB4E-DD8362E21A2B} = {5BE2024B-B512-492C-87AB-E8C7D3B3F3AE}
 		{08B96D2C-6C55-40A1-8D68-7F83A7D3B211} = {D9F346F2-6435-4FD4-8980-33233FC585A6}
-		{E5B96629-1698-4A94-8B96-062CB00D3180} = {D9F346F2-6435-4FD4-8980-33233FC585A6}
 		{84437525-A54B-425D-9DEE-AF190A591E5D} = {5BE2024B-B512-492C-87AB-E8C7D3B3F3AE}
 		{92FB16D7-A628-41FA-89C1-E2905A8032F7} = {D9F346F2-6435-4FD4-8980-33233FC585A6}
 	EndGlobalSection
