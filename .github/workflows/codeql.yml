@@ -28,7 +28,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
-        config-file: ./codeql-config.yml
+        config-file: ./.github/workflows/codeql-config.yml
 
     - run: npm install
       working-directory: tools/Deployment
