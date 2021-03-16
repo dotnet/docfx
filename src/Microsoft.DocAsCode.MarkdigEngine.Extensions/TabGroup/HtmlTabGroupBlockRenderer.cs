@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         protected override void Write(HtmlRenderer renderer, TabGroupBlock block)
         {
             renderer.Write(@"<div class=""tabGroup"" id=""tabgroup_");
-            var groupId = ExtensionsHelper.Escape(block.Id);
+            var groupId = block.Id.ToString();
             renderer.Write(groupId);
             renderer.Write("\"");
             renderer.WriteAttributes(block);
