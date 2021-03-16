@@ -109,21 +109,29 @@ namespace Microsoft.Docs.Build
 
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
-                    TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var taxonomy, out var enumValues))
+                    TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var enumDependencies, out var enumValues))
                 {
                     // if just plain enum, extend property
                     if (enumValues != null && enumValues.Length > 0)
                     {
-                        var enumType = new
+                        var type = GetType(rulesInfo);
+                        if (type != null && type.Contains("array"))
                         {
-                            type = "string",
-                            @enum = enumValues,
-                        };
-                        property.Add("items", enumType);
+                            var enumType = new
+                            {
+                                type = "string",
+                                @enum = enumValues,
+                            };
+                            property.Add("items", enumType);
+                        }
+                        else
+                        {
+                            property["enum"] = enumValues;
+                        }
                     }
                     else
                     {
-                        schema.enumDependencies.Add($"{attribute}[0]", taxonomy);
+                        schema.enumDependencies.Add($"{attribute}[0]", enumDependencies);
 
                         if (rulesInfo.TryGetValue("Match", out var matchRuleInfo) &&
                             !string.IsNullOrEmpty(matchRuleInfo.Value) &&
@@ -194,8 +202,8 @@ namespace Microsoft.Docs.Build
 
             if (string.IsNullOrEmpty(subTaxonomy.NestedValue))
             {
-                taxonomy = subTaxonomy.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
-                enumValues = null;
+                taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+                enumValues = subTaxonomy.NestedTaxonomy.list;
                 return true;
             }
 

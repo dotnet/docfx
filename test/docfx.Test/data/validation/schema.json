@@ -62,6 +62,15 @@
       "type": [
         "string",
         "null"
+      ],
+      "enum": [
+        "archived",
+        "article",
+        "best-practice",
+        "callback",
+        "checklist",
+        "class",
+        "conceptual"
       ]
     },
     "product": {
@@ -240,16 +249,6 @@
           "update-management": null
         }
       }
-    },
-    "ms.topic[0]": {
-      "archived": null,
-      "article": null,
-      "best-practice": null,
-      "callback": null,
-      "checklist": null,
-      "class": null,
-      "conceptual": null,
-      "include": null
     }
   },
   "rules": {
