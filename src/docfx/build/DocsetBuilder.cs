@@ -191,7 +191,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 // TODO: explicitly state that ToXrefMapModel produces errors
-                var xrefMapModel = _xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
+                var xrefMapModel = _xrefResolver.ToXrefMapModel();
                 var (publishModel, fileManifests) = publishModelBuilder.Build(filesToBuild);
 
                 // TODO: decouple files and dependencies from legacy.
