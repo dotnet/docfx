@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using Markdig.Syntax;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -9,7 +8,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 {
     public class TabGroupIdRewriter : IMarkdownObjectRewriter
     {
-        private readonly Dictionary<string, int> _dict = new();
+        private int _id;
 
         public void PostProcess(IMarkdownObject markdownObject)
         {
@@ -23,22 +22,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             if (markdownObject is TabGroupBlock block)
             {
-                var groupId = block.Id;
-                while (true)
-                {
-                    if (_dict.TryGetValue(groupId, out var index))
-                    {
-                        _dict[groupId] += 1;
-                        groupId = $"{groupId}-{index}";
-                        block.Id = groupId;
-                        return block;
-                    }
-                    else
-                    {
-                        _dict.Add(groupId, 1);
-                        return markdownObject;
-                    }
-                }
+                block.Id = ++_id;
             }
 
             return markdownObject;
