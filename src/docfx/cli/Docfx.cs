@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             var command = CreateCommand("build", "Builds a docset.", options => Builder.Run(options, package));
             DefineCommonCommands(command);
             command.AddOption(new Option<string[]>(
-                new[] { "--file", "--files" }, "Build only the specified files."));
+                new[] { "--file" }, "Build only the specified files."));
             command.AddOption(new Option<string>(
                 new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
             command.AddOption(new Option<OutputType>(
