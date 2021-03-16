@@ -151,12 +151,16 @@ namespace Microsoft.Docs.Build
 
         private static Diagnostic ConvertToDiagnostics(Error error, SourceInfo source)
         {
+            var documentUrl = error.DocumentUrl ?? "https://review.docs.microsoft.com/en-us/help/contribute/validation-ref/doc-not-available?branch=main";
             return new Diagnostic
             {
                 Range = new(
                      new(ConvertLocation(source.Line), ConvertLocation(source.Column)),
                      new(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
                 Code = error.Code,
+                CodeDescription = Uri.TryCreate(documentUrl, UriKind.Absolute, out var href)
+                    ? new() { Href = href }
+                    : null,
                 Source = "Docs Validation",
                 Severity = error.Level switch
                 {

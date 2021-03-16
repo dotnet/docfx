@@ -75,7 +75,8 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("OS not supported");
             }
 
-            lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
+            var lockKey = test.FilePath.Contains("lsp.yml") ? test.FilePath : $"{test.FilePath}-{test.Ordinal:D2}";
+            lock (s_locks.GetOrAdd(lockKey, _ => new object()))
             {
                 var (docsetPath, appDataPath, outputPath, repos, package) = CreateDocset(test, spec);
 
