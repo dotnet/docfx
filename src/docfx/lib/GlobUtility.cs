@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using GlobExpressions;
 
@@ -9,6 +10,8 @@ namespace Microsoft.Docs.Build
 {
     internal static class GlobUtility
     {
+        private static readonly char[] s_globChars = new char[] { '*', '?', '[', ']' };
+
         public static Func<string, bool> CreateGlobMatcher(string pattern)
         {
             var glob = CreateGlob(pattern);
@@ -48,6 +51,9 @@ namespace Microsoft.Docs.Build
                 return false;
             }
         }
+
+        public static bool IsGlobString(string str)
+            => str.IndexOfAny(s_globChars) >= 0;
 
         private static Func<string, bool> CreateGlob(string pattern)
         {
