@@ -21,7 +21,7 @@ jobs:
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
-    vmImage: 'DocFX'
+    name: DocFX
   steps:
 
   # Install .NET Core sdk
