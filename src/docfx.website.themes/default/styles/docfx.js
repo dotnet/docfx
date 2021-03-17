@@ -388,7 +388,7 @@ $(function () {
             $(e).attr("href", href);
 
             var isActive = false;
-            var originalHref = e.name;
+            var originalHref = $(e).attr("name");
             if (originalHref) {
               originalHref = navrel + originalHref;
               if (util.getDirectory(util.getAbsolutePath(originalHref)) === util.getDirectory(util.getAbsolutePath(tocPath))) {
