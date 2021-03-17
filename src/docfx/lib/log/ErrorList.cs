@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,9 +11,9 @@ namespace Microsoft.Docs.Build
 {
     internal class ErrorList : ErrorBuilder, IReadOnlyList<Error>
     {
-        private readonly List<Error> _items = new();
+        private readonly ConcurrentBag<Error> _items = new();
 
-        public Error this[int index] => _items[index];
+        public Error this[int index] => _items.ToArray()[index];
 
         public int Count => _items.Count;
 
@@ -20,8 +21,9 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
+            Console.Write($"[ErrorList] Count before add: {_items.Count}, hashcode(${GetHashCode()})");
             _items.Add(error);
-            Console.WriteLine($"[ErrorList] Error {error} has been added, current count: {_items.Count}");
+            Console.WriteLine($"[ErrorList] Error {error} has been added, current count: {_items.Count}, hashcode(${this.GetHashCode()})");
         }
 
         public override bool FileHasError(FilePath file) => throw new NotSupportedException();

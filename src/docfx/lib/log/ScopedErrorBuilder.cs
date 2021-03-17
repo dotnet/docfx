@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
         public IDisposable BeginScope(ErrorBuilder errors)
         {
             _errors.Value = errors;
+            Console.WriteLine($"new scoped error builder: hashcode({_errors.Value.GetHashCode()})");
             return new DelegatingDisposable(() => _errors.Value = null);
         }
 

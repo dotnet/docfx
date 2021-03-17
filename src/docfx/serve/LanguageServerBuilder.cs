@@ -67,14 +67,15 @@ namespace Microsoft.Docs.Build
                     progressReporter.Report("Start build...");
                     var operation = Telemetry.StartOperation("realTimeBuild");
 
+                    var errors = new ErrorList();
+                    var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
+
                     // This is to avoid the task await deadlock in the credential refresh scenario
                     // The progress reporter create request task can only be completed when the current build done if there is no `Task.Yield`
                     // The current build can only be completed when the credential refresh request response get handled.
                     // But the responses of language server are handled sequentially, which cause the deadlock.
                     await Task.Yield();
-
-                    var filesToBuild = _languageServerPackage.GetAllFilesInMemory();
-                    var errors = new ErrorList();
+                    Console.WriteLine($"ErrorList created, hashcode(${errors.GetHashCode()})");
                     Telemetry.SetIsRealTimeBuild(true);
                     _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
