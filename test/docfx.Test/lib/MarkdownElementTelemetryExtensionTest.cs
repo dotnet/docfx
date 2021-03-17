@@ -8,7 +8,7 @@ using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 using Xunit;
 
 namespace Microsoft.Docs.Build
