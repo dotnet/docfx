@@ -1,2 +1,2 @@
 paths-ignore:
-  - src/docfx.website.themes/pdf.default/styles/docfx.vendor.js
+  - '**/docfx.vendor.js'
