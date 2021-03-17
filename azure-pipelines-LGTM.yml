@@ -64,7 +64,7 @@ jobs:
       Function: 'analyze'
       AnalyzeTarget: >
         src/docfx/bin/Release/net5.0/docfx.dll;
-        src/docfx/bin/Release/net5.0/Microsoft.DocAsCode.MarkdigEngine.Extensions.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.MarkdigExtensions.dll;
         src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
 
   - task: Semmle@0

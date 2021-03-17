@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Template", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.RegressionTest", "test\docfx.RegressionTest\docfx.RegressionTest.csproj", "{09449ABE-6F58-4728-BB4E-DD8362E21A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions", "src\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj", "{08B96D2C-6C55-40A1-8D68-7F83A7D3B211}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.MarkdigExtensions", "src\Microsoft.Docs.MarkdigExtensions\Microsoft.Docs.MarkdigExtensions.csproj", "{08B96D2C-6C55-40A1-8D68-7F83A7D3B211}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{84437525-A54B-425D-9DEE-AF190A591E5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.MarkdigExtensions.Tests", "test\Microsoft.Docs.MarkdigExtensions.Tests\Microsoft.Docs.MarkdigExtensions.Tests.csproj", "{84437525-A54B-425D-9DEE-AF190A591E5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.LearnValidation", "src\Microsoft.Docs.LearnValidation\Microsoft.Docs.LearnValidation.csproj", "{92FB16D7-A628-41FA-89C1-E2905A8032F7}"
 EndProject
