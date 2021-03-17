@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,9 +11,9 @@ namespace Microsoft.Docs.Build
 {
     internal class ErrorList : ErrorBuilder, IReadOnlyList<Error>
     {
-        private readonly List<Error> _items = new();
+        private readonly ConcurrentBag<Error> _items = new();
 
-        public Error this[int index] => _items[index];
+        public Error this[int index] => _items.ToArray()[index];
 
         public int Count => _items.Count;
 
