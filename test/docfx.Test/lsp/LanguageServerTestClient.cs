@@ -199,6 +199,7 @@ namespace Microsoft.Docs.Build
         {
             var client = await _client.Value;
             await client.client.Shutdown();
+            Console.WriteLine($"Client exited: {_workingDirectory}");
             // client.cts.Cancel();
         }
 
@@ -273,7 +274,7 @@ namespace Microsoft.Docs.Build
             var serverPipe = new Pipe();
             var cts = new CancellationTokenSource();
 
-            var client = LanguageClient.Create(options => options
+            var client = LanguageClient.PreInit(options => options
                 .WithInput(serverPipe.Reader)
                 .WithOutput(clientPipe.Writer)
                 .WithCapability(new WorkspaceEditCapability()

@@ -197,11 +197,18 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package)
         {
-            await using var client = new LanguageServerTestClient(docsetPath, package, spec.NoCache);
-
-            foreach (var command in spec.LanguageServer)
+            try
             {
-                await client.ProcessCommand(command);
+                await using var client = new LanguageServerTestClient(docsetPath, package, spec.NoCache);
+
+                foreach (var command in spec.LanguageServer)
+                {
+                    await client.ProcessCommand(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DocfxTest] Exception throw: {ex}");
             }
         }
 
