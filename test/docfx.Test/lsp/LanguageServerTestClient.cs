@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
             var client = await _client.Value;
             await client.client.Shutdown();
             Console.WriteLine($"Client exited: {_workingDirectory}");
-            // client.cts.Cancel();
+            client.cts.Cancel();
         }
 
         void ILanguageServerNotificationListener.OnNotificationSent()
@@ -272,7 +272,7 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                Console.WriteLine($"[LanguageServerTestClient] Start to initialize the client (_workingDirectory)");
+                Console.WriteLine($"[LanguageServerTestClient] Start to initialize the client ({_workingDirectory})");
                 var clientPipe = new Pipe();
                 var serverPipe = new Pipe();
                 var cts = new CancellationTokenSource();
