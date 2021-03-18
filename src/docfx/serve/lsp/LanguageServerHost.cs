@@ -52,10 +52,6 @@ namespace Microsoft.Docs.Build
                                 })
                                 .AddOptions()
                                 .AddLogging())
-                            .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken cancellationToken) =>
-                            {
-                                return Task.Delay(1000);
-                            })
                             .OnExit(_ =>
                             {
                                 Console.WriteLine("Server exit");

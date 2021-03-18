@@ -328,6 +328,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Console.Write($"[LanguageServerTestClient] Unexpected exception: {ex}");
+                return (default, default);
             }
         }
 
