@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationSent;
         private int _clientNotificationReceived;
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
-        private TaskCompletionSource _notificationSync = new TaskCompletionSource();
+        private TaskCompletionSource _notificationSync = new(new CancellationTokenSource(20000).Token);
 
         public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
@@ -238,7 +238,7 @@ namespace Microsoft.Docs.Build
         {
             Interlocked.Increment(ref _clientNotificationSent);
             Console.WriteLine($"ClientNotificationSent: {_clientNotificationSent}");
-            _notificationSync = new TaskCompletionSource();
+            _notificationSync = new TaskCompletionSource(new CancellationTokenSource(20000));
             _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
         }
 
@@ -270,58 +270,65 @@ namespace Microsoft.Docs.Build
 
         private async Task<(CancellationTokenSource, ILanguageClient)> InitializeClient(string workingDirectory, Package package, bool noCache)
         {
-            var clientPipe = new Pipe();
-            var serverPipe = new Pipe();
-            var cts = new CancellationTokenSource();
-            var tcs = new TaskCompletionSource();
+            try
+            {
+                var clientPipe = new Pipe();
+                var serverPipe = new Pipe();
+                var cts = new CancellationTokenSource();
+                var tcs = new TaskCompletionSource();
 
-            var client = LanguageClient.Create(options => options
-                .WithInput(serverPipe.Reader)
-                .WithOutput(clientPipe.Writer)
-                .WithCapability(new WorkspaceEditCapability()
-                {
-                    DocumentChanges = true,
-                    FailureHandling = FailureHandlingKind.Undo,
-                })
-                .OnInitialized((ILanguageClient client, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
-                {
-                    tcs.TrySetResult();
-                    return Task.CompletedTask;
-                })
-                .OnLogMessage(message =>
-                {
-                    Console.WriteLine($"[LanguageServerTestClient] on message: (${message.Type}){message.Message}");
-                    if (message.Type == MessageType.Error)
+                var client = LanguageClient.Create(options => options
+                    .WithInput(serverPipe.Reader)
+                    .WithOutput(clientPipe.Writer)
+                    .WithCapability(new WorkspaceEditCapability()
                     {
-                        _notificationSync.TrySetException(new InvalidOperationException(message.Message));
-                    }
-                })
-                .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
-                {
-                    var response = new TaskCompletionSource<JToken>();
-                    _requestChannel.Writer.TryWrite((JToken.Parse(JsonUtility.Serialize(@params)), response));
+                        DocumentChanges = true,
+                        FailureHandling = FailureHandlingKind.Undo,
+                    })
+                    .OnInitialized((ILanguageClient client, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
+                    {
+                        tcs.TrySetResult();
+                        return Task.CompletedTask;
+                    })
+                    .OnLogMessage(message =>
+                    {
+                        Console.WriteLine($"[LanguageServerTestClient] on message: (${message.Type}){message.Message}");
+                        if (message.Type == MessageType.Error || message.Type == MessageType.Warning)
+                        {
+                            _notificationSync.TrySetException(new InvalidOperationException(message.Message));
+                        }
+                    })
+                    .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
+                    {
+                        var response = new TaskCompletionSource<JToken>();
+                        _requestChannel.Writer.TryWrite((JToken.Parse(JsonUtility.Serialize(@params)), response));
 
-                    return await response.Task;
-                })
-                .OnPublishDiagnostics(item =>
-                {
-                    _diagnostics[ToFile(item.Uri)] = JToken.FromObject(item.Diagnostics, JsonUtility.Serializer);
-                    OnNotification();
-                }));
+                        return await response.Task;
+                    })
+                    .OnPublishDiagnostics(item =>
+                    {
+                        _diagnostics[ToFile(item.Uri)] = JToken.FromObject(item.Diagnostics, JsonUtility.Serializer);
+                        OnNotification();
+                    }));
 
-            Task.Run(
-                () => LanguageServerHost.RunLanguageServer(
-                new() { Directory = workingDirectory, NoCache = noCache },
-                clientPipe.Reader,
-                serverPipe.Writer,
-                package,
-                notificationListener: this,
-                cts.Token)).GetAwaiter();
+                Task.Run(
+                    () => LanguageServerHost.RunLanguageServer(
+                    new() { Directory = workingDirectory, NoCache = noCache },
+                    clientPipe.Reader,
+                    serverPipe.Writer,
+                    package,
+                    notificationListener: this,
+                    cts.Token)).GetAwaiter();
 
-            await client.Initialize(default);
-            await tcs.Task;
+                await client.Initialize(default);
+                await tcs.Task;
 
-            return (cts, client);
+                return (cts, client);
+            }
+            catch (Exception ex)
+            {
+                Console.Write($"[LanguageServerTestClient] Unexpected exception: {ex}");
+            }
         }
 
         private static JsonDiff CreateLanguageServerJsonDiff()

@@ -208,7 +208,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[DocfxTest] Exception throw: {ex}");
+                Console.WriteLine($"[DocfxTest] Unexpected exception: {ex}");
             }
         }
 
