@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
 
         private readonly string _workingDirectory;
         private readonly Lazy<Task<(CancellationTokenSource cts, ILanguageClient client)>> _client;
+        private readonly TaskCompletionSource _serverInitializedTcs = new();
         private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
@@ -224,6 +225,11 @@ namespace Microsoft.Docs.Build
             _notificationSync.TrySetException(ex);
         }
 
+        void ILanguageServerNotificationListener.OnInitialized()
+        {
+            _serverInitializedTcs.TrySetResult();
+        }
+
         private JToken ApplyCredentialVariables(JToken @params)
         {
             return TestUtility.ApplyVariables(
@@ -276,7 +282,6 @@ namespace Microsoft.Docs.Build
                 var clientPipe = new Pipe();
                 var serverPipe = new Pipe();
                 var cts = new CancellationTokenSource();
-                var tcs = new TaskCompletionSource(new CancellationTokenSource(20000).Token);
 
                 var client = LanguageClient.Create(options => options
                     .WithInput(serverPipe.Reader)
@@ -285,11 +290,6 @@ namespace Microsoft.Docs.Build
                     {
                         DocumentChanges = true,
                         FailureHandling = FailureHandlingKind.Undo,
-                    })
-                    .OnInitialized((ILanguageClient client, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
-                    {
-                        tcs.TrySetResult();
-                        return Task.CompletedTask;
                     })
                     .OnLogMessage(message =>
                     {
@@ -325,7 +325,7 @@ namespace Microsoft.Docs.Build
 
                 Console.WriteLine($"[LanguageServerTestClient] Client initialization request sent ({_workingDirectory})");
 
-                await tcs.Task;
+                await _serverInitializedTcs.Task;
 
                 Console.WriteLine($"[LanguageServerTestClient] Client initialized ({_workingDirectory})");
 

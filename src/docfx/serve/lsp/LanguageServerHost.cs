@@ -78,6 +78,9 @@ namespace Microsoft.Docs.Build
 
                 var builder = server.GetRequiredService<LanguageServerBuilder>();
 
+                await server.WasStarted;
+                notificationListener?.OnInitialized();
+
                 await Task.Run(() => builder.Run(cancellationToken), cancellationToken);
             }
             catch (Exception ex)
