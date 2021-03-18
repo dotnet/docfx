@@ -273,14 +273,20 @@ namespace Microsoft.Docs.Build
             var clientPipe = new Pipe();
             var serverPipe = new Pipe();
             var cts = new CancellationTokenSource();
+            var tcs = new TaskCompletionSource();
 
-            var client = LanguageClient.PreInit(options => options
+            var client = LanguageClient.Create(options => options
                 .WithInput(serverPipe.Reader)
                 .WithOutput(clientPipe.Writer)
                 .WithCapability(new WorkspaceEditCapability()
                 {
                     DocumentChanges = true,
                     FailureHandling = FailureHandlingKind.Undo,
+                })
+                .OnInitialized((ILanguageClient client, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
+                {
+                    tcs.TrySetResult();
+                    return Task.CompletedTask;
                 })
                 .OnLogMessage(message =>
                 {
@@ -313,6 +319,7 @@ namespace Microsoft.Docs.Build
                 cts.Token)).GetAwaiter();
 
             await client.Initialize(default);
+            await tcs.Task;
 
             return (cts, client);
         }
