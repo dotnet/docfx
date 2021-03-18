@@ -75,7 +75,6 @@ namespace Microsoft.Docs.Build
                     // The current build can only be completed when the credential refresh request response get handled.
                     // But the responses of language server are handled sequentially, which cause the deadlock.
                     await Task.Yield();
-                    Console.WriteLine($"ErrorList created, hashcode(${errors.GetHashCode()})");
                     Telemetry.SetIsRealTimeBuild(true);
                     _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
 
@@ -132,11 +131,6 @@ namespace Microsoft.Docs.Build
 
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
-            Console.WriteLine($"{errors.Count} errors found:");
-            foreach (var error in errors)
-            {
-                Console.WriteLine(error.ToString());
-            }
             List<PathString> filesWithDiagnostics = new();
             var diagnosticsGroupByFile = from error in errors
                                          let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
