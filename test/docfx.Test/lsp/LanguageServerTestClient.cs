@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
 
         private readonly string _workingDirectory;
-        private readonly Lazy<Task<ILanguageClient>> _client;
+        private readonly Lazy<Task<(CancellationTokenSource cts, ILanguageClient client)>> _client;
         private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
@@ -51,7 +51,7 @@ namespace Microsoft.Docs.Build
 
         public async Task ProcessCommand(LanguageServerTestCommand command)
         {
-            var client = await _client.Value;
+            var client = (await _client.Value).client;
 
             if (command.OpenFiles != null)
             {
@@ -198,7 +198,8 @@ namespace Microsoft.Docs.Build
         public async ValueTask DisposeAsync()
         {
             var client = await _client.Value;
-            await client.Shutdown();
+            await client.client.Shutdown();
+            client.cts.Cancel();
         }
 
         void ILanguageServerNotificationListener.OnNotificationSent()
@@ -266,10 +267,11 @@ namespace Microsoft.Docs.Build
             return path is null ? uri.ToString() : PathUtility.NormalizeFile(Path.GetRelativePath(_workingDirectory, path));
         }
 
-        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package, bool noCache)
+        private async Task<(CancellationTokenSource, ILanguageClient)> InitializeClient(string workingDirectory, Package package, bool noCache)
         {
             var clientPipe = new Pipe();
             var serverPipe = new Pipe();
+            var cts = new CancellationTokenSource();
 
             var client = LanguageClient.Create(options => options
                 .WithInput(serverPipe.Reader)
@@ -306,11 +308,12 @@ namespace Microsoft.Docs.Build
                 clientPipe.Reader,
                 serverPipe.Writer,
                 package,
-                notificationListener: this)).GetAwaiter();
+                notificationListener: this,
+                cts.Token)).GetAwaiter();
 
             await client.Initialize(default);
 
-            return client;
+            return (cts, client);
         }
 
         private static JsonDiff CreateLanguageServerJsonDiff()
