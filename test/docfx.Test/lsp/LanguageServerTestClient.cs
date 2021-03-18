@@ -276,6 +276,7 @@ namespace Microsoft.Docs.Build
                 })
                 .OnLogMessage(message =>
                 {
+                    Console.WriteLine($"[LanguageServerTestClient] on message: (${message.Type}){message.Message}");
                     if (message.Type == MessageType.Error)
                     {
                         _notificationSync.TrySetException(new InvalidOperationException(message.Message));

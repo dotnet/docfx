@@ -88,6 +88,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine($"[LanguageServerBuilder] throw exception: ${ex}");
                     _logger.LogCritical(ex, "Failed to handle build request");
                     Telemetry.TrackException(ex);
                 }
