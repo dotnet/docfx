@@ -272,10 +272,11 @@ namespace Microsoft.Docs.Build
         {
             try
             {
+                Console.WriteLine($"[LanguageServerTestClient] Start to initialize the client (_workingDirectory)");
                 var clientPipe = new Pipe();
                 var serverPipe = new Pipe();
                 var cts = new CancellationTokenSource();
-                var tcs = new TaskCompletionSource();
+                var tcs = new TaskCompletionSource(new CancellationTokenSource(20000).Token);
 
                 var client = LanguageClient.Create(options => options
                     .WithInput(serverPipe.Reader)
@@ -320,8 +321,13 @@ namespace Microsoft.Docs.Build
                     notificationListener: this,
                     cts.Token)).GetAwaiter();
 
-                await client.Initialize(default);
+                await client.Initialize(new CancellationTokenSource(20000).Token);
+
+                Console.WriteLine($"[LanguageServerTestClient] Client initialization request sent ({_workingDirectory})");
+
                 await tcs.Task;
+
+                Console.WriteLine($"[LanguageServerTestClient] Client initialized ({_workingDirectory})");
 
                 return (cts, client);
             }
