@@ -179,7 +179,7 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                var (request, response) = await _requestChannel.Reader.ReadAsync();
+                var (request, response) = await _requestChannel.Reader.ReadAsync(new CancellationTokenSource(20000).Token);
 
                 s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
                 response.SetResult(ApplyCredentialVariables(command.Response));
