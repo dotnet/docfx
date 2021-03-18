@@ -379,7 +379,7 @@ $(function () {
           navrel = navbarPath.substr(0, index + 1);
         }
         $('#navbar>ul').addClass('navbar-nav');
-        var currentAbsPath = util.getAbsolutePath(window.location.pathname);
+        var currentAbsPath = util.getCurrentWindowAbsolutePath();
         // set active item
         $('#navbar').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
@@ -388,7 +388,7 @@ $(function () {
             $(e).attr("href", href);
 
             var isActive = false;
-            var originalHref = $(e).attr("name");
+            var originalHref = e.name;
             if (originalHref) {
               originalHref = navrel + originalHref;
               if (util.getDirectory(util.getAbsolutePath(originalHref)) === util.getDirectory(util.getAbsolutePath(tocPath))) {
@@ -556,7 +556,7 @@ $(function () {
         if (index > -1) {
           tocrel = tocPath.substr(0, index + 1);
         }
-        var currentHref = util.getAbsolutePath(window.location.pathname);
+        var currentHref = util.getCurrentWindowAbsolutePath();
         $('#sidetoc').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
           if (util.isRelativePath(href)) {
@@ -1054,14 +1054,25 @@ $(function () {
     this.getAbsolutePath = getAbsolutePath;
     this.isRelativePath = isRelativePath;
     this.isAbsolutePath = isAbsolutePath;
+    this.getCurrentWindowAbsolutePath = getCurrentWindowAbsolutePath;
     this.getDirectory = getDirectory;
     this.formList = formList;
 
     function getAbsolutePath(href) {
-      // Use anchor to normalize href
-      var anchor = $('<a href="' + href + '"></a>')[0];
-      // Ignore protocal, remove search and query
-      return anchor.host + anchor.pathname;
+      if (isAbsolutePath(href)) return href;
+      var currentAbsPath = getCurrentWindowAbsolutePath();
+      var stack = currentAbsPath.split("/");
+      stack.pop();
+      var parts = href.split("/");
+      for (var i=0; i< parts.length; i++) {
+        if (parts[i] == ".") continue;
+        if (parts[i] == ".." && stack.length > 0)
+          stack.pop();
+        else
+          stack.push(parts[i]);
+      }
+      var p = stack.join("/");
+      return p;
     }
 
     function isRelativePath(href) {
@@ -1075,6 +1086,9 @@ $(function () {
       return (/^(?:[a-z]+:)?\/\//i).test(href);
     }
 
+    function getCurrentWindowAbsolutePath() {
+      return window.location.origin + window.location.pathname;
+    }
     function getDirectory(href) {
       if (!href) return '';
       var index = href.lastIndexOf('/');
