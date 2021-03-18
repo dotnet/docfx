@@ -21,9 +21,7 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            Console.Write($"[ErrorList] Count before add: {_items.Count}, hashcode(${GetHashCode()})");
             _items.Add(error);
-            Console.WriteLine($"[ErrorList] Error {error} has been added, current count: {_items.Count}, hashcode(${this.GetHashCode()})");
         }
 
         public override bool FileHasError(FilePath file) => throw new NotSupportedException();

@@ -2,11 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO.Pipelines;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Server;
 
@@ -21,8 +19,6 @@ namespace Microsoft.Docs.Build
             Package? package = null,
             ILanguageServerNotificationListener? notificationListener = null)
         {
-            using var cts = new CancellationTokenSource();
-
             var languageServerPackage = new LanguageServerPackage(
                 new(commandLineOptions.WorkingDirectory),
                 package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
@@ -46,18 +42,11 @@ namespace Microsoft.Docs.Build
                     })
                     .AddOptions()
                     .AddLogging())
-                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
-                .OnExit(_ =>
-                {
-                    cts.Cancel();
-                    return Task.CompletedTask;
-                }));
+                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace))));
 
             var builder = server.GetRequiredService<LanguageServerBuilder>();
 
-            await Task.WhenAll(
-                server.WaitForExit,
-                Task.Run(() => builder.Run(cts.Token)));
+            await Task.Run(() => builder.Run());
         }
     }
 }

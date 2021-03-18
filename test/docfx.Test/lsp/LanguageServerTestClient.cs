@@ -217,6 +217,11 @@ namespace Microsoft.Docs.Build
             Console.WriteLine($"ServerNotificationHandled: {_serverNotificationHandled}");
         }
 
+        void ILanguageServerNotificationListener.OnException(Exception ex)
+        {
+            _notificationSync.TrySetException(ex);
+        }
+
         private JToken ApplyCredentialVariables(JToken @params)
         {
             return TestUtility.ApplyVariables(
@@ -295,7 +300,8 @@ namespace Microsoft.Docs.Build
                     OnNotification();
                 }));
 
-            Task.Run(() => LanguageServerHost.RunLanguageServer(
+            Task.Run(
+                () => LanguageServerHost.RunLanguageServer(
                 new() { Directory = workingDirectory, NoCache = noCache },
                 clientPipe.Reader,
                 serverPipe.Writer,
