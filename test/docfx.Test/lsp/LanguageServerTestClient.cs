@@ -199,7 +199,7 @@ namespace Microsoft.Docs.Build
         {
             var client = await _client.Value;
             await client.client.Shutdown();
-            client.cts.Cancel();
+            // client.cts.Cancel();
         }
 
         void ILanguageServerNotificationListener.OnNotificationSent()
