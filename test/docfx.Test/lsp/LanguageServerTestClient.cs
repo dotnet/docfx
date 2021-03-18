@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationSent;
         private int _clientNotificationReceived;
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
-        private TaskCompletionSource _notificationSync = new(new CancellationTokenSource(20000).Token);
+        private TaskCompletionSource _notificationSync = new();
 
         public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
@@ -238,13 +238,13 @@ namespace Microsoft.Docs.Build
         {
             Interlocked.Increment(ref _clientNotificationSent);
             Console.WriteLine($"ClientNotificationSent: {_clientNotificationSent}");
-            _notificationSync = new TaskCompletionSource(new CancellationTokenSource(20000));
+            _notificationSync = new TaskCompletionSource();
             _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
         }
 
         private Task SynchronizeNotifications()
         {
-            return _notificationSync.Task;
+            return Task.WhenAny(_notificationSync.Task, Task.Delay(20000));
         }
 
         private void OnNotification()
