@@ -11,11 +11,16 @@ namespace Microsoft.Docs.Build
     {
         private readonly List<Error> _items = new();
 
-        public Error this[int index] => _items[index];
-
-        public int Count => _items.Count;
-
-        public override bool HasError => _items.Any(item => item.Level == ErrorLevel.Error);
+        public override bool HasError
+        {
+            get
+            {
+                lock (_items)
+                {
+                    return _items.Any(item => item.Level == ErrorLevel.Error);
+                }
+            }
+        }
 
         public override void Add(Error error)
         {

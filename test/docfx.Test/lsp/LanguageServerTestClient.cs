@@ -44,8 +44,6 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
         private TaskCompletionSource _notificationSync = new();
 
-        private CancellationToken DefaultCancellationToken => new CancellationTokenSource(30000).Token;
-
         public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
             _workingDirectory = workingDirectory;
@@ -183,7 +181,7 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                var (request, response) = await _requestChannel.Reader.ReadAsync(DefaultCancellationToken);
+                var (request, response) = await _requestChannel.Reader.ReadAsync(GetDefaultTimeOutCanellationToken());
 
                 s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
                 response.SetResult(ApplyCredentialVariables(command.Response));
@@ -230,6 +228,9 @@ namespace Microsoft.Docs.Build
             _serverInitializedTcs.TrySetResult();
         }
 
+        private CancellationToken GetDefaultTimeOutCanellationToken()
+            => new CancellationTokenSource(30000).Token;
+
         private JToken ApplyCredentialVariables(JToken @params)
         {
             return TestUtility.ApplyVariables(
@@ -249,7 +250,7 @@ namespace Microsoft.Docs.Build
 
         private async Task SynchronizeNotifications()
         {
-            using (DefaultCancellationToken.Register(() => _notificationSync.TrySetCanceled()))
+            using (GetDefaultTimeOutCanellationToken().Register(() => _notificationSync.TrySetCanceled()))
             {
                 await _notificationSync.Task;
             }
@@ -318,7 +319,7 @@ namespace Microsoft.Docs.Build
                 notificationListener: this,
                 _serverCts.Token)).GetAwaiter();
 
-            await client.Initialize(DefaultCancellationToken);
+            await client.Initialize(GetDefaultTimeOutCanellationToken());
             await _serverInitializedTcs.Task;
             return client;
         }
