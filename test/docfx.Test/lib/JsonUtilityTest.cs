@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             JsonUtility.Serialize(sw, new BasicClass { C = input });
             var json = sw.ToString();
             var (errors, value) = DeserializeWithValidation<BasicClass>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
         }
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
             var (errors, value) = DeserializeWithValidation<BasicClass>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -85,7 +85,7 @@ namespace Microsoft.Docs.Build
             var json = JsonUtility.Serialize(new BasicClass { C = null, });
             Assert.Equal("{\"b\":0,\"d\":false}", json);
             var (errors, value) = DeserializeWithValidation<BasicClass>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal(0, value.B);
             Assert.Null(value.C);
@@ -98,7 +98,7 @@ namespace Microsoft.Docs.Build
         public void TestBoolean(string json, bool expected)
         {
             var (errors, actual) = DeserializeWithValidation<object>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.Equal(expected, actual);
         }
 
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
                 (from i in Enumerable.Range(0, 10)
                  select new BasicClass { B = i, C = $"Good{i}!", D = i % 2 == 0 }).ToList());
             var (errors, values) = DeserializeWithValidation<List<BasicClass>>(json);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
             for (var i = 0; i < values.Count; i++)
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
 }".Replace("\r\n", "\n"),
                 json.Replace("\r\n", "\n"));
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json);
-            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
+            Assert.Empty(errors.ToArray().Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
             var errors = new ErrorList();
             var token = JsonUtility.Parse(errors, json, null);
             _ = JsonUtility.ToObject(errors, token, type);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
         }
 
         [Fact]
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
 ""valueEnum"":""Four""}";
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json);
             Assert.Collection(
-                errors,
+                errors.ToArray(),
                 error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -286,7 +286,7 @@ namespace Microsoft.Docs.Build
 }";
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json);
             Assert.Collection(
-                errors,
+                errors.ToArray(),
                 error =>
             {
                 Assert.Equal(ErrorLevel.Error, error.Level);
@@ -465,7 +465,7 @@ namespace Microsoft.Docs.Build
             string json, ErrorLevel expectedErrorLevel, string expectedErrorCode, int expectedErrorLine, int expectedErrorColumn)
         {
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(json.Replace('\'', '\"'));
-            Assert.Collection(errors, error =>
+            Assert.Collection(errors.ToArray(), error =>
             {
                 Assert.Equal(expectedErrorLevel, error.Level);
                 Assert.Equal(expectedErrorCode, error.Code);
@@ -481,7 +481,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new ErrorList();
             var result = JsonUtility.Parse(errors, json.Replace('\'', '"'), null);
-            Assert.Collection(errors, error =>
+            Assert.Collection(errors.ToArray(), error =>
             {
                 Assert.Equal(errorLevel, error.Level);
                 Assert.Equal(errorCode, error.Code);
