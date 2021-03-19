@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <nullable>disable</nullable>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
