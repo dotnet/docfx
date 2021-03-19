@@ -202,7 +202,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 

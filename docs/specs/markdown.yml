@@ -389,7 +389,6 @@ outputs:
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/a.md","line":4,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/d.md","line":1,"column":1}
-    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
 ---
 # only validate bookmarks when the referenced file existed
 inputs:

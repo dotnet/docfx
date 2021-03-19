@@ -592,3 +592,13 @@ nettrace
 speedscope
 dns
 middleware
+allowfullscreen
+bgcolor
+bordercolor
+cellpadding
+cellspacing
+hspace
+marginwidth
+nowrap
+scrolling
+valign
