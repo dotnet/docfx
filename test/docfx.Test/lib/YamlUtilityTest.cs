@@ -25,7 +25,7 @@ namespace Microsoft.Docs.Build
         {
             var yaml = $"c: \"{input}\"";
             var (errors, value) = DeserializeWithValidation<BasicClass>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
         }
@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         {
             var yaml = $"c: {input}";
             var (errors, value) = DeserializeWithValidation<BasicClass>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal(expected.Replace("\r\n", "\n"), value.C.Replace("\r\n", "\n"));
         }
@@ -72,7 +72,7 @@ namespace Microsoft.Docs.Build
         public void TestBigInteger(string yaml, object expected)
         {
             var (errors, actual) = DeserializeWithValidation<object>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.Equal(expected, actual);
         }
 
@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         {
             var yaml = "a: 123,456";
             var (errors, value) = DeserializeWithValidation<Dictionary<string, object>>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal("123,456", value["a"]);
         }
@@ -116,7 +116,7 @@ c: Good!
 d: true
 ";
             var (errors, value) = DeserializeWithValidation<BasicClass>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good!", value.C);
@@ -133,7 +133,7 @@ d: true
         public void TestBoolean(string yaml, bool expected)
         {
             var (errors, actual) = DeserializeWithValidation<object>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.Equal(expected, actual);
         }
 
@@ -145,7 +145,7 @@ d: true
         public void TestNull(string yaml)
         {
             var (errors, _) = DeserializeWithValidation<object>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
         }
 
         [Theory]
@@ -158,7 +158,7 @@ d: true
         public void TestSpecialDouble(string yaml, object expected)
         {
             var (errors, value) = DeserializeWithValidation<object>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.Equal(value, expected);
         }
 
@@ -206,7 +206,7 @@ d: true
   d: true
 ";
             var (errors, values) = DeserializeWithValidation<List<BasicClass>>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
             Assert.NotNull(values);
             Assert.Equal(10, values.Count);
             for (var i = 0; i < values.Count; i++)
@@ -239,7 +239,7 @@ valueBasic:
 valueRequired: a
 ";
             var (errors, value) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
-            Assert.Empty(errors.Where(error => error.Level == ErrorLevel.Error));
+            Assert.Empty(errors.ToArray().Where(error => error.Level == ErrorLevel.Error));
             Assert.NotNull(value);
             Assert.Equal(1, value.B);
             Assert.Equal("Good1!", value.C);
@@ -261,7 +261,7 @@ valueRequired: a
         {
             var yaml = "";
             var (errors, _) = DeserializeWithValidation<ClassWithMoreMembers>(yaml);
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
         }
 
         [Fact]
@@ -274,7 +274,7 @@ Key1: 1
             var errors = new ErrorList();
             var result = YamlUtility.Parse(errors, yaml, null);
             Assert.Collection(
-                errors,
+                errors.ToArray(),
                 e => Assert.Equal("Key 'Key1' is already defined, remove the duplicate key.", e.Message));
             Assert.Equal("1", result.Value<string>("Key1"));
         }
@@ -290,7 +290,7 @@ items:
         {
             var errors = new ErrorList();
             var value = YamlUtility.Parse(errors, yaml, new FilePath("file"));
-            Assert.Empty(errors);
+            Assert.Empty(errors.ToArray());
 
             // Get the first JValue of the first JProperty if any
             var source = JsonUtility.GetSourceInfo(value.Children().Any() ? value.Children().First().Children().First() : value);
