@@ -181,7 +181,7 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                var (request, response) = await _requestChannel.Reader.ReadAsync(GetDefaultTimeOutCanellationToken());
+                var (request, response) = await _requestChannel.Reader.ReadAsync(CancelAfterTimeout());
 
                 s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
                 response.SetResult(ApplyCredentialVariables(command.Response));
@@ -228,7 +228,7 @@ namespace Microsoft.Docs.Build
             _serverInitializedTcs.TrySetResult();
         }
 
-        private CancellationToken GetDefaultTimeOutCanellationToken()
+        private CancellationToken CancelAfterTimeout()
             => new CancellationTokenSource(30000).Token;
 
         private JToken ApplyCredentialVariables(JToken @params)
@@ -250,7 +250,7 @@ namespace Microsoft.Docs.Build
 
         private async Task SynchronizeNotifications()
         {
-            using (GetDefaultTimeOutCanellationToken().Register(() => _notificationSync.TrySetCanceled()))
+            using (CancelAfterTimeout().Register(() => _notificationSync.TrySetCanceled()))
             {
                 await _notificationSync.Task;
             }
@@ -319,7 +319,7 @@ namespace Microsoft.Docs.Build
                 notificationListener: this,
                 _serverCts.Token)).GetAwaiter();
 
-            await client.Initialize(GetDefaultTimeOutCanellationToken());
+            await client.Initialize(CancelAfterTimeout());
             await _serverInitializedTcs.Task;
             return client;
         }
