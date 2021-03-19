@@ -71,14 +71,16 @@ namespace Microsoft.Docs.Build
                             });
                         options.OnUnhandledException = (e) =>
                         {
-                            Console.Write($"[] exception throwed {e}");
+                            Console.Write($"[LanguageServerHost unhandled] Unexpected exception: {e}");
                         };
                     },
                     cancellationToken);
 
                 var builder = server.GetRequiredService<LanguageServerBuilder>();
 
-                await Task.Run(() => builder.Run(cancellationToken), cancellationToken);
+                await Task.WhenAll(
+                    server.WaitForExit,
+                    Task.Run(() => builder.Run(cancellationToken), cancellationToken));
             }
             catch (Exception ex)
             {
