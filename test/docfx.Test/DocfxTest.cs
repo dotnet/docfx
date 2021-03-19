@@ -274,7 +274,7 @@ namespace Microsoft.Docs.Build
 
             File.WriteAllLines(
                 Path.Combine(outputPath, ".errors.log"),
-                errors.Select(error => error with { MessageArguments = null }).Distinct().Select(error => error.ToString()));
+                errors.ToArray().Select(error => error with { MessageArguments = null }).Distinct().Select(error => error.ToString()));
         }
 
         private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)

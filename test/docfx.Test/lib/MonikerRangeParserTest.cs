@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
         {
             var errors = new ErrorList();
             _monikerRangeParser.Parse(errors, new SourceInfo<string>(rangeString));
-            Assert.Contains(errorMessage, errors.Select(x => x.Message));
+            Assert.Contains(errorMessage, errors.ToArray().Select(x => x.Message));
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace Microsoft.Docs.Build
             var errors = new ErrorList();
             var monikerRangeParser = new MonikerRangeParser(new MonikerDefinitionModel());
             monikerRangeParser.Parse(errors, new SourceInfo<string>("netcore-1.0"));
-            Assert.Collection(errors, error =>
+            Assert.Collection(errors.ToArray(), error =>
             {
                 Assert.Equal("moniker-range-invalid", error.Code);
                 Assert.Equal("Invalid moniker range: 'netcore-1.0'. Moniker 'netcore-1.0' is not defined.", error.Message);

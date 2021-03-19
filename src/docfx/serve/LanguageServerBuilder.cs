@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             _buildChannel.Writer.TryWrite(true);
         }
 
-        public async void Run(CancellationToken cancellationToken = default)
+        public async Task Run(CancellationToken cancellationToken = default)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -88,6 +88,7 @@ namespace Microsoft.Docs.Build
                 catch (Exception ex)
                 {
                     _logger.LogCritical(ex, "Failed to handle build request");
+                    _notificationListener.OnException(ex);
                     Telemetry.TrackException(ex);
                 }
                 finally
@@ -130,7 +131,7 @@ namespace Microsoft.Docs.Build
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
-            var diagnosticsGroupByFile = from error in errors
+            var diagnosticsGroupByFile = from error in errors.ToArray()
                                          let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
@@ -151,12 +152,16 @@ namespace Microsoft.Docs.Build
 
         private static Diagnostic ConvertToDiagnostics(Error error, SourceInfo source)
         {
+            var documentUrl = error.DocumentUrl ?? "https://review.docs.microsoft.com/en-us/help/contribute/validation-ref/doc-not-available?branch=main";
             return new Diagnostic
             {
                 Range = new(
                      new(ConvertLocation(source.Line), ConvertLocation(source.Column)),
                      new(ConvertLocation(source.EndLine), ConvertLocation(source.EndColumn))),
                 Code = error.Code,
+                CodeDescription = Uri.TryCreate(documentUrl, UriKind.Absolute, out var href)
+                    ? new() { Href = href }
+                    : null,
                 Source = "Docs Validation",
                 Severity = error.Level switch
                 {

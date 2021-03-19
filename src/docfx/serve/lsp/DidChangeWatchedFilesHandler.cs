@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
@@ -64,16 +63,13 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
-        DidChangeWatchedFilesRegistrationOptions IRegistration<DidChangeWatchedFilesRegistrationOptions>.GetRegistrationOptions()
+        public DidChangeWatchedFilesRegistrationOptions GetRegistrationOptions(
+            DidChangeWatchedFilesCapability capability, ClientCapabilities clientCapabilities)
         {
-            return new DidChangeWatchedFilesRegistrationOptions()
+            return new()
             {
                 Watchers = _watcher,
             };
-        }
-
-        public void SetCapability(DidChangeWatchedFilesCapability capability)
-        {
         }
     }
 }
