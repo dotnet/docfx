@@ -55,12 +55,10 @@ namespace Microsoft.Docs.Build
                 },
                 cancellationToken);
 
-            var builder = server.GetRequiredService<LanguageServerBuilder>();
-
             await server.WasStarted;
             notificationListener?.OnInitialized();
 
-            await Task.Run(() => builder.Run(cancellationToken), cancellationToken);
+            await server.GetRequiredService<LanguageServerBuilder>().Run(cancellationToken);
         }
     }
 }

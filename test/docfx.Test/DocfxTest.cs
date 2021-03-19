@@ -75,8 +75,7 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("OS not supported");
             }
 
-            var lockKey = test.FilePath.Contains("lsp.yml") ? test.FilePath : $"{test.FilePath}-{test.Ordinal:D2}";
-            lock (s_locks.GetOrAdd(lockKey, _ => new object()))
+            lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
                 var (docsetPath, appDataPath, outputPath, repos, package) = CreateDocset(test, spec);
 
@@ -275,7 +274,7 @@ namespace Microsoft.Docs.Build
 
             File.WriteAllLines(
                 Path.Combine(outputPath, ".errors.log"),
-                errors.Select(error => error with { MessageArguments = null }).Distinct().Select(error => error.ToString()));
+                errors.ToArray().Select(error => error with { MessageArguments = null }).Distinct().Select(error => error.ToString()));
         }
 
         private static void VerifyOutput(string outputPath, Dictionary<string, string> outputs)

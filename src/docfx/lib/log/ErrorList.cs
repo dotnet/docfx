@@ -2,19 +2,16 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
-    internal class ErrorList : ErrorBuilder, IReadOnlyList<Error>
+    internal class ErrorList : ErrorBuilder
     {
-        private readonly object _lock = new();
-
         private readonly List<Error> _items = new();
 
-        public Error this[int index] => _items.ToArray()[index];
+        public Error this[int index] => _items[index];
 
         public int Count => _items.Count;
 
@@ -22,7 +19,7 @@ namespace Microsoft.Docs.Build
 
         public override void Add(Error error)
         {
-            lock (_lock)
+            lock (_items)
             {
                 _items.Add(error);
             }
@@ -30,8 +27,12 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => throw new NotSupportedException();
 
-        public IEnumerator<Error> GetEnumerator() => _items.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
+        public Error[] ToArray()
+        {
+            lock (_items)
+            {
+                return _items.ToArray();
+            }
+        }
     }
 }

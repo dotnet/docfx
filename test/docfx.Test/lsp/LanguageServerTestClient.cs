@@ -28,7 +28,6 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
 
         private readonly string _workingDirectory;
-        private readonly CancellationTokenSource _clientCts = new(30000);
         private readonly CancellationTokenSource _serverCts = new();
         private readonly Lazy<Task<ILanguageClient>> _client;
         private readonly TaskCompletionSource _serverInitializedTcs = new();
@@ -44,6 +43,8 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationReceived;
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
         private TaskCompletionSource _notificationSync = new();
+
+        private CancellationToken DefaultCancellationToken => new CancellationTokenSource(30000).Token;
 
         public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
@@ -182,7 +183,7 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                var (request, response) = await _requestChannel.Reader.ReadAsync(_clientCts.Token);
+                var (request, response) = await _requestChannel.Reader.ReadAsync(DefaultCancellationToken);
 
                 s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
                 response.SetResult(ApplyCredentialVariables(command.Response));
@@ -248,7 +249,7 @@ namespace Microsoft.Docs.Build
 
         private async Task SynchronizeNotifications()
         {
-            using (_clientCts.Token.Register(() => _notificationSync.TrySetCanceled()))
+            using (DefaultCancellationToken.Register(() => _notificationSync.TrySetCanceled()))
             {
                 await _notificationSync.Task;
             }
@@ -317,8 +318,7 @@ namespace Microsoft.Docs.Build
                 notificationListener: this,
                 _serverCts.Token)).GetAwaiter();
 
-            await client.Initialize(_clientCts.Token);
-
+            await client.Initialize(DefaultCancellationToken);
             await _serverInitializedTcs.Task;
             return client;
         }

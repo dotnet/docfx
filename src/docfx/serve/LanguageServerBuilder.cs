@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
             _buildChannel.Writer.TryWrite(true);
         }
 
-        public async void Run(CancellationToken cancellationToken = default)
+        public async Task Run(CancellationToken cancellationToken = default)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -131,7 +131,7 @@ namespace Microsoft.Docs.Build
         private void PublishDiagnosticsParams(ErrorList errors, IEnumerable<PathString> filesToBuild)
         {
             List<PathString> filesWithDiagnostics = new();
-            var diagnosticsGroupByFile = from error in errors
+            var diagnosticsGroupByFile = from error in errors.ToArray()
                                          let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                          let diagnostic = ConvertToDiagnostics(error, source)
                                          group diagnostic by source.File;
