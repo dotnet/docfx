@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
 
         private readonly string _workingDirectory;
-        private readonly CancellationTokenSource _clientCts = new(10000);
+        private readonly CancellationTokenSource _clientCts = new(30000);
         private readonly CancellationTokenSource _serverCts = new();
         private readonly Lazy<Task<ILanguageClient>> _client;
         private readonly TaskCompletionSource _serverInitializedTcs = new();
