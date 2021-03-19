@@ -6,7 +6,7 @@ using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 
 namespace Microsoft.Docs.Build
 {

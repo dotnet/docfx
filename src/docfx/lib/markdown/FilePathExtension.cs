@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Markdig;
 using Markdig.Syntax;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 
 namespace Microsoft.Docs.Build
 {

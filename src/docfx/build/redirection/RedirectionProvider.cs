@@ -298,6 +298,7 @@ namespace Microsoft.Docs.Build
                 // Convert the redirection target from redirect url to file path according to the version of redirect source
                 var renameHistory = new Dictionary<FilePath, FilePath>();
                 var redirectionHistory = new Dictionary<FilePath, (FilePath, SourceInfo?)>();
+                var redirectionUrlConflict = new Dictionary<FilePath, List<RedirectionItem>>();
                 var redirectUrls = _redirects.Value.urls;
 
                 foreach (var item in _redirects.Value.items)
@@ -334,10 +335,28 @@ namespace Microsoft.Docs.Build
 
                     foreach (var candidate in candidates)
                     {
-                        if (item.RedirectDocumentId && !renameHistory.TryAdd(candidate, file))
+                        if (item.RedirectDocumentId)
                         {
-                            _errors.Add(Errors.Redirection.RedirectionUrlConflict(item.RedirectUrl));
+                            renameHistory.TryAdd(candidate, file);
+                            if (redirectionUrlConflict.TryGetValue(candidate, out var redirectionItems))
+                            {
+                                redirectionItems.Add(item);
+                            }
+                            else
+                            {
+                                redirectionUrlConflict[candidate] = new List<RedirectionItem> { item };
+                            }
                         }
+                    }
+                }
+                foreach (var list in redirectionUrlConflict.Values)
+                {
+                    if (list.Count > 1)
+                    {
+                        _errors.Add(Errors.Redirection.RedirectionUrlConflict(
+                            list.First().RedirectUrl,
+                            list.Select(i => i.RedirectUrl.Source?.File.Path ?? default).Distinct(),
+                            list.Select(i => i.SourcePath)));
                     }
                 }
                 return (renameHistory, redirectionHistory);

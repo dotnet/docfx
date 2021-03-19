@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
             var operation = Telemetry.StartOperation("build");
             using var errors = new ErrorWriter(options.Log);
 
-            var files = options.Files?.Select(Path.GetFullPath).ToArray();
+            var files = options.File?.Select(Path.GetFullPath).ToArray();
 
             package ??= new LocalPackage(options.WorkingDirectory);
 

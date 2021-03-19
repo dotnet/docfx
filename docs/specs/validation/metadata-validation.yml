@@ -379,3 +379,76 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
 ---
+# Json schema product taxonomy
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { 
+      "required": ["products"],
+      "properties": { 
+        "products": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "azure",
+                    "azure-active-directory",
+                    "azure-active-directory-b2c",
+                  ]
+            }
+        }
+      },
+      "rules": {
+          "products": {
+            "missing-attribute": {
+                "severity": "suggestion",
+                "code": "products-missing",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            },
+            "invalid-paired-attribute": {
+                "severity": "suggestion",
+                "code": "products-invalid",
+                "additionalMessage": "Ensure all products values specified are valid per the Product taxonomy.",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            },
+            "invalid-value": {
+                "severity": "suggestion",
+                "code": "products-invalid",
+                "additionalMessage": "Ensure all products values specified are valid per the Product taxonomy.",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            },
+            "unexpected-type": {
+                "severity": "suggestion",
+                "code": "multiple-values",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            }
+        }
+      }
+    }
+  a.md: |
+    ---
+    products: 
+      - a
+      - azure
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"products-invalid","message":"Invalid value for 'products': 'a'. Ensure all products values specified are valid per the Product taxonomy.","file":"a.md","line":3,"column":5}
+---
