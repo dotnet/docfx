@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.General;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
 
 namespace Microsoft.Docs.Build
@@ -19,45 +19,51 @@ namespace Microsoft.Docs.Build
             PipeReader input,
             PipeWriter output,
             Package? package = null,
-            ILanguageServerNotificationListener? notificationListener = null)
+            ILanguageServerNotificationListener? notificationListener = null,
+            CancellationToken cancellationToken = default)
         {
-            using var cts = new CancellationTokenSource();
+                var languageServerPackage = new LanguageServerPackage(
+                    new(commandLineOptions.WorkingDirectory),
+                    package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
 
-            var languageServerPackage = new LanguageServerPackage(
-                new(commandLineOptions.WorkingDirectory),
-                package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
-
-            var server = await LanguageServer.From(options => options
-                .WithInput(input)
-                .WithOutput(output)
-                .ConfigureLogging(x => x.AddLanguageProtocolLogging())
-                .WithHandler<TextDocumentHandler>()
-                .WithHandler<DidChangeWatchedFilesHandler>()
-                .WithServices(services => services
-                    .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
-                    .AddSingleton(languageServerPackage)
-                    .AddSingleton(commandLineOptions)
-                    .AddSingleton<DiagnosticPublisher>()
-                    .AddSingleton<LanguageServerCredentialProvider>()
-                    .AddSingleton<LanguageServerBuilder>()
-                    .AddSingleton(new ConfigurationItem
+                var server = await LanguageServer.From(
+                    options =>
                     {
-                        Section = "docfxLanguageServer",
-                    })
-                    .AddOptions()
-                    .AddLogging())
-                .WithServices(x => x.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace)))
-                .OnExit(_ =>
-                {
-                    cts.Cancel();
-                    return Task.CompletedTask;
-                }));
+                        options
+                            .WithInput(input)
+                            .WithOutput(output)
+                            .ConfigureLogging(x => x.AddLanguageProtocolLogging().SetMinimumLevel(LogLevel.Trace))
+                            .WithHandler<TextDocumentHandler>()
+                            .WithHandler<DidChangeWatchedFilesHandler>()
+                            .WithServices(services => services
+                                .AddSingleton(notificationListener ?? new LanguageServerNotificationListener())
+                                .AddSingleton(languageServerPackage)
+                                .AddSingleton(commandLineOptions)
+                                .AddSingleton<DiagnosticPublisher>()
+                                .AddSingleton<LanguageServerCredentialProvider>()
+                                .AddSingleton<LanguageServerBuilder>()
+                                .AddSingleton(new ConfigurationItem
+                                {
+                                    Section = "docfxLanguageServer",
+                                })
+                                .AddOptions()
+                                .AddLogging())
+                            .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
+                            {
+                                notificationListener?.OnInitialized();
+                                return Task.CompletedTask;
+                            });
+                        options.OnUnhandledException = (e) =>
+                        {
+                            notificationListener?.OnException(e);
+                            Telemetry.TrackException(e);
+                        };
+                    },
+                    cancellationToken);
 
-            var builder = server.GetRequiredService<LanguageServerBuilder>();
+                var builder = server.GetRequiredService<LanguageServerBuilder>();
 
-            await Task.WhenAll(
-                server.WaitForExit,
-                Task.Run(() => builder.Run(cts.Token)));
+                await Task.Run(() => builder.Run(cancellationToken), cancellationToken);
         }
     }
 }

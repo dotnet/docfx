@@ -28,7 +28,10 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
 
         private readonly string _workingDirectory;
+        private readonly CancellationTokenSource _clientCts = new(10000);
+        private readonly CancellationTokenSource _serverCts = new();
         private readonly Lazy<Task<ILanguageClient>> _client;
+        private readonly TaskCompletionSource _serverInitializedTcs = new();
         private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
@@ -40,7 +43,7 @@ namespace Microsoft.Docs.Build
         private int _clientNotificationSent;
         private int _clientNotificationReceived;
         private int _clientNotificationReceivedBeforeSync; // For expectNoNotification
-        private TaskCompletionSource _notificationSync = new TaskCompletionSource();
+        private TaskCompletionSource _notificationSync = new();
 
         public LanguageServerTestClient(string workingDirectory, Package package, bool noCache)
         {
@@ -179,7 +182,7 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                var (request, response) = await _requestChannel.Reader.ReadAsync();
+                var (request, response) = await _requestChannel.Reader.ReadAsync(_clientCts.Token);
 
                 s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
                 response.SetResult(ApplyCredentialVariables(command.Response));
@@ -199,6 +202,7 @@ namespace Microsoft.Docs.Build
         {
             var client = await _client.Value;
             await client.Shutdown();
+            _serverCts.Cancel();
         }
 
         void ILanguageServerNotificationListener.OnNotificationSent()
@@ -213,6 +217,16 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
+        }
+
+        void ILanguageServerNotificationListener.OnException(Exception ex)
+        {
+            _notificationSync.TrySetException(ex);
+        }
+
+        void ILanguageServerNotificationListener.OnInitialized()
+        {
+            _serverInitializedTcs.TrySetResult();
         }
 
         private JToken ApplyCredentialVariables(JToken @params)
@@ -232,9 +246,12 @@ namespace Microsoft.Docs.Build
             _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
         }
 
-        private Task SynchronizeNotifications()
+        private async Task SynchronizeNotifications()
         {
-            return _notificationSync.Task;
+            using (_clientCts.Token.Register(() => _notificationSync.TrySetCanceled()))
+            {
+                await _notificationSync.Task;
+            }
         }
 
         private void OnNotification()
@@ -272,7 +289,8 @@ namespace Microsoft.Docs.Build
                 })
                 .OnLogMessage(message =>
                 {
-                    if (message.Type == MessageType.Error)
+                    Console.WriteLine($"[LanguageServerTestClient] on message: (${message.Type}){message.Message}");
+                    if (message.Type == MessageType.Error || message.Type == MessageType.Warning)
                     {
                         _notificationSync.TrySetException(new InvalidOperationException(message.Message));
                     }
@@ -290,15 +308,18 @@ namespace Microsoft.Docs.Build
                     OnNotification();
                 }));
 
-            Task.Run(() => LanguageServerHost.RunLanguageServer(
+            Task.Run(
+                () => LanguageServerHost.RunLanguageServer(
                 new() { Directory = workingDirectory, NoCache = noCache },
                 clientPipe.Reader,
                 serverPipe.Writer,
                 package,
-                notificationListener: this)).GetAwaiter();
+                notificationListener: this,
+                _serverCts.Token)).GetAwaiter();
 
-            await client.Initialize(default);
+            await client.Initialize(_clientCts.Token);
 
+            await _serverInitializedTcs.Task;
             return client;
         }
 
