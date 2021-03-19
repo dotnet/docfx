@@ -173,6 +173,11 @@ inputs:
 outputs:
   a.json: |
     {"markdown":"<h1 id=\"h1\">h1</h1><div></div>"}
+  .errors.log: |
+    {"code": "disallowed-html-tag", "message": "*script*", "line": 3 }
+    {"code": "disallowed-html-tag", "message": "*link*", "line": 4 }
+    {"code": "disallowed-html-attribute","message": "*style*", "line": 5 }
+    {"code": "disallowed-html-tag", "message": "*style*", "line": 6 }
 ---
 # Loc build uses localized template with naming convention
 locale: zh-cn
