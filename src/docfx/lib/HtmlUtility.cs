@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
             { "address", null },
             { "article", null },
             { "b", null },
+            { "button", new(StringComparer.OrdinalIgnoreCase) { "hidden", "type" } },
             { "bdi", null },
             { "bdo", null },
             { "blockquote", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
@@ -63,8 +64,8 @@ namespace Microsoft.Docs.Build
             { "em", null },
             { "figcaption", null },
             { "figure", null },
-            { "font", null },
-            { "form", null },
+            { "font", new(StringComparer.OrdinalIgnoreCase) { "color", "face", "size" } },
+            { "form", new(StringComparer.OrdinalIgnoreCase) { "action" } },
             { "h1", null },
             { "h2", null },
             { "h3", null },
@@ -75,13 +76,16 @@ namespace Microsoft.Docs.Build
             {
                 "iframe", new(StringComparer.OrdinalIgnoreCase)
                 {
-                    "allow", "align", "border", "marginwidth", "frameborder", "allowtransparency", "allowfullscreen", "scrolling", "height", "src", "width",
+                    "allow", "align", "border", "marginwidth", "frameborder", "allowtransparency",
+                    "allowfullscreen", "scrolling", "height", "src", "width", "loading",
                 }
             },
             { "image", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width" } },
             { "img", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align", "hspace", "border", "sizes", "valign" } },
+            { "input", new(StringComparer.OrdinalIgnoreCase) { "type", "value" } },
             { "ins", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
             { "kbd", null },
+            { "label", new(StringComparer.OrdinalIgnoreCase) { "for" } },
             { "li", new(StringComparer.OrdinalIgnoreCase) { "value" } },
             { "mark", null },
             { "nav", null },
