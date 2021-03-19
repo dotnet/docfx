@@ -24,10 +24,6 @@ namespace Microsoft.Docs.Build
             ILanguageServerNotificationListener? notificationListener = null,
             CancellationToken cancellationToken = default)
         {
-            try
-            {
-                Console.WriteLine($"[LanguageServerHost] Start to run ({commandLineOptions.WorkingDirectory})");
-
                 var languageServerPackage = new LanguageServerPackage(
                     new(commandLineOptions.WorkingDirectory),
                     package ?? new LocalPackage(commandLineOptions.WorkingDirectory));
@@ -54,38 +50,22 @@ namespace Microsoft.Docs.Build
                                 })
                                 .AddOptions()
                                 .AddLogging())
-                            .OnInitialize((ILanguageServer server, InitializeParams request, CancellationToken cancellationToken) =>
-                            {
-                                Console.WriteLine($"[LanguageServerHost] Server receive intialize request ({commandLineOptions.WorkingDirectory})");
-                                return Task.CompletedTask;
-                            })
                             .OnInitialized((ILanguageServer server, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
                             {
-                                Console.WriteLine($"[LanguageServerHost] Server initialized ({commandLineOptions.WorkingDirectory})");
-                                return Task.CompletedTask;
-                            })
-                            .OnExit(_ =>
-                            {
-                                Console.WriteLine("Server exit");
+                                notificationListener?.OnInitialized();
                                 return Task.CompletedTask;
                             });
                         options.OnUnhandledException = (e) =>
                         {
-                            Console.Write($"[LanguageServerHost unhandled] Unexpected exception: {e}");
+                            notificationListener?.OnException(e);
+                            Telemetry.TrackException(e);
                         };
                     },
                     cancellationToken);
 
                 var builder = server.GetRequiredService<LanguageServerBuilder>();
 
-                await Task.WhenAll(
-                    server.WaitForExit,
-                    Task.Run(() => builder.Run(cancellationToken), cancellationToken));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[LanguageServerHost] Unexpected exception: {ex}");
-            }
+                await Task.Run(() => builder.Run(cancellationToken), cancellationToken);
         }
     }
 }

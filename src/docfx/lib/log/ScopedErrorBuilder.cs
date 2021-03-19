@@ -22,9 +22,6 @@ namespace Microsoft.Docs.Build
 
         public override bool FileHasError(FilePath file) => EnsureValue.FileHasError(file);
 
-        public override void Add(Error error) => Watcher.Write(() =>
-        {
-            EnsureValue.Add(error);
-        });
+        public override void Add(Error error) => Watcher.Write(() => EnsureValue.Add(error));
     }
 }

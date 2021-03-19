@@ -75,8 +75,7 @@ namespace Microsoft.Docs.Build
                 throw new TestSkippedException("OS not supported");
             }
 
-            var lockKey = test.FilePath.Contains("lsp.yml") ? test.FilePath : $"{test.FilePath}-{test.Ordinal:D2}";
-            lock (s_locks.GetOrAdd(lockKey, _ => new object()))
+            lock (s_locks.GetOrAdd($"{test.FilePath}-{test.Ordinal:D2}", _ => new object()))
             {
                 var (docsetPath, appDataPath, outputPath, repos, package) = CreateDocset(test, spec);
 
@@ -197,18 +196,11 @@ namespace Microsoft.Docs.Build
 
         private static async Task RunLanguageServer(string docsetPath, DocfxTestSpec spec, Package package)
         {
-            try
-            {
-                await using var client = new LanguageServerTestClient(docsetPath, package, spec.NoCache);
+            await using var client = new LanguageServerTestClient(docsetPath, package, spec.NoCache);
 
-                foreach (var command in spec.LanguageServer)
-                {
-                    await client.ProcessCommand(command);
-                }
-            }
-            catch (Exception ex)
+            foreach (var command in spec.LanguageServer)
             {
-                Console.WriteLine($"[DocfxTest] Unexpected exception: {ex}");
+                await client.ProcessCommand(command);
             }
         }
 

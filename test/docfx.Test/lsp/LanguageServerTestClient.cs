@@ -28,7 +28,10 @@ namespace Microsoft.Docs.Build
         private static readonly JsonDiff s_languageServerJsonDiff = CreateLanguageServerJsonDiff();
 
         private readonly string _workingDirectory;
-        private readonly Lazy<Task<(CancellationTokenSource cts, ILanguageClient client)>> _client;
+        private readonly CancellationTokenSource _clientCts = new(10000);
+        private readonly CancellationTokenSource _serverCts = new();
+        private readonly Lazy<Task<ILanguageClient>> _client;
+        private readonly TaskCompletionSource _serverInitializedTcs = new();
         private readonly Package _package;
 
         private readonly ConcurrentDictionary<string, JToken> _diagnostics = new();
@@ -51,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public async Task ProcessCommand(LanguageServerTestCommand command)
         {
-            var client = (await _client.Value).client;
+            var client = await _client.Value;
 
             if (command.OpenFiles != null)
             {
@@ -179,7 +182,7 @@ namespace Microsoft.Docs.Build
             }
             else if (command.ExpectGetCredentialRequest != null)
             {
-                var (request, response) = await _requestChannel.Reader.ReadAsync(new CancellationTokenSource(20000).Token);
+                var (request, response) = await _requestChannel.Reader.ReadAsync(_clientCts.Token);
 
                 s_languageServerJsonDiff.Verify(command.ExpectGetCredentialRequest, request);
                 response.SetResult(ApplyCredentialVariables(command.Response));
@@ -198,15 +201,13 @@ namespace Microsoft.Docs.Build
         public async ValueTask DisposeAsync()
         {
             var client = await _client.Value;
-            await client.client.Shutdown();
-            Console.WriteLine($"Client exited: {_workingDirectory}");
-            client.cts.Cancel();
+            await client.Shutdown();
+            _serverCts.Cancel();
         }
 
         void ILanguageServerNotificationListener.OnNotificationSent()
         {
             Interlocked.Increment(ref _serverNotificationSent);
-            Console.WriteLine($"ServerNotificationSent: {_serverNotificationSent}");
         }
 
         void ILanguageServerNotificationListener.OnNotificationHandled()
@@ -216,12 +217,16 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
-            Console.WriteLine($"ServerNotificationHandled: {_serverNotificationHandled}");
         }
 
         void ILanguageServerNotificationListener.OnException(Exception ex)
         {
             _notificationSync.TrySetException(ex);
+        }
+
+        void ILanguageServerNotificationListener.OnInitialized()
+        {
+            _serverInitializedTcs.TrySetResult();
         }
 
         private JToken ApplyCredentialVariables(JToken @params)
@@ -237,14 +242,16 @@ namespace Microsoft.Docs.Build
         private void BeforeSendNotification()
         {
             Interlocked.Increment(ref _clientNotificationSent);
-            Console.WriteLine($"ClientNotificationSent: {_clientNotificationSent}");
             _notificationSync = new TaskCompletionSource();
             _clientNotificationReceivedBeforeSync = _clientNotificationReceived;
         }
 
-        private Task SynchronizeNotifications()
+        private async Task SynchronizeNotifications()
         {
-            return Task.WhenAny(_notificationSync.Task, Task.Delay(20000));
+            using (_clientCts.Token.Register(() => _notificationSync.TrySetCanceled()))
+            {
+                await _notificationSync.Task;
+            }
         }
 
         private void OnNotification()
@@ -254,7 +261,6 @@ namespace Microsoft.Docs.Build
             {
                 _notificationSync.TrySetResult();
             }
-            Console.WriteLine($"ClientNotificationReceived: {_clientNotificationReceived}");
         }
 
         private DocumentUri ToUri(string file)
@@ -268,74 +274,53 @@ namespace Microsoft.Docs.Build
             return path is null ? uri.ToString() : PathUtility.NormalizeFile(Path.GetRelativePath(_workingDirectory, path));
         }
 
-        private async Task<(CancellationTokenSource, ILanguageClient)> InitializeClient(string workingDirectory, Package package, bool noCache)
+        private async Task<ILanguageClient> InitializeClient(string workingDirectory, Package package, bool noCache)
         {
-            try
-            {
-                Console.WriteLine($"[LanguageServerTestClient] Start to initialize the client ({_workingDirectory})");
-                var clientPipe = new Pipe();
-                var serverPipe = new Pipe();
-                var cts = new CancellationTokenSource();
-                var tcs = new TaskCompletionSource(new CancellationTokenSource(20000).Token);
+            var clientPipe = new Pipe();
+            var serverPipe = new Pipe();
 
-                var client = LanguageClient.Create(options => options
-                    .WithInput(serverPipe.Reader)
-                    .WithOutput(clientPipe.Writer)
-                    .WithCapability(new WorkspaceEditCapability()
+            var client = LanguageClient.Create(options => options
+                .WithInput(serverPipe.Reader)
+                .WithOutput(clientPipe.Writer)
+                .WithCapability(new WorkspaceEditCapability()
+                {
+                    DocumentChanges = true,
+                    FailureHandling = FailureHandlingKind.Undo,
+                })
+                .OnLogMessage(message =>
+                {
+                    Console.WriteLine($"[LanguageServerTestClient] on message: (${message.Type}){message.Message}");
+                    if (message.Type == MessageType.Error || message.Type == MessageType.Warning)
                     {
-                        DocumentChanges = true,
-                        FailureHandling = FailureHandlingKind.Undo,
-                    })
-                    .OnInitialized((ILanguageClient client, InitializeParams request, InitializeResult response, CancellationToken cancellationToken) =>
-                    {
-                        tcs.TrySetResult();
-                        return Task.CompletedTask;
-                    })
-                    .OnLogMessage(message =>
-                    {
-                        Console.WriteLine($"[LanguageServerTestClient] on message: (${message.Type}){message.Message}");
-                        if (message.Type == MessageType.Error || message.Type == MessageType.Warning)
-                        {
-                            _notificationSync.TrySetException(new InvalidOperationException(message.Message));
-                        }
-                    })
-                    .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
-                    {
-                        var response = new TaskCompletionSource<JToken>();
-                        _requestChannel.Writer.TryWrite((JToken.Parse(JsonUtility.Serialize(@params)), response));
+                        _notificationSync.TrySetException(new InvalidOperationException(message.Message));
+                    }
+                })
+                .OnRequest("docfx/getCredential", async (GetCredentialParams @params) =>
+                {
+                    var response = new TaskCompletionSource<JToken>();
+                    _requestChannel.Writer.TryWrite((JToken.Parse(JsonUtility.Serialize(@params)), response));
 
-                        return await response.Task;
-                    })
-                    .OnPublishDiagnostics(item =>
-                    {
-                        _diagnostics[ToFile(item.Uri)] = JToken.FromObject(item.Diagnostics, JsonUtility.Serializer);
-                        OnNotification();
-                    }));
+                    return await response.Task;
+                })
+                .OnPublishDiagnostics(item =>
+                {
+                    _diagnostics[ToFile(item.Uri)] = JToken.FromObject(item.Diagnostics, JsonUtility.Serializer);
+                    OnNotification();
+                }));
 
-                Task.Run(
-                    () => LanguageServerHost.RunLanguageServer(
-                    new() { Directory = workingDirectory, NoCache = noCache },
-                    clientPipe.Reader,
-                    serverPipe.Writer,
-                    package,
-                    notificationListener: this,
-                    cts.Token)).GetAwaiter();
+            Task.Run(
+                () => LanguageServerHost.RunLanguageServer(
+                new() { Directory = workingDirectory, NoCache = noCache },
+                clientPipe.Reader,
+                serverPipe.Writer,
+                package,
+                notificationListener: this,
+                _serverCts.Token)).GetAwaiter();
 
-                await client.Initialize(new CancellationTokenSource(20000).Token);
+            await client.Initialize(_clientCts.Token);
 
-                Console.WriteLine($"[LanguageServerTestClient] Client initialization request sent ({_workingDirectory})");
-
-                await tcs.Task;
-
-                Console.WriteLine($"[LanguageServerTestClient] Client initialized ({_workingDirectory})");
-
-                return (cts, client);
-            }
-            catch (Exception ex)
-            {
-                Console.Write($"[LanguageServerTestClient] Unexpected exception: {ex}");
-                return (default, default);
-            }
+            await _serverInitializedTcs.Task;
+            return client;
         }
 
         private static JsonDiff CreateLanguageServerJsonDiff()

@@ -12,5 +12,7 @@ namespace Microsoft.Docs.Build
         public void OnNotificationSent() { }
 
         public void OnException(Exception ex) { }
+
+        public void OnInitialized() { }
     }
 }

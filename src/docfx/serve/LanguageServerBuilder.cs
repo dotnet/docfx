@@ -56,7 +56,6 @@ namespace Microsoft.Docs.Build
 
         public async void Run(CancellationToken cancellationToken = default)
         {
-            Console.WriteLine($"[LangugeserverBuilder] Start Build");
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
@@ -88,7 +87,6 @@ namespace Microsoft.Docs.Build
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[LanguageServerBuilder] Unexpected exception: ${ex}");
                     _logger.LogCritical(ex, "Failed to handle build request");
                     _notificationListener.OnException(ex);
                     Telemetry.TrackException(ex);
