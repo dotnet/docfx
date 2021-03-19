@@ -12,7 +12,7 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v1
     - run: dotnet test -warnAsError -c Release
-    - run: dotnet pack -warnAsError -c Release -o drop
+    - run: dotnet pack -warnAsError -c Release -o drop src/docfx/docfx.csproj
     - name: Publish binary packages
       shell: pwsh
       run: |
