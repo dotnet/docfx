@@ -35,7 +35,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
             TestUtility.VerifyMarkup(
                 @":::no-loc text=""I am crossing\
 a line"":::",
-                @"<p>:::no-loc text=&quot;I am crossing<br />a line&quot;:::</p>");
+                @"<p>:::no-loc text=&quot;I am crossing\a line&quot;:::</p>");
 
             // Spaces not exactly match
             TestUtility.VerifyMarkup(
