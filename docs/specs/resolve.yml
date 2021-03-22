@@ -564,6 +564,8 @@ inputs:
   a.md: |
     [link](http://github.com)
     [link](ms-windows-store://pdp?productId=9WZDNCRFHVJL)
+    [link](//codepen.io/azuremaps/embed)
+    [link](file://c/d)
     ![img](data:image/png;base64,aG=)
     <img src="http://docs.com/a.png">
     <img src="https://docs.com/a.png">
@@ -575,6 +577,8 @@ outputs:
       "conceptual": "<p>
         <a href='http://github.com' data-linktype='external'>link</a>
         <a href=''>link</a>
+        <a href='//codepen.io/azuremaps/embed' data-linktype='external'>link</a>
+        <a href=''>link</a>
         <img src='data:image/png;base64,aG=' alt='img' data-linktype='external'/>
         <img src=''>
         <img src='https://docs.com/a.png' data-linktype='external'>
@@ -583,6 +587,7 @@ outputs:
     }
   .errors.log: |
     { "message_severity": "info", "message": "* 'ms-windows-store://pdp' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "info", "message": "* 'file://c' *", "code": "disallowed-domain", "file": "a.md" }
     { "message_severity": "info", "message": "* 'http://docs.com' *", "code": "disallowed-domain", "file": "a.md" }
     { "message_severity": "info", "message": "* 'https://microsoft.com' *", "code": "disallowed-domain", "file": "a.md" }
 ---

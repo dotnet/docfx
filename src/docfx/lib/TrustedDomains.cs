@@ -52,6 +52,12 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
+            // Special case for links without protocol: '//codepen.io'. Uri treats them as files.
+            if (uri.Scheme == Uri.UriSchemeFile && url.StartsWith("//"))
+            {
+                return true;
+            }
+
             if (!_trustedDomains.TryGetValue(uri.Scheme, out var domains))
             {
                 errors.Add(Errors.Content.DisallowedDomain(new(file), uri.GetLeftPart(UriPartial.Authority)));
