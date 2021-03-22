@@ -24,7 +24,7 @@ namespace Microsoft.Docs.Build
                     // @uid
                     if (node is XrefInline xref)
                     {
-                        var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
+                        var raw = xref.GetAttributes().Properties?.First(p => p.Key == "data-raw-source").Value ?? "";
                         var suppressXrefNotFound = raw.StartsWith("@");
                         var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
                         var (href, display) = resolveXref(source, null, suppressXrefNotFound);
@@ -34,7 +34,7 @@ namespace Microsoft.Docs.Build
                             return new LiteralInline(raw);
                         }
 
-                        return new LinkInline(href, null).AppendChild(new LiteralInline(display));
+                        return new LinkInline(href, "").AppendChild(new LiteralInline(display));
                     }
                     return node;
                 });

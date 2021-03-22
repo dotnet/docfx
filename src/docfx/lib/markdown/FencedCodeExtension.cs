@@ -12,7 +12,10 @@ namespace Microsoft.Docs.Build
         {
             return builder.Use(pipeline =>
             {
-                pipeline.BlockParsers.FindExact<FencedCodeBlockParser>().InfoPrefix = "lang-";
+                if (pipeline.BlockParsers.FindExact<FencedCodeBlockParser>() is FencedCodeBlockParser parser)
+                {
+                    parser.InfoPrefix = "lang-";
+                }
             });
         }
     }

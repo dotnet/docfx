@@ -11,7 +11,7 @@ namespace Microsoft.Docs.MarkdigExtensions
     {
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
-            pipeline.InlineParsers.InsertBefore<AutolineInlineParser>(new XrefInlineParser());
+            pipeline.InlineParsers.InsertBefore<AutolinkInlineParser>(new XrefInlineParser());
             pipeline.InlineParsers.AddIfNotAlready(new XrefInlineShortParser());
         }
 

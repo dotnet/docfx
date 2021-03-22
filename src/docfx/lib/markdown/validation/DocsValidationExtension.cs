@@ -295,14 +295,15 @@ namespace Microsoft.Docs.Build
         private static TableCellNode ParseCell(TableCell cell)
         {
             var block = cell.LastChild;
-            var isVisible = MarkdigUtility.IsVisible(block);
+            var isVisible = block != null && MarkdigUtility.IsVisible(block);
             var isEmphasis = false;
             MarkdigUtility.Visit(block, node =>
             {
                 var innerEmphasis = false;
                 if (node is ParagraphBlock paragraphBlock)
                 {
-                    innerEmphasis = paragraphBlock.Inline.FindDescendants<EmphasisInline>().Any(x => x.DelimiterCount >= 2);
+                    innerEmphasis = paragraphBlock.Inline != null &&
+                        paragraphBlock.Inline.FindDescendants<EmphasisInline>().Any(x => x.DelimiterCount >= 2);
                 }
                 return isEmphasis = isEmphasis || innerEmphasis;
             });
@@ -316,7 +317,7 @@ namespace Microsoft.Docs.Build
 
         private static bool TryDetectTable(ParagraphBlock paragraph)
         {
-            if (!paragraph.Inline.FindDescendants<LineBreakInline>().Any())
+            if (paragraph.Inline is null || !paragraph.Inline.FindDescendants<LineBreakInline>().Any())
             {
                 return false;
             }
