@@ -194,7 +194,7 @@ namespace Microsoft.Docs.Build
                         }
                         return inline;
 
-                    case LeafBlock leaf:
+                    case LeafBlock leaf when leaf.Inline != null:
                         var leafInline = ReplaceCore(leaf.Inline, action) as ContainerInline;
                         if (leafInline != leaf.Inline)
                         {
@@ -271,9 +271,9 @@ namespace Microsoft.Docs.Build
                 case LinkInline linkInline when linkInline.IsImage:
                 case TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension:
                 case HtmlInline htmlInline when htmlInline.Tag.StartsWith("<img", StringComparison.InvariantCultureIgnoreCase):
-                    for (MarkdownObject current = node, parent = node.Parent; current != null;)
+                    for (var current = node; current != null;)
                     {
-                        if (parent is ContainerInline containerInline)
+                        if (current.Parent is ContainerInline containerInline)
                         {
                             foreach (var child in containerInline)
                             {
@@ -282,8 +282,7 @@ namespace Microsoft.Docs.Build
                                     return true;
                                 }
                             }
-                            current = parent;
-                            parent = containerInline.Parent;
+                            current = current.Parent;
                         }
                         else
                         {

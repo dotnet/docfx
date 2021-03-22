@@ -217,7 +217,10 @@ namespace Microsoft.Docs.Build
 
             builder.InlineParsers.RemoveAll(parser => !(parser is LinkInlineParser || parser is EscapeInlineParser));
 
-            builder.BlockParsers.Find<HeadingBlockParser>().MaxLeadingCount = int.MaxValue;
+            if (builder.BlockParsers.Find<HeadingBlockParser>() is HeadingBlockParser headingParser)
+            {
+                headingParser.MaxLeadingCount = int.MaxValue;
+            }
 
             builder.UseFilePath()
                    .UseYamlFrontMatter()
