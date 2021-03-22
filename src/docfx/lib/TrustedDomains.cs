@@ -24,9 +24,9 @@ namespace Microsoft.Docs.Build
                     throw new ArgumentException("Trusted domain must contain both protocol and domain, use * to match all domains.");
                 }
 
-                var protocol = split[0].ToLowerInvariant();
-                var domain = split[1] != "*" ? split[1].ToLowerInvariant() : null;
-                if (domain is null)
+                var protocol = split[0];
+                var domain = split[1];
+                if (domain == "*")
                 {
                     _trustedDomains[protocol] = null;
                 }

@@ -767,7 +767,7 @@ namespace Microsoft.Docs.Build
             /// Url domain must be in allowed list
             /// </summary>
             public static Error DisallowedDomain(SourceInfo? source, string domain)
-                => new Error(ErrorLevel.Info, "disallowed-domain", $"Url domain '{domain}' isn't allowed. Disallowed domain poses a security risk.  If this is intended, open a ticket at https://SiteHelp or go to the Docs Support Teams channel.", source, propertyPath: domain);
+                => new Error(ErrorLevel.Warning, "disallowed-domain", $"Url domain '{domain}' isn't allowed. Disallowed domain poses a security risk.  If this is intended, open a ticket at https://SiteHelp or go to the Docs Support Teams channel.", source, propertyPath: domain);
         }
 
         public static class DependencyRepository
