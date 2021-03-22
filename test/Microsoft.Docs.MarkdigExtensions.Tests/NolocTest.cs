@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Xunit;
@@ -33,7 +33,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
             TestUtility.VerifyMarkup(
                 @":::no-loc text=""I am crossing\
 a line"":::",
-                @"<p>:::no-loc text=&quot;I am crossing<br />a line&quot;:::</p>");
+                @"<p>:::no-loc text=&quot;I am crossing\a line&quot;:::</p>");
 
             // Spaces not exactly match
             TestUtility.VerifyMarkup(

@@ -234,9 +234,9 @@ Skip the note
 <div class=""NOTE"">
 <h5>NOTE</h5>
 <p>note text 1-1
-note text 1-2<br />
+note text 1-2  <br />
 note text 2-1
-This is also note<br />
+This is also note  <br />
 This is also note with br</p>
 </div>
 <p>Skip the note</p>
@@ -253,7 +253,7 @@ This is also note with br</p>
 </blockquote>
 <div class=""NOTE"">
 <h5>NOTE</h5>
-<p>no-note text 1-2<br />
+<p>no-note text 1-2  <br />
 no-note text 2-1</p>
 </div>
 ")]
@@ -270,7 +270,7 @@ no-note text 2-1</p>
 </blockquote>
 <div class=""NOTE"">
 <h5>NOTE</h5>
-<p>no-note text 2-1<br />
+<p>no-note text 2-1  <br />
 no-note text 2-2</p>
 </div>
 ")]
