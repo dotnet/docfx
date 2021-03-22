@@ -571,6 +571,7 @@ inputs:
     <img src="https://docs.com/a.png">
     <img src="https://microsoft.com/a.png">
     <img src="data:image/svg+xml,%3Csvg /svg%3E">
+    <img src="//office.com/a.png">
 outputs:
   a.json: |
     {
@@ -583,11 +584,13 @@ outputs:
         <img src=''>
         <img src='https://docs.com/a.png' data-linktype='external'>
         <img src=''>
-        <img src='data:image/svg+xml,%3Csvg /svg%3E' data-linktype='external'></p>"
+        <img src='data:image/svg+xml,%3Csvg /svg%3E' data-linktype='external'>
+        <img src=''></p>"
     }
   .errors.log: |
     { "message_severity": "warning", "message": "* 'ms-windows-store://pdp' *", "code": "disallowed-domain", "file": "a.md" }
     { "message_severity": "warning", "message": "* 'file://c' *", "code": "disallowed-domain", "file": "a.md" }
     { "message_severity": "warning", "message": "* 'http://docs.com' *", "code": "disallowed-domain", "file": "a.md" }
     { "message_severity": "warning", "message": "* 'https://microsoft.com' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "warning", "message": "* '//office.com' *", "code": "disallowed-domain", "file": "a.md" }
 ---
