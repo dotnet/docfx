@@ -207,6 +207,15 @@ namespace Microsoft.Docs.Build
         public SourceInfo<string> MonikerDefinition { get; init; } = new("");
 
         /// <summary>
+        /// Get a list of trusted domains by tag name.
+        /// </summary>
+        /// <example>
+        /// - "a" -> ["https://*", "http://*"]: Matches all domains using https or http for `a` tag
+        /// - "img" -> ["https://docs.microsoft.com"]: Matches this specific domain using https
+        /// </example>
+        public Dictionary<string, TrustedDomains> TrustedDomains { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
         public SourceInfo<string> MarkdownValidationRules { get; init; } = new("");

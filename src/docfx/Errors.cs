@@ -762,6 +762,12 @@ namespace Microsoft.Docs.Build
             /// </summary>
             public static Error DisallowedHtmlAttribute(SourceInfo? source, string tag, string attribute)
                 => new Error(ErrorLevel.Info, "disallowed-html-attribute", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
+
+            /// <summary>
+            /// Url domain must be in allowed list
+            /// </summary>
+            public static Error DisallowedDomain(SourceInfo? source, string domain)
+                => new Error(ErrorLevel.Info, "disallowed-domain", $"Url domain '{domain}' isn't allowed. Disallowed domain poses a security risk.  If this is intended, open a ticket at https://SiteHelp or go to the Docs Support Teams channel.", source, propertyPath: domain);
         }
 
         public static class DependencyRepository
