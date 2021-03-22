@@ -210,7 +210,8 @@ namespace Microsoft.Docs.Build
         /// Get a list of trusted domains by tag name.
         /// </summary>
         /// <example>
-        /// - "a" -> ["https://*", "http://*"]: Matches all domains using https or http for `a` tag
+        /// - "a" -> ["https://*"]: Matches all domains using https for `a` tag
+        /// - "a" -> ["http://*"]: Matches all domains using http or https (http implies https) for `a` tag
         /// - "img" -> ["https://docs.microsoft.com"]: Matches this specific domain using https
         /// </example>
         public Dictionary<string, TrustedDomains> TrustedDomains { get; init; } = new(StringComparer.OrdinalIgnoreCase);

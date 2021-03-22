@@ -56,37 +56,40 @@ namespace Microsoft.Docs.Build
             // Special case for links without protocol: '//codepen.io'. Uri treats them as files.
             if (uri.Scheme == Uri.UriSchemeFile && url.StartsWith("//"))
             {
-                if (!IsTrusted("http", uri.DnsSafeHost) && !IsTrusted("https", uri.DnsSafeHost))
+                if (IsTrusted("http", uri.DnsSafeHost))
                 {
-                    errors.Add(Errors.Content.DisallowedDomain(new(file), $"//{uri.DnsSafeHost}"));
-                    return false;
+                    return true;
                 }
 
-                return true;
-            }
-
-            if (!IsTrusted(uri.Scheme, uri.DnsSafeHost))
-            {
-                errors.Add(Errors.Content.DisallowedDomain(new(file), uri.GetLeftPart(UriPartial.Authority)));
+                errors.Add(Errors.Content.DisallowedDomain(new(file), $"//{uri.DnsSafeHost}"));
                 return false;
             }
 
-            return true;
+            if (IsTrusted(uri.Scheme, uri.DnsSafeHost))
+            {
+                return true;
+            }
+
+            errors.Add(Errors.Content.DisallowedDomain(new(file), uri.GetLeftPart(UriPartial.Authority)));
+            return false;
         }
 
         private bool IsTrusted(string protocol, string domain)
         {
-            if (!_trustedDomains.TryGetValue(protocol, out var domains))
+            if (_trustedDomains.TryGetValue(protocol, out var domains))
             {
-                return false;
+                if (domains is null || domains.Contains(domain))
+                {
+                    return true;
+                }
             }
 
-            if (domains != null && !domains.Contains(domain))
+            if (protocol == "https")
             {
-                return false;
+                return IsTrusted("http", domain);
             }
 
-            return true;
+            return false;
         }
     }
 }

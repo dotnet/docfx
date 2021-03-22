@@ -557,12 +557,12 @@ inputs:
     trustedDomains:
       a:
       - "http://*"
-      - "https://*"
       img:
       - "https://docs.com"
       - "data:*"
   a.md: |
     [link](http://github.com)
+    [link](https://github.com)
     [link](ms-windows-store://pdp?productId=9WZDNCRFHVJL)
     [link](//codepen.io/azuremaps/embed)
     [link](file://c/d)
@@ -577,6 +577,7 @@ outputs:
     {
       "conceptual": "<p>
         <a href='http://github.com' data-linktype='external'>link</a>
+        <a href='https://github.com' data-linktype='external'>link</a>
         <a href=''>link</a>
         <a href='//codepen.io/azuremaps/embed' data-linktype='external'>link</a>
         <a href=''>link</a>
