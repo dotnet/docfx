@@ -1473,5 +1473,14 @@ inputs:
     key: value
   _themes/ContentTemplate/schemas/Achievements.schema.json: '{"renderType": "component"}'
 outputs:
-  a.mta.json: '{"page_type": "learn", "page_kind": "achievements"}'
   a.json:
+  .publish.json: |
+    {
+      "files": [
+        {
+          "url": "/a.json",
+          "page_type": "learn",
+          "page_kind": "achievements"
+        }
+      ]
+    }
