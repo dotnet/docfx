@@ -269,7 +269,7 @@ namespace Microsoft.Docs.Build
             _searchIndexBuilder.SetTitle(file, conceptual.Title);
             _contentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
 
-            ProcessConceptualHtml(conceptual, file, html);
+            ProcessConceptualHtml(errors, file, html, conceptual);
 
             return _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
         }
@@ -326,7 +326,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = ProcessHtml(file, razorHtml),
+                    Conceptual = ProcessHtml(errors, file, razorHtml),
                     ExtensionData = pageModel,
                 });
             }
@@ -384,10 +384,10 @@ namespace Microsoft.Docs.Build
             var model = _templateEngine.RunJavaScript($"{mime}.html.primary.js", pageModel);
             var content = _templateEngine.RunMustache(errors, $"{mime}.html", model);
 
-            return ProcessHtml(file, content);
+            return ProcessHtml(errors, file, content);
         }
 
-        private string ProcessHtml(FilePath file, string html)
+        private string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
         {
             var bookmarks = new HashSet<string>();
             var searchText = new StringBuilder();
@@ -395,7 +395,7 @@ namespace Microsoft.Docs.Build
             var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
             {
                 HtmlUtility.GetBookmarks(ref token, bookmarks);
-                HtmlUtility.AddLinkType(ref token, _buildOptions.Locale);
+                HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
                 if (token.Type == HtmlTokenType.Text)
                 {
@@ -409,7 +409,7 @@ namespace Microsoft.Docs.Build
             return LocalizationUtility.AddLeftToRightMarker(_buildOptions.Culture, result);
         }
 
-        private void ProcessConceptualHtml(ConceptualModel conceptual, FilePath file, string html)
+        private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
         {
             var wordCount = 0L;
             var bookmarks = new HashSet<string>();
@@ -418,7 +418,7 @@ namespace Microsoft.Docs.Build
             var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
             {
                 HtmlUtility.GetBookmarks(ref token, bookmarks);
-                HtmlUtility.AddLinkType(ref token, _buildOptions.Locale);
+                HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
                 if (!_config.DryRun)
                 {
