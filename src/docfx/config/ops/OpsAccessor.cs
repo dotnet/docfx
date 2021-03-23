@@ -55,7 +55,11 @@ namespace Microsoft.Docs.Build
 
         public Task<string> GetDocumentUrls()
         {
-            return Fetch("https://docsvalidation.azurefd.net/errorcodes");
+            return Fetch(DocsEnvironment switch
+            {
+                DocsEnvironment.Prod => "https://docsvalidation.azurefd.net/errorcodes",
+                _ => "https://docsvalidationppe.azurefd.net/errorcodes",
+            });
         }
 
         public async Task<string[]> GetXrefMaps(string tag, string xrefEndpoint, string xrefMapQueryParams)
