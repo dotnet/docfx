@@ -106,9 +106,10 @@ namespace Microsoft.Docs.Build
                     _output.WriteJson(outputPath, output);
                 }
 
-                if (_config.OutputType == OutputType.PageJson && isContentRenderType)
+                if (_config.OutputType == OutputType.PageJson && metadata.Count > 0)
                 {
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    var metadataPath = outputPath.Substring(
+                        0, outputPath.Length - (isContentRenderType ? ".raw.page.json".Length : ".json".Length)) + ".mta.json";
                     _output.WriteJson(metadataPath, metadata);
                 }
             }
@@ -182,7 +183,11 @@ namespace Microsoft.Docs.Build
 
             var mime = _documentProvider.GetMime(file);
 
-            return (_templateEngine.RunJavaScript($"{mime}.json.js", sourceModel), new JObject());
+            return (
+                _templateEngine.RunJavaScript($"{mime}.json.js", sourceModel),
+                string.Equals("Achievements", mime, StringComparison.OrdinalIgnoreCase) // TODO: remove after schema exported
+                    ? new JObject { { "page_type", "learn" }, { "page_kind", "achievements" } }
+                    : new JObject());
         }
 
         private SystemMetadata CreateSystemMetadata(ErrorBuilder errors, FilePath file, UserMetadata userMetadata)

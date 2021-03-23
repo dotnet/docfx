@@ -1462,4 +1462,16 @@ outputs:
     {"message_severity":"error","code":"tasks-format-invalid","message":"Task has invalid Azure resource type 'a/1/1'. Type must be formatted as '*/*' when name is specified.","file":"unit-c.yml","line":5}
     {"message_severity":"error","code":"task-type-invalid","message":"Task has invalid Azure resource type: 'c/1'.","file":"unit-d.yml","line":5}
     {"message_severity":"error","code":"unit-task-and-quiz","message":"Unit can't have both quiz and task.","file":"unit-b.yml","line":2}
-
+---
+# Special case for learn Achievements
+# TODO: remove when schema exported 
+inputs:
+  docfx.yml: |
+    outputType: pageJson
+  a.yml: |
+    #YamlMime:Achievements
+    key: value
+  _themes/ContentTemplate/schemas/Achievements.schema.json: '{"renderType": "component"}'
+outputs:
+  a.mta.json: '{"page_type": "learn", "page_kind": "achievements"}'
+  a.json:
