@@ -40,10 +40,13 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     var msAuthor = MetadataProvider?.GetMetadata(Null, source).MsAuthor;
-                    if (msAuthor != default)
-                    {
-                        error = error with { MsAuthor = msAuthor };
-                    }
+                    var msProd = MetadataProvider?.GetMetadata(Null, source).MsProd;
+                    var msTechnology = MetadataProvider?.GetMetadata(Null, source).MsTechnology;
+                    var msService = MetadataProvider?.GetMetadata(Null, source).MsService;
+                    var msSubservice = MetadataProvider?.GetMetadata(Null, source).MsSubservice;
+
+                    error = error with
+                        { MsAuthor = msAuthor, MsProd = msProd, MsTechnology = msTechnology, MsService = msService, MsSubservice = msSubservice };
                 }
                 catch
                 {
