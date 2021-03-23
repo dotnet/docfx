@@ -473,7 +473,8 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static void AddLinkType(ref HtmlToken token, string locale)
+        internal static void AddLinkType(
+            ErrorBuilder errors, FilePath file, ref HtmlToken token, string locale, Dictionary<string, TrustedDomains> trustedDomains)
         {
             foreach (ref readonly var attribute in token.Attributes.Span)
             {
@@ -494,10 +495,19 @@ namespace Microsoft.Docs.Build
                             token.SetAttributeValue("data-linktype", "relative-path");
                             break;
                         case LinkType.External:
-                            token.SetAttributeValue("data-linktype", "external");
                             if (Uri.TryCreate(href, UriKind.Absolute, out var uri))
                             {
                                 Telemetry.TrackExternalLink(tagName, attributeName, uri.Scheme, uri.DnsSafeHost);
+                            }
+
+                            // Opt-in to trusted domain check
+                            if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(errors, file, href))
+                            {
+                                token.SetAttributeValue(attributeName, "");
+                            }
+                            else
+                            {
+                                token.SetAttributeValue("data-linktype", "external");
                             }
                             break;
                     }

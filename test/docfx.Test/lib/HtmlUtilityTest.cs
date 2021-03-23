@@ -28,7 +28,8 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.AddLinkType(ref token, "zh-cn"));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+                    HtmlUtility.AddLinkType(ErrorBuilder.Null, new("a.md"), ref token, "zh-cn", new()));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
