@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_externalLinkMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, "ExternalLink", "Tag", "Attribute", "Schema", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "ExternalLink", "Tag", "Attribute", "Scheme", "Host", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_errorCountMetric =
