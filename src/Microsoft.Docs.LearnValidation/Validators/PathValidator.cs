@@ -49,7 +49,7 @@ namespace Microsoft.Docs.LearnValidation
 
         protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
         {
-            var path = JsonConvert.DeserializeObject<PathValidateModel>(validatorHierarchyItem.ServiceData);
+            var path = JsonConvert.DeserializeObject<PathValidateModel>(validatorHierarchyItem.ServiceData) ?? new();
             SetHierarchyData(path, validatorHierarchyItem, manifestItem);
             return path;
         }

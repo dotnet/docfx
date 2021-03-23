@@ -100,7 +100,7 @@ namespace Microsoft.Docs.Build
                         throw new Exception("Exceed max file errors, adjust regression test config to allow more error items.");
 
                     case "yaml-syntax-error" when obj.ContainsKey("message"):
-                        obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]!.Value<string>(), @"Idx: \d+", ""));
+                        obj["message"] = JValue.CreateString(Regex.Replace(obj["message"]?.Value<string>() ?? "", @"Idx: \d+", ""));
                         break;
                 }
 
