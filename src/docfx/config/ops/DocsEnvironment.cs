@@ -7,6 +7,5 @@ namespace Microsoft.Docs.Build
     {
         Prod,
         PPE,
-        Perf,
     }
 }
