@@ -236,7 +236,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (GlobUtility.IsGlobString(file))
                     {
-                        globs.Add(GlobUtility.CreateGlobMatcher(PathUtility.Normalize(Path.Combine(_buildOptions.DocsetPath, file))));
+                        globs.Add(GlobUtility.CreateGlobMatcher(Path.Combine(_buildOptions.DocsetPath, file)));
                     }
                     else
                     {
