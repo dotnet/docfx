@@ -121,6 +121,7 @@ enoent
 enotfound
 entrycount
 enum
+eppe
 erl
 erlang
 etag
@@ -591,3 +592,13 @@ nettrace
 speedscope
 dns
 middleware
+allowfullscreen
+bgcolor
+bordercolor
+cellpadding
+cellspacing
+hspace
+marginwidth
+nowrap
+scrolling
+valign

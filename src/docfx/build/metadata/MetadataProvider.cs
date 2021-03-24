@@ -63,7 +63,7 @@ namespace Microsoft.Docs.Build
         public UserMetadata GetMetadata(ErrorBuilder errors, FilePath file)
         {
             var (error, result) = _metadataCache.GetOrAdd(file, key => new(() => GetMetadataCore(key))).Value;
-            errors.AddRange(error);
+            errors.AddRange(error.ToArray());
             return result;
         }
 

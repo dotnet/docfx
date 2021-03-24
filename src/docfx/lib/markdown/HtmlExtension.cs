@@ -7,7 +7,7 @@ using Markdig;
 using Markdig.Helpers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -15,8 +15,6 @@ namespace Microsoft.Docs.Build
     {
         public static MarkdownPipelineBuilder UseHtml(
             this MarkdownPipelineBuilder builder,
-            DocumentProvider documentProvider,
-            MetadataProvider metadataProvider,
             Func<ErrorBuilder> getErrors,
             Func<LinkInfo, string> getLink,
             Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
@@ -25,8 +23,6 @@ namespace Microsoft.Docs.Build
             {
                 var errors = getErrors();
                 var file = ((SourceInfo)InclusionContext.File).File;
-                var scanTags = TemplateEngine.IsConceptual(documentProvider.GetMime(file)) &&
-                    !metadataProvider.GetMetadata(errors, file).IsArchived;
 
                 document.Visit(node =>
                 {
@@ -35,10 +31,10 @@ namespace Microsoft.Docs.Build
                         case TabTitleBlock:
                             return true;
                         case HtmlBlock block:
-                            block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors, scanTags));
+                            block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors));
                             return false;
                         case HtmlInline inline:
-                            inline.Tag = ProcessHtml(inline.Tag, inline, errors, scanTags);
+                            inline.Tag = ProcessHtml(inline.Tag, inline, errors);
                             return false;
                         default:
                             return false;
@@ -46,7 +42,7 @@ namespace Microsoft.Docs.Build
                 });
             });
 
-            string ProcessHtml(string html, MarkdownObject block, ErrorBuilder errors, bool scanTags)
+            string ProcessHtml(string html, MarkdownObject block, ErrorBuilder errors)
             {
                 // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
                 // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
@@ -55,14 +51,8 @@ namespace Microsoft.Docs.Build
                 {
                     HtmlUtility.TransformLink(ref token, block, getLink!);
                     HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
-
-                    if (scanTags)
-                    {
-                        HtmlUtility.ScanTags(ref token, block, errors);
-                    }
-
                     HtmlUtility.RemoveRerunCodepenIframes(ref token);
-                    HtmlUtility.StripTags(ref reader, ref token);
+                    HtmlUtility.SanitizeHtml(errors, ref reader, ref token, block);
                 });
             }
         }

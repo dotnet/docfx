@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -25,7 +24,9 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private static readonly SecretClient s_secretClientPublic = new(new("https://docfxdevkvpub.vault.azure.net/"), new DefaultAzureCredential());
+        private static readonly SecretClient s_secretClientPublic = new(new(
+            Environment.GetEnvironmentVariable("DOCS_KV_PROD_ENDPOINT") ?? "https://docfxdevkvpub.vault.azure.net/"), new DefaultAzureCredential());
+
         private static readonly SecretClient s_secretClientPubDev = new(new("https://docfxdevkvpubdev.vault.azure.net/"), new DefaultAzureCredential());
         private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken"));
         private static readonly Lazy<Task<string>> s_opsTokenPubDev = new(() => GetSecret("OpsBuildUserToken", isPubDev: true));
@@ -50,6 +51,15 @@ namespace Microsoft.Docs.Build
         public Task<string> GetMonikerDefinition()
         {
             return FetchBuild("/v2/monikertrees/allfamiliesproductsmonikers");
+        }
+
+        public Task<string> GetDocumentUrls()
+        {
+            return Fetch(DocsEnvironment switch
+            {
+                DocsEnvironment.Prod => "https://docsvalidation.azurefd.net/errorcodes",
+                _ => "https://docsvalidationppe.azurefd.net/errorcodes",
+            });
         }
 
         public async Task<string[]> GetXrefMaps(string tag, string xrefEndpoint, string xrefMapQueryParams)
@@ -194,7 +204,7 @@ namespace Microsoft.Docs.Build
 
             async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
             {
-                using (PerfScope.Start($"[{nameof(OpsAccessor)}] Fetching '{request.RequestUri}'"))
+                using (PerfScope.Start($"[{nameof(OpsAccessor)}] '{request.Method} {UrlUtility.SanitizeUrl(request.RequestUri?.ToString())}'"))
                 {
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
                     return await _http.SendAsync(request);

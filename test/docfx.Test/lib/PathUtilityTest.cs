@@ -136,19 +136,6 @@ namespace Microsoft.Docs.Build
             Assert.Equal(Directory.Exists(Path.GetDirectoryName(filePath)), isDirectoryCreated);
         }
 
-        [Theory]
-        [InlineData("", "e3b0c44298fc1c149afbf4c8996fb924")]
-        [InlineData("https://github.com/dotnet/docfx", "github.com+dotnet+docfx+5fa6f8cdf466438b475e5aa429078cf8")]
-        [InlineData("https://github.com/1/2/3/4/5/6/7/8/9/10/11/12/13/14", "github.com+1+2+3+11+12+13+14+95662b4142069fc944aa91531bbaf0f2")]
-        [InlineData("https://github.com/crazy-crazy-crazy-crazy-long-repo.zh-cn", "github.com+crazy-cr..po.zh-cn+574d9cf4127558addef3080fd7011891")]
-        [InlineData("https://a.com?b=c#d", "a.com+b=c+d+38f7bfa5bdfcfc843d87c657f9886d62")]
-        [InlineData("https://ab-c.blob.core.windows.net/a/b/c/d?sv=d&sr=e&sig=f&st=2019-05-07&se=2019-05-08&sp=r", "ab-c.blo..dows.net+a+b+c+d+d8b987862ffce09ceef9c9aaceaa9440")]
-        public static void UrlToFolderName(string url, string folderName)
-        {
-            var result = PathUtility.UrlToShortName(url);
-            Assert.Equal(folderName, result);
-        }
-
         [Fact]
         public static void PathDoesNotThrowForInvalidChar()
         {

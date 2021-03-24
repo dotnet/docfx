@@ -318,9 +318,9 @@ namespace Microsoft.Docs.Build
             /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
             /// can't decide which entry to use when computing document id.
             /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error RedirectionUrlConflict(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings.", source);
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectionUrlConflict(SourceInfo<string> source, IEnumerable<PathString> redirectionFiles, IEnumerable<PathString> redirectionSourceFiles)
+                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The following files are redirected to '{source}' with redirect_document_id set to true: {StringUtility.Join(redirectionSourceFiles)}. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): {StringUtility.Join(redirectionFiles)}.", source);
 
             /// <summary>
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
@@ -754,14 +754,20 @@ namespace Microsoft.Docs.Build
             /// <summary>
             /// Html Tag value must be in allowed list
             /// </summary>
-            public static Error DisallowedHtml(SourceInfo? source, string tag)
+            public static Error DisallowedHtmlTag(SourceInfo? source, string tag)
                 => new Error(ErrorLevel.Info, "disallowed-html-tag", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
 
             /// <summary>
             /// Html Attribute value must be in allowed list
             /// </summary>
-            public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
+            public static Error DisallowedHtmlAttribute(SourceInfo? source, string tag, string attribute)
                 => new Error(ErrorLevel.Info, "disallowed-html-attribute", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
+
+            /// <summary>
+            /// Url domain must be in allowed list
+            /// </summary>
+            public static Error DisallowedDomain(SourceInfo? source, string domain)
+                => new Error(ErrorLevel.Warning, "disallowed-domain", $"Url domain '{domain}' isn't allowed. Disallowed domain poses a security risk.  If this is intended, open a ticket at https://SiteHelp or go to the Docs Support Teams channel.", source, propertyPath: domain);
         }
 
         public static class DependencyRepository

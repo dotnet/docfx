@@ -389,7 +389,6 @@ outputs:
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/a.md","line":4,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/d.md","line":1,"column":1}
-    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
 ---
 # only validate bookmarks when the referenced file existed
 inputs:
@@ -467,19 +466,19 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "
-        <div class='tabGroup' id='tabgroup_bHGHmlrG6S'>
+        <div class='tabGroup' id='tabgroup_1'>
           <ul role='tablist'>
             <li role='presentation'>
-              <a href='#tabpanel_bHGHmlrG6S_a' role='tab' aria-controls='tabpanel_bHGHmlrG6S_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
+              <a href='#tabpanel_1_a' role='tab' aria-controls='tabpanel_1_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
             </li>
             <li role='presentation'>
-              <a href='#tabpanel_bHGHmlrG6S_b' role='tab' aria-controls='tabpanel_bHGHmlrG6S_b' data-tab='b' tabindex='-1'>b</a>
+              <a href='#tabpanel_1_b' role='tab' aria-controls='tabpanel_1_b' data-tab='b' tabindex='-1'>b</a>
             </li>
           </ul>
-          <section id='tabpanel_bHGHmlrG6S_a' role='tabpanel' data-tab='a'>
+          <section id='tabpanel_1_a' role='tabpanel' data-tab='a'>
             <p>a</p>
           </section>
-          <section id='tabpanel_bHGHmlrG6S_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
+          <section id='tabpanel_1_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
             <p>b</p>
           </section>
         </div>"
@@ -840,13 +839,3 @@ outputs:
     }
   block.json:
 ---
-# treat iframe src //domain as external link
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    <iframe src='//codepen.io/azuremaps/embed'>
-      See the Pen <a href='https://codepen.io'>CodePen</a>.
-    </iframe>
-outputs:
-  docs/a.json: |
-    {"conceptual": "<iframe src='//codepen.io/azuremaps/embed&rerun-position=hidden&' data-linktype=\"external\">\n  See the Pen <a href='https://codepen.io' data-linktype=\"external\">CodePen</a>.\n</iframe>\n"}

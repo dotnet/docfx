@@ -534,3 +534,64 @@ outputs:
   b.json:
   a/a.json: |
     { "url": "/b" }
+---
+# Treat iframe src //domain as external link
+inputs:
+  docfx.yml:
+  a.md: |
+    <iframe src='//codepen.io/azuremaps/embed'>
+      See the Pen <a href='https://codepen.io'>CodePen</a>.
+    </iframe>
+outputs:
+  a.json: |
+    {
+      "conceptual": "
+        <iframe src='//codepen.io/azuremaps/embed&rerun-position=hidden&' data-linktype=\"external\">
+          See the Pen <a href='https://codepen.io' data-linktype=\"external\">CodePen</a>.
+        </iframe>"
+    }
+---
+# Sanitize external links using trusted domains
+inputs:
+  docfx.yml: |
+    trustedDomains:
+      a:
+      - "http://*"
+      img:
+      - "https://docs.com"
+      - "data:*"
+  a.md: |
+    [link](http://github.com)
+    [link](https://github.com)
+    [link](ms-windows-store://pdp?productId=9WZDNCRFHVJL)
+    [link](//codepen.io/azuremaps/embed)
+    [link](file://c/d)
+    ![img](data:image/png;base64,aG=)
+    <img src="http://docs.com/a.png">
+    <img src="https://docs.com/a.png">
+    <img src="https://microsoft.com/a.png">
+    <img src="data:image/svg+xml,%3Csvg /svg%3E">
+    <img src="//office.com/a.png">
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>
+        <a href='http://github.com' data-linktype='external'>link</a>
+        <a href='https://github.com' data-linktype='external'>link</a>
+        <a href=''>link</a>
+        <a href='//codepen.io/azuremaps/embed' data-linktype='external'>link</a>
+        <a href=''>link</a>
+        <img src='data:image/png;base64,aG=' alt='img' data-linktype='external'/>
+        <img src=''>
+        <img src='https://docs.com/a.png' data-linktype='external'>
+        <img src=''>
+        <img src='data:image/svg+xml,%3Csvg /svg%3E' data-linktype='external'>
+        <img src=''></p>"
+    }
+  .errors.log: |
+    { "message_severity": "warning", "message": "* 'ms-windows-store://pdp' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "warning", "message": "* 'file://c' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "warning", "message": "* 'http://docs.com' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "warning", "message": "* 'https://microsoft.com' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "warning", "message": "* '//office.com' *", "code": "disallowed-domain", "file": "a.md" }
+---

@@ -40,6 +40,7 @@ jobs:
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      DOCS_OPS_TOKEN: $(opBuildUserToken)
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
 
   - task: reportgenerator@4
@@ -154,7 +155,7 @@ jobs:
   - task: AzureCLI@2
     displayName: Run regression tests
     inputs:
-      azureSubscription: 'Open Publishing - Build Production'
+      azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
       scriptType: ps
       scriptLocation: inlineScript
       powerShellErrorActionPreference: continue
@@ -163,6 +164,7 @@ jobs:
       BUILD_REASON: $(Build.Reason)
       DOCFX_APPDATA_PATH: D:/appdata
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
       AZURE_DEVOPS_TOKEN: $(vsoTestToken)
       PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
       APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09

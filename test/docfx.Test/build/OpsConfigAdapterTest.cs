@@ -12,29 +12,23 @@ namespace Microsoft.Docs.Build
 {
     public static class OpsConfigAdapterTest
     {
-        [Theory]
+        [SkippableTheory]
         [InlineData(
-            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=master",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'review.docs.microsoft.com'}")]
+            "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=master",
+            "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
         [InlineData(
-            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr&branch=live",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
+            "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=live",
+            "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
         [InlineData(
-            "https://ops/buildconfig/?name=azure-documents&repository_url=https://github.com/MicrosoftDocs/azure-docs-pr.zh-cn&branch=live-sxs",
-            "{'product':'Azure','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/azure','xrefHostName':'docs.microsoft.com'}")]
+            "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr.cs-cz&branch=live-sxs",
+            "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
         [InlineData(
-            "https://ops/buildconfig/?name=mooncake-docs&repository_url=https://github.com/MicrosoftDocs/mc-docs-pr&branch=master",
-            "{'product':'Azure','siteName':'DocsAzureCN','hostName':'docs.azure.cn','basePath':'/','xrefHostName':'review.docs.azure.cn'}")]
-        [InlineData(
-            "https://ops/buildconfig/?name=dotnet-api-docs&repository_url=https://github.com/dotnet/dotnet-api-docs/&branch=master",
-            "{'product':'VS','siteName':'Docs','hostName':'docs.microsoft.com','basePath':'/dotnet','xrefHostName':'review.docs.microsoft.com'}")]
+            "https://ops/buildconfig/?name=e2e-ppe-dotnetapidocs&repository_url=https://github.com/OPS-E2E-PPE/dotnet-api-docs/&branch=master",
+            "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-core-docs','xrefHostName':'ppe.docs.microsoft.com'}")]
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");
-            if (string.IsNullOrEmpty(token))
-            {
-                return;
-            }
+            Skip.If(string.IsNullOrEmpty(token));
 
             var credentialHandler = new CredentialHandler((_, _, _) =>
             {

@@ -109,7 +109,7 @@ inputs:
   docs/path1.md:
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/docs/path1' appears twice or more in the redirection mappings.","file":"redirections.yml","line":3,"column":9}
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '/docs/path1' with redirect_document_id set to true: 'a.md', 'b.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): 'redirections.yml'.","file":"redirections.yml","line":2,"column":9}
   .publish.json: |
     {
         "files": [
@@ -225,7 +225,7 @@ outputs:
   sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
     { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
   .errors.log: |
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/sccm/mdm/understand/hybrid-mobile-device-management' appears twice or more in the redirection mappings.","file":"sccm/redirections.yml","line":3,"column":18}
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with redirect_document_id set to true: 'mdm/index.md', 'mdm/index2.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): 'redirections.yml'.","line":2,"column":17}
 ---
 # redirect to empty URL
 inputs:
@@ -796,6 +796,39 @@ outputs:
         {"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}
       ]
     }
+---
+# Multiple Redirection Files with redirect url conflict
+repos:
+  https://github.com/redirection/multiple-redirection-files-source-path-from-root:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.json",
+            "a/b/.openpublishing.redirection.json"
+          ],
+        }
+      .openpublishing.redirection.json: |
+        {
+          "redirections": [{"source_path": "a/a.md", "redirect_url": "/aa", "redirect_document_id": true}]
+        }
+      a/docfx.yml:
+      a/b/.openpublishing.redirection.json: |
+        {"redirections": [{"source_path_from_root": "/a/b.md", "redirect_url": "/aa", "redirect_document_id": true}]}
+      a/aa.md:
+outputs:
+  a/.publish.json: |
+    {
+      "files": [
+        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "source_path": "b.md", "locale": "en-us"},
+        {"url": "/aa", "source_path": "aa.md", "locale": "en-us"}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '/aa' with redirect_document_id set to true: 'a.md', 'b.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): '../.openpublishing.redirection.json', 'b/.openpublishing.redirection.json'.","file":".openpublishing.redirection.json","line":2,"column":66}
+  a/aa.json:
 ---
 # File not found for a registered redirection file.
 repos:
