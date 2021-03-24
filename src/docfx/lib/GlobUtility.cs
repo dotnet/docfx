@@ -57,7 +57,7 @@ namespace Microsoft.Docs.Build
 
         private static Func<string, bool> CreateGlob(string pattern)
         {
-            pattern = PreProcessPattern(pattern);
+            pattern = PreProcessPattern(PathUtility.Normalize(pattern));
 
             if (KnownGlob.TryCreate(pattern) is KnownGlob knownGlob)
             {
