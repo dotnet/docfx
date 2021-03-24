@@ -181,8 +181,16 @@ namespace Microsoft.Docs.Build
             }
 
             var mime = _documentProvider.GetMime(file);
+            var metadata = new JObject();
 
-            return (_templateEngine.RunJavaScript($"{mime}.json.js", sourceModel), new JObject());
+            // TODO: remove after schema exported
+            if (string.Equals("Achievements", mime, StringComparison.OrdinalIgnoreCase))
+            {
+                metadata["page_type"] = "learn";
+                metadata["page_kind"] = "achievements";
+            }
+
+            return (_templateEngine.RunJavaScript($"{mime}.json.js", sourceModel), metadata);
         }
 
         private SystemMetadata CreateSystemMetadata(ErrorBuilder errors, FilePath file, UserMetadata userMetadata)
