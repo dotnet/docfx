@@ -253,9 +253,7 @@ namespace Microsoft.Docs.Build
             return (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
-                DocsEnvironment.PPE => "https://BuildApiPubDev.azurefd.net",
-                DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-                _ => throw new NotSupportedException(),
+                _ => "https://BuildApiPubDev.azurefd.net",
             };
         }
 

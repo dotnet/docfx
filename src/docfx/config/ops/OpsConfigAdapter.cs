@@ -150,33 +150,23 @@ namespace Microsoft.Docs.Build
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
                     DocsEnvironment.PPE => "ppe.docs.azure.cn",
-                    DocsEnvironment.Perf => "ppe.docs.azure.cn",
-                    _ => throw new NotSupportedException(),
+                    _ => "ppe.docs.azure.cn",
                 },
                 "dev.microsoft.com" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
-                    DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
-                    DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
-                    _ => throw new NotSupportedException(),
+                    _ => "devmsft-sandbox.azurewebsites.net",
                 },
-                "rd.microsoft.com" => OpsAccessor.DocsEnvironment switch
-                {
-                    DocsEnvironment.Prod => "rd.microsoft.com",
-                    _ => throw new NotSupportedException(),
-                },
+                "rd.microsoft.com" => "rd.microsoft.com",
                 "Startups" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "startups.microsoft.com",
-                    DocsEnvironment.PPE => "ppe.startups.microsoft.com",
-                    _ => throw new NotSupportedException(),
+                    _ => "ppe.startups.microsoft.com",
                 },
                 _ => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
-                    DocsEnvironment.PPE => "ppe.docs.microsoft.com",
-                    DocsEnvironment.Perf => "ppe.docs.microsoft.com",
-                    _ => throw new NotSupportedException(),
+                    _ => "ppe.docs.microsoft.com",
                 },
             };
         }
