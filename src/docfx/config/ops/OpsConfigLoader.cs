@@ -107,7 +107,7 @@ namespace Microsoft.Docs.Build
             (result["fileMetadata"], result["joinTOC"]) =
                 GenerateJoinTocMetadataAndConfig(
                     joinTOCPluginConfig,
-                    docsetConfig?.JoinTOCPlugin != null ? new PathString() : new PathString(buildSourceFolder));
+                    docsetConfig?.JoinTOCPlugin != null ? default : new PathString(buildSourceFolder));
             var sourceMaps = new JArray();
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
