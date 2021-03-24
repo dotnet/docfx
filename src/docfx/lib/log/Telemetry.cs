@@ -164,11 +164,11 @@ namespace Microsoft.Docs.Build
                 error.MsService,
                 error.MsSubservice,
             };
-            var additoinInfoString = JsonUtility.Serialize(additionalInfo);
+            var additionalInfoString = JsonUtility.Serialize(additionalInfo);
             if (!s_isRealTimeBuild.Value)
             {
                 s_errorCountMetric.TrackValue(
-                    1, code, level.ToString(), CoalesceEmpty(name), additoinInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                    1, code, level.ToString(), CoalesceEmpty(name), additionalInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
             }
         }
 
