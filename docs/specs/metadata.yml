@@ -66,7 +66,7 @@ inputs:
     ---
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"violate-schema","ms.author":undefined,"message":"Expected type String, please input String or type compatible with String.","file":"docs/a.md","line":2,"column":8}
+    {"message_severity":"error","code":"violate-schema","ms.author":undefined,"ms.prod":undefined,"message":"Expected type String, please input String or type compatible with String.","file":"docs/a.md","line":2,"column":8}
 ---
 # Report error for invalid yaml header value type as array
 inputs:
