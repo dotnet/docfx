@@ -30,17 +30,19 @@ namespace Microsoft.Docs.Build
             _repositoryProvider = repositoryProvider;
         }
 
-        public void Run()
+        public bool Run()
         {
-            PreProcessMonoDocXml();
+            // TODO: get failure indicator from MAML2Yaml
             PreProcessMAML();
+            return PreProcessMonoDocXml();
         }
 
-        private void PreProcessMonoDocXml()
+        private bool PreProcessMonoDocXml()
         {
+            var result = true;
             if (_config.Monodoc is null)
             {
-                return;
+                return result;
             }
 
             using (Progress.Start("Preprocessing monodoc XML files"))
@@ -67,7 +69,7 @@ namespace Microsoft.Docs.Build
                             ? null
                             : Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
                         var (repository, _) = _repositoryProvider.GetRepository(new PathString(xmlDirectory));
-                        ECMA2YamlConverter.Run(
+                        result &= ECMA2YamlConverter.Run(
                             xmlDirectory,
                             outputDirectory: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder)),
                             fallbackXmlDirectory: fallbackXmlPath,
@@ -81,10 +83,12 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+            return result;
         }
 
         private void PreProcessMAML()
         {
+            // TODO: get failure indicator from MAML2Yaml
             if (_config.MAMLMonikerPath is null)
             {
                 return;
