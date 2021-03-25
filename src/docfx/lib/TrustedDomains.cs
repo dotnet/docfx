@@ -69,7 +69,13 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            errors.Add(Errors.Content.DisallowedDomain(new(file), uri.GetLeftPart(UriPartial.Authority)));
+            var domain = uri.GetLeftPart(UriPartial.Authority);
+            if (string.IsNullOrEmpty(domain))
+            {
+                domain = uri.GetLeftPart(UriPartial.Scheme);
+            }
+
+            errors.Add(Errors.Content.DisallowedDomain(new(file), domain));
             return false;
         }
 
