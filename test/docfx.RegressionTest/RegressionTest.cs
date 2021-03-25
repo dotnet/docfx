@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
                     docfxConfig["sandboxEnabledModuleList"] = "https://ops/sandboxEnabledModuleList/";
                     docfxConfig["metadataSchema"] = new JArray()
                     {
-                        Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                        Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"),
                         "https://ops/regressionallmetadataschema/",
                     };
                     docfxConfig["allowlists"] = "https://ops/regressionalltaxonomy-allowlists/";

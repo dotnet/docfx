@@ -589,9 +589,9 @@ outputs:
         <img src=''></p>"
     }
   .errors.log: |
-    { "message_severity": "warning", "message": "* 'ms-windows-store://pdp' *", "code": "disallowed-domain", "file": "a.md" }
-    { "message_severity": "warning", "message": "* 'file://c' *", "code": "disallowed-domain", "file": "a.md" }
-    { "message_severity": "warning", "message": "* 'http://docs.com' *", "code": "disallowed-domain", "file": "a.md" }
-    { "message_severity": "warning", "message": "* 'https://microsoft.com' *", "code": "disallowed-domain", "file": "a.md" }
-    { "message_severity": "warning", "message": "* '//office.com' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "info", "message": "* 'ms-windows-store://pdp' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "info", "message": "* 'file://c' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "info", "message": "* 'http://docs.com' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "info", "message": "* 'https://microsoft.com' *", "code": "disallowed-domain", "file": "a.md" }
+    { "message_severity": "info", "message": "* '//office.com' *", "code": "disallowed-domain", "file": "a.md" }
 ---
