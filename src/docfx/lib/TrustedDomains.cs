@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -56,7 +55,7 @@ namespace Microsoft.Docs.Build
             // Special case for links without protocol: '//codepen.io'. Uri treats them as files.
             if (uri.Scheme == Uri.UriSchemeFile && url.StartsWith("//"))
             {
-                if (IsTrusted("http", uri.DnsSafeHost))
+                if (IsTrusted("https", uri.DnsSafeHost))
                 {
                     return true;
                 }
