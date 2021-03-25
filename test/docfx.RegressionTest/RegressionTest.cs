@@ -184,7 +184,8 @@ namespace Microsoft.Docs.Build
                     // A new repo is added for the first time
                     Exec("git", $"checkout -B {s_repositoryName} origin/template", cwd: workingFolder);
                     Exec("git", $"clean -xdff", cwd: workingFolder);
-                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f --branch {opts.Branch} {opts.Repository} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                    var submoduleBranch = string.IsNullOrEmpty(opts.Branch) ? "" : $"--branch {opts.Branch}";
+                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f {submoduleBranch} {opts.Repository} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
                     return;
                 }
                 throw;
@@ -194,7 +195,10 @@ namespace Microsoft.Docs.Build
             Exec("git", $"clean -xdff", cwd: workingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
-            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            if (!string.IsNullOrEmpty(opts.Branch))
+            {
+                Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            }
             Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_repositoryName));

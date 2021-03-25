@@ -125,7 +125,7 @@ jobs:
       azure-mediaplayer-typescript:
         params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
       quantum-docs-pr:
-        params: https://github.com/MicrosoftDocs/quantum-docs-pr --timeout 30 --branch main
+        params: https://github.com/MicrosoftDocs/quantum-docs-pr --timeout 30
       microsoft-graph-docs:
         params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
       # dry-runs
