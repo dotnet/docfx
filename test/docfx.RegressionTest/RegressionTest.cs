@@ -165,6 +165,9 @@ namespace Microsoft.Docs.Build
 
         private static void EnsureTestData(Options opts, string workingFolder)
         {
+            var branch = string.IsNullOrEmpty(opts.Branch)
+                ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
+                : opts.Branch;
             if (!Directory.Exists(workingFolder))
             {
                 Directory.CreateDirectory(workingFolder);
@@ -184,8 +187,7 @@ namespace Microsoft.Docs.Build
                     // A new repo is added for the first time
                     Exec("git", $"checkout -B {s_repositoryName} origin/template", cwd: workingFolder);
                     Exec("git", $"clean -xdff", cwd: workingFolder);
-                    var submoduleBranch = string.IsNullOrEmpty(opts.Branch) ? "" : $"--branch {opts.Branch}";
-                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f {submoduleBranch} {opts.Repository} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f --branch {branch} {opts.Repository} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
                     return;
                 }
                 throw;
@@ -195,13 +197,18 @@ namespace Microsoft.Docs.Build
             Exec("git", $"clean -xdff", cwd: workingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
-            if (!string.IsNullOrEmpty(opts.Branch))
-            {
-                Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            }
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {branch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_repositoryName));
+        }
+
+        private static string GetRemoteDefaultBranch(string repositoryUrl, string workingDirectory)
+        {
+            var headBranchKey = "HEAD branch: ";
+            var remoteInfo = ProcessUtility.Execute("git", $"{s_gitCmdAuth} remote show {repositoryUrl}", workingDirectory, secret: s_gitCmdAuth);
+            var headBranchInfo = remoteInfo.Split('\n').First(x => x.Contains(headBranchKey));
+            return headBranchInfo[(headBranchInfo.IndexOf(headBranchKey) + headBranchKey.Length)..];
         }
 
         private static void Clean(string outputPath)
