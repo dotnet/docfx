@@ -251,7 +251,7 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchDocsetName = _config.Name;
             systemMetadata.SearchEngine = _config.SearchEngine;
 
-            if (_config.OutputPdf)
+            if (!_config.IsReferenceRepository && _config.OutputPdf)
             {
                 systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
                     $"https://{_config.HostName}", "pdfstore", systemMetadata.Locale, $"{_config.Product}.{_config.Name}", "{branchName}");
