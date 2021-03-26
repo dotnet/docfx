@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
                     referencingFile,
                     inclusionRoot);
 
-                return (xrefError, resolvedHref ?? href, declaringFile);
+                return (xrefError, resolvedHref ?? "", declaringFile);
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile, inclusionRoot);

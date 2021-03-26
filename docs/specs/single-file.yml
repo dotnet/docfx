@@ -61,6 +61,18 @@ outputs:
   c/.publish.json: |
     { "files": [{ "source_path": "a/a.md" }] }
 ---
+# Support glob pattern when build the whole repository
+buildFiles:
+- ./**
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a.md:
+outputs:
+  a/a.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+---
 # Ignore include files and invalid files
 buildFiles:
 - a.md

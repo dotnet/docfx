@@ -25,6 +25,9 @@ namespace Microsoft.Docs.Build
         // Ignore files starting with dot
         [InlineData("**", ".git, .git/a, a/.git, a\\.git", false)]
 
+        // Pattern will be normalized firstly
+        [InlineData("./test/../a.md", "a.md", true)]
+
         // Do not support negate pattern
         [InlineData("!abc", "d, dd, def", false)]
 
