@@ -422,3 +422,67 @@ outputs:
   cat/cf69cea28707fb90a9b0ead6e6f1707c/api/catlibrary.json:
   cat/api/toc.json:
   cat/api/copied-mouse/toc.json:
+---
+# No output generated when ecma2yaml fails with invalid xml
+os: windows, osx
+noInputCheck: true
+repos:
+  https://github.com/ops/ecma-yaml:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+          { 
+            "build_source_folder": "cat",
+            "SplitTOC": ["api/toc.yml"]
+          }],
+          "ECMA2Yaml": {
+            "SourceXmlFolder": "cat/xml",
+            "OutputYamlFolder": "cat/api",
+            "Flatten": true,
+            "SDPMode": true,
+          },
+        }
+      cat/docfx.yml: |
+        files: '**/*.{md,yml}'
+        template: ../_themes
+        monikerDefinition: monikerDefinition.json
+      cat/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "cat-1.0", "product_name": "CAT" }
+          ]
+        }
+      cat/xml/ns-CatLibrary.xml: |
+        <Namespace Name="CatLibrary">
+          <Docs>
+            <summary>To be added.</summary>
+            <remarks>To be added.</remarks>
+          </Docs>
+        </Namespace>
+      cat/xml/CatLibrary/Cat`2.xml: |
+        <Type Name="Cat&lt;T,K&gt;" FullName="CatLibrary.Cat&lt;T,K&gt;">
+          <TypeSignature Language="C#" Value="public class Cat&lt;T,K&gt; where T : class, new() where K : struct" />
+          <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit Cat`2&lt;class .ctor T, struct .ctor (class System.ValueType) K&gt; extends System.Object" />
+          <TypeSignature Language="DocId" Value="T:CatLibrary.Cat`2" />
+          <AssemblyInfo>
+            <AssemblyName>CatLibrary</AssemblyName>
+            <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      cat/xml/FrameworksIndex/cat-1.0.xml: |
+        <?xml version="1.0" encoding="utf-8"?>
+        <Framework Name="cat-1.0">
+          <Assemblies>
+            <Assembly Name="CatLibrary" Version="1.0.0.0" />
+          </Assemblies>
+          <Namespace Name="CatLibrary">
+            <Type Name="CatLibrary.Cat`2" Id="T:CatLibrary.Cat`2">
+              <Member Id="M:CatLibrary.Cat`2.#ctor(`0)" />
+            </Type>
+          </Namespace>
+        </Framework>
+      _themes/ContentTemplate/schemas/NetNamespace.schema.json: |
+        {}
+      _themes/ContentTemplate/schemas/NetMember.schema.json: |
+        {}
+outputs:
+  .errors.log:
