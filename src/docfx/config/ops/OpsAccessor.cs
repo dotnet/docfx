@@ -55,7 +55,11 @@ namespace Microsoft.Docs.Build
 
         public Task<string> GetDocumentUrls()
         {
-            return Fetch("https://docsvalidation.azurefd.net/errorcodes");
+            return Fetch(DocsEnvironment switch
+            {
+                DocsEnvironment.Prod => "https://docsvalidation.azurefd.net/errorcodes",
+                _ => "https://docsvalidationppe.azurefd.net/errorcodes",
+            });
         }
 
         public async Task<string[]> GetXrefMaps(string tag, string xrefEndpoint, string xrefMapQueryParams)
@@ -249,9 +253,7 @@ namespace Microsoft.Docs.Build
             return (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
-                DocsEnvironment.PPE => "https://BuildApiPubDev.azurefd.net",
-                DocsEnvironment.Perf => "https://op-build-perf.azurewebsites.net",
-                _ => throw new NotSupportedException(),
+                _ => "https://BuildApiPubDev.azurefd.net",
             };
         }
 
