@@ -25,15 +25,7 @@ namespace Microsoft.Docs.Build
 
         public object?[] MessageArguments { get; init; } = Array.Empty<object?>();
 
-        public string? MsAuthor { get; init; }
-
-        public string? MsProd { get; init; }
-
-        public string? MsTechnology { get; init; }
-
-        public string? MsService { get; init; }
-
-        public string? MsSubservice { get; init; }
+        public AdditionalErrorInfo? AdditonalErrorInfo { get; init; }
 
         public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null)
         {
@@ -67,11 +59,11 @@ namespace Microsoft.Docs.Build
                 log_item_type = "user",
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
                 property_path = PropertyPath,
-                ms_author = MsAuthor,
-                ms_prod = MsProd,
-                ms_technology = MsTechnology,
-                ms_service = MsService,
-                ms_subservice = MsSubservice,
+                ms_author = AdditonalErrorInfo?.MsAuthor,
+                ms_prod = AdditonalErrorInfo?.MsProd,
+                ms_technology = AdditonalErrorInfo?.MsTechnology,
+                ms_service = AdditonalErrorInfo?.MsService,
+                ms_subservice = AdditonalErrorInfo?.MsSubservice,
                 document_url = DocumentUrl,
                 date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
             }).Replace("\"ms_", "\"ms.");

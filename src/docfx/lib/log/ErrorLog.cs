@@ -39,14 +39,18 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var msAuthor = MetadataProvider?.GetMetadata(Null, source).MsAuthor;
-                    var msProd = MetadataProvider?.GetMetadata(Null, source).MsProd;
-                    var msTechnology = MetadataProvider?.GetMetadata(Null, source).MsTechnology;
-                    var msService = MetadataProvider?.GetMetadata(Null, source).MsService;
-                    var msSubservice = MetadataProvider?.GetMetadata(Null, source).MsSubservice;
+                    if (error.AdditonalErrorInfo == null)
+                    {
+                        var metadata = MetadataProvider?.GetMetadata(Null, source);
+                        var additionalInfo = new AdditionalErrorInfo(
+                            metadata?.MsAuthor,
+                            metadata?.MsProd,
+                            metadata?.MsTechnology,
+                            metadata?.MsService,
+                            metadata?.MsSubservice);
 
-                    error = error with
-                        { MsAuthor = msAuthor, MsProd = msProd, MsTechnology = msTechnology, MsService = msService, MsSubservice = msSubservice };
+                        error = error with { AdditonalErrorInfo = additionalInfo };
+                    }
                 }
                 catch
                 {
