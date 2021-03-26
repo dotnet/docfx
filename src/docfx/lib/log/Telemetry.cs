@@ -156,7 +156,7 @@ namespace Microsoft.Docs.Build
             var code = error.Code;
             var level = error.Level;
             var name = error.PropertyPath;
-            var additionalErrorInfoString = error.AdditonalErrorInfo == null ? "{}" : JsonUtility.Serialize(error.AdditonalErrorInfo);
+            var additionalErrorInfoString = error.AdditionalErrorInfo == null ? "{}" : JsonUtility.Serialize(error.AdditionalErrorInfo);
             if (!s_isRealTimeBuild.Value)
             {
                 s_errorCountMetric.TrackValue(

@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    if (error.AdditonalErrorInfo == null)
+                    if (error.AdditionalErrorInfo == null)
                     {
                         var metadata = MetadataProvider?.GetMetadata(Null, source);
                         var additionalInfo = new AdditionalErrorInfo(
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                             metadata?.MsService,
                             metadata?.MsSubservice);
 
-                        error = error with { AdditonalErrorInfo = additionalInfo };
+                        error = error with { AdditionalErrorInfo = additionalInfo };
                     }
                 }
                 catch
