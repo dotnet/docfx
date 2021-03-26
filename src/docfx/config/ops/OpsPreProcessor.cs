@@ -32,9 +32,7 @@ namespace Microsoft.Docs.Build
 
         public bool Run()
         {
-            // TODO: get failure indicator from MAML2Yaml
-            PreProcessMAML();
-            return PreProcessMonoDocXml();
+            return PreProcessMonoDocXml() & PreProcessMAML();
         }
 
         private bool PreProcessMonoDocXml()
@@ -86,12 +84,12 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private void PreProcessMAML()
+        private bool PreProcessMAML()
         {
-            // TODO: get failure indicator from MAML2Yaml
+            var result = true;
             if (_config.MAMLMonikerPath is null)
             {
-                return;
+                return result;
             }
 
             using (Progress.Start("Preprocessing MAML markdown files"))
@@ -102,7 +100,7 @@ namespace Microsoft.Docs.Build
                     {
                         var monikerMappingPath = _config.MAMLMonikerPath[index];
 
-                        MAML2YamlConverter.Run(
+                        result &= MAML2YamlConverter.Run(
                             docsetPath: _buildOptions.DocsetPath,
                             monikerMappingPath: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monikerMappingPath)),
                             logWriter: LogError,
@@ -110,6 +108,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+            return result;
         }
 
         private void LogError(ECMALogItem item)
