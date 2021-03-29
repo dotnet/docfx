@@ -213,7 +213,7 @@ namespace Microsoft.Docs.Build
             {
                 return match.Groups[2].Value;
             }
-            return string.Empty;
+            throw new InvalidOperationException("Default remote branch not found!");
         }
 
         private static void Clean(string outputPath)
