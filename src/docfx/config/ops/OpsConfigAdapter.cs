@@ -10,7 +10,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -113,8 +112,6 @@ namespace Microsoft.Docs.Build
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 .ToDictionary(item => item.log_code, item => item.document_url);
 
-            var trustedDomains = JToken.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/docs/trusted-domains.json")));
-
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
@@ -124,7 +121,6 @@ namespace Microsoft.Docs.Build
                 xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 documentUrls,
-                trustedDomains,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
                 buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
