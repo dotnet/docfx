@@ -108,12 +108,4 @@ namespace Microsoft.Docs.Build
             }
         }
     }
-
-    internal enum ErrorLevel
-    {
-        Info,
-        Suggestion,
-        Warning,
-        Error,
-    }
 }
