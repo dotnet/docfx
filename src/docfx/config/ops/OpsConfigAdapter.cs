@@ -127,6 +127,7 @@ namespace Microsoft.Docs.Build
                 allowlists = AllowlistsApi,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
+                isReferenceRepository = docsets.Any(d => d.use_template),
             });
         }
 
