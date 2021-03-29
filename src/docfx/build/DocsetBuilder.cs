@@ -141,7 +141,10 @@ namespace Microsoft.Docs.Build
 
                 var repositoryProvider = new RepositoryProvider(errorLog, buildOptions, config);
 
-                new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run();
+                if (!new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run())
+                {
+                    return null;
+                }
 
                 return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package, progressReporter);
             }

@@ -74,6 +74,11 @@ namespace Microsoft.Docs.Build
         public bool OutputPdf { get; init; }
 
         /// <summary>
+        /// Gets whether the repository a reference repository.
+        /// </summary>
+        public bool IsReferenceRepository { get; init; }
+
+        /// <summary>
         /// Gets Output Url type
         /// </summary>
         public UrlType UrlType { get; init; } = UrlType.Pretty;
