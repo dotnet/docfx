@@ -602,3 +602,4 @@ marginwidth
 nowrap
 scrolling
 valign
+rgn
