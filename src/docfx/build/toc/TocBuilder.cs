@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
             var outputPath = _documentProvider.GetOutputPath(file);
 
             // enable pdf
-            if (_config.OutputPdf)
+            if (!_config.IsReferenceRepository && _config.OutputPdf)
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
                 model.Metadata.PdfAbsolutePath = "/" +

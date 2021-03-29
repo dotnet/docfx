@@ -365,6 +365,15 @@ outputs:
   a.json: |
     { "_op_pdfUrlPrefixTemplate": "https://docs.com/pdfstore/en-us/./{branchName}" }
 ---
+# no _op_pdfUrlPrefixTemplate for reference repository
+inputs:
+  docfx.yml: |
+    outputPdf: true
+    isReferenceRepository: true
+  a.md:
+outputs:
+  a.json:
+---
 # Support tilde_path
 inputs:
   docfx.yml:
