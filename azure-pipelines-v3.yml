@@ -151,7 +151,7 @@ jobs:
   - script: dotnet tool update -g dotnet-trace
     displayName: Install dotnet-trace
 
-  - bash: curl https://raw.githubusercontent.com/Azure/azure-cli/fix-managed_by_tenants/src/azure-cli-core/azure/cli/core/_profile.py --output "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\Lib\site-packages\azure\cli\core\_profile.py"
+  - script: Invoke-WebRequest -Uri https://raw.githubusercontent.com/Azure/azure-cli/fix-managed_by_tenants/src/azure-cli-core/azure/cli/core/_profile.py -OutFile "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\Lib\site-packages\azure\cli\core\_profile.py"
 
   # Run Regression Tests
   - task: AzureCLI@2
