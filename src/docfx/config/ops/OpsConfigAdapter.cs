@@ -95,7 +95,11 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(docset.base_path))
             {
                 xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);
+
+                // Handle share base path change during archive
+                xrefQueryTags.Add($"/previous-versions{docset.base_path.ValueWithLeadingSlash}");
             }
+
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
             {
