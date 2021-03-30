@@ -98,7 +98,7 @@ jobs:
         params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --profile --timeout 25
       powerbi-docs-pr.de-DE:
         params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
-      PowerShell-Docs:
+      :-Docs:
         params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
       roslyn-api-docs:
         params: https://github.com/dotnet/roslyn-api-docs --branch live --profile --timeout 105
@@ -151,7 +151,9 @@ jobs:
   - script: dotnet tool update -g dotnet-trace
     displayName: Install dotnet-trace
 
-  - powershell: Invoke-WebRequest -Uri https://raw.githubusercontent.com/Azure/azure-cli/fix-managed_by_tenants/src/azure-cli-core/azure/cli/core/_profile.py -OutFile "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\Lib\site-packages\azure\cli\core\_profile.py"
+  - powershell: |
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      Invoke-WebRequest -Uri https://raw.githubusercontent.com/Azure/azure-cli/fix-managed_by_tenants/src/azure-cli-core/azure/cli/core/_profile.py -OutFile "C:\Program Files (x86)\Microsoft SDKs\Azure\CLI2\Lib\site-packages\azure\cli\core\_profile.py"
 
   # Run Regression Tests
   - task: AzureCLI@2
