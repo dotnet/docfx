@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             {
                 xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);
 
-                // Hanlde share base path change during archive
+                // Handle share base path change during archive
                 xrefQueryTags.Add($"/previous-versions{docset.base_path.ValueWithLeadingSlash}");
             }
 
