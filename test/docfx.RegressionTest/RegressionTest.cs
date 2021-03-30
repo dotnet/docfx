@@ -222,8 +222,7 @@ namespace Microsoft.Docs.Build
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"restore {logOption} {templateOption} --verbose --stdin",
                 stdin: docfxConfig,
-                cwd: repositoryPath,
-                allowExitCodes: new int[] { 0 });
+                cwd: repositoryPath);
 
             var profiler = opts.Profile
                 ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
@@ -316,7 +315,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, allowExitCodes: new[] { 0 }, secrets: s_gitCmdAuth);
+                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             }
         }
 
@@ -333,7 +332,7 @@ namespace Microsoft.Docs.Build
         {
             var stopwatch = Stopwatch.StartNew();
             var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrWhiteSpace(secret) ? arg : arg.Replace(secret, "***"));
-            allowExitCodes ??= new int[] { 0, 1 };
+            allowExitCodes ??= new int[] { 0 };
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
