@@ -316,7 +316,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, allowExitCodes: new[] { 0 }, secrets: s_gitCmdAuth);
             }
         }
 
