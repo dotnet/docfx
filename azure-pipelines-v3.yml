@@ -15,14 +15,26 @@ variables:
   value: false
 - name: NugetSecurityAnalysisWarningLevel
   value: none
+- name: system.debug
+  value: true
 
 jobs:
 
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
-    vmImage: 'windows-latest'
+    name: DocFX
   steps:
+
+  # Test azure CLI login
+  - task: AzureCLI@2
+    displayName: az login fail
+    inputs:
+      azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+      scriptType: ps
+      scriptLocation: inlineScript
+      powerShellErrorActionPreference: continue
+      inlineScript: write-host 'AWSL'
 
   # Install .NET Core sdk
   - task: UseDotNet@2
