@@ -233,6 +233,7 @@ namespace Microsoft.Docs.Build
                 arguments: $"build -o \"{outputPath}\" {logOption} {templateOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
+                allowExitCodes: new[] { 0, 1 },
                 env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null);
 
             if (profiler != null)
