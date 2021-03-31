@@ -344,18 +344,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     continue;
                 }
 
-                if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
-                {
-                    Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
-                    return;
-                }
-
                 var region = node.Attribute("region");
 
                 var path = source.Value;
                 if (!Path.IsPathRooted(path))
                 {
-                    var basePath = !string.IsNullOrEmpty(context.CodeSourceBasePath) ? context.CodeSourceBasePath : Path.GetDirectoryName(Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Path));
+                    string basePath;
+
+                    if (!string.IsNullOrEmpty(context.CodeSourceBasePath))
+                    {
+                        basePath = context.CodeSourceBasePath;
+                    }
+                    else
+                    {
+                        if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
+                        {
+                            Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
+                            continue;
+                        }
+
+                        basePath = Path.GetDirectoryName(Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Path));
+                    }
                     
                     path = Path.Combine(basePath, path);
                 }

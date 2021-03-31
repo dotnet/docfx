@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public static class MergeCommentsHelper
     {
-        public static void MergeComments(MetadataItem item, IEnumerable<string> commentFiles)
+        public static void MergeComments(ExtractMetadataOptions options, MetadataItem item, IEnumerable<string> commentFiles)
         {
             if (item == null || commentFiles == null)
             {
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                        from uidAndReader in EnumerateDeveloperComments(file)
                        select uidAndReader.ToCommentIdAndComment();
 
-            PatchMetadataItem(item, list);
+            PatchMetadataItem(options, item, list);
             RebuildReference(item);
         }
 
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static void PatchMetadataItem(MetadataItem assembly, IEnumerable<CommentIdAndComment> list)
+        private static void PatchMetadataItem(ExtractMetadataOptions options, MetadataItem assembly, IEnumerable<CommentIdAndComment> list)
         {
             var allItemsInAssembly = new Dictionary<string, MetadataItem>(StringComparer.OrdinalIgnoreCase);
             GetAllItemByCommentId(allItemsInAssembly, assembly);
@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 MetadataItem item = null;
                 if (allItemsInAssembly.TryGetValue(uidAndComment.CommentId, out item))
                 {
-                    PatchViewModel(item, uidAndComment.Comment);
+                    PatchViewModel(options, item, uidAndComment.Comment);
                 }
             }
         }
@@ -109,11 +109,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static void PatchViewModel(MetadataItem item, string comment)
+        private static void PatchViewModel(ExtractMetadataOptions options, MetadataItem item, string comment)
         {
             var context = new TripleSlashCommentParserContext
             {
-                AddReferenceDelegate = (s, e) => { }
+                AddReferenceDelegate = (s, e) => { },
+                CodeSourceBasePath = options.CodeSourceBasePath,
+                
             };
             var commentModel = TripleSlashCommentModel.CreateModel(comment, SyntaxLanguage.CSharp, context);
             var summary = commentModel.Summary;
