@@ -506,7 +506,7 @@ namespace Microsoft.Docs.Build
                             {
                                 if (tagName == "img")
                                 {
-                                    errors.Add(Errors.Content.ExternalImage(new(file), href, untrustedDomain));
+                                    errors.Add(Errors.Content.ExternalImage(new(file), href, tagName, untrustedDomain));
                                 }
                                 else
                                 {

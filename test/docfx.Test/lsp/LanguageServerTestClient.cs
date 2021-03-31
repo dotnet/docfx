@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
         }
 
         private CancellationToken CancelAfterTimeout()
-            => new CancellationTokenSource(30000).Token;
+            => new CancellationTokenSource(60000).Token;
 
         private JToken ApplyCredentialVariables(JToken @params)
         {
