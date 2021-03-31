@@ -11,7 +11,7 @@ namespace Microsoft.Docs.Build
         public string Repository { get; set; } = "";
 
         [Option("branch")]
-        public string Branch { get; set; } = "master";
+        public string Branch { get; set; } = "";
 
         [Option("locale")]
         public string Locale { get; set; } = "en-us";

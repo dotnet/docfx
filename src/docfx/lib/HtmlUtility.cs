@@ -94,6 +94,7 @@ namespace Microsoft.Docs.Build
             { "p", new(StringComparer.OrdinalIgnoreCase) { "align", "dir", "hidden", "lang", "valign" } },
             { "pre", new(StringComparer.OrdinalIgnoreCase) { "lang" } },
             { "q", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
+            { "rgn", null },
             { "s", null },
             { "samp", null },
             { "section", null },
