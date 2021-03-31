@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
@@ -25,8 +24,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {
-        private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
-
         [Fact]
         [Trait("Related", "Attribute")]
         public void TestGenerateMetadataAsyncWithFuncVoidReturn()
@@ -2474,7 +2471,7 @@ namespace Test1
             Assert.Equal("TestAttribute", @class.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.TestAttribute", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal(@"[Serializable]
-[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Module | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Interface | AttributeTargets.Parameter | AttributeTargets.Delegate | AttributeTargets.ReturnValue | AttributeTargets.GenericParameter | AttributeTargets.All, Inherited = true, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
 [TypeConverter(typeof(TestAttribute))]
 [TypeConverter(typeof(TestAttribute[]))]
 [Test(""test"")]
@@ -2548,6 +2545,58 @@ public object Property
     [Test(8)]
     set;
 }", property.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithDefaultParameterEnumFlagsValues()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None) { }
+        public void Undefined(AttributeTargets targets = (AttributeTargets)0) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var defined = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(defined);
+            Assert.Equal(@"public void Defined(Base64FormattingOptions options = Base64FormattingOptions.None)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var undefined = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(undefined);
+            Assert.Equal(@"public void Undefined(AttributeTargets targets = (AttributeTargets)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithDefaultParameterEnumValues()
+        {
+            string code = @"
+using System;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC) { }
+        public void Undefined(ConsoleKey key = (ConsoleKey)0) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            var defined = output.Items[0].Items[0].Items[0];
+            Assert.NotNull(defined);
+            Assert.Equal(@"public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC)", defined.Syntax.Content[SyntaxLanguage.CSharp]);
+
+            var undefined = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(undefined);
+            Assert.Equal(@"public void Undefined(ConsoleKey key = (ConsoleKey)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]

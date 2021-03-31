@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.VisualBasic;
     using Microsoft.CodeAnalysis.Emit;
-    using Microsoft.CodeAnalysis.MSBuild;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
@@ -23,8 +22,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromVBUnitTest
     {
-        private static readonly MSBuildWorkspace Workspace = MSBuildWorkspace.Create();
-
         [Trait("Related", "Generic")]
         [Fact]
         public void TestGenereateMetadataWithClass()
@@ -1392,7 +1389,7 @@ End Namespace
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
             Assert.Equal(@"<Serializable>
-<AttributeUsage(AttributeTargets.Assembly Or AttributeTargets.Module Or AttributeTargets.Class Or AttributeTargets.Struct Or AttributeTargets.Enum Or AttributeTargets.Constructor Or AttributeTargets.Method Or AttributeTargets.Property Or AttributeTargets.Field Or AttributeTargets.Event Or AttributeTargets.Interface Or AttributeTargets.Parameter Or AttributeTargets.Delegate Or AttributeTargets.ReturnValue Or AttributeTargets.GenericParameter Or AttributeTargets.All, Inherited:=True, AllowMultiple:=True)>
+<AttributeUsage(AttributeTargets.All, Inherited:=True, AllowMultiple:=True)>
 <TypeConverter(GetType(TestAttribute))>
 <Test(""test"")>
 <Test(New Integer() {1, 2, 3})>
