@@ -6,8 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -27,6 +25,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
+        private readonly MetadataProvider _metadataProvider;
         private readonly PublishUrlMap _publishUrlMap;
 
         public ContentValidator(
@@ -36,6 +35,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             ZonePivotProvider zonePivotProvider,
+            MetadataProvider metadataProvider,
             PublishUrlMap publishUrlMap)
         {
             _config = config;
@@ -43,6 +43,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _zonePivotProvider = zonePivotProvider;
+            _metadataProvider = metadataProvider;
             _publishUrlMap = publishUrlMap;
 
             _validator = new Validator(
@@ -306,6 +307,8 @@ namespace Microsoft.Docs.Build
 
         private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context)
         {
+            var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, file);
+            var noindex = metadata.Robots?.Contains("noindex");
             if (TryGetValidationDocumentType(file, out var documentType))
             {
                 context = new ValidationContext
@@ -313,6 +316,7 @@ namespace Microsoft.Docs.Build
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
                     Monikers = GetMonikers(file, needMonikers),
+                    NoIndex = noindex ?? false,
                 };
                 return true;
             }

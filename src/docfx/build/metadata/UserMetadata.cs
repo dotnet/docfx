@@ -55,6 +55,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_tocRel")]
         public string? TocRel { get; init; }
 
+        [JsonProperty("robots")]
         public string? Robots { get; set; }
 
         public PathString TildePath { get; init; }
