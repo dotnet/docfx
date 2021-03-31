@@ -35,13 +35,53 @@ namespace Microsoft.Docs.Build
 
         private static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<Options>(args).MapResult(
-                Run,
-                _ =>
+            if (args.Length >= 1 && args[0].Equals("warm-up"))
+            {
+                Console.WriteLine($"warm up starting...");
+                var opts = string.Join(" ", args[1..]);
+
+                foreach (var opt in opts.Split("https:"))
                 {
-                    SendPullRequestComments(new() { CrashMessage = "regression-test argument exception" });
-                    return -9999;
-                });
+                    if (string.IsNullOrEmpty(opt.Trim()))
+                    {
+                        continue;
+                    }
+
+                    var option = Parser.Default.ParseArguments<Options>($"https:{opt}".Split()).MapResult(WarmUpAgents, _ => { return -9999; });
+                }
+                return 0;
+            }
+            else
+            {
+                Console.WriteLine("run regression test starting...");
+                return Parser.Default.ParseArguments<Options>(args).MapResult(
+                    Run,
+                    _ =>
+                    {
+                        SendPullRequestComments(new() { CrashMessage = "regression-test argument exception" });
+                        return -9999;
+                    });
+            }
+        }
+
+        private static int WarmUpAgents(Options opts)
+        {
+            try
+            {
+                s_repository = opts.Repository;
+                s_repositoryName = $"{(opts.DryRun ? "dryrun." : "")}{Path.GetFileName(opts.Repository)}";
+                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
+
+                Console.WriteLine($"Downloading {s_repository} with branch {opts.Branch}");
+                EnsureTestData(opts, workingFolder);
+                Console.WriteLine($"{s_repository} with branch {opts.Branch} is finished!");
+            }
+            catch
+            {
+                throw;
+            }
+
+            return 0;
         }
 
         private static int Run(Options opts)
@@ -171,10 +211,17 @@ namespace Microsoft.Docs.Build
                 : opts.Branch;
             if (!Directory.Exists(workingFolder))
             {
-                Directory.CreateDirectory(workingFolder);
-                Exec("git", $"init", cwd: workingFolder);
-                Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+                try
+                {
+                    Directory.CreateDirectory(workingFolder);
+                    Exec("git", $"init", cwd: workingFolder);
+                    Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
+                    Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+                }
+                catch
+                {
+                    EnsureTestData(opts, workingFolder);
+                }
             }
 
             try
