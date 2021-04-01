@@ -21,7 +21,7 @@ jobs:
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
-    name: 1ES-Pool
+    vmImage: 'windows-latest'
   steps:
 
   # Install .NET Core sdk
