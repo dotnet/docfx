@@ -290,7 +290,7 @@ namespace Microsoft.Docs.Build
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
+                    Arguments = $"--no-pager -c core.longpaths=true -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
                 }) ?? throw new InvalidOperationException();
