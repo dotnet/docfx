@@ -124,8 +124,8 @@ jobs:
         params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
       azure-mediaplayer-typescript:
         params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
-      quantum-docs-pr:
-        params: https://github.com/MicrosoftDocs/quantum-docs-pr --timeout 30 --branch main
+      quantum-docs-private:
+        params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
       microsoft-graph-docs:
         params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
       # dry-runs
@@ -153,7 +153,7 @@ jobs:
 
   # Run Regression Tests
   - task: AzureCLI@2
-    displayName: Run regression tests
+    displayName: Run
     inputs:
       azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
       scriptType: ps

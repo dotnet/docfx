@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, "BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildLog", "Code", "Level", "Name", "AdditionalErrorInfo", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_fileLogCountMetric =
@@ -151,12 +151,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static void TrackErrorCount(string code, ErrorLevel level, string? name)
+        public static void TrackErrorCount(Error error)
         {
+            var code = error.Code;
+            var level = error.Level;
+            var name = error.PropertyPath;
+            var additionalErrorInfoString = error.AdditionalErrorInfo == null ? "{}" : JsonUtility.Serialize(error.AdditionalErrorInfo);
             if (!s_isRealTimeBuild.Value)
             {
                 s_errorCountMetric.TrackValue(
-                    1, code, level.ToString(), CoalesceEmpty(name), "User", s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                    1, code, level.ToString(), CoalesceEmpty(name), additionalErrorInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
             }
         }
 

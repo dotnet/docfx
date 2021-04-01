@@ -13,8 +13,6 @@ namespace Microsoft.Docs.Build
 
         public string Message { get; init; }
 
-        public string? MsAuthor { get; init; }
-
         public string? PropertyPath { get; init; }
 
         public SourceInfo? Source { get; init; }
@@ -26,6 +24,8 @@ namespace Microsoft.Docs.Build
         public string? DocumentUrl { get; init; }
 
         public object?[] MessageArguments { get; init; } = Array.Empty<object?>();
+
+        public AdditionalErrorInfo? AdditionalErrorInfo { get; init; }
 
         public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null)
         {
@@ -59,10 +59,14 @@ namespace Microsoft.Docs.Build
                 log_item_type = "user",
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
                 property_path = PropertyPath,
-                ms_author = MsAuthor,
+                ms_author = AdditionalErrorInfo?.MsAuthor,
+                ms_prod = AdditionalErrorInfo?.MsProd,
+                ms_technology = AdditionalErrorInfo?.MsTechnology,
+                ms_service = AdditionalErrorInfo?.MsService,
+                ms_subservice = AdditionalErrorInfo?.MsSubservice,
                 document_url = DocumentUrl,
                 date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
-            }).Replace("\"ms_author\"", "\"ms.author\"");
+            }).Replace("\"ms_", "\"ms.");
         }
 
         public DocfxException ToException(Exception? innerException = null, bool isError = true)
