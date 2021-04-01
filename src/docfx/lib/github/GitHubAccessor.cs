@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
                     content,
                     new { data = default(T), errors = new[] { new { type = "", message = "" } } });
 
-                if (body.errors != null)
+                if (body?.errors != null)
                 {
                     foreach (var error in body.errors)
                     {
@@ -221,7 +221,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
 
-                return (null, null, body.data);
+                return (null, null, body?.data);
             }
             catch (Exception ex)
             {

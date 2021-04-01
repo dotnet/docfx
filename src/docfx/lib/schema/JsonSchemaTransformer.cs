@@ -401,8 +401,14 @@ namespace Microsoft.Docs.Build
                 return value;
             }
 
+            var stringValue = value.Value<string>();
+            if (stringValue is null)
+            {
+                return value;
+            }
+
             var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
-            var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
+            var content = new SourceInfo<string>(stringValue, sourceInfo);
 
             switch (schema.ContentType)
             {
@@ -458,7 +464,7 @@ namespace Microsoft.Docs.Build
                     if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
                     {
                         Watcher.Write(() => _uidReferenceCountList.Value.Add((
-                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            content,
                             propertyPath,
                             rootSchema,
                             schema.MinReferenceCount,
@@ -467,7 +473,7 @@ namespace Microsoft.Docs.Build
                     else if (schema.ContentType == JsonSchemaContentType.Xref)
                     {
                         Watcher.Write(() => _xrefList.Value.Add((
-                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            content,
                             (xrefSpec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null,
                             xrefSpec?.SchemaType)));
                     }
