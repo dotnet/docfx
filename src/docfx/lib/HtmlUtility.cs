@@ -502,8 +502,16 @@ namespace Microsoft.Docs.Build
                             }
 
                             // Opt-in to trusted domain check
-                            if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(errors, file, href))
+                            if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
                             {
+                                if (tagName == "img")
+                                {
+                                    errors.Add(Errors.Content.ExternalImage(new(file), href, tagName, untrustedDomain));
+                                }
+                                else
+                                {
+                                    errors.Add(Errors.Content.DisallowedDomain(new(file), href, tagName, untrustedDomain));
+                                }
                                 token.SetAttributeValue(attributeName, "");
                             }
                             else

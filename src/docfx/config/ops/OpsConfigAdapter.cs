@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
 
         private static Task<string> GetOpsMetadata()
         {
-            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"));
+            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"));
         }
 
         private static (string repository, string branch) GetValidationServiceParameters(Uri url)
