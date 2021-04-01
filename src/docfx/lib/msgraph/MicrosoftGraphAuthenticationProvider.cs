@@ -24,7 +24,10 @@ namespace Microsoft.Docs.Build
 
         public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientCertificate)
         {
-            _clientCertificate = new X509Certificate2(Convert.FromBase64String(clientCertificate), password: "");
+            _clientCertificate = new X509Certificate2(
+                Convert.FromBase64String(clientCertificate),
+                password: "",
+                X509KeyStorageFlags.EphemeralKeySet);
             _cca = ConfidentialClientApplicationBuilder.Create(clientId)
                 .WithCertificate(_clientCertificate)
                 .WithAuthority(new Uri($"https://login.microsoftonline.com/{tenantId}/v2.0"))
