@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
             var profile = new { type = "", name = "", unit = "", startValue = 0.0, endValue = 0.0, events = new[] { @event } };
             var spec = new { shared = new { frames = new[] { frame } }, profiles = new[] { profile } };
 
-            var data = JsonConvert.DeserializeAnonymousType(File.ReadAllText(fileName), spec);
+            var data = JsonConvert.DeserializeAnonymousType(File.ReadAllText(fileName), spec) ?? throw new ArgumentNullException();
             var inclusiveTime = new double[data.shared.frames.Length];
             var totalTime = 0.0;
 

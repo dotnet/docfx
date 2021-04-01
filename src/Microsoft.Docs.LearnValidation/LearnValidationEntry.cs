@@ -166,7 +166,7 @@ namespace Microsoft.Docs.LearnValidation
             var sw = Stopwatch.StartNew();
 
             var data = await learnServiceAccessor.HierarchyDrySync(body);
-            var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data);
+            var results = JsonConvert.DeserializeObject<List<ValidationResult>>(data) ?? new();
             Console.WriteLine($"[{PluginName}] dry-sync done in {sw.ElapsedMilliseconds / 1000}s");
 
             return results.First(r => string.Equals(r.Locale, Constants.DefaultLocale));
@@ -174,7 +174,7 @@ namespace Microsoft.Docs.LearnValidation
 
         private static void RemoveInvalidPublishItems(string publishFilePath, HashSet<string> invalidFiles, LearnValidationLogger logger)
         {
-            var publishModel = JsonConvert.DeserializeObject<LearnPublishModel>(File.ReadAllText(publishFilePath));
+            var publishModel = JsonConvert.DeserializeObject<LearnPublishModel>(File.ReadAllText(publishFilePath)) ?? new();
             publishModel.Files.RemoveAll(item => invalidFiles.Contains(item.SourcePath));
 
             if (logger.HasFileWithError)
