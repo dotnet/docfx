@@ -70,7 +70,7 @@ namespace Microsoft.Docs.Build
 
             var response = await FetchBuild($"/v1/xrefmap{tag}{xrefMapQueryParams}", value404: "{}", environment);
 
-            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } }).links ?? Array.Empty<string>();
+            return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } })?.links ?? Array.Empty<string>();
         }
 
         public Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple)

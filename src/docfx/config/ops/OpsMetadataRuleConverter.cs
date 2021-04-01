@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
 
             var schema = new
             {

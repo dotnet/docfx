@@ -385,7 +385,7 @@ namespace Microsoft.Docs.Build
             if (TemplateEngine.IsConceptual(mime) || TemplateEngine.IsLandingData(mime))
             {
                 // Conceptual and Landing Data
-                return pageModel.Value<string>("conceptual");
+                return pageModel.Value<string>("conceptual") ?? "";
             }
 
             // Generate SDP content
