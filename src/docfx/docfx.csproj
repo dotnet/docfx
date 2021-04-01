@@ -22,11 +22,11 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.4" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
-    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.786" />
+    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.789" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.74" Aliases="maml" />
-    <PackageReference Include="Microsoft.Graph" Version="3.27.0" />
+    <PackageReference Include="Microsoft.Graph" Version="3.28.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.27.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.29.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2031" />
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.0" />
@@ -34,14 +34,14 @@
     <PackageReference Include="Quickenshtein" Version="1.5.0" />
     <PackageReference Include="Stubble.Core" Version="1.9.3" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
-    <PackageReference Include="YamlDotNet" Version="9.1.4" />
+    <PackageReference Include="YamlDotNet" Version="10.0.0" />
     <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" PrivateAssets="all" />
-    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-rc-00552-632f0a9" PrivateAssets="all" />
+    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-beta-00558-82cdaba" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
