@@ -232,6 +232,7 @@ namespace Microsoft.Docs.Build
                         {
                             DocsEnvironment.Prod => s_opsTokenPublic,
                             DocsEnvironment.PPE => s_opsTokenPubDev,
+                            DocsEnvironment.Perf => s_opsTokenPubDev,
                             _ => throw new InvalidOperationException(),
                         };
 
@@ -253,7 +254,9 @@ namespace Microsoft.Docs.Build
             return (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
-                _ => "https://BuildApiPubDev.azurefd.net",
+                DocsEnvironment.PPE => "https://BuildApiPubDev.azurefd.net",
+                DocsEnvironment.Perf => "https://op-build-test.azurewebsites.net",
+                _ => throw new NotSupportedException(),
             };
         }
 
