@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly SecretClient s_secretClientPerf = new(new("https://kv-opbuild-test.vault.azure.net/"), new DefaultAzureCredential());
 
-        private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken"));
+        private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.Prod));
         private static readonly Lazy<Task<string>> s_opsTokenPubDev = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.PPE));
         private static readonly Lazy<Task<string>> s_opsTokenPerf = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.Perf));
 
@@ -277,8 +277,8 @@ namespace Microsoft.Docs.Build
         {
             var response = environment switch
             {
-                DocsEnvironment.Prod => await s_secretClientPubDev.GetSecretAsync(secret),
-                DocsEnvironment.PPE => await s_secretClientPublic.GetSecretAsync(secret),
+                DocsEnvironment.Prod => await s_secretClientPublic.GetSecretAsync(secret),
+                DocsEnvironment.PPE => await s_secretClientPubDev.GetSecretAsync(secret),
                 DocsEnvironment.Perf => await s_secretClientPerf.GetSecretAsync(secret),
                 _ => throw new InvalidOperationException(),
             };
