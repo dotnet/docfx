@@ -51,7 +51,7 @@ namespace Microsoft.Docs.LearnValidation
                 {
                     path = manifestItem?.Output?.MetadataOutput?.LinkToPath ?? "";
                 }
-                var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path));
+                var validatorHierarchyItem = JsonConvert.DeserializeObject<ValidatorHierarchyItem>(File.ReadAllText(path)) ?? new();
                 var hierarchyItem = GetHierarchyItem(validatorHierarchyItem, manifestItem ?? new LegacyManifestItem());
                 MergeToHierarchyItem(validatorHierarchyItem, hierarchyItem);
                 items[i] = (IValidateModel)hierarchyItem;

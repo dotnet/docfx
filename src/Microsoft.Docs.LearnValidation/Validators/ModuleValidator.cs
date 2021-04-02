@@ -54,7 +54,7 @@ namespace Microsoft.Docs.LearnValidation
 
         protected override HierarchyItem GetHierarchyItem(ValidatorHierarchyItem validatorHierarchyItem, LegacyManifestItem manifestItem)
         {
-            var module = JsonConvert.DeserializeObject<ModuleValidateModel>(validatorHierarchyItem.ServiceData);
+            var module = JsonConvert.DeserializeObject<ModuleValidateModel>(validatorHierarchyItem.ServiceData) ?? new();
             SetHierarchyData(module, validatorHierarchyItem, manifestItem);
             return module;
         }

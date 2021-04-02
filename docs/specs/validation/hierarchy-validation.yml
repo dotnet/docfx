@@ -107,4 +107,4 @@ outputs:
   unit1b.json:
   unit2.json:
   .errors.log: |
-    {"message_severity":"error","code":"sandbox-not-mapping","message":"Module 'module2' is not mapped to the Azure sandbox. To use the sandbox in its child unit, you must first submit an onboarding request.","line":0}
+    {"message_severity":"error","code":"sandbox-not-mapping","message":"Module 'module2' is not mapped to the Azure sandbox. To use the sandbox in its child unit, you must first submit an onboarding request.","line":2}

@@ -1392,3 +1392,42 @@ outputs:
     {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":3,"end_line":3}
     {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":5,"end_line":5}
 ---
+# Content validation - H1 unique (ignore noindex)
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1
+  b.md: |
+    # Title 1
+  c.md: |
+    ---
+    robots: noindex
+    ---
+    # Title 1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
