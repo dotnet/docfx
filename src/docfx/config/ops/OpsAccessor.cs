@@ -260,7 +260,7 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
                 DocsEnvironment.PPE => "https://BuildApiPubDev.azurefd.net",
                 DocsEnvironment.Perf => "https://op-build-test.azurewebsites.net",
-                _ => throw new NotSupportedException(),
+                _ => throw new InvalidOperationException(),
             };
         }
 
@@ -280,7 +280,7 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.Prod => await s_secretClientPubDev.GetSecretAsync(secret),
                 DocsEnvironment.PPE => await s_secretClientPublic.GetSecretAsync(secret),
                 DocsEnvironment.Perf => await s_secretClientPerf.GetSecretAsync(secret),
-                _ => throw new NotSupportedException(),
+                _ => throw new InvalidOperationException(),
             };
 
             if (response.Value is null)
