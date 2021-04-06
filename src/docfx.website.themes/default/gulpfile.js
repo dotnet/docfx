@@ -14,7 +14,7 @@ var vendor = {
   js: ['node_modules/jquery/dist/jquery.min.js',
     'node_modules/bootstrap/dist/js/bootstrap.min.js',
     'node_modules/highlightjs/highlight.pack.min.js',
-    'node_modules/js-url/url.min.js',
+    'node_modules/@websanova/url/dist/url.min.js',
     'node_modules/twbs-pagination/jquery.twbsPagination.min.js',
     "node_modules/mark.js/dist/jquery.mark.min.js",
     "node_modules/anchor-js/anchor.min.js"
