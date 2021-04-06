@@ -46,8 +46,15 @@ namespace Microsoft.Docs.Build
                     {
                         continue;
                     }
-
-                    var option = Parser.Default.ParseArguments<Options>($"https:{opt}".Split()).MapResult(WarmUpAgents, _ => { return -9999; });
+                    try
+                    {
+                        var option = Parser.Default.ParseArguments<Options>($"https:{opt}".Split()).MapResult(WarmUpAgents, _ => { return -9999; });
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"Clone failed: https:{opt}");
+                        continue;
+                    }
                 }
                 return 0;
             }
@@ -211,6 +218,7 @@ namespace Microsoft.Docs.Build
                 : opts.Branch;
             if (!Directory.Exists(workingFolder))
             {
+                var retryCount = 0;
                 try
                 {
                     Directory.CreateDirectory(workingFolder);
@@ -220,7 +228,15 @@ namespace Microsoft.Docs.Build
                 }
                 catch
                 {
-                    EnsureTestData(opts, workingFolder);
+                    if (retryCount++ < 3)
+                    {
+                        _ = Task.Delay(5000);
+                        EnsureTestData(opts, workingFolder);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
             }
 
