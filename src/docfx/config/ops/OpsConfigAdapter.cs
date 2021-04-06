@@ -83,8 +83,8 @@ namespace Microsoft.Docs.Build
                 docsetInfo,
                 new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template = false } });
 
-            var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
-            if (docset is null)
+            var docset = docsets?.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
+            if (docsets is null || docset is null)
             {
                 throw Errors.Config.DocsetNotProvisioned(name).ToException();
             }
@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
             var xrefHostName = GetXrefHostName(docset.site_name, branch);
             var documentUrls = JsonConvert.DeserializeAnonymousType(
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
-                .ToDictionary(item => item.log_code, item => item.document_url);
+                ?.ToDictionary(item => item.log_code, item => item.document_url);
 
             return JsonConvert.SerializeObject(new
             {
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
 
         private static Task<string> GetOpsMetadata()
         {
-            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"));
+            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"));
         }
 
         private static (string repository, string branch) GetValidationServiceParameters(Uri url)
@@ -154,7 +154,6 @@ namespace Microsoft.Docs.Build
                 "DocsAzureCN" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
-                    DocsEnvironment.PPE => "ppe.docs.azure.cn",
                     _ => "ppe.docs.azure.cn",
                 },
                 "dev.microsoft.com" => OpsAccessor.DocsEnvironment switch

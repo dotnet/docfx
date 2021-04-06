@@ -192,7 +192,7 @@ jobs:
 
   # Run Regression Tests
   - task: AzureCLI@2
-    displayName: Run regression tests
+    displayName: Run
     inputs:
       azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
       scriptType: ps

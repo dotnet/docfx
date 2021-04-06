@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -46,31 +46,39 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public bool IsTrusted(ErrorBuilder errors, FilePath file, string url)
+        public bool IsTrusted(string url, [NotNullWhen(false)] out string? untrustedDomain)
         {
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
             {
+                untrustedDomain = url;
                 return false;
             }
 
             // Special case for links without protocol: '//codepen.io'. Uri treats them as files.
             if (uri.Scheme == Uri.UriSchemeFile && url.StartsWith("//"))
             {
-                if (IsTrusted("http", uri.DnsSafeHost))
+                if (IsTrusted("https", uri.DnsSafeHost))
                 {
+                    untrustedDomain = null;
                     return true;
                 }
 
-                errors.Add(Errors.Content.DisallowedDomain(new(file), $"//{uri.DnsSafeHost}"));
+                untrustedDomain = $"//{uri.DnsSafeHost}";
                 return false;
             }
 
             if (IsTrusted(uri.Scheme, uri.DnsSafeHost))
             {
+                untrustedDomain = null;
                 return true;
             }
 
-            errors.Add(Errors.Content.DisallowedDomain(new(file), uri.GetLeftPart(UriPartial.Authority)));
+            untrustedDomain = uri.GetLeftPart(UriPartial.Authority);
+            if (string.IsNullOrEmpty(untrustedDomain))
+            {
+                untrustedDomain = uri.GetLeftPart(UriPartial.Scheme);
+            }
+
             return false;
         }
 
