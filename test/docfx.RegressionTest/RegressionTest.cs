@@ -38,24 +38,23 @@ namespace Microsoft.Docs.Build
             if (args.Length >= 1 && args[0].Equals("warm-up"))
             {
                 Console.WriteLine($"warm up starting...");
-                var opts = string.Join(" ", args[1..]);
 
-                foreach (var opt in opts.Split("https:"))
+                var opt = string.Join(" ", args[1..]);
+
+                if (string.IsNullOrEmpty(opt))
                 {
-                    if (string.IsNullOrEmpty(opt.Trim()))
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        var option = Parser.Default.ParseArguments<Options>($"https:{opt}".Split()).MapResult(WarmUpAgents, _ => { return -9999; });
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"Clone failed: https:{opt}");
-                        continue;
-                    }
+                    throw new InvalidDataException();
                 }
+
+                try
+                {
+                    var option = Parser.Default.ParseArguments<Options>($"{opt}".Split()).MapResult(WarmUpAgents, _ => { return -9999; });
+                }
+                catch
+                {
+                    Console.WriteLine($"Clone failed: https:{opt}");
+                }
+
                 return 0;
             }
             else

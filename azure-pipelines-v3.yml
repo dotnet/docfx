@@ -1,89 +1,71 @@
 parameters:
+- name: agents
+  type: object
+  default:
+    agent1: 1
+    agent2: 2
+    agent3: 3
+    agent4: 4
+    agent5: 5
+    agent6: 6
 - name: repos
   type: object
   default:
     azure-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 100 --regression-rules
-      branch: master
     sql-docs-pr:
       params: https://github.com/MicrosoftDocs/sql-docs-pr --profile --timeout 120 --regression-rules
-      branch: master
     docs:
       params: https://github.com/dotnet/docs --timeout 60 --regression-rules
-      branch: main
     learn-pr:
       params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
-      branch: master
     windowsserverdocs-pr:
       params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-rules
-      branch: master
     VBA-Docs:
       params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
-      branch: master
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
-      branch: master
     AspNetCore.Docs:
       params: https://github.com/dotnet/AspNetCore.Docs --profile --timeout 30 --output-html
-      branch: main
     microsoft-365-docs-pr.zh-CN:
       params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --profile --timeout 25
-      branch: live-sxs
     powerbi-docs-pr.de-DE:
       params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
-      branch: live-sxs
     PowerShell-Docs:
       params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
-      branch: staging
     roslyn-api-docs:
       params: https://github.com/dotnet/roslyn-api-docs --branch live --profile --timeout 105
-      branch: live
     azure-docs-rest-apis:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
-      branch: master
     dynamics365-docs-odata-apis:
       params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 20
-      branch: master
     mc-docs-pr:
       params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
-      branch: master
     dynamics365smb-devitpro:
       params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
-      branch: master
     DevSandbox:
       params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
-      branch: master
     test:
       params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync
-      branch: master
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
-      branch: master
     windows-compatibility:
       params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
-      branch: main
     azure-docs-cli:
       params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
-      branch: master
     dataprep-dotnet-pr:
       params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
-      branch: master
     azure-mediaplayer-typescript:
       params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
-      branch: master
     quantum-docs-private:
-      params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch master
-      branch: main
+      params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
     microsoft-graph-docs:
       params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
-      branch: main
     # dry-runs
     dryrun.bot-docs-pr:
       params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
-      branch: master
     dryrun.azure-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
-      branch: master
 
 trigger:
   batch: true
@@ -102,8 +84,6 @@ variables:
   value: false
 - name: NugetSecurityAnalysisWarningLevel
   value: none
-- name: pipeline-option
-  value: regression-test
 
 jobs:
 
@@ -123,7 +103,7 @@ jobs:
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
-    condition: and(succeeded(), eq(variables['pipeline-option'], 'regression-test-test'))
+    condition: and(succeeded(), eq(variables['pipeline-option'], 'regression-test'))
     inputs:
       command: test
       arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
@@ -135,7 +115,7 @@ jobs:
 
   - task: reportgenerator@4
     displayName: Merge Test Results
-    condition: and(succeeded(), eq(variables['pipeline-option'], 'regression-test-test'))
+    condition: and(succeeded(), eq(variables['pipeline-option'], 'regression-test'))
     inputs:
       reports: test/**/coverage.cobertura.xml
       targetdir: $(Pipeline.Workspace)/coveragereport
@@ -163,7 +143,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), eq(variables['pipeline-option'], 'regression-test'))
   dependsOn: WindowsBuild
   pool:
     name: Docfx-1ES
@@ -174,39 +154,65 @@ jobs:
           params: ${{repo.value.params}}
 
   steps:
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
+    - template: prepare.yml
+      parameters:
+        dotnetVersion: $(dotnetVersion)
 
-  # Download RegressionTest binary
-  - download: current
-    displayName: Download RegressionTest binary
-    artifact: RegressionTest
+    # Run Regression Tests
+    - task: AzureCLI@2
+      displayName: Run
+      inputs:
+        azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+        scriptType: ps
+        scriptLocation: inlineScript
+        powerShellErrorActionPreference: continue
+        inlineScript: |
+          echo $(params)
+          $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
+      env:
+        BUILD_REASON: $(Build.Reason)
+        DOCFX_APPDATA_PATH: D:/appdata
+        DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+        DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
+        AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+        PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+        APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
 
-  # Install dotnet-trace
-  - script: dotnet tool update -g dotnet-trace
-    displayName: Install dotnet-trace
-
-  # Run Regression Tests
-  - task: AzureCLI@2
-    displayName: Run
-    inputs:
-      azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
-      scriptType: ps
-      scriptLocation: inlineScript
-      powerShellErrorActionPreference: continue
-      inlineScript: |
-        echo $(params)
-        $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
-    env:
-      BUILD_REASON: $(Build.Reason)
-      DOCFX_APPDATA_PATH: D:/appdata
-      DOCS_GITHUB_TOKEN: $(gitHubTestToken)
-      DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
-      AZURE_DEVOPS_TOKEN: $(vsoTestToken)
-      PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
-      APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
-
+- job: WarmUp
+  timeoutInMinutes: 180
+  condition: and(succeeded(), eq(variables['pipeline-option'], 'warm-up'))
+  dependsOn: WindowsBuild
+  pool:
+    name: Docfx-1ES
+  strategy:
+    matrix:
+      ${{ each agent in parameters.agents }}:
+        ${{ agent.key }}:
+          agentIndex: ${{ agent.value }}
+  steps:
+    - template: prepare.yml
+      parameters:
+        dotnetVersion: $(dotnetVersion)
+    # Warm up
+    - task: PowerShell@2
+      displayName: create needed directory
+      inputs:
+        targetType: 'inline'
+        powerShellErrorActionPreference: continue
+        script: |
+          if (-not (Test-Path -Path D:\docfx.TestData\.temp)) {
+            New-Item -Path 'D:\docfx.TestData\.temp\' -ItemType Directory
+          } else {
+            echo 'The directory is already exist.'
+          }
+    - ${{ each repo in parameters.repos.*.params}}:
+      - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe warm-up ${{repo}}
+        displayName: ${{repo}}
+        env:
+          BUILD_REASON: $(Build.Reason)
+          DOCFX_APPDATA_PATH: D:/appdata
+          DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+          DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
+          AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+          PULL_REQUEST_NUMBER: $(System.PullRequest.PullRequestNumber)
+          APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09

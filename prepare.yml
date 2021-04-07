@@ -1,0 +1,18 @@
+parameters:
+  dotnetVersion:
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Install .NET Core sdk $(dotnetVersion)'
+  inputs:
+    packageType: sdk
+    version: $(dotnetVersion)
+
+# Download RegressionTest binary
+- download: current
+  displayName: Download RegressionTest binary
+  artifact: RegressionTest
+
+# Install dotnet-trace
+- script: dotnet tool update -g dotnet-trace
+  displayName: Install dotnet-trace
