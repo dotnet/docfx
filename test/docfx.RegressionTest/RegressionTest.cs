@@ -210,14 +210,10 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static string EnsureTestData(Options opts, string workingFolder)
+        private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 0)
         {
-            var remoteBranch = string.IsNullOrEmpty(opts.Branch)
-                ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
-                : opts.Branch;
             if (!Directory.Exists(workingFolder))
             {
-                var retryCount = 0;
                 try
                 {
                     Directory.CreateDirectory(workingFolder);
@@ -230,7 +226,7 @@ namespace Microsoft.Docs.Build
                     if (retryCount++ < 3)
                     {
                         _ = Task.Delay(5000);
-                        EnsureTestData(opts, workingFolder);
+                        EnsureTestData(opts, workingFolder, retryCount);
                     }
                     else
                     {
@@ -238,6 +234,10 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+
+            var remoteBranch = string.IsNullOrEmpty(opts.Branch)
+                ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
+                : opts.Branch;
 
             try
             {

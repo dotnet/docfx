@@ -166,9 +166,7 @@ jobs:
         scriptType: ps
         scriptLocation: inlineScript
         powerShellErrorActionPreference: continue
-        inlineScript: |
-          echo $(params)
-          $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
+        inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
       env:
         BUILD_REASON: $(Build.Reason)
         DOCFX_APPDATA_PATH: D:/appdata
