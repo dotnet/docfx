@@ -172,7 +172,7 @@ namespace Microsoft.Docs.Build
             var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
             if (!string.IsNullOrEmpty(etagContent))
             {
-                existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
+                existingEtag = EntityTagHeaderValue.Parse(etagContent);
             }
 
             var (tempFile, etag) = DownloadToTempFile(url, existingEtag).GetAwaiter().GetResult();
