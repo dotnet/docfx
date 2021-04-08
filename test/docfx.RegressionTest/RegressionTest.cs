@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
                 Run,
                 _ =>
                 {
-                    SendPullRequestComments(new() { CrashMessage = "regression-test argument exception" });
+                    SendPullRequestComments(new() { CrashMessage = "argument exception" });
                     return -9999;
                 });
         }
@@ -53,7 +53,10 @@ namespace Microsoft.Docs.Build
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
                 var remoteBranch = EnsureTestData(opts, workingFolder);
-                Test(opts, workingFolder, remoteBranch);
+                if (!opts.WarmUp)
+                {
+                    Test(opts, workingFolder, remoteBranch);
+                }
             }
             catch (Exception ex)
             {
@@ -164,18 +167,34 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static string EnsureTestData(Options opts, string workingFolder)
+        private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 3)
         {
+            if (!Directory.Exists(workingFolder))
+            {
+                try
+                {
+                    Directory.CreateDirectory(workingFolder);
+                    Exec("git", $"init", cwd: workingFolder);
+                    Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
+                    Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+                }
+                catch
+                {
+                    if (retryCount-- > 0)
+                    {
+                        _ = Task.Delay(5000);
+                        EnsureTestData(opts, workingFolder, retryCount);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
+
             var remoteBranch = string.IsNullOrEmpty(opts.Branch)
                 ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
                 : opts.Branch;
-            if (!Directory.Exists(workingFolder))
-            {
-                Directory.CreateDirectory(workingFolder);
-                Exec("git", $"init", cwd: workingFolder);
-                Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
-            }
 
             try
             {
@@ -240,6 +259,7 @@ namespace Microsoft.Docs.Build
                 stdin: docfxConfig,
                 cwd: repositoryPath);
 
+            Directory.CreateDirectory(Path.GetDirectoryName(traceFile) ?? ".");
             var profiler = opts.Profile
                 ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
                 : null;
