@@ -35,7 +35,6 @@ namespace Microsoft.Docs.Build
 
         private static int Main(string[] args)
         {
-            Console.WriteLine("starting...");
             return Parser.Default.ParseArguments<Options>(args).MapResult(
                 Run,
                 _ =>
@@ -260,6 +259,7 @@ namespace Microsoft.Docs.Build
                 stdin: docfxConfig,
                 cwd: repositoryPath);
 
+            Directory.CreateDirectory(Path.GetDirectoryName(traceFile) ?? ".");
             var profiler = opts.Profile
                 ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
                 : null;

@@ -7,11 +7,11 @@ namespace Microsoft.Docs.Build
 {
     internal class Options
     {
-        [Option("warm-up")]
-        public bool WarmUp { get; set; } = false;
-
         [Value(0, Required = true)]
         public string Repository { get; set; } = "";
+
+        [Option("warm-up")]
+        public bool WarmUp { get; set; } = false;
 
         [Option("branch")]
         public string Branch { get; set; } = "";

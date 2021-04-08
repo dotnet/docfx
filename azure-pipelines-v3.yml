@@ -34,7 +34,7 @@ jobs:
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
-    condition: and(succeeded(), ne(variables['pipeline-option'], 'warm-up'))
+    condition: and(succeeded(), ne(variables['warm-up'], 'warm-up'))
     inputs:
       command: test
       arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
@@ -46,7 +46,7 @@ jobs:
 
   - task: reportgenerator@4
     displayName: Merge Test Results
-    condition: and(succeeded(), ne(variables['pipeline-option'], 'warm-up'))
+    condition: and(succeeded(), ne(variables['warm-up'], 'warm-up'))
     inputs:
       reports: test/**/coverage.cobertura.xml
       targetdir: $(Pipeline.Workspace)/coveragereport
@@ -57,10 +57,10 @@ jobs:
       codeCoverageTool: cobertura
       summaryFileLocation: $(Pipeline.Workspace)/coveragereport/Cobertura.xml
 
-  # Build RegressionTest into Artifact 
+  # Build RegressionTest into Artifact
   - powershell: |
       dotnet build ./test/docfx.RegressionTest -warnAsError -c Release -r win7-x64 -o ./drop/RegressionTest
-    displayName: Build RegressionTest into Artifact 
+    displayName: Build RegressionTest into Artifact
 
   # Publish RegressionTest binary
   - publish: ./drop/RegressionTest
@@ -74,7 +74,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['pipeline-option'], 'warm-up'))
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['warm-up'], 'warm-up'))
   dependsOn: WindowsBuild
   pool:
     name: Docfx-1ES
@@ -91,7 +91,6 @@ jobs:
         packageType: sdk
         version: $(dotnetVersion)
 
-    # Download RegressionTest binary
     - download: current
       displayName: Download RegressionTest binary
       artifact: RegressionTest
@@ -120,7 +119,7 @@ jobs:
 
 - job: WarmUp
   timeoutInMinutes: 180
-  condition: and(succeeded(), eq(variables['pipeline-option'], 'warm-up'))
+  condition: and(succeeded(), eq(variables['warm-up'], 'true'))
   dependsOn: WindowsBuild
   pool:
     name: Docfx-1ES
@@ -129,28 +128,19 @@ jobs:
       ${{ each agent in parameters.agents }}:
         ${{ agent.key }}:
           agentIndex: ${{ agent.value }}
+
   steps:
     - task: UseDotNet@2
       displayName: 'Install .NET Core sdk $(dotnetVersion)'
       inputs:
         packageType: sdk
         version: $(dotnetVersion)
-    # Download RegressionTest binary
+
     - download: current
       displayName: Download RegressionTest binary
       artifact: RegressionTest
+
     # Warm up
-    - task: PowerShell@2
-      displayName: create needed directory
-      inputs:
-        targetType: 'inline'
-        powerShellErrorActionPreference: continue
-        script: |
-          if (-not (Test-Path -Path D:\docfx.TestData\.temp)) {
-            New-Item -Path 'D:\docfx.TestData\.temp\' -ItemType Directory
-          } else {
-            echo 'The directory already exists.'
-          }
     - ${{ each repo in parameters.repos.*.params}}:
       - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe ${{repo}} --warm-up true
         displayName: ${{repo}}
