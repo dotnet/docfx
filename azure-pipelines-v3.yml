@@ -201,7 +201,7 @@ jobs:
           if (-not (Test-Path -Path D:\docfx.TestData\.temp)) {
             New-Item -Path 'D:\docfx.TestData\.temp\' -ItemType Directory
           } else {
-            echo 'The directory is already exist.'
+            echo 'The directory already exists.'
           }
     - ${{ each repo in parameters.repos.*.params}}:
       - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe warm-up ${{repo}}

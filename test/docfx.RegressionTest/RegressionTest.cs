@@ -72,20 +72,13 @@ namespace Microsoft.Docs.Build
 
         private static int WarmUpAgents(Options opts)
         {
-            try
-            {
-                s_repository = opts.Repository;
-                s_repositoryName = $"{(opts.DryRun ? "dryrun." : "")}{Path.GetFileName(opts.Repository)}";
-                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
+            s_repository = opts.Repository;
+            s_repositoryName = $"{(opts.DryRun ? "dryrun." : "")}{Path.GetFileName(opts.Repository)}";
+            var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
-                Console.WriteLine($"Downloading {s_repository} with branch {opts.Branch}");
-                EnsureTestData(opts, workingFolder);
-                Console.WriteLine($"{s_repository} with branch {opts.Branch} is finished!");
-            }
-            catch
-            {
-                throw;
-            }
+            Console.WriteLine($"Downloading {s_repository} with branch {opts.Branch}");
+            EnsureTestData(opts, workingFolder);
+            Console.WriteLine($"{s_repository} with branch {opts.Branch} is finished!");
 
             return 0;
         }
@@ -210,7 +203,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 0)
+        private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 3)
         {
             if (!Directory.Exists(workingFolder))
             {
@@ -223,7 +216,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch
                 {
-                    if (retryCount++ < 3)
+                    if (retryCount-- > 0)
                     {
                         _ = Task.Delay(5000);
                         EnsureTestData(opts, workingFolder, retryCount);
