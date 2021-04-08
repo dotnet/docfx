@@ -19,8 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="*.json" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="*.yml" CopyToOutputDirectory="PreserveNewest" />
     <None Include="data/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
