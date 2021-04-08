@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
 
         private static int Main(string[] args)
         {
-            if (args.Length >= 1 && args[0].Equals("warm-up"))
+            if (args.Length > 1 && args[0].Equals("warm-up"))
             {
                 Console.WriteLine($"warm up starting...");
 
@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
                 }
                 catch
                 {
-                    Console.WriteLine($"Clone failed: https:{opt}");
+                    Console.WriteLine($"Clone failed: {opt}");
                 }
 
                 return 0;
