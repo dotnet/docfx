@@ -1,3 +1,168 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - v3
+    - v3-release
+pr:
+- v3
+
+variables:
+- group: devresourcekeyvault
+- name: dotnetVersion
+  value: 5.0.200
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
+
+jobs:
+
+# Test and deploy on windows
+- job: WindowsBuild
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+
+  # Install .NET Core sdk
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk $(dotnetVersion)'
+    inputs:
+      packageType: sdk
+      version: $(dotnetVersion)
+
+  # dotnet test
+  - task: DotNetCoreCLI@2
+    displayName: dotnet test
+    condition: and(succeeded(), ne(variables['pipeline-option'], 'warm-up'))
+    inputs:
+      command: test
+      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      publishTestResults: true
+    env:
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      DOCS_OPS_TOKEN: $(opBuildUserToken)
+      MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
+
+  - task: reportgenerator@4
+    displayName: Merge Test Results
+    condition: and(succeeded(), ne(variables['pipeline-option'], 'warm-up'))
+    inputs:
+      reports: test/**/coverage.cobertura.xml
+      targetdir: $(Pipeline.Workspace)/coveragereport
+
+  - task: PublishCodeCoverageResults@1
+    displayName: Upload Code Coverage Result
+    inputs:
+      codeCoverageTool: cobertura
+      summaryFileLocation: $(Pipeline.Workspace)/coveragereport/Cobertura.xml
+
+  # Build RegressionTest into Artifact 
+  - powershell: |
+      dotnet build ./test/docfx.RegressionTest -warnAsError -c Release -r win7-x64 -o ./drop/RegressionTest
+    displayName: Build RegressionTest into Artifact 
+
+  # Publish RegressionTest binary
+  - publish: ./drop/RegressionTest
+    displayName: Publish RegressionTest binary
+    artifact: RegressionTest
+
+  # Run Component Detection
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Detection'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+# Run RegressionTest
+- job: RunRegressionTest
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['pipeline-option'], 'warm-up'))
+  dependsOn: WindowsBuild
+  pool:
+    name: Docfx-1ES
+  strategy:
+    matrix:
+      ${{ each repo in parameters.repos }}:
+        ${{ repo.key }}:
+          params: ${{repo.value.params}}
+
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET Core sdk $(dotnetVersion)'
+      inputs:
+        packageType: sdk
+        version: $(dotnetVersion)
+
+    # Download RegressionTest binary
+    - download: current
+      displayName: Download RegressionTest binary
+      artifact: RegressionTest
+
+    # Install dotnet-trace
+    - script: dotnet tool update -g dotnet-trace
+      displayName: Install dotnet-trace
+
+    # Run Regression Tests
+    - task: AzureCLI@2
+      displayName: Run
+      inputs:
+        azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+        scriptType: ps
+        scriptLocation: inlineScript
+        powerShellErrorActionPreference: continue
+        inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
+      env:
+        BUILD_REASON: $(Build.Reason)
+        DOCFX_APPDATA_PATH: D:/appdata
+        DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+        DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
+        AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+        PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+        APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+
+- job: WarmUp
+  timeoutInMinutes: 180
+  condition: and(succeeded(), eq(variables['pipeline-option'], 'warm-up'))
+  dependsOn: WindowsBuild
+  pool:
+    name: Docfx-1ES
+  strategy:
+    matrix:
+      ${{ each agent in parameters.agents }}:
+        ${{ agent.key }}:
+          agentIndex: ${{ agent.value }}
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET Core sdk $(dotnetVersion)'
+      inputs:
+        packageType: sdk
+        version: $(dotnetVersion)
+    # Download RegressionTest binary
+    - download: current
+      displayName: Download RegressionTest binary
+      artifact: RegressionTest
+    # Warm up
+    - task: PowerShell@2
+      displayName: create needed directory
+      inputs:
+        targetType: 'inline'
+        powerShellErrorActionPreference: continue
+        script: |
+          if (-not (Test-Path -Path D:\docfx.TestData\.temp)) {
+            New-Item -Path 'D:\docfx.TestData\.temp\' -ItemType Directory
+          } else {
+            echo 'The directory already exists.'
+          }
+    - ${{ each repo in parameters.repos.*.params}}:
+      - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe ${{repo}} --warm-up true
+        displayName: ${{repo}}
+        env:
+          BUILD_REASON: $(Build.Reason)
+          DOCFX_APPDATA_PATH: D:/appdata
+          DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+          DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
+          AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+          PULL_REQUEST_NUMBER: $(System.PullRequest.PullRequestNumber)
+          APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+
 parameters:
 - name: agents
   type: object
@@ -66,151 +231,3 @@ parameters:
       params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
     dryrun.azure-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
-
-trigger:
-  batch: true
-  branches:
-    include:
-    - v3
-    - v3-release
-pr:
-- v3
-
-variables:
-- group: devresourcekeyvault
-- name: dotnetVersion
-  value: 5.0.200
-- name: runCodesignValidationInjection
-  value: false
-- name: NugetSecurityAnalysisWarningLevel
-  value: none
-
-jobs:
-
-# Test and deploy on windows
-- job: WindowsBuild
-  pool:
-    vmImage: 'windows-latest'
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    condition: and(succeeded(), eq(variables['pipeline-option'], 'regression-test'))
-    inputs:
-      command: test
-      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-      publishTestResults: true
-    env:
-      DOCS_GITHUB_TOKEN: $(gitHubTestToken)
-      DOCS_OPS_TOKEN: $(opBuildUserToken)
-      MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
-
-  - task: reportgenerator@4
-    displayName: Merge Test Results
-    condition: and(succeeded(), eq(variables['pipeline-option'], 'regression-test'))
-    inputs:
-      reports: test/**/coverage.cobertura.xml
-      targetdir: $(Pipeline.Workspace)/coveragereport
-
-  - task: PublishCodeCoverageResults@1
-    displayName: Upload Code Coverage Result
-    inputs:
-      codeCoverageTool: cobertura
-      summaryFileLocation: $(Pipeline.Workspace)/coveragereport/Cobertura.xml
-
-  # Build RegressionTest into Artifact 
-  - powershell: |
-      dotnet build ./test/docfx.RegressionTest -warnAsError -c Release -r win7-x64 -o ./drop/RegressionTest
-    displayName: Build RegressionTest into Artifact 
-
-  # Publish RegressionTest binary
-  - publish: ./drop/RegressionTest
-    displayName: Publish RegressionTest binary
-    artifact: RegressionTest
-
-  # Run Component Detection
-  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-    displayName: 'Component Detection'
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
-# Run RegressionTest
-- job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), eq(variables['pipeline-option'], 'regression-test'))
-  dependsOn: WindowsBuild
-  pool:
-    name: Docfx-1ES
-  strategy:
-    matrix:
-      ${{ each repo in parameters.repos }}:
-        ${{ repo.key }}:
-          params: ${{repo.value.params}}
-
-  steps:
-    - template: prepare.yml
-      parameters:
-        dotnetVersion: $(dotnetVersion)
-
-    # Run Regression Tests
-    - task: AzureCLI@2
-      displayName: Run
-      inputs:
-        azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
-        scriptType: ps
-        scriptLocation: inlineScript
-        powerShellErrorActionPreference: continue
-        inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
-      env:
-        BUILD_REASON: $(Build.Reason)
-        DOCFX_APPDATA_PATH: D:/appdata
-        DOCS_GITHUB_TOKEN: $(gitHubTestToken)
-        DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
-        AZURE_DEVOPS_TOKEN: $(vsoTestToken)
-        PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
-        APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
-
-- job: WarmUp
-  timeoutInMinutes: 180
-  condition: and(succeeded(), eq(variables['pipeline-option'], 'warm-up'))
-  dependsOn: WindowsBuild
-  pool:
-    name: Docfx-1ES
-  strategy:
-    matrix:
-      ${{ each agent in parameters.agents }}:
-        ${{ agent.key }}:
-          agentIndex: ${{ agent.value }}
-  steps:
-    - template: prepare.yml
-      parameters:
-        dotnetVersion: $(dotnetVersion)
-    # Warm up
-    - task: PowerShell@2
-      displayName: create needed directory
-      inputs:
-        targetType: 'inline'
-        powerShellErrorActionPreference: continue
-        script: |
-          if (-not (Test-Path -Path D:\docfx.TestData\.temp)) {
-            New-Item -Path 'D:\docfx.TestData\.temp\' -ItemType Directory
-          } else {
-            echo 'The directory already exists.'
-          }
-    - ${{ each repo in parameters.repos.*.params}}:
-      - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe warm-up ${{repo}}
-        displayName: ${{repo}}
-        env:
-          BUILD_REASON: $(Build.Reason)
-          DOCFX_APPDATA_PATH: D:/appdata
-          DOCS_GITHUB_TOKEN: $(gitHubTestToken)
-          DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
-          AZURE_DEVOPS_TOKEN: $(vsoTestToken)
-          PULL_REQUEST_NUMBER: $(System.PullRequest.PullRequestNumber)
-          APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09

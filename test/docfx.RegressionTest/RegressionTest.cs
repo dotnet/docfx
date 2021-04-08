@@ -35,52 +35,14 @@ namespace Microsoft.Docs.Build
 
         private static int Main(string[] args)
         {
-            if (args.Length > 1 && args[0].Equals("warm-up"))
-            {
-                Console.WriteLine($"warm up starting...");
-
-                var opt = string.Join(" ", args[1..]);
-
-                if (string.IsNullOrEmpty(opt))
+            Console.WriteLine("starting...");
+            return Parser.Default.ParseArguments<Options>(args).MapResult(
+                Run,
+                _ =>
                 {
-                    throw new InvalidDataException();
-                }
-
-                try
-                {
-                    var option = Parser.Default.ParseArguments<Options>($"{opt}".Split()).MapResult(WarmUpAgents, _ => { return -9999; });
-                }
-                catch
-                {
-                    Console.WriteLine($"Clone failed: {opt}");
-                }
-
-                return 0;
-            }
-            else
-            {
-                Console.WriteLine("run regression test starting...");
-                return Parser.Default.ParseArguments<Options>(args).MapResult(
-                    Run,
-                    _ =>
-                    {
-                        SendPullRequestComments(new() { CrashMessage = "regression-test argument exception" });
-                        return -9999;
-                    });
-            }
-        }
-
-        private static int WarmUpAgents(Options opts)
-        {
-            s_repository = opts.Repository;
-            s_repositoryName = $"{(opts.DryRun ? "dryrun." : "")}{Path.GetFileName(opts.Repository)}";
-            var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
-
-            Console.WriteLine($"Downloading {s_repository} with branch {opts.Branch}");
-            EnsureTestData(opts, workingFolder);
-            Console.WriteLine($"{s_repository} with branch {opts.Branch} is finished!");
-
-            return 0;
+                    SendPullRequestComments(new() { CrashMessage = "argument exception" });
+                    return -9999;
+                });
         }
 
         private static int Run(Options opts)
@@ -92,7 +54,10 @@ namespace Microsoft.Docs.Build
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
                 var remoteBranch = EnsureTestData(opts, workingFolder);
-                Test(opts, workingFolder, remoteBranch);
+                if (!opts.WarmUp)
+                {
+                    Test(opts, workingFolder, remoteBranch);
+                }
             }
             catch (Exception ex)
             {
