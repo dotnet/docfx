@@ -34,7 +34,7 @@ jobs:
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
-    condition: and(succeeded(), ne(variables['warm-up'], 'warm-up'))
+    condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       command: test
       arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
@@ -46,7 +46,7 @@ jobs:
 
   - task: reportgenerator@4
     displayName: Merge Test Results
-    condition: and(succeeded(), ne(variables['warm-up'], 'warm-up'))
+    condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       reports: test/**/coverage.cobertura.xml
       targetdir: $(Pipeline.Workspace)/coveragereport
@@ -74,7 +74,7 @@ jobs:
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['warm-up'], 'warm-up'))
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['warm-up'], 'true'))
   dependsOn: WindowsBuild
   pool:
     name: Docfx-1ES
