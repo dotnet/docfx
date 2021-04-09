@@ -1299,12 +1299,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxKind.NothingLiteralExpression,
                     SyntaxFactory.Token(SyntaxKind.NothingKeyword));
             }
-            bool isNullable = type.GetDocumentationCommentId().StartsWith("T:System.Nullable{");
-            if (isNullable)
-            {
-                var namedType = (INamedTypeSymbol)type;
-                type = namedType.TypeArguments[0];
-            }
             var result = GetLiteralExpressionCore(value, type);
             if (result != null)
             {
