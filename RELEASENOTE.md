@@ -1,8 +1,23 @@
 Version Notes (Current Version: v2.57)
 =======================================
 
-v2.57(Pre-release)
+v2.57
 -----------
+1. Improve display of enum flags. Thanks @mikernet! (#7043)
+2. Some improvements in `docfx.console.targets`. Thanks @alexrp! (#7117)
+3. New tools available: TocDocfxCreation, DocLinkChecker, DocLanguageTranslator and some examples. Thanks @Ellerbach! (#7231)
+4. Security updates:
+    1. Replace use of MD5, SHA1 with SHA256. (#7149, #7157)
+    2. Specify `noopener`/`noreferer` for external link. (#7204)
+    3. Avoid reinterpreting DOM text as HTML without escaping meta-characters. (#7210)
+    4. Check certificate revocation list in HTTP calls. (#7142)
+    5. Upgrade some NPM, NuGet packages. (#7135, #7147)
+    6. Migrate bower to NPM. (#7273)
+    7. Enable CodeQL. (#7184)
+5. Bug fix:
+    1. Wrong default value for nullable parameters. Thanks @mikernet! (#7054)
+    2. `<code source=...>` not work when using DLL + XML documents as input. Thanks @james-hunt-ra! (#7096)
+    3. Sub navbar not fully shows if remove `.html` extension from URL. Thanks @CyberAndrii! (#7046)
 
 v2.56.7
 -----------
