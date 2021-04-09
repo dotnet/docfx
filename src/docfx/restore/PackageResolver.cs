@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
             if (fetchContributionBranch)
             {
                 var crrRepository = Repository.Create(gitPath, committish, url);
-                LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
+                LocalizationUtility.EnsureLocalizationContributionBranch(_config.Secrets, crrRepository);
             }
 
             return gitPath;
