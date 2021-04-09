@@ -142,10 +142,11 @@ inputs:
     monikerDefinition: https://ops/monikerDefinition/
     monikerRange:
       'a.md': '> netcore-1.0 || < invalid-moniker'
-    http:
-      https://BuildApiPubDev.azurefd.net:
-        headers:
-          X-OP-BuildUserToken: invalid-token
+    secrets:
+      http:
+        https://BuildApiPubDev.azurefd.net:
+          headers:
+            X-OP-BuildUserToken: invalid-token
   a.md:
 languageServer:
   - openFiles:
