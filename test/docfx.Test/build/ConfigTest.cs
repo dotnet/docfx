@@ -110,7 +110,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://a.com/a/b/1", "a/b")]
         public static void HttpCredential_Respect_LongestMatch(string url, string value)
         {
-            var config = JsonUtility.DeserializeData<PreloadConfig>(
+            var secrets = JsonUtility.DeserializeData<SecretConfig>(
                 @"{
     'http': {
         'https://a.com/a': { 'headers': { 'key': 'a' } },
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
     }
 }".Replace('\'', '"'), null);
 
-            var httpConfig = config.GetHttpConfig(url);
+            var httpConfig = secrets.GetHttpConfig(url);
 
             Assert.NotNull(httpConfig);
             Assert.Equal(value, httpConfig.Headers["key"]);
