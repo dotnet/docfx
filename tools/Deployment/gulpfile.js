@@ -87,7 +87,14 @@ gulp.task("e2eTest:buildSeed", () => {
     return Common.execAsync(path.resolve(config.docfx["exe"]), ["docfx.json"], config.docfx.docfxSeedHome);
 });
 
-gulp.task("e2eTest", gulp.series("e2eTest:restoreSeed", "e2eTest:buildSeed"));
+gulp.task("e2eTest:buildDocfxSite", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.exe, "config.docfx.exe", "Can't find docfx.exe in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.docfxSeedHome, "config.docfx.docfxSeedHome", "Can't find docfx-seed in configuration.");
+
+    return Common.execAsync(path.resolve(config.docfx["exe"]), [path.resolve(config.docfx.docfxJson)]);
+});
+
+gulp.task("e2eTest", gulp.series("e2eTest:restoreSeed", "e2eTest:buildSeed", "e2eTest:buildDocfxSite"));
 
 gulp.task("publish:azdevops-perf-login", () => {
     return Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-perf", "-source", config.azdevops["perfUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
@@ -137,17 +144,12 @@ gulp.task("publish:nuget", () => {
 gulp.task("updateGhPage", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.httpsRepoUrl, "config.docfx.httpsRepoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.siteFolder, "config.docfx.siteFolder", "Can't find docfx site folder in configuration.");
-    Guard.argumentNotNullOrEmpty(config.docfx.exe, "config.docfx.exe", "Can't find docfx exe in configuration.");
-    Guard.argumentNotNullOrEmpty(config.docfx.docfxJson, "config.docfx.docfxJson", "Can't find docfx.json in configuration.");
     Guard.argumentNotNullOrEmpty(config.git.name, "config.git.name", "Can't find git user name in configuration");
     Guard.argumentNotNullOrEmpty(config.git.email, "config.git.email", "Can't find git user email in configuration");
     Guard.argumentNotNullOrEmpty(config.git.message, "config.git.message", "Can't find git commit message in configuration");
     Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
-    let docfxExe = path.resolve(config.docfx.exe);
-    let docfxJson = path.resolve(config.docfx.docfxJson);
-
-    return Github.updateGhPagesAsync(config.docfx.httpsRepoUrl, config.docfx.siteFolder, docfxExe, docfxJson, config.git.name, config.git.email, config.git.message, process.env.TOKEN);
+    return Github.updateGhPagesAsync(config.docfx.httpsRepoUrl, config.docfx.siteFolder, config.git.name, config.git.email, config.git.message, process.env.TOKEN);
 });
 
 gulp.task("packAssetZip", () => {

@@ -48,8 +48,6 @@ export class Github {
     static async updateGhPagesAsync(
         repoUrl: string,
         siteFolder: string,
-        docfxExe: string,
-        docfxJson: string,
         gitUserName: string,
         gitUserEmail: string,
         gitCommitMessage: string,
@@ -57,14 +55,10 @@ export class Github {
 
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
         Guard.argumentNotNullOrEmpty(siteFolder, "siteFolder");
-        Guard.argumentNotNullOrEmpty(docfxExe, "docfxExe");
-        Guard.argumentNotNullOrEmpty(docfxJson, "docfxJson");
         Guard.argumentNotNullOrEmpty(gitUserName, "gitUserName");
         Guard.argumentNotNullOrEmpty(gitUserEmail, "gitUserEmail");
         Guard.argumentNotNullOrEmpty(gitCommitMessage, "gitCommitMessage");
         Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
-
-        await Common.execAsync(docfxExe, [docfxJson]);
 
         let branch = "gh-pages";
         let targetDir = "docfxsite";
