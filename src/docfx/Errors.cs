@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error ValidationIncomplete()
-                => new Error(ErrorLevel.Warning, "validation-incomplete", $"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://SiteHelp.");
+                => new Error(ErrorLevel.Warning, "validation-incomplete", $"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://aka.ms/SiteHelp.");
 
             /// <summary>
             /// Didn't run `docfx restore` before running `docfx build`.
@@ -789,7 +789,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RestoreDependentRepositoryFailed(string url, string branch)
-                => new Error(ErrorLevel.Error, "restore-dependent-repository-failed", $"Failed to restore dependent repository `{url}#{branch}`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.");
+                => new Error(ErrorLevel.Error, "restore-dependent-repository-failed", $"Failed to restore dependent repository `{url}#{branch}`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://aka.ms/SiteHelp and include URL of the build report.");
 
             /// <summary>
             /// Repository owner did not re-authorize his/her GitHub account to Docs Build with SSO.
@@ -803,7 +803,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error ServiceAccountPermissionInsufficient(string? repoOrg, string? repoOwner, string dependentRepoUrl)
-                => new Error(ErrorLevel.Error, "service-account-permission-insufficient", $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under '{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. For any support, please open a ticket in https://SiteHelp.");
+                => new Error(ErrorLevel.Error, "service-account-permission-insufficient", $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under '{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. For any support, please open a ticket in https://aka.ms/SiteHelp.");
 
             /// <summary>
             /// Repository owner does not have 'Read' permission on CRR.
