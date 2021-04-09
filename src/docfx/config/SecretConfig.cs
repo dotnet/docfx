@@ -8,7 +8,7 @@ using System.Linq;
 namespace Microsoft.Docs.Build
 {
     /// <summary>
-    /// Add a comment to say all secrets <b>MUST</b> go here otherwise they are print out to logs
+    /// All secrets <b>MUST</b> go here otherwise they are print out to logs
     /// </summary>
     internal class SecretConfig
     {
