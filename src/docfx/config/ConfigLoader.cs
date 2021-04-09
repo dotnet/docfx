@@ -60,6 +60,8 @@ namespace Microsoft.Docs.Build
             var envConfig = LoadEnvironmentVariables();
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
+
+            // TODO: print stdin passed secrets
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, package);
 
             var globalConfig = LoadConfig(errors, package, new PathString(AppData.Root));
@@ -75,7 +77,7 @@ namespace Microsoft.Docs.Build
             {
                 credentialProviders.Add(getCredential);
             }
-            credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.GetHttpConfig(url)));
+            credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.Secrets.GetHttpConfig(url)));
             var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
             var opsAccessor = new OpsAccessor(errors, credentialHandler);
             var configAdapter = new OpsConfigAdapter(opsAccessor);
