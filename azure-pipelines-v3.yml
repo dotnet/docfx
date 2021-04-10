@@ -116,6 +116,7 @@ jobs:
         AZURE_DEVOPS_TOKEN: $(vsoTestToken)
         PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+        MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
 
 - job: WarmUp
   timeoutInMinutes: 180

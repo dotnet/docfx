@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
+        private static readonly string? s_microsoftGraphClientCertificate = Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_CERTIFICATE");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
@@ -104,13 +105,17 @@ namespace Microsoft.Docs.Build
 
                 var docfxConfig = JObject.FromObject(new
                 {
-                    http,
                     maxFileWarnings = 10000,
                     maxFileSuggestions = 10000,
                     maxFileInfos = 10000,
                     updateTimeAsCommitBuildTime = true,
-                    githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
+                    secrets = new
+                    {
+                        http,
+                        githubToken = s_githubToken,
+                        microsoftGraphClientCertificate = s_microsoftGraphClientCertificate,
+                    },
                 });
 
                 if (opts.OutputHtml)
