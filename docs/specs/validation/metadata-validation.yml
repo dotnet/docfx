@@ -485,7 +485,7 @@ inputs:
   a.md: |
     ---
     description: a
-    robot: noindex
+    robots: noindex
     ---
   b.md: |
     ---
@@ -527,7 +527,7 @@ inputs:
     ---
     title: title1
     description: description1
-    robot: noindex
+    robots: noindex
     ---
   b.md: |
     ---

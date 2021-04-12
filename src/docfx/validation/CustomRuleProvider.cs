@@ -54,10 +54,9 @@ namespace Microsoft.Docs.Build
 
             if (customRule.Tags != null && customRule.Tags.Contains("SEO"))
             {
-                var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, filePath).RawJObject;
-                var noindex = metadata.TryGetValue<JValue>("robot", out var robotValue) && robotValue.Value is string robot &&
-                    robot.Contains("noindex", StringComparison.OrdinalIgnoreCase);
-                if (noindex)
+                var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, filePath);
+                var noindex = metadata.Robots?.Contains("noindex", StringComparison.OrdinalIgnoreCase);
+                if (noindex ?? false)
                 {
                     return false;
                 }
