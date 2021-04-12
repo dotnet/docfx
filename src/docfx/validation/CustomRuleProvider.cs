@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Docs.Validation;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -52,14 +51,11 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (customRule.Tags != null && customRule.Tags.Contains("SEO"))
+            if (customRule.Tags != null
+                && customRule.Tags.Contains("SEO")
+                && _metadataProvider.GetMetadata(ErrorBuilder.Null, filePath).NoIndex())
             {
-                var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, filePath);
-                var noindex = metadata.Robots?.Contains("noindex", StringComparison.OrdinalIgnoreCase);
-                if (noindex ?? false)
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
