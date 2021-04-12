@@ -382,6 +382,7 @@ sbyte
 scriptblock
 sdp
 semver
+seo
 serializer
 setext
 shellprogressbar
