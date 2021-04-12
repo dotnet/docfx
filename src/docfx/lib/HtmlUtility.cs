@@ -496,10 +496,6 @@ namespace Microsoft.Docs.Build
                             token.SetAttributeValue("data-linktype", "relative-path");
                             break;
                         case LinkType.External:
-                            if (Uri.TryCreate(href, UriKind.Absolute, out var uri))
-                            {
-                                Telemetry.TrackExternalLink(tagName, attributeName, uri.Scheme, uri.DnsSafeHost);
-                            }
 
                             // Opt-in to trusted domain check
                             if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))

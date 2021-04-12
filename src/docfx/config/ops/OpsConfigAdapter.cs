@@ -154,7 +154,6 @@ namespace Microsoft.Docs.Build
                 "DocsAzureCN" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
-                    DocsEnvironment.PPE => "ppe.docs.azure.cn",
                     _ => "ppe.docs.azure.cn",
                 },
                 "dev.microsoft.com" => OpsAccessor.DocsEnvironment switch

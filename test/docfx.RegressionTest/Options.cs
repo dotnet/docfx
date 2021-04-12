@@ -10,6 +10,9 @@ namespace Microsoft.Docs.Build
         [Value(0, Required = true)]
         public string Repository { get; set; } = "";
 
+        [Option("warm-up")]
+        public bool WarmUp { get; set; } = false;
+
         [Option("branch")]
         public string Branch { get; set; } = "";
 
