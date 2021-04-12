@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     public static class GitHubAccessorTest
     {
         private static readonly string s_token = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
-        private static readonly Config s_config = JsonUtility.DeserializeData<Config>($@"{{'githubToken': '{s_token}'}}".Replace('\'', '\"'), null);
+        private static readonly Config s_config = JsonUtility.DeserializeData<Config>($@"{{'secrets':{{'githubToken': '{s_token}'}}}}".Replace('\'', '\"'), null);
         private static readonly GitHubAccessor s_github = new(s_config);
 
         [SkippableTheory]

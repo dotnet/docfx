@@ -280,11 +280,6 @@ namespace Microsoft.Docs.Build
         public DateTime? BuildTime { get; init; }
 
         /// <summary>
-        /// Token that can be used to access the GitHub API.
-        /// </summary>
-        public string GithubToken { get; init; } = "";
-
-        /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
         public int GithubUserCacheExpirationInHours { get; init; } = 30 * 24;
@@ -309,11 +304,6 @@ namespace Microsoft.Docs.Build
         /// Client id that can be used to access the Microsoft Graph API.
         /// </summary>
         public string MicrosoftGraphClientId { get; init; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
-
-        /// <summary>
-        /// The base64 encoded client cert that can be used to access the Microsoft Graph API.
-        /// </summary>
-        public string MicrosoftGraphClientCertificate { get; init; } = "";
 
         /// <summary>
         /// A file containing a map of file path to the original file path.

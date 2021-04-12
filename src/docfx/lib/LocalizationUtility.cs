@@ -86,7 +86,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static void EnsureLocalizationContributionBranch(PreloadConfig config, Repository? repository)
+        public static void EnsureLocalizationContributionBranch(SecretConfig secrets, Repository? repository)
         {
             // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
             // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
@@ -106,7 +106,7 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            GitUtility.Fetch(config, repository.Path, repository.Url, $"+{branch}:{branch}", "--update-head-ok");
+                            GitUtility.Fetch(secrets, repository.Path, repository.Url, $"+{branch}:{branch}", "--update-head-ok");
                             succeeded = true;
                             break;
                         }
