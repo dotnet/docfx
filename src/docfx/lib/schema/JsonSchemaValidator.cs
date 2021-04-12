@@ -491,11 +491,11 @@ namespace Microsoft.Docs.Build
         {
             return value switch
             {
-                JObject _ => true,
-                JArray _ => true,
+                JObject => true,
+                JArray => true,
                 JValue v when v.Value is null => false,
                 JValue v when v.Value is string str => !string.IsNullOrWhiteSpace(str),
-                JValue _ => true,
+                JValue => true,
                 _ => false,
             };
         }
