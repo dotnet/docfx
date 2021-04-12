@@ -5,10 +5,10 @@ trigger:
   branches:
     include:
     - dev
-    - master
+    - main
 pr:
 - dev
-- master
+- main
 
 pool:
   name: Hosted Windows 2019 with VS2019

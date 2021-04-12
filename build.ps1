@@ -19,7 +19,7 @@ $scriptRoot = $($MyInvocation.MyCommand.Definition) | Split-Path
 . "$scriptRoot/common.ps1"
 
 $ErrorActionPreference = 'Stop'
-$releaseBranch = "master"
+$releaseBranch = "main"
 $gitCommand = "git"
 $framework = "net472"
 $packageVersion = "1.0.0"
@@ -64,7 +64,7 @@ if ($prod -eq $true) {
         ProcessLastExitCode $lastexitcode "Get GIT branch name $branch"
     }
     else {
-        $branch = "master";
+        $branch = "main";
         Write-Host "Release version using $branch branch"
     }
 
