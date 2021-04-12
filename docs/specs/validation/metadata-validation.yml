@@ -452,3 +452,89 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"products-invalid","message":"Invalid value for 'products': 'a'. Ensure all products values specified are valid per the Product taxonomy.","file":"a.md","line":3,"column":5}
 ---
+# ignore error if markdown is noindex and rule has SEO tag
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 2,
+          "maxLength": 10
+        }
+      },
+      "rules": {
+          "description": {
+            "string-length-invalid": {
+                "severity": "warning",
+                "code": "length-invalid", 
+                "contentTypes": [
+                    "conceptual"
+                ],
+                "tags": [ "SEO"]
+            }
+          }
+      }
+    }
+  a.md: |
+    ---
+    description: a
+    robot: noindex
+    ---
+  b.md: |
+    ---
+    description: a long description
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10.","file":"b.md","line":2,"column":14}
+---
+# Json schema docset unique - rule is SEO and one markdonw is noindex
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"],
+      "rules": {
+        "description": {
+          "duplicate-attribute": {
+            "severity": "suggestion",
+            "code": "duplicate-description-within-docset",
+            "additionalMessage": "Description must be unique within a docset.",
+            "pullRequestOnly": false,
+            "contentTypes": [
+              "conceptual",
+              "include",
+              "landingpage",
+              "hubpage"
+            ],
+            "tags": [ "SEO"]
+          }
+        }
+      }
+    }
+  a.md: |
+    ---
+    title: title1
+    description: description1
+    robot: noindex
+    ---
+  b.md: |
+    ---
+    description: description1
+    title: title2
+    ---
+outputs:
+  a.json:
+  b.json:
+---

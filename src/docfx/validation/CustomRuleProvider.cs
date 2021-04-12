@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Docs.Validation;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly PublishUrlMap _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
+        private readonly MetadataProvider _metadataProvider;
 
         private readonly Dictionary<string, List<CustomRule>> _customRules;
 
@@ -25,13 +27,15 @@ namespace Microsoft.Docs.Build
             FileResolver fileResolver,
             DocumentProvider documentProvider,
             PublishUrlMap publishUrlMap,
-            MonikerProvider monikerProvider)
+            MonikerProvider monikerProvider,
+            MetadataProvider metadataProvider)
         {
             _config = config;
             _fileResolver = fileResolver;
             _documentProvider = documentProvider;
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
+            _metadataProvider = metadataProvider;
 
             _customRules = LoadCustomRules(errors);
         }
@@ -46,6 +50,17 @@ namespace Microsoft.Docs.Build
             if (customRule.CanonicalVersionOnly && !IsCanonicalVersion(filePath, moniker))
             {
                 return false;
+            }
+
+            if (customRule.Tags != null && customRule.Tags.Contains("SEO"))
+            {
+                var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, filePath).RawJObject;
+                var noindex = metadata.TryGetValue<JValue>("robot", out var robotValue) && robotValue.Value is string robot &&
+                    robot.Contains("noindex", StringComparison.OrdinalIgnoreCase);
+                if (noindex)
+                {
+                    return false;
+                }
             }
 
             return true;

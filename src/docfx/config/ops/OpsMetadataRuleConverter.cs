@@ -182,6 +182,7 @@ namespace Microsoft.Docs.Build
                                 canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
                                 pullRequestOnly = ruleInfo.PullRequestOnly,
                                 contentTypes = ruleInfo.ContentTypes,
+                                tags = ruleInfo.Tags,
                             });
                         }
                     }
