@@ -1,4 +1,4 @@
-# This YAML is used for the docfx v2 master release CI (https://dev.azure.com/ceapex/Engineering/_build?definitionId=1503&_a=summary)
+# This YAML is used for the docfx v2 main release CI (https://dev.azure.com/ceapex/Engineering/_build?definitionId=1503&_a=summary)
 
 variables:
 - group: docfx-v2-pipeline-kv
@@ -36,7 +36,7 @@ steps:
   displayName: 'gulp build'
   inputs:
     filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js master:build'
+    arguments: '.\node_modules\gulp\bin\gulp.js main:build'
     workingFolder: tools/Deployment
   env:
     TOKEN: $(ServiceAccountGithubToken)
@@ -166,7 +166,7 @@ steps:
   displayName: 'gulp pack'
   inputs:
     filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js master:pack'
+    arguments: '.\node_modules\gulp\bin\gulp.js main:pack'
     workingFolder: tools/Deployment
 
 - task: EsrpCodeSigning@1
@@ -209,7 +209,7 @@ steps:
   displayName: 'gulp release'
   inputs:
     filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js master:release'
+    arguments: '.\node_modules\gulp\bin\gulp.js main:release'
     workingFolder: tools/Deployment
   env:
     NUGETAPIKEY: $(NugetAPIKey)
