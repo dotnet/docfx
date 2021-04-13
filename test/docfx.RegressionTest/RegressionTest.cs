@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace Microsoft.Docs.Build
 {
@@ -174,6 +175,7 @@ namespace Microsoft.Docs.Build
 
         private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 3)
         {
+            var retryPolicy = Retry();
             if (!Directory.Exists(workingFolder))
             {
                 try
@@ -181,19 +183,15 @@ namespace Microsoft.Docs.Build
                     Directory.CreateDirectory(workingFolder);
                     Exec("git", $"init", cwd: workingFolder);
                     Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
-                    Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+
+                    retryPolicy.Execute(() =>
+                    {
+                        Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+                    });
                 }
                 catch
                 {
-                    if (retryCount-- > 0)
-                    {
-                        _ = Task.Delay(5000);
-                        EnsureTestData(opts, workingFolder, retryCount);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    throw new InvalidOperationException();
                 }
             }
 
@@ -203,7 +201,13 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth, redirectStandardError: true);
+                retryPolicy.Execute(
+                    () => Exec(
+                            "git",
+                            $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}",
+                            cwd: workingFolder,
+                            secrets: s_gitCmdAuth,
+                            redirectStandardError: true));
             }
             catch (Exception ex)
             {
@@ -527,5 +531,8 @@ namespace Microsoft.Docs.Build
 
             response.EnsureSuccessStatusCode();
         }
+
+        private static Policy Retry(int retryCount = 6)
+            => Policy.Handle<Exception>().WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryCount)));
     }
 }
