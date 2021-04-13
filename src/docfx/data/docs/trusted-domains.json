@@ -19,7 +19,8 @@
     "urn:*",
     "view-source:*",
     "vscode:*",
-    "windowsdefender:*"
+    "windowsdefender:*",
+    "xamlcontrolsgallery:*"
   ],
   "source": [
     "https://trainpr.streaming.mediaservices.windows.net",
