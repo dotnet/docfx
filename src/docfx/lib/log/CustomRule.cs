@@ -30,6 +30,9 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public string[]? ContentTypes { get; init; }
 
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public string[]? Tags { get; init; }
+
         public bool Disabled { get; init; }
 
         private Func<string, bool>? _globMatcherCache;
