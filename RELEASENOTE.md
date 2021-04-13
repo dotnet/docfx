@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.58)
+Version Notes (Current Version: v2.57.1)
 =======================================
 
-v2.58(Pre-release)
+v2.57.1
 -----------
+1. Fix breaking theme by reverting bootstrap from 4.6.0 back to 3.4.1.
 
 v2.57
 -----------
@@ -18,9 +19,8 @@ v2.57
     6. Migrate bower to NPM. (#7273)
     7. Enable CodeQL. (#7184)
 5. Bug fix:
-    1. Wrong default value for nullable parameters. Thanks @mikernet! (#7054)
-    2. `<code source=...>` not work when using DLL + XML documents as input. Thanks @james-hunt-ra! (#7096)
-    3. Sub navbar not fully shows if remove `.html` extension from URL. Thanks @CyberAndrii! (#7046)
+    1. `<code source=...>` not work when using DLL + XML documents as input. Thanks @james-hunt-ra! (#7096)
+    2. Sub navbar not fully shows if remove `.html` extension from URL. Thanks @CyberAndrii! (#7046)
 
 v2.56.7
 -----------
