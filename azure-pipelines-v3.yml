@@ -163,10 +163,6 @@ parameters:
     agent2: 2
     agent3: 3
     agent4: 4
-    agent5: 5
-    agent6: 6
-    agent7: 7
-    agent8: 8
 - name: repos
   type: object
   default:
