@@ -10,7 +10,7 @@ pr:
 variables:
 - group: devresourcekeyvault
 - name: dotnetVersion
-  value: 5.0.200
+  value: 5.0.x
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel
