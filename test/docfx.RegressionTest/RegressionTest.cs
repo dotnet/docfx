@@ -181,10 +181,7 @@ namespace Microsoft.Docs.Build
                 Exec("git", $"init", cwd: workingFolder);
                 Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
 
-                ExecGitRetry().Execute(() =>
-                {
-                    Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
-                });
+                Retry(() => Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth));
             }
 
             var remoteBranch = string.IsNullOrEmpty(opts.Branch)
@@ -193,8 +190,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                ExecGitRetry().Execute(
-                    () => Exec(
+                Retry(() => Exec(
                             "git",
                             $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}",
                             cwd: workingFolder,
@@ -524,7 +520,10 @@ namespace Microsoft.Docs.Build
             response.EnsureSuccessStatusCode();
         }
 
-        private static Policy ExecGitRetry(int retryCount = 5)
-            => Policy.Handle<Exception>().WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        private static TimeSpan Retry(Func<TimeSpan> action, int retryCount = 5)
+            => Policy
+            .Handle<Exception>()
+            .WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .Execute(action);
     }
 }
