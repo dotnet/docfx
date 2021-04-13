@@ -35,6 +35,7 @@ namespace Microsoft.Docs.Build
 
             var serialized = JsonUtility.Serialize(MaskUtility.HideSecret(JsonUtility.ToJObject(data)), indent: true);
             Assert.True(secrets.All(secret => !serialized.Contains(secret)));
+            Assert.Contains("***", serialized);
         }
     }
 }
