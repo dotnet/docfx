@@ -61,13 +61,7 @@ namespace Microsoft.Docs.Build
 
         private bool NoIndex(FilePath file)
         {
-            var metadata = _metadataProvider.GetMetadata(_errors, file);
-            if (metadata.Robots != null && metadata.Robots.Contains("noindex", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
+            return _metadataProvider.GetMetadata(_errors, file).NoIndex();
         }
     }
 }
