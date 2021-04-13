@@ -9,7 +9,7 @@ pr: none
 
 variables:
 - name: dotnetVersion
-  value: 5.0.100
+  value: 5.0.x
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel
@@ -97,6 +97,16 @@ jobs:
       ArtifactType: 'Container'
       AllTools: true
       ToolLogsNotFoundAction: 'Standard'
+
+  - task: TSAUpload@1
+    inputs:
+      tsaVersion: 'TsaV2'
+      codebase: 'Existing'
+      tsaEnvironment: 'PROD'
+      codeBaseName: 'Docs_default'
+      uploadBinSkim: true
+      uploadCredScan: true
+      uploadAsync: true
 
   - task: PostAnalysis@1
     displayName: Security - PostAnalysis

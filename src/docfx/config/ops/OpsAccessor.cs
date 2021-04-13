@@ -28,8 +28,12 @@ namespace Microsoft.Docs.Build
             Environment.GetEnvironmentVariable("DOCS_KV_PROD_ENDPOINT") ?? "https://docfxdevkvpub.vault.azure.net/"), new DefaultAzureCredential());
 
         private static readonly SecretClient s_secretClientPubDev = new(new("https://docfxdevkvpubdev.vault.azure.net/"), new DefaultAzureCredential());
-        private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken"));
-        private static readonly Lazy<Task<string>> s_opsTokenPubDev = new(() => GetSecret("OpsBuildUserToken", isPubDev: true));
+
+        private static readonly SecretClient s_secretClientPerf = new(new("https://kv-opbuild-test.vault.azure.net/"), new DefaultAzureCredential());
+
+        private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.Prod));
+        private static readonly Lazy<Task<string>> s_opsTokenPubDev = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.PPE));
+        private static readonly Lazy<Task<string>> s_opsTokenPerf = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.Perf));
 
         private static int s_validationRulesetReported;
 
@@ -232,6 +236,7 @@ namespace Microsoft.Docs.Build
                         {
                             DocsEnvironment.Prod => s_opsTokenPublic,
                             DocsEnvironment.PPE => s_opsTokenPubDev,
+                            DocsEnvironment.Perf => s_opsTokenPerf,
                             _ => throw new InvalidOperationException(),
                         };
 
@@ -253,7 +258,9 @@ namespace Microsoft.Docs.Build
             return (environment ?? DocsEnvironment) switch
             {
                 DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
-                _ => "https://BuildApiPubDev.azurefd.net",
+                DocsEnvironment.PPE => "https://BuildApiPubDev.azurefd.net",
+                DocsEnvironment.Perf => "https://op-build-test.azurewebsites.net",
+                _ => throw new InvalidOperationException(),
             };
         }
 
@@ -266,9 +273,16 @@ namespace Microsoft.Docs.Build
             };
         }
 
-        private static async Task<string> GetSecret(string secret, bool isPubDev = false)
+        private static async Task<string> GetSecret(string secret, DocsEnvironment environment = DocsEnvironment.Prod)
         {
-            var response = await (isPubDev ? s_secretClientPubDev.GetSecretAsync(secret) : s_secretClientPublic.GetSecretAsync(secret));
+            var response = environment switch
+            {
+                DocsEnvironment.Prod => await s_secretClientPublic.GetSecretAsync(secret),
+                DocsEnvironment.PPE => await s_secretClientPubDev.GetSecretAsync(secret),
+                DocsEnvironment.Perf => await s_secretClientPerf.GetSecretAsync(secret),
+                _ => throw new InvalidOperationException(),
+            };
+
             if (response.Value is null)
             {
                 throw new HttpRequestException(response.GetRawResponse().ToString());

@@ -39,11 +39,11 @@ namespace Microsoft.Docs.Build
                 StringComparer.OrdinalIgnoreCase,
                 ResolveGitHubUserConflict);
 
-            if (!string.IsNullOrEmpty(config.GithubToken))
+            if (!string.IsNullOrEmpty(config.Secrets.GithubToken))
             {
                 _httpClient = new HttpClient(_httpClientHandler);
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.GithubToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.Secrets.GithubToken);
             }
         }
 

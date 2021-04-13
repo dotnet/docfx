@@ -29,7 +29,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -58,7 +59,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -92,7 +94,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -127,7 +130,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -156,7 +160,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":

@@ -307,8 +307,6 @@ namespace Microsoft.Docs.Build
 
         private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context)
         {
-            var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, file);
-            var noindex = metadata.Robots?.Contains("noindex", StringComparison.OrdinalIgnoreCase);
             if (TryGetValidationDocumentType(file, out var documentType))
             {
                 context = new ValidationContext
@@ -316,7 +314,7 @@ namespace Microsoft.Docs.Build
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
                     Monikers = GetMonikers(file, needMonikers),
-                    NoIndex = noindex ?? false,
+                    NoIndex = _metadataProvider.GetMetadata(ErrorBuilder.Null, file).NoIndex(),
                 };
                 return true;
             }

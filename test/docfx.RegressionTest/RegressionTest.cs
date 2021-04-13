@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
+        private static readonly string? s_microsoftGraphClientCertificate = Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_CERTIFICATE");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
@@ -39,7 +40,7 @@ namespace Microsoft.Docs.Build
                 Run,
                 _ =>
                 {
-                    SendPullRequestComments(new() { CrashMessage = "regression-test argument exception" });
+                    SendPullRequestComments(new() { CrashMessage = "argument exception" });
                     return -9999;
                 });
         }
@@ -53,7 +54,10 @@ namespace Microsoft.Docs.Build
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
                 var remoteBranch = EnsureTestData(opts, workingFolder);
-                Test(opts, workingFolder, remoteBranch);
+                if (!opts.WarmUp)
+                {
+                    Test(opts, workingFolder, remoteBranch);
+                }
             }
             catch (Exception ex)
             {
@@ -101,13 +105,17 @@ namespace Microsoft.Docs.Build
 
                 var docfxConfig = JObject.FromObject(new
                 {
-                    http,
                     maxFileWarnings = 10000,
                     maxFileSuggestions = 10000,
                     maxFileInfos = 10000,
                     updateTimeAsCommitBuildTime = true,
-                    githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
+                    secrets = new
+                    {
+                        http,
+                        githubToken = s_githubToken,
+                        microsoftGraphClientCertificate = s_microsoftGraphClientCertificate,
+                    },
                 });
 
                 if (opts.OutputHtml)
@@ -164,18 +172,34 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static string EnsureTestData(Options opts, string workingFolder)
+        private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 3)
         {
+            if (!Directory.Exists(workingFolder))
+            {
+                try
+                {
+                    Directory.CreateDirectory(workingFolder);
+                    Exec("git", $"init", cwd: workingFolder);
+                    Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
+                    Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+                }
+                catch
+                {
+                    if (retryCount-- > 0)
+                    {
+                        _ = Task.Delay(5000);
+                        EnsureTestData(opts, workingFolder, retryCount);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
+
             var remoteBranch = string.IsNullOrEmpty(opts.Branch)
                 ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
                 : opts.Branch;
-            if (!Directory.Exists(workingFolder))
-            {
-                Directory.CreateDirectory(workingFolder);
-                Exec("git", $"init", cwd: workingFolder);
-                Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
-            }
 
             try
             {
@@ -240,6 +264,7 @@ namespace Microsoft.Docs.Build
                 stdin: docfxConfig,
                 cwd: repositoryPath);
 
+            Directory.CreateDirectory(Path.GetDirectoryName(traceFile) ?? ".");
             var profiler = opts.Profile
                 ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
                 : null;
