@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
+        private static readonly Policy s_retryPolicy = Retry();
 
         private static string s_repositoryName = "";
         private static string s_repository = "";
@@ -173,9 +174,8 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static string EnsureTestData(Options opts, string workingFolder, int retryCount = 3)
+        private static string EnsureTestData(Options opts, string workingFolder)
         {
-            var retryPolicy = Retry();
             if (!Directory.Exists(workingFolder))
             {
                 try
@@ -184,7 +184,7 @@ namespace Microsoft.Docs.Build
                     Exec("git", $"init", cwd: workingFolder);
                     Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
 
-                    retryPolicy.Execute(() =>
+                    s_retryPolicy.Execute(() =>
                     {
                         Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
                     });
@@ -201,7 +201,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                retryPolicy.Execute(
+                s_retryPolicy.Execute(
                     () => Exec(
                             "git",
                             $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}",
@@ -227,15 +227,18 @@ namespace Microsoft.Docs.Build
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
             Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {remoteBranch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            s_retryPolicy.Execute(() =>
+            {
+                Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            });
             Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_repositoryName));
             return remoteBranch;
         }
 
         private static string GetRemoteDefaultBranch(string repositoryUrl, string workingDirectory)
         {
-            var remoteInfo = ProcessUtility.Execute("git", $"{s_gitCmdAuth} remote show {repositoryUrl}", workingDirectory, secret: s_gitCmdAuth);
+            var remoteInfo = s_retryPolicy.Execute(() => ProcessUtility.Execute("git", $"{s_gitCmdAuth} remote show {repositoryUrl}", workingDirectory, secret: s_gitCmdAuth));
             var match = Regex.Match(remoteInfo, "^([\\s\\S]*)\\sHEAD branch: (.*)$");
             if (match.Success)
             {
@@ -361,7 +364,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                s_retryPolicy.Execute(() => Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth));
             }
         }
 
