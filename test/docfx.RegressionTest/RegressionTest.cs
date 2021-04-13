@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -227,11 +226,8 @@ namespace Microsoft.Docs.Build
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
             Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {remoteBranch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Retry().Execute(() =>
-            {
-                Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-                Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            });
+            Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_repositoryName));
             return remoteBranch;
         }
@@ -536,6 +532,6 @@ namespace Microsoft.Docs.Build
         }
 
         private static Policy Retry(int retryCount = 5)
-            => Policy.Handle<HttpRequestException>(r => r.StatusCode == HttpStatusCode.ServiceUnavailable).WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+            => Policy.Handle<Exception>().WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
 }
