@@ -145,6 +145,7 @@ jobs:
     - ${{ each repo in parameters.repos.*.params}}:
       - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe ${{repo}} --warm-up true
         displayName: ${{repo}}
+        errorActionPreference: continue
         env:
           BUILD_REASON: $(Build.Reason)
           DOCFX_APPDATA_PATH: D:/appdata
