@@ -177,21 +177,14 @@ namespace Microsoft.Docs.Build
         {
             if (!Directory.Exists(workingFolder))
             {
-                try
-                {
-                    Directory.CreateDirectory(workingFolder);
-                    Exec("git", $"init", cwd: workingFolder);
-                    Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
+                Directory.CreateDirectory(workingFolder);
+                Exec("git", $"init", cwd: workingFolder);
+                Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
 
-                    Retry().Execute(() =>
-                    {
-                        Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
-                    });
-                }
-                catch
+                ExecGitRetry().Execute(() =>
                 {
-                    throw new InvalidOperationException();
-                }
+                    Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+                });
             }
 
             var remoteBranch = string.IsNullOrEmpty(opts.Branch)
@@ -200,7 +193,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                Retry().Execute(
+                ExecGitRetry().Execute(
                     () => Exec(
                             "git",
                             $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}",
@@ -531,7 +524,7 @@ namespace Microsoft.Docs.Build
             response.EnsureSuccessStatusCode();
         }
 
-        private static Policy Retry(int retryCount = 5)
+        private static Policy ExecGitRetry(int retryCount = 5)
             => Policy.Handle<Exception>().WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
 }
