@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(
                     stdinObj,
                     options.StdinConfig,
-                    new JObject { ["secrets"] = MaskUtility.HideSecret(options.StdinConfig?["secrets"] ?? new JObject()) });
+                    new JObject { ["secrets"] = MaskUtility.HideSecret(options.StdinConfig["secrets"] ?? new JObject()) });
                 Log.Write($"stdin config: {stdinObj}");
             }
 
