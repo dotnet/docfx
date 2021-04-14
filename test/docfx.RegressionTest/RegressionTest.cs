@@ -55,7 +55,12 @@ namespace Microsoft.Docs.Build
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
                 var remoteBranch = EnsureTestData(opts, workingFolder);
-                if (!opts.WarmUp)
+                if (opts.WarmUp)
+                {
+                    var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
+                    RestoreDependency(repositoryPath, docfxConfig, outputPath);
+                }
+                else
                 {
                     Test(opts, workingFolder, remoteBranch);
                 }
@@ -244,6 +249,16 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        private static void RestoreDependency(string repositoryPath, string docfxConfig, string outputPath)
+        {
+            var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
+            Exec(
+                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                arguments: $"restore {logOption} --verbose --stdin",
+                stdin: docfxConfig,
+                cwd: repositoryPath);
+        }
+
         private static void Build(RegressionTestResult testResult, string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
@@ -252,11 +267,7 @@ namespace Microsoft.Docs.Build
             var diagnosticPort = $"docfx-regression-test-{Guid.NewGuid()}.sock";
             var traceFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.nettrace");
 
-            Exec(
-                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {logOption} --verbose --stdin",
-                stdin: docfxConfig,
-                cwd: repositoryPath);
+            RestoreDependency(repositoryPath, docfxConfig, outputPath);
 
             Directory.CreateDirectory(Path.GetDirectoryName(traceFile) ?? ".");
             var profiler = opts.Profile
