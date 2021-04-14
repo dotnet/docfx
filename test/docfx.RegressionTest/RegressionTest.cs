@@ -106,6 +106,7 @@ namespace Microsoft.Docs.Build
 
                 var docfxConfig = JObject.FromObject(new
                 {
+                    outputType = opts.OutputType,
                     maxFileWarnings = 10000,
                     maxFileSuggestions = 10000,
                     maxFileInfos = 10000,
@@ -119,15 +120,17 @@ namespace Microsoft.Docs.Build
                     },
                 });
 
-                if (opts.OutputHtml)
+                if (!string.IsNullOrEmpty(opts.Template))
                 {
-                    docfxConfig["outputType"] = "html";
+                    docfxConfig["template"] = opts.Template;
+                }
+
+                if (opts.OutputType == "html")
+                {
                     docfxConfig["urlType"] = "ugly";
-                    docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
                 else
                 {
-                    docfxConfig["outputType"] = "pageJson";
                     docfxConfig["selfContained"] = false;
                 }
 
@@ -244,7 +247,6 @@ namespace Microsoft.Docs.Build
         private static void Build(RegressionTestResult testResult, string repositoryPath, string outputPath, Options opts, string docfxConfig)
         {
             var dryRunOption = opts.DryRun ? "--dry-run" : "";
-            var templateOption = opts.PublicTemplate ? "--template https://static.docs.com/ui/latest" : "";
             var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
             var diagnosticPort = $"docfx-regression-test-{Guid.NewGuid()}.sock";
@@ -252,7 +254,7 @@ namespace Microsoft.Docs.Build
 
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"restore {logOption} {templateOption} --verbose --stdin",
+                arguments: $"restore {logOption} --verbose --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath);
 
@@ -263,7 +265,7 @@ namespace Microsoft.Docs.Build
 
             testResult.BuildTime = Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {templateOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
+                arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new[] { 0, 1 },
