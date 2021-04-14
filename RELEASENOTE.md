@@ -9,10 +9,6 @@ v2.57.1
 -----------
 1. Fix breaking theme by reverting bootstrap from 4.6.0 back to 3.4.1.
 
-v2.57.1
------------
-1. Fix breaking theme by reverting bootstrap from 4.6.0 back to 3.4.1.
-
 v2.57
 -----------
 1. Improve display of enum flags. Thanks @mikernet! (#7043)
