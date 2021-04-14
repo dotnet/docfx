@@ -59,7 +59,14 @@ namespace Microsoft.Docs.Build
                 {
                     var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
                     Clean(outputPath);
-                    RestoreDependency(repositoryPath, docfxConfig, outputPath);
+                    try
+                    {
+                        RestoreDependency(repositoryPath, docfxConfig, outputPath);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("restore failed");
+                    }
                 }
                 else
                 {
