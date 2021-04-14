@@ -189,20 +189,6 @@ namespace Microsoft.Docs.Build
             return value;
         }
 
-        public static string RandomSHA1Hash()
-        {
-            using var sha1 = new SHA1Managed();
-            var hash = sha1.ComputeHash(Guid.NewGuid().ToByteArray());
-            var sb = new StringBuilder(hash.Length * 2);
-
-            foreach (var b in hash)
-            {
-                sb.Append(b.ToString("x2"));
-            }
-
-            return sb.ToString();
-        }
-
         private static string ApplyVariables(string value, IEnumerable<KeyValuePair<string, string>> variables)
         {
             if (variables != null && value != null)

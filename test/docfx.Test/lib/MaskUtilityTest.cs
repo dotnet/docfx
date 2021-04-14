@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
         [Fact]
         public static void HideSecret()
         {
-            var githubToken = TestUtility.RandomSHA1Hash();
+            var githubToken = RandomHexNumber(40);
             var microsoftGraphClientCertificate = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
             var opBuildUserToken = Guid.NewGuid().ToString();
 
@@ -36,6 +36,17 @@ namespace Microsoft.Docs.Build
             var serialized = JsonUtility.Serialize(MaskUtility.HideSecret(JsonUtility.ToJObject(data)), indent: true);
             Assert.True(secrets.All(secret => !serialized.Contains(secret)));
             Assert.Contains("***", serialized);
+        }
+
+        private static string RandomHexNumber(int digits)
+        {
+            var buffer = new byte[digits / 2];
+            var random = new Random();
+            random.NextBytes(buffer);
+            var result = string.Concat(buffer.Select(c => c.ToString("x2")));
+            return digits % 2 == 0
+                ? result
+                : result + random.Next(16).ToString("x");
         }
     }
 }

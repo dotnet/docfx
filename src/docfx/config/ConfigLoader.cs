@@ -66,8 +66,9 @@ namespace Microsoft.Docs.Build
                 var stdinObj = new JObject();
                 JsonUtility.Merge(
                     stdinObj,
+                    options.StdinConfig,
                     new JObject { ["secrets"] = MaskUtility.HideSecret(options.StdinConfig?["secrets"] ?? new JObject()) });
-                Log.Write($"stdin secret config: {stdinObj}");
+                Log.Write($"stdin config: {stdinObj}");
             }
 
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, package);
