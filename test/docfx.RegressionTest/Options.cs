@@ -22,14 +22,14 @@ namespace Microsoft.Docs.Build
         [Option("timeout")]
         public int? Timeout { get; set; }
 
-        [Option("output-html")]
-        public bool OutputHtml { get; set; }
+        [Option("output-type")]
+        public string OutputType { get; set; } = "pagejson";
+
+        [Option("template")]
+        public string? Template { get; set; }
 
         [Option("dry-run")]
         public bool DryRun { get; set; }
-
-        [Option("public-template")]
-        public bool PublicTemplate { get; set; }
 
         [Option("no-dry-sync")]
         public bool NoDrySync { get; set; }

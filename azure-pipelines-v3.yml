@@ -179,8 +179,6 @@ parameters:
       params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
-    AspNetCore.Docs:
-      params: https://github.com/dotnet/AspNetCore.Docs --profile --timeout 30 --output-html
     microsoft-365-docs-pr.zh-CN:
       params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --profile --timeout 25
     powerbi-docs-pr.de-DE:
@@ -215,8 +213,13 @@ parameters:
       params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
     microsoft-graph-docs:
       params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
+    # render HTML
+    html.test:
+      params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync --output-type html
+    html.AspNetCore.Docs:
+      params: https://github.com/dotnet/AspNetCore.Docs --profile --timeout 30 --output-type html --template https://github.com/Microsoft/templates.docs.msft.pdf
     # dry-runs
     dryrun.bot-docs-pr:
-      params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
+      params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --template https://static.docs.com/ui/latest
     dryrun.azure-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
