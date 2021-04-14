@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.58)
+Version Notes (Current Version: v2.57.2)
 =======================================
 
-v2.58(Pre-release)
+v2.57.2
 -----------
+1. Fix search function break. (#7302)
 
 v2.57.1
 -----------
