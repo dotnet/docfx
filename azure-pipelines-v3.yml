@@ -169,8 +169,6 @@ parameters:
 - name: repos
   type: object
   default:
-    azure-docs-pr:
-      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 100 --regression-rules
     sql-docs-pr:
       params: https://github.com/MicrosoftDocs/sql-docs-pr --profile --timeout 120 --regression-rules
     docs:
