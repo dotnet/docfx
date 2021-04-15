@@ -61,7 +61,16 @@ namespace Microsoft.Docs.Build
             var cliConfig = new JObject();
             JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
 
-            // TODO: print stdin passed secrets
+            if (options.StdinConfig != null)
+            {
+                var stdinObj = new JObject();
+                JsonUtility.Merge(
+                    stdinObj,
+                    options.StdinConfig,
+                    new JObject { ["secrets"] = MaskUtility.HideSecret(options.StdinConfig["secrets"] ?? new JObject()) });
+                Log.Write($"stdin config: {stdinObj}");
+            }
+
             var (xrefEndpoint, xrefQueryTags, opsConfig) = OpsConfigLoader.LoadDocfxConfig(errors, repository, package);
 
             var globalConfig = LoadConfig(errors, package, new PathString(AppData.Root));
