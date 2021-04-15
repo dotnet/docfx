@@ -39,7 +39,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 ## DocFX Project
 
-`dev` is the default branch accepting Pull Requests. It releases a package daily. `master` branch is the release branch.
+`dev` is the default branch accepting Pull Requests. It releases a package daily. `main` branch is the release branch.
 
 ### How to build from source code
 
@@ -55,7 +55,7 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 ### Build Status
 
-| master | dev
+| main | dev
 | - | -
 | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-master-release?branchName=master)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1503&branchName=master) | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-dev-release?branchName=dev)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1743&branchName=dev)
 
