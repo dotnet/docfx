@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO.Enumeration;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -13,7 +15,7 @@ namespace Microsoft.Docs.Build
     {
         private static readonly string[] s_splitStrings = new[] { ":", "//" };
 
-        private readonly Dictionary<string, HashSet<string>?> _trustedDomains = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, (HashSet<string> literals, List<string> wildcards)?> _trustedDomains = new(StringComparer.OrdinalIgnoreCase);
 
         public TrustedDomains(string[] trustedDomains)
         {
@@ -35,12 +37,19 @@ namespace Microsoft.Docs.Build
                 {
                     if (!_trustedDomains.TryGetValue(protocol, out var domains))
                     {
-                        _trustedDomains[protocol] = domains = new(StringComparer.OrdinalIgnoreCase);
+                        _trustedDomains[protocol] = domains = new(new(StringComparer.OrdinalIgnoreCase), new());
                     }
 
                     if (domains != null)
                     {
-                        domains.Add(domain);
+                        if (domain.Contains('*'))
+                        {
+                            domains.Value.wildcards.Add(domain);
+                        }
+                        else
+                        {
+                            domains.Value.literals.Add(domain);
+                        }
                     }
                 }
             }
@@ -57,7 +66,7 @@ namespace Microsoft.Docs.Build
             // Special case for links without protocol: '//codepen.io'. Uri treats them as files.
             if (uri.Scheme == Uri.UriSchemeFile && url.StartsWith("//"))
             {
-                if (IsTrusted("https", uri.DnsSafeHost))
+                if (IsTrusted("https", uri))
                 {
                     untrustedDomain = null;
                     return true;
@@ -67,7 +76,7 @@ namespace Microsoft.Docs.Build
                 return false;
             }
 
-            if (IsTrusted(uri.Scheme, uri.DnsSafeHost))
+            if (IsTrusted(uri.Scheme, uri))
             {
                 untrustedDomain = null;
                 return true;
@@ -82,11 +91,13 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        private bool IsTrusted(string protocol, string domain)
+        private bool IsTrusted(string protocol, Uri uri)
         {
             if (_trustedDomains.TryGetValue(protocol, out var domains))
             {
-                if (domains is null || domains.Contains(domain))
+                if (domains is null ||
+                    domains.Value.literals.Contains(uri.DnsSafeHost) ||
+                    domains.Value.wildcards.Any(wildcard => FileSystemName.MatchesSimpleExpression(wildcard, uri.LocalPath)))
                 {
                     return true;
                 }
@@ -94,7 +105,7 @@ namespace Microsoft.Docs.Build
 
             if (protocol == "https")
             {
-                return IsTrusted("http", domain);
+                return IsTrusted("http", uri);
             }
 
             return false;
