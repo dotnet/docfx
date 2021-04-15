@@ -84,7 +84,7 @@ export class Github {
         let description = Common.getDescriptionFromReleaseNote(releaseNotePath);
         let releaseDescription = {
             "tag_name": `v${version}`,
-            "target_commitish": "master",
+            "target_commitish": "main",
             "name": `Version ${version}`,
             "body": description
         };
