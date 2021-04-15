@@ -6,7 +6,7 @@ variables:
   value: nuget
 
 pool:
-  name: Hosted Windows 2019 with VS2019
+  name: 1ES-Pool
 
 steps:
 
