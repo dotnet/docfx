@@ -1,8 +1,7 @@
 # This YAML is used for the docfx v2 daily pre-release CI (https://dev.azure.com/ceapex/Engineering/_build?definitionId=1743&_a=summary)
 
 pool:
-  name: Hosted Windows 2019 with VS2019
-  vmImage: 'windows-2019'
+  name: 1ES-Pool
 
 variables:
 - group: docfx-v2-pipeline-kv
