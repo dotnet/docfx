@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
 
         public string AttributeName { get; init; } = "href";
 
-        public bool IsImage => TagName == "img" || TagName == "image";
+        public bool IsImage => TagName == "img";
 
         public MarkdownObject? MarkdownObject { get; init; }
 
