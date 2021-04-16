@@ -550,10 +550,12 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            if (attribute.NameIs("src"))
+            if (attribute.NameIs("src") || attribute.NameIs("poster"))
             {
-                tagName = token.Name.ToString().Trim().ToLowerInvariant();
-                attributeName = "src";
+                tagName = token.NameIs("image")
+                    ? "img"
+                    : token.Name.ToString().Trim().ToLowerInvariant();
+                attributeName = attribute.Name.ToString().Trim().ToLowerInvariant();
                 return true;
             }
 
