@@ -28,7 +28,7 @@ export class Nuget {
 
         let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
         let promises = packages.map((p: string) => {
-            return Common.execAsync(nugetPath, ["push", p, token, "-Source", url]);
+            return Common.execAsync(nugetPath, ["push", p, token, "-Source", url, "-SkipDuplicate"]);
         });
 
         await Promise.all(promises);
