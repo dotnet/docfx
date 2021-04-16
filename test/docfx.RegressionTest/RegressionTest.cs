@@ -58,7 +58,6 @@ namespace Microsoft.Docs.Build
                 if (opts.WarmUp)
                 {
                     var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
-                    Clean(outputPath);
                     RestoreDependency(repositoryPath, docfxConfig, outputPath);
                 }
                 else
