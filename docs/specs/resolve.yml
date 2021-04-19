@@ -559,7 +559,8 @@ inputs:
       - "http://*"
       img:
       - "https://docs.com"
-      - "data:*"
+      - "data:image/*"
+      video: []
   a.md: |
     [link](http://github.com)
     [link](https://github.com)
@@ -567,11 +568,15 @@ inputs:
     [link](//codepen.io/azuremaps/embed)
     [link](file://c/d)
     ![img](data:image/png;base64,aG=)
+    ![img](data:text/html;base64,aL=)
     <img src="http://docs.com/a.png">
     <img src="https://docs.com/a.png">
     <img src="https://microsoft.com/a.png">
     <img src="data:image/svg+xml,%3Csvg /svg%3E">
     <img src="//office.com/a.png">
+    <image src="//office.com/b.png">
+    <video src="a.mp4" poster="a.png"></video>
+    <video src="https://microsoft.com/a.mp4" poster="https://microsoft.com/a.png"></video>
 outputs:
   a.json: |
     {
@@ -582,16 +587,27 @@ outputs:
         <a href='//codepen.io/azuremaps/embed' data-linktype='external'>link</a>
         <a href=''>link</a>
         <img src='data:image/png;base64,aG=' alt='img' data-linktype='external'/>
+        <img src='' alt='img'/>
         <img src=''>
         <img src='https://docs.com/a.png' data-linktype='external'>
         <img src=''>
         <img src='data:image/svg+xml,%3Csvg /svg%3E' data-linktype='external'>
-        <img src=''></p>"
+        <img src=''>
+        <image src=''>
+        <video src='a.mp4' poster='a.png' data-linktype='relative-path'></video>
+        <video src='' poster=''></video>
+        </p>"
     }
   .errors.log: |
     { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'ms-windows-store://pdp?productId=9WZDNCRFHVJL' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'file://c/d' *", "file": "a.md" }
+    { "message_severity": "suggestion", "code": "external-image", "message": "Image 'data:text/html;base64,aL=' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "external-image", "message": "Image 'http://docs.com/a.png' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "external-image", "message": "Image 'https://microsoft.com/a.png' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "external-image", "message": "Image '//office.com/a.png' *", "file": "a.md" }
+    { "message_severity": "suggestion", "code": "external-image", "message": "Image '//office.com/b.png' *", "file": "a.md" }
+    { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'https://microsoft.com/a.mp4' *", "file": "a.md" }
+    { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'https://microsoft.com/a.png' *", "file": "a.md" }
+    { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: 'a.mp4'.", "file": "a.md" }
+    { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: 'a.png'.", "file": "a.md" }
 ---

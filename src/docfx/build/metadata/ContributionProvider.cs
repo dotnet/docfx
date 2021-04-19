@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,13 +14,11 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly GitHubAccessor _githubAccessor;
         private readonly BuildOptions _buildOptions;
-        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders =
-                     new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new(PathUtility.PathComparer);
 
         private readonly RepositoryProvider _repositoryProvider;
 
-        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls =
-                     new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
+        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new();
 
         public ContributionProvider(
             Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider)

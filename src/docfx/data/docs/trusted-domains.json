@@ -22,6 +22,7 @@
     "windowsdefender:*",
     "xamlcontrolsgallery:*"
   ],
+  "video": [],
   "source": [
     "https://trainpr.streaming.mediaservices.windows.net",
     "https://adaptivecardsblob.blob.core.windows.net"
@@ -63,7 +64,7 @@
   ],
   "img": [
     "cid:*",
-    "data:*",
+    "data:image/*",
     "http://aka.ms",
     "http://armviz.io",
     "http://azuredeploy.net",

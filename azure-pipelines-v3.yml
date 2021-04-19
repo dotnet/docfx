@@ -21,7 +21,7 @@ jobs:
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
-    vmImage: 'windows-latest'
+    name: 1ES-Pool
   steps:
 
   # Install .NET Core sdk
@@ -143,16 +143,22 @@ jobs:
 
     # Warm up
     - ${{ each repo in parameters.repos.*.params}}:
-      - script: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe ${{repo}} --warm-up true
+      - task: AzureCLI@2
         displayName: ${{repo}}
+        inputs:
+          azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+          scriptType: ps
+          scriptLocation: inlineScript
+          powerShellErrorActionPreference: continue
+          inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe ${{repo}} --warm-up true
         env:
           BUILD_REASON: $(Build.Reason)
           DOCFX_APPDATA_PATH: D:/appdata
           DOCS_GITHUB_TOKEN: $(gitHubTestToken)
           DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
           AZURE_DEVOPS_TOKEN: $(vsoTestToken)
-          PULL_REQUEST_NUMBER: $(System.PullRequest.PullRequestNumber)
           APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+          PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
 
 parameters:
 - name: agents
@@ -164,6 +170,8 @@ parameters:
     agent4: 4
     agent5: 5
     agent6: 6
+    agent7: 7
+    agent8: 8
 - name: repos
   type: object
   default:
@@ -181,8 +189,6 @@ parameters:
       params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
-    AspNetCore.Docs:
-      params: https://github.com/dotnet/AspNetCore.Docs --profile --timeout 30 --output-html
     microsoft-365-docs-pr.zh-CN:
       params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --profile --timeout 25
     powerbi-docs-pr.de-DE:
@@ -217,8 +223,13 @@ parameters:
       params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
     microsoft-graph-docs:
       params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
+    # render HTML
+    html.test:
+      params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync --output-type html
+    html.AspNetCore.Docs:
+      params: https://github.com/dotnet/AspNetCore.Docs --profile --timeout 30 --output-type html --template https://github.com/Microsoft/templates.docs.msft.pdf
     # dry-runs
     dryrun.bot-docs-pr:
-      params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
+      params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --template https://static.docs.com/ui/latest
     dryrun.azure-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
