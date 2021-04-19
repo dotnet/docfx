@@ -73,6 +73,7 @@ if (-not(Test-Path -path $docfxTarget)) {
 
 Copy-Item -Path "src/nuspec/docfx.console/build" -Destination $docfxTarget -Force -Recurse
 Copy-Item -Path "src/nuspec/docfx.console/content" -Destination $docfxTarget -Force -Recurse
+Copy-Item -Path "LICENSE" -Destination $docfxTarget -Force
 
 $packages = @{
     "docfx" = @{
