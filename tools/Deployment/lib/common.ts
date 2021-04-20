@@ -29,7 +29,7 @@ export class Common {
         let stdoutStr = "";
         let promise = cp.spawn(command, args);
         let childProcess = promise.childProcess;
-        childProcess.stdout.on("data", async (data) => {
+        childProcess.stdout.on("data", (data) => {
             stdoutStr = data.toString();
             process.stdout.write(stdoutStr);
         });
