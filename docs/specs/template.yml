@@ -39,7 +39,8 @@ outputs:
 ---
 # Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestObject
     prop: value
@@ -70,7 +71,8 @@ outputs:
 ---
 # Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestData
     prop: value
@@ -87,7 +89,8 @@ outputs:
 ---
 # Run data-transform if provided, and return raw object if content property is not serialized json object
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestData
     prop: value
@@ -523,3 +526,21 @@ outputs:
   a.mta.json:
   a.raw.page.json: |
     { "content": "<span>Edm.Int32</span><span>Missing</span>" }
+---
+# Output schema for data type
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        result: model.prop + " has run js data transform",
+        content: "raw string"
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
+outputs:
+  a.json: |
+    {"prop":"value","schema":"TestData"}
