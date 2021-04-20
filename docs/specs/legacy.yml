@@ -76,6 +76,7 @@ outputs:
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
         <meta name=\"original_content_git_url_template\" content=\"{repo}/blob/{branch}/c.md\" />
         <meta name=\"rawTitle\" content=\"\" />
+        <meta name=\"schema\" content=\"Conceptual\" />
         <meta name=\"search.ms_docsetname\" content=\"\" />
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
