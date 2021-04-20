@@ -149,6 +149,7 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
+            outputModel["schema"] = mime.Value;
             if (_config.OutputType == OutputType.Json)
             {
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
@@ -188,6 +189,12 @@ namespace Microsoft.Docs.Build
             {
                 metadata["page_type"] = "learn";
                 metadata["page_kind"] = "achievements";
+            }
+
+            sourceModel["schema"] = mime.Value;
+            if (_config.OutputType == OutputType.Json)
+            {
+                return (sourceModel, metadata);
             }
 
             return (_templateEngine.RunJavaScript($"{mime}.json.js", sourceModel), metadata);
