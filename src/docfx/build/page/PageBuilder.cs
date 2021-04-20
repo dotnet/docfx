@@ -134,7 +134,6 @@ namespace Microsoft.Docs.Build
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
-            outputModel["schema"] = mime.Value;
             if (TemplateEngine.IsConceptual(mime))
             {
                 // conceptual raw metadata and raw model
@@ -150,6 +149,7 @@ namespace Microsoft.Docs.Build
                 JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
             }
 
+            outputModel["schema"] = mime.Value;
             if (_config.OutputType == OutputType.Json)
             {
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
