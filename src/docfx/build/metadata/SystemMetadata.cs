@@ -73,7 +73,5 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("_op_pdfUrlPrefixTemplate")]
         public string? PdfUrlPrefixTemplate { get; set; }
-
-        public string? Schema { get; set; }
     }
 }

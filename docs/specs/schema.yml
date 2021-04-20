@@ -420,7 +420,7 @@ inputs:
   _themes/ContentTemplate/TestData.html.tmpl:
 outputs:
   a.json: |
-    {"metadata": {"href": "b", "schema": "TestData"}}
+    {"metadata": {"href": "b"}, "schema": "TestData"}
   b.json: |
     {"conceptual": "", "schema": "Conceptual"}
 ---

@@ -134,6 +134,7 @@ namespace Microsoft.Docs.Build
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
+            outputModel["schema"] = mime.Value;
             if (TemplateEngine.IsConceptual(mime))
             {
                 // conceptual raw metadata and raw model
@@ -250,7 +251,6 @@ namespace Microsoft.Docs.Build
             systemMetadata.SearchProduct = _config.Product;
             systemMetadata.SearchDocsetName = _config.Name;
             systemMetadata.SearchEngine = _config.SearchEngine;
-            systemMetadata.Schema = _documentProvider.GetMime(file);
 
             if (!_config.IsReferenceRepository && _config.OutputPdf)
             {
