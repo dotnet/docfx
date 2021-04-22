@@ -535,7 +535,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         }
                         else
                         {
-                            item.Remove();
+                            // instead of just removing the whole ref, output the target
+                            item.ReplaceWith(cref);
                             success = false;
                         }
                     }
