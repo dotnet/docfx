@@ -10,7 +10,7 @@ import * as crypto from "crypto";
 import * as moment from "moment-timezone";
 
 export class Common {
-    static async execAsync(command: string, args: Array<string>, workDir = null): Promise<void> {
+    static async execAsync(command: string, args: Array<string>, workDir = null, stdoutHandler: (stdout: string) => Promise<void> = null): Promise<void> {
         Guard.argumentNotNullOrEmpty(command, "command");
         Guard.argumentNotNull(args, "args");
 
@@ -25,17 +25,22 @@ export class Common {
 
             process.chdir(workDir);
         }
-
+        
+        let stdoutStr = "";
         let promise = cp.spawn(command, args);
         let childProcess = promise.childProcess;
         childProcess.stdout.on("data", (data) => {
-            process.stdout.write(data.toString());
+            stdoutStr = data.toString();
+            process.stdout.write(stdoutStr);
         });
         childProcess.stderr.on("data", (data) => {
             process.stderr.write(data.toString());
         })
-        return promise.then(() => {
+        return promise.then(async () => {
             process.chdir(cwd);
+            if (stdoutHandler) {
+                await stdoutHandler(stdoutStr);
+            }
         });
     }
 

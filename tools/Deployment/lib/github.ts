@@ -71,12 +71,19 @@ export class Github {
 
         await Common.execAsync("git", ["config", "user.name", gitUserName], siteFolder);
         await Common.execAsync("git", ["config", "user.email", gitUserEmail], siteFolder);
-        await Common.execAsync("git", ["add", "."], siteFolder);
-        await Common.execAsync("git", ["commit", "-m", gitCommitMessage], siteFolder);
+
+        return Common.execAsync("git", ["status", "--porcelain"], siteFolder, async (stdout) => {
+            if (stdout) {
+                await Common.execAsync("git", ["add", "."], siteFolder);
+                await Common.execAsync("git", ["commit", "-m", gitCommitMessage], siteFolder);
         
-        var repoUrlWithToken = "https://dotnet:" + githubToken + "@" + repoUrl.substring("https://".length);
-        await Common.execAsync("git", ["remote", "set-url", "origin", repoUrlWithToken], siteFolder);
-        return Common.execAsync("git", ["push", "origin", branch], siteFolder);
+                var repoUrlWithToken = "https://dotnet:" + githubToken + "@" + repoUrl.substring("https://".length);
+                await Common.execAsync("git", ["remote", "set-url", "origin", repoUrlWithToken], siteFolder);
+                return Common.execAsync("git", ["push", "origin", branch], siteFolder);
+            } else {
+                console.log("Skipped updateGhPages due to no local change.")
+            }
+        });
     }
 
     private static getReleaseDescription(releaseNotePath: string): ReleaseDescription {
