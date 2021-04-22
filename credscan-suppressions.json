@@ -1,0 +1,9 @@
+{
+  "tool": "Credential Scanner",
+  "suppressions": [
+    {
+      "file": "\\test\\docfx.Test\\lib\\MaskUtilityTest.cs",
+      "_justification": "test data"
+    }
+  ]
+}

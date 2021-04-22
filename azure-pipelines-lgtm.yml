@@ -55,6 +55,7 @@ jobs:
     displayName: Security - CredScan
     inputs:
       toolMajorVersion: 'V2'
+      suppressionsFile: credscan-suppressions.json
 
   # Run SDL tools
   - task: BinSkim@3
