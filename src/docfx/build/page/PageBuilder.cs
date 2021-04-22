@@ -378,8 +378,7 @@ namespace Microsoft.Docs.Build
                 ["is_dynamic_rendering"] = true,
             };
 
-            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(
-                metadata, HtmlUtility.HtmlMetaHidden, HtmlUtility.HtmlMetaNames);
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
 
             // content for *.raw.page.json
             var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");

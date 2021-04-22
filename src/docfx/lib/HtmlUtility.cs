@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
     {
         public delegate void TransformHtmlDelegate(ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token);
 
-        public static readonly string[] HtmlMetaHidden = new[]
+        private static readonly string[] s_htmlMetaHidden = new[]
         {
             "titleSuffix",
             "contributors_to_exclude",
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             "is_hidden",
         };
 
-        public static readonly Dictionary<string, string> HtmlMetaNames = new()
+        private static readonly Dictionary<string, string> s_htmlMetaNames = new()
         {
             { "product", "Product" },
             { "topic_type", "TopicType" },
@@ -428,19 +428,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
+        public static string CreateHtmlMetaTags(JObject metadata)
         {
             var result = new StringBuilder();
 
             foreach (var (key, value) in metadata)
             {
-                if (value is null || value is JObject || htmlMetaHidden.Contains(key))
+                if (value is null || value is JObject || s_htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
 
                 var content = "";
-                var name = htmlMetaNames.TryGetValue(key, out var displayName) ? displayName : key;
+                var name = s_htmlMetaNames.TryGetValue(key, out var displayName) ? displayName : key;
 
                 if (value is JArray arr)
                 {
