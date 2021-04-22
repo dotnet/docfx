@@ -29,59 +29,6 @@
             "type": "boolean",
             "description": "Indicate whether the depot need to API Scan"
         },
-        "product": {
-            "type": ["array", "null"],
-            "items": {
-                "type": "string"
-            },
-            "htmlMetaName": "Product",
-            "description": "Identifies the Platform in which the API ships.  "
-        },
-        "topic_type": {
-            "type": ["array", "null"],
-            "items": {
-                "type": "string"
-            },
-            "htmlMetaName": "TopicType",
-            "description": "Identifies topic as an API reference topic."
-        },
-        "api_type": {
-            "type": ["array", "null"],
-            "items": {
-                "type": "string"
-            },
-            "htmlMetaName": "APIType",
-            "description": "Identifies type of dependency being documented."
-        },
-        "api_location": {
-            "type": ["array", "null"],
-            "items": {
-                "type": "string"
-            },
-            "htmlMetaName": "APILocation",
-            "description": "Identifies location of dependency."
-        },
-        "api_name": {
-            "type": ["array", "null"],
-            "items": {
-                "type": "string"
-            },
-            "htmlMetaName": "APIName",
-            "description": "Identifies the API name."
-        },
-        "api_extra_info": {
-            "type": ["string", "null"],
-            "htmlMetaName": "APIExtraInfo",
-            "description": "Other information which is specific to the API type."
-        },
-        "target_os": {
-            "type": ["array", "null"],
-            "items": {
-                "type": "string"
-            },
-            "htmlMetaName": "TargetOS",
-            "description": "Identifies the targeted OS/platform."
-        },
         "ms.translationtype": {
             "type": ["string", "null"],
             "enum": [
@@ -208,40 +155,5 @@
         "serviceData",
         "is_hidden",
         "redirect_document_id"
-    ],
-    "htmlMetaHidden": [
-        "titleSuffix",
-        "contributors_to_exclude",
-        "helpviewer_keywords",
-        "dev_langs",
-        "f1_keywords",
-        "api_scan",
-        "layout",
-        "open_to_public_contributors",
-        "title",
-        "absolutePath",
-        "original_content_git_url_template",
-        "fileRelativePath",
-        "internal_document_id",
-        "product_family",
-        "product_version",
-        "redirect_url",
-        "redirect_document_id",
-        "toc_asset_id",
-        "content_git_url",
-        "area",
-        "theme",
-        "theme_branch",
-        "theme_url",
-        "is_active",
-        "publish_version",
-        "canonical_url",
-        "is_dynamic_rendering",
-        "need_preview_pull_request",
-        "moniker_type",
-        "is_significant_update",
-        "serviceData",
-        "github_contributors",
-        "is_hidden"
     ]
 }

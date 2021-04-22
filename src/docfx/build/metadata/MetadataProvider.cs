@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,26 +18,59 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache = new();
 
-        public ICollection<string> HtmlMetaHidden { get; }
+        public ICollection<string> HtmlMetaHidden { get; } = new List<string>()
+        {
+            "titleSuffix",
+            "contributors_to_exclude",
+            "helpviewer_keywords",
+            "dev_langs",
+            "f1_keywords",
+            "api_scan",
+            "layout",
+            "open_to_public_contributors",
+            "title",
+            "absolutePath",
+            "original_content_git_url_template",
+            "fileRelativePath",
+            "internal_document_id",
+            "product_family",
+            "product_version",
+            "redirect_url",
+            "redirect_document_id",
+            "toc_asset_id",
+            "content_git_url",
+            "area",
+            "theme",
+            "theme_branch",
+            "theme_url",
+            "is_active",
+            "publish_version",
+            "canonical_url",
+            "is_dynamic_rendering",
+            "need_preview_pull_request",
+            "moniker_type",
+            "is_significant_update",
+            "serviceData",
+            "github_contributors",
+            "is_hidden",
+        };
 
-        public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
+        public IReadOnlyDictionary<string, string> HtmlMetaNames { get; } = new Dictionary<string, string>()
+        {
+            { "product", "Product" },
+            { "topic_type", "TopicType" },
+            { "api_type", "APIType" },
+            { "api_location", "APILocation" },
+            { "api_name", "APIName" },
+            { "api_extra_info", "APIExtraInfo" },
+            { "target_os", "TargetOS" },
+        };
 
-        public MetadataProvider(Config config, Input input, BuildScope buildScope, JsonSchemaLoader jsonSchemaLoader)
+        public MetadataProvider(Config config, Input input, BuildScope buildScope)
         {
             _input = input;
             _globalMetadata = config.GlobalMetadata.ExtensionData;
             _buildScope = buildScope;
-
-            var metadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
-
-            HtmlMetaHidden = metadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
-
-            HtmlMetaNames = new Dictionary<string, string>(
-                from schema in metadataSchemas
-                from property in schema.Properties
-                let htmlMetaName = property.Value.HtmlMetaName
-                where !string.IsNullOrEmpty(htmlMetaName)
-                select new KeyValuePair<string, string>(property.Key, htmlMetaName));
 
             foreach (var (key, item) in config.FileMetadata)
             {
