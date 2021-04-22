@@ -29,6 +29,52 @@
             "type": "boolean",
             "description": "Indicate whether the depot need to API Scan"
         },
+        "product": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "string"
+            },
+            "description": "Identifies the Platform in which the API ships.  "
+        },
+        "topic_type": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "string"
+            },
+            "description": "Identifies topic as an API reference topic."
+        },
+        "api_type": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "string"
+            },
+            "description": "Identifies type of dependency being documented."
+        },
+        "api_location": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "string"
+            },
+            "description": "Identifies location of dependency."
+        },
+        "api_name": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "string"
+            },
+            "description": "Identifies the API name."
+        },
+        "api_extra_info": {
+            "type": ["string", "null"],
+            "description": "Other information which is specific to the API type."
+        },
+        "target_os": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "string"
+            },
+            "description": "Identifies the targeted OS/platform."
+        },
         "ms.translationtype": {
             "type": ["string", "null"],
             "enum": [

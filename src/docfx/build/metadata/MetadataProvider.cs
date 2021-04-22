@@ -18,54 +18,6 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache = new();
 
-        public ICollection<string> HtmlMetaHidden { get; } = new List<string>()
-        {
-            "titleSuffix",
-            "contributors_to_exclude",
-            "helpviewer_keywords",
-            "dev_langs",
-            "f1_keywords",
-            "api_scan",
-            "layout",
-            "open_to_public_contributors",
-            "title",
-            "absolutePath",
-            "original_content_git_url_template",
-            "fileRelativePath",
-            "internal_document_id",
-            "product_family",
-            "product_version",
-            "redirect_url",
-            "redirect_document_id",
-            "toc_asset_id",
-            "content_git_url",
-            "area",
-            "theme",
-            "theme_branch",
-            "theme_url",
-            "is_active",
-            "publish_version",
-            "canonical_url",
-            "is_dynamic_rendering",
-            "need_preview_pull_request",
-            "moniker_type",
-            "is_significant_update",
-            "serviceData",
-            "github_contributors",
-            "is_hidden",
-        };
-
-        public IReadOnlyDictionary<string, string> HtmlMetaNames { get; } = new Dictionary<string, string>()
-        {
-            { "product", "Product" },
-            { "topic_type", "TopicType" },
-            { "api_type", "APIType" },
-            { "api_location", "APILocation" },
-            { "api_name", "APIName" },
-            { "api_extra_info", "APIExtraInfo" },
-            { "target_os", "TargetOS" },
-        };
-
         public MetadataProvider(Config config, Input input, BuildScope buildScope)
         {
             _input = input;

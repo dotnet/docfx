@@ -379,7 +379,7 @@ namespace Microsoft.Docs.Build
             };
 
             var pageMetadata = HtmlUtility.CreateHtmlMetaTags(
-                metadata, _metadataProvider.HtmlMetaHidden, _metadataProvider.HtmlMetaNames);
+                metadata, HtmlUtility.HtmlMetaHidden, HtmlUtility.HtmlMetaNames);
 
             // content for *.raw.page.json
             var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
