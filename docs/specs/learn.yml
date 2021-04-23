@@ -1506,6 +1506,10 @@ repos:
       b-unit.yml: |
         ### YamlMime:ModuleUnit
         uid: unit
+      c-module.yml: |
+        ### YamlMime:Module
+        uid: module-c
+        units: ['unit']
       _themes/ContentTemplate/LearningPath.html.primary.tmpl:
       _themes/ContentTemplate/schemas/LearningPath.schema.json: |
         {
@@ -1514,6 +1518,7 @@ repos:
             "modules": {"items": {"contentType": "xref"}},
           }
         }
+      _themes/ContentTemplate/Module.html.primary.tmpl:
       _themes/ContentTemplate/schemas/Module.schema.json: |
         {
           "properties": {
@@ -1539,6 +1544,8 @@ repos:
 outputs:
   path.mta.json:
   path.raw.page.json:
+  c-module.mta.json:
+  c-module.raw.page.json:
   full-dependent-list.txt:
   .errors.log: |
     {"message_severity":"error","code":"duplicate-uid","message":"UID 'unit' is duplicated in 'a-unit.yml(2,6)', 'b-unit.yml(2,6)'.","file":"a-unit.yml"}
@@ -1553,6 +1560,15 @@ outputs:
             {
               "from_file_path": "path.yml",
               "to_file_path": "b-module.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "c-module.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "c-module.yml",
+              "to_file_path": "b-unit.yml",
               "dependency_type": "hierarchy"
             }
           ]
