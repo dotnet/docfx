@@ -249,16 +249,6 @@ namespace Microsoft.Docs.Build
         public string? SchemaTypeProperty { get; init; }
 
         /// <summary>
-        /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
-        /// </summary>
-        public string? HtmlMetaName { get; init; }
-
-        /// <summary>
-        /// Properties that are hidden in output HTML <meta> tag. Does not have effect in sub schemas.
-        /// </summary>
-        public string[] HtmlMetaHidden { get; init; } = Array.Empty<string>();
-
-        /// <summary>
         /// Properties that are reserved by the system.
         /// </summary>
         public string[] Reserved { get; init; } = Array.Empty<string>();
