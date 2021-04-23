@@ -1479,7 +1479,7 @@ outputs:
       ]
     }
 ---
-# Pick uid by commit time latest when conflict
+# Pick uid by commit time latest when conflict for learn docset
 noDryRun: true
 repos:
   https://github.com/learn/learn-pr:

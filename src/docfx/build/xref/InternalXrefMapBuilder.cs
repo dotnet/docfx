@@ -147,6 +147,8 @@ namespace Microsoft.Docs.Build
                    .OrderByDescending(spec => spec.Monikers.HasMonikers
                         ? spec.Monikers.Select(moniker => _monikerProvider.GetMonikerOrder(moniker)).Max()
                         : int.MaxValue);
+
+            // TODO: clean up after new loc pipeline
             specs = _config.IsLearn
                 ? specs.ThenByDescending(spec => GetUpdateTime(spec.DeclaringFile))
                 : specs.ThenBy(spec => spec.DeclaringFile);
