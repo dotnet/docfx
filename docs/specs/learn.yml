@@ -152,7 +152,6 @@ inputs:
         "achievement": {"contentType": "xref"}
       }
     }
-  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
       "properties": {
@@ -161,14 +160,12 @@ inputs:
         "achievement": {"contentType": "xref"}
       }
     }
-  _themes/ContentTemplate/Module.html.primary.tmpl:
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
     {
       "properties": {
         "uid" : {"contentType": "uid"}
       }
     }
-  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
       "renderType": "component",
@@ -303,7 +300,6 @@ inputs:
         }
       }
     }
-  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
       "properties": {
@@ -315,14 +311,12 @@ inputs:
         }
       }
     }
-  _themes/ContentTemplate/Module.html.primary.tmpl:
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
     {
       "properties": {
         "uid" : {"contentType": "uid"}
       }
     }
-  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
       "renderType": "component",
@@ -1483,4 +1477,85 @@ outputs:
           "page_kind": "achievements"
         }
       ]
+    }
+---
+# Pick uid by commit time latest when conflict
+noDryRun: true
+repos:
+  https://github.com/learn/learn-pr:
+  - time: 10/30/2019 12:00:00
+    files:
+      docfx.yml: |
+        isLearn: true
+        outputType: pageJson
+      path.yml: |
+        ### YamlMime:LearningPath
+        uid: path
+        modules: ['module']
+      a-module.yml: |
+        ### YamlMime:Module
+        uid: module
+        units: ['unit']
+      a-unit.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit
+      b-module.yml: |
+        ### YamlMime:Module
+        uid: module
+        units: ['unit']
+      b-unit.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit
+      _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+      _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+        {
+          "properties": {
+            "uid" : {"contentType": "uid"},
+            "modules": {"items": {"contentType": "xref"}},
+          }
+        }
+      _themes/ContentTemplate/schemas/Module.schema.json: |
+        {
+          "properties": {
+            "uid" : {"contentType": "uid"},
+            "units": {"items": {"contentType": "xref" }},
+          }
+        }
+      _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        {
+          "properties": {
+            "uid" : {"contentType": "uid"}
+          }
+        }
+  - time: 10/30/2018 12:00:00
+    files:
+      a-module.yml: |
+        ### YamlMime:Module
+        uid: module
+        units: ['unit']
+      a-unit.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit
+outputs:
+  path.mta.json:
+  path.raw.page.json:
+  full-dependent-list.txt:
+  .errors.log: |
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'unit' is duplicated in 'a-unit.yml(2,6)', 'b-unit.yml(2,6)'.","file":"a-unit.yml"}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'unit' is duplicated in 'a-unit.yml(2,6)', 'b-unit.yml(2,6)'.","file":"b-unit.yml"}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'module' is duplicated in 'a-module.yml(2,6)', 'b-module.yml(2,6)'.","file":"a-module.yml"}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'module' is duplicated in 'a-module.yml(2,6)', 'b-module.yml(2,6)'.","file":"b-module.yml"}
+  op_aggregated_file_map_info.json: |
+    {
+      "aggregated_file_map_items": {
+        "path.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "path.yml",
+              "to_file_path": "b-module.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        }
+      }
     }

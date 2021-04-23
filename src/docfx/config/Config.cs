@@ -317,9 +317,9 @@ namespace Microsoft.Docs.Build
         public bool RemoveHostName { get; init; }
 
         /// <summary>
-        /// Determines if run learn-validation as post process
+        /// Determines if it's a learn docset
         /// </summary>
-        public bool RunLearnValidation { get; init; }
+        public bool IsLearn { get; init; }
 
         /// <summary>
         /// Determines if disable dry sync
