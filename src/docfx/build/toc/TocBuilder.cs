@@ -76,18 +76,18 @@ namespace Microsoft.Docs.Build
                 {
                     if (_documentProvider.GetRenderType(file) == RenderType.Content)
                     {
-                        var viewModel = _templateEngine.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
-                        var html = _templateEngine.RunMustache(errors, $"toc.html", viewModel);
+                        var viewModel = _templateEngine.TemplateEngineRunner.RunJavaScript($"toc.html.js", JsonUtility.ToJObject(model));
+                        var html = _templateEngine.TemplateEngineRunner.RunMustache(errors, $"toc.html", viewModel);
                         _output.WriteText(outputPath, html);
                     }
 
                     // Just for current PDF build. toc.json is used for generate PDF outline
-                    var output = _templateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
+                    var output = _templateEngine.TemplateEngineRunner.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                     _output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
                 }
                 else
                 {
-                    var output = _templateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
+                    var output = _templateEngine.TemplateEngineRunner.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                     _output.WriteJson(outputPath, output);
                 }
             }

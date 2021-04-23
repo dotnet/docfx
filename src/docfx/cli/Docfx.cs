@@ -88,10 +88,9 @@ namespace Microsoft.Docs.Build
         private static Command ApplyTemplateCommand()
         {
             var command = CreateCommand("apply-template", "Apply templates", ApplyTemplate.Run);
-            command.AddOption(new Option<string>("--log", "Enable logging to the specified file path."));
-            command.AddOption(new Option<string>("--template", "The directory or git repository that contains website template."));
+            DefineCommonCommands(command);
             command.AddOption(new Option<string>("--locale", "Locale of the files."));
-            command.AddOption(new Option<string>("--directory", "Directory of structured json files."));
+            command.AddOption(new Option<string>("--input", "Input directory of structured json files."));
             command.AddOption(new Option<string>("--output", "Output directory path."));
             return command;
         }

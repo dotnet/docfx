@@ -155,7 +155,18 @@ namespace Microsoft.Docs.Build
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = CreateTemplateModel(errors, file, mime, JsonUtility.SortProperties(outputModel));
+            var (templateModel, templateMetadata) = TemplateModelBuilder.CreateTemplateModel(
+                errors,
+                _templateEngine.TemplateEngineRunner,
+                file,
+                JsonUtility.SortProperties(outputModel),
+                mime,
+                _buildOptions.Locale,
+                _buildOptions.Culture,
+                _config.TrustedDomains,
+                _config.DryRun,
+                _bookmarkValidator,
+                _searchIndexBuilder);
 
             if (_config.OutputType == OutputType.PageJson)
             {
@@ -164,7 +175,7 @@ namespace Microsoft.Docs.Build
 
             try
             {
-                var html = _templateEngine.RunLiquid(errors, mime, templateModel);
+                var html = _templateEngine.TemplateEngineRunner.RunLiquid(errors, mime, templateModel);
                 return (html, JsonUtility.SortProperties(templateMetadata));
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
@@ -197,7 +208,7 @@ namespace Microsoft.Docs.Build
                 return (sourceModel, metadata);
             }
 
-            return (_templateEngine.RunJavaScript($"{mime}.json.js", sourceModel), metadata);
+            return (_templateEngine.TemplateEngineRunner.RunJavaScript($"{mime}.json.js", sourceModel), metadata);
         }
 
         private SystemMetadata CreateSystemMetadata(ErrorBuilder errors, FilePath file, UserMetadata userMetadata)
@@ -341,86 +352,13 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = ProcessHtml(errors, file, razorHtml),
+                    Conceptual = TemplateModelBuilder.ProcessHtml(
+                        errors, file, razorHtml, _config.TrustedDomains, null, _buildOptions.Culture, _bookmarkValidator, _searchIndexBuilder),
                     ExtensionData = pageModel,
                 });
             }
 
             return pageModel;
-        }
-
-        private (TemplateModel model, JObject metadata) CreateTemplateModel(ErrorBuilder errors, FilePath file, string? mime, JObject pageModel)
-        {
-            var content = CreateContent(errors, file, mime, pageModel);
-
-            if (_config.DryRun)
-            {
-                return (new TemplateModel("", new JObject(), "", ""), new JObject());
-            }
-
-            // Hosting layers treats empty content as 404, so generate an empty <div></div>
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                content = "<div></div>";
-            }
-
-            var jsName = $"{mime}.mta.json.js";
-            var templateMetadata = _templateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
-
-            if (TemplateEngine.IsLandingData(mime))
-            {
-                templateMetadata.Remove("conceptual");
-            }
-
-            // content for *.mta.json
-            var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
-            {
-                ["is_dynamic_rendering"] = true,
-            };
-
-            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
-
-            // content for *.raw.page.json
-            var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
-
-            return (model, metadata);
-        }
-
-        private string CreateContent(ErrorBuilder errors, FilePath file, string? mime, JObject pageModel)
-        {
-            if (TemplateEngine.IsConceptual(mime) || TemplateEngine.IsLandingData(mime))
-            {
-                // Conceptual and Landing Data
-                return pageModel.Value<string>("conceptual") ?? "";
-            }
-
-            // Generate SDP content
-            var model = _templateEngine.RunJavaScript($"{mime}.html.primary.js", pageModel);
-            var content = _templateEngine.RunMustache(errors, $"{mime}.html", model);
-
-            return ProcessHtml(errors, file, content);
-        }
-
-        private string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
-        {
-            var bookmarks = new HashSet<string>();
-            var searchText = new StringBuilder();
-
-            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
-            {
-                HtmlUtility.GetBookmarks(ref token, bookmarks);
-                HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
-
-                if (token.Type == HtmlTokenType.Text)
-                {
-                    searchText.Append(token.RawText);
-                }
-            });
-
-            _bookmarkValidator.AddBookmarks(file, bookmarks);
-            _searchIndexBuilder.SetBody(file, searchText.ToString());
-
-            return LocalizationUtility.AddLeftToRightMarker(_buildOptions.Culture, result);
         }
 
         private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)

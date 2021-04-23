@@ -852,16 +852,6 @@ namespace Microsoft.Docs.Build
                     ErrorLevel.Error,
                     "template-not-specified",
                     $"Must specify the path to template repo by --{nameof(CommandLineOptions.Template)} when apply templates.");
-
-            /// <summary>
-            /// Directory for structured json files is not specified.
-            /// </summary>
-            /// Behavior: ❌ Message: ❌
-            public static Error StructuredJsonDirNotSpecified()
-                => new Error(
-                    ErrorLevel.Error,
-                    "directory-for-structured-json-files-not-specified",
-                    $"Must specify the directory containing the structured json files by --{nameof(CommandLineOptions.Directory)} when apply templates.");
         }
     }
 }
