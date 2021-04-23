@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             _githubAccessor = new(_config);
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
-            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
+            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
             _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
             _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
