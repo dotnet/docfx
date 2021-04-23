@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     public static class MaskUtilityTest
     {
         [Theory]
-        [InlineData("'ThisIsAGithubToken'", "'Th***en'")]
+        [InlineData("'ThisIsGithubToken'", "'Th***en'")]
         [InlineData("['someLongPat', 'password']", "['so***at','***']")]
         [InlineData("{'key': 'AnotherSecret'}", "{'key':'An***et'}")]
         [InlineData(
