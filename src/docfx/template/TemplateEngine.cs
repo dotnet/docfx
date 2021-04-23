@@ -20,19 +20,25 @@ namespace Microsoft.Docs.Build
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
-        private readonly BuildOptions _buildOptions;
+        private readonly BuildOptions? _buildOptions;
         private readonly JsonSchemaLoader _jsonSchemaLoader;
+        private readonly string? _locale;
 
         private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas = new(StringComparer.OrdinalIgnoreCase);
 
         private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new(StringComparer.OrdinalIgnoreCase)
         {
-            "Architecture", "TSType", "TSEnum",
+            "Architecture",
+            "TSType",
+            "TSEnum",
         };
 
         private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new(StringComparer.OrdinalIgnoreCase)
         {
-            "Architecture", "Hub", "Landing", "LandingData",
+            "Architecture",
+            "Hub",
+            "Landing",
+            "LandingData",
         };
 
         public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
@@ -56,6 +62,17 @@ namespace Microsoft.Docs.Build
             _global = LoadGlobalTokens(errors);
 
             _liquid = new(_package, config.TemplateBasePath, _global);
+            _js = new(() => JavaScriptEngine.Create(_package, _global));
+            _mustacheTemplate = new(_package, "ContentTemplate", _global);
+        }
+
+        public TemplateEngine(ErrorBuilder errors, string locale, Package package)
+        {
+            _locale = locale;
+            _package = package;
+
+            _global = LoadGlobalTokens(errors);
+
             _js = new(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
         }
@@ -208,7 +225,8 @@ namespace Microsoft.Docs.Build
         private JObject LoadGlobalTokens(ErrorBuilder errors)
         {
             var defaultTokens = _package.TryLoadYamlOrJson<JObject>(errors, "ContentTemplate/token");
-            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            var locale = _buildOptions is not null ? _buildOptions.Locale : _locale ?? "en-us";
+            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{locale}");
             if (defaultTokens == null)
             {
                 return localeTokens ?? new JObject();

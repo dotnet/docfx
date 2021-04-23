@@ -63,6 +63,7 @@ namespace Microsoft.Docs.Build
                 RestoreCommand(),
                 BuildCommand(package),
                 ServeCommand(package),
+                ApplyTemplateCommand(),
             }.Invoke(args);
         }
 
@@ -81,6 +82,17 @@ namespace Microsoft.Docs.Build
         {
             var command = CreateCommand("restore", "Restores dependencies before build.", Restore.Run);
             DefineCommonCommands(command);
+            return command;
+        }
+
+        private static Command ApplyTemplateCommand()
+        {
+            var command = CreateCommand("apply-template", "Apply templates", ApplyTemplate.Run);
+            command.AddOption(new Option<string>("--log", "Enable logging to the specified file path."));
+            command.AddOption(new Option<string>("--template", "The directory or git repository that contains website template."));
+            command.AddOption(new Option<string>("--locale", "Locale of the files."));
+            command.AddOption(new Option<string>("--directory", "Directory of structured json files."));
+            command.AddOption(new Option<string>("--output", "Output directory path."));
             return command;
         }
 

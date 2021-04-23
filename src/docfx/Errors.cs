@@ -840,5 +840,28 @@ namespace Microsoft.Docs.Build
             public static Error DuplicateSourceMapItem(string key, IEnumerable<PathString> originalFiles)
                 => new Error(ErrorLevel.Warning, "duplicate-source-map-item", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
         }
+
+        public static class ApplyTemplate
+        {
+            /// <summary>
+            /// Template path is not specified.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error TemplateNotSpecified()
+                => new Error(
+                    ErrorLevel.Error,
+                    "template-not-specified",
+                    $"Must specify the path to template repo by --{nameof(CommandLineOptions.Template)} when apply templates.");
+
+            /// <summary>
+            /// Directory for structured json files is not specified.
+            /// </summary>
+            /// Behavior: ❌ Message: ❌
+            public static Error StructuredJsonDirNotSpecified()
+                => new Error(
+                    ErrorLevel.Error,
+                    "directory-for-structured-json-files-not-specified",
+                    $"Must specify the directory containing the structured json files by --{nameof(CommandLineOptions.Directory)} when apply templates.");
+        }
     }
 }

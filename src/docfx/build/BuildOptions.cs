@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static CultureInfo CreateCultureInfo(string locale)
+        public static CultureInfo CreateCultureInfo(string locale)
         {
             try
             {
