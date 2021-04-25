@@ -29,7 +29,8 @@ namespace Microsoft.Docs.Build
                 Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories),
                 filePath =>
                 {
-                    ApplyTemplates(errors, filePath, directory, options.Output ?? directory, templateEngineRunner, trustedDomains, options.Locale);
+                    ApplyTemplateCore(
+                        errors, filePath, directory, options.Output ?? directory, templateEngineRunner, trustedDomains, options.Locale ?? "en-us");
                 });
 
             return errors.HasError;
@@ -47,14 +48,14 @@ namespace Microsoft.Docs.Build
             return (templateEngineRunner, trustedDomains);
         }
 
-        private static void ApplyTemplates(
+        private static void ApplyTemplateCore(
             ErrorBuilder errors,
             string filePath,
             string inputDir,
             string outputDir,
             TemplateEngineRunner templateEngineRunner,
             Dictionary<string, TrustedDomains> trustedDomains,
-            string? locale = "en-us")
+            string locale)
         {
             var file = new FilePath(filePath);
             var pageModel = JsonUtility.Deserialize<JObject>(errors, File.ReadAllText(file.Path), file);
@@ -72,11 +73,11 @@ namespace Microsoft.Docs.Build
             File.WriteAllText(GetOutPathWithDifferentExtension(inputDir, filePath, outputDir), JsonUtility.Serialize(model));
         }
 
-        private static string GetOutPathWithDifferentExtension(string inputDir, string filePath, string outputDir, string extension = "raw.page.json")
+        private static string GetOutPathWithDifferentExtension(string inputDir, string filePath, string outputDir)
         {
             var relativeFilePath = Path.GetRelativePath(inputDir, filePath);
             var outputPath = Path.Combine(outputDir, relativeFilePath);
-            return Path.ChangeExtension(outputPath, extension);
+            return Path.ChangeExtension(outputPath, "raw.page.json");
         }
     }
 }

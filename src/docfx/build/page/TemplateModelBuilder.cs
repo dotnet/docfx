@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             FilePath file,
             JObject pageModel,
             string? schema,
-            string? locale,
+            string locale,
             CultureInfo? cultureInfo,
             Dictionary<string, TrustedDomains> trustedDomains,
             bool dryRun = false,
@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             FilePath file,
             string html,
             Dictionary<string, TrustedDomains> trustedDomains,
-            string? locale,
+            string locale,
             CultureInfo? cultureInfo,
             BookmarkValidator? bookmarkValidator,
             SearchIndexBuilder? searchIndexBuilder)
@@ -77,7 +77,7 @@ namespace Microsoft.Docs.Build
             var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
             {
                 HtmlUtility.GetBookmarks(ref token, bookmarks);
-                HtmlUtility.AddLinkType(errors, file, ref token, locale ?? "en-us", trustedDomains);
+                HtmlUtility.AddLinkType(errors, file, ref token, locale, trustedDomains);
 
                 if (token.Type == HtmlTokenType.Text)
                 {
@@ -88,7 +88,7 @@ namespace Microsoft.Docs.Build
             bookmarkValidator?.AddBookmarks(file, bookmarks);
             searchIndexBuilder?.SetBody(file, searchText.ToString());
 
-            return LocalizationUtility.AddLeftToRightMarker(cultureInfo ?? BuildOptions.CreateCultureInfo(locale ?? "en-us"), result);
+            return LocalizationUtility.AddLeftToRightMarker(cultureInfo ?? BuildOptions.CreateCultureInfo(locale), result);
         }
 
         private static string CreateContent(
@@ -96,7 +96,7 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             FilePath file,
             string? schema,
-            string? locale,
+            string locale,
             CultureInfo? cultureInfo,
             JObject pageModel,
             Dictionary<string, TrustedDomains> trustedDomains,

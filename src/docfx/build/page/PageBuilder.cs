@@ -352,13 +352,25 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = TemplateModelBuilder.ProcessHtml(
-                        errors, file, razorHtml, _config.TrustedDomains, null, _buildOptions.Culture, _bookmarkValidator, _searchIndexBuilder),
+                    Conceptual = ProcessHtml(errors, file, razorHtml),
                     ExtensionData = pageModel,
                 });
             }
 
             return pageModel;
+        }
+
+        private string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
+        {
+            return TemplateModelBuilder.ProcessHtml(
+                errors,
+                file,
+                html,
+                _config.TrustedDomains,
+                _buildOptions.Locale ?? "en-us",
+                _buildOptions.Culture,
+                _bookmarkValidator,
+                _searchIndexBuilder);
         }
 
         private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
