@@ -61,8 +61,8 @@ namespace Microsoft.Docs.Build
         {
             return Fetch(DocsEnvironment switch
             {
-                DocsEnvironment.Prod => "https://docsvalidation.azurefd.net/errorcodes",
-                _ => "https://docsvalidationppe.azurefd.net/errorcodes",
+                DocsEnvironment.Prod => "https://docsvalidation-public.azurefd.net/errorcodes",
+                _ => "https://docsvalidation-pubdev.azurefd.net/errorcodes",
             });
         }
 
