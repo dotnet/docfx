@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildScope _buildScope;
         private readonly BuildOptions _buildOptions;
-        private readonly TemplateEngine _templateEngine;
+        private readonly TemplateSchemaProvider _templateSchemaProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly MetadataProvider _metadataProvider;
 
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
-            TemplateEngine templateEngine,
+            TemplateSchemaProvider templateSchemaProvider,
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider)
         {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
-            _templateEngine = templateEngine;
+            _templateSchemaProvider = templateSchemaProvider;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
 
@@ -134,7 +134,7 @@ namespace Microsoft.Docs.Build
             }
 
             // if source is redirection or migrated from markdown, change it to *.md
-            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsMigratedFromMarkdown(file.Mime))
+            if (file.ContentType == ContentType.Redirection || TemplateEngineUtility.IsMigratedFromMarkdown(file.Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
@@ -173,7 +173,7 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
-            var renderType = _templateEngine.GetRenderType(contentType, mime);
+            var renderType = _templateSchemaProvider.GetRenderType(contentType, mime);
             var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, renderType);

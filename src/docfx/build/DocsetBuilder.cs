@@ -31,6 +31,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
+        private readonly TemplateSchemaProvider _templateSchemaProvider;
         private readonly DocumentProvider _documentProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly RedirectionProvider _redirectionProvider;
@@ -81,8 +82,10 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = new(_fileResolver);
             _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
-            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
-            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
+            var (packageForTemplateEngine, templateBasePath, global) = TemplateEngineUtility.PrepareForTemplate(_errors, _config, _packageResolver, _buildOptions);
+            _templateEngine = new(_errors, packageForTemplateEngine, templateBasePath, global);
+            _templateSchemaProvider = new(_config.Template, packageForTemplateEngine, _jsonSchemaLoader, global);
+            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateSchemaProvider, _monikerProvider, _metadataProvider);
             _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
             _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
@@ -95,8 +98,8 @@ namespace Microsoft.Docs.Build
             _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
             _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));
             _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider);
-            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
-            _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
+            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateSchemaProvider, _contentValidator, _publishUrlMap);
+            _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _templateSchemaProvider, _input);
             _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
             _tocParser = new(_input, _markdownEngine);
             _tocLoader = new(_buildOptions, _input, _linkResolver, _xrefResolver, _tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
@@ -204,7 +207,7 @@ namespace Microsoft.Docs.Build
                 MemoryCache.Clear();
 
                 Parallel.Invoke(
-                    () => _templateEngine.CopyAssetsToOutput(output),
+                    () => _templateEngine.CopyAssetsToOutput(output, _config.SelfContained),
                     () => output.WriteJson(".xrefmap.json", xrefMapModel),
                     () => output.WriteJson(".publish.json", publishModel),
                     () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
