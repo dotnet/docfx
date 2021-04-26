@@ -1524,14 +1524,52 @@ outputs:
     }
 ---
 # TOC with output-type="json"
-inputs:
-  docfx.yml: |
-    outputType: Json
-  TOC.yml: |
-    - name: a
-      href: a.md
-  a.md:
+repos:
+  https://github.com/toc/toc-output-type-is-json:
+  - files:
+      docfx.yml: |
+        outputType: Json
+        template: https://docs.com/theme
+      TOC.yml: |
+        - name: a
+          href: a.md
+      a.md:
+  https://docs.com/theme:
+  - files:
+      ContentTemplate/toc.json.js: |
+        exports.transform = function (model) {
+          model["outputType"] = "json"
+          return {
+            content: JSON.stringify(model)
+          }
+        }
 outputs:
   a.json:
   toc.json: |
     {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc"}
+---
+# TOC with output-type="pageJson"
+repos:
+  https://github.com/toc/toc-output-type-is-pageJson:
+  - files:
+      docfx.yml: |
+        outputType: PageJson
+        template: https://docs.com/theme
+      TOC.yml: |
+        - name: a
+          href: a.md
+      a.md:
+  https://docs.com/theme:
+  - files:
+      ContentTemplate/toc.json.js: |
+        exports.transform = function (model) {
+          model["outputType"] = "pagejson"
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+outputs:
+  a.raw.page.json:
+  a.mta.json:
+  toc.json: |
+    {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc","outputType":"pagejson"}
