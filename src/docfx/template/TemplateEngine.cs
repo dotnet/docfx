@@ -2,9 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -13,7 +10,6 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
-        private readonly Config _config;
         private readonly Package _package;
         private readonly Lazy<TemplateDefinition> _templateDefinition;
         private readonly JObject _global;
@@ -21,25 +17,10 @@ namespace Microsoft.Docs.Build
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly BuildOptions _buildOptions;
-        private readonly JsonSchemaLoader _jsonSchemaLoader;
 
-        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas = new(StringComparer.OrdinalIgnoreCase);
-
-        private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new(StringComparer.OrdinalIgnoreCase)
+        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions)
         {
-            "Architecture", "TSType", "TSEnum",
-        };
-
-        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new(StringComparer.OrdinalIgnoreCase)
-        {
-            "Architecture", "Hub", "Landing", "LandingData",
-        };
-
-        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
-        {
-            _config = config;
             _buildOptions = buildOptions;
-            _jsonSchemaLoader = jsonSchemaLoader;
 
             var template = config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
@@ -58,40 +39,6 @@ namespace Microsoft.Docs.Build
             _liquid = new(_package, config.TemplateBasePath, _global);
             _js = new(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
-        }
-
-        public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
-        {
-            return contentType switch
-            {
-                ContentType.Redirection => RenderType.Content,
-                ContentType.Page => GetRenderType(mime),
-                ContentType.Toc => GetTocRenderType(),
-                _ => RenderType.Component,
-            };
-        }
-
-        public static bool OutputAbsoluteUrl(string? mime) => mime != null && s_outputAbsoluteUrlYamlMime.Contains(mime);
-
-        public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
-
-        public static bool IsLandingData(string? mime) => "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
-
-        public static bool IsMigratedFromMarkdown(string? mime)
-        {
-            return mime != null && s_yamlMimesMigratedFromMarkdown.Contains(mime);
-        }
-
-        public JsonSchema GetSchema(SourceInfo<string?> mime)
-        {
-            return GetSchemaValidator(mime).Schema;
-        }
-
-        public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> mime)
-        {
-            var name = mime.Value ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
-
-            return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
         }
 
         public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
@@ -137,9 +84,9 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public void CopyAssetsToOutput(Output output)
+        public void CopyAssetsToOutput(Output output, bool selfContained = true)
         {
-            if (!_config.SelfContained || _templateDefinition.Value.Assets.Length <= 0)
+            if (!selfContained || _templateDefinition.Value.Assets.Length <= 0)
             {
                 return;
             }
@@ -158,51 +105,6 @@ namespace Microsoft.Docs.Build
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
-        }
-
-        private RenderType GetRenderType(SourceInfo<string?> mime)
-        {
-            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
-            {
-                return RenderType.Content;
-            }
-            try
-            {
-                return GetSchema(mime).RenderType;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
-            {
-                return RenderType.Content;
-            }
-        }
-
-        private RenderType GetTocRenderType()
-        {
-            try
-            {
-                return GetSchema(new SourceInfo<string?>("toc")).RenderType;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
-            {
-                // TODO: Remove after schema of toc is support in template
-                var isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
-                    || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
-                return isContentRenderType ? RenderType.Content : RenderType.Component;
-            }
-        }
-
-        private JsonSchemaValidator? GetSchemaCore(string mime)
-        {
-            var jsonSchema = IsLandingData(mime)
-                ? _jsonSchemaLoader.LoadSchema(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/docs/landing-data.json")))
-                : _jsonSchemaLoader.TryLoadSchema(_package, new PathString($"ContentTemplate/schemas/{mime}.schema.json"));
-
-            if (jsonSchema is null)
-            {
-                return null;
-            }
-
-            return new JsonSchemaValidator(jsonSchema, forceError: true);
         }
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
