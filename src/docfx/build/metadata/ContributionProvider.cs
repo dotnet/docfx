@@ -110,27 +110,6 @@ namespace Microsoft.Docs.Build
             return (contributionInfo, githubContributors.Distinct().ToArray());
         }
 
-        public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
-        {
-            if (fileCommits.Length > 0)
-            {
-                if (_config.UpdateTimeAsCommitBuildTime && repository != null && repository.Branch != null)
-                {
-                    return _commitBuildTimeProviders
-                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
-                        .GetCommitBuildTime(fileCommits[0].Sha);
-                }
-                else
-                {
-                    return fileCommits[0].Time.UtcDateTime;
-                }
-            }
-
-            return _input.TryGetOriginalPhysicalPath(file) is PathString
-                ? _input.GetLastWriteTimeUtc(file)
-                : default;
-        }
-
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate)
             GetGitUrl(FilePath file)
         {
@@ -223,6 +202,27 @@ namespace Microsoft.Docs.Build
                 : UrlUtility.TryParseAzureReposUrl(url, out _, out _, out _)
                 ? $"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents"
                 : null;
+        }
+
+        private DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
+        {
+            if (fileCommits.Length > 0)
+            {
+                if (_config.UpdateTimeAsCommitBuildTime && repository != null && repository.Branch != null)
+                {
+                    return _commitBuildTimeProviders
+                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
+                        .GetCommitBuildTime(fileCommits[0].Sha);
+                }
+                else
+                {
+                    return fileCommits[0].Time.UtcDateTime;
+                }
+            }
+
+            return _input.TryGetOriginalPhysicalPath(file) is PathString
+                ? _input.GetLastWriteTimeUtc(file)
+                : default;
         }
     }
 }
