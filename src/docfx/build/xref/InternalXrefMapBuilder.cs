@@ -164,8 +164,7 @@ namespace Microsoft.Docs.Build
             }
 
             var commits = _repositoryProvider.GetCommitHistory(fullPath.Value).commits;
-            var result = commits.FirstOrDefault()?.Time.UtcDateTime ?? default;
-            return result;
+            return commits.FirstOrDefault()?.Time.UtcDateTime ?? default;
         }
 
         private static bool CheckOverlappingMonikers(InternalXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)
