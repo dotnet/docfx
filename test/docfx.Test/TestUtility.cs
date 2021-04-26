@@ -102,6 +102,7 @@ namespace Microsoft.Docs.Build
 
             foreach (var commit in commits.Reverse())
             {
+                // TODO: move outside
                 var commitIndex = 0;
                 var tree = new TreeDefinition();
 
