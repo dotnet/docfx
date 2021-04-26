@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
                 // Output absolute URL starting from Architecture and TSType
-                var href = TemplateEngineUtility.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
+                var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                     ? spec.Href
                     : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
 

@@ -28,7 +28,7 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly TemplateSchemaProvider _templateSchemaProvider;
+        private readonly TemplateEngine _templateEngine;
         private readonly ContentValidator _contentValidator;
 
         private readonly MarkdownContext _markdownContext;
@@ -45,7 +45,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
-            TemplateSchemaProvider templateSchemaProvider,
+            TemplateEngine templateEngine,
             ContentValidator contentValidator,
             PublishUrlMap publishUrlMap)
         {
@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
-            _templateSchemaProvider = templateSchemaProvider;
+            _templateEngine = templateEngine;
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
 
@@ -229,7 +229,7 @@ namespace Microsoft.Docs.Build
 
         private string? GetToken(string key)
         {
-            return _templateSchemaProvider.GetToken(key);
+            return _templateEngine.GetToken(key);
         }
 
         private static void LogInfo(string code, string message, MarkdownObject? origin, int? line)

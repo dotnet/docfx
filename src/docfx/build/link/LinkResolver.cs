@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
-            if (file != null && !TemplateEngineUtility.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
+            if (file != null && !JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
             {
                 link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }
@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (_templateEngine != null && TemplateEngineUtility.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
+                    if (_templateEngine != null && JsonSchemaProvider.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
                     {
                         if (file is null)
                         {

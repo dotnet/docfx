@@ -12,17 +12,33 @@ namespace Microsoft.Docs.Build
     {
         private readonly Package _package;
         private readonly Lazy<TemplateDefinition> _templateDefinition;
+        private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
+        private readonly BuildOptions _buildOptions;
 
-        public TemplateEngine(ErrorBuilder errors, Package package, string? templateBasePath, JObject global)
+        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions)
         {
-            _package = package;
+            _buildOptions = buildOptions;
+
+            var template = config.Template;
+            var templateFetchOptions = PackageFetchOptions.DepthOne;
+            if (template.Type == PackageType.None)
+            {
+                template = new("_themes");
+                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExistedError;
+            }
+
+            _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
+
             _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
-            _liquid = new(_package, templateBasePath, global);
-            _js = new(() => JavaScriptEngine.Create(_package, global));
-            _mustacheTemplate = new(_package, "ContentTemplate", global);
+
+            _global = LoadGlobalTokens(errors);
+
+            _liquid = new(_package, config.TemplateBasePath, _global);
+            _js = new(() => JavaScriptEngine.Create(_package, _global));
+            _mustacheTemplate = new(_package, "ContentTemplate", _global);
         }
 
         public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
@@ -84,6 +100,23 @@ namespace Microsoft.Docs.Build
                     output.Copy(file, _package, file);
                 }
             });
+        }
+
+        public string? GetToken(string key)
+        {
+            return _global[key]?.ToString();
+        }
+
+        private JObject LoadGlobalTokens(ErrorBuilder errors)
+        {
+            var defaultTokens = _package.TryLoadYamlOrJson<JObject>(errors, "ContentTemplate/token");
+            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            if (defaultTokens == null)
+            {
+                return localeTokens ?? new JObject();
+            }
+            JsonUtility.Merge(defaultTokens, localeTokens);
+            return defaultTokens;
         }
     }
 }

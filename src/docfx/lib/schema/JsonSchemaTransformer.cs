@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
-        private readonly TemplateSchemaProvider _templateSchemaProvider;
+        private readonly JsonSchemaProvider _jsonSchemaProvider;
         private readonly Input _input;
 
         private readonly MemoryCache<FilePath, Watch<(JToken, JsonSchema, JsonSchemaMap, int)>> _schemaDocumentsCache = new();
@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             XrefResolver xrefResolver,
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
-            TemplateSchemaProvider templateSchemaProvider,
+            JsonSchemaProvider jsonSchemaProvider,
             Input input)
         {
             _documentProvider = documentProvider;
@@ -48,7 +48,7 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _errors = errors;
             _monikerProvider = monikerProvider;
-            _templateSchemaProvider = templateSchemaProvider;
+            _jsonSchemaProvider = jsonSchemaProvider;
             _input = input;
         }
 
@@ -118,7 +118,7 @@ namespace Microsoft.Docs.Build
                 _ => throw new NotSupportedException(),
             };
             var mime = _documentProvider.GetMime(file);
-            var schemaValidator = _templateSchemaProvider.GetSchemaValidator(mime);
+            var schemaValidator = _jsonSchemaProvider.GetSchemaValidator(mime);
             var schemaMap = new JsonSchemaMap(IsContentTransform);
             var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
             errors.AddRange(schemaErrors);

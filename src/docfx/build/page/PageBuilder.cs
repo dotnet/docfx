@@ -127,14 +127,14 @@ namespace Microsoft.Docs.Build
 
             // Mandatory metadata are metadata that are required by template to successfully ran to completion.
             // The bookmark validation for SDP can be skipped when the public template is used since the mustache is not accessable for public template
-            if (_config.DryRun && (TemplateEngineUtility.IsConceptual(mime) || _config.Template.Type == PackageType.PublicTemplate))
+            if (_config.DryRun && (JsonSchemaProvider.IsConceptual(mime) || _config.Template.Type == PackageType.PublicTemplate))
             {
                 return (new JObject(), new JObject());
             }
 
             var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
-            if (TemplateEngineUtility.IsConceptual(mime))
+            if (JsonSchemaProvider.IsConceptual(mime))
             {
                 // conceptual raw metadata and raw model
                 JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
@@ -334,7 +334,7 @@ namespace Microsoft.Docs.Build
 
             JsonUtility.Merge(pageModel, transformedContent);
 
-            if (TemplateEngineUtility.IsLandingData(mime))
+            if (JsonSchemaProvider.IsLandingData(mime))
             {
                 var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
                 var razorHtml = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();
@@ -367,7 +367,7 @@ namespace Microsoft.Docs.Build
             var jsName = $"{mime}.mta.json.js";
             var templateMetadata = _templateEngine.RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
 
-            if (TemplateEngineUtility.IsLandingData(mime))
+            if (JsonSchemaProvider.IsLandingData(mime))
             {
                 templateMetadata.Remove("conceptual");
             }
@@ -388,7 +388,7 @@ namespace Microsoft.Docs.Build
 
         private string CreateContent(ErrorBuilder errors, FilePath file, string? mime, JObject pageModel)
         {
-            if (TemplateEngineUtility.IsConceptual(mime) || TemplateEngineUtility.IsLandingData(mime))
+            if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
             {
                 // Conceptual and Landing Data
                 return pageModel.Value<string>("conceptual") ?? "";
