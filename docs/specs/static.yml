@@ -401,3 +401,57 @@ outputs:
     <script src='/dev/test.js' ></script>
     <link rel="stylesheet" href="/dev/test.css">
     <div></div>
+---
+# TOC with output-type="html"
+repos:
+  https://github.com/toc/toc-output-type-is-html:
+  - files:
+      docfx.yml: |
+        outputType: html
+        renderType: Content
+        template: https://docs.com/theme
+      TOC.yml: |
+        - name: link-a
+          href: a.md
+      a.md:
+  https://docs.com/theme:
+  - files:
+      ContentTemplate/toc.json.js: |
+        exports.transform = function (model) {
+          model["outputType"] = "html"
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+      ContentTemplate/toc.html.tmpl:  |
+        {{!Copyright-Microsoft.}}
+        <h1>TOC</h1>
+        {{#items}}
+          <a href="{{href}}"> {{name}} </a>
+        {{/items}}
+      Conceptual.html.liquid: |
+        <!DOCTYPE html>
+          <div>
+              {{content}}
+          </div>
+      ContentTemplate/schemas/toc.schema.json: |
+        {
+          "title": "TOC",
+          "additionalProperties": true,
+          "properties": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "href": { "contentType": "href", "type": "string" },
+                "name": { "type": "string" }
+              }
+            }
+          }
+        }
+outputs:
+  a.html:
+  toc.html: |
+    <h1>TOC</h1>
+      <a href="a"> link-a </a>
+  toc.json: |
+    {"items":[{"name":"link-a","href":"a"}],"_path":"toc.json","schema":"toc", "outputType":"html"}
