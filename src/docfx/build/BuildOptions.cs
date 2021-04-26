@@ -42,25 +42,13 @@ namespace Microsoft.Docs.Build
             }
             OutputPath = package.GetFullFilePath(new PathString(outputPath ?? Path.Combine(docsetPath, config.OutputPath)));
             Locale = (LocalizationUtility.GetLocale(repository) ?? config.DefaultLocale).ToLowerInvariant();
-            Culture = CreateCultureInfo(Locale);
+            Culture = LocalizationUtility.CreateCultureInfo(Locale);
 
             if (repository != null && !string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 EnableSideBySide =
                     LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
                     contributionBranch != repository.Branch;
-            }
-        }
-
-        private static CultureInfo CreateCultureInfo(string locale)
-        {
-            try
-            {
-                return new CultureInfo(locale);
-            }
-            catch (CultureNotFoundException)
-            {
-                throw Errors.Config.LocaleInvalid(locale).ToException();
             }
         }
     }

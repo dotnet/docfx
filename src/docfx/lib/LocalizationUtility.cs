@@ -125,6 +125,18 @@ namespace Microsoft.Docs.Build
             }
         }
 
+        public static CultureInfo CreateCultureInfo(string locale)
+        {
+            try
+            {
+                return new CultureInfo(locale);
+            }
+            catch (CultureNotFoundException)
+            {
+                throw Errors.Config.LocaleInvalid(locale).ToException();
+            }
+        }
+
         internal static (string? fallbackUrl, string? fallbackBranch) GetFallbackRepository(string? url, string? branch)
         {
             if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(branch))
