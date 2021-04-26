@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         [JsonProperty("_path")]
         public string Path { get; }
 
-        public string Schema { get; init; } = "toc";
+        public string Schema { get; } = "toc";
 
         public TocModel(TocNode[] items, TocMetadata metadata, string path)
         {
