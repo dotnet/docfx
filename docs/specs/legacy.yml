@@ -70,6 +70,7 @@ outputs:
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
         <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/42eb7605fdef9f5e7674a1cae803f86a39ee628a/c.md\" />
+        <meta content=\"true\" name=\"isContentRenderType\"></meta>
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />

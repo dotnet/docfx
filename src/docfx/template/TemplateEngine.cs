@@ -2,8 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlReaderWriter;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -105,6 +110,107 @@ namespace Microsoft.Docs.Build
         public string? GetToken(string key)
         {
             return _global[key]?.ToString();
+        }
+
+        public (TemplateModel model, JObject metadata) CreateTemplateModel(
+            ErrorBuilder errors,
+            FilePath file,
+            string? mime,
+            JObject pageModel,
+            string locale,
+            CultureInfo? cultureInfo,
+            Dictionary<string, TrustedDomains> trustedDomains,
+            BookmarkValidator? bookmarkValidator = null,
+            SearchIndexBuilder? searchIndexBuilder = null,
+            bool dryRun = false)
+        {
+            var content = CreateContent(errors, file, mime, pageModel, locale, cultureInfo, trustedDomains, bookmarkValidator, searchIndexBuilder);
+
+            if (dryRun)
+            {
+                return (new TemplateModel("", new JObject(), "", ""), new JObject());
+            }
+
+            // Hosting layers treats empty content as 404, so generate an empty <div></div>
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                content = "<div></div>";
+            }
+
+            var jsName = $"{mime}.mta.json.js";
+            var templateMetadata = RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
+
+            if (JsonSchemaProvider.IsLandingData(mime))
+            {
+                templateMetadata.Remove("conceptual");
+            }
+
+            // content for *.mta.json
+            var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
+            {
+                ["is_dynamic_rendering"] = true,
+            };
+
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
+
+            // content for *.raw.page.json
+            var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
+
+            return (model, metadata);
+        }
+
+        public static string ProcessHtml(
+            ErrorBuilder errors,
+            FilePath file,
+            string html,
+            Dictionary<string, TrustedDomains> trustedDomains,
+            string locale,
+            CultureInfo? cultureInfo,
+            BookmarkValidator? bookmarkValidator,
+            SearchIndexBuilder? searchIndexBuilder)
+        {
+            var bookmarks = new HashSet<string>();
+            var searchText = new StringBuilder();
+
+            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+            {
+                HtmlUtility.GetBookmarks(ref token, bookmarks);
+                HtmlUtility.AddLinkType(errors, file, ref token, locale, trustedDomains);
+
+                if (token.Type == HtmlTokenType.Text)
+                {
+                    searchText.Append(token.RawText);
+                }
+            });
+
+            bookmarkValidator?.AddBookmarks(file, bookmarks);
+            searchIndexBuilder?.SetBody(file, searchText.ToString());
+
+            return LocalizationUtility.AddLeftToRightMarker(cultureInfo ?? LocalizationUtility.CreateCultureInfo(locale), result);
+        }
+
+        private string CreateContent(
+            ErrorBuilder errors,
+            FilePath file,
+            string? mime,
+            JObject pageModel,
+            string locale,
+            CultureInfo? cultureInfo,
+            Dictionary<string, TrustedDomains> trustedDomains,
+            BookmarkValidator? bookmarkValidator = null,
+            SearchIndexBuilder? searchIndexBuilder = null)
+        {
+            if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
+            {
+                // Conceptual and Landing Data
+                return pageModel.Value<string>("conceptual") ?? "";
+            }
+
+            // Generate SDP content
+            var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
+            var content = RunMustache(errors, $"{mime}.html", model);
+
+            return ProcessHtml(errors, file, content, trustedDomains, locale, cultureInfo, bookmarkValidator, searchIndexBuilder);
         }
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
