@@ -85,7 +85,15 @@ namespace Microsoft.Docs.Build
                     var output = _templateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                     _output.WriteJson(Path.ChangeExtension(outputPath, ".json"), output);
                 }
-                else
+
+                if (_config.OutputType == OutputType.Json)
+                {
+                    var outputModel = JsonUtility.ToJObject(model);
+                    outputModel["schema"] = "toc";
+                    _output.WriteJson(outputPath, outputModel);
+                }
+
+                if (_config.OutputType == OutputType.PageJson)
                 {
                     var output = _templateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(model));
                     _output.WriteJson(outputPath, output);

@@ -1522,3 +1522,16 @@ outputs:
         "a.md": [{ "source": "TOC.yml", "type": "metadata" }]
       }
     }
+---
+# TOC with output-type="json"
+inputs:
+  docfx.yml: |
+    outputType: Json
+  TOC.yml: |
+    - name: a
+      href: a.md
+  a.md:
+outputs:
+  a.json:
+  toc.json: |
+    {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc"}
