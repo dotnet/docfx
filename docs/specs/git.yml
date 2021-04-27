@@ -649,8 +649,8 @@ repos:
 state:
   history/build_history_95ac9e0f-677b-d6a6-13b5-a7a3118624ab_cd6b8f09-2146-73d3-cade-4e832627b4f6.json: |
     { "commits":[
-          {"sha":"408f26a8f70f25c8cd0067e2421f560f46f56d96","built_at":"2020-02-12T00:00:00Z"},
-          {"sha":"821cee8a13e124826fe160d619fb9f4d09e9f884","built_at":"2020-02-11T00:00:00Z"},
+          {"sha":"62f395b3259c14e5b081a2b327da21b84bd2464d","built_at":"2020-02-12T00:00:00Z"},
+          {"sha":"42364b93484c710e471827b81bb375e1e1dd8eb7","built_at":"2020-02-11T00:00:00Z"},
           {"sha":"cd13c15380474902b64f8dd114c2c3969d218580","built_at":"2020-02-10T00:00:00Z"}
       ]
     }
@@ -678,7 +678,7 @@ outputs:
       "content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/test/b.md",
-      "gitcommit": "https://github.com/testowner/crr-content/blob/408f26a8f70f25c8cd0067e2421f560f46f56d96/b.md",
+      "gitcommit": "https://github.com/testowner/crr-content/blob/62f395b3259c14e5b081a2b327da21b84bd2464d/b.md",
       "updated_at": "2020-02-12 12:00 AM"
     }
   .links.json: |
