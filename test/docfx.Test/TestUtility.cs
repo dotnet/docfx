@@ -99,11 +99,10 @@ namespace Microsoft.Docs.Build
             }
 
             var lastCommit = default(Commit);
+            var commitIndex = 0;
 
             foreach (var commit in commits.Reverse())
             {
-                // TODO: move outside
-                var commitIndex = 0;
                 var tree = new TreeDefinition();
 
                 foreach (var file in commit.Files)
