@@ -28,19 +28,46 @@ namespace Microsoft.Docs.Build
         private readonly SearchIndexBuilder? _searchIndexBuilder;
         private readonly BookmarkValidator? _bookmarkValidator;
 
-        public TemplateEngine(
+        public static TemplateEngine CreateTemplateEngine(
+            ErrorBuilder errors,
+            Config? config,
+            PackageResolver? packageResolver,
+            string locale,
+            Package? package,
+            BookmarkValidator? bookmarkValidator = null,
+            SearchIndexBuilder? searchIndexBuilder = null,
+            bool fullBuild = true)
+        {
+            if (fullBuild)
+            {
+                if (config is null || packageResolver is null)
+                {
+                    throw new InvalidOperationException("config and packageResolver cannot be null when fullbuild.");
+                }
+                return new TemplateEngine(errors, config, packageResolver, locale, bookmarkValidator, searchIndexBuilder);
+            }
+            else
+            {
+                if (package is null || config is null)
+                {
+                    throw new InvalidOperationException("config and package cannot be null when apply templates.");
+                }
+                return new TemplateEngine(errors, config, package, locale);
+            }
+        }
+
+        private TemplateEngine(
             ErrorBuilder errors,
             Config config,
             PackageResolver packageResolver,
             string locale,
-            CultureInfo cultureInfo,
             BookmarkValidator? bookmarkValidator,
             SearchIndexBuilder? searchIndexBuilder)
         {
             _errors = errors;
             _config = config;
             _locale = locale;
-            _cultureInfo = cultureInfo;
+            _cultureInfo = LocalizationUtility.CreateCultureInfo(_locale);
 
             var template = _config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
@@ -58,6 +85,20 @@ namespace Microsoft.Docs.Build
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
             _bookmarkValidator = bookmarkValidator;
             _searchIndexBuilder = searchIndexBuilder;
+        }
+
+        private TemplateEngine(ErrorBuilder errors, Config config, Package package, string locale)
+        {
+            _errors = errors;
+            _config = config;
+            _package = package;
+            _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
+            _locale = locale;
+            _cultureInfo = LocalizationUtility.CreateCultureInfo(_locale);
+            _global = LoadGlobalTokens(errors);
+            _liquid = new(_package, null, _global);
+            _js = new(() => JavaScriptEngine.Create(_package, _global));
+            _mustacheTemplate = new(_package, "ContentTemplate", _global);
         }
 
         public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
