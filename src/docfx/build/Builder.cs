@@ -34,17 +34,17 @@ namespace Microsoft.Docs.Build
             {
                 // Apply templates.
                 ApplyTemplates.Run(errors, options);
-                return errors.HasError;
+            }
+            else
+            {
+                var files = options.File?.Select(Path.GetFullPath).ToArray();
+
+                package ??= new LocalPackage(options.WorkingDirectory);
+
+                new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
             }
 
-            var files = options.File?.Select(Path.GetFullPath).ToArray();
-
-            package ??= new LocalPackage(options.WorkingDirectory);
-
-            new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
-
             operation.Complete();
-
             errors.PrintSummary();
             return errors.HasError;
         }

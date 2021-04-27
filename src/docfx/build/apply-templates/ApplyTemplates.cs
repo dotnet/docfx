@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,7 +14,7 @@ namespace Microsoft.Docs.Build
         {
             if (string.IsNullOrEmpty(options.Template))
             {
-                throw new InvalidOperationException("Must provide the path to template repo when apply templates.");
+                throw new InvalidOperationException("Must provide the path of template repo when apply templates.");
             }
 
             var inputDir = options.WorkingDirectory;
@@ -34,9 +33,14 @@ namespace Microsoft.Docs.Build
             var fileResolver = new FileResolver(package);
             var jsonSchemaLoader = new JsonSchemaLoader(fileResolver);
             var jsonSchemaProvider = new JsonSchemaProvider(config, package, jsonSchemaLoader);
-            var templateEngine = TemplateEngine.CreateTemplateEngine(errors, config, null, locale, package, fullBuild: false);
+            var templateEngine = TemplateEngine.CreateTemplateEngine(errors, config, locale, package);
 
-            Parallel.ForEach(
+            Directory.CreateDirectory(outputDir);
+
+            using var scope = Progress.Start("Apply templates...");
+            ParallelUtility.ForEach(
+                scope,
+                errors,
                 Directory.GetFiles(inputDir, "*.*", SearchOption.AllDirectories),
                 filePath =>
                 {
@@ -69,7 +73,6 @@ namespace Microsoft.Docs.Build
                 if (isContentRenderType)
                 {
                     var (model, _) = templateEngine.CreateTemplateModel(file, schema is null ? string.Empty : schema.ToString(), pageModel);
-
                     File.WriteAllText(GetOutPathWithDifferentExtension(inputDir, filePath, outputDir), JsonUtility.Serialize(model));
                 }
                 else
