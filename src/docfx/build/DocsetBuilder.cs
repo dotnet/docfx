@@ -82,7 +82,6 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = new(_fileResolver);
             _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
-            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions);
             _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
             _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
             _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
@@ -93,6 +92,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
             _dependencyMapBuilder = new(_sourceMap);
             _searchIndexBuilder = new(_config, _errors, _documentProvider, _metadataProvider);
+            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _bookmarkValidator, _searchIndexBuilder);
             _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));
             _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
             _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));

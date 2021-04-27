@@ -150,23 +150,12 @@ namespace Microsoft.Docs.Build
             }
 
             outputModel["schema"] = mime.Value;
-            outputModel["isContentRenderType"] = true;
             if (_config.OutputType == OutputType.Json)
             {
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(
-                errors,
-                file,
-                mime,
-                JsonUtility.SortProperties(outputModel),
-                _buildOptions.Locale,
-                _buildOptions.Culture,
-                _config.TrustedDomains,
-                _bookmarkValidator,
-                _searchIndexBuilder,
-                _config.DryRun);
+            var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(_config, file, mime, JsonUtility.SortProperties(outputModel));
 
             if (_config.OutputType == OutputType.PageJson)
             {
@@ -203,7 +192,6 @@ namespace Microsoft.Docs.Build
             }
 
             sourceModel["schema"] = mime.Value;
-            sourceModel["isContentRenderType"] = false;
             if (_config.OutputType == OutputType.Json)
             {
                 return (sourceModel, metadata);
@@ -353,8 +341,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = TemplateEngine.ProcessHtml(
-                        errors, file, razorHtml, _config.TrustedDomains, _buildOptions.Locale, _buildOptions.Culture, _bookmarkValidator, _searchIndexBuilder),
+                    Conceptual = _templateEngine.ProcessHtml(errors, _config, file, razorHtml),
                     ExtensionData = pageModel,
                 });
             }

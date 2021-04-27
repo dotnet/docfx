@@ -15,6 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
+        private readonly ErrorBuilder _errors;
         private readonly Package _package;
         private readonly Lazy<TemplateDefinition> _templateDefinition;
         private readonly JObject _global;
@@ -22,10 +23,20 @@ namespace Microsoft.Docs.Build
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
         private readonly BuildOptions _buildOptions;
+        private readonly SearchIndexBuilder? _searchIndexBuilder;
+        private readonly BookmarkValidator? _bookmarkValidator;
 
-        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions)
+        public TemplateEngine(
+            ErrorBuilder errors,
+            Config config,
+            PackageResolver
+            packageResolver,
+            BuildOptions buildOptions,
+            BookmarkValidator? bookmarkValidator,
+            SearchIndexBuilder? searchIndexBuilder)
         {
             _buildOptions = buildOptions;
+            _errors = errors;
 
             var template = config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
@@ -36,14 +47,13 @@ namespace Microsoft.Docs.Build
             }
 
             _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
-
             _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
-
             _global = LoadGlobalTokens(errors);
-
             _liquid = new(_package, config.TemplateBasePath, _global);
             _js = new(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
+            _bookmarkValidator = bookmarkValidator;
+            _searchIndexBuilder = searchIndexBuilder;
         }
 
         public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
@@ -112,19 +122,27 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
+        public (TemplateModel model, JObject metadata) CreateTemplateModel(Config config, FilePath file, string? mime, JObject pageModel)
+        {
+            return CreateTemplateModel(
+                file, mime, pageModel, _buildOptions.Locale, _buildOptions.Culture, config.TrustedDomains, config.DryRun);
+        }
+
+        public string ProcessHtml(ErrorBuilder errors, Config config, FilePath file, string html)
+        {
+            return ProcessHtml(errors, file, html, config.TrustedDomains, _buildOptions.Locale, _buildOptions.Culture);
+        }
+
         public (TemplateModel model, JObject metadata) CreateTemplateModel(
-            ErrorBuilder errors,
             FilePath file,
             string? mime,
             JObject pageModel,
             string locale,
             CultureInfo? cultureInfo,
             Dictionary<string, TrustedDomains> trustedDomains,
-            BookmarkValidator? bookmarkValidator = null,
-            SearchIndexBuilder? searchIndexBuilder = null,
             bool dryRun = false)
         {
-            var content = CreateContent(errors, file, mime, pageModel, locale, cultureInfo, trustedDomains, bookmarkValidator, searchIndexBuilder);
+            var content = CreateContent(file, mime, pageModel, locale, cultureInfo, trustedDomains);
 
             if (dryRun)
             {
@@ -159,15 +177,34 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        public static string ProcessHtml(
+        private string CreateContent(
+            FilePath file,
+            string? mime,
+            JObject pageModel,
+            string locale,
+            CultureInfo? cultureInfo,
+            Dictionary<string, TrustedDomains> trustedDomains)
+        {
+            if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
+            {
+                // Conceptual and Landing Data
+                return pageModel.Value<string>("conceptual") ?? "";
+            }
+
+            // Generate SDP content
+            var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
+            var content = RunMustache(_errors, $"{mime}.html", model);
+
+            return ProcessHtml(_errors, file, content, trustedDomains, locale, cultureInfo);
+        }
+
+        private string ProcessHtml(
             ErrorBuilder errors,
             FilePath file,
             string html,
             Dictionary<string, TrustedDomains> trustedDomains,
             string locale,
-            CultureInfo? cultureInfo,
-            BookmarkValidator? bookmarkValidator,
-            SearchIndexBuilder? searchIndexBuilder)
+            CultureInfo? cultureInfo)
         {
             var bookmarks = new HashSet<string>();
             var searchText = new StringBuilder();
@@ -183,34 +220,10 @@ namespace Microsoft.Docs.Build
                 }
             });
 
-            bookmarkValidator?.AddBookmarks(file, bookmarks);
-            searchIndexBuilder?.SetBody(file, searchText.ToString());
+            _bookmarkValidator?.AddBookmarks(file, bookmarks);
+            _searchIndexBuilder?.SetBody(file, searchText.ToString());
 
             return LocalizationUtility.AddLeftToRightMarker(cultureInfo ?? LocalizationUtility.CreateCultureInfo(locale), result);
-        }
-
-        private string CreateContent(
-            ErrorBuilder errors,
-            FilePath file,
-            string? mime,
-            JObject pageModel,
-            string locale,
-            CultureInfo? cultureInfo,
-            Dictionary<string, TrustedDomains> trustedDomains,
-            BookmarkValidator? bookmarkValidator = null,
-            SearchIndexBuilder? searchIndexBuilder = null)
-        {
-            if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
-            {
-                // Conceptual and Landing Data
-                return pageModel.Value<string>("conceptual") ?? "";
-            }
-
-            // Generate SDP content
-            var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
-            var content = RunMustache(errors, $"{mime}.html", model);
-
-            return ProcessHtml(errors, file, content, trustedDomains, locale, cultureInfo, bookmarkValidator, searchIndexBuilder);
         }
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
