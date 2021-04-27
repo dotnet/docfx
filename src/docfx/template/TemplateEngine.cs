@@ -39,6 +39,8 @@ namespace Microsoft.Docs.Build
         {
             _errors = errors;
             _config = config;
+            _locale = locale;
+            _cultureInfo = cultureInfo;
 
             var template = _config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
@@ -54,8 +56,6 @@ namespace Microsoft.Docs.Build
             _liquid = new(_package, _config.TemplateBasePath, _global);
             _js = new(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
-            _locale = locale;
-            _cultureInfo = cultureInfo;
             _bookmarkValidator = bookmarkValidator;
             _searchIndexBuilder = searchIndexBuilder;
         }
