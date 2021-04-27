@@ -155,7 +155,7 @@ namespace Microsoft.Docs.Build
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(_config, file, mime, JsonUtility.SortProperties(outputModel));
+            var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(file, mime, JsonUtility.SortProperties(outputModel));
 
             if (_config.OutputType == OutputType.PageJson)
             {
@@ -341,7 +341,7 @@ namespace Microsoft.Docs.Build
 
                 pageModel = JsonUtility.ToJObject(new ConceptualModel
                 {
-                    Conceptual = _templateEngine.ProcessHtml(errors, _config, file, razorHtml),
+                    Conceptual = _templateEngine.ProcessHtml(errors, file, razorHtml),
                     ExtensionData = pageModel,
                 });
             }

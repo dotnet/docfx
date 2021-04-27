@@ -16,29 +16,31 @@ namespace Microsoft.Docs.Build
     internal class TemplateEngine
     {
         private readonly ErrorBuilder _errors;
+        private readonly Config _config;
         private readonly Package _package;
         private readonly Lazy<TemplateDefinition> _templateDefinition;
         private readonly JObject _global;
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
-        private readonly BuildOptions _buildOptions;
+        private readonly string _locale;
+        private readonly CultureInfo _cultureInfo;
         private readonly SearchIndexBuilder? _searchIndexBuilder;
         private readonly BookmarkValidator? _bookmarkValidator;
 
         public TemplateEngine(
             ErrorBuilder errors,
             Config config,
-            PackageResolver
-            packageResolver,
-            BuildOptions buildOptions,
+            PackageResolver packageResolver,
+            string locale,
+            CultureInfo cultureInfo,
             BookmarkValidator? bookmarkValidator,
             SearchIndexBuilder? searchIndexBuilder)
         {
-            _buildOptions = buildOptions;
             _errors = errors;
+            _config = config;
 
-            var template = config.Template;
+            var template = _config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
@@ -49,9 +51,11 @@ namespace Microsoft.Docs.Build
             _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
             _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
             _global = LoadGlobalTokens(errors);
-            _liquid = new(_package, config.TemplateBasePath, _global);
+            _liquid = new(_package, _config.TemplateBasePath, _global);
             _js = new(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
+            _locale = locale;
+            _cultureInfo = cultureInfo;
             _bookmarkValidator = bookmarkValidator;
             _searchIndexBuilder = searchIndexBuilder;
         }
@@ -122,29 +126,11 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        public (TemplateModel model, JObject metadata) CreateTemplateModel(Config config, FilePath file, string? mime, JObject pageModel)
+        public (TemplateModel model, JObject metadata) CreateTemplateModel(FilePath file, string? mime, JObject pageModel)
         {
-            return CreateTemplateModel(
-                file, mime, pageModel, _buildOptions.Locale, _buildOptions.Culture, config.TrustedDomains, config.DryRun);
-        }
+            var content = CreateContent(file, mime, pageModel);
 
-        public string ProcessHtml(ErrorBuilder errors, Config config, FilePath file, string html)
-        {
-            return ProcessHtml(errors, file, html, config.TrustedDomains, _buildOptions.Locale, _buildOptions.Culture);
-        }
-
-        public (TemplateModel model, JObject metadata) CreateTemplateModel(
-            FilePath file,
-            string? mime,
-            JObject pageModel,
-            string locale,
-            CultureInfo? cultureInfo,
-            Dictionary<string, TrustedDomains> trustedDomains,
-            bool dryRun = false)
-        {
-            var content = CreateContent(file, mime, pageModel, locale, cultureInfo, trustedDomains);
-
-            if (dryRun)
+            if (_config.DryRun)
             {
                 return (new TemplateModel("", new JObject(), "", ""), new JObject());
             }
@@ -177,13 +163,29 @@ namespace Microsoft.Docs.Build
             return (model, metadata);
         }
 
-        private string CreateContent(
-            FilePath file,
-            string? mime,
-            JObject pageModel,
-            string locale,
-            CultureInfo? cultureInfo,
-            Dictionary<string, TrustedDomains> trustedDomains)
+        public string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
+        {
+            var bookmarks = new HashSet<string>();
+            var searchText = new StringBuilder();
+
+            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+            {
+                HtmlUtility.GetBookmarks(ref token, bookmarks);
+                HtmlUtility.AddLinkType(errors, file, ref token, _locale, _config.TrustedDomains);
+
+                if (token.Type == HtmlTokenType.Text)
+                {
+                    searchText.Append(token.RawText);
+                }
+            });
+
+            _bookmarkValidator?.AddBookmarks(file, bookmarks);
+            _searchIndexBuilder?.SetBody(file, searchText.ToString());
+
+            return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
+        }
+
+        private string CreateContent(FilePath file, string? mime, JObject pageModel)
         {
             if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
             {
@@ -195,41 +197,13 @@ namespace Microsoft.Docs.Build
             var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
             var content = RunMustache(_errors, $"{mime}.html", model);
 
-            return ProcessHtml(_errors, file, content, trustedDomains, locale, cultureInfo);
-        }
-
-        private string ProcessHtml(
-            ErrorBuilder errors,
-            FilePath file,
-            string html,
-            Dictionary<string, TrustedDomains> trustedDomains,
-            string locale,
-            CultureInfo? cultureInfo)
-        {
-            var bookmarks = new HashSet<string>();
-            var searchText = new StringBuilder();
-
-            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
-            {
-                HtmlUtility.GetBookmarks(ref token, bookmarks);
-                HtmlUtility.AddLinkType(errors, file, ref token, locale, trustedDomains);
-
-                if (token.Type == HtmlTokenType.Text)
-                {
-                    searchText.Append(token.RawText);
-                }
-            });
-
-            _bookmarkValidator?.AddBookmarks(file, bookmarks);
-            _searchIndexBuilder?.SetBody(file, searchText.ToString());
-
-            return LocalizationUtility.AddLeftToRightMarker(cultureInfo ?? LocalizationUtility.CreateCultureInfo(locale), result);
+            return ProcessHtml(_errors, file, content);
         }
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
         {
             var defaultTokens = _package.TryLoadYamlOrJson<JObject>(errors, "ContentTemplate/token");
-            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_locale}");
             if (defaultTokens == null)
             {
                 return localeTokens ?? new JObject();
