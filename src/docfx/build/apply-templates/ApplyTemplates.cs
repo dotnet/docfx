@@ -65,20 +65,27 @@ namespace Microsoft.Docs.Build
             if (schema is not null && schema.Equals("toc", StringComparison.Ordinal))
             {
                 var model = templateEngine.RunJavaScript("toc.json.js", JsonUtility.ToJObject(pageModel));
-                File.WriteAllText(GetOutPathWithDifferentExtension(inputDir, filePath, outputDir, "json"), JsonUtility.Serialize(model));
+                var outputPath = GetOutPathWithDifferentExtension(inputDir, filePath, outputDir, "json");
+                Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+                File.WriteAllText(outputPath, JsonUtility.Serialize(model));
             }
             else
             {
-                var isContentRenderType = jsonSchemaProvider.GetRenderType(ContentType.Page, new SourceInfo<string?>(schema)) == RenderType.Content;
+                var isContentRenderType = jsonSchemaProvider.IsContentRenderType(schema);
                 if (isContentRenderType)
                 {
-                    var (model, _) = templateEngine.CreateTemplateModel(file, schema is null ? string.Empty : schema.ToString(), pageModel);
-                    File.WriteAllText(GetOutPathWithDifferentExtension(inputDir, filePath, outputDir), JsonUtility.Serialize(model));
+                    var (model, metadata) = templateEngine.CreateTemplateModel(file, schema is null ? string.Empty : schema.ToString(), pageModel);
+                    var outputPath = GetOutPathWithDifferentExtension(inputDir, filePath, outputDir);
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+                    File.WriteAllText(outputPath, JsonUtility.Serialize(model));
+                    File.WriteAllText(GetOutPathWithDifferentExtension(inputDir, filePath, outputDir, "mta.json"), JsonUtility.Serialize(metadata));
                 }
                 else
                 {
                     var model = templateEngine.RunJavaScript($"{schema}.json.js", pageModel);
-                    File.WriteAllText(GetOutPathWithDifferentExtension(inputDir, filePath, outputDir), JsonUtility.Serialize(model));
+                    var outputPath = GetOutPathWithDifferentExtension(inputDir, filePath, outputDir, "json");
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+                    File.WriteAllText(outputPath, JsonUtility.Serialize(model));
                 }
             }
         }

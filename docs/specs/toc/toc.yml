@@ -1549,6 +1549,7 @@ outputs:
     {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc"}
 ---
 # TOC with output-type="pageJson"
+outputType: PageJson
 repos:
   https://github.com/toc/toc-output-type-is-pageJson:
   - files:

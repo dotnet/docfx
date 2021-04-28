@@ -75,6 +75,17 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        public bool IsContentRenderType(string? mime)
+        {
+            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
+            {
+                return true;
+            }
+
+            var jsonSchema = _jsonSchemaLoader.TryLoadSchema(_package, new PathString($"ContentTemplate/schemas/{mime}.schema.json"));
+            return jsonSchema?.RenderType == RenderType.Content;
+        }
+
         public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> mime)
         {
             var name = mime.Value ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();

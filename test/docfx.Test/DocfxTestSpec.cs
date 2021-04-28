@@ -31,6 +31,8 @@ namespace Microsoft.Docs.Build
 
         public bool NoCache { get; set; }
 
+        public bool NoContinue { get; set; }
+
         public string Locale { get; set; }
 
         [JsonConverter(typeof(OneOrManyConverter))]

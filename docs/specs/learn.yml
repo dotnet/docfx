@@ -1,5 +1,6 @@
 ---
 # Draft run learn post validation
+noContinue: true
 noDryRun: true
 repos:
   https://github.com/learn/learn-pr:
@@ -47,6 +48,7 @@ repos:
 outputs:
 ---
 # Can generate hierarchy
+noContinue: true
 noDryRun: true
 repos:
   https://github.com/learn/learn-pr:

@@ -1,4 +1,5 @@
 # Build output as page json
+noContinue: true
 repos:
   https://github.com/legacy/test:
   - author: Charlie
@@ -418,6 +419,7 @@ outputs:
   b.raw.page.json: '{"content": "<div></div>"}'
 ---
 # Add data-linktype to urls
+noContinue: true
 inputs:
   docfx.yml: |
     outputType: pageJson
