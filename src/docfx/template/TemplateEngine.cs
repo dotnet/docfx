@@ -28,29 +28,44 @@ namespace Microsoft.Docs.Build
         private readonly SearchIndexBuilder? _searchIndexBuilder;
         private readonly BookmarkValidator? _bookmarkValidator;
 
-        public TemplateEngine(
+        public static TemplateEngine CreateTemplateEngine(
             ErrorBuilder errors,
             Config config,
             PackageResolver packageResolver,
             string locale,
-            CultureInfo cultureInfo,
-            BookmarkValidator? bookmarkValidator,
-            SearchIndexBuilder? searchIndexBuilder)
+            BookmarkValidator? bookmarkValidator = null,
+            SearchIndexBuilder? searchIndexBuilder = null)
         {
-            _errors = errors;
-            _config = config;
-            _locale = locale;
-            _cultureInfo = cultureInfo;
-
-            var template = _config.Template;
+            var template = config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
                 template = new("_themes");
                 templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExistedError;
             }
+            var package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
-            _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
+            return new TemplateEngine(errors, config, package, locale, bookmarkValidator, searchIndexBuilder);
+        }
+
+        public static TemplateEngine CreateTemplateEngine(ErrorBuilder errors, Config config, string locale, Package package)
+        {
+            return new TemplateEngine(errors, config, package, locale);
+        }
+
+        private TemplateEngine(
+             ErrorBuilder errors,
+             Config config,
+             Package package,
+             string locale,
+             BookmarkValidator? bookmarkValidator = null,
+             SearchIndexBuilder? searchIndexBuilder = null)
+        {
+            _errors = errors;
+            _config = config;
+            _locale = locale;
+            _cultureInfo = LocalizationUtility.CreateCultureInfo(_locale);
+            _package = package;
             _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
             _global = LoadGlobalTokens(errors);
             _liquid = new(_package, _config.TemplateBasePath, _global);

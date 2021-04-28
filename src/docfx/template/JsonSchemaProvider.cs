@@ -46,6 +46,13 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = jsonSchemaLoader;
         }
 
+        public JsonSchemaProvider(Config config, Package package, JsonSchemaLoader jsonSchemaLoader)
+        {
+            _template = config.Template;
+            _package = package;
+            _jsonSchemaLoader = jsonSchemaLoader;
+        }
+
         public static bool OutputAbsoluteUrl(string? mime) => mime != null && s_outputAbsoluteUrlYamlMime.Contains(mime);
 
         public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
