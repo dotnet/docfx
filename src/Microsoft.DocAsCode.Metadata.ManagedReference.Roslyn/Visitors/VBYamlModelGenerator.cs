@@ -1299,7 +1299,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxKind.NothingLiteralExpression,
                     SyntaxFactory.Token(SyntaxKind.NothingKeyword));
             }
-            bool isNullable = type.GetDocumentationCommentId().StartsWith("T:System.Nullable{");
+            bool isNullable = type.GetDocumentationCommentId()?.StartsWith("T:System.Nullable{") == true;
             if (isNullable)
             {
                 var namedType = (INamedTypeSymbol)type;

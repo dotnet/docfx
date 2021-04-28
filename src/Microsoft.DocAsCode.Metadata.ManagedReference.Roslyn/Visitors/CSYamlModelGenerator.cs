@@ -870,7 +870,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static ExpressionSyntax GetLiteralExpression(object value, ITypeSymbol type)
         {
-            bool isNullable = type.GetDocumentationCommentId().StartsWith("T:System.Nullable{");
+            bool isNullable = type.GetDocumentationCommentId()?.StartsWith("T:System.Nullable{") == true;
             if (value == null)
             {
                 if (type.IsValueType && !isNullable)
