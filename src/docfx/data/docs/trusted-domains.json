@@ -17,6 +17,7 @@
     "sip:*",
     "tel:*",
     "urn:*",
+    "uwpct:*",
     "view-source:*",
     "vscode:*",
     "windowsdefender:*",
