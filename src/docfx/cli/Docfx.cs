@@ -104,6 +104,8 @@ namespace Microsoft.Docs.Build
                 "--no-cache", "Always fetch latest dependencies in build."));
             command.AddOption(new Option<string>(
                 "--template-base-path", "The base path used for referencing the template resource file when applying liquid."));
+            command.AddOption(new Option<bool>(
+                "--continue", "Run the 2nd stage of DocFX to apply templates."));
             return command;
         }
 

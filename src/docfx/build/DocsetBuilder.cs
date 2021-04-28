@@ -92,7 +92,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
             _dependencyMapBuilder = new(_sourceMap);
             _searchIndexBuilder = new(_config, _errors, _documentProvider, _metadataProvider);
-            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions.Locale, _buildOptions.Culture, _bookmarkValidator, _searchIndexBuilder);
+            _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator, _searchIndexBuilder);
             _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));
             _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
             _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));

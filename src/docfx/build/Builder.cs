@@ -30,14 +30,21 @@ namespace Microsoft.Docs.Build
             var operation = Telemetry.StartOperation("build");
             using var errors = new ErrorWriter(options.Log);
 
-            var files = options.File?.Select(Path.GetFullPath).ToArray();
+            if (options.Continue)
+            {
+                // Apply templates.
+                ApplyTemplates.Run(errors, options);
+            }
+            else
+            {
+                var files = options.File?.Select(Path.GetFullPath).ToArray();
 
-            package ??= new LocalPackage(options.WorkingDirectory);
+                package ??= new LocalPackage(options.WorkingDirectory);
 
-            new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
+                new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
+            }
 
             operation.Complete();
-
             errors.PrintSummary();
             return errors.HasError;
         }
