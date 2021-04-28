@@ -24,12 +24,12 @@
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.789" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.74" Aliases="maml" />
-    <PackageReference Include="Microsoft.Graph" Version="3.29.0" />
+    <PackageReference Include="Microsoft.Graph" Version="3.30.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.29.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.30.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2031" />
-    <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.0" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.1" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Quickenshtein" Version="1.5.0" />
     <PackageReference Include="Stubble.Core" Version="1.9.3" />

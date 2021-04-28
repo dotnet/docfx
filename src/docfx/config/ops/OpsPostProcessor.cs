@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         private void PostProcessLearnValidation()
         {
-            if (!_config.RunLearnValidation || _config.OutputType != OutputType.PageJson || _config.DryRun)
+            if (!_config.IsLearn || _config.OutputType != OutputType.PageJson || _config.DryRun)
             {
                 return;
             }

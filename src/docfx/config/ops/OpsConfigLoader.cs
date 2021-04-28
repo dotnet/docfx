@@ -126,7 +126,7 @@ namespace Microsoft.Docs.Build
             }
 
             result["sourceMap"] = sourceMaps;
-            result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
+            result["isLearn"] = IsLearn(docsetConfig);
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
                 : new JArray(maml2YamlMonikerPath);
         }
 
-        private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)
+        private static bool IsLearn(OpsDocsetConfig? docsetConfig)
             => docsetConfig?.CustomizedTasks != null
             && docsetConfig.CustomizedTasks.TryGetValue("docset_postbuild", out var plugins)
             && plugins.Any(plugin => plugin.EndsWith("TripleCrownValidation.ps1", StringComparison.OrdinalIgnoreCase));

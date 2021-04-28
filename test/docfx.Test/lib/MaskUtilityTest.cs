@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
         [InlineData(
             "{'key':['a7480eccbe3820e09dc1163687c63ca9d87','10d0cf03-6df8-b765-614a4f01cd32']}",
             "{'key':['a7***87','10***32']}")]
-        [InlineData("{'key':{'secret':'1f03-6d1'}}", "{'key':{'secret':'***'}}")]
+        [InlineData("{'key':{'fakeSecret':'fakeToken'}}", "{'key':{'fakeSecret':'***'}}")]
         public static void HideSecret(string json, string expectedMasked)
         {
             var token = JsonUtility.Parse(new ErrorList(), json, null);
