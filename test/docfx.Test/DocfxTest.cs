@@ -64,6 +64,11 @@ namespace Microsoft.Docs.Build
             {
                 yield return "SingleFile";
             }
+
+            if (InputContainsText(spec, "outputType: pageJson") && !spec.NoContinue)
+            {
+                yield return "ContinueBuild";
+            }
         }
 
         [YamlTest("~/docs/specs/**/*.yml", ExpandTest = nameof(ExpandTest))]
@@ -103,33 +108,36 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsOutputTypePageJson(DocfxTestSpec spec)
+        private static bool InputContainsText(DocfxTestSpec spec, string text)
         {
-            var existInInputs = IsExist(spec.Inputs);
+            if (Contains(spec.Inputs, text))
+            {
+                return true;
+            }
 
-            var existInRepos = false;
             foreach (var (_, repo) in spec.Repos)
             {
                 foreach (var item in repo)
                 {
-                    existInRepos = existInRepos || IsExist(item.Files);
+                    if (Contains(item.Files, text))
+                    {
+                        return true;
+                    }
                 }
             }
-
-            return existInInputs || existInRepos;
-        }
-
-        private static bool IsExist(IDictionary<string, string> dic, string expect = "outputType: pageJson")
-        {
-            foreach (var (_, value) in dic)
-            {
-                if (value is not null && value.Contains(expect, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
             return false;
+
+            static bool Contains(IDictionary<string, string> dict, string text)
+            {
+                foreach (var (_, value) in dict)
+                {
+                    if (value is string str && str.Contains(text, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
         private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Package package)
@@ -200,6 +208,7 @@ namespace Microsoft.Docs.Build
         {
             var singleFile = test.Matrix.Contains("SingleFile");
             var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun") || singleFile;
+            var isContinue = test.Matrix.Contains("ContinueBuild");
 
             if (spec.LanguageServer.Count != 0)
             {
@@ -214,12 +223,12 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, dryRun, singleFile, spec, package.CreateSubPackage(locDocsetPath));
+                    RunBuild(locDocsetPath, outputPath, dryRun, singleFile, isContinue, spec, package.CreateSubPackage(locDocsetPath));
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, dryRun, singleFile, spec, package);
+                RunBuild(docsetPath, outputPath, dryRun, singleFile, isContinue, spec, package);
             }
         }
 
@@ -233,29 +242,61 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, bool singleFile, DocfxTestSpec spec, Package package)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, bool singleFile, bool isContinue, DocfxTestSpec spec, Package package)
         {
-            var randomNormalOutputPath = Path.ChangeExtension(outputPath, $".normal.{Guid.NewGuid()}");
-            var randomFirstStageOutputPath = Path.ChangeExtension(outputPath, $".firststage.{Guid.NewGuid()}");
-            var randomContinueOutputPath = Path.ChangeExtension(outputPath, $".continue.{Guid.NewGuid()}");
+            var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
             docsetPath = Path.Combine(docsetPath, spec.Cwd ?? "");
 
-            var isOutputTypePageJson = IsOutputTypePageJson(spec);
-            var isTwoStagesBuild = isOutputTypePageJson && !dryRun && !spec.NoContinue;
             using (TestUtility.EnsureFilesNotChanged(docsetPath, spec.NoInputCheck))
             {
                 if (singleFile)
                 {
-                    RunSingleFileBuild(docsetPath, randomNormalOutputPath, spec, package);
+                    RunSingleFileBuild(docsetPath, randomOutputPath, spec, package);
+                }
+                else if (isContinue)
+                {
+                    var randomJsonOutputPath = Path.ChangeExtension(outputPath, $".intermediate.{Guid.NewGuid()}");
+                    var jsonCommandLine = new[]
+                        {
+                            "build", docsetPath,
+                            "--output", randomJsonOutputPath,
+                            "--log", Path.Combine(randomJsonOutputPath, ".errors.log"),
+                            "--output-type", "json",
+                            spec.NoRestore ? "--no-restore" : null,
+                            spec.NoCache ? "--no-cache" : null,
+                            spec.NoDrySync ? "--no-dry-sync" : null,
+                        };
+
+                    Docfx.Run(jsonCommandLine.Where(arg => arg != null).ToArray(), package);
+
+                    var continueCommandLine = new[]
+                    {
+                        "build", randomJsonOutputPath,
+                        "--output", randomOutputPath,
+                        "--log", Path.Combine(randomOutputPath, ".errors.log"),
+                        "--continue",
+                        "--template", GetTemplatePath(package, s_repos.Value),
+                        "--output-type", "pageJson",
+                        spec.NoRestore ? "--no-restore" : null,
+                        spec.NoCache ? "--no-cache" : null,
+                        spec.NoDrySync ? "--no-dry-sync" : null,
+                    };
+                    RemoveUnnecessaryFilesForContinue(randomJsonOutputPath);
+                    Docfx.Run(continueCommandLine.Where(arg => arg != null).ToArray(), package);
+
+                    if (Directory.Exists(randomJsonOutputPath))
+                    {
+                        Directory.Delete(randomJsonOutputPath, recursive: true);
+                    }
                 }
                 else
                 {
                     var commandLine = new[]
                     {
                         "build", docsetPath,
-                        "--output", randomNormalOutputPath,
-                        "--log", Path.Combine(randomNormalOutputPath, ".errors.log"),
+                        "--output", randomOutputPath,
+                        "--log", Path.Combine(randomOutputPath, ".errors.log"),
                         dryRun ? "--dry-run" : null,
                         spec.NoRestore ? "--no-restore" : null,
                         spec.NoCache ? "--no-cache" : null,
@@ -263,92 +304,23 @@ namespace Microsoft.Docs.Build
                     }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
                     Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
-
-                    if (isTwoStagesBuild)
-                    {
-                        var firstStageCommandLine = new[]
-                        {
-                            "build", docsetPath,
-                            "--output", randomFirstStageOutputPath,
-                            "--log", Path.Combine(randomFirstStageOutputPath, ".errors.log"),
-                            "--output-type", "json",
-                            spec.NoRestore ? "--no-restore" : null,
-                            spec.NoCache ? "--no-cache" : null,
-                            spec.NoDrySync ? "--no-dry-sync" : null,
-                        };
-
-                        Docfx.Run(firstStageCommandLine.Where(arg => arg != null).ToArray(), package);
-
-                        RemoveUnnecessaryFilesForContinue(randomFirstStageOutputPath);
-
-                        var templatePath = GetTemplatePath(package, s_repos.Value);
-                        var continueCommandLine = new[]
-                        {
-                            "build", randomFirstStageOutputPath,
-                            "--output", randomContinueOutputPath,
-                            "--log", Path.Combine(randomContinueOutputPath, ".errors.log"),
-                            "--continue",
-                            "--template", templatePath,
-                            spec.NoRestore ? "--no-restore" : null,
-                            spec.NoCache ? "--no-cache" : null,
-                            spec.NoDrySync ? "--no-dry-sync" : null,
-                        };
-
-                        Docfx.Run(continueCommandLine.Where(arg => arg != null).ToArray(), package);
-                    }
                 }
             }
 
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
             var outputs = dryRun && spec.Outputs.TryGetValue(".errors.log", out var errors)
                 ? new Dictionary<string, string> { [".errors.log"] = errors }
-                : spec.Outputs;
+                : isContinue
+                  ? (from kvp in spec.Outputs
+                    where !Path.GetFileName(kvp.Key).StartsWith(".") && IsRequiredOutput(kvp.Key) && kvp.Key.EndsWith(".json")
+                    select kvp).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                  : spec.Outputs;
 
-            VerifyOutput(randomNormalOutputPath, outputs);
+            VerifyOutput(randomOutputPath, outputs);
 
-            if (isTwoStagesBuild)
+            if (Directory.Exists(randomOutputPath))
             {
-                CopyNecessaryFilesForContinue(randomNormalOutputPath, randomContinueOutputPath);
-                VerifyOutput(randomContinueOutputPath, outputs);
-            }
-
-            if (Directory.Exists(randomNormalOutputPath))
-            {
-                Directory.Delete(randomNormalOutputPath, recursive: true);
-            }
-
-            if (Directory.Exists(randomFirstStageOutputPath))
-            {
-                Directory.Delete(randomFirstStageOutputPath, recursive: true);
-            }
-
-            if (Directory.Exists(randomContinueOutputPath))
-            {
-                Directory.Delete(randomContinueOutputPath, recursive: true);
-            }
-        }
-
-        private static void CopyNecessaryFilesForContinue(string sourceDir, string destDir)
-        {
-            foreach (var sourceFilePath in Directory.GetFiles(sourceDir, "*.*", SearchOption.AllDirectories))
-            {
-                if (Path.GetFileName(sourceFilePath).StartsWith(".") || !IsRequiredOutput(sourceFilePath) || !sourceFilePath.EndsWith(".json"))
-                {
-                    var destFilePath = Path.Combine(destDir, Path.GetRelativePath(sourceDir, sourceFilePath));
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
-                    File.Copy(sourceFilePath, destFilePath);
-                }
-            }
-        }
-
-        private static void RemoveUnnecessaryFilesForContinue(string path)
-        {
-            foreach (var filePath in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
-            {
-                if (Path.GetFileName(filePath).StartsWith(".") || !IsRequiredOutput(filePath) || !filePath.EndsWith(".json"))
-                {
-                    File.Delete(filePath);
-                }
+                Directory.Delete(randomOutputPath, recursive: true);
             }
         }
 
@@ -372,6 +344,18 @@ namespace Microsoft.Docs.Build
             }
 
             return "_themesPlaceholder";
+        }
+
+        private static void RemoveUnnecessaryFilesForContinue(string path)
+        {
+            // TODO: no need to clean-up if glob more strictly for continue build
+            foreach (var filePath in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
+            {
+                if (Path.GetFileName(filePath).StartsWith(".") || !IsRequiredOutput(filePath) || !filePath.EndsWith(".json"))
+                {
+                    File.Delete(filePath);
+                }
+            }
         }
 
         private static void RunSingleFileBuild(string docsetPath, string outputPath, DocfxTestSpec spec, Package package)
