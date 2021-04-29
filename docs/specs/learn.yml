@@ -1,6 +1,5 @@
 ---
 # Draft run learn post validation
-noContinue: true
 noDryRun: true
 repos:
   https://github.com/learn/learn-pr:
