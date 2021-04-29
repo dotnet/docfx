@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 yield return "SingleFile";
             }
 
-            if (InputContainsText(spec, "outputType: pageJson") && !spec.NoContinue)
+            if (InputContainsText(spec, "outputType: pageJson"))
             {
                 yield return "ContinueBuild";
             }
@@ -312,8 +312,8 @@ namespace Microsoft.Docs.Build
                 ? new Dictionary<string, string> { [".errors.log"] = errors }
                 : isContinue
                   ? (from kvp in spec.Outputs
-                    where !Path.GetFileName(kvp.Key).StartsWith(".") && IsRequiredOutput(kvp.Key) && kvp.Key.EndsWith(".json")
-                    select kvp).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                    where !Path.GetFileName(kvp.Key).StartsWith(".") && IsRequiredOutput(kvp.Key) && kvp.Key.EndsWith(".json") && !kvp.Key.Equals("hierarchy.json")
+                     select kvp).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
                   : spec.Outputs;
 
             VerifyOutput(randomOutputPath, outputs);
@@ -348,7 +348,7 @@ namespace Microsoft.Docs.Build
 
         private static void RemoveUnnecessaryFilesForContinue(string path)
         {
-            // TODO: no need to clean-up if glob more strictly for continue build
+            // TODO: no need to clean-up if glob more strictly for 
             foreach (var filePath in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
             {
                 if (Path.GetFileName(filePath).StartsWith(".") || !IsRequiredOutput(filePath) || !filePath.EndsWith(".json"))

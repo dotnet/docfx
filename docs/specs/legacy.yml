@@ -1,5 +1,4 @@
 # Build output as page json
-noContinue: true
 repos:
   https://github.com/legacy/test:
   - author: Charlie
@@ -426,7 +425,7 @@ inputs:
   a.md: '[](https://github.com)'
   b.yml: |
     #YamlMime:TestPage
-    link: https://docs.com
+    link: https://static.docs.com
     markdown: '[](a.md)'
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -446,7 +445,7 @@ outputs:
   b.raw.page.json: |
     { "content": "
         <a data-linktype='external' href='https://github.com'></a>
-        <img data-linktype='external' src='https://docs.com'></img>
+        <img data-linktype='external' src='https://static.docs.com'></img>
         <p><a data-linktype='relative-path' href='a'></a></p>" }
 ---
 # The site base path is empty.

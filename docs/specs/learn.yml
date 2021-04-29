@@ -48,7 +48,6 @@ repos:
 outputs:
 ---
 # Can generate hierarchy
-noContinue: true
 noDryRun: true
 repos:
   https://github.com/learn/learn-pr:
