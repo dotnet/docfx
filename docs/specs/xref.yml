@@ -1904,41 +1904,44 @@ noSingleFile: true
 locale: zh-cn
 repos:
   https://docs.com/test-valdiate-external-xref.zh-cn:
-    - files:
-        docfx.yml: |
-          name: docset_a
-          xref:
-          - 1.xrefmap.json
-        1.xrefmap.json: |
-          {
-            "repository_url": "b_repository_url",
-            "docset_name": "docset_b",
-            "references":[
-              {"uid": "c", "schemaType": "c-type"},
-              {"uid": "d", "schemaType": "d-type"}
-            ],
-            "external_xrefs":[
-              {"uid": "nofound",
-                "docsetName": "docset_a",
-                "schemaType": "a-type",
-                "count": 1}
-            ]
+  - files:
+      docfx.yml: |
+        name: docset_a
+        xref:
+        - 1.xrefmap.json
+      1.xrefmap.json: |
+        {
+          "repository_url": "b_repository_url",
+          "docset_name": "docset_b",
+          "references":[
+            {"uid": "c", "schemaType": "c-type"},
+            {"uid": "d", "schemaType": "d-type"}
+          ],
+          "external_xrefs":[
+            {"uid": "nofound",
+              "docsetName": "docset_a",
+              "schemaType": "a-type",
+              "count": 1}
+          ]
+        }
+      docs/a.yml: |
+        ### YamlMime:TestData1
+        uid: a
+        ref_other: ["b", "c", "d"]
+      docs/b.yml: |
+        ### YamlMime:TestData1
+        uid: b
+        ref_other: ["c"]
+      _themes/ContentTemplate/schemas/TestData1.schema.json: |
+        {
+          "properties": {
+            "uid": { "contentType": "uid"},
+            "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
           }
-        docs/a.yml: |
-          ### YamlMime:TestData1
-          uid: a
-          ref_other: ["b", "c", "d"]
-        docs/b.yml: |
-          ### YamlMime:TestData1
-          uid: b
-          ref_other: ["c"]
-        _themes/ContentTemplate/schemas/TestData1.schema.json: |
-          {
-            "properties": {
-              "uid": { "contentType": "uid"},
-              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
-            }
-          }
+        }
+  https://docs.com/test-valdiate-external-xref:
+  - files:
+      docfx.yml:
 outputs:
   docs/a.json:
   docs/b.json:
@@ -1988,7 +1991,7 @@ outputs:
 ---
 # Xref markdown property output absolute url for TSType mime
 repos:
-  https://docs.com/test-valdiate-external-xref.zh-cn#live:
+  https://docs.com/test-valdiate-external-xref#live:
     - files:
         docfx.yml: |
         docs/c/c.md: |
