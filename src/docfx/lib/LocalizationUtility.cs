@@ -55,17 +55,16 @@ namespace Microsoft.Docs.Build
             if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
-                foreach (var branch in new HashSet<string?> { fallbackBranch, "main" })
+                var package = new PackagePath(fallbackRemote, fallbackBranch);
+                var options = PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError;
+                if (packageResolver.TryResolvePackage(package, options, out var fallbackRepoPath))
                 {
-                    if (packageResolver.TryResolvePackage(
-                        new PackagePath(fallbackRemote, branch),
-                        PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError,
-                        out var fallbackRepoPath))
-                    {
-                        return Path.Combine(fallbackRepoPath, docsetSourceFolder);
-                    }
+                    return Path.Combine(fallbackRepoPath, docsetSourceFolder);
                 }
-                throw Errors.System.GitCloneFailed(fallbackRemote, fallbackBranch ?? "").ToException();
+                else
+                {
+                    return Path.Combine(packageResolver.ResolvePackage(package, options), docsetSourceFolder);
+                }
             }
             return null;
         }
