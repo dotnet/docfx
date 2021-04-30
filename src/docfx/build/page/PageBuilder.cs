@@ -150,12 +150,13 @@ namespace Microsoft.Docs.Build
             }
 
             outputModel["schema"] = mime.Value;
+            outputModel = JsonUtility.SortProperties(outputModel);
             if (_config.OutputType == OutputType.Json)
             {
                 return (outputModel, JsonUtility.SortProperties(outputMetadata));
             }
 
-            var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(file, mime, JsonUtility.SortProperties(outputModel));
+            var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(file, mime, outputModel);
 
             if (_config.OutputType == OutputType.PageJson)
             {

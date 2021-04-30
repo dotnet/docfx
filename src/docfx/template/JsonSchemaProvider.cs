@@ -75,6 +75,22 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        public RenderType GetRenderType(SourceInfo<string?> mime)
+        {
+            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
+            {
+                return RenderType.Content;
+            }
+            try
+            {
+                return GetSchema(mime).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                return RenderType.Content;
+            }
+        }
+
         public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> mime)
         {
             var name = mime.Value ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
@@ -99,22 +115,6 @@ namespace Microsoft.Docs.Build
             }
 
             return new JsonSchemaValidator(jsonSchema, forceError: true);
-        }
-
-        private RenderType GetRenderType(SourceInfo<string?> mime)
-        {
-            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
-            {
-                return RenderType.Content;
-            }
-            try
-            {
-                return GetSchema(mime).RenderType;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
-            {
-                return RenderType.Content;
-            }
         }
 
         private RenderType GetTocRenderType()
