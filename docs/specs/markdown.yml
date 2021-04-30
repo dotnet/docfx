@@ -311,10 +311,10 @@ outputs:
   docs/a.json: |
     { "conceptual": "<div></div><p>body</p>" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'script' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":1,"column":2}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'link' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":2,"column":2}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":3,"column":6}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'style' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":4,"column":2}
 ---
 # markdown table with styles is allowed
 inputs:
@@ -389,7 +389,6 @@ outputs:
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/b.md","line":2,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/a.md","line":4,"column":1}
     {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-3' in 'docs/a.md', did you mean '#title-1'?","file":"docs/d.md","line":1,"column":1}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/a.md","line":8,"column":2}
 ---
 # only validate bookmarks when the referenced file existed
 inputs:
@@ -467,19 +466,19 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "
-        <div class='tabGroup' id='tabgroup_CeZOj-G++Q'>
+        <div class='tabGroup' id='tabgroup_1'>
           <ul role='tablist'>
             <li role='presentation'>
-              <a href='#tabpanel_CeZOj-G++Q_a' role='tab' aria-controls='tabpanel_CeZOj-G++Q_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
+              <a href='#tabpanel_1_a' role='tab' aria-controls='tabpanel_1_a' data-tab='a' tabindex='0' aria-selected='true'>a</a>
             </li>
             <li role='presentation'>
-              <a href='#tabpanel_CeZOj-G++Q_b' role='tab' aria-controls='tabpanel_CeZOj-G++Q_b' data-tab='b' tabindex='-1'>b</a>
+              <a href='#tabpanel_1_b' role='tab' aria-controls='tabpanel_1_b' data-tab='b' tabindex='-1'>b</a>
             </li>
           </ul>
-          <section id='tabpanel_CeZOj-G++Q_a' role='tabpanel' data-tab='a'>
+          <section id='tabpanel_1_a' role='tabpanel' data-tab='a'>
             <p>a</p>
           </section>
-          <section id='tabpanel_CeZOj-G++Q_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
+          <section id='tabpanel_1_b' role='tabpanel' data-tab='b' aria-hidden='true' hidden='hidden'>
             <p>b</p>
           </section>
         </div>"
@@ -520,10 +519,10 @@ outputs:
   docs/c.json: |
     { "conceptual": "<p><a><image src=\"https://shell.azure.com/images/launchcloudshell.png\"></image></a></p>\n" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":27}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":27}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":4}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'style' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":4}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/c.md","line":1,"column":27}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'a' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"docs/b.md","line":1,"column":27}
 ---
 # yaml header shouldn't be array
 inputs:

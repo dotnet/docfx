@@ -29,7 +29,7 @@ inputs:
 outputs:
   docs/a.json:
 ---
-# Validate user html
+# Sanitize user html
 inputs:
   docfx.yml:
   a.md: |
@@ -39,23 +39,16 @@ inputs:
     <h1 height="docs"></h1>
     <div onclick="alert();" data-source="docs"></div>
 outputs:
-  a.json:
-  .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'BUTTON' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":4,"column":2}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
----
-# Suppress disallowed HTML on archive content
-inputs:
-  docfx.yml: |
-    globalMetadata:
-      is_archived: true
-  a.md: |
-    <div><script></script></div>
-outputs:
   a.json: |
-    { "conceptual": "<div></div>" }
+    { "conceptual": "
+        <h2 id='head' title='HEAD'></h2>
+        <BUTTON>click</BUTTON>
+        <img height='docs'></img>
+        <h1></h1>
+        <div data-source='docs'></div>" }
+  .errors.log: |
+    {"message_severity": "info","code": "disallowed-html-attribute","message": "HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file": "a.md","line": 4,"column": 5}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
 ---
 # SensitiveLanguage - sensitive-language
 inputs:

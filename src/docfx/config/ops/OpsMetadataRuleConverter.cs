@@ -40,7 +40,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
 
             var schema = new
             {
@@ -64,25 +64,18 @@ namespace Microsoft.Docs.Build
                     where type != null && !ruleInfo.Disabled
                     select new KeyValuePair<string, OpsMetadataRule>(type, ruleInfo));
 
-                var property = new
+                var property = new Dictionary<string, object?>()
                 {
-                    type = GetType(rulesInfo),
-                    @enum = GetEnum(rulesInfo),
-                    dateFormat = GetDateFormat(rulesInfo),
-                    relativeMaxDate = GetRelativeMaxDate(rulesInfo),
-                    relativeMinDate = GetRelativeMinDate(rulesInfo),
-                    replacedBy = GetReplacedBy(rulesInfo),
-                    microsoftAlias = GetMicrosoftAlias(rulesInfo, taxonomies),
-                    minLength = GetMinLength(rulesInfo),
-                    maxLength = GetMaxLength(rulesInfo),
+                    { "type", GetType(rulesInfo) },
+                    { "enum", GetEnum(rulesInfo) },
+                    { "dateFormat", GetDateFormat(rulesInfo) },
+                    { "relativeMaxDate", GetRelativeMaxDate(rulesInfo) },
+                    { "relativeMinDate", GetRelativeMinDate(rulesInfo) },
+                    { "replacedBy", GetReplacedBy(rulesInfo) },
+                    { "microsoftAlias", GetMicrosoftAlias(rulesInfo, taxonomies) },
+                    { "minLength", GetMinLength(rulesInfo) },
+                    { "maxLength", GetMaxLength(rulesInfo) },
                 };
-
-                var propertyJson =
-                    JsonConvert.SerializeObject(property, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                if (propertyJson != "{}")
-                {
-                    schema.properties.Add(attribute, property);
-                }
 
                 if (TryGetAttributeCustomRules(rulesInfo, out var attributeCustomRules))
                 {
@@ -116,22 +109,57 @@ namespace Microsoft.Docs.Build
 
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
-                    TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var taxonomy))
+                    TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var enumDependencies, out var enumValues))
                 {
-                    schema.enumDependencies.Add($"{attribute}[0]", taxonomy);
-
-                    if (rulesInfo.TryGetValue("Match", out var matchRuleInfo) &&
-                        !string.IsNullOrEmpty(matchRuleInfo.Value) &&
-                        !schema.enumDependencies[$"{attribute}[0]"].ContainsKey(matchRuleInfo.Value))
+                    // if just plain enum, extend property
+                    if (enumValues != null && enumValues.Length > 0)
                     {
-                        schema.enumDependencies[$"{attribute}[0]"].Add(matchRuleInfo.Value, null);
+                        SetEnumValues(property, rulesInfo, enumValues);
                     }
+                    else
+                    {
+                        schema.enumDependencies.Add($"{attribute}[0]", enumDependencies);
+
+                        if (rulesInfo.TryGetValue("Match", out var matchRuleInfo) &&
+                            !string.IsNullOrEmpty(matchRuleInfo.Value) &&
+                            !schema.enumDependencies[$"{attribute}[0]"].ContainsKey(matchRuleInfo.Value))
+                        {
+                            schema.enumDependencies[$"{attribute}[0]"].Add(matchRuleInfo.Value, null);
+                        }
+                    }
+                }
+
+                var cleanProperty = property.Where(p => p.Value != null).ToDictionary(p => p.Key, p => p.Value);
+                var propertyJson =
+                    JsonConvert.SerializeObject(
+                        cleanProperty, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                if (propertyJson != "{}")
+                {
+                    schema.properties.Add(attribute, cleanProperty);
                 }
             }
 
             var jsonSchema = JsonConvert.SerializeObject(schema, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             Log.Write(jsonSchema);
             return jsonSchema;
+        }
+
+        private static void SetEnumValues(Dictionary<string, object?> property, Dictionary<string, OpsMetadataRule> rulesInfo, string[] enumValues)
+        {
+            var type = GetType(rulesInfo);
+            if (type != null && type.Contains("array"))
+            {
+                var enumType = new
+                {
+                    type = new string[] { "string", "null" },
+                    @enum = enumValues,
+                };
+                property.Add("items", enumType);
+            }
+            else
+            {
+                property["enum"] = enumValues;
+            }
         }
 
         private static bool TryGetAttributeCustomRules(Dictionary<string, OpsMetadataRule> rulesInfo, out Dictionary<string, dynamic> attributeCustomRules)
@@ -154,6 +182,7 @@ namespace Microsoft.Docs.Build
                                 canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
                                 pullRequestOnly = ruleInfo.PullRequestOnly,
                                 contentTypes = ruleInfo.ContentTypes,
+                                tags = ruleInfo.Tags,
                             });
                         }
                     }
@@ -163,27 +192,41 @@ namespace Microsoft.Docs.Build
             return attributeCustomRules.Count != 0;
         }
 
-        private static bool TryGetTaxonomy(string attribute, string? listId, Taxonomies taxonomies, out Dictionary<string, EnumDependenciesSchema?> taxonomy)
+        private static bool TryGetTaxonomy(
+            string attribute,
+            string? listId,
+            Taxonomies taxonomies,
+            out Dictionary<string, EnumDependenciesSchema?> taxonomy,
+            out string[]? enumValues)
         {
             if (string.IsNullOrEmpty(listId) || !taxonomies.TryGetValue(listId["list:".Length..], out var subTaxonomy))
             {
                 taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+                enumValues = null;
                 return false;
             }
 
             if (string.IsNullOrEmpty(subTaxonomy.NestedValue))
             {
-                taxonomy = subTaxonomy.NestedTaxonomy.list.ToDictionary(x => x, x => (EnumDependenciesSchema?)null);
+                taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+                enumValues = subTaxonomy.NestedTaxonomy.list;
                 return true;
             }
 
             var nestedValue = subTaxonomy.NestedValue;
-            var index = 0;
 
+            // `slug` of product taxonomy means only one level indeed. Here combine parent and children
             if (string.Equals("slug", nestedValue, StringComparison.OrdinalIgnoreCase))
             {
-                index = 1;
-                nestedValue = attribute;
+                var list = new List<string>();
+                foreach (var (key, value) in subTaxonomy.NestedTaxonomy.dic)
+                {
+                    list.Add(key);
+                    list.AddRange(value);
+                }
+                enumValues = list.ToArray();
+                taxonomy = new Dictionary<string, EnumDependenciesSchema?>();
+                return true;
             }
 
             // msService => ms.service, msSubService => ms.subservice
@@ -207,8 +250,9 @@ namespace Microsoft.Docs.Build
                 var clearTaxonomy = value.ToDictionary(
                     x => string.Equals("(empty)", x, StringComparison.OrdinalIgnoreCase) ? string.Empty : x, x => (EnumDependenciesSchema?)null);
 
-                taxonomy.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[{index}]", clearTaxonomy } });
+                taxonomy.Add(key, new EnumDependenciesSchema() { { $"{nestedValue}[0]", clearTaxonomy } });
             }
+            enumValues = null;
             return true;
         }
 

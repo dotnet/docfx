@@ -756,7 +756,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    { "conceptual": "<p>Link to <a href=\"xref:c#bookmark\">title</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"\">title</a></p>" }
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'c'.","file":"docs/b.md","line":1,"column":9}
 ---
@@ -1579,9 +1579,9 @@ inputs:
       }
     }
 outputs:
-  136a42ac/docs/a.json:
-  136a42ac/docs/b.json:
-  4667fedf/docs/a.json:
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json:
+  9b52f68bce2b10c7aa018b696f8ca916/docs/b.json:
+  ecc061f43156f37be077db42abf8301a/docs/a.json:
   .xrefmap.json: |
     {
       "references": [
@@ -1650,14 +1650,14 @@ inputs:
     <xref uid="xref"/>
 
 outputs:
-  136a42ac/docs/a.json:
-  136a42ac/docs/b.raw.page.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json:
+  9b52f68bce2b10c7aa018b696f8ca916/docs/b.raw.page.json: |
     {"content": "<a href=\"a.json\" data-linktype=\"relative-path\"> name 1.0 </a>"}
-  136a42ac/docs/b.mta.json:
-  136a42ac/docs/toc.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/b.mta.json:
+  9b52f68bce2b10c7aa018b696f8ca916/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-1.0"]}]}
-  4667fedf/docs/a.json:
-  4667fedf/docs/toc.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json:
+  ecc061f43156f37be077db42abf8301a/docs/toc.json: |
     {"items":[{"name":"node","href":"a.json","uid":"a","monikers":["netcore-2.0"]}]}
 ---
 # can cross version referencing single-version uid
@@ -1699,10 +1699,10 @@ inputs:
     <xref uid="xref"/>
 
 outputs:
-  136a42ac/v1/a.json:
-  4667fedf/v2/b.raw.page.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/v1/a.json:
+  ecc061f43156f37be077db42abf8301a/v2/b.raw.page.json: |
     {"content": "<a href=\"../v1/a.json\" data-linktype=\"relative-path\"> name 1.0 </a>"}
-  4667fedf/v2/b.mta.json:
+  ecc061f43156f37be077db42abf8301a/v2/b.mta.json:
 ---
 # can cross version reference, using highest version
 inputs:
@@ -1750,11 +1750,11 @@ inputs:
     <xref uid="xref"/>
 
 outputs:
-  136a42ac/v1/a.json:
-  4667fedf/v2/a.json:
-  439a76d0/v3/b.raw.page.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/v1/a.json:
+  ecc061f43156f37be077db42abf8301a/v2/a.json:
+  dbd65aae1151fa58b34e889be64c7783/v3/b.raw.page.json: |
     {"content": "<a href=\"../v2/a.json\" data-linktype=\"relative-path\"> name 2.0 </a>"}
-  439a76d0/v3/b.mta.json:
+  dbd65aae1151fa58b34e889be64c7783/v3/b.mta.json:
 ---
 # When href doesn't exist, should display the alt but not the text.
 inputs:
@@ -1981,7 +1981,7 @@ inputs:
     members:
     - uid: "a"
 outputs: 
-  71ccb7a3/test.json:
+  5e1e2bcac305958b27077ca136f35f0a/test.json:
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":4,"column":8}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'test.yml(2,6)', 'test.yml(4,8)'.","file":"test.yml","line":2,"column":6}

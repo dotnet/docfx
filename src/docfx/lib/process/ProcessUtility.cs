@@ -21,7 +21,7 @@ namespace Microsoft.Docs.Build
         /// </summary>
         public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null)
         {
-            var sanitizedCommandLineArgs = secret != null ? HideSecret(commandLineArgs, secret) : commandLineArgs;
+            var sanitizedCommandLineArgs = MaskUtility.HideSecret(commandLineArgs, secret);
 
             using (PerfScope.Start($"Executing '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'"))
             {
@@ -50,7 +50,7 @@ namespace Microsoft.Docs.Build
                 if (process.ExitCode != 0)
                 {
                     var errorData = error.ToString();
-                    var sanitizedErrorData = secret != null ? HideSecret(errorData, secret) : errorData;
+                    var sanitizedErrorData = MaskUtility.HideSecret(errorData, secret);
 
                     throw new InvalidOperationException(
                         $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: " +
@@ -58,11 +58,6 @@ namespace Microsoft.Docs.Build
                 }
 
                 return result.ToString();
-            }
-
-            static string HideSecret(string arg, string secret)
-            {
-                return arg.Replace(secret, secret.Length > 10 ? secret[0..3] + "***" + secret[^3..] : "***");
             }
 
             static void PipeStream(TextReader input, TextWriter output1, TextWriter? output2 = null)

@@ -87,7 +87,7 @@ namespace Microsoft.Docs.Build
                     GetPackages(config).Distinct(),
                     item => packageResolver.DownloadPackage(item.package, item.flags));
             }
-            LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
+            LocalizationUtility.EnsureLocalizationContributionBranch(config.Secrets, buildOptions.Repository);
         }
 
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config)
@@ -99,7 +99,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                yield return (config.Template, PackageFetchOptions.DepthOne);
+                yield return (config.Template, PackageFetchOptions.DepthOne | PackageFetchOptions.IgnoreBranchFallbackError);
             }
         }
     }

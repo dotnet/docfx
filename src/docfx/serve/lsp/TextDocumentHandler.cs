@@ -35,6 +35,15 @@ namespace Microsoft.Docs.Build
 
         public TextDocumentSyncKind Change { get; } = TextDocumentSyncKind.Full;
 
+        public TextDocumentChangeRegistrationOptions GetRegistrationOptions(SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        {
+            return new TextDocumentChangeRegistrationOptions()
+            {
+                DocumentSelector = _documentSelector,
+                SyncKind = Change,
+            };
+        }
+
         public Task<Unit> Handle(DidChangeTextDocumentParams notification, CancellationToken token)
         {
             if (!TryUpdatePackage(notification.TextDocument.Uri, notification.ContentChanges.First().Text))
@@ -45,6 +54,15 @@ namespace Microsoft.Docs.Build
 
             _languageServerBuilder.QueueBuild();
             return Unit.Task;
+        }
+
+        TextDocumentOpenRegistrationOptions IRegistration<TextDocumentOpenRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        {
+            return new()
+            {
+                DocumentSelector = _documentSelector,
+            };
         }
 
         public Task<Unit> Handle(DidOpenTextDocumentParams notification, CancellationToken token)
@@ -59,6 +77,15 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
+        TextDocumentCloseRegistrationOptions IRegistration<TextDocumentCloseRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
+        {
+            return new()
+            {
+                DocumentSelector = _documentSelector,
+            };
+        }
+
         public Task<Unit> Handle(DidCloseTextDocumentParams notification, CancellationToken token)
         {
             if (!TryRemoveFileFromPackage(notification.TextDocument.Uri))
@@ -70,40 +97,20 @@ namespace Microsoft.Docs.Build
             return Unit.Task;
         }
 
-        public Task<Unit> Handle(DidSaveTextDocumentParams notification, CancellationToken token)
-        {
-            _notificationListener.OnNotificationHandled();
-            return Unit.Task;
-        }
-
-        TextDocumentChangeRegistrationOptions IRegistration<TextDocumentChangeRegistrationOptions>.GetRegistrationOptions()
-        {
-            return new TextDocumentChangeRegistrationOptions()
-            {
-                DocumentSelector = _documentSelector,
-                SyncKind = Change,
-            };
-        }
-
-        public void SetCapability(SynchronizationCapability capability)
-        {
-        }
-
-        TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions()
-        {
-            return new TextDocumentRegistrationOptions()
-            {
-                DocumentSelector = _documentSelector,
-            };
-        }
-
-        TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions()
+        TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions, SynchronizationCapability>.GetRegistrationOptions(
+            SynchronizationCapability capability, ClientCapabilities clientCapabilities)
         {
             return new TextDocumentSaveRegistrationOptions()
             {
                 DocumentSelector = _documentSelector,
                 IncludeText = true,
             };
+        }
+
+        public Task<Unit> Handle(DidSaveTextDocumentParams notification, CancellationToken token)
+        {
+            _notificationListener.OnNotificationHandled();
+            return Unit.Task;
         }
 
         public TextDocumentAttributes GetTextDocumentAttributes(DocumentUri uri)

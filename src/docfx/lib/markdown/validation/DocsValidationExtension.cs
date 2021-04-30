@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -29,6 +31,7 @@ namespace Microsoft.Docs.Build
 
                 var documentNodes = new List<ContentNode>();
                 var codeBlockNodes = new List<(bool isInclude, CodeBlockNode codeBlockItem)>();
+                var tableNodes = new List<TableNode>();
 
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
@@ -55,6 +58,8 @@ namespace Microsoft.Docs.Build
 
                     BuildCodeBlockNodes(node, codeBlockNodes, isCanonicalVersion);
 
+                    BuildTableNodes(node, tableNodes, isCanonicalVersion);
+
                     return false;
                 });
 
@@ -64,6 +69,11 @@ namespace Microsoft.Docs.Build
                 foreach (var (_, codeBlockItem) in codeBlockNodes)
                 {
                     contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
+                }
+
+                foreach (var tableItem in tableNodes)
+                {
+                    contentValidator.ValidateTable(currentFile, tableItem);
                 }
             });
         }
@@ -230,6 +240,167 @@ namespace Microsoft.Docs.Build
 
                 return content.ToString();
             }
+        }
+
+        private static void BuildTableNodes(MarkdownObject node, List<TableNode> tableNodes, bool isCanonicalVersion)
+        {
+            TableNode? tableNode = null;
+            switch (node)
+            {
+                case Table table:
+                    var parsedNode = TryParseTable(table);
+                    tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with
+                    {
+                        RowHeaders = parsedNode.RowHeaders,
+                        ColumnHeaders = parsedNode.ColumnHeaders,
+                        IsSuccessParsed = parsedNode.IsSuccessParsed,
+                    };
+                    break;
+                case ParagraphBlock paragraphBlock:
+                    if (TryDetectTable(paragraphBlock))
+                    {
+                        tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with { IsSuccessParsed = false };
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (tableNode != null)
+            {
+                tableNodes.Add(tableNode);
+            }
+        }
+
+        private static TableNode TryParseTable(Table table)
+        {
+            var columnHeaders = new List<TableCellNode>();
+            var rowHeaders = new List<TableCellNode>();
+            var columnHeaderRow = (TableRow)table.First();
+            foreach (TableCell cell in columnHeaderRow)
+            {
+                columnHeaders.Add(ParseCell(cell));
+            }
+            foreach (TableRow row in table)
+            {
+                rowHeaders.Add(ParseCell((TableCell)row.First()));
+            }
+            return new TableNode
+            {
+                ColumnHeaders = columnHeaders.ToArray(),
+                RowHeaders = rowHeaders.ToArray(),
+                IsSuccessParsed = true,
+            };
+        }
+
+        private static TableCellNode ParseCell(TableCell cell)
+        {
+            var block = cell.LastChild;
+            var isVisible = MarkdigUtility.IsVisible(block);
+            var isEmphasis = false;
+            MarkdigUtility.Visit(block, node =>
+            {
+                var innerEmphasis = false;
+                if (node is ParagraphBlock paragraphBlock)
+                {
+                    innerEmphasis = paragraphBlock.Inline.FindDescendants<EmphasisInline>().Where(x => x.DelimiterCount >= 2).Any();
+                }
+                return isEmphasis = isEmphasis || innerEmphasis;
+            });
+            var cellNode = new TableCellNode
+            {
+                IsVisible = isVisible,
+                IsEmphasis = isEmphasis,
+            };
+            return cellNode;
+        }
+
+        private static bool TryDetectTable(ParagraphBlock paragraph)
+        {
+            if (!paragraph.Inline.FindDescendants<LineBreakInline>().Any())
+            {
+                return false;
+            }
+
+            var tableDelimiterExistLine = 0;
+            var tableHeaderExist = false;
+
+            var inlines = new List<Inline>();
+            var lineFinish = false;
+            var child = paragraph.Inline.LastChild;
+            var stack = new Stack<Inline>();
+            while (child != null)
+            {
+                stack.Push(child);
+                child = child.PreviousSibling;
+            }
+            var pipeDelimiterCount = new List<int>();
+            while (stack.Count > 0)
+            {
+                child = stack.Pop();
+                switch (child)
+                {
+                    case ContainerInline containerInline:
+                        if (containerInline is PipeTableDelimiterInline)
+                        {
+                            inlines.Add(containerInline);
+                        }
+                        child = containerInline.LastChild;
+                        while (child != null)
+                        {
+                            stack.Push(child);
+                            child = child.PreviousSibling;
+                        }
+                        break;
+                    case LineBreakInline:
+                        lineFinish = true;
+                        break;
+                    default:
+                        inlines.Add(child);
+                        break;
+                }
+                if (lineFinish || stack.Count == 0)
+                {
+                    var totalText = new StringBuilder();
+                    foreach (var line in inlines)
+                    {
+                        switch (line)
+                        {
+                            case PipeTableDelimiterInline:
+                                totalText.Append('|');
+                                break;
+                            case LiteralInline literalInline:
+                                var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
+                                totalText.Append(text);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    var regex = new Regex(@"^[|:-]*$");
+                    var lineText = totalText.ToString();
+                    tableHeaderExist = tableHeaderExist || regex.IsMatch(lineText);
+                    if (lineText.Contains("|"))
+                    {
+                        pipeDelimiterCount.Add(lineText.Count(x => x == '|'));
+                        tableDelimiterExistLine++;
+                    }
+                    else
+                    {
+                        pipeDelimiterCount.Add(0);
+                    }
+                    if (tableDelimiterExistLine >= 2 && tableHeaderExist)
+                    {
+                       return true;
+                    }
+                    inlines.Clear();
+                    lineFinish = false;
+                }
+            }
+            if (tableDelimiterExistLine >= 2 && pipeDelimiterCount.TrueForAll(x => x >= 2))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

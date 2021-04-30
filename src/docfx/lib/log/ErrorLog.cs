@@ -39,10 +39,17 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    var msAuthor = MetadataProvider?.GetMetadata(Null, source).MsAuthor;
-                    if (msAuthor != default)
+                    if (error.AdditionalErrorInfo == null)
                     {
-                        error = error with { MsAuthor = msAuthor };
+                        var metadata = MetadataProvider?.GetMetadata(Null, source);
+                        var additionalInfo = new AdditionalErrorInfo(
+                            metadata?.MsAuthor,
+                            metadata?.MsProd,
+                            metadata?.MsTechnology,
+                            metadata?.MsService,
+                            metadata?.MsSubservice);
+
+                        error = error with { AdditionalErrorInfo = additionalInfo };
                     }
                 }
                 catch
@@ -77,6 +84,11 @@ namespace Microsoft.Docs.Build
                         Add(Errors.Logging.FallbackError(config.DefaultLocale));
                     }
                     return;
+                }
+
+                if (config.DocumentUrls.TryGetValue(error.Code, out var documentUrl))
+                {
+                    error = error with { DocumentUrl = documentUrl };
                 }
             }
 

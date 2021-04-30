@@ -420,8 +420,9 @@ inputs:
   _themes/ContentTemplate/TestData.html.tmpl:
 outputs:
   a.json: |
-    {"metadata": {"href": "b"}}
-  b.json:
+    {"metadata": {"href": "b"}, "schema": "TestData"}
+  b.json: |
+    {"conceptual": "", "schema": "Conceptual"}
 ---
 # Skip javascript on schema validation failure
 inputs:

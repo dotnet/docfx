@@ -25,10 +25,11 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret) &&
+                !string.IsNullOrEmpty(config.Secrets.MicrosoftGraphClientCertificate) &&
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _microsoftGraphAuthenticationProvider = new(config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, config.MicrosoftGraphClientSecret);
+                _microsoftGraphAuthenticationProvider = new(
+                    config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, config.Secrets.MicrosoftGraphClientCertificate);
                 _msGraphClient = new(_microsoftGraphAuthenticationProvider);
             }
         }

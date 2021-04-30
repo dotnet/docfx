@@ -256,9 +256,9 @@ inputs:
     #### h4 heading
     ::: moniker-end
 outputs:
-  2420f88b/a.json:
-  2420f88b/b.json:
-  2420f88b/c.json:
+  4d70bd679da22f2fcabba1faf02184a4/a.json:
+  4d70bd679da22f2fcabba1faf02184a4/b.json:
+  4d70bd679da22f2fcabba1faf02184a4/c.json:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"b.md","line":6,"end_line":6,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-skipped","message":"Skipped heading: H2 'h2 heading' followed by heading: H4 'h4 heading'. Headings must increment with no skipped levels","file":"c.md","line":4,"end_line":4,"column":1,"end_column":1}
@@ -1010,8 +1010,8 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/a.md","line":5,"end_line":5,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/b.md","line":3,"end_line":3,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/a.md(5,1), docs/v1/b.md, docs/v1/b.md(3,1)'","file":"docs/v1/b.md","line":1,"end_line":1,"column":1,"end_column":1}
-  2420f88b/docs/a.json:
-  2420f88b/docs/b.json:
+  4d70bd679da22f2fcabba1faf02184a4/docs/a.json:
+  4d70bd679da22f2fcabba1faf02184a4/docs/b.json:
 ---
 # Canonial Version Only H1 Unique Check with Inclusion
 noSingleFile: true
@@ -1076,8 +1076,8 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/b.md, docs/v1/token1.md, docs/v1/token2.md(5,1)'","file":"docs/v1/token2.md","line":5,"end_line":5,"column":1,"end_column":1}
-  2420f88b/docs/a.json:
-  2420f88b/docs/b.json:
+  4d70bd679da22f2fcabba1faf02184a4/docs/a.json:
+  4d70bd679da22f2fcabba1faf02184a4/docs/b.json:
 ---
 # Canonial Version Only H1 Unique Check with Inclusion
 # multiple-versioning file cases
@@ -1163,9 +1163,9 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v2/b.md'","file":"docs/v1/token1.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'h1' is duplicated with other articles: 'docs/v1/token1.md, docs/v2/b.md'","file":"docs/v2/b.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"warning","log_item_type":"user","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string '< netcore-1.1' is 'netcore-1.0', while file level monikers is 'netcore-1.2', 'netcore-2.0'.","file":"docs/v1/token3.md","line":1,"end_line":1,"column":1,"end_column":1}
-  9d4e15fd/docs/a.json:
-  9d4e15fd/docs/b.json:
-  976da3a9/docs/b.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/b.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/b.json:
 ---
 
 #Content validation - h1 disallowed headings
@@ -1236,7 +1236,7 @@ inputs:
     ::: moniker-end
 outputs:
   a.json:
-  4667fedf/v2/b.json:
+  ecc061f43156f37be077db42abf8301a/v2/b.json:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-moniker","message":"H1s are not allowed in moniker sections. Each article should have one and only one H1.","file":"v2/b.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
@@ -1391,4 +1391,43 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":3,"end_line":3}
     {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":5,"end_line":5}
+---
+# Content validation - H1 unique (ignore noindex)
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1
+  b.md: |
+    # Title 1
+  c.md: |
+    ---
+    robots: noindex
+    ---
+    # Title 1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---

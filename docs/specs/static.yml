@@ -219,35 +219,35 @@ inputs:
   docs/v1/TOC.md: |
     # [A](a.md)
 outputs:
-  1dd7adba/toc.html: |
+  c83d387e11975a5f5fe51ced25ba46a7/toc.html: |
     <!DOCTYPE html>
       <div>
         <li>
-          <a class="normal" href="../136a42ac/a.html">A</a> 
+          <a class="normal" href="../9b52f68bce2b10c7aa018b696f8ca916/a.html">A</a> 
         </li>
       </div>
-  1dd7adba/toc.json: |
+  c83d387e11975a5f5fe51ced25ba46a7/toc.json: |
     {
-      "items": [{"name": "A","href": "../136a42ac/a.html"}],
-      "_path": "1dd7adba/toc.html"
+      "items": [{"name": "A","href": "../9b52f68bce2b10c7aa018b696f8ca916/a.html"}],
+      "_path": "c83d387e11975a5f5fe51ced25ba46a7/toc.html"
     }
-  136a42ac/a.html: |
+  9b52f68bce2b10c7aa018b696f8ca916/a.html: |
     <!DOCTYPE html>
-    <div><p><a href="../218c13d0/b.html" data-linktype="relative-path">B</a></p></div>
-  218c13d0/b.html:    
+    <div><p><a href="../55a4a18f941221e4d8924d8ebc96dd6c/b.html" data-linktype="relative-path">B</a></p></div>
+  55a4a18f941221e4d8924d8ebc96dd6c/b.html:    
   .manifest.json: |
     {
       "files": [
-        {"asset_id": "136a42ac/a.html","output":{".html":{"relative_path":"136a42ac/a.html"}},"group": "136a42ac","version": "< netcore-2.0", "is_moniker_range":true, "source_relative_path": "docs/v1/a.md"},
+        {"asset_id": "55a4a18f941221e4d8924d8ebc96dd6c/b.html"},
+        {"asset_id": "9b52f68bce2b10c7aa018b696f8ca916/a.html","output":{".html":{"relative_path":"9b52f68bce2b10c7aa018b696f8ca916/a.html"}},"group": "9b52f68bce2b10c7aa018b696f8ca916","version": "< netcore-2.0", "is_moniker_range":true, "source_relative_path": "docs/v1/a.md"},
         {
-          "asset_id": "1dd7adba/toc.html",
-          "output":{".html":{"relative_path":"1dd7adba/toc.html"}},
-          "group": "1dd7adba",
+          "asset_id": "c83d387e11975a5f5fe51ced25ba46a7/toc.html",
+          "output":{".html":{"relative_path":"c83d387e11975a5f5fe51ced25ba46a7/toc.html"}},
+          "group": "c83d387e11975a5f5fe51ced25ba46a7",
           "version":"< netcore-2.0",
           "is_moniker_range": true,
           "source_relative_path": "docs/v1/TOC.md"
         },
-        {"asset_id": "218c13d0/b.html"}
       ]
     }
 ---
@@ -401,3 +401,57 @@ outputs:
     <script src='/dev/test.js' ></script>
     <link rel="stylesheet" href="/dev/test.css">
     <div></div>
+---
+# TOC with output-type="html"
+repos:
+  https://github.com/toc/toc-output-type-is-html:
+  - files:
+      docfx.yml: |
+        outputType: html
+        renderType: Content
+        template: https://docs.com/theme
+      TOC.yml: |
+        - name: link-a
+          href: a.md
+      a.md:
+  https://docs.com/theme:
+  - files:
+      ContentTemplate/toc.json.js: |
+        exports.transform = function (model) {
+          model["outputType"] = "html"
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+      ContentTemplate/toc.html.tmpl:  |
+        {{!Copyright-Microsoft.}}
+        <h1>TOC</h1>
+        {{#items}}
+          <a href="{{href}}"> {{name}} </a>
+        {{/items}}
+      Conceptual.html.liquid: |
+        <!DOCTYPE html>
+          <div>
+              {{content}}
+          </div>
+      ContentTemplate/schemas/toc.schema.json: |
+        {
+          "title": "TOC",
+          "additionalProperties": true,
+          "properties": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "href": { "contentType": "href", "type": "string" },
+                "name": { "type": "string" }
+              }
+            }
+          }
+        }
+outputs:
+  a.html:
+  toc.html: |
+    <h1>TOC</h1>
+      <a href="a"> link-a </a>
+  toc.json: |
+    {"items":[{"name":"link-a","href":"a"}],"_path":"toc.json","schema":"toc", "outputType":"html"}

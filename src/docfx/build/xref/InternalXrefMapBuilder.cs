@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly BuildScope _buildScope;
+        private readonly RepositoryProvider _repositoryProvider;
+        private readonly Input _input;
         private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
@@ -26,6 +28,8 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             BuildScope buildScope,
+            RepositoryProvider repositoryProvider,
+            Input input,
             Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
@@ -34,6 +38,8 @@ namespace Microsoft.Docs.Build
             _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
             _buildScope = buildScope;
+            _repositoryProvider = repositoryProvider;
+            _input = input;
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
@@ -124,7 +130,7 @@ namespace Microsoft.Docs.Build
                     {
                         duplicateSpecs.Add(spec);
                         _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath) with
-                        { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning, });
+                        { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning, });
                     }
                 }
             }
@@ -137,12 +143,28 @@ namespace Microsoft.Docs.Build
                 _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
-            return specsWithSameUid
+            var specs = specsWithSameUid
                    .OrderByDescending(spec => spec.Monikers.HasMonikers
                         ? spec.Monikers.Select(moniker => _monikerProvider.GetMonikerOrder(moniker)).Max()
-                        : int.MaxValue)
-                   .ThenBy(spec => spec.DeclaringFile)
-                   .ToArray();
+                        : int.MaxValue);
+
+            // TODO: clean up after new loc pipeline
+            specs = _config.IsLearn
+                ? specs.ThenByDescending(spec => GetUpdateTime(spec.DeclaringFile))
+                : specs.ThenBy(spec => spec.DeclaringFile);
+            return specs.ToArray();
+        }
+
+        private DateTime GetUpdateTime(FilePath file)
+        {
+            var fullPath = _input.TryGetOriginalPhysicalPath(file);
+            if (fullPath is null)
+            {
+                return default;
+            }
+
+            var commits = _repositoryProvider.GetCommitHistory(fullPath.Value).commits;
+            return commits.FirstOrDefault()?.Time.UtcDateTime ?? default;
         }
 
         private static bool CheckOverlappingMonikers(InternalXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)

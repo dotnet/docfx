@@ -113,6 +113,7 @@ documentdb
 domaininfo
 dotnet
 dotnetfoundation
+ecc
 embeddedvideo
 emoji
 endregion
@@ -120,6 +121,7 @@ enoent
 enotfound
 entrycount
 enum
+eppe
 erl
 erlang
 etag
@@ -155,6 +157,7 @@ hdinsight
 hehe
 herohua
 highlightjs
+Hmlr
 homepage
 howto
 href
@@ -379,6 +382,7 @@ sbyte
 scriptblock
 sdp
 semver
+seo
 serializer
 setext
 shellprogressbar
@@ -585,3 +589,19 @@ testdata
 vsts
 windowsserverdocs
 csv
+nettrace
+speedscope
+dns
+middleware
+allowfullscreen
+bgcolor
+bordercolor
+cellpadding
+cellspacing
+hspace
+marginwidth
+nowrap
+scrolling
+valign
+rgn
+lgtm

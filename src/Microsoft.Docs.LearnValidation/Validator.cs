@@ -19,7 +19,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public Validator(string manifestFilePath, LearnValidationLogger logger, Func<string, string, bool> isSharedItem)
         {
-            _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath));
+            _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath)) ?? new();
             _outputBasePath = Path.GetDirectoryName(manifestFilePath) ?? "";
             _logger = logger;
             _isSharedItem = isSharedItem;

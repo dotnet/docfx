@@ -6,88 +6,22 @@ trigger:
     - v3-release
 pr:
 - v3
+
 variables:
-  dotnetVersion: 5.0.100
-  runCodesignValidationInjection: false
-  NugetSecurityAnalysisWarningLevel: none
+- group: devresourcekeyvault
+- name: dotnetVersion
+  value: 5.0.x
+- name: runCodesignValidationInjection
+  value: false
+- name: NugetSecurityAnalysisWarningLevel
+  value: none
 
 jobs:
-
-# Test pull requests on linux and mac
-- job: LinuxBuild
-  pool:
-    vmImage: 'ubuntu-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
-
-- job: MacBuild
-  pool:
-    vmImage: 'macOS-latest'
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-  steps:
-
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
-
-  # dotnet test
-  - task: DotNetCoreCLI@2
-    displayName: dotnet test
-    inputs:
-      command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
-      publishTestResults: true
-    env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
 
 # Test and deploy on windows
 - job: WindowsBuild
   pool:
-    vmImage: 'windows-latest'
+    name: 1ES-Pool
   steps:
 
   # Install .NET Core sdk
@@ -96,164 +30,206 @@ jobs:
     inputs:
       packageType: sdk
       version: $(dotnetVersion)
-
-  # dotnet build
-  - task: DotNetCoreCLI@2
-    displayName: dotnet build
-    inputs:
-      command: build
-      arguments: -c Release
 
   # dotnet test
   - task: DotNetCoreCLI@2
     displayName: dotnet test
+    condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       command: test
-      arguments: -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       publishTestResults: true
     env:
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      DOCS_OPS_TOKEN: $(DOCS_OPS_TOKEN)
-      MICROSOFT_GRAPH_CLIENT_SECRET: $(MICROSOFT_GRAPH_CLIENT_SECRET)
-      GIT_TOKEN_HTTP_AUTH_SSO_DISABLED: $(GIT_TOKEN_HTTP_AUTH_SSO_DISABLED)
-      GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION: $(GIT_TOKEN_HTTP_AUTH_INSUFFICIENT_PERMISSION)
+      DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+      DOCS_OPS_TOKEN: $(opBuildUserToken)
+      MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
 
-  # Upload code coverage to codecov.io
-  - bash: |
-      bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-    displayName: 'Upload to codecov.io'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
+  - task: reportgenerator@4
+    displayName: Merge Test Results
+    condition: and(succeeded(), ne(variables['warm-up'], 'true'))
+    inputs:
+      reports: test/**/coverage.cobertura.xml
+      targetdir: $(Pipeline.Workspace)/coveragereport
 
-  # Build Binaries
-  - powershell: ./build.ps1
-    displayName: Build Binaries
+  - task: PublishCodeCoverageResults@1
+    displayName: Upload Code Coverage Result
+    inputs:
+      codeCoverageTool: cobertura
+      summaryFileLocation: $(Pipeline.Workspace)/coveragereport/Cobertura.xml
 
-  # Build RegressionTest into Artifact 
+  # Build RegressionTest into Artifact
   - powershell: |
-      $regressionTestDir = './drop/RegressionTest'
-      Remove-Item $regressionTestDir -Force -Recurse -ErrorAction Ignore
-      dotnet build ./test/docfx.RegressionTest -c Release -r win7-x64 -o $regressionTestDir/bin
-    displayName: Build RegressionTest into Artifact 
+      dotnet build ./test/docfx.RegressionTest -warnAsError -c Release -r win7-x64 -o ./drop/RegressionTest
+    displayName: Build RegressionTest into Artifact
 
   # Publish RegressionTest binary
-  - publish: ./drop/RegressionTest/bin
+  - publish: ./drop/RegressionTest
     displayName: Publish RegressionTest binary
     artifact: RegressionTest
 
-  # Push to azure devops feed
-  - task: NuGetCommand@2
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish NuGet Packages
-    inputs:
-      command: push
-      packagesToPush: drop/**/*.nupkg
-      publishFeedCredentials: docs-public-packages
-      nugetFeedType: external
-      allowPackageConflicts: true
-
-  # Publish binary packages to production
-  - task: AzureFileCopy@3
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
-    displayName: Publish Binary Packages To Production
-    inputs:
-      azureSubscription: Open Publishing - Build Production
-      sourcePath: drop/docfx-bin/staging
-      destination: AzureBlob
-      storage: opsbuildk8sprod
-      containerName: docfx-bin
+  # Run Component Detection
+  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+    displayName: 'Component Detection'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 # Run RegressionTest
 - job: RunRegressionTest
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'))
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['warm-up'], 'true'))
   dependsOn: WindowsBuild
   pool:
-    name: DocFX
+    name: Docfx-1ES
   strategy:
     matrix:
-      azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 90 --regression-rules
-      sql-docs-pr:
-        params: https://github.com/MicrosoftDocs/sql-docs-pr --timeout 120 --regression-rules
-      docs:
-        params: https://github.com/dotnet/docs --timeout 60 --regression-rules
-      learn-pr:
-        params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
-      windowsserverdocs-pr:
-        params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-rules
-      VBA-Docs:
-        params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
-      azure-devops-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
-      AspNetCore.Docs:
-        params: https://github.com/dotnet/AspNetCore.Docs --timeout 30 --output-html
-      microsoft-365-docs-pr.zh-CN:
-        params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --timeout 25
-      powerbi-docs-pr.de-DE:
-        params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
-      PowerShell-Docs:
-        params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
-      roslyn-api-docs:
-        params: https://github.com/dotnet/roslyn-api-docs --branch live --timeout 105
-      azure-docs-rest-apis:
-        params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
-      dynamics365-docs-odata-apis:
-        params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 20
-      mc-docs-pr:
-        params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
-      dynamics365smb-devitpro:
-        params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
-      DevSandbox:
-        params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
-      test:
-        params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync
-      DocsRoot:
-        params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
-      windows-compatibility:
-        params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
-      azure-docs-cli:
-        params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
-      dataprep-dotnet-pr:
-        params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
-      azure-mediaplayer-typescript:
-        params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
-      quantum-docs-pr:
-        params: https://github.com/MicrosoftDocs/quantum-docs-pr --timeout 30 --branch main
-      microsoft-graph-docs:
-        params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
-      # dry-runs
-      dryrun.bot-docs-pr:
-        params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --public-template
-      dryrun.azure-docs-pr:
-        params: https://github.com/MicrosoftDocs/azure-docs-pr --timeout 50 --dry-run --regression-rules
+      ${{ each repo in parameters.repos }}:
+        ${{ repo.key }}:
+          params: ${{repo.value.params}}
 
   steps:
-  # Install .NET Core sdk
-  - task: UseDotNet@2
-    displayName: 'Install .NET Core sdk $(dotnetVersion)'
-    inputs:
-      packageType: sdk
-      version: $(dotnetVersion)
+    - task: UseDotNet@2
+      displayName: 'Install .NET Core sdk $(dotnetVersion)'
+      inputs:
+        packageType: sdk
+        version: $(dotnetVersion)
 
-  # Download RegressionTest binary
-  - download: current
-    displayName: Download RegressionTest binary
-    artifact: RegressionTest
+    - download: current
+      displayName: Download RegressionTest binary
+      artifact: RegressionTest
 
-  # Run Regression Tests
-  - task: AzureCLI@2
-    displayName: Run regression tests
-    inputs:
-      azureSubscription: 'Open Publishing - Build Production'
-      scriptType: ps
-      scriptLocation: inlineScript
-      powerShellErrorActionPreference: continue
-      inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
-    env:
-      BUILD_REASON: $(Build.Reason)
-      DOCFX_APPDATA_PATH: D:/appdata
-      DOCS_GITHUB_TOKEN: $(DOCS_GITHUB_TOKEN)
-      AZURE_DEVOPS_TOKEN: $(AZURE_DEVOPS_TOKEN)
-      PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
-      APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+    # Install dotnet-trace
+    - script: dotnet tool update -g dotnet-trace
+      displayName: Install dotnet-trace
+
+    # Run Regression Tests
+    - task: AzureCLI@2
+      displayName: Run
+      inputs:
+        azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+        scriptType: ps
+        scriptLocation: inlineScript
+        powerShellErrorActionPreference: continue
+        inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe $(params)
+      env:
+        BUILD_REASON: $(Build.Reason)
+        DOCFX_APPDATA_PATH: D:/appdata
+        DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+        DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
+        AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+        PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+        APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+        MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(test-MS-Graph-Client-Cert)
+
+- job: WarmUp
+  timeoutInMinutes: 180
+  condition: and(succeeded(), eq(variables['warm-up'], 'true'))
+  dependsOn: WindowsBuild
+  pool:
+    name: Docfx-1ES
+  strategy:
+    matrix:
+      ${{ each agent in parameters.agents }}:
+        ${{ agent.key }}:
+          agentIndex: ${{ agent.value }}
+
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET Core sdk $(dotnetVersion)'
+      inputs:
+        packageType: sdk
+        version: $(dotnetVersion)
+
+    - download: current
+      displayName: Download RegressionTest binary
+      artifact: RegressionTest
+
+    # Warm up
+    - ${{ each repo in parameters.repos.*.params}}:
+      - task: AzureCLI@2
+        displayName: ${{repo}}
+        inputs:
+          azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+          scriptType: ps
+          scriptLocation: inlineScript
+          powerShellErrorActionPreference: continue
+          inlineScript: $(Pipeline.Workspace)/RegressionTest/docfx.RegressionTest.exe ${{repo}} --warm-up true
+        env:
+          BUILD_REASON: $(Build.Reason)
+          DOCFX_APPDATA_PATH: D:/appdata
+          DOCS_GITHUB_TOKEN: $(gitHubTestToken)
+          DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
+          AZURE_DEVOPS_TOKEN: $(vsoTestToken)
+          APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
+          PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+
+parameters:
+- name: agents
+  type: object
+  default:
+    agent1: 1
+    agent2: 2
+    agent3: 3
+    agent4: 4
+    agent5: 5
+    agent6: 6
+    agent7: 7
+    agent8: 8
+- name: repos
+  type: object
+  default:
+    azure-docs-pr:
+      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 100 --regression-rules
+    sql-docs-pr:
+      params: https://github.com/MicrosoftDocs/sql-docs-pr --profile --timeout 120 --regression-rules
+    docs:
+      params: https://github.com/dotnet/docs --timeout 60 --regression-rules
+    learn-pr:
+      params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
+    windowsserverdocs-pr:
+      params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-rules
+    VBA-Docs:
+      params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
+    azure-devops-docs-pr:
+      params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
+    microsoft-365-docs-pr.zh-CN:
+      params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live-sxs --profile --timeout 25
+    powerbi-docs-pr.de-DE:
+      params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
+    PowerShell-Docs:
+      params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
+    roslyn-api-docs:
+      params: https://github.com/dotnet/roslyn-api-docs --branch live --profile --timeout 105
+    azure-docs-rest-apis:
+      params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
+    dynamics365-docs-odata-apis:
+      params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 20
+    mc-docs-pr:
+      params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
+    dynamics365smb-devitpro:
+      params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
+    DevSandbox:
+      params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
+    test:
+      params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync
+    DocsRoot:
+      params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
+    windows-compatibility:
+      params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
+    azure-docs-cli:
+      params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
+    dataprep-dotnet-pr:
+      params: https://github.com/MicrosoftDocs/dataprep-dotnet-pr --timeout 30
+    azure-mediaplayer-typescript:
+      params: https://github.com/MicrosoftDocs/azure-mediaplayer-typescript --timeout 30
+    quantum-docs-private:
+      params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
+    microsoft-graph-docs:
+      params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
+    # render HTML
+    html.test:
+      params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync --output-type html
+    html.AspNetCore.Docs:
+      params: https://github.com/dotnet/AspNetCore.Docs --profile --timeout 30 --output-type html --template https://github.com/Microsoft/templates.docs.msft.pdf
+    # dry-runs
+    dryrun.bot-docs-pr:
+      params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --template https://static.docs.com/ui/latest
+    dryrun.azure-docs-pr:
+      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules

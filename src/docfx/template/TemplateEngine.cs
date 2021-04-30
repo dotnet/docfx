@@ -2,17 +2,20 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlReaderWriter;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
 {
     internal class TemplateEngine
     {
+        private readonly ErrorBuilder _errors;
         private readonly Config _config;
         private readonly Package _package;
         private readonly Lazy<TemplateDefinition> _templateDefinition;
@@ -20,78 +23,56 @@ namespace Microsoft.Docs.Build
         private readonly LiquidTemplate _liquid;
         private readonly ThreadLocal<JavaScriptEngine> _js;
         private readonly MustacheTemplate _mustacheTemplate;
-        private readonly BuildOptions _buildOptions;
-        private readonly JsonSchemaLoader _jsonSchemaLoader;
+        private readonly string _locale;
+        private readonly CultureInfo _cultureInfo;
+        private readonly SearchIndexBuilder? _searchIndexBuilder;
+        private readonly BookmarkValidator? _bookmarkValidator;
 
-        private readonly ConcurrentDictionary<string, JsonSchemaValidator?> _schemas = new(StringComparer.OrdinalIgnoreCase);
-
-        private static readonly HashSet<string> s_outputAbsoluteUrlYamlMime = new(StringComparer.OrdinalIgnoreCase)
+        public static TemplateEngine CreateTemplateEngine(
+            ErrorBuilder errors,
+            Config config,
+            PackageResolver packageResolver,
+            string locale,
+            BookmarkValidator? bookmarkValidator = null,
+            SearchIndexBuilder? searchIndexBuilder = null)
         {
-            "Architecture", "TSType", "TSEnum",
-        };
-
-        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new(StringComparer.OrdinalIgnoreCase)
-        {
-            "Architecture", "Hub", "Landing", "LandingData",
-        };
-
-        public TemplateEngine(ErrorBuilder errors, Config config, PackageResolver packageResolver, BuildOptions buildOptions, JsonSchemaLoader jsonSchemaLoader)
-        {
-            _config = config;
-            _buildOptions = buildOptions;
-            _jsonSchemaLoader = jsonSchemaLoader;
-
             var template = config.Template;
             var templateFetchOptions = PackageFetchOptions.DepthOne;
             if (template.Type == PackageType.None)
             {
                 template = new("_themes");
-                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExisted;
+                templateFetchOptions |= PackageFetchOptions.IgnoreDirectoryNonExistedError;
             }
+            var package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
-            _package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
+            return new TemplateEngine(errors, config, package, locale, bookmarkValidator, searchIndexBuilder);
+        }
 
+        public static TemplateEngine CreateTemplateEngine(ErrorBuilder errors, Config config, string locale, Package package)
+        {
+            return new TemplateEngine(errors, config, package, locale);
+        }
+
+        private TemplateEngine(
+             ErrorBuilder errors,
+             Config config,
+             Package package,
+             string locale,
+             BookmarkValidator? bookmarkValidator = null,
+             SearchIndexBuilder? searchIndexBuilder = null)
+        {
+            _errors = errors;
+            _config = config;
+            _locale = locale;
+            _cultureInfo = LocalizationUtility.CreateCultureInfo(_locale);
+            _package = package;
             _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
-
             _global = LoadGlobalTokens(errors);
-
-            _liquid = new(_package, config.TemplateBasePath, _global);
+            _liquid = new(_package, _config.TemplateBasePath, _global);
             _js = new(() => JavaScriptEngine.Create(_package, _global));
             _mustacheTemplate = new(_package, "ContentTemplate", _global);
-        }
-
-        public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
-        {
-            return contentType switch
-            {
-                ContentType.Redirection => RenderType.Content,
-                ContentType.Page => GetRenderType(mime),
-                ContentType.Toc => GetTocRenderType(),
-                _ => RenderType.Component,
-            };
-        }
-
-        public static bool OutputAbsoluteUrl(string? mime) => mime != null && s_outputAbsoluteUrlYamlMime.Contains(mime);
-
-        public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
-
-        public static bool IsLandingData(string? mime) => "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
-
-        public static bool IsMigratedFromMarkdown(string? mime)
-        {
-            return mime != null && s_yamlMimesMigratedFromMarkdown.Contains(mime);
-        }
-
-        public JsonSchema GetSchema(SourceInfo<string?> mime)
-        {
-            return GetSchemaValidator(mime).Schema;
-        }
-
-        public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> mime)
-        {
-            var name = mime.Value ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
-
-            return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
+            _bookmarkValidator = bookmarkValidator;
+            _searchIndexBuilder = searchIndexBuilder;
         }
 
         public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
@@ -137,9 +118,9 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        public void CopyAssetsToOutput(Output output)
+        public void CopyAssetsToOutput(Output output, bool selfContained = true)
         {
-            if (!_config.SelfContained || _templateDefinition.Value.Assets.Length <= 0)
+            if (!selfContained || _templateDefinition.Value.Assets.Length <= 0)
             {
                 return;
             }
@@ -160,55 +141,84 @@ namespace Microsoft.Docs.Build
             return _global[key]?.ToString();
         }
 
-        private RenderType GetRenderType(SourceInfo<string?> mime)
+        public (TemplateModel model, JObject metadata) CreateTemplateModel(FilePath file, string? mime, JObject pageModel)
         {
-            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
+            var content = CreateContent(file, mime, pageModel);
+
+            if (_config.DryRun)
             {
-                return RenderType.Content;
+                return (new TemplateModel("", new JObject(), "", ""), new JObject());
             }
-            try
+
+            // Hosting layers treats empty content as 404, so generate an empty <div></div>
+            if (string.IsNullOrWhiteSpace(content))
             {
-                return GetSchema(mime).RenderType;
+                content = "<div></div>";
             }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+
+            var jsName = $"{mime}.mta.json.js";
+            var templateMetadata = RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
+
+            if (JsonSchemaProvider.IsLandingData(mime))
             {
-                return RenderType.Content;
+                templateMetadata.Remove("conceptual");
             }
+
+            // content for *.mta.json
+            var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
+            {
+                ["is_dynamic_rendering"] = true,
+            };
+
+            var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
+
+            // content for *.raw.page.json
+            var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
+
+            return (model, metadata);
         }
 
-        private RenderType GetTocRenderType()
+        public string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
         {
-            try
+            var bookmarks = new HashSet<string>();
+            var searchText = new StringBuilder();
+
+            var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
             {
-                return GetSchema(new SourceInfo<string?>("toc")).RenderType;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
-            {
-                // TODO: Remove after schema of toc is support in template
-                var isContentRenderType = _config.Template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
-                    || _config.Template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
-                return isContentRenderType ? RenderType.Content : RenderType.Component;
-            }
+                HtmlUtility.GetBookmarks(ref token, bookmarks);
+                HtmlUtility.AddLinkType(errors, file, ref token, _locale, _config.TrustedDomains);
+
+                if (token.Type == HtmlTokenType.Text)
+                {
+                    searchText.Append(token.RawText);
+                }
+            });
+
+            _bookmarkValidator?.AddBookmarks(file, bookmarks);
+            _searchIndexBuilder?.SetBody(file, searchText.ToString());
+
+            return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
         }
 
-        private JsonSchemaValidator? GetSchemaCore(string mime)
+        private string CreateContent(FilePath file, string? mime, JObject pageModel)
         {
-            var jsonSchema = IsLandingData(mime)
-                ? _jsonSchemaLoader.LoadSchema(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/schemas/LandingData.json")))
-                : _jsonSchemaLoader.TryLoadSchema(_package, new PathString($"ContentTemplate/schemas/{mime}.schema.json"));
-
-            if (jsonSchema is null)
+            if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
             {
-                return null;
+                // Conceptual and Landing Data
+                return pageModel.Value<string>("conceptual") ?? "";
             }
 
-            return new JsonSchemaValidator(jsonSchema, forceError: true);
+            // Generate SDP content
+            var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
+            var content = RunMustache(_errors, $"{mime}.html", model);
+
+            return ProcessHtml(_errors, file, content);
         }
 
         private JObject LoadGlobalTokens(ErrorBuilder errors)
         {
             var defaultTokens = _package.TryLoadYamlOrJson<JObject>(errors, "ContentTemplate/token");
-            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_buildOptions.Locale}");
+            var localeTokens = _package.TryLoadYamlOrJson<JObject>(errors, $"ContentTemplate/token.{_locale}");
             if (defaultTokens == null)
             {
                 return localeTokens ?? new JObject();

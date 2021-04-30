@@ -1,7 +1,9 @@
 ---
 # Basic lsp test
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    documentUrls:
+      file-not-found: 'https://docs.com'
 languageServer:
   - openFiles:
       a.md: "# Heading\nInvalid Link [B](b.md)"
@@ -14,6 +16,8 @@ languageServer:
             end: { "line": 1, "character": 13 }
           severity: 2
           code: file-not-found
+          codeDescription:
+            href: https://docs.com
           source: Docs Validation
           message: "Invalid file link: 'b.md'."
       toc.md: [{ "code": "file-not-found" }]
@@ -138,19 +142,20 @@ inputs:
     monikerDefinition: https://ops/monikerDefinition/
     monikerRange:
       'a.md': '> netcore-1.0 || < invalid-moniker'
-    http:
-      https://op-build-prod.azurewebsites.net:
-        headers:
-          X-OP-BuildUserToken: invalid-token
+    secrets:
+      http:
+        https://BuildApiPubDev.azurefd.net:
+          headers:
+            X-OP-BuildUserToken: invalid-token
   a.md:
 languageServer:
   - openFiles:
       a.md:
   - expectGetCredentialRequest:
-      url: https://op-build-prod.azurewebsites.net/v2/monikertrees/allfamiliesproductsmonikers
+      url: https://buildapipubdev.azurefd.net/v2/monikertrees/allfamiliesproductsmonikers
     response:
       http:
-        https://op-build-prod.azurewebsites.net:
+        https://BuildApiPubDev.azurefd.net:
           headers:
             X-OP-BuildUserToken: "{DOCS_OPS_TOKEN}"
   - expectDiagnostics:

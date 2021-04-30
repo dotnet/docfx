@@ -8,7 +8,7 @@ using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
                 new object[] { new ListBlock(null), "List" },
                 new object[] { new CodeSnippet(null), "CodeSnippet" },
                 new object[] { new Table(), "Table" },
-                new object[] { new TabGroupBlock(null, new List<TabItemBlock>() { new TabItemBlock("Fake", "Fake", new TabTitleBlock(), new TabContentBlock(new List<Block>()), false) }.ToImmutableArray(), 0, 0, 0), "TabbedContent" },
+                new object[] { new TabGroupBlock(new List<TabItemBlock>() { new TabItemBlock("Fake", "Fake", new TabTitleBlock(), new TabContentBlock(new List<Block>()), false) }.ToImmutableArray(), 0, 0, 0), "TabbedContent" },
                 new object[] { new MonikerRangeBlock(null), "MonikerRange" },
                 new object[] { new RowBlock(null), "Row" },
                 new object[] { new NestedColumnBlock(null), "NestedColumn" },

@@ -50,8 +50,8 @@ inputs:
   folder0/folder1/folder2/image.png:
 outputs:
   docs/folder/folder1/folder2/index.json:
-  docs/136a42ac/folder/folder1/folder2/a.json: 
-  docs/4667fedf/folder/folder1/folder2/a.json: 
+  docs/9b52f68bce2b10c7aa018b696f8ca916/folder/folder1/folder2/a.json: 
+  docs/ecc061f43156f37be077db42abf8301a/folder/folder1/folder2/a.json: 
   docs/folder/folder1/folder2/toc.json:
   docs/folder/b.json: |
     {"conceptual": "<p><img src=\"folder1/folder2/image.png\" alt=\"\" data-linktype=\"relative-path\"></p>"}
@@ -112,8 +112,8 @@ inputs:
   folder0/duplicated-base-path/docs/a.md:
 outputs:
   docs/folder/duplicatedword/duplicatedword/index.json:
-  docs/136a42ac/folder/duplicatedword/folder1/duplicatedword.json: 
-  docs/4667fedf/folder/duplicatedword/folder1/duplicatedword.json: 
+  docs/9b52f68bce2b10c7aa018b696f8ca916/folder/duplicatedword/folder1/duplicatedword.json: 
+  docs/ecc061f43156f37be077db42abf8301a/folder/duplicatedword/folder1/duplicatedword.json: 
   docs/folder/duplicatedword/duplicatedword/toc.json:
   docs/folder/duplicatedword/duplicatedword/image.png:
   docs/folder/duplicated-base-path/docs/a.json:

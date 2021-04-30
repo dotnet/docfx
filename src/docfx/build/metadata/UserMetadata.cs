@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -23,6 +24,18 @@ namespace Microsoft.Docs.Build
 
         [JsonProperty("ms.author")]
         public SourceInfo<string?> MsAuthor { get; init; }
+
+        [JsonProperty("ms.prod")]
+        public SourceInfo<string?> MsProd { get; init; }
+
+        [JsonProperty("ms.technology")]
+        public SourceInfo<string?> MsTechnology { get; init; }
+
+        [JsonProperty("ms.service")]
+        public SourceInfo<string?> MsService { get; init; }
+
+        [JsonProperty("ms.subservice")]
+        public SourceInfo<string?> MsSubservice { get; init; }
 
         public SourceInfo<string> BreadcrumbPath { get; init; } = new SourceInfo<string>("");
 
@@ -64,5 +77,10 @@ namespace Microsoft.Docs.Build
 
         [JsonIgnore]
         public JObject RawJObject { get; set; } = new JObject();
+
+        public bool NoIndex()
+        {
+            return Robots != null && Robots.Contains("noindex", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

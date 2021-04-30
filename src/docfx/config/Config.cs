@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets moniker range group configuration for v2 backward compatibility.
         /// </summary>
-        public Dictionary<string, GroupConfig> Groups { get; } = new Dictionary<string, GroupConfig>();
+        public Dictionary<string, GroupConfig> Groups { get; } = new();
 
         /// <summary>
         /// Gets output file type
@@ -72,6 +72,11 @@ namespace Microsoft.Docs.Build
         /// Front-end will display `Download PDF` link if `_op_pdfUrlPrefixTemplate` property is set.
         /// </summary>
         public bool OutputPdf { get; init; }
+
+        /// <summary>
+        /// Gets whether the repository a reference repository.
+        /// </summary>
+        public bool IsReferenceRepository { get; init; }
 
         /// <summary>
         /// Gets Output Url type
@@ -112,7 +117,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the global metadata added to each document.
         /// </summary>
-        public GlobalMetadata GlobalMetadata { get; init; } = new GlobalMetadata();
+        public GlobalMetadata GlobalMetadata { get; init; } = new();
 
         /// <summary>
         /// Gets the {Schema}://{HostName}
@@ -138,14 +143,13 @@ namespace Microsoft.Docs.Build
         /// Gets the file metadata added to each document.
         /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
         /// </summary>
-        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } =
-            new Dictionary<string, SourceInfo<Dictionary<string, JToken>>>();
+        public Dictionary<string, SourceInfo<Dictionary<string, JToken>>> FileMetadata { get; } = new();
 
         /// <summary>
         /// Gets a map from source folder path and output URL path.
         /// We rely on a Dictionary behavior that the enumeration order is the same as insertion order if there is no other mutations.
         /// </summary>
-        public Dictionary<PathString, PathString> Routes { get; } = new Dictionary<PathString, PathString>();
+        public Dictionary<PathString, PathString> Routes { get; } = new();
 
         /// <summary>
         /// Specify the repository url for contribution
@@ -160,24 +164,29 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// The excluded contributors which you don't want to show
         /// </summary>
-        public HashSet<string> ExcludeContributors { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> ExcludeContributors { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Gets the map from dependency name to git url
         /// All dependencies need to be restored locally before build
         /// The default value is empty mappings
         /// </summary>
-        public Dictionary<PathString, DependencyConfig> Dependencies { get; } = new Dictionary<PathString, DependencyConfig>();
+        public Dictionary<PathString, DependencyConfig> Dependencies { get; } = new();
 
         /// <summary>
         /// Gets the document id configuration section
         /// </summary>
-        public Dictionary<PathString, DocumentIdConfig> DocumentId { get; } = new Dictionary<PathString, DocumentIdConfig>();
+        public Dictionary<PathString, DocumentIdConfig> DocumentId { get; } = new();
 
         /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
-        public Dictionary<string, SourceInfo<CustomRule>> Rules { get; } = new Dictionary<string, SourceInfo<CustomRule>>();
+        public Dictionary<string, SourceInfo<CustomRule>> Rules { get; } = new();
+
+        /// <summary>
+        /// Gets a map from error code to document URL.
+        /// </summary>
+        public Dictionary<string, string> DocumentUrls { get; } = new();
 
         /// <summary>
         /// Gets whether warnings should be treated as errors.
@@ -194,33 +203,43 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Gets the moniker range mapping
         /// </summary>
-        public Dictionary<string, SourceInfo<string?>> MonikerRange { get; } = new Dictionary<string, SourceInfo<string?>>();
+        public Dictionary<string, SourceInfo<string?>> MonikerRange { get; } = new();
 
         /// <summary>
         /// Get the definition of monikers
         /// It should be absolute url or relative path
         /// </summary>
-        public SourceInfo<string> MonikerDefinition { get; init; } = new SourceInfo<string>("");
+        public SourceInfo<string> MonikerDefinition { get; init; } = new("");
+
+        /// <summary>
+        /// Get a list of trusted domains by tag name.
+        /// </summary>
+        /// <example>
+        /// - "a" -> ["https://*"]: Matches all domains using https for `a` tag
+        /// - "a" -> ["http://*"]: Matches all domains using http or https (http implies https) for `a` tag
+        /// - "img" -> ["https://docs.microsoft.com"]: Matches this specific domain using https
+        /// </example>
+        public Dictionary<string, TrustedDomains> TrustedDomains { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
-        public SourceInfo<string> MarkdownValidationRules { get; init; } = new SourceInfo<string>("");
+        public SourceInfo<string> MarkdownValidationRules { get; init; } = new("");
 
         /// <summary>
         /// Get the file path of Azure SandboxEnabledModuleList
         /// </summary>
-        public SourceInfo<string> SandboxEnabledModuleList { get; private set; } = new SourceInfo<string>("");
+        public SourceInfo<string> SandboxEnabledModuleList { get; private set; } = new("");
 
         /// <summary>
         /// Get the file path of build validation rules
         /// </summary>
-        public SourceInfo<string> BuildValidationRules { get; init; } = new SourceInfo<string>("");
+        public SourceInfo<string> BuildValidationRules { get; init; } = new("");
 
         /// <summary>
         /// Get the file path of allow lists
         /// </summary>
-        public SourceInfo<string> Allowlists { get; init; } = new SourceInfo<string>("");
+        public SourceInfo<string> Allowlists { get; init; } = new("");
 
         /// <summary>
         /// Get the metadata JSON schema file path.
@@ -261,11 +280,6 @@ namespace Microsoft.Docs.Build
         public DateTime? BuildTime { get; init; }
 
         /// <summary>
-        /// Token that can be used to access the GitHub API.
-        /// </summary>
-        public string GithubToken { get; init; } = "";
-
-        /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
         public int GithubUserCacheExpirationInHours { get; init; } = 30 * 24;
@@ -292,11 +306,6 @@ namespace Microsoft.Docs.Build
         public string MicrosoftGraphClientId { get; init; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
 
         /// <summary>
-        /// Client secret that can be used to access the Microsoft Graph API.
-        /// </summary>
-        public string MicrosoftGraphClientSecret { get; init; } = "";
-
-        /// <summary>
         /// A file containing a map of file path to the original file path.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
@@ -308,9 +317,9 @@ namespace Microsoft.Docs.Build
         public bool RemoveHostName { get; init; }
 
         /// <summary>
-        /// Determines if run learn-validation as post process
+        /// Determines if it's a learn docset
         /// </summary>
-        public bool RunLearnValidation { get; init; }
+        public bool IsLearn { get; init; }
 
         /// <summary>
         /// Determines if disable dry sync
@@ -331,9 +340,9 @@ namespace Microsoft.Docs.Build
 
         public JoinTOCConfig[] JoinTOC { get; init; } = Array.Empty<JoinTOCConfig>();
 
-        public HashSet<PathString> SplitTOC { get; init; } = new HashSet<PathString>();
+        public HashSet<PathString> SplitTOC { get; init; } = new();
 
-        public HashSet<string> RedirectionFiles { get; init; } = new HashSet<string>();
+        public HashSet<string> RedirectionFiles { get; init; } = new();
 
         public IEnumerable<SourceInfo<string>> GetFileReferences()
         {
@@ -346,6 +355,7 @@ namespace Microsoft.Docs.Build
             {
                 yield return sourceMap;
             }
+
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
             yield return BuildValidationRules;
@@ -361,7 +371,7 @@ namespace Microsoft.Docs.Build
             {
                 if (item.TopLevelToc != null)
                 {
-                    yield return new SourceInfo<string>(item.TopLevelToc);
+                    yield return new(item.TopLevelToc);
                 }
             }
         }
@@ -372,7 +382,7 @@ namespace Microsoft.Docs.Build
             if (LowerCaseUrl)
             {
                 HostName = HostName.ToLowerInvariant();
-                BasePath = new BasePath(BasePath.Value.ToLowerInvariant());
+                BasePath = new(BasePath.Value.ToLowerInvariant());
             }
         }
     }

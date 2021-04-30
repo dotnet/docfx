@@ -6,5 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("docfx.Test")]
+[assembly: InternalsVisibleTo("docfx.RegressionTest")]
 [assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
 [assembly: CLSCompliant(false)]

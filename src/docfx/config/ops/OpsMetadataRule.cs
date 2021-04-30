@@ -55,5 +55,7 @@ namespace Microsoft.Docs.Build
         public bool? CanonicalVersionOnly { get; set; }
 
         public bool? PullRequestOnly { get; set; }
+
+        public string[]? Tags { get; set; }
     }
 }
