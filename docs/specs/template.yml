@@ -27,6 +27,9 @@ repos:
       docs/a.md: |
         >[!NOTE]
         >note
+  https://docs.com/markdown-note:
+  - files:
+      docfx.yml:
   https://docs.com/template/token:
   - files:
       ContentTemplate/token.json: |
