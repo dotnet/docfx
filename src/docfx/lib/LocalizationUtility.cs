@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
             if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
-                foreach (var branch in new[] { fallbackBranch, "main" })
+                foreach (var branch in new HashSet<string?> { fallbackBranch, "main" })
                 {
                     if (packageResolver.TryResolvePackage(
                         new PackagePath(fallbackRemote, branch),
