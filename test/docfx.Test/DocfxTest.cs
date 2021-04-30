@@ -115,29 +115,12 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            foreach (var (_, repo) in spec.Repos)
-            {
-                foreach (var item in repo)
-                {
-                    if (Contains(item.Files, text))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return spec.Repos.Values
+                .SelectMany(item => item)
+                .Any(item => Contains(item.Files, text));
 
             static bool Contains(IDictionary<string, string> dict, string text)
-            {
-                foreach (var (_, value) in dict)
-                {
-                    if (value is string str && str.Contains(text, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+                => dict.Values.Any(value => value is string str && str.Contains(text, StringComparison.OrdinalIgnoreCase));
         }
 
         private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Package package)
