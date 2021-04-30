@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
             if (options.Continue)
             {
                 // Apply templates.
-                ApplyTemplates.Run(errors, options);
+                ContinueBuild.Run(errors, options);
             }
             else
             {
