@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (TryCreateValidationContext(file, false, out var validationContext))
+            if (TryCreateValidationContext(file, true, out var validationContext))
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
                 var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
