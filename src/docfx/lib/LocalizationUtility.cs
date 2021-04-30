@@ -65,6 +65,7 @@ namespace Microsoft.Docs.Build
                         return Path.Combine(fallbackRepoPath, docsetSourceFolder);
                     }
                 }
+                throw Errors.System.GitCloneFailed(fallbackRemote, fallbackBranch ?? "").ToException();
             }
             return null;
         }
