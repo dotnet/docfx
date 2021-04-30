@@ -63,6 +63,7 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
+                    package = new PackagePath(fallbackRemote, "main");
                     return Path.Combine(packageResolver.ResolvePackage(package, options), docsetSourceFolder);
                 }
             }
