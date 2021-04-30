@@ -331,7 +331,7 @@ namespace Microsoft.Docs.Build
 
         private static void RemoveUnnecessaryFilesForContinue(string path)
         {
-            // TODO: no need to clean-up if glob more strictly for 
+            // TODO: no need to clean-up if glob more strictly
             foreach (var filePath in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
             {
                 if (Path.GetFileName(filePath).StartsWith(".") || !IsRequiredOutput(filePath) || !filePath.EndsWith(".json"))
