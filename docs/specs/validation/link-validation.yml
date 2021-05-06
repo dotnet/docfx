@@ -415,6 +415,34 @@ outputs:
     {"message_severity":"suggestion","code":"redirected-link","message":"Redirected link 'https://go.microsoft.com/fwlink/p/?LinkId=666' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":55}
   file1.json:
 ---
+# Validate docs link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "DisallowedLink",
+            "message": "Absolute link '{0}' will be broken in isolated environments. Replace with a relative link.",
+            "code": "docs-link-absolute",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"],
+            "linkTypes": [
+               "docs"
+            ]
+          }
+        ]
+      }
+    }
+  file1.md: |
+    [https://docs.microsoft.com/en-us/admin/](https://docs.microsoft.com/en-us/admin/)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"docs-link-absolute","message":"Absolute link 'https://docs.microsoft.com/en-us/admin/' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+  file1.json:
+---
 # Validate secure link
 inputs:
   docfx.yml: |
