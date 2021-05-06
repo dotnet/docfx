@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (TryGetValidationDocumentType(file, out var documentType))
+            if (TryCreateValidationContext(file, true, out var validationContext))
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
                 var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
@@ -99,12 +99,6 @@ namespace Microsoft.Docs.Build
                     IsCanonicalVersion = isCanonicalVersion,
                     Title = GetOgTitle(title.Value, titleSuffix),
                     SourceInfo = title.Source,
-                };
-                var validationContext = new ValidationContext
-                {
-                    DocumentType = documentType,
-                    FileSourceInfo = new SourceInfo(file),
-                    Monikers = monikers,
                 };
                 Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
             }
