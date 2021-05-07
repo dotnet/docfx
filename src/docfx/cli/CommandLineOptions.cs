@@ -9,6 +9,10 @@ namespace Microsoft.Docs.Build
 {
     internal class CommandLineOptions
     {
+        public string? Locale { get; init; }
+
+        public bool Continue { get; init; }
+
         public string? Output { get; init; }
 
         public string? Log { get; init; }

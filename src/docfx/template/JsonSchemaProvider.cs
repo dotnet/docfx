@@ -46,6 +46,13 @@ namespace Microsoft.Docs.Build
             _jsonSchemaLoader = jsonSchemaLoader;
         }
 
+        public JsonSchemaProvider(Config config, Package package, JsonSchemaLoader jsonSchemaLoader)
+        {
+            _template = config.Template;
+            _package = package;
+            _jsonSchemaLoader = jsonSchemaLoader;
+        }
+
         public static bool OutputAbsoluteUrl(string? mime) => mime != null && s_outputAbsoluteUrlYamlMime.Contains(mime);
 
         public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
@@ -66,6 +73,22 @@ namespace Microsoft.Docs.Build
                 ContentType.Toc => GetTocRenderType(),
                 _ => RenderType.Component,
             };
+        }
+
+        public RenderType GetRenderType(SourceInfo<string?> mime)
+        {
+            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
+            {
+                return RenderType.Content;
+            }
+            try
+            {
+                return GetSchema(mime).RenderType;
+            }
+            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+            {
+                return RenderType.Content;
+            }
         }
 
         public JsonSchemaValidator GetSchemaValidator(SourceInfo<string?> mime)
@@ -92,22 +115,6 @@ namespace Microsoft.Docs.Build
             }
 
             return new JsonSchemaValidator(jsonSchema, forceError: true);
-        }
-
-        private RenderType GetRenderType(SourceInfo<string?> mime)
-        {
-            if (mime == null || IsConceptual(mime) || IsLandingData(mime))
-            {
-                return RenderType.Content;
-            }
-            try
-            {
-                return GetSchema(mime).RenderType;
-            }
-            catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
-            {
-                return RenderType.Content;
-            }
         }
 
         private RenderType GetTocRenderType()
