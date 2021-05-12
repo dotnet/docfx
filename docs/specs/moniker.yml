@@ -738,7 +738,7 @@ outputs:
     {"message_severity":"error","code":"moniker-overlapping","message":"Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'."}
     {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'."}
   .xrefmap.json: | 
-    {"references":[{"uid":"a","name":"netcore-2.0, netcore-2.1"}]}
+    {"references":[{"uid":"a","name":"netcore-2.0, netcore-2.1", "monikers": ["netcore-2.0", "netcore-2.1"]}]}
   .publish.json: |
     {
       "files": 
