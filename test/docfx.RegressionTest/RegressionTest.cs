@@ -55,7 +55,7 @@ namespace Microsoft.Docs.Build
                 s_repositoryName = opts.DryRun
                     ? $"dryrun.{Path.GetFileName(opts.Repository)}"
                     : opts.OutputType.Equals("html", StringComparison.OrdinalIgnoreCase)
-                        ? $"htmltest.{{Path.GetFileName(opts.Repository)}}"
+                        ? $"htmlTest.{Path.GetFileName(opts.Repository)}"
                         : Path.GetFileName(opts.Repository);
 
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
