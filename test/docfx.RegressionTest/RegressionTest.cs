@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
-        private static string s_repositoryName = "";
+        private static string s_testName = "";
         private static string s_repository = "";
 
         private static int Main(string[] args)
@@ -52,13 +52,13 @@ namespace Microsoft.Docs.Build
             {
                 s_repository = opts.Repository;
 
-                s_repositoryName = opts.DryRun
+                s_testName = opts.DryRun
                     ? $"dryrun.{Path.GetFileName(opts.Repository)}"
                     : opts.OutputType.Equals("html", StringComparison.OrdinalIgnoreCase)
                         ? $"htmlTest.{Path.GetFileName(opts.Repository)}"
                         : Path.GetFileName(opts.Repository);
 
-                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
+                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_testName}");
 
                 var remoteBranch = EnsureTestData(opts, workingFolder);
                 if (opts.WarmUp)
@@ -81,12 +81,12 @@ namespace Microsoft.Docs.Build
 
         private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string workingFolder, string remoteBranch)
         {
-            var repositoryPath = Path.Combine(workingFolder, s_repositoryName);
+            var repositoryPath = Path.Combine(workingFolder, s_testName);
             var cachePath = Path.Combine(workingFolder, "cache");
             var statePath = Path.Combine(workingFolder, "state");
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"Testing {s_repositoryName}");
+            Console.WriteLine($"Testing {s_testName}");
             Console.ResetColor();
 
             var baseLinePath = Path.Combine(workingFolder, "output");
@@ -206,32 +206,32 @@ namespace Microsoft.Docs.Build
             {
                 Retry(() => Exec(
                             "git",
-                            $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}",
+                            $"{s_gitCmdAuth} fetch origin --progress --prune {s_testName}",
                             cwd: workingFolder,
                             secrets: s_gitCmdAuth,
                             redirectStandardError: true));
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains($"couldn't find remote ref {s_repositoryName}"))
+                if (ex.Message.Contains($"couldn't find remote ref {s_testName}"))
                 {
                     // A new repo is added for the first time
-                    Exec("git", $"checkout -B {s_repositoryName} origin/template", cwd: workingFolder);
+                    Exec("git", $"checkout -B {s_testName} origin/template", cwd: workingFolder);
                     Exec("git", $"clean -xdff", cwd: workingFolder);
-                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {remoteBranch} {opts.Repository} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {remoteBranch} {opts.Repository} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
                     return remoteBranch;
                 }
                 throw;
             }
 
-            Exec("git", $"checkout --force origin/{s_repositoryName}", cwd: workingFolder);
+            Exec("git", $"checkout --force origin/{s_testName}", cwd: workingFolder);
             Exec("git", $"clean -xdff", cwd: workingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
-            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {remoteBranch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_repositoryName));
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {remoteBranch} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule sync {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_testName));
             return remoteBranch;
         }
 
@@ -271,7 +271,7 @@ namespace Microsoft.Docs.Build
             var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
             var diagnosticPort = $"docfx-regression-test-{Guid.NewGuid()}.sock";
-            var traceFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.nettrace");
+            var traceFile = Path.Combine(s_testDataRoot, $".temp/{s_testName}.nettrace");
 
             RestoreDependency(repositoryPath, docfxConfig, outputPath);
 
@@ -294,7 +294,7 @@ namespace Microsoft.Docs.Build
 
                 Console.WriteLine($"##vso[artifact.upload artifactname=trace;]{traceFile}");
 
-                var speedScopeFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.speedscope.json");
+                var speedScopeFile = Path.Combine(s_testDataRoot, $".temp/{s_testName}.speedscope.json");
                 Process.Start("dotnet-trace", $"convert --format Speedscope \"{traceFile}\"").WaitForExit();
 
                 testResult.HotMethods = string.Join('\n', SpeedScope.FindHotMethods(speedScopeFile).Select(item => $"{item.percentage,3}% | {item.method}"));
@@ -313,8 +313,8 @@ namespace Microsoft.Docs.Build
 
             if (testResult.BuildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
             {
-                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
-                Console.WriteLine($"Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
             }
 
             if (s_isPullRequest)
@@ -331,7 +331,7 @@ namespace Microsoft.Docs.Build
                     RedirectStandardOutput = true,
                 }) ?? throw new InvalidOperationException();
 
-                var diffFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.patch");
+                var diffFile = Path.Combine(s_testDataRoot, $".temp/{s_testName}.patch");
 
                 Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
                 var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
@@ -356,7 +356,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: workingFolder);
-                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_repositoryName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
+                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_testName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
             }
         }
 
@@ -368,7 +368,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             }
         }
 
@@ -488,7 +488,7 @@ namespace Microsoft.Docs.Build
             var body = new StringBuilder();
             body.Append("<details><summary>");
             body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "🧭" : "⚠");
-            body.Append($"<a href='{s_repository}'>{s_repositoryName}</a>");
+            body.Append($"<a href='{s_repository}'>{s_testName}</a>");
             body.Append($"({testResult.BuildTime}");
 
             if (isTimeout)
