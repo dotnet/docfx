@@ -51,7 +51,13 @@ namespace Microsoft.Docs.Build
             try
             {
                 s_repository = opts.Repository;
-                s_repositoryName = $"{(opts.DryRun ? "dryrun." : "")}{Path.GetFileName(opts.Repository)}";
+
+                s_repositoryName = opts.DryRun
+                    ? $"dryrun.{Path.GetFileName(opts.Repository)}"
+                    : opts.OutputType.Equals("html", StringComparison.OrdinalIgnoreCase)
+                        ? $"htmltest.{{Path.GetFileName(opts.Repository)}}"
+                        : Path.GetFileName(opts.Repository);
+
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
                 var remoteBranch = EnsureTestData(opts, workingFolder);
