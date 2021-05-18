@@ -251,17 +251,10 @@ namespace Microsoft.Docs.Build
         {
             if (isExperimental)
             {
-                sitePath = ReplaceLast(sitePath, ".experimental", "");
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, renderType);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
-
-            static string ReplaceLast(string source, string find, string replace)
-            {
-                var i = source.LastIndexOf(find);
-                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
-            }
         }
 
         private PathString ApplyRoutes(PathString path)
