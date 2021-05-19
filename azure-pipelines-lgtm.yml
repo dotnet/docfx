@@ -70,7 +70,7 @@ jobs:
   - task: Semmle@0
     displayName: Security - LGTM
     env: 
-      SYSTEM_ACCESSTOKEN: $(MICROSOFT_PAT_TOKEN)
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
     inputs:
       toolVersion: 'LatestPreRelease'
       sourceCodeDirectory: '$(Build.SourcesDirectory)'
