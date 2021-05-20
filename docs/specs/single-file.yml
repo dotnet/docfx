@@ -34,6 +34,45 @@ outputs:
   b/.publish.json: |
     { "files": [{ "source_path": "b.md" }] }
 ---
+# Support glob pattern
+buildFiles:
+- a/a/*.md
+- b/b/*.md
+- c/a/a.md
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a/a.md:
+  a/b/b.md:
+  b/docfx.yml:
+  b/a/a.md:
+  b/b/b.md:
+  c/docfx.yml:
+  c/a/a.md:
+  c/b/b.md:
+outputs:
+  a/a/a.json:
+  b/b/b.json:
+  c/a/a.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a/a.md" }] }
+  b/.publish.json: |
+    { "files": [{ "source_path": "b/b.md" }] }
+  c/.publish.json: |
+    { "files": [{ "source_path": "a/a.md" }] }
+---
+# Support glob pattern when build the whole repository
+buildFiles:
+- ./**
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a.md:
+outputs:
+  a/a.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+---
 # Ignore include files and invalid files
 buildFiles:
 - a.md

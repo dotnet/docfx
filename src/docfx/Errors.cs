@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error ValidationIncomplete()
-                => new Error(ErrorLevel.Warning, "validation-incomplete", $"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://SiteHelp.");
+                => new Error(ErrorLevel.Warning, "validation-incomplete", $"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://aka.ms/SiteHelp.");
 
             /// <summary>
             /// Didn't run `docfx restore` before running `docfx build`.
@@ -318,9 +318,9 @@ namespace Microsoft.Docs.Build
             /// Multiple files defined in <see cref="Config.Redirections"/> are redirected to the same url,
             /// can't decide which entry to use when computing document id.
             /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error RedirectionUrlConflict(SourceInfo<string> source)
-                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The '{source}' appears twice or more in the redirection mappings.", source);
+            /// Behavior: ✔️ Message: ✔️
+            public static Error RedirectionUrlConflict(SourceInfo<string> source, IEnumerable<PathString> redirectionFiles, IEnumerable<PathString> redirectionSourceFiles)
+                => new Error(ErrorLevel.Warning, "redirection-url-conflict", $"The following files are redirected to '{source}' with redirect_document_id set to true: {StringUtility.Join(redirectionSourceFiles)}. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): {StringUtility.Join(redirectionFiles)}.", source);
 
             /// <summary>
             /// The dest to redirection url does not match any files's publish URL, but the redirect_with_id flag has been set as true
@@ -457,39 +457,11 @@ namespace Microsoft.Docs.Build
                 => new Error(ErrorLevel.Error, "moniker-overlapping", $"Two or more documents with the same uid `{uid}`({StringUtility.Join(files)}) have defined overlapping moniker: {StringUtility.Join(overlappingMonikers)}.");
 
             /// <summary>
-            /// Failed to parse moniker string: moniker is not defined.
+            /// Failed to parse moniker string.
             /// </summary>
             /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeMissing(SourceInfo<string?> operand, string moniker)
-                => new Error(ErrorLevel.Error, "moniker-range-missing", $"Invalid moniker range '{operand}': Moniker '{moniker}' is not defined.", operand);
-
-            /// <summary>
-            /// Failed to parse moniker string: parse ends before reaching end of string
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeUnrecognized(SourceInfo? operand, string rangeString)
-                => new Error(ErrorLevel.Error, "moniker-range-unrecognized", $"Parse ends before reaching end of string, unrecognized string: '{rangeString}'.", operand);
-
-            /// <summary>
-            /// Failed to parse moniker string: expect a comparator set
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeMissComparator(SourceInfo? operand, string rangeString)
-                => new Error(ErrorLevel.Error, "moniker-range-miss-comparator", $"Expect a comparator set, but got '{rangeString}'.", operand);
-
-            /// <summary>
-            /// Failed to parse moniker string: expect a moniker string
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeMissMoniker(SourceInfo? operand, string rangeString)
-                => new Error(ErrorLevel.Error, "moniker-range-miss-moniker", $"Expect a moniker string, but got '{rangeString}'.", operand);
-
-            /// <summary>
-            /// Failed to parse moniker string: Moniker key is not defined.
-            /// </summary>
-            /// Behavior: ✔️ Message: ❌
-            public static Error MonikerRangeKeyUndefined(SourceInfo? operand, string key)
-                => new Error(ErrorLevel.Error, "moniker-range-key-undefined", $"Invalid monikers: Moniker '{key}' is not defined.", operand);
+            public static Error MonikerRangeInvalid(SourceInfo? source, string message)
+                => new Error(ErrorLevel.Error, "moniker-range-invalid", $"Invalid moniker range: {message}", source);
 
             /// <summary>
             /// MonikerRange is not defined in docfx.yml or doesn't match an article.md,
@@ -782,14 +754,27 @@ namespace Microsoft.Docs.Build
             /// <summary>
             /// Html Tag value must be in allowed list
             /// </summary>
-            public static Error DisallowedHtml(SourceInfo? source, string tag)
+            public static Error DisallowedHtmlTag(SourceInfo? source, string tag)
                 => new Error(ErrorLevel.Info, "disallowed-html-tag", $"HTML tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: tag);
 
             /// <summary>
             /// Html Attribute value must be in allowed list
             /// </summary>
-            public static Error DisallowedHtml(SourceInfo? source, string tag, string attribute)
+            public static Error DisallowedHtmlAttribute(SourceInfo? source, string tag, string attribute)
                 => new Error(ErrorLevel.Info, "disallowed-html-attribute", $"HTML attribute '{attribute}' on tag '{tag}' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.", source, propertyPath: $"{tag}_{attribute}");
+
+            /// <summary>
+            /// Url domain must be in allowed list
+            /// </summary>
+            public static Error DisallowedDomain(SourceInfo? source, string href, string tag, string domain)
+                => new Error(ErrorLevel.Suggestion, "disallowed-domain", $"Url '{href}' references a disallowed domain '{domain}'. This poses a security risk.", source, propertyPath: $"{tag}_{domain}");
+
+            /// <summary>
+            /// Url domain must be in allowed list
+            /// </summary>
+            /// Behavior: ✔️ Message: ✔️
+            public static Error ExternalImage(SourceInfo? source, string href, string tag, string domain)
+                => new Error(ErrorLevel.Suggestion, "external-image", $"Image '{href}' references an external site. This poses a security risk and external images are unavailable in some environments. Reference an image file within the repo instead.", source, propertyPath: $"{tag}_{domain}");
         }
 
         public static class DependencyRepository
@@ -802,7 +787,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error RestoreDependentRepositoryFailed(string url, string branch)
-                => new Error(ErrorLevel.Error, "restore-dependent-repository-failed", $"Failed to restore dependent repository `{url}#{branch}`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://SiteHelp and include URL of the build report.");
+                => new Error(ErrorLevel.Error, "restore-dependent-repository-failed", $"Failed to restore dependent repository `{url}#{branch}`. This could be caused by an incorrect repository URL, please verify the URL on the Docs Portal (https://ops.microsoft.com). If it is not the case, please open a ticket in https://aka.ms/SiteHelp and include URL of the build report.");
 
             /// <summary>
             /// Repository owner did not re-authorize his/her GitHub account to Docs Build with SSO.
@@ -816,7 +801,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error ServiceAccountPermissionInsufficient(string? repoOrg, string? repoOwner, string dependentRepoUrl)
-                => new Error(ErrorLevel.Error, "service-account-permission-insufficient", $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under '{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. For any support, please open a ticket in https://SiteHelp.");
+                => new Error(ErrorLevel.Error, "service-account-permission-insufficient", $"Docs Build service account cannot access repository '{dependentRepoUrl}'. Please ask repository owner '{repoOwner}' to grant 'write' permission to all service accounts under '{repoOrg}' organization to '{dependentRepoUrl}'. Service accounts list can be found here: https://review.docs.microsoft.com/en-us/engineering/projects/ops/engdocs/how-to-grant-service-account-permission-in-your-repository?branch=master#{repoOrg?.ToLowerInvariant()}. For any support, please open a ticket in https://aka.ms/SiteHelp.");
 
             /// <summary>
             /// Repository owner does not have 'Read' permission on CRR.

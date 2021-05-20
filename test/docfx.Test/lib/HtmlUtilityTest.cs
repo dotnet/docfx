@@ -23,12 +23,13 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/xxx-yyy/a' />", "<a href='/zh-cn/xxx-yyy/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
-        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='external' />")]
+        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
         public void HtmlAddLinkType(string input, string output)
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.AddLinkType(ref token, "zh-cn"));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+                    HtmlUtility.AddLinkType(ErrorBuilder.Null, new("a.md"), ref token, "zh-cn", new()));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -56,7 +57,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.StripTags(ref reader, ref token));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -78,7 +79,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, (_, foo) => link));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformLink(ref token, null, _ => link));
 
             Assert.Equal(output, actual);
         }

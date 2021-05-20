@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             var command = CreateCommand("build", "Builds a docset.", options => Builder.Run(options, package));
             DefineCommonCommands(command);
             command.AddOption(new Option<string[]>(
-                new[] { "--file", "--files" }, "Build only the specified files."));
+                new[] { "--file" }, "Build only the specified files."));
             command.AddOption(new Option<string>(
                 new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
             command.AddOption(new Option<OutputType>(
@@ -104,6 +104,8 @@ namespace Microsoft.Docs.Build
                 "--no-cache", "Always fetch latest dependencies in build."));
             command.AddOption(new Option<string>(
                 "--template-base-path", "The base path used for referencing the template resource file when applying liquid."));
+            command.AddOption(new Option<bool>(
+                "--continue", "Continue build based on intermediate json output."));
             return command;
         }
 

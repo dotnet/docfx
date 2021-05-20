@@ -9,6 +9,10 @@ namespace Microsoft.Docs.Build
 {
     internal class CommandLineOptions
     {
+        public string? Locale { get; init; }
+
+        public bool Continue { get; init; }
+
         public string? Output { get; init; }
 
         public string? Log { get; init; }
@@ -39,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         public string? TemplateBasePath { get; init; }
 
-        public IReadOnlyList<string>? Files { get; init; }
+        public IReadOnlyList<string>? File { get; init; }
 
         public string? TemplateName { get; init; }
 

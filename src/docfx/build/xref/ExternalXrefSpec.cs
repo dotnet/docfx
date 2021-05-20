@@ -14,7 +14,6 @@ namespace Microsoft.Docs.Build
 
         public string? SchemaType { get; init; }
 
-        [JsonIgnore]
         public MonikerList Monikers { get; init; }
 
         [JsonIgnore]

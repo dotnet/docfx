@@ -30,24 +30,24 @@ namespace Microsoft.Docs.Build
 
         private static readonly Metric s_operationStartMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, $"OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
+                new MetricIdentifier(null, "OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_operationEndMetric =
             s_telemetryClient.GetMetric(
-                new MetricIdentifier(null, $"OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
+                new MetricIdentifier(null, "OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_errorCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildLog", "Code", "Level", "Name", "Type", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildLog", "Code", "Level", "Name", "AdditionalErrorInfo", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_fileLogCountMetric =
             s_telemetryClient.GetMetric(
                 new MetricIdentifier(
-                    null, $"BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
+                    null, "BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
                 s_metricConfiguration);
 
         private static readonly Metric s_buildFileTypeCountMetric =
@@ -136,12 +136,16 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public static void TrackErrorCount(string code, ErrorLevel level, string? name)
+        public static void TrackErrorCount(Error error)
         {
+            var code = error.Code;
+            var level = error.Level;
+            var name = error.PropertyPath;
+            var additionalErrorInfoString = error.AdditionalErrorInfo == null ? "{}" : JsonUtility.Serialize(error.AdditionalErrorInfo);
             if (!s_isRealTimeBuild.Value)
             {
                 s_errorCountMetric.TrackValue(
-                    1, code, level.ToString(), CoalesceEmpty(name), "User", s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                    1, code, level.ToString(), CoalesceEmpty(name), additionalErrorInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
             }
         }
 
@@ -222,6 +226,13 @@ namespace Microsoft.Docs.Build
             {
                 eventTelemetry.Properties[property.Key] = property.Value;
             }
+
+            eventTelemetry.Properties["OS"] = s_os;
+            eventTelemetry.Properties["Version"] = s_version;
+            eventTelemetry.Properties["Repo"] = s_repo;
+            eventTelemetry.Properties["Branch"] = s_branch;
+            eventTelemetry.Properties["CorrelationId"] = s_correlationId;
+            eventTelemetry.Properties["SessionId"] = s_sessionId;
 
             s_telemetryClient.TrackEvent(eventTelemetry);
         }

@@ -35,6 +35,8 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             BuildScope buildScope,
+            RepositoryProvider repositoryProvider,
+            Input input,
             Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
@@ -45,7 +47,8 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
-            _internalXrefMapBuilder = new(config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, jsonSchemaTransformer);
+            _internalXrefMapBuilder = new(
+                config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, repositoryProvider, input, jsonSchemaTransformer);
 
             _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
             _internalXrefMap = new(BuildInternalXrefMap);
@@ -130,7 +133,7 @@ namespace Microsoft.Docs.Build
             return (error, xrefSpec, href);
         }
 
-        public XrefMapModel ToXrefMapModel(bool isLocalizedBuild)
+        public XrefMapModel ToXrefMapModel()
         {
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
@@ -138,27 +141,24 @@ namespace Microsoft.Docs.Build
             var references = Array.Empty<ExternalXrefSpec>();
             var externalXrefs = Array.Empty<ExternalXref>();
 
-            if (!isLocalizedBuild)
-            {
-                references = _internalXrefMap.Value.Values
-                    .Select(xrefs =>
-                    {
-                        var xref = xrefs.First();
+            references = _internalXrefMap.Value.Values
+                .Select(xrefs =>
+                {
+                    var xref = xrefs.First();
 
-                        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                        // output xref map with URL appending "?branch=master" for master branch
-                        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
-                            ? $"?branch={repositoryBranch}" : "";
+                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
+                    ? $"?branch={repositoryBranch}" : "";
 
-                        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
 
-                        return xref.ToExternalXrefSpec(href);
-                    })
-                    .OrderBy(xref => xref.Uid)
-                    .ToArray();
+                    return xref.ToExternalXrefSpec(href);
+                })
+                .OrderBy(xref => xref.Uid)
+                .ToArray();
 
-                externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
-            }
+            externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
             var model =
                 new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
@@ -199,7 +199,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Add(
                         Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath) with
-                        { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
+                        { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(
                         xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType) with
-                    { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
+                    { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -278,7 +278,7 @@ namespace Microsoft.Docs.Build
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
                 // Output absolute URL starting from Architecture and TSType
-                var href = TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
+                var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                     ? spec.Href
                     : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
 

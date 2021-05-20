@@ -62,6 +62,8 @@ outputs:
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
     }
   a++.png:
+  .errors.log: |
+    { "message_severity":"warning", "code":"file-not-found", "file":"links.md", "line":5 }
 ---
 # Handle encoding for html links
 inputs:
@@ -94,7 +96,8 @@ outputs:
   a&b.json:
   a&amp;b.json:
   a++.png:
-  .publish.json:
+  .errors.log: |
+    { "message_severity":"warning", "code":"file-not-found", "file":"html-links.md", "line":5 }
 ---
 # Don't handle encoding for includes at the moment
 inputs:

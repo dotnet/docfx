@@ -28,21 +28,24 @@ namespace Microsoft.Docs.Build
             {
                 using var request = requestFactory();
                 var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
-                using (PerfScope.Start($"[{nameof(OpsConfigAdapter)}] Executing request '{request.Method} {request.RequestUri}'"))
+
+                if (i > 0)
                 {
-                    var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
-                    FillInCredentials(request, httpConfig);
-
-                    response = await next(request);
-                    if (response.StatusCode != HttpStatusCode.Unauthorized)
-                    {
-                        break;
-                    }
-
-                    needRefresh = true;
-                    _credentialCache.TryRemove(url, out _);
-                    httpConfigUsed = httpConfig;
+                    Log.Write($"[{nameof(CredentialHandler)}] Retry '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
                 }
+
+                var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
+                FillInCredentials(request, httpConfig);
+
+                response = await next(request);
+                if (response.StatusCode != HttpStatusCode.Unauthorized)
+                {
+                    break;
+                }
+
+                needRefresh = true;
+                _credentialCache.TryRemove(url, out _);
+                httpConfigUsed = httpConfig;
             }
 
             return response!;

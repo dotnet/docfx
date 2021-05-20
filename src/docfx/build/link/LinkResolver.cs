@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.Docs.Build
 {
@@ -84,7 +83,7 @@ namespace Microsoft.Docs.Build
                     referencingFile,
                     inclusionRoot);
 
-                return (xrefError, resolvedHref ?? href, declaringFile);
+                return (xrefError, resolvedHref ?? "", declaringFile);
             }
 
             var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile, inclusionRoot);
@@ -106,7 +105,7 @@ namespace Microsoft.Docs.Build
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
-            if (file != null && !TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
+            if (file != null && !JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
             {
                 link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }
@@ -142,7 +141,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = _documentProvider.GetSiteUrl(file);
 
             // Self reference, don't build the file, leave href as is
-            if (file == hrefRelativeTo)
+            if (file == inclusionRoot)
             {
                 var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(siteUrl);
 
@@ -185,7 +184,7 @@ namespace Microsoft.Docs.Build
             switch (linkType)
             {
                 case LinkType.SelfBookmark:
-                    return (null, referencingFile, query, fragment, linkType);
+                    return (null, inclusionRoot, query, fragment, linkType);
 
                 case LinkType.WindowsAbsolutePath:
                     return (Errors.Link.LocalFilePath(href), null, null, null, linkType);
@@ -195,7 +194,7 @@ namespace Microsoft.Docs.Build
                     {
                         // https://tools.ietf.org/html/rfc2396#section-4.2
                         // a hack way to process empty href
-                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
+                        return (null, inclusionRoot, query, fragment, LinkType.SelfBookmark);
                     }
 
                     // resolve file
@@ -205,7 +204,7 @@ namespace Microsoft.Docs.Build
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (_templateEngine != null && TemplateEngine.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
+                    if (_templateEngine != null && JsonSchemaProvider.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
                     {
                         if (file is null)
                         {

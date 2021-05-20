@@ -40,7 +40,7 @@ namespace Microsoft.Docs.LearnValidation
                     path = m?.Output?.MetadataOutput?.LinkToPath ?? "";
                 }
 
-                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path));
+                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path)) ?? new();
 
                 achievements.ForEach(achievement => achievement.SourceRelativePath = m?.SourceRelativePath!);
 

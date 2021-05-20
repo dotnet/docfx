@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,6 +31,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
+        private readonly JsonSchemaProvider _jsonSchemaProvider;
         private readonly DocumentProvider _documentProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly RedirectionProvider _redirectionProvider;
@@ -77,24 +80,25 @@ namespace Microsoft.Docs.Build
             _githubAccessor = new(_config);
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
-            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
+            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
-            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
-            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
+            _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
+            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
             _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
             _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
-            _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
+            _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider, _metadataProvider);
             _bookmarkValidator = new(_errors);
             _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
             _dependencyMapBuilder = new(_sourceMap);
             _searchIndexBuilder = new(_config, _errors, _documentProvider, _metadataProvider);
+            _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator, _searchIndexBuilder);
             _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));
-            _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _publishUrlMap);
-            _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(_jsonSchemaTransformer));
+            _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
+            _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));
             _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider);
             _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
-            _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
+            _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _jsonSchemaProvider, _input);
             _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
             _tocParser = new(_input, _markdownEngine);
             _tocLoader = new(_buildOptions, _input, _linkResolver, _xrefResolver, _tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
@@ -139,7 +143,10 @@ namespace Microsoft.Docs.Build
 
                 var repositoryProvider = new RepositoryProvider(errorLog, buildOptions, config);
 
-                new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run();
+                if (!new OpsPreProcessor(config, errorLog, buildOptions, repositoryProvider).Run())
+                {
+                    return null;
+                }
 
                 return new DocsetBuilder(errorLog, config, buildOptions, packageResolver, fileResolver, opsAccessor, repositoryProvider, package, progressReporter);
             }
@@ -164,9 +171,7 @@ namespace Microsoft.Docs.Build
                 var tocBuilder = new TocBuilder(_config, _tocLoader, _contentValidator, _metadataProvider, _metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
-                var filesToBuild = files != null
-                    ? files.Select(file => FilePath.Content(new PathString(file))).Where(file => _input.Exists(file) && _buildScope.Contains(file.Path)).ToHashSet()
-                    : _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles()).ToHashSet();
+                var filesToBuild = GetFilesToBuild(files);
 
                 using (var scope = Progress.Start($"Building {filesToBuild.Count} files"))
                 {
@@ -191,7 +196,7 @@ namespace Microsoft.Docs.Build
                 }
 
                 // TODO: explicitly state that ToXrefMapModel produces errors
-                var xrefMapModel = _xrefResolver.ToXrefMapModel(_buildOptions.IsLocalizedBuild);
+                var xrefMapModel = _xrefResolver.ToXrefMapModel();
                 var (publishModel, fileManifests) = publishModelBuilder.Build(filesToBuild);
 
                 // TODO: decouple files and dependencies from legacy.
@@ -201,7 +206,7 @@ namespace Microsoft.Docs.Build
                 MemoryCache.Clear();
 
                 Parallel.Invoke(
-                    () => _templateEngine.CopyAssetsToOutput(output),
+                    () => _templateEngine.CopyAssetsToOutput(output, _config.SelfContained),
                     () => output.WriteJson(".xrefmap.json", xrefMapModel),
                     () => output.WriteJson(".publish.json", publishModel),
                     () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
@@ -220,6 +225,43 @@ namespace Microsoft.Docs.Build
             {
                 _errors.AddRange(dex);
             }
+        }
+
+        private HashSet<FilePath> GetFilesToBuild(string[]? files)
+        {
+            HashSet<FilePath> filesToBuild = new();
+            if (files == null)
+            {
+                filesToBuild = _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles()).ToHashSet();
+            }
+            else
+            {
+                var globs = new List<Func<string, bool>>();
+                foreach (var file in files)
+                {
+                    if (GlobUtility.IsGlobString(file))
+                    {
+                        globs.Add(GlobUtility.CreateGlobMatcher(Path.Combine(_buildOptions.DocsetPath, file)));
+                    }
+                    else
+                    {
+                        var filePath = FilePath.Content(new PathString(file));
+                        if (_input.Exists(filePath) && _buildScope.Contains(filePath.Path))
+                        {
+                            filesToBuild.Add(filePath);
+                        }
+                    }
+                }
+
+                if (globs.Any())
+                {
+                    filesToBuild.UnionWith(from file in _publishUrlMap.GetFiles().Concat(_tocMap.GetFiles())
+                                           let fullPath = Path.Combine(_buildOptions.DocsetPath, file.Path)
+                                           where globs.Any(glob => glob.Invoke(fullPath))
+                                           select file);
+                }
+            }
+            return filesToBuild;
         }
 
         private void BuildFile(

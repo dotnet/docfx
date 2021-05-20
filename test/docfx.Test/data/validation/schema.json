@@ -62,13 +62,70 @@
       "type": [
         "string",
         "null"
+      ],
+      "enum": [
+        "archived",
+        "article",
+        "best-practice",
+        "callback",
+        "checklist",
+        "class",
+        "conceptual"
       ]
     },
     "product": {
       "type": [
         "array",
         "null"
-      ]
+      ],
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "azure",
+          "azue-speech-translation",
+          "azure-active-directory",
+          "azure-active-directory-b2c",
+          "azure-active-directory-domain",
+          "azure-advisor",
+          "azure-analysis-services",
+          "azure-anomaly-detector",
+          "azure-api-apps",
+          "azure-api-fhir",
+          "azure-api-management",
+          "dotnet",
+          "aspnet",
+          "aspnet-core",
+          "dotnet-core",
+          "dotnet-standard",
+          "ef-core",
+          "mlnet",
+          "xamarin",
+          "dynamics",
+          "dynamics-365",
+          "customer-voice",
+          "dynamics-business-central",
+          "dynamics-commerce",
+          "dynamics-cust-insights",
+          "dynamics-customer-engagement",
+          "dynamics-customer-service",
+          "dynamics-cust-svc-insights",
+          "dynamics-field-service",
+          "expression",
+          "expression-studio",
+          "m365",
+          "m365-ems",
+          "m365-ems-cloud-app-security",
+          "m365-information-protection",
+          "m365-security-center",
+          "m365-security-score",
+          "mem",
+          "mem-configuration-manager",
+          "mem-intune"
+        ]
+      }
     },
     "ms.date": {
       "type": [
@@ -193,78 +250,6 @@
           "process-automation": null,
           "shared-capabilities": null,
           "update-management": null
-        }
-      }
-    },
-    "ms.topic[0]": {
-      "archived": null,
-      "article": null,
-      "best-practice": null,
-      "callback": null,
-      "checklist": null,
-      "class": null,
-      "conceptual": null,
-      "include": null
-    },
-    "product[0]": {
-      "azure": {
-        "product[1]": {
-          "azue-speech-translation": null,
-          "azure-active-directory": null,
-          "azure-active-directory-b2c": null,
-          "azure-active-directory-domain": null,
-          "azure-advisor": null,
-          "azure-analysis-services": null,
-          "azure-anomaly-detector": null,
-          "azure-api-apps": null,
-          "azure-api-fhir": null,
-          "azure-api-management": null
-        }
-      },
-      "dotnet": {
-        "product[1]": {
-          "aspnet": null,
-          "aspnet-core": null,
-          "dotnet-core": null,
-          "dotnet-standard": null,
-          "ef-core": null,
-          "mlnet": null,
-          "xamarin": null
-        }
-      },
-      "dynamics": {
-        "product[1]": {}
-      },
-      "dynamics-365": {
-        "product[1]": {
-          "customer-voice": null,
-          "dynamics-business-central": null,
-          "dynamics-commerce": null,
-          "dynamics-cust-insights": null,
-          "dynamics-customer-engagement": null,
-          "dynamics-customer-service": null,
-          "dynamics-cust-svc-insights": null,
-          "dynamics-field-service": null
-        }
-      },
-      "expression": {
-        "product[1]": {
-          "expression-studio": null
-        }
-      },
-      "m365": {
-        "product[1]": {
-          "m365-ems": null,
-          "m365-ems-cloud-app-security": null,
-          "m365-information-protection": null,
-          "m365-security-center": null,
-          "m365-security-score": null
-        }
-      },
-      "mem": {
-        "product[1]": {
-          "mem-configuration-manager": null,
-          "mem-intune": null
         }
       }
     }
@@ -429,7 +414,8 @@
         "contentTypes": [
           "conceptual",
           "include"
-        ]
+        ],
+        "tags": [ "SEO" ]
       },
       "missing-attribute": {
         "severity": "suggestion",
@@ -437,7 +423,8 @@
         "additionalMessage": "Add a title string to show in search engine results.",
         "contentTypes": [
           "conceptual"
-        ]
+        ],
+        "tags": [ "SEO" ]
       },
       "duplicate-attribute": {
         "severity": "suggestion",
@@ -448,7 +435,8 @@
           "include",
           "landingpage",
           "hubpage"
-        ]
+        ],
+        "tags": [ "SEO" ]
       }
     },
     "ms.topic": {

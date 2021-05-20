@@ -22,7 +22,7 @@ namespace Microsoft.Docs.Build
                 CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
                 new[] { "zh-cn", "zh-tw", "zh-hk", "zh-sg", "zh-mo" }), StringComparer.OrdinalIgnoreCase);
 
-        private static readonly Regex s_nameWithLocale = new(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?|\.loc)?$", RegexOptions.IgnoreCase);
+        private static readonly Regex s_nameWithLocale = new(@"^.+?(\.[a-z]{2,4}-[a-z]{2,4}(-[a-z]{2,4})?)?$", RegexOptions.IgnoreCase);
         private static readonly Regex s_lrmAdjustment = new(@"(^|\s|\>)(C#|F#|C\+\+)(\s*|[.!?;:]*)(\<|[\n\r]|$)", RegexOptions.IgnoreCase);
 
         public static bool IsValidLocale(string locale) => s_locales.Contains(locale);
@@ -55,15 +55,16 @@ namespace Microsoft.Docs.Build
             if (fallbackRemote != null)
             {
                 var docsetSourceFolder = Path.GetRelativePath(repository.Path, docsetPath);
-                foreach (var branch in new[] { fallbackBranch, "main" })
+                var package = new PackagePath(fallbackRemote, fallbackBranch);
+                var options = PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError;
+                if (packageResolver.TryResolvePackage(package, options, out var fallbackRepoPath))
                 {
-                    if (packageResolver.TryResolvePackage(
-                        new PackagePath(fallbackRemote, branch),
-                        PackageFetchOptions.None | PackageFetchOptions.IgnoreBranchFallbackError,
-                        out var fallbackRepoPath))
-                    {
-                        return Path.Combine(fallbackRepoPath, docsetSourceFolder);
-                    }
+                    return Path.Combine(fallbackRepoPath, docsetSourceFolder);
+                }
+                else
+                {
+                    package = new PackagePath(fallbackRemote, "main");
+                    return Path.Combine(packageResolver.ResolvePackage(package, options), docsetSourceFolder);
                 }
             }
             return null;
@@ -86,7 +87,7 @@ namespace Microsoft.Docs.Build
             return false;
         }
 
-        public static void EnsureLocalizationContributionBranch(PreloadConfig config, Repository? repository)
+        public static void EnsureLocalizationContributionBranch(SecretConfig secrets, Repository? repository)
         {
             // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
             // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
@@ -106,7 +107,7 @@ namespace Microsoft.Docs.Build
                     {
                         try
                         {
-                            GitUtility.Fetch(config, repository.Path, repository.Url, $"+{branch}:{branch}", "--update-head-ok");
+                            GitUtility.Fetch(secrets, repository.Path, repository.Url, $"+{branch}:{branch}", "--update-head-ok");
                             succeeded = true;
                             break;
                         }
@@ -122,6 +123,18 @@ namespace Microsoft.Docs.Build
 
                     s_fetchedLocalizationRepositories.TryAdd(repository);
                 }
+            }
+        }
+
+        public static CultureInfo CreateCultureInfo(string locale)
+        {
+            try
+            {
+                return new CultureInfo(locale);
+            }
+            catch (CultureNotFoundException)
+            {
+                throw Errors.Config.LocaleInvalid(locale).ToException();
             }
         }
 

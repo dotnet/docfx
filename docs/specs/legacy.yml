@@ -27,8 +27,7 @@ repos:
         {
           "properties": {
             "api_name": { "htmlMetaName": "APIName" }
-          },
-          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url", "github_contributors"]
+          }
         }
   https://docs.com/theme:
   - files:
@@ -66,16 +65,16 @@ outputs:
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
         <meta name=\"author\" content=\"charlie\" />
-        <meta name=\"content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
+        <meta name=\"conceptual\" content=\"<p><a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;>d</a></p>\"/>
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/3a174518dadf39d8ec448a4090a8105e2bdf6336/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/42eb7605fdef9f5e7674a1cae803f86a39ee628a/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
-        <meta name=\"original_content_git_url_template\" content=\"{repo}/blob/{branch}/c.md\" />
         <meta name=\"rawTitle\" content=\"\" />
+        <meta name=\"schema\" content=\"Conceptual\" />
         <meta name=\"search.ms_docsetname\" content=\"\" />
         <meta name=\"search.ms_product\" content=\"\" />
         <meta name=\"search.ms_sitename\" content=\"Docs\" />
@@ -313,39 +312,39 @@ inputs:
       ]
     }
 outputs:
-  docs/4667fedf/a.mta.json:
-  docs/4667fedf/a.raw.page.json:
-  docs/9d4e15fd/a.mta.json:
-  docs/9d4e15fd/a.raw.page.json:
+  docs/ecc061f43156f37be077db42abf8301a/a.mta.json:
+  docs/ecc061f43156f37be077db42abf8301a/a.raw.page.json:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.mta.json:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.raw.page.json:
   full-dependent-list.txt:
   docs/.manifest.json: |
     {
       "files":[
-        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"9d4e15fd/a.mta.json"},".raw.page.json":{"relative_path":"9d4e15fd/a.raw.page.json"}},"group":"9d4e15fd"},
-        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"4667fedf/a.mta.json"},".raw.page.json":{"relative_path":"4667fedf/a.raw.page.json"}},"group":"4667fedf"}
+        {"asset_id":"a","original":"docs/v1/a.md","source_relative_path":"docs/v1/a.md","output":{".mta.json":{"relative_path":"17b9fe681514513cbf7d5c90e32f107a/a.mta.json"},".raw.page.json":{"relative_path":"17b9fe681514513cbf7d5c90e32f107a/a.raw.page.json"}},"group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"asset_id":"a","original":"docs/v2/a.md","source_relative_path":"docs/v2/a.md","output":{".mta.json":{"relative_path":"ecc061f43156f37be077db42abf8301a/a.mta.json"},".raw.page.json":{"relative_path":"ecc061f43156f37be077db42abf8301a/a.raw.page.json"}},"group":"ecc061f43156f37be077db42abf8301a"}
       ],
       "groups":[
-        {"group":"4667fedf","monikers":["netcore-2.0"]},
-        {"group":"9d4e15fd","monikers":["netcore-1.0","netcore-1.1"]}
+        {"group":"17b9fe681514513cbf7d5c90e32f107a","monikers":["netcore-1.0","netcore-1.1"]},
+        {"group":"ecc061f43156f37be077db42abf8301a","monikers":["netcore-2.0"]}
       ]
     }
   docs/filemap.json: |
     {
       "file_mapping":{
-        "docs/v1/a.md:< netcore-2.0":{
-          "type":"Content",
-          "output_relative_path":"9d4e15fd/a.html",
-          "asset_id":"a",
-          "version": "< netcore-2.0",
-          "monikers":["netcore-1.0","netcore-1.1"],
-          "is_moniker_range": true
-        },
         "docs/v2/a.md:netcore-2.0":{
           "type":"Content",
-          "output_relative_path":"4667fedf/a.html",
+          "output_relative_path":"ecc061f43156f37be077db42abf8301a/a.html",
           "asset_id":"a",
           "version": "netcore-2.0",
           "monikers":["netcore-2.0"],
+          "is_moniker_range": true
+        },
+        "docs/v1/a.md:< netcore-2.0":{
+          "type":"Content",
+          "output_relative_path":"17b9fe681514513cbf7d5c90e32f107a/a.html",
+          "asset_id":"a",
+          "version": "< netcore-2.0",
+          "monikers":["netcore-1.0","netcore-1.1"],
           "is_moniker_range": true
         }
       }
@@ -376,11 +375,11 @@ inputs:
       ]
     }
 outputs:
-  docs/136a42ac/toc.json:
-  docs/136a42ac/f1/a.json: |
+  docs/9b52f68bce2b10c7aa018b696f8ca916/toc.json:
+  docs/9b52f68bce2b10c7aa018b696f8ca916/f1/a.json: |
     {"_tocRel": "../toc.json"}
-  docs/4667fedf/toc.json:
-  docs/4667fedf/f1/a.json: |
+  docs/ecc061f43156f37be077db42abf8301a/toc.json:
+  docs/ecc061f43156f37be077db42abf8301a/f1/a.json: |
     {"_tocRel": "../toc.json"}
   docs/filemap.json:
 ---
@@ -425,7 +424,7 @@ inputs:
   a.md: '[](https://github.com)'
   b.yml: |
     #YamlMime:TestPage
-    link: https://docs.com
+    link: https://static.docs.com
     markdown: '[](a.md)'
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -445,7 +444,7 @@ outputs:
   b.raw.page.json: |
     { "content": "
         <a data-linktype='external' href='https://github.com'></a>
-        <img data-linktype='external' src='https://docs.com'></img>
+        <img data-linktype='external' src='https://static.docs.com'></img>
         <p><a data-linktype='relative-path' href='a'></a></p>" }
 ---
 # The site base path is empty.

@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.LearnValidation
 {
-    public class ValidatorHierarchyItem : HierarchyItem, IValidateModel
+    public class ValidatorHierarchyItem : IValidateModel
     {
         [JsonProperty("serviceData")]
         public string ServiceData { get; set; } = "";
@@ -16,6 +15,9 @@ namespace Microsoft.Docs.LearnValidation
         public bool IsValid { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        [JsonProperty("uid")]
+        public string UId { get; set; } = "";
 
         public string Uid => UId;
 
@@ -29,5 +31,29 @@ namespace Microsoft.Docs.LearnValidation
 
         [JsonProperty("page_kind")]
         public string PageKind { get; set; } = "";
+
+        [JsonProperty("depotName")]
+        public string DepotName { get; set; } = "";
+
+        [JsonProperty("assetId")]
+        public string? AssetId { get; set; }
+
+        [JsonProperty("locale")]
+        public string Locale { get; set; } = "";
+
+        [JsonProperty("branch")]
+        public string Branch { get; set; } = "";
+
+        [JsonProperty("url")]
+        public string Url { get; set; } = "";
+
+        [JsonProperty("abstract")]
+        public string Abstract { get; set; } = "";
+
+        [JsonProperty("summary")]
+        public string Summary { get; set; } = "";
+
+        [JsonProperty("points", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public int Points { get; set; } = 0;
     }
 }

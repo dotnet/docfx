@@ -1264,8 +1264,8 @@ inputs:
     - name: Uid Ref
       uid: a
 outputs:
-  e300a7df/docs/a.json:
-  8169d1ea/docs/toc.json: |
+  cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/a.json:
+  4186d6505439642fa6301b4755580de2/docs/toc.json: |
     {
       "items": [
         { "name":"Uid Ref","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
@@ -1315,8 +1315,8 @@ inputs:
   docs/TOC.md: |
     # @b
 outputs:
-  e300a7df/docs/a.json:
-  8169d1ea/docs/toc.json: |
+  cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/a.json:
+  4186d6505439642fa6301b4755580de2/docs/toc.json: |
     {
       "items": [
         { "name":"Title A","href":"a","monikers": ["netcore-1.1", "netcore-1.2"] }
@@ -1480,7 +1480,7 @@ inputs:
         - "3.0"
         - "4.0"
 outputs:
-  336669db/docs/b.json:
+  a19a1584344c1f3783bff51524a5a4b8/docs/b.json:
   docs/toc.json: |
     {
       "items": [
@@ -1522,3 +1522,54 @@ outputs:
         "a.md": [{ "source": "TOC.yml", "type": "metadata" }]
       }
     }
+---
+# TOC with output-type="json"
+repos:
+  https://github.com/toc/toc-output-type-is-json:
+  - files:
+      docfx.yml: |
+        outputType: Json
+        template: https://docs.com/theme
+      TOC.yml: |
+        - name: a
+          href: a.md
+      a.md:
+  https://docs.com/theme:
+  - files:
+      ContentTemplate/toc.json.js: |
+        exports.transform = function (model) {
+          model["outputType"] = "json"
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+outputs:
+  a.json:
+  toc.json: |
+    {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc"}
+---
+# TOC with output-type="pageJson"
+repos:
+  https://github.com/toc/toc-output-type-is-pageJson:
+  - files:
+      docfx.yml: |
+        outputType: PageJson
+        template: https://docs.com/theme
+      TOC.yml: |
+        - name: a
+          href: a.md
+      a.md:
+  https://docs.com/theme:
+  - files:
+      ContentTemplate/toc.json.js: |
+        exports.transform = function (model) {
+          model["outputType"] = "pagejson"
+          return {
+            content: JSON.stringify(model)
+          }
+        }
+outputs:
+  a.raw.page.json:
+  a.mta.json:
+  toc.json: |
+    {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc","outputType":"pagejson"}

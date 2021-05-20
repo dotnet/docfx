@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -16,7 +15,7 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -203,7 +202,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(_documentProvider, _metadataProvider, GetErrors, GetLink, GetImageLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref)
                 .UseExtractTitle(this, GetConceptual);
         }
 
@@ -300,72 +299,74 @@ namespace Microsoft.Docs.Build
             return file is null ? default : (_input.ReadString(file).Replace("\r", ""), new SourceInfo(file));
         }
 
+        private string GetLink(string path, MarkdownObject origin)
+        {
+            return GetLink(new()
+            {
+                Href = new(path, origin.GetSourceInfo()),
+                MarkdownObject = origin,
+            });
+        }
+
         private string GetImageLink(string path, MarkdownObject origin, string? altText, string? imageType)
         {
-            if (altText is null && origin is LinkInline linkInline && linkInline.IsImage)
+            return GetLink(new()
             {
-                altText = ToPlainText(origin);
-            }
-            var node = new ImageLinkNode
-            {
-                UrlLink = path,
-                ImageLinkType = Enum.TryParse(imageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
-                AltText = altText,
-                IsInline = origin.IsInlineImage(-1),
-            };
-            return GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin, node);
+                Href = new(path, origin.GetSourceInfo()),
+                TagName = "img",
+                AttributeName = "src",
+                MarkdownObject = origin,
+                AltText = altText ?? (origin is LinkInline linkInline && linkInline.IsImage ? ToPlainText(origin) : null),
+                ImageType = imageType,
+            });
         }
 
-        private string GetImageLink(SourceInfo<string> href, MarkdownObject origin, string? altText, int imageIndex)
+        private string GetLink(LinkInfo link)
         {
-            var node = new ImageLinkNode
-            {
-                UrlLink = href,
-                ImageLinkType = ImageLinkType.Default,
-                AltText = altText,
-                IsInline = origin.IsInlineImage(imageIndex),
-            };
-            return GetLink(href, origin, node);
-        }
+            ValidateLink(link);
 
-        private string GetLink(SourceInfo<string> link, MarkdownObject origin)
-        {
-            if (origin is LinkInline linkInline)
-            {
-                Debug.Assert(!linkInline.IsImage);
-            }
-            var node = new HyperLinkNode
-            {
-                UrlLink = link,
-                IsVisible = MarkdigUtility.IsVisible(origin),
-                HyperLinkType = origin switch
-                {
-                    AutolinkInline => HyperLinkType.AutoLink,
-                    HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
-                    _ => HyperLinkType.Default,
-                },
-            };
-            return GetLink(link, origin, node);
-        }
-
-        private string GetLink(string path, MarkdownObject origin) => GetLink(new SourceInfo<string>(path, origin.GetSourceInfo()), origin);
-
-        private string GetLink(SourceInfo<string> href, MarkdownObject origin, LinkNode outer)
-        {
-            // fill common field of LinkNode
-            var node = outer with
-            {
-                SourceInfo = href.Source,
-                ParentSourceInfoList = origin.GetInclusionStack(),
-                Monikers = origin.GetZoneLevelMonikers(),
-                ZonePivots = origin.GetZonePivots(),
-                TabbedConceptualHeader = origin.GetTabId(),
-            };
-            _contentValidator.ValidateLink(GetRootFilePath(), node);
             var status = s_status.Value!.Peek();
-            var (error, link, _) = _linkResolver.ResolveLink(href, GetFilePath(href), GetRootFilePath());
+            var (error, result, _) = _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath());
             status.Errors.AddIfNotNull(error);
-            return link;
+            return result;
+        }
+
+        private void ValidateLink(LinkInfo link)
+        {
+            if (link.MarkdownObject is null)
+            {
+                return;
+            }
+
+            LinkNode node = link.IsImage
+                ? new ImageLinkNode
+                {
+                    ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
+                    AltText = link.AltText,
+                    IsInline = link.MarkdownObject.IsInlineImage(link.HtmlSourceIndex),
+                }
+                : new HyperLinkNode
+                {
+                    IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
+                    HyperLinkType = link.MarkdownObject switch
+                    {
+                        AutolinkInline => HyperLinkType.AutoLink,
+                        HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
+                        _ => HyperLinkType.Default,
+                    },
+                };
+
+            node = node with
+            {
+                UrlLink = link.Href,
+                SourceInfo = link.Href.Source,
+                ParentSourceInfoList = link.MarkdownObject.GetInclusionStack(),
+                Monikers = link.MarkdownObject.GetZoneLevelMonikers(),
+                ZonePivots = link.MarkdownObject.GetZonePivots(),
+                TabbedConceptualHeader = link.MarkdownObject.GetTabId(),
+            };
+
+            _contentValidator.ValidateLink(GetRootFilePath(), node);
         }
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)

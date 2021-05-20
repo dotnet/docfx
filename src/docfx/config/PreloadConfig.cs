@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -41,10 +39,7 @@ namespace Microsoft.Docs.Build
         [JsonConverter(typeof(OneOrManyConverter))]
         public SourceInfo<string>[] Extend { get; init; } = Array.Empty<SourceInfo<string>>();
 
-        /// <summary>
-        /// Gets the authorization keys for required resources access
-        /// </summary>
-        public Dictionary<string, HttpConfig> Http { get; init; } = new Dictionary<string, HttpConfig>();
+        public SecretConfig Secrets { get; init; } = new SecretConfig();
 
         /// <summary>
         /// Type of git access token used to access the GitHub API
@@ -55,17 +50,5 @@ namespace Microsoft.Docs.Build
         /// Name of the git repository owner
         /// </summary>
         public string? DocsRepositoryOwnerName { get; init; }
-
-        public HttpConfig? GetHttpConfig(string url)
-        {
-            foreach (var (baseUrl, rule) in Http.OrderByDescending(pair => pair.Key, StringComparer.Ordinal))
-            {
-                if (url.StartsWith(baseUrl, StringComparison.OrdinalIgnoreCase))
-                {
-                    return rule;
-                }
-            }
-            return default;
-        }
     }
 }

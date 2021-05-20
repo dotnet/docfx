@@ -26,12 +26,12 @@ inputs:
       ]
     }
 outputs:
-  docs/9d4e15fd/a.json: |
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
-  docs/23d205a5/a.json: |
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0, netcore-2.1</p>",
       "monikers": ["netcore-2.0", "netcore-2.1"]
@@ -39,12 +39,12 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/a","moniker_group":"23d205a5", "config_moniker_range": ">= netcore-2.0" },
-        {"url":"/docs/a","moniker_group":"9d4e15fd", "config_moniker_range": "< netcore-2.0" }
+        {"url":"/docs/a","moniker_group":"17b9fe681514513cbf7d5c90e32f107a", "config_moniker_range": "< netcore-2.0" },
+        {"url":"/docs/a","moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a", "config_moniker_range": ">= netcore-2.0" }
       ],
       "moniker_groups": {
-        "23d205a5": ["netcore-2.0","netcore-2.1"],
-        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
+        "ed8f7746ec932ae7c9f595c1f2c97d5a": ["netcore-2.0","netcore-2.1"],
+        "17b9fe681514513cbf7d5c90e32f107a": ["netcore-1.0","netcore-1.1"]
       }
     }
 ---
@@ -65,7 +65,7 @@ inputs:
       ]
     }
 outputs:
-  218c13d0/docs/v1/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/v1/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
@@ -101,12 +101,12 @@ inputs:
       ]
     }
 outputs:
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"],
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"],
@@ -114,12 +114,12 @@ outputs:
   .publish.json: |
     {
       "files": [
-          { "url": "/docs/a", "path": "218c13d0/docs/a.json", "moniker_group": "218c13d0" },
-          { "url": "/docs/a", "path": "4667fedf/docs/a.json", "moniker_group": "4667fedf" }
+          { "url": "/docs/a", "path": "55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+          { "url": "/docs/a", "path": "ecc061f43156f37be077db42abf8301a/docs/a.json", "moniker_group": "ecc061f43156f37be077db42abf8301a" }
       ],
       "moniker_groups":{
-        "218c13d0":["netcore-1.1"],
-        "4667fedf":["netcore-2.0"]
+        "55a4a18f941221e4d8924d8ebc96dd6c":["netcore-1.1"],
+        "ecc061f43156f37be077db42abf8301a":["netcore-2.0"]
       }
     }
 ---
@@ -145,7 +145,7 @@ inputs:
       ]
     }
 outputs:
-  2420f88b/docs/a.json: |
+  4d70bd679da22f2fcabba1faf02184a4/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p><div data-moniker=\"netcore-1.0 netcore-1.1\"><p>Moniker: netcore-1.0, netcore-1.1</p></div>",
       "monikers": ["netcore-1.0", "netcore-1.1", "netcore-1.2"]
@@ -183,19 +183,19 @@ inputs:
       ]
     }
 outputs:
-  docs/9d4e15fd/a.json:
-  docs/4667fedf/b.json:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.json:
+  docs/ecc061f43156f37be077db42abf8301a/b.json:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/c","moniker_group":"4667fedf"},
-        {"url":"/docs/c","moniker_group":"9d4e15fd"},
-        {"url":"/docs/b","moniker_group":"4667fedf"},
-        {"url":"/docs/a","moniker_group":"9d4e15fd"}
+        {"url":"/docs/c","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"url":"/docs/c","moniker_group":"ecc061f43156f37be077db42abf8301a"},
+        {"url":"/docs/a","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"url":"/docs/b","moniker_group":"ecc061f43156f37be077db42abf8301a"}
       ],
       "moniker_groups":{
-        "4667fedf":["netcore-2.0"],
-        "9d4e15fd":["netcore-1.0","netcore-1.1"]
+        "ecc061f43156f37be077db42abf8301a":["netcore-2.0"],
+        "17b9fe681514513cbf7d5c90e32f107a":["netcore-1.0","netcore-1.1"]
       }
     }
 ---
@@ -227,11 +227,11 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/docs/a.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json: |
     {
       "document_id": "2f5db941-5d87-5c7e-668b-00a1e364cc0e"
     }
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "document_id": "08d48c30-3997-5171-bec6-5f6650078a1f"
     }
@@ -242,16 +242,16 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "136a42ac" },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "218c13d0" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/b-old", "redirect_url": "/docs/b" },
-        { "url": "/docs/a", "moniker_group": "136a42ac" },
-        { "url": "/docs/a", "moniker_group": "218c13d0" },
+        { "url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/b" }
       ],
       "moniker_groups": {
-        "218c13d0": ["netcore-1.1"],
-        "136a42ac": ["netcore-1.0"]
+        "55a4a18f941221e4d8924d8ebc96dd6c": ["netcore-1.1"],
+        "9b52f68bce2b10c7aa018b696f8ca916": ["netcore-1.0"]
       }
     }
 ---
@@ -282,25 +282,25 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/docs/a.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json: |
     {
       "document_id": "9aad8db9-886c-62db-ad91-a80eb80f89d8"
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "document_id": "9aad8db9-886c-62db-ad91-a80eb80f89d8"
     }
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "e2dfe8fd" },
-        { "url": "/docs/a", "moniker_group": "136a42ac" },
-        { "url": "/docs/a", "moniker_group": "4667fedf" }
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" },
+        { "url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
+        { "url": "/docs/a", "moniker_group": "ecc061f43156f37be077db42abf8301a" }
       ],
       "moniker_groups": {
-        "4667fedf": ["netcore-2.0"],
-        "136a42ac": ["netcore-1.0"],
-        "e2dfe8fd": [
+        "ecc061f43156f37be077db42abf8301a": ["netcore-2.0"],
+        "9b52f68bce2b10c7aa018b696f8ca916": ["netcore-1.0"],
+        "78a0a559ed7f8a30d90c683a57012297": [
             "netcore-1.0",
             "netcore-2.0"
         ]
@@ -334,25 +334,25 @@ inputs:
       ]
     }
 outputs:
-  9d4e15fd/docs/a.json: |
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json: |
     {
       "document_id": "2f5db941-5d87-5c7e-668b-00a1e364cc0e"
     }
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "136a42ac" },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "218c13d0" },
-        { "url": "/docs/a", "moniker_group": "9d4e15fd" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
+        { "url": "/docs/a", "moniker_group": "17b9fe681514513cbf7d5c90e32f107a" },
       ],
       "moniker_groups": {
-        "136a42ac": [ "netcore-1.0" ],
-        "218c13d0": [ "netcore-1.1" ],
-        "9d4e15fd": ["netcore-1.0","netcore-1.1"]
+        "9b52f68bce2b10c7aa018b696f8ca916": [ "netcore-1.0" ],
+        "55a4a18f941221e4d8924d8ebc96dd6c": [ "netcore-1.1" ],
+        "17b9fe681514513cbf7d5c90e32f107a": ["netcore-1.0","netcore-1.1"]
       }
     }
   .errors.log: |
-    {"message_severity":"warning","code":"redirection-url-conflict","message":"The '/docs/a' appears twice or more in the redirection mappings.","file":"redirections.yml","line":3,"column":21}
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '/docs/a' with redirect_document_id set to true: 'docs/v1/a-old.md', 'docs/v2/a-old.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): 'redirections.yml'.","line":2,"column":21}
 ---
 # Redirection file with monikers - moniker overlap
 inputs:
@@ -385,11 +385,11 @@ inputs:
       ]
     }
 outputs:
-  9d4e15fd/docs/a.json: |
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>"
     }
-  b201e604/docs/a.json: |
+  98db214cbec40e19feee113edb10edb0/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.2</p>"
     }
@@ -397,9 +397,9 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a-old", "moniker_group": "e300a7df", "config_moniker_range": ">= netcore-1.1 <= netcore-1.2", "redirect_url": "/docs/a"},
-        {"url": "/docs/a", "path": "9d4e15fd/docs/a.json"},
-        {"url": "/docs/a", "path": "b201e604/docs/a.json"},
+        {"url": "/docs/a-old", "moniker_group": "cb8e4dad4d4bcb3bdefdfe9f87ccffda", "config_moniker_range": ">= netcore-1.1 <= netcore-1.2", "redirect_url": "/docs/a"},
+        {"url": "/docs/a", "path": "17b9fe681514513cbf7d5c90e32f107a/docs/a.json"},
+        {"url": "/docs/a", "path": "98db214cbec40e19feee113edb10edb0/docs/a.json"},
       ]
     }
   .errors.log: |
@@ -429,12 +429,12 @@ inputs:
       ]
     }
 outputs:
-  f7525be1/docs/a.json:
+  ed8f7746ec932ae7c9f595c1f2c97d5a/docs/a.json:
   .publish.json: |
     {
       "files":
       [
-        {"url": "/docs/a", "path": "f7525be1/docs/a.json"}
+        {"url": "/docs/a", "path": "ed8f7746ec932ae7c9f595c1f2c97d5a/docs/a.json"}
       ]
     }
   .errors.log: |
@@ -546,7 +546,7 @@ inputs:
       ]
     }
 outputs:
-  9d4e15fd/docs/a.json: |
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json: |
     { "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>" }
   .errors.log: |
     {"message_severity":"warning","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string 'netcore-1.2' is 'netcore-1.2', while file level monikers is 'netcore-1.0', 'netcore-1.1'.","file":"docs/v1/a.md","line":2,"column":1}
@@ -592,12 +592,12 @@ outputs:
       "conceptual": "<p>Link to <a href=\"a?view=netcore-1.1\">netcore</a></p>",
       "monikers": undefined
     }
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
@@ -641,8 +641,8 @@ inputs:
 outputs:
   docs/c.json: |
     { "conceptual": "<p>Link to <a href=\"a\">netcore-2.0</a></p>" }
-  218c13d0/docs/a.json:
-  4667fedf/docs/a.json:
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json:
+  ecc061f43156f37be077db42abf8301a/docs/a.json:
 ---
 # Define same uid with multiple moniker ranges with same name, 
 # reference to it without moniker in the same docset, anyone can be taken
@@ -686,12 +686,12 @@ outputs:
       "conceptual": "<p>Link to <a href=\"a\">netcore</a></p>",
       "monikers": undefined
     }
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
@@ -731,20 +731,20 @@ inputs:
       ]
     }
 outputs:
-  afb33dd2/docs/a.json:
+  ed8f7746ec932ae7c9f595c1f2c97d5a/docs/a.json:
   docs/c.json: |
     {"conceptual":"<p>Link to <a href=\"a\" data-linktype=\"relative-path\">netcore-2.0, netcore-2.1</a></p>"}
   .errors.log: |
     {"message_severity":"error","code":"moniker-overlapping","message":"Two or more documents with the same uid `a`('docs/v1/a.md', 'docs/v2/a.md') have defined overlapping moniker: 'netcore-2.0'."}
     {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('netcore-2.0') publish to the same url '/docs/a': 'docs/v1/a.md<'netcore-1.1', 'netcore-2.0'>', 'docs/v2/a.md<'netcore-2.0', 'netcore-2.1'>'."}
   .xrefmap.json: | 
-    {"references":[{"uid":"a","name":"netcore-2.0, netcore-2.1"}]}
+    {"references":[{"uid":"a","name":"netcore-2.0, netcore-2.1", "monikers": ["netcore-2.0", "netcore-2.1"]}]}
   .publish.json: |
     {
       "files": 
       [
-        {"url": "/docs/a", "path": "afb33dd2/docs/a.json"},
-        {"url": "/docs/c"}
+        {"url": "/docs/c"},
+        {"url": "/docs/a", "path": "ed8f7746ec932ae7c9f595c1f2c97d5a/docs/a.json"}
       ]
     }
 ---
@@ -789,12 +789,12 @@ outputs:
       "conceptual": "<p>Link <a href=\"a?view=netcore-1.0\">netcore</a></p>",
       "monikers": undefined
     }
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
@@ -842,12 +842,12 @@ outputs:
       "conceptual": "<p>Link to <a href=\"a\">no version</a></p>",
       "monikers": undefined
     }
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
@@ -903,12 +903,12 @@ outputs:
       "conceptual": "<p>Link to <a href=\"b\" data-linktype=\"relative-path\">b with no version</a></p>",
       "monikers": undefined
     }
-  218c13d0/docs/a.json: |
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1</p>",
       "monikers": ["netcore-1.1"]
     }
-  4667fedf/docs/a.json: |
+  ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-2.0</p>",
       "monikers": ["netcore-2.0"]
@@ -962,17 +962,17 @@ inputs:
     }
 outputs:
   docs/x.json:
-  9d4e15fd/docs/a.json: |
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1</p>",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
-  e300a7df/docs/b.json: |
+  cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/b.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
     }
-  8169d1ea/docs/toc.json: |
+  4186d6505439642fa6301b4755580de2/docs/toc.json: |
     {
       "items": [
         {
@@ -1009,7 +1009,7 @@ outputs:
         }
       ],
       "metadata": {
-        "pdf_absolute_path": "/opbuildpdf/8169d1ea/docs/toc.pdf"
+        "pdf_absolute_path": "/opbuildpdf/4186d6505439642fa6301b4755580de2/docs/toc.pdf"
       }
     }
 ---
@@ -1034,9 +1034,9 @@ inputs:
     # [A-1](../v1/a.md)
     # [A-2](../v2/a.md)
 outputs:
-  136a42ac/docs/a.json:
-  4667fedf/docs/a.json:
-  e2dfe8fd/docs/toc.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json:
+  ecc061f43156f37be077db42abf8301a/docs/a.json:
+  78a0a559ed7f8a30d90c683a57012297/docs/toc.json: |
     {
       "items": [
         { "name": "A-1", "href": "a", "monikers": ["netcore-1.0"] },
@@ -1104,11 +1104,11 @@ inputs:
       - name: C
         href: ../c.md
 outputs:
-  136a42ac/docs/b.json:
-  218c13d0/docs/c.json:
-  b201e604/docs/d.json:
-  8d1c2563/docs/e.json:
-  8169d1ea/docs/toc.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/b.json:
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/c.json:
+  98db214cbec40e19feee113edb10edb0/docs/d.json:
+  67b6a3a371dd7a835afa0157c240fc18/docs/e.json:
+  4186d6505439642fa6301b4755580de2/docs/toc.json: |
     {
       "items": [
         {
@@ -1200,11 +1200,11 @@ inputs:
       - name: C
         href: ../c.md
 outputs:
-  136a42ac/docs/b.json:
-  218c13d0/docs/c.json:
-  b201e604/docs/d.json:
-  8d1c2563/docs/e.json:
-  8169d1ea/docs/toc.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/b.json:
+  55a4a18f941221e4d8924d8ebc96dd6c/docs/c.json:
+  98db214cbec40e19feee113edb10edb0/docs/d.json:
+  67b6a3a371dd7a835afa0157c240fc18/docs/e.json:
+  4186d6505439642fa6301b4755580de2/docs/toc.json: |
     {
       "items": [
         {
@@ -1257,7 +1257,7 @@ inputs:
       ]
     }
 outputs:
-  e2dfe8fd/docs/toc.json:
+  ecc061f43156f37be077db42abf8301a/docs/toc.json:
   .publish.json: |
     {
       "files":
@@ -1265,7 +1265,7 @@ outputs:
         {
           "url": "/docs/toc.json",
           "locale": "en-us",
-          "path": "e2dfe8fd/docs/toc.json",
+          "path": "ecc061f43156f37be077db42abf8301a/docs/toc.json",
         }
       ]
     }
@@ -1322,21 +1322,21 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/docs/a.json:
-  136a42ac/docs/c.png:
-  4667fedf/docs/a.json:
-  4667fedf/docs/c.png:
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json:
+  9b52f68bce2b10c7aa018b696f8ca916/docs/c.png:
+  ecc061f43156f37be077db42abf8301a/docs/a.json:
+  ecc061f43156f37be077db42abf8301a/docs/c.png:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a", "path": "136a42ac/docs/a.json", "moniker_group": "136a42ac" },
-        { "url": "/docs/c.png", "path": "136a42ac/docs/c.png", "moniker_group": "136a42ac" },
-        { "url": "/docs/a", "path": "4667fedf/docs/a.json", "moniker_group": "4667fedf" },
-        { "url": "/docs/c.png", "path": "4667fedf/docs/c.png", "moniker_group": "4667fedf" },
+        { "url": "/docs/a", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/a.json", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
+        { "url": "/docs/c.png", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/c.png", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
+        { "url": "/docs/a", "path": "ecc061f43156f37be077db42abf8301a/docs/a.json", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
+        { "url": "/docs/c.png", "path": "ecc061f43156f37be077db42abf8301a/docs/c.png", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
       ],
       "moniker_groups": {
-        "136a42ac": ["netcore-1.0"],
-        "4667fedf": ["netcore-2.0"]
+        "9b52f68bce2b10c7aa018b696f8ca916": ["netcore-1.0"],
+        "ecc061f43156f37be077db42abf8301a": ["netcore-2.0"]
       }
     }
 ---
@@ -1370,15 +1370,15 @@ inputs:
       ]
     }
 outputs:
-  e300a7df/docs/c.png:
-  9d4e15fd/docs/a.json:
-  b201e604/docs/a.json:
+  cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/c.png:
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json:
+  98db214cbec40e19feee113edb10edb0/docs/a.json:
   .publish.json: |
     {
       "files": [
           { "url": "/docs/a" },
           { "url": "/docs/a" },
-          { "url": "/docs/c.png", "path": "e300a7df/docs/c.png"},
+          { "url": "/docs/c.png", "path": "cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/c.png"},
       ]
     }
   .errors.log: |
@@ -1407,7 +1407,7 @@ inputs:
 outputs:
   docs/v1/a.json:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-missing","message":"Invalid moniker range '>= netcore-2.0': Moniker 'netcore-2.0' is not defined.","file":"docfx.yml","line":2,"column":17}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range: '>= netcore-2.0'. Moniker 'netcore-2.0' is not defined.","file":"docfx.yml","line":2,"column":17}
 ---
 # Invalid moniker range in file
 inputs:
@@ -1432,8 +1432,8 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-missing","message":"Invalid moniker range 'netcore-1.2': Moniker 'netcore-1.2' is not defined.","file":"docs/v1/a.md","line":2,"column":15}
-    {"message_severity":"error","code":"moniker-range-missing","message":"Invalid moniker range '<= netcore-1.2': Moniker 'netcore-1.2' is not defined.","file":"docs/v1/b.md","line":2,"column":1}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range: 'netcore-1.2'. Moniker 'netcore-1.2' is not defined.","file":"docs/v1/a.md","line":2,"column":15}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range: '<= netcore-1.2'. Moniker 'netcore-1.2' is not defined.","file":"docs/v1/b.md","line":2,"column":1}
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-1.0' is 'netcore-1.0', while file monikers is ''.","file":"docs/v1/a.md","line":2,"column":15}
     {"message_severity":"warning","code":"moniker-zone-empty","message":"No intersection between zone and file level monikers. The result of zone level range string '<= netcore-1.2' is '', while file level monikers is 'netcore-1.0'.","file":"docs/v1/b.md","line":2,"column":1}
 ---
@@ -1470,12 +1470,12 @@ inputs:
       ]
     }
 outputs:
-  docs/9d4e15fd/a.json: |
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.json: |
     {
       "conceptual": "<p>Moniker: Same with parent</p><div data-moniker=\"netcore-1.1\"><p>Moniker: &gt;= netcore-1.1</p></div>",
       "monikers": ["netcore-1.0", "netcore-1.1"]
     }
-  docs/23d205a5/a.json: |
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/a.json: |
     {
       "conceptual": "<p>Moniker: Same with parent</p><div data-moniker=\"netcore-2.0 netcore-2.1\"><p>Moniker: &gt;= netcore-1.1</p></div>",
       "monikers": ["netcore-2.0", "netcore-2.1"]
@@ -1483,12 +1483,12 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/a","moniker_group":"23d205a5"},
-        {"url":"/docs/a","moniker_group":"9d4e15fd"}
+        {"url":"/docs/a","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"url":"/docs/a","moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a"}
       ],
       "moniker_groups":{
-        "23d205a5":["netcore-2.0","netcore-2.1"],
-        "9d4e15fd":["netcore-1.0","netcore-1.1"]
+        "ed8f7746ec932ae7c9f595c1f2c97d5a":["netcore-2.0","netcore-2.1"],
+        "17b9fe681514513cbf7d5c90e32f107a":["netcore-1.0","netcore-1.1"]
       }
     }
 ---
@@ -1559,16 +1559,16 @@ inputs:
       ]
     }
 outputs:
-  docs/f649fb38/a.json:
-  docs/f649fb38/toc.json:
+  docs/c7654dfba8a02b8991beeae19b3f816b/a.json:
+  docs/c7654dfba8a02b8991beeae19b3f816b/toc.json:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/a","moniker_group":"f649fb38"},
-        {"url":"/docs/toc.json","moniker_group":"f649fb38"}
+        {"url":"/docs/a","moniker_group":"c7654dfba8a02b8991beeae19b3f816b"},
+        {"url":"/docs/toc.json","moniker_group":"c7654dfba8a02b8991beeae19b3f816b"}
       ],
       "moniker_groups":{
-        "f649fb38":["versioning-1.0","versioning-2.0"]
+        "c7654dfba8a02b8991beeae19b3f816b":["versioning-1.0","versioning-2.0"]
       }
     }
 ---
@@ -1598,9 +1598,9 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/a.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/a.json: |
     { "monikers": ["netcore-1.0"] }
-  4667fedf/a.json: |
+  ecc061f43156f37be077db42abf8301a/a.json: |
     { "monikers": ["netcore-2.0"] }
 ---
 # Allow monikers Config if monikerRange not defined
@@ -1624,7 +1624,7 @@ inputs:
       ]
     }
 outputs:
-  4667fedf/docs/q.json: |
+  ecc061f43156f37be077db42abf8301a/docs/q.json: |
     {"monikers":["netcore-2.0"]}
 ---
 # User defined monikers should not outrange moniker range in config
@@ -1699,7 +1699,7 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"moniker-range-key-undefined","message":"Invalid monikers: Moniker 'netcore-1.1' is not defined.","file":"docs/v1/TOC.md","line":2,"column":11}
+    {"message_severity":"error","code":"moniker-range-invalid","message":"Invalid moniker range: Moniker 'netcore-1.1' is not defined.","file":"docs/v1/TOC.md","line":2,"column":11}
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '>= netcore-2.0' is 'netcore-2.0', while file monikers is ''.","file":"docs/v1/TOC.md","line":2,"column":11}
 ---
 # Should take monikerRange as final monikers even it outputs empty
@@ -1751,7 +1751,7 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/docs/a.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/a.json: |
     {"monikers":["netcore-1.0"]}
 ---
 # Should warn if user input monikers with array of empty items
@@ -1777,7 +1777,7 @@ inputs:
       ]
     }
 outputs:
-  136a42ac/docs/toc.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/docs/toc.json: |
     {"metadata":{}}
   .errors.log: |
     {"message_severity":"warning","code":"null-array-value","message":"'monikers' contains null value, the null value has been removed.","file":"docs/v1/TOC.md","line":3,"column":4}
@@ -1816,7 +1816,7 @@ inputs:
       ]
     }
 outputs:
-  e2dfe8fd/docs/a.json: |
+  78a0a559ed7f8a30d90c683a57012297/docs/a.json: |
     {"metadata":{"monikers":["netcore-1.0","netcore-2.0"]}}
   .errors.log: |
     {"message_severity":"error","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '' is '', while file monikers is 'netcore-1.0'.","file":"docs/b.md","line":2,"column":11}
@@ -1893,9 +1893,9 @@ inputs:
   docs/v1/a.md:
   docs/v2/a.md:
 outputs:
-  136a42ac/a.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/a.json: |
     {"monikers":["netcore-1.0"]}
-  4667fedf/a.json: |
+  ecc061f43156f37be077db42abf8301a/a.json: |
     {"monikers":["netcore-2.0"]}
 ---
 # Group is ignored when version configured in docfx.json of v2
@@ -1931,9 +1931,9 @@ inputs:
   docs/v1/a.md:
   docs/v2/a.md:
 outputs:
-  136a42ac/a.json: |
+  9b52f68bce2b10c7aa018b696f8ca916/a.json: |
     {"monikers":["netcore-1.0"]}
-  4667fedf/a.json: |
+  ecc061f43156f37be077db42abf8301a/a.json: |
     {"monikers":["netcore-2.0"]}
 ---
 # Support exclude_monikers metadata
@@ -1960,7 +1960,7 @@ inputs:
       ]
     }
 outputs:
-  439a76d0/docs/q.json: |
+  dbd65aae1151fa58b34e889be64c7783/docs/q.json: |
     {"monikers":["netcore-3.0"]}
 ---
 # Error on file monikers does not intersect with config monikers
@@ -2014,7 +2014,7 @@ inputs:
       ]
     }
 outputs:
-  b59389ff/docs/q.json: |
+  120d8563fdad4bed21620baf3019b9a7/docs/q.json: |
     {"monikers":["netcore-4.0"]}
 ---
 # replace_monikers should intersect with the config monikers
@@ -2067,7 +2067,7 @@ inputs:
       ]
     }
 outputs:
-  e300a7df/docs/a.json: |
+  cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/a.json: |
     {
       "conceptual": "<p>Moniker: netcore-1.0, netcore-1.1, netcore-1.2</p>",
       "monikers": ["netcore-1.1", "netcore-1.2"]
@@ -2091,12 +2091,12 @@ inputs:
       "monikers": [{ "moniker_name": "v1" }, { "moniker_name": "v2" }]
     }
 outputs:
-  6654c734/v1/a.png:
+  3bfc269594ef649228e9a74bab00f042/v1/a.png:
   .publish.json: |
     {
       "files": [
-        { "url": "/v2/b", "moniker_group": "1b267619" },
-        { "url": "/v1/a.png", "moniker_group": "6654c734" }
+        { "url": "/v2/b", "moniker_group": "fb04dcb6970e4c3d1873de51fd5a50d7" },
+        { "url": "/v1/a.png", "moniker_group": "3bfc269594ef649228e9a74bab00f042" }
       ]
     }
 ---
@@ -2148,4 +2148,4 @@ inputs:
       ]
     }
 outputs: 
-  136a42ac/a.json:
+  9b52f68bce2b10c7aa018b696f8ca916/a.json:
