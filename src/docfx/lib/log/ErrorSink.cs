@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                     return ErrorSinkResult.Ignore;
                 }
 
-                if (!_errors.Add(error with { MessageArguments = Array.Empty<string>(), AdditionalErrorInfo = null }))
+                if (!_errors.Add(error with { MessageArguments = Array.Empty<string>() }))
                 {
                     return ErrorSinkResult.Ignore;
                 }
