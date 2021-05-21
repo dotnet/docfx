@@ -5,34 +5,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using Polly;
 
 namespace Microsoft.Docs.Build
 {
-    internal class MicrosoftGraphAccessor : IDisposable
+    internal class MicrosoftGraphAccessor
     {
-        private readonly IGraphServiceClient? _msGraphClient;
+        private readonly GraphServiceClient? _msGraphClient;
         private readonly MicrosoftGraphAuthenticationProvider? _microsoftGraphAuthenticationProvider;
         private readonly JsonDiskCache<Error, string, MicrosoftGraphUser> _aliasCache;
+        private readonly SemaphoreSlim _syncRoot = new(1, 1);
 
         public MicrosoftGraphAccessor(Config config)
         {
-            _aliasCache = new JsonDiskCache<Error, string, MicrosoftGraphUser>(
-                AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraphCacheExpirationInHours));
+            _aliasCache = new(AppData.MicrosoftGraphCachePath, TimeSpan.FromHours(config.MicrosoftGraphCacheExpirationInHours));
 
             if (!string.IsNullOrEmpty(config.MicrosoftGraphTenantId) &&
                 !string.IsNullOrEmpty(config.MicrosoftGraphClientId) &&
-                !string.IsNullOrEmpty(config.MicrosoftGraphClientSecret) &&
+                !string.IsNullOrEmpty(config.Secrets.MicrosoftGraphClientCertificate) &&
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                _microsoftGraphAuthenticationProvider = new MicrosoftGraphAuthenticationProvider(
-                    config.MicrosoftGraphTenantId,
-                    config.MicrosoftGraphClientId,
-                    config.MicrosoftGraphClientSecret);
-
-                _msGraphClient = new GraphServiceClient(_microsoftGraphAuthenticationProvider);
+                _microsoftGraphAuthenticationProvider = new(
+                    config.MicrosoftGraphTenantId, config.MicrosoftGraphClientId, config.Secrets.MicrosoftGraphClientCertificate);
+                _msGraphClient = new(_microsoftGraphAuthenticationProvider);
             }
         }
 
@@ -54,34 +52,43 @@ namespace Microsoft.Docs.Build
             return _aliasCache.Save();
         }
 
-        public void Dispose()
-        {
-            _microsoftGraphAuthenticationProvider?.Dispose();
-        }
-
         private async Task<(Error?, MicrosoftGraphUser?)> GetMicrosoftGraphUserCore(string alias)
         {
-            using (PerfScope.Start($"Calling Microsoft Graph API: {alias}"))
-            {
-                var options = new List<Option>
+            var options = new List<Option>
                 {
                     new QueryOption("$select", "id,mailNickname"),
                     new QueryOption("$filter", $"mailNickname eq '{alias}'"),
                 };
 
-                try
-                {
-                    var users = await Policy
-                        .Handle<ServiceException>()
-                        .RetryAsync(3)
-                        .ExecuteAsync(() => _msGraphClient!.Users.Request(options).GetAsync());
+            try
+            {
+                var users = await Policy
+                    .Handle<ServiceException>()
+                    .RetryAsync(3)
+                    .ExecuteAsync(() => SendRequest(alias, () => _msGraphClient!.Users.Request(options).GetAsync()));
 
-                    return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
-                }
-                catch (Exception e)
+                return (null, new MicrosoftGraphUser { Alias = alias, Id = users?.FirstOrDefault()?.Id });
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                return (Errors.System.MicrosoftGraphApiFailed(ex.Message), null);
+            }
+        }
+
+        private async Task<T> SendRequest<T>(string api, Func<Task<T>> func)
+        {
+            await _syncRoot.WaitAsync();
+            try
+            {
+                using (PerfScope.Start($"Calling Microsoft Graph API: {api}"))
                 {
-                    return (Errors.System.MicrosoftGraphApiFailed(e.Message), null);
+                    return await func();
                 }
+            }
+            finally
+            {
+                _syncRoot.Release();
             }
         }
     }

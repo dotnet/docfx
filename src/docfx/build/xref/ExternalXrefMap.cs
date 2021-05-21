@@ -8,26 +8,44 @@ namespace Microsoft.Docs.Build
 {
     internal class ExternalXrefMap
     {
-        private readonly IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> _externalXrefMap;
+        private readonly Dictionary<string, Lazy<ExternalXrefSpec>> _xrefSpecs;
+        private readonly List<ExternalXref> _externalXrefs;
 
-        private readonly IEnumerable<ExternalXref> _externalXref;
-
-        public ExternalXrefMap(IReadOnlyDictionary<string, Lazy<ExternalXrefSpec>> externalXrefMap, IEnumerable<ExternalXref> externalXref)
+        public ExternalXrefMap(Dictionary<string, Lazy<ExternalXrefSpec>> xrefSpecs, List<ExternalXref> externalXrefs)
         {
-            _externalXrefMap = externalXrefMap;
-            _externalXref = externalXref;
+            _xrefSpecs = xrefSpecs;
+            _externalXrefs = externalXrefs;
         }
 
-        public bool ExternalXrefMapTryGetValue(string uid, out ExternalXrefSpec? spec)
+        public ExternalXrefMap(IEnumerable<ExternalXrefMap> xrefMaps)
         {
-            var result = _externalXrefMap.TryGetValue(uid, out var lazySpec);
+            _externalXrefs = new();
+            _xrefSpecs = new();
+
+            foreach (var xrefMap in xrefMaps)
+            {
+                foreach (var (key, value) in xrefMap._xrefSpecs)
+                {
+                    _xrefSpecs.TryAdd(key, value);
+                }
+
+                foreach (var externalXref in xrefMap._externalXrefs)
+                {
+                    _externalXrefs.Add(externalXref);
+                }
+            }
+        }
+
+        public bool TryGetValue(string uid, out ExternalXrefSpec? spec)
+        {
+            var result = _xrefSpecs.TryGetValue(uid, out var lazySpec);
             spec = lazySpec?.Value;
             return result;
         }
 
-        public IEnumerable<ExternalXref> GetExternalXref()
+        public IEnumerable<ExternalXref> GetExternalXrefs()
         {
-            return _externalXref;
+            return _externalXrefs;
         }
     }
 }

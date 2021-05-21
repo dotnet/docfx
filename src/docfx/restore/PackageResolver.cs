@@ -3,28 +3,27 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PackageResolver : IDisposable
+    internal class PackageResolver
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories
-                          = new ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>>();
+        private static readonly ConcurrentDictionary<(string gitRoot, string url, string branch), Lazy<PathString>> s_gitRepositories = new();
 
+        private readonly ErrorBuilder _errors;
         private readonly string _docsetPath;
         private readonly PreloadConfig _config;
         private readonly FetchOptions _fetchOptions;
         private readonly Repository? _repository;
         private readonly FileResolver _fileResolver;
 
-        private readonly Dictionary<PathString, InterProcessReaderWriterLock> _gitReaderLocks = new Dictionary<PathString, InterProcessReaderWriterLock>();
-
-        public PackageResolver(string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
+        public PackageResolver(
+            ErrorBuilder errors, string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
         {
+            _errors = errors;
             _docsetPath = docsetPath;
             _config = config;
             _fetchOptions = fetchOptions;
@@ -57,15 +56,16 @@ namespace Microsoft.Docs.Build
 
         public string ResolvePackage(PackagePath package, PackageFetchOptions options)
         {
-            switch (package.Type)
+            var packagePath = package.Type switch
             {
-                case PackageType.Git:
-                    var gitPath = DownloadGitRepository(package, options);
-                    EnterGitReaderLock(gitPath);
-                    return gitPath;
-                default:
-                    return Path.Combine(_docsetPath, package.Path);
+                PackageType.Git => DownloadGitRepository(package, options),
+                _ => Path.Combine(_docsetPath, package.Path),
+            };
+            if (!Directory.Exists(packagePath) && !options.HasFlag(PackageFetchOptions.IgnoreDirectoryNonExistedError))
+            {
+                throw Errors.Config.DirectoryNotFound(packagePath).ToException();
             }
+            return packagePath;
         }
 
         public void DownloadPackage(PackagePath package, PackageFetchOptions options)
@@ -78,28 +78,17 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public void Dispose()
-        {
-            lock (_gitReaderLocks)
-            {
-                foreach (var item in _gitReaderLocks.Values)
-                {
-                    item.Dispose();
-                }
-            }
-        }
-
         private PathString DownloadGitRepository(PackagePath path, PackageFetchOptions options)
         {
             return s_gitRepositories.GetOrAdd((AppData.GitRoot, path.Url, path.Branch), _ => new Lazy<PathString>(() =>
                 DownloadGitRepositoryCore(
                     path.Url,
                     path.Branch,
-                    options.HasFlag(PackageFetchOptions.DepthOne),
-                    path is DependencyConfig dependency && dependency.IncludeInBuild))).Value;
+                    path is DependencyConfig dependency && dependency.IncludeInBuild,
+                    options))).Value;
         }
 
-        private PathString DownloadGitRepositoryCore(string url, string committish, bool depthOne, bool fetchContributionBranch)
+        private PathString DownloadGitRepositoryCore(string url, string committish, bool fetchContributionBranch, PackageFetchOptions options)
         {
             var gitPath = GetGitRepositoryPath(url, committish);
             var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -114,12 +103,16 @@ namespace Microsoft.Docs.Build
                     throw Errors.System.NeedRestore($"{url}#{committish}").ToException();
             }
 
-            using (InterProcessReaderWriterLock.CreateWriterLock(gitPath))
+            using (InterProcessMutex.Create(gitPath))
             {
-                DeleteIfExist(gitDocfxHead);
+                if (File.Exists(gitDocfxHead))
+                {
+                    File.Delete(gitDocfxHead);
+                }
+
                 using (PerfScope.Start($"Downloading '{url}#{committish}'"))
                 {
-                    InitFetchCheckoutGitRepository(gitPath, url, committish, depthOne);
+                    InitFetchCheckoutGitRepository(gitPath, url, committish, options);
                 }
                 File.WriteAllText(gitDocfxHead, committish);
                 Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
@@ -129,26 +122,26 @@ namespace Microsoft.Docs.Build
             if (fetchContributionBranch)
             {
                 var crrRepository = Repository.Create(gitPath, committish, url);
-                LocalizationUtility.EnsureLocalizationContributionBranch(_config, crrRepository);
+                LocalizationUtility.EnsureLocalizationContributionBranch(_config.Secrets, crrRepository);
             }
 
             return gitPath;
         }
 
-        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, bool depthOne)
+        private void InitFetchCheckoutGitRepository(string cwd, string url, string committish, PackageFetchOptions options)
         {
             var fetchOption = "--update-head-ok --prune --force";
-            var depthOneOption = $"--depth {(depthOne ? "1" : "99999999")}";
+            var depthOneOption = $"--depth {(options.HasFlag(PackageFetchOptions.DepthOne) ? "1" : "99999999")}";
+
+            // Remove git lock files if previous build was killed during git operation
+            DeleteLockFiles(Path.Combine(cwd, ".git"));
 
             Directory.CreateDirectory(cwd);
             GitUtility.Init(cwd);
             GitUtility.AddRemote(cwd, "origin", url);
 
-            // Remove git lock files if previous build was killed during git operation
-            DeleteIfExist(Path.Combine(cwd, ".git/index.lock"));
-            DeleteIfExist(Path.Combine(cwd, ".git/shallow.lock"));
-
             var succeeded = false;
+            var branchUsed = committish;
             foreach (var branch in GitUtility.GetFallbackBranch(committish))
             {
                 try
@@ -157,9 +150,9 @@ namespace Microsoft.Docs.Build
                     {
                         Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {branch} branch");
                     }
-                    GitUtility.Fetch(_config, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
+                    GitUtility.Fetch(_config.Secrets, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
                     succeeded = true;
-                    committish = branch;
+                    branchUsed = branch;
                     break;
                 }
                 catch (InvalidOperationException)
@@ -172,7 +165,7 @@ namespace Microsoft.Docs.Build
                 try
                 {
                     // Fallback to fetch all branches if the input committish is not supported by fetch
-                    GitUtility.Fetch(_config, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
+                    GitUtility.Fetch(_config.Secrets, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -185,13 +178,18 @@ namespace Microsoft.Docs.Build
                 }
             }
 
+            if ((branchUsed != committish) && !options.HasFlag(PackageFetchOptions.IgnoreBranchFallbackError))
+            {
+                _errors.Add(Errors.DependencyRepository.DependencyRepositoryBranchNotMatch(url, committish, branchUsed));
+            }
+
             try
             {
-                GitUtility.Checkout(cwd, committish, "--force");
+                GitUtility.Checkout(cwd, branchUsed, "--force");
             }
             catch (InvalidOperationException ex)
             {
-                throw Errors.Config.CommittishNotFound(url, committish).ToException(ex);
+                throw Errors.Config.CommittishNotFound(url, branchUsed).ToException(ex);
             }
         }
 
@@ -234,14 +232,13 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool IsPermissionInsufficient(Exception ex)
+        private static bool IsPermissionInsufficient(Exception e)
         {
-            return ex.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains(
-                                "does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
-                            || ex.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
+            return e.Message.Contains("fatal: Authentication fail", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("remote: Not Found", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("remote: Repository not found.", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("does not exist or you do not have permissions for the operation you are attempting", StringComparison.OrdinalIgnoreCase)
+                || e.Message.Contains("fatal: could not read Username", StringComparison.OrdinalIgnoreCase);
         }
 
         private static (string? org, string? name) ParseRepoInfo(string url)
@@ -262,25 +259,17 @@ namespace Microsoft.Docs.Build
 
         private static PathString GetGitRepositoryPath(string url, string branch)
         {
-            return new PathString(Path.Combine(AppData.GitRoot, $"{PathUtility.UrlToShortName(url)}-{branch}"));
+            return new PathString(Path.Combine(AppData.GitRoot, $"{UrlUtility.UrlToShortName(url)}-{branch}"));
         }
 
-        private void EnterGitReaderLock(PathString gitPath)
+        private static void DeleteLockFiles(string path)
         {
-            lock (_gitReaderLocks)
+            if (Directory.Exists(path))
             {
-                if (!_gitReaderLocks.ContainsKey(gitPath))
+                foreach (var file in Directory.GetFiles(path, "*.lock"))
                 {
-                    _gitReaderLocks.Add(gitPath, InterProcessReaderWriterLock.CreateReaderLock(gitPath));
+                    File.Delete(file);
                 }
-            }
-        }
-
-        private static void DeleteIfExist(string path)
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
             }
         }
     }

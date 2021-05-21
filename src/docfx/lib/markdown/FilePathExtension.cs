@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using Markdig;
 using Markdig.Syntax;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 
 namespace Microsoft.Docs.Build
 {
     internal static class FilePathExtension
     {
-        private static readonly List<object?> s_emptyInclusionStack = new List<object?>();
-        private static readonly object s_filePathKey = new object();
+        private static readonly List<object?> s_emptyInclusionStack = new();
+        private static readonly object s_filePathKey = new();
 
         public static MarkdownPipelineBuilder UseFilePath(this MarkdownPipelineBuilder builder)
         {
@@ -73,8 +73,8 @@ namespace Microsoft.Docs.Build
             {
                 switch (item)
                 {
-                    case InclusionBlock _:
-                    case InclusionInline _:
+                    case InclusionBlock:
+                    case InclusionInline:
                         source = (item.Line + 1, item.Column + 1);
                         break;
                 }

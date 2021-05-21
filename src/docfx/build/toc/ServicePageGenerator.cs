@@ -15,31 +15,39 @@ namespace Microsoft.Docs.Build
         private readonly PathString _docsetPath;
         private readonly Input _input;
         private readonly JoinTOCConfig _joinTOCConfig;
+        private readonly BuildScope _buildScope;
+        private readonly TocParser _tocParser;
+        private readonly ErrorBuilder _errors;
 
         public ServicePageGenerator(
             PathString docsetPath,
             Input input,
-            JoinTOCConfig joinTOCConfig)
+            JoinTOCConfig joinTOCConfig,
+            BuildScope buildScope,
+            TocParser tocParser,
+            ErrorBuilder errors)
         {
             _docsetPath = docsetPath;
             _input = input;
             _joinTOCConfig = joinTOCConfig;
+            _buildScope = buildScope;
+            _tocParser = tocParser;
+            _errors = errors;
         }
 
-        public void GenerateServicePageFromTopLevelTOC(TableOfContentsNode node, List<FilePath> results, string directoryName = "")
+        public void GenerateServicePageFromTopLevelTOC(TocNode node, List<FilePath> results, string directoryName = "")
         {
-            if (string.IsNullOrEmpty(node.Name))
+            var name = node.Name.Value;
+            if (string.IsNullOrEmpty(name))
             {
                 return;
             }
 
-            var filename = Regex.Replace(node.Name, @"\s+", "");
-
+            var filename = name.Replace(" ", "");
             var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc) ?? ".";
             var referenceTOCFullPath = Path.GetFullPath(Path.Combine(_docsetPath, referenceTOCRelativeDir));
-            var nodeHrefFullPath = Path.GetFullPath(Path.Combine(referenceTOCFullPath, node.Href.Value ?? ""));
 
-            if (string.IsNullOrEmpty(node.Href.Value) || !File.Exists(nodeHrefFullPath))
+            if (string.IsNullOrEmpty(node.Href.Value))
             {
                 TryToGenerateServicePageForItem(node, directoryName, filename, referenceTOCFullPath, results);
             }
@@ -63,7 +71,7 @@ namespace Microsoft.Docs.Build
         }
 
         private void TryToGenerateServicePageForItem(
-            TableOfContentsNode node,
+            TocNode node,
             string directoryName,
             string filename,
             string referenceTOCFullPath,
@@ -72,16 +80,15 @@ namespace Microsoft.Docs.Build
             if (node.LandingPageType.Value != null)
             {
                 var topLevelTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.TopLevelToc);
-                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
+                var referenceTOCRelativeDir = Path.GetDirectoryName(_joinTOCConfig.ReferenceToc);
+                var baseDir = _joinTOCConfig.OutputFolder.IsDefault ? referenceTOCRelativeDir ?? topLevelTOCRelativeDir : _joinTOCConfig.OutputFolder;
                 var pageType = node.LandingPageType.Value;
-                FilePath servicePagePath;
-                if (pageType == LandingPageType.Root)
+                var servicePagePath = pageType == LandingPageType.Root
+                    ? FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"))
+                    : FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
+                if (!_buildScope.Contains(servicePagePath.Path))
                 {
-                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/index.yml"));
-                }
-                else
-                {
-                    servicePagePath = FilePath.Generated(new PathString($"./{baseDir}/{directoryName}/{filename}.yml"));
+                    return;
                 }
 
                 if (string.IsNullOrEmpty(node.Href.Value))
@@ -101,29 +108,22 @@ namespace Microsoft.Docs.Build
                     var childName = item.Value.Name.Value;
                     var childHref = item.Value.Href.Value;
                     var childUid = item.Value.Uid.Value;
-                    var childHrefType = TableOfContentsLoader.GetHrefType(childHref);
-                    if (!string.IsNullOrEmpty(childHref) && (childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile))
-                    {
-                        childHref = null;
-                    }
+                    var childHrefType = TocLoader.GetHrefType(childHref);
 
                     if (item.Value.LandingPageType.Value != null)
                     {
-                        if (!string.IsNullOrEmpty(childHref))
+                        if (string.IsNullOrEmpty(childHref))
                         {
-                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                            // generate href for it based on service-page path
+                            childHref = pageType == LandingPageType.Root
+                                ? $"./{childName?.Replace(" ", "")}.yml"
+                                : $"{name.Value?.Replace(" ", "")}/{childName?.Replace(" ", "")}.yml";
                         }
                         else
                         {
-                            // generate href for it based on service-page path
-                            if (pageType == LandingPageType.Root)
-                            {
-                                childHref = $"./{Regex.Replace(childName, @"\s+", "")}.yml";
-                            }
-                            else
-                            {
-                                childHref = $"{Regex.Replace(name, @"\s+", "")}/{Regex.Replace(childName, @"\s+", "")}.yml";
-                            }
+                            childHref = childHrefType == TocHrefType.RelativeFolder || childHrefType == TocHrefType.TocFile
+                                ? null
+                                : GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
                         }
                         child = new ServicePageItem(childName, childHref, null);
                     }
@@ -131,12 +131,19 @@ namespace Microsoft.Docs.Build
                     {
                         if (!string.IsNullOrEmpty(childHref))
                         {
-                            childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
-                            child = new ServicePageItem(childName, childHref, null);
+                            if (childHrefType == TocHrefType.RelativeFolder)
+                            {
+                                child = new ServicePageItem(childName, null, GetUidFromSplitTOC(childHref, referenceTOCFullPath));
+                            }
+                            else
+                            {
+                                childHref = GetHrefRelativeToServicePage(childHref, referenceTOCFullPath, servicePagePath);
+                                child = new ServicePageItem(childName, childHref, null);
+                            }
                         }
                         else
                         {
-                            child = new ServicePageItem(childName, null, childUid);
+                            child = new ServicePageItem(childName, null, childUid ?? GetSubTocFirstUid(item));
                         }
                     }
 
@@ -151,9 +158,34 @@ namespace Microsoft.Docs.Build
                 }
 
                 results.Add(servicePagePath);
-                var servicePageToken = new ServicePageModel(name, fullName, children, langs, pageType);
+
+                var servicePageToken = new ServicePageModel
+                {
+                    Name = name,
+                    FullName = fullName,
+                    Children = children,
+                    Langs = langs,
+                    PageType = pageType,
+                };
+
                 _input.AddGeneratedContent(servicePagePath, JsonUtility.ToJObject(servicePageToken), "ReferenceContainer");
             }
+        }
+
+        private string? GetUidFromSplitTOC(string childHref, string referenceTOCFullPath)
+        {
+            childHref = Path.Combine(childHref, "TOC.yml");
+            var childHrefFullPath = Path.Combine(referenceTOCFullPath, childHref);
+            var childHrefRelativeToDocset = Path.GetRelativePath(_docsetPath, childHrefFullPath);
+
+            var filePath = _input.GetFirstMatchInSplitToc(childHrefRelativeToDocset);
+            if (filePath != null)
+            {
+                var node = _tocParser.Parse(filePath!, _errors);
+                return GetSubTocFirstUid(node);
+            }
+
+            return null;
         }
 
         private string? GetHrefRelativeToServicePage(string childHref, string referenceTOCFullPath, FilePath servicePagePath)
@@ -167,6 +199,28 @@ namespace Microsoft.Docs.Build
             }
 
             return childHref;
+        }
+
+        private string? GetSubTocFirstUid(TocNode node)
+        {
+            if (!string.IsNullOrEmpty(node.Uid))
+            {
+                return node.Uid.Value;
+            }
+
+            foreach (var item in node.Items)
+            {
+                if (!string.IsNullOrEmpty(item.Value.Uid))
+                {
+                    return item.Value.Uid;
+                }
+                else
+                {
+                    return GetSubTocFirstUid(item);
+                }
+            }
+
+            return null;
         }
     }
 }

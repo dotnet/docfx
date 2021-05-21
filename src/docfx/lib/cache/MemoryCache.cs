@@ -14,7 +14,7 @@ namespace System.Collections.Concurrent
         private const int PollingInterval = 10 * 1000;
         private const int MemoryLimitPercentage = 70;
 
-        private static readonly List<WeakReference<IMemoryCache>> s_caches = new List<WeakReference<IMemoryCache>>();
+        private static readonly List<WeakReference<IMemoryCache>> s_caches = new();
         private static int s_lastGen2Count;
 
         static MemoryCache()
@@ -133,6 +133,7 @@ ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
 
         [StructLayout(LayoutKind.Sequential)]
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1307", Justification = "Interop")]
+        [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Interop")]
         private struct MEMORYSTATUSEX
         {
             // The length field must be set to the size of this data structure.

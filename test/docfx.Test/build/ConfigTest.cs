@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Linq;
-using System.Net.Http;
 using Xunit;
 
 namespace Microsoft.Docs.Build
@@ -21,7 +18,6 @@ namespace Microsoft.Docs.Build
         [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master")]
         [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master")]
         [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master")]
-        [InlineData("https://github.com/docs.loc", "master-sxs.zh-cn", "https://github.com/docs", "master")]
         public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch)
         {
             var (sourceRemote, sourceBranch) = LocalizationUtility.GetFallbackRepository(remote, branch);
@@ -114,7 +110,7 @@ namespace Microsoft.Docs.Build
         [InlineData("https://a.com/a/b/1", "a/b")]
         public static void HttpCredential_Respect_LongestMatch(string url, string value)
         {
-            var config = JsonUtility.DeserializeData<PreloadConfig>(
+            var secrets = JsonUtility.DeserializeData<SecretConfig>(
                 @"{
     'http': {
         'https://a.com/a': { 'headers': { 'key': 'a' } },
@@ -122,11 +118,10 @@ namespace Microsoft.Docs.Build
     }
 }".Replace('\'', '"'), null);
 
-            var credentialProvider = config.GetCredentialProvider();
+            var httpConfig = secrets.GetHttpConfig(url);
 
-            using var message = new HttpRequestMessage { RequestUri = new Uri(url) };
-            credentialProvider(message);
-            Assert.Equal(value, message.Headers.GetValues("key").First());
+            Assert.NotNull(httpConfig);
+            Assert.Equal(value, httpConfig.Headers["key"]);
         }
     }
 }

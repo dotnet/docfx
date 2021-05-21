@@ -16,19 +16,23 @@ namespace Microsoft.Docs.Build
     internal class OpsConfigAdapter
     {
         public const string BuildConfigApi = "https://ops/buildconfig/";
+
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
         private const string MetadataSchemaApi = "https://ops/metadataschema/";
         private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-        private const string AllowlistsApi = "https://ops/allowlists/";
-        private const string DisallowlistsApi = "https://ops/disallowlists/";
+        private const string BuildValidationRulesApi = "https://ops/buildvalidationrules/";
+        private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
+        private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
+        private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
         private const string RegressionAllMetadataSchemaApi = "https://ops/regressionallmetadataschema/";
+        private const string RegressionAllBuildRulesApi = "https://ops/regressionallbuildrules/";
 
         private readonly (string, Func<Uri, Task<string>>)[] _apis;
         private readonly OpsAccessor _opsAccessor;
 
-        private static readonly ConcurrentDictionary<string, Lazy<Task<string>>> s_docsetInfoCache = new ConcurrentDictionary<string, Lazy<Task<string>>>();
+        private static readonly ConcurrentDictionary<string, Lazy<Task<string>>> s_docsetInfoCache = new();
 
         public OpsConfigAdapter(OpsAccessor opsAccessor)
         {
@@ -40,9 +44,12 @@ namespace Microsoft.Docs.Build
                 (OpsMetadataApi, _ => GetOpsMetadata()),
                 (MetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url))),
                 (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
-                (AllowlistsApi, url => _opsAccessor.GetAllowlists(GetValidationServiceParameters(url))),
-                (DisallowlistsApi, url => _opsAccessor.GetDisallowlists(GetValidationServiceParameters(url))),
+                (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
+                (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
+                (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
+                (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
+                (RegressionAllBuildRulesApi, _ => _opsAccessor.GetRegressionAllBuildRules()),
                 (RegressionAllMetadataSchemaApi, _ => _opsAccessor.GetRegressionAllMetadataSchema()),
             };
         }
@@ -51,7 +58,7 @@ namespace Microsoft.Docs.Build
         {
             foreach (var (baseUrl, rule) in _apis)
             {
-                if (request.RequestUri.OriginalString.StartsWith(baseUrl))
+                if (request.RequestUri is Uri uri && uri.ToString().StartsWith(baseUrl))
                 {
                     return new HttpResponseMessage { Content = new StringContent(await rule(request.RequestUri)) };
                 }
@@ -62,12 +69,12 @@ namespace Microsoft.Docs.Build
         private async Task<string> GetBuildConfig(Uri url)
         {
             var queries = HttpUtility.ParseQueryString(url.Query);
-            var name = queries["name"];
-            var repository = queries["repository_url"];
-            var branch = queries["branch"];
-            var locale = queries["locale"];
-            var xrefEndpoint = queries["xref_endpoint"];
-            var xrefQueryTags = string.IsNullOrEmpty(queries["xref_query_tags"]) ? new List<string>() : queries["xref_query_tags"].Split(',').ToList();
+            var name = queries["name"] ?? "";
+            var repository = queries["repository_url"] ?? "";
+            var branch = queries["branch"] ?? "";
+            var locale = queries["locale"] ?? "";
+            var xrefEndpoint = queries["xref_endpoint"] ?? "";
+            var xrefQueryTags = (queries["xref_query_tags"] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
             var getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, new Lazy<Task<string>>(() => _opsAccessor.GetDocsetInfo(repository)));
             var docsetInfo = await getDocsetInfo.Value;
@@ -76,10 +83,10 @@ namespace Microsoft.Docs.Build
                 docsetInfo,
                 new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template = false } });
 
-            var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
-            if (docset is null)
+            var docset = docsets?.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
+            if (docsets is null || docset is null)
             {
-                throw Errors.Config.DocsetNotProvisioned(name).ToException(isError: false);
+                throw Errors.Config.DocsetNotProvisioned(name).ToException();
             }
 
             var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
@@ -88,7 +95,11 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(docset.base_path))
             {
                 xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);
+
+                // Handle share base path change during archive
+                xrefQueryTags.Add($"/previous-versions{docset.base_path.ValueWithLeadingSlash}");
             }
+
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
             {
@@ -97,6 +108,10 @@ namespace Microsoft.Docs.Build
             }
 
             var xrefHostName = GetXrefHostName(docset.site_name, branch);
+            var documentUrls = JsonConvert.DeserializeAnonymousType(
+                    await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
+                ?.ToDictionary(item => item.log_code, item => item.document_url);
+
             return JsonConvert.SerializeObject(new
             {
                 product = docset.product_name,
@@ -105,28 +120,31 @@ namespace Microsoft.Docs.Build
                 basePath = docset.base_path.ValueWithLeadingSlash,
                 xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
+                documentUrls,
                 markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
                     OpsMetadataApi,
                     $"{MetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
-                disallowlists = DisallowlistsApi,
+                sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
+                isReferenceRepository = docsets.Any(d => d.use_template),
             });
         }
 
         private static Task<string> GetOpsMetadata()
         {
-            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"));
+            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"));
         }
 
         private static (string repository, string branch) GetValidationServiceParameters(Uri url)
         {
             var queries = HttpUtility.ParseQueryString(url.Query);
 
-            return (queries["repository_url"], queries["branch"]);
+            return (queries["repository_url"] ?? "", queries["branch"] ?? "");
         }
 
         private static string GetHostName(string siteName)
@@ -136,31 +154,23 @@ namespace Microsoft.Docs.Build
                 "DocsAzureCN" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
-                    DocsEnvironment.PPE => "ppe.docs.azure.cn",
-                    DocsEnvironment.Internal => "ppe.docs.azure.cn",
-                    DocsEnvironment.Perf => "ppe.docs.azure.cn",
-                    _ => throw new NotSupportedException(),
+                    _ => "ppe.docs.azure.cn",
                 },
                 "dev.microsoft.com" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "developer.microsoft.com",
-                    DocsEnvironment.PPE => "devmsft-sandbox.azurewebsites.net",
-                    DocsEnvironment.Internal => "devmsft-sandbox.azurewebsites.net",
-                    DocsEnvironment.Perf => "devmsft-sandbox.azurewebsites.net",
-                    _ => throw new NotSupportedException(),
+                    _ => "devmsft-sandbox.azurewebsites.net",
                 },
-                "rd.microsoft.com" => OpsAccessor.DocsEnvironment switch
+                "rd.microsoft.com" => "rd.microsoft.com",
+                "Startups" => OpsAccessor.DocsEnvironment switch
                 {
-                    DocsEnvironment.Prod => "rd.microsoft.com",
-                    _ => throw new NotSupportedException(),
+                    DocsEnvironment.Prod => "startups.microsoft.com",
+                    _ => "ppe.startups.microsoft.com",
                 },
                 _ => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.microsoft.com",
-                    DocsEnvironment.PPE => "ppe.docs.microsoft.com",
-                    DocsEnvironment.Internal => "ppe.docs.microsoft.com",
-                    DocsEnvironment.Perf => "ppe.docs.microsoft.com",
-                    _ => throw new NotSupportedException(),
+                    _ => "ppe.docs.microsoft.com",
                 },
             };
         }

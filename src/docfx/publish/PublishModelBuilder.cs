@@ -14,9 +14,8 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly string _locale;
-        private readonly PublishUrlMap _publishUrlMapBuilder;
-        private readonly DocumentProvider _documentProvider;
         private readonly SourceMap _sourceMap;
+        private readonly DocumentProvider _documentProvider;
 
         private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
                      new ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)>();
@@ -26,40 +25,47 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
             BuildOptions buildOptions,
-            PublishUrlMap publishUrlMapBuilder,
-            DocumentProvider documentProvider,
-            SourceMap sourceMap)
+            SourceMap sourceMap,
+            DocumentProvider documentProvider)
         {
             _config = config;
             _errors = errors;
             _monikerProvider = monikerProvider;
             _locale = buildOptions.Locale;
-            _publishUrlMapBuilder = publishUrlMapBuilder;
-            _documentProvider = documentProvider;
             _sourceMap = sourceMap;
+            _documentProvider = documentProvider;
         }
 
-        public void SetPublishItem(FilePath file, JObject? metadata, string? outputPath)
+        public void AddOrUpdate(FilePath file, JObject? metadata, string? outputPath)
         {
             _buildOutput.TryAdd(file, (metadata, outputPath));
         }
 
-        public (PublishModel, Dictionary<FilePath, PublishItem>) Build()
+        public (PublishModel, Dictionary<FilePath, PublishItem>) Build(IReadOnlyCollection<FilePath> files)
         {
             var publishItems = new Dictionary<FilePath, PublishItem>();
-            foreach (var (url, sourcePath, monikers) in _publishUrlMapBuilder.GetPublishOutput())
+
+            foreach (var sourceFile in files.Concat(_buildOutput.Keys))
             {
-                var buildOutput = _buildOutput.TryGetValue(sourcePath, out var result);
-                var publishItem = new PublishItem(
-                    url,
-                    buildOutput ? result.outputPath : null,
-                    _sourceMap.GetOriginalFilePath(sourcePath)?.Path ?? sourcePath.Path,
-                    _locale,
-                    monikers,
-                    _monikerProvider.GetConfigMonikerRange(sourcePath),
-                    _errors.FileHasError(sourcePath),
-                    buildOutput ? RemoveComplexValue(result.metadata) : null);
-                publishItems.Add(sourcePath, publishItem);
+                if (!publishItems.ContainsKey(sourceFile))
+                {
+                    _buildOutput.TryGetValue(sourceFile, out var buildOutput);
+
+                    var publishItem = new PublishItem
+                    {
+                        Url = _documentProvider.GetSiteUrl(sourceFile),
+                        Path = buildOutput.outputPath,
+                        SourceFile = sourceFile,
+                        SourcePath = _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
+                        Locale = _locale,
+                        Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
+                        ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),
+                        HasError = _errors.FileHasError(sourceFile),
+                        ExtensionData = RemoveComplexValue(buildOutput.metadata),
+                    };
+
+                    publishItems.Add(sourceFile, publishItem);
+                }
             }
 
             var items = (
@@ -75,13 +81,15 @@ namespace Microsoft.Docs.Build
                 group item by monikerGroup into g
                 select new KeyValuePair<string, MonikerList>(g.Key, g.First().Monikers));
 
-            var model = new PublishModel(
-                _config.Name,
-                _config.Product,
-                _config.BasePath.ValueWithLeadingSlash,
-                _config.Template.IsMainOrMaster ? null : _config.Template.Branch,
-                items,
-                monikerGroups);
+            var model = new PublishModel
+            {
+                Name = _config.Name,
+                Product = _config.Product,
+                BasePath = _config.BasePath.ValueWithLeadingSlash,
+                ThemeBranch = _config.Template.IsMainOrMaster ? null : _config.Template.Branch,
+                Files = items,
+                MonikerGroups = monikerGroups,
+            };
 
             var fileManifests = publishItems.ToDictionary(item => item.Key, item => item.Value);
 

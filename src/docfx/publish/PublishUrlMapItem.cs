@@ -6,23 +6,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Docs.Build
 {
-    internal class PublishUrlMapItem : IEquatable<PublishUrlMapItem>, IComparable<PublishUrlMapItem>
+    internal sealed record PublishUrlMapItem(string Url, string OutputPath, MonikerList Monikers, FilePath SourcePath)
+        : IComparable<PublishUrlMapItem>
     {
-        public string Url { get; }
-
-        public string OutputPath { get; }
-
-        public MonikerList Monikers { get; }
-
-        public FilePath SourcePath { get; }
-
-        public PublishUrlMapItem(string url, string outputPath, MonikerList monikers, FilePath sourcePath)
-        {
-            Url = url;
-            OutputPath = outputPath;
-            Monikers = monikers;
-            SourcePath = sourcePath;
-        }
+        private readonly int _hashCode = PathUtility.PathComparer.GetHashCode(Url);
 
         public int CompareTo(PublishUrlMapItem? other)
         {
@@ -53,14 +40,6 @@ namespace Microsoft.Docs.Build
             return PathUtility.PathComparer.Compare(Url, other.Url) == 0 && Monikers.Intersects(other.Monikers);
         }
 
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as PublishUrlMapItem);
-        }
-
-        public override int GetHashCode()
-        {
-            return PathUtility.PathComparer.GetHashCode(Url);
-        }
+        public override int GetHashCode() => _hashCode;
     }
 }

@@ -45,11 +45,7 @@ repos:
               "include_in_build": true
             }]
         }
-      a/docfx.yml: |
-        http:
-          https://op-build-prod.azurewebsites.net:
-            headers:
-              X-OP-BuildUserToken: {DOCS_OPS_TOKEN}
+      a/docfx.yml:
       a/a.md:
       articles/docfx.yml: 
       articles/a.yml: '#YamlMime:TestData'
@@ -72,7 +68,7 @@ outputs:
   articles/crr/token.json: |
     { "conceptual": "<p>live1</p>" }
   .errors.log: |
-    {"message_severity":"warning","code":"docset-not-provisioned"}
+    {"message_severity":"error","code":"docset-not-provisioned"}
 ---
 # Specify editLink repo and branch in .openpublishing.publish.config.json
 repos:
@@ -271,3 +267,18 @@ repos:
   - files:
       ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
+---
+# SourceInfo of incorrect opConfig
+repos:
+  https://github.com/redirection/SourceInfoOfIncorrectOpConfig:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": "a/b/.openpublishing.redirection.test.json",
+        }
+      a/docfx.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66}
+    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66}

@@ -11,12 +11,7 @@ inputs:
             "message": "H1 is required. Add content to your top-level heading. {0} {1}",
             "code": "h1-empty",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -41,12 +36,7 @@ inputs:
             "message": "H1 is not allowed in zone '{0}' sections. Each article should have one and only one H1.",
             "code": "h1-in-zone",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ]
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -61,6 +51,7 @@ outputs:
     {"message_severity":"suggestion","log_item_type":"user","code":"h1-in-zone","message":"H1 is not allowed in zone 'pdf' sections. Each article should have one and only one H1.","file":"a.md","line":2,"end_line":2,"column":1,"end_column":1}
 ---
 # Canonial Version Only Metadata Validation
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -155,10 +146,10 @@ outputs:
     {"message_severity":"suggestion","code":"description-bad-length","message":"String 'description' is too short: 1 characters. Length should be >= 2.","file":"docs/v2/b.md","line":3,"end_line":3,"column":14,"end_column":15}
     {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":9}
     {"message_severity":"suggestion","code":"duplicate-title-within-docset","message":"Attribute 'title' with value 't' is duplicated in 'docs/v2/a.md(2,8)', 'docs/v2/b.md(2,8)'. Title must be unique within a docset.","file":"docs/v2/a.md","line":2,"end_line":2,"column":8,"end_column":9}
-  9d4e15fd/docs/a.json:
-  9d4e15fd/docs/b.json:
-  976da3a9/docs/a.json:
-  976da3a9/docs/b.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json:
+  17b9fe681514513cbf7d5c90e32f107a/docs/b.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/a.json:
+  a31d07d25317b56c51cdd6b43a491e1a/docs/b.json:
 ---
 # Hidden PR only validation rule result
 inputs:
@@ -218,7 +209,7 @@ inputs:
           {
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
-            "exclusions": [ "toc", "includes", "hubpage", "landingpage" ],
+            "contentTypes": ["conceptual"],
             "severity": "SUGGESTION",
             "code": "h1-missing",
             "docfxOverride": true
@@ -228,10 +219,7 @@ inputs:
             "message": "Markdown content is not allowed before {0}.",
             "code": "h1-not-first",
             "severity": "SUGGESTION",
-            "exclusions": [ "includes", "landingpage", "hubpage" ],
-            "excludedDocfxVersions": [
-              "v2"
-            ] ,
+            "contentTypes": ["conceptual"],
             "pullRequestOnly": false,
             "docfxOverride": true
           },
@@ -240,10 +228,7 @@ inputs:
             "message": "Empty {0}. Headings must have content.",
             "code": "heading-empty",
             "severity": "SUGGESTION",
-            "exclusions": [ "landingpage", "hubpage", "toc" ],
-            "excludedDocfxVersions": [
-              "v2"
-            ],
+            "contentTypes": ["conceptual"],
             "pullRequestOnly": true,
             "docfxOverride": true
           },
@@ -252,15 +237,7 @@ inputs:
             "message": "{0} contains no content. Add content or remove the unused heading.",
             "code": "heading-no-content",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "includes",
-              "landingpage",
-              "hubpage",
-              "toc"
-            ],
-            "excludedDocfxVersions": [
-              "v2"
-            ],
+            "contentTypes": ["conceptual"],
             "pullRequestOnly": true,
             "docfxOverride": true
           }

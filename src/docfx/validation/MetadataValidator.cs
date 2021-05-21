@@ -18,17 +18,15 @@ namespace Microsoft.Docs.Build
         public MetadataValidator(
             Config config,
             MicrosoftGraphAccessor microsoftGraphAccessor,
-            FileResolver fileResolver,
+            JsonSchemaLoader jsonSchemaLoader,
             MonikerProvider monikerProvider,
-            JsonSchemaValidatorExtension validatorExtension)
+            CustomRuleProvider customRuleProvider)
         {
-            MetadataSchemas = Array.ConvertAll(
-               config.MetadataSchema,
-               schema => JsonUtility.DeserializeData<JsonSchema>(fileResolver.ReadString(schema), schema.Source?.File));
+            MetadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
 
             _schemaValidators = Array.ConvertAll(
                 MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, monikerProvider, false, validatorExtension));
+                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, monikerProvider, false, customRuleProvider));
 
             _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
                 .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))

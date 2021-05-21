@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ECMA2Yaml;
@@ -11,33 +12,39 @@ namespace Microsoft.Docs.Build
 {
     internal static class OpsConfigLoader
     {
-        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, string workingDirectory)
+        public static OpsConfig? LoadOpsConfig(ErrorBuilder errors, Package package, Repository? repository)
         {
-            var fullPath = Path.Combine(workingDirectory, ".openpublishing.publish.config.json");
-            if (!File.Exists(fullPath))
+            if (repository is null)
             {
                 return default;
             }
 
-            var filePath = new FilePath(Path.GetRelativePath(workingDirectory, fullPath));
-            return JsonUtility.Deserialize<OpsConfig>(errors, File.ReadAllText(fullPath), filePath);
+            var opDirRelativeToPackage = Path.GetRelativePath(package.BasePath, repository.Path);
+            var fullPath = new PathString(Path.Combine(package.BasePath, opDirRelativeToPackage, ".openpublishing.publish.config.json"));
+            if (!package.Exists(fullPath))
+            {
+                return default;
+            }
+
+            var filePath = new FilePath(Path.GetRelativePath(package.BasePath, fullPath));
+            return JsonUtility.Deserialize<OpsConfig>(errors, package.ReadString(fullPath), filePath);
         }
 
         public static (string? xrefEndpoint, string[]? xrefQueryTags, JObject? config) LoadDocfxConfig(
-            ErrorBuilder errors, string docsetPath, Repository? repository)
+            ErrorBuilder errors, Repository? repository, Package package)
         {
             if (repository is null)
             {
                 return (default, default, default);
             }
 
-            var opsConfig = LoadOpsConfig(errors, repository.Path);
+            var opsConfig = LoadOpsConfig(errors, package, repository);
             if (opsConfig is null)
             {
                 return (default, default, default);
             }
 
-            var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, docsetPath));
+            var buildSourceFolder = new PathString(Path.GetRelativePath(repository.Path, package.BasePath));
             return ToDocfxConfig(repository.Branch, opsConfig, buildSourceFolder);
         }
 
@@ -65,6 +72,8 @@ namespace Microsoft.Docs.Build
             result["editRepositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors;
             result["fallbackRepository"] = dependencies.FirstOrDefault(
                 dep => dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase)).obj;
+            result["redirectionFiles"] = JToken.FromObject(opsConfig.RedirectionFiles);
+            result["trustedDomains"] = JToken.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/docs/trusted-domains.json")));
 
             var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(
                 config => config.BuildSourceFolder.FolderEquals(buildSourceFolder));
@@ -82,12 +91,24 @@ namespace Microsoft.Docs.Build
                     ["open_to_public_contributors"] = docsetConfig.OpenToPublicContributors,
                 };
 
-                result["splitTOC"] = JArray.FromObject(docsetConfig.SplitTOC);
+                var splitTOCSet = new HashSet<PathString>(docsetConfig.SplitTOC);
+
+                foreach (var item in opsConfig.SplitTOC)
+                {
+                    if (item.StartsWithPath(buildSourceFolder, out var splitTOCRelativeToDocset))
+                    {
+                        splitTOCSet.Add(splitTOCRelativeToDocset);
+                    }
+                }
+
+                result["splitTOC"] = JArray.FromObject(splitTOCSet);
             }
 
             var joinTOCPluginConfig = docsetConfig?.JoinTOCPlugin ?? opsConfig.JoinTOCPlugin ?? Array.Empty<OpsJoinTocConfig>();
             (result["fileMetadata"], result["joinTOC"]) =
-                GenerateJoinTocMetadataAndConfig(joinTOCPluginConfig, new PathString(buildSourceFolder));
+                GenerateJoinTocMetadataAndConfig(
+                    joinTOCPluginConfig,
+                    docsetConfig?.JoinTOCPlugin != null ? default : new PathString(buildSourceFolder));
             var sourceMaps = new JArray();
 
             var monodoc = GetMonodocConfig(docsetConfig, opsConfig, buildSourceFolder);
@@ -105,7 +126,7 @@ namespace Microsoft.Docs.Build
             }
 
             result["sourceMap"] = sourceMaps;
-            result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
+            result["isLearn"] = IsLearn(docsetConfig);
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
@@ -150,14 +171,14 @@ namespace Microsoft.Docs.Build
                 : new JArray(maml2YamlMonikerPath);
         }
 
-        private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)
+        private static bool IsLearn(OpsDocsetConfig? docsetConfig)
             => docsetConfig?.CustomizedTasks != null
             && docsetConfig.CustomizedTasks.TryGetValue("docset_postbuild", out var plugins)
             && plugins.Any(plugin => plugin.EndsWith("TripleCrownValidation.ps1", StringComparison.OrdinalIgnoreCase));
 
         private static (JObject joinTocMetadata, JArray joinTocConfig) GenerateJoinTocMetadataAndConfig(
             OpsJoinTocConfig[] configs,
-            PathString buildSourceFolder)
+            PathString baseDir)
         {
             var conceptualToc = new JObject();
             var refToc = new JObject();
@@ -167,31 +188,33 @@ namespace Microsoft.Docs.Build
             {
                 if (!string.IsNullOrEmpty(config.ConceptualTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
                 {
-                    refToc[buildSourceFolder.GetRelativePath(new PathString(config.ConceptualTOC))] = config.ReferenceTOCUrl;
-                    refToc[Path.GetRelativePath(buildSourceFolder, config.ConceptualTOC)] = config.ReferenceTOCUrl;
+                    refToc[baseDir.GetRelativePath(new PathString(config.ConceptualTOC))] = config.ReferenceTOCUrl;
+                    refToc[Path.GetRelativePath(baseDir, config.ConceptualTOC)] = config.ReferenceTOCUrl;
                     var conceptualTOCDir = Path.GetDirectoryName(config.ConceptualTOC);
-                    var conceptualTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(conceptualTOCDir) ? "." : conceptualTOCDir);
+                    var conceptualTOCRelativeDir = Path.GetRelativePath(baseDir, string.IsNullOrEmpty(conceptualTOCDir) ? "." : conceptualTOCDir);
                     refToc[Path.Combine(conceptualTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
                 }
 
                 if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ConceptualTOCUrl))
                 {
-                    conceptualToc[Path.GetRelativePath(buildSourceFolder, config.ReferenceTOC)] = config.ConceptualTOCUrl;
+                    conceptualToc[Path.GetRelativePath(baseDir, config.ReferenceTOC)] = config.ConceptualTOCUrl;
                     var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
-                    var refTOCRelativeDir = Path.GetRelativePath(buildSourceFolder, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
+                    var refTOCRelativeDir = Path.GetRelativePath(baseDir, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
                     conceptualToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ConceptualTOCUrl;
+                    conceptualToc[baseDir.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
+                }
 
-                    if (!string.IsNullOrEmpty(config.ReferenceTOCUrl))
-                    {
-                        refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
-                    }
-                    conceptualToc[buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC))] = config.ConceptualTOCUrl;
+                if (!string.IsNullOrEmpty(config.ReferenceTOC) && !string.IsNullOrEmpty(config.ReferenceTOCUrl))
+                {
+                    var refTOCDir = Path.GetDirectoryName(config.ReferenceTOC);
+                    var refTOCRelativeDir = Path.GetRelativePath(baseDir, string.IsNullOrEmpty(refTOCDir) ? "." : refTOCDir);
+                    refToc[Path.Combine(refTOCRelativeDir, "_splitted/**")] = config.ReferenceTOCUrl;
                 }
 
                 var item = new JObject();
                 if (!string.IsNullOrEmpty(config.OutputFolder))
                 {
-                    item["outputFolder"] = buildSourceFolder.GetRelativePath(new PathString(config.OutputFolder));
+                    item["outputFolder"] = baseDir.GetRelativePath(new PathString(config.OutputFolder));
                 }
                 if (config.ContainerPageMetadata != null)
                 {
@@ -199,11 +222,11 @@ namespace Microsoft.Docs.Build
                 }
                 if (!string.IsNullOrEmpty(config.ReferenceTOC))
                 {
-                    item["referenceToc"] = buildSourceFolder.GetRelativePath(new PathString(config.ReferenceTOC));
+                    item["referenceToc"] = baseDir.GetRelativePath(new PathString(config.ReferenceTOC));
                 }
                 if (!string.IsNullOrEmpty(config.TopLevelTOC))
                 {
-                    item["topLevelToc"] = buildSourceFolder.GetRelativePath(new PathString(config.TopLevelTOC));
+                    item["topLevelToc"] = baseDir.GetRelativePath(new PathString(config.TopLevelTOC));
                 }
 
                 joinTocConfig.Add(item);

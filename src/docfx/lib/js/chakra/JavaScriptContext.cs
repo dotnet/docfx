@@ -24,7 +24,7 @@ namespace ChakraHost.Hosting
         /// <summary>
         ///     The reference.
         /// </summary>
-        private readonly IntPtr reference;
+        private readonly IntPtr _reference;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="JavaScriptContext"/> struct. 
@@ -32,7 +32,7 @@ namespace ChakraHost.Hosting
         /// <param name="reference">The reference.</param>
         internal JavaScriptContext(IntPtr reference)
         {
-            this.reference = reference;
+            _reference = reference;
         }
 
         /// <summary>
@@ -50,8 +50,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptContext reference;
-                Native.ThrowIfError(Native.JsGetCurrentContext(out reference));
+                Native.ThrowIfError(Native.JsGetCurrentContext(out var reference));
                 return reference;
             }
 
@@ -84,8 +83,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                bool hasException;
-                Native.ThrowIfError(Native.JsHasException(out hasException));
+                Native.ThrowIfError(Native.JsHasException(out var hasException));
                 return hasException;
             }
         }
@@ -97,8 +95,7 @@ namespace ChakraHost.Hosting
         {
             get
             {
-                JavaScriptRuntime handle;
-                Native.ThrowIfError(Native.JsGetRuntime(this, out handle));
+                Native.ThrowIfError(Native.JsGetRuntime(this, out var handle));
                 return handle;
             }
         }
@@ -108,7 +105,7 @@ namespace ChakraHost.Hosting
         /// </summary>
         public bool IsValid
         {
-            get { return reference != IntPtr.Zero; }
+            get { return _reference != IntPtr.Zero; }
         }
 
         /// <summary>
@@ -135,8 +132,7 @@ namespace ChakraHost.Hosting
         /// </returns>
         public static uint Idle()
         {
-            uint ticks;
-            Native.ThrowIfError(Native.JsIdle(out ticks));
+            Native.ThrowIfError(Native.JsIdle(out var ticks));
             return ticks;
         }
 
@@ -154,8 +150,7 @@ namespace ChakraHost.Hosting
         /// <returns>A <c>Function</c> representing the script code.</returns>
         public static JavaScriptValue ParseScript(string script, JavaScriptSourceContext sourceContext, string sourceName)
         {
-            JavaScriptValue result;
-            Native.ThrowIfError(Native.JsParseScript(script, sourceContext, sourceName, out result));
+            Native.ThrowIfError(Native.JsParseScript(script, sourceContext, sourceName, out var result));
             return result;
         }
 
@@ -174,8 +169,7 @@ namespace ChakraHost.Hosting
         /// <returns>A <c>Function</c> representing the script code.</returns>
         public static JavaScriptValue ParseScript(string script, byte[] buffer, JavaScriptSourceContext sourceContext, string sourceName)
         {
-            JavaScriptValue result;
-            Native.ThrowIfError(Native.JsParseSerializedScript(script, buffer, sourceContext, sourceName, out result));
+            Native.ThrowIfError(Native.JsParseSerializedScript(script, buffer, sourceContext, sourceName, out var result));
             return result;
         }
 
@@ -220,8 +214,7 @@ namespace ChakraHost.Hosting
         /// <returns>The result of the script, if any.</returns>
         public static JavaScriptValue RunScript(string script, JavaScriptSourceContext sourceContext, string sourceName)
         {
-            JavaScriptValue result;
-            Native.ThrowIfError(Native.JsRunScript(script, sourceContext, sourceName, out result));
+            Native.ThrowIfError(Native.JsRunScript(script, sourceContext, sourceName, out var result));
             return result;
         }
 
@@ -240,8 +233,7 @@ namespace ChakraHost.Hosting
         /// <returns>The result of the script, if any.</returns>
         public static JavaScriptValue RunScript(string script, byte[] buffer, JavaScriptSourceContext sourceContext, string sourceName)
         {
-            JavaScriptValue result;
-            Native.ThrowIfError(Native.JsRunSerializedScript(script, buffer, sourceContext, sourceName, out result));
+            Native.ThrowIfError(Native.JsRunSerializedScript(script, buffer, sourceContext, sourceName, out var result));
             return result;
         }
 
@@ -316,8 +308,7 @@ namespace ChakraHost.Hosting
         /// <returns>The exception for the runtime of the current context.</returns>
         public static JavaScriptValue GetAndClearException()
         {
-            JavaScriptValue reference;
-            Native.ThrowIfError(Native.JsGetAndClearException(out reference));
+            Native.ThrowIfError(Native.JsGetAndClearException(out var reference));
             return reference;
         }
 
@@ -350,8 +341,7 @@ namespace ChakraHost.Hosting
         /// <returns>The object's new reference count.</returns>
         public uint AddRef()
         {
-            uint count;
-            Native.ThrowIfError(Native.JsContextAddRef(this, out count));
+            Native.ThrowIfError(Native.JsContextAddRef(this, out var count));
             return count;
         }
 
@@ -364,8 +354,7 @@ namespace ChakraHost.Hosting
         /// <returns>The object's new reference count.</returns>
         public uint Release()
         {
-            uint count;
-            Native.ThrowIfError(Native.JsContextRelease(this, out count));
+            Native.ThrowIfError(Native.JsContextRelease(this, out var count));
             return count;
         }
 
@@ -378,12 +367,12 @@ namespace ChakraHost.Hosting
             /// <summary>
             ///     The previous context.
             /// </summary>
-            private readonly JavaScriptContext previousContext;
+            private readonly JavaScriptContext _previousContext;
 
             /// <summary>
             ///     Whether the structure has been disposed.
             /// </summary>
-            private bool disposed;
+            private bool _disposed;
 
             /// <summary>
             ///     Initializes a new instance of the <see cref="Scope"/> struct. 
@@ -391,8 +380,8 @@ namespace ChakraHost.Hosting
             /// <param name="context">The context to create the scope for.</param>
             public Scope(JavaScriptContext context)
             {
-                disposed = false;
-                previousContext = Current;
+                _disposed = false;
+                _previousContext = Current;
                 Current = context;
             }
 
@@ -401,13 +390,13 @@ namespace ChakraHost.Hosting
             /// </summary>
             public void Dispose()
             {
-                if (disposed)
+                if (_disposed)
                 {
                     return;
                 }
 
-                Current = previousContext;
-                disposed = true;
+                Current = _previousContext;
+                _disposed = true;
             }
         }
     }

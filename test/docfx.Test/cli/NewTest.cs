@@ -9,24 +9,33 @@ namespace Microsoft.Docs.Build
 {
     public static class NewTest
     {
-        public static TheoryData<string> TemplateTypes { get; } = new TheoryData<string>();
+        public static TheoryData<string> TemplateNames { get; } = new TheoryData<string>();
 
         static NewTest()
         {
-            foreach (var templateType in Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "data", "new")))
+            var basePath = Path.Combine(AppContext.BaseDirectory, "data", "new");
+            foreach (var path in Directory.GetDirectories(basePath))
             {
-                TemplateTypes.Add(templateType);
+                TemplateNames.Add(Path.GetRelativePath(basePath, path));
             }
         }
 
         [Theory]
-        [MemberData(nameof(TemplateTypes))]
-        public static void Create_Build_Docset(string type)
+        [MemberData(nameof(TemplateNames))]
+        public static void Create_Build_Docset(string templateName)
         {
             var path = Path.Combine("new-test", Guid.NewGuid().ToString("N"));
 
-            Assert.Equal(0, Docfx.Run(new[] { "new", type, "-o", path }));
+            Assert.Equal(0, Docfx.Run(new[] { "new", templateName, "-o", path }));
             Assert.Equal(0, Docfx.Run(new[] { "build", path }));
+        }
+
+        [Fact]
+        public static void Create_Build_Invalid_Docset()
+        {
+            var path = Path.Combine("new-test", Guid.NewGuid().ToString("N"));
+
+            Assert.Equal(1, Docfx.Run(new[] { "new", "C:/Users", "-o", path }));
         }
     }
 }

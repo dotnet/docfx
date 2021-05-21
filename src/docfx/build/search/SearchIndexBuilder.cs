@@ -14,7 +14,8 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
-        private readonly ConcurrentDictionary<FilePath, SearchIndexItem> _searchIndex = new ConcurrentDictionary<FilePath, SearchIndexItem>();
+
+        private readonly Scoped<ConcurrentDictionary<FilePath, SearchIndexItem>> _searchIndex = new();
 
         public SearchIndexBuilder(Config config, ErrorBuilder errors, DocumentProvider documentProvider, MetadataProvider metadataProvider)
         {
@@ -31,7 +32,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            _searchIndex.GetOrAdd(file, _ => new SearchIndexItem(_documentProvider.GetSiteUrl(file))).Title = title;
+            Watcher.Write(() => _searchIndex.Value.GetOrAdd(file, _ => new SearchIndexItem(_documentProvider.GetSiteUrl(file))).Title = title);
         }
 
         public void SetBody(FilePath file, string? body)
@@ -41,17 +42,17 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            _searchIndex.GetOrAdd(file, _ => new SearchIndexItem(_documentProvider.GetSiteUrl(file))).Body = body;
+            Watcher.Write(() => _searchIndex.Value.GetOrAdd(file, _ => new SearchIndexItem(_documentProvider.GetSiteUrl(file))).Body = body);
         }
 
         public string? Build()
         {
-            if (_searchIndex.IsEmpty)
+            if (_searchIndex.Value.IsEmpty)
             {
                 return null;
             }
 
-            var documents = JToken.FromObject(_searchIndex.Values);
+            var documents = JToken.FromObject(_searchIndex.Value.Values);
             var js = JavaScriptEngine.Create(new LocalPackage());
             var scriptPath = Path.Combine(AppContext.BaseDirectory, "data/scripts/lunr.interop.js");
 
@@ -60,13 +61,7 @@ namespace Microsoft.Docs.Build
 
         private bool NoIndex(FilePath file)
         {
-            var metadata = _metadataProvider.GetMetadata(_errors, file);
-            if (metadata.Robots != null && metadata.Robots.Contains("noindex", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
+            return _metadataProvider.GetMetadata(_errors, file).NoIndex();
         }
     }
 }

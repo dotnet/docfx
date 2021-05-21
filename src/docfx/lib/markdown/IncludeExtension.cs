@@ -4,9 +4,11 @@
 using System;
 using System.Linq;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Renderers;
 using Markdig.Syntax;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Markdig.Syntax.Inlines;
+using Microsoft.Docs.MarkdigExtensions;
 
 namespace Microsoft.Docs.Build
 {
@@ -45,6 +47,10 @@ namespace Microsoft.Docs.Build
                         ExpandInclusionBlock(context, inclusionBlock, pipeline, inlinePipeline, errors);
                         return true;
 
+                    case InclusionInline inclusionInline when TryConvertToInclusionBlock(inclusionInline) is InclusionBlock inclusionBlock:
+                        ExpandInclusionBlock(context, inclusionBlock, pipeline, inlinePipeline, errors);
+                        return true;
+
                     case InclusionInline inclusionInline:
                         ExpandInclusionInline(context, inclusionInline, inlinePipeline, inlinePipeline, errors);
                         return true;
@@ -58,6 +64,17 @@ namespace Microsoft.Docs.Build
         private static void ExpandInclusionBlock(
             MarkdownContext context, InclusionBlock inclusionBlock, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
+            if (string.IsNullOrEmpty(inclusionBlock.IncludedFilePath))
+            {
+                errors.Add(Errors.Markdown.IncludeNotFound(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
+                return;
+            }
+            if (!inclusionBlock.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(Errors.Markdown.IncludeInvalid(new SourceInfo<string?>(inclusionBlock.IncludedFilePath, inclusionBlock.GetSourceInfo())));
+                return;
+            }
+
             var (content, file) = context.ReadFile(inclusionBlock.IncludedFilePath, inclusionBlock);
             if (content is null || file is null)
             {
@@ -82,6 +99,17 @@ namespace Microsoft.Docs.Build
         private static void ExpandInclusionInline(
             MarkdownContext context, InclusionInline inclusionInline, MarkdownPipeline pipeline, MarkdownPipeline inlinePipeline, ErrorBuilder errors)
         {
+            if (string.IsNullOrEmpty(inclusionInline.IncludedFilePath))
+            {
+                errors.Add(Errors.Markdown.IncludeNotFound(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
+                return;
+            }
+            if (!inclusionInline.IncludedFilePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(Errors.Markdown.IncludeInvalid(new SourceInfo<string?>(inclusionInline.IncludedFilePath, inclusionInline.GetSourceInfo())));
+                return;
+            }
+
             var (content, file) = context.ReadFile(inclusionInline.IncludedFilePath, inclusionInline);
             if (content is null)
             {
@@ -108,6 +136,27 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+        }
+
+        private static InclusionBlock? TryConvertToInclusionBlock(InclusionInline inline)
+        {
+            // If a table cell contains only an InclusionInline token,
+            // treat that InclusionInline as InclusionBlock to allow list inside table.
+            if (inline.Parent is ContainerInline containerInline &&
+                containerInline.ParentBlock is ParagraphBlock paragraphBlock &&
+                paragraphBlock.Parent is TableCell tableCell &&
+                tableCell.Count == 1 &&
+                containerInline.All(child => child == inline || IsEmptyLiteralInline(child)))
+            {
+                var inclusionBlock = new InclusionBlock(null) { Title = inline.Title, IncludedFilePath = inline.IncludedFilePath };
+                tableCell.RemoveAt(0);
+                tableCell.Add(inclusionBlock);
+                return inclusionBlock;
+            }
+
+            return null;
+
+            static bool IsEmptyLiteralInline(Inline inline) => inline is LiteralInline literal && literal.Content.IsEmptyOrWhitespace();
         }
 
         private static MarkdownPipeline CreateMarkdownPipeline(MarkdownPipelineBuilder existingBuilder, bool inlineOnly = false)

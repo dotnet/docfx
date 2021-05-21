@@ -82,6 +82,7 @@ cwd
 daringfireball
 datalist
 datetime
+debounce
 dedent
 dedup
 dependencymap
@@ -96,6 +97,7 @@ devmsft
 devops
 devsandbox
 dfm
+dic
 dirname
 disallowlist
 dlang
@@ -111,6 +113,7 @@ documentdb
 domaininfo
 dotnet
 dotnetfoundation
+ecc
 embeddedvideo
 emoji
 endregion
@@ -118,6 +121,7 @@ enoent
 enotfound
 entrycount
 enum
+eppe
 erl
 erlang
 etag
@@ -153,6 +157,7 @@ hdinsight
 hehe
 herohua
 highlightjs
+Hmlr
 homepage
 howto
 href
@@ -199,6 +204,7 @@ intellisense
 interop
 interoperability
 iparser
+IProgress
 ipsom
 ipsum
 ipynb
@@ -219,6 +225,7 @@ ituple
 itype
 ivalidation
 ivalidator
+IWork
 ixref
 jarray
 javascript
@@ -338,7 +345,6 @@ powershell
 ppe
 pragma
 preload
-privot
 progressbar
 proj
 projitems
@@ -376,6 +382,7 @@ sbyte
 scriptblock
 sdp
 semver
+seo
 serializer
 setext
 shellprogressbar
@@ -409,6 +416,7 @@ stylesheet
 stylewith
 subfolder
 submittext
+subservice
 superyyrrzz
 svg
 tabgroup
@@ -417,6 +425,7 @@ tableofcontent
 tablist
 tabpanel
 tagname
+taxonomyservice
 tbl
 tblock
 tbody
@@ -520,6 +529,7 @@ Idx
 igrouping
 contentrules
 metadatarules
+buildrules
 fnv
 MEMORYSTATUSEX
 sizeof
@@ -530,6 +540,7 @@ dryrun
 bak
 cwe
 dfp
+IRequest
 IRest
 isb
 IValidate
@@ -554,3 +565,43 @@ langs
 ILearn
 Formattable
 Memberwise
+zonepivotgroups
+docfxvnext
+pagejson
+sln
+Quickenshtein
+IFunction
+TChange
+vsthrd
+IAsync
+IDid
+IProducer
+msys
+Arity
+csholmq
+dataprep
+devitpro
+mediaplayer
+powerbi
+roslyn
+smb
+testdata
+vsts
+windowsserverdocs
+csv
+nettrace
+speedscope
+dns
+middleware
+allowfullscreen
+bgcolor
+bordercolor
+cellpadding
+cellspacing
+hspace
+marginwidth
+nowrap
+scrolling
+valign
+rgn
+lgtm

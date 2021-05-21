@@ -25,60 +25,6 @@ namespace Microsoft.Docs.Build
 
         public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
-        private static readonly EnumerationOptions s_enumerationOptions = new EnumerationOptions { RecurseSubdirectories = true };
-        private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
-
-        /// <summary>
-        /// Finds a yaml or json file under the specified location
-        /// </summary>
-        public static T? LoadYamlOrJson<T>(ErrorBuilder errors, string directory, string fileNameWithoutExtension) where T : class, new()
-        {
-            var fileName = fileNameWithoutExtension + ".yml";
-            var fullPath = Path.Combine(directory, fileName);
-            if (File.Exists(fullPath))
-            {
-                return YamlUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
-            }
-
-            fileName = fileNameWithoutExtension + ".json";
-            fullPath = Path.Combine(directory, fileName);
-            if (File.Exists(fullPath))
-            {
-                return JsonUtility.Deserialize<T>(errors, File.ReadAllText(fullPath), new FilePath(fileName));
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Enumerates files inside a directory, returns path relative to <paramref name="directory"/>.
-        /// </summary>
-        public static IEnumerable<PathString> GetFiles(string directory)
-        {
-            if (!Directory.Exists(directory))
-            {
-                throw Errors.Config.DirectoryNotFound(directory).ToException();
-            }
-
-            return new FileSystemEnumerable<PathString>(directory, ToPathString, s_enumerationOptions)
-            {
-                ShouldIncludePredicate = (ref FileSystemEntry entry) => !entry.IsDirectory && entry.FileName[0] != '.',
-                ShouldRecursePredicate =
-                 (ref FileSystemEntry entry) => entry.FileName[0] != '.' && !entry.FileName.Equals("_site", StringComparison.OrdinalIgnoreCase),
-            };
-
-            static PathString ToPathString(ref FileSystemEntry entry)
-            {
-                Debug.Assert(!entry.IsDirectory);
-
-                var path = entry.RootDirectory.Length == entry.Directory.Length
-                    ? entry.FileName.ToString()
-                    : string.Concat(entry.Directory.Slice(entry.RootDirectory.Length + 1), "/", entry.FileName);
-
-                return PathString.DangerousCreate(path);
-            }
-        }
-
         /// <summary>
         /// Create a relative path from one path to another file.
         /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
@@ -200,72 +146,12 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            if (path[^1] == '/' && res.Length > 0 && res[res.Length - 1] != '/')
+            if (path[^1] == '/' && res.Length > 0 && res[^1] != '/')
             {
                 res.Append('/');
             }
 
             return res.ToString();
-        }
-
-        /// <summary>
-        /// Converts an URL to a human readable short name for directory or file
-        /// </summary>
-        public static string UrlToShortName(string url)
-        {
-            url = RemoveQueryForBlobUrl(url);
-
-            var hash = HashUtility.GetMd5HashShort(url);
-
-            // Trim https://
-            var index = url.IndexOf(':');
-            if (index > 0)
-            {
-                url = url.Substring(index);
-            }
-
-            url = url.TrimStart('/', '\\', '.', ':').Trim();
-
-            var result = new StringBuilder();
-
-            // Take the surrounding 4 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
-            var segments = url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries);
-            for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
-            {
-                if (segmentIndex == 4 && segments.Length > 8)
-                {
-                    segmentIndex += segments.Length - 9;
-                    continue;
-                }
-
-                var segment = segments[segmentIndex];
-                for (var charIndex = 0; charIndex < segment.Length; charIndex++)
-                {
-                    var ch = segment[charIndex];
-                    if (charIndex == 8 && segment.Length > 16)
-                    {
-                        result.Append("..");
-                        charIndex += segment.Length - 17;
-                        continue;
-                    }
-                    if (!s_invalidPathChars.Contains(ch))
-                    {
-                        result.Append(ch);
-                    }
-                }
-
-                result.Append('+');
-            }
-
-            result.Append(hash);
-            return result.ToString();
-        }
-
-        // For azure blob url, url without sas token should identify if the content has changed
-        // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
-        private static string RemoveQueryForBlobUrl(string url)
-        {
-            return Regex.Replace(url, @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
         }
 
         private static bool GetIsCaseSensitive()

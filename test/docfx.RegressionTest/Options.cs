@@ -10,8 +10,11 @@ namespace Microsoft.Docs.Build
         [Value(0, Required = true)]
         public string Repository { get; set; } = "";
 
+        [Option("warm-up")]
+        public bool WarmUp { get; set; } = false;
+
         [Option("branch")]
-        public string Branch { get; set; } = "master";
+        public string Branch { get; set; } = "";
 
         [Option("locale")]
         public string Locale { get; set; } = "en-us";
@@ -19,8 +22,11 @@ namespace Microsoft.Docs.Build
         [Option("timeout")]
         public int? Timeout { get; set; }
 
-        [Option("output-html")]
-        public bool OutputHtml { get; set; }
+        [Option("output-type")]
+        public string OutputType { get; set; } = "pagejson";
+
+        [Option("template")]
+        public string? Template { get; set; }
 
         [Option("dry-run")]
         public bool DryRun { get; set; }
@@ -28,11 +34,11 @@ namespace Microsoft.Docs.Build
         [Option("no-dry-sync")]
         public bool NoDrySync { get; set; }
 
-        [Option("regression-markdown-rule")]
-        public bool RegressionMarkdownRule { get; set; }
+        [Option("profile")]
+        public bool Profile { get; set; }
 
-        [Option("regression-metadata-schema")]
-        public bool RegressionMetadataSchema { get; set; }
+        [Option("regression-rules")]
+        public bool RegressionRules { get; set; }
 
         [Option("error-level")]
         public ErrorLevel ErrorLevel { get; set; }

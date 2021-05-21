@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Microsoft.Docs.Build
@@ -19,6 +21,8 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly MetadataProvider _metadataProvider;
+
+        private readonly Scoped<ConcurrentHashSet<FilePath>> _additionalResources = new();
 
         public LinkResolver(
             Config config,
@@ -49,10 +53,11 @@ namespace Microsoft.Docs.Build
         public (Error? error, FilePath? file) ResolveContent(
             SourceInfo<string> href,
             FilePath referencingFile,
+            FilePath inclusionRoot,
             bool contentFallback = true,
             bool? transitive = null)
         {
-            var (error, file, _, _, _) = TryResolveFile(referencingFile, href, contentFallback, true);
+            var (error, file, _, _, _) = TryResolveFile(inclusionRoot, referencingFile, href, contentFallback, true);
             if (file is null)
             {
                 return default;
@@ -68,19 +73,20 @@ namespace Microsoft.Docs.Build
             return (error, file);
         }
 
-        public (Error? error, string link, FilePath? file) ResolveLink(SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
+        public (Error? error, string link, FilePath? file) ResolveLink(
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
         {
             if (href.Value.StartsWith("xref:"))
             {
                 var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
-                    new SourceInfo<string>(href.Value.Substring("xref:".Length), href),
+                    new SourceInfo<string>(href.Value["xref:".Length..], href),
                     referencingFile,
                     inclusionRoot);
 
-                return (xrefError, resolvedHref ?? href, declaringFile);
+                return (xrefError, resolvedHref ?? "", declaringFile);
             }
 
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile);
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile, inclusionRoot);
 
             inclusionRoot ??= referencingFile;
             if (!isCrossReference)
@@ -99,7 +105,7 @@ namespace Microsoft.Docs.Build
 
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
 
-            if (file != null)
+            if (file != null && !JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
             {
                 link = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), link);
             }
@@ -107,11 +113,13 @@ namespace Microsoft.Docs.Build
             return (error, link, file);
         }
 
+        public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources.Value;
+
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
-            SourceInfo<string> href, FilePath hrefRelativeTo)
+            SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
-            var (error, file, query, fragment, linkType) = TryResolveFile(hrefRelativeTo, decodedHref);
+            var (error, file, query, fragment, linkType) = TryResolveFile(inclusionRoot, hrefRelativeTo, decodedHref);
 
             if (linkType == LinkType.WindowsAbsolutePath)
             {
@@ -133,7 +141,7 @@ namespace Microsoft.Docs.Build
             var siteUrl = _documentProvider.GetSiteUrl(file);
 
             // Self reference, don't build the file, leave href as is
-            if (file == hrefRelativeTo)
+            if (file == inclusionRoot)
             {
                 var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(siteUrl);
 
@@ -147,6 +155,11 @@ namespace Microsoft.Docs.Build
 
             if (error is null && _buildScope.OutOfScope(file))
             {
+                if (file.Origin == FileOrigin.Dependency && _buildScope.GetContentType(file) == ContentType.Resource)
+                {
+                    Watcher.Write(() => _additionalResources.Value.TryAdd(file));
+                    return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
+                }
                 return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
             }
 
@@ -163,7 +176,7 @@ namespace Microsoft.Docs.Build
         }
 
         private (Error? error, FilePath? file, string? query, string? fragment, LinkType linkType) TryResolveFile(
-            FilePath referencingFile, SourceInfo<string> href, bool contentFallback = true, bool lookupGitCommits = false)
+            FilePath inclusionRoot, FilePath referencingFile, SourceInfo<string> href, bool contentFallback = true, bool lookupGitCommits = false)
         {
             href = new SourceInfo<string>(href.Value.Trim(), href.Source).Or("");
             var (path, query, fragment) = UrlUtility.SplitUrl(href);
@@ -171,7 +184,7 @@ namespace Microsoft.Docs.Build
             switch (linkType)
             {
                 case LinkType.SelfBookmark:
-                    return (null, referencingFile, query, fragment, linkType);
+                    return (null, inclusionRoot, query, fragment, linkType);
 
                 case LinkType.WindowsAbsolutePath:
                     return (Errors.Link.LocalFilePath(href), null, null, null, linkType);
@@ -181,7 +194,7 @@ namespace Microsoft.Docs.Build
                     {
                         // https://tools.ietf.org/html/rfc2396#section-4.2
                         // a hack way to process empty href
-                        return (null, referencingFile, query, fragment, LinkType.SelfBookmark);
+                        return (null, inclusionRoot, query, fragment, LinkType.SelfBookmark);
                     }
 
                     // resolve file
@@ -191,7 +204,7 @@ namespace Microsoft.Docs.Build
                     // for LandingPage should not be used,
                     // it is a hack to handle some specific logic for landing page based on the user input for now
                     // which needs to be removed once the user input is correct
-                    if (_templateEngine != null && TemplateEngine.IsLandingData(_documentProvider.GetMime(referencingFile)))
+                    if (_templateEngine != null && JsonSchemaProvider.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
                     {
                         if (file is null)
                         {
@@ -205,8 +218,7 @@ namespace Microsoft.Docs.Build
 
                     if (file is null)
                     {
-                        return (Errors.Link.FileNotFound(
-                            new SourceInfo<string>(path, href)), null, query, fragment, linkType);
+                        return (Errors.Link.FileNotFound(new SourceInfo<string>(path, href)), null, query, fragment, linkType);
                     }
 
                     return (null, file, query, fragment, linkType);
@@ -224,7 +236,7 @@ namespace Microsoft.Docs.Build
             if (relativePath.StartsWith("~/") || relativePath.StartsWith("~\\"))
             {
                 var metadata = _metadataProvider.GetMetadata(ErrorBuilder.Null, referencingFile);
-                pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath.Substring(2).TrimStart('/', '\\')));
+                pathToDocset = new PathString(Path.Combine(metadata.TildePath, relativePath[2..].TrimStart('/', '\\')));
             }
             else
             {

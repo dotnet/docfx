@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class ErrorWriter : ErrorBuilder, IDisposable
     {
-        private readonly object _outputLock = new object();
+        private readonly object _outputLock = new();
         private readonly Lazy<TextWriter> _output;
 
         private int _errorCount;
@@ -29,12 +29,12 @@ namespace Microsoft.Docs.Build
 
         public ErrorWriter(string? outputPath = null)
         {
-            _output = new Lazy<TextWriter>(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
+            _output = new(() => outputPath is null ? TextWriter.Null : CreateOutput(outputPath));
         }
 
         public override void Add(Error error)
         {
-            var count = error.Level switch
+            _ = error.Level switch
             {
                 ErrorLevel.Error => Interlocked.Increment(ref _errorCount),
                 ErrorLevel.Warning => Interlocked.Increment(ref _warningCount),
@@ -42,7 +42,7 @@ namespace Microsoft.Docs.Build
                 _ => 0,
             };
 
-            Telemetry.TrackErrorCount(error.Code, error.Level, error.PropertyPath);
+            Telemetry.TrackErrorCount(error);
 
             if (_output != null)
             {
@@ -109,7 +109,7 @@ namespace Microsoft.Docs.Build
         {
             var outputFilePath = Path.GetFullPath(outputPath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath) ?? ".");
 
             return File.AppendText(outputFilePath);
         }

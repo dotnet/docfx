@@ -45,7 +45,7 @@ Docfx generate `links` information of each files into one single file `.links.js
   |                         |                                         |
   |-------------------------|----------------------                   |
   | `source_url`            | /dotnet/articles/a                      |
-  | `source_moniker_group`  | 218c13d0                                |
+  | `source_moniker_group`  | 55a4a18f941221e4d8924d8ebc96dd6c                                |
   | `target_url`            | /dotnet/articles/b                      |
   | `source_git_url`        | https://github.com/dotnet/articles/a.md |
   | `source_line`           | 10                                      |
@@ -59,21 +59,21 @@ Example:
     [
         {
             "source_url": "/dotnet/articles/a",
-            "source_moniker_group": "218c13d0",
+            "source_moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c",
             "target_url": "/dotnet/articles/b",
             "source_git_url": "https://github.com/dotnet/articles/a.md",
             "source_line": "10"
         },
         {
             "source_url": "/dotnet/articles/a",
-            "source_moniker_group": "218c13d0",
+            "source_moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c",
             "target_url": "https://github.com",
             "source_git_url": "https://github.com/dotnet/articles/a.md",
             "source_line": "20"
         },
         {
             "source_url": "/dotnet/articles/a",
-            "source_moniker_group": "218c13d0",
+            "source_moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c",
             "target_url": "./c.md",
             "source_git_url": "https://github.com/dotnet/articles/a.md",
             "source_line": "30"

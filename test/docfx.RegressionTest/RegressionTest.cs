@@ -9,10 +9,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Polly;
 
 namespace Microsoft.Docs.Build
 {
@@ -25,12 +27,12 @@ namespace Microsoft.Docs.Build
         private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
         private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
         private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
+        private static readonly string? s_microsoftGraphClientCertificate = Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_CERTIFICATE");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
         private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
 
-        private static (bool succeeded, TimeSpan buildTime, int? timeout, string diff, int moreLines) s_testResult;
-        private static string s_repositoryName = "";
+        private static string s_testName = "";
         private static string s_repository = "";
 
         private static int Main(string[] args)
@@ -39,7 +41,7 @@ namespace Microsoft.Docs.Build
                 Run,
                 _ =>
                 {
-                    SendPullRequestComments("regression-test argument exception");
+                    SendPullRequestComments(new() { CrashMessage = "argument exception" });
                     return -9999;
                 });
         }
@@ -49,29 +51,42 @@ namespace Microsoft.Docs.Build
             try
             {
                 s_repository = opts.Repository;
-                s_repositoryName = $"{(opts.DryRun ? "dryrun." : "")}{Path.GetFileName(opts.Repository)}";
-                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_repositoryName}");
 
-                EnsureTestData(opts, workingFolder);
-                Test(opts, workingFolder);
-                PushChanges(workingFolder);
+                s_testName = opts.DryRun
+                    ? $"dryrun.{Path.GetFileName(opts.Repository)}"
+                    : opts.OutputType.Equals("html", StringComparison.OrdinalIgnoreCase)
+                        ? $"htmlTest.{Path.GetFileName(opts.Repository)}"
+                        : Path.GetFileName(opts.Repository);
+
+                var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_testName}");
+
+                var remoteBranch = EnsureTestData(opts, workingFolder);
+                if (opts.WarmUp)
+                {
+                    var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
+                    RestoreDependency(repositoryPath, docfxConfig, outputPath);
+                }
+                else
+                {
+                    Test(opts, workingFolder, remoteBranch);
+                }
             }
             catch (Exception ex)
             {
-                SendPullRequestComments(ex.ToString());
+                SendPullRequestComments(new() { CrashMessage = ex.ToString() });
                 throw;
             }
             return 0;
         }
 
-        private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string workingFolder)
+        private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string workingFolder, string remoteBranch)
         {
-            var repositoryPath = Path.Combine(workingFolder, s_repositoryName);
+            var repositoryPath = Path.Combine(workingFolder, s_testName);
             var cachePath = Path.Combine(workingFolder, "cache");
             var statePath = Path.Combine(workingFolder, "state");
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine($"Testing {s_repositoryName}");
+            Console.WriteLine($"Testing {s_testName}");
             Console.ResetColor();
 
             var baseLinePath = Path.Combine(workingFolder, "output");
@@ -80,7 +95,7 @@ namespace Microsoft.Docs.Build
 
             // Set Env for Build
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
-            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
+            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", remoteBranch);
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
@@ -89,45 +104,58 @@ namespace Microsoft.Docs.Build
 
             static string GetDocfxConfig(Options opts)
             {
+                var http = new Dictionary<string, object>();
+                if (!string.IsNullOrEmpty(s_githubToken))
+                {
+                    http["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) };
+                }
+
+                if (!string.IsNullOrEmpty(s_azureDevopsToken))
+                {
+                    http["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) };
+                }
+
                 var docfxConfig = JObject.FromObject(new
                 {
-                    http = new Dictionary<string, object>
-                    {
-                        ["https://github.com"] = new { headers = ToAuthHeader(s_githubToken) },
-                        ["https://dev.azure.com"] = new { headers = ToAuthHeader(s_azureDevopsToken) },
-                    },
-                    maxFileWarnings = 1000,
-                    maxFileSuggestions = 1000,
-                    maxFileInfos = 1000,
+                    outputType = opts.OutputType,
+                    maxFileWarnings = 10000,
+                    maxFileSuggestions = 10000,
+                    maxFileInfos = 10000,
                     updateTimeAsCommitBuildTime = true,
-                    githubToken = s_githubToken,
                     githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
+                    secrets = new
+                    {
+                        http,
+                        githubToken = s_githubToken,
+                        microsoftGraphClientCertificate = s_microsoftGraphClientCertificate,
+                    },
                 });
 
-                if (opts.OutputHtml)
+                if (!string.IsNullOrEmpty(opts.Template))
                 {
-                    docfxConfig["outputType"] = "html";
+                    docfxConfig["template"] = opts.Template;
+                }
+
+                if (opts.OutputType == "html")
+                {
                     docfxConfig["urlType"] = "ugly";
-                    docfxConfig["template"] = "https://github.com/Microsoft/templates.docs.msft.pdf#master";
                 }
                 else
                 {
-                    docfxConfig["outputType"] = "pageJson";
                     docfxConfig["selfContained"] = false;
                 }
 
-                if (opts.RegressionMarkdownRule)
+                if (opts.RegressionRules)
                 {
                     docfxConfig["markdownValidationRules"] = "https://ops/regressionallcontentrules/";
-                }
-
-                if (opts.RegressionMetadataSchema)
-                {
+                    docfxConfig["buildValidationRules"] = "https://ops/regressionallbuildrules/";
+                    docfxConfig["sandboxEnabledModuleList"] = "https://ops/sandboxEnabledModuleList/";
                     docfxConfig["metadataSchema"] = new JArray()
                     {
-                        Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"),
+                        Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"),
                         "https://ops/regressionallmetadataschema/",
                     };
+                    docfxConfig["allowlists"] = "https://ops/regressionalltaxonomy-allowlists/";
                 }
 
                 return JsonConvert.SerializeObject(docfxConfig);
@@ -142,55 +170,80 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool Test(Options opts, string workingFolder)
+        private static bool Test(Options opts, string workingFolder, string remoteBranch)
         {
-            var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder);
+            var testResult = new RegressionTestResult();
+            var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
 
             Clean(outputPath);
-            var buildTime = Build(repositoryPath, outputPath, opts, docfxConfig);
+            Build(testResult, repositoryPath, outputPath, opts, docfxConfig);
 
-            Compare(opts, workingFolder, outputPath, baseLinePath, buildTime);
+            Compare(testResult, opts, workingFolder, outputPath, baseLinePath);
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             Console.WriteLine($"Test Pass {workingFolder}");
             Console.ResetColor();
+
+            PushChanges(testResult, workingFolder);
             return true;
         }
 
-        private static void EnsureTestData(Options opts, string workingFolder)
+        private static string EnsureTestData(Options opts, string workingFolder)
         {
             if (!Directory.Exists(workingFolder))
             {
                 Directory.CreateDirectory(workingFolder);
                 Exec("git", $"init", cwd: workingFolder);
                 Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth);
+
+                Retry(() => Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth));
             }
+
+            var remoteBranch = string.IsNullOrEmpty(opts.Branch)
+                ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
+                : opts.Branch;
 
             try
             {
-                Exec("git", $"{s_gitCmdAuth} fetch origin --progress --prune {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth, redirectStandardError: true);
+                Retry(() => Exec(
+                            "git",
+                            $"{s_gitCmdAuth} fetch origin --progress --prune {s_testName}",
+                            cwd: workingFolder,
+                            secrets: s_gitCmdAuth,
+                            redirectStandardError: true));
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains($"couldn't find remote ref {s_repositoryName}"))
+                if (ex.Message.Contains($"couldn't find remote ref {s_testName}"))
                 {
                     // A new repo is added for the first time
-                    Exec("git", $"checkout -B {s_repositoryName} origin/template", cwd: workingFolder);
+                    Exec("git", $"checkout -B {s_testName} origin/template", cwd: workingFolder);
                     Exec("git", $"clean -xdff", cwd: workingFolder);
-                    Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule add -f --branch {opts.Branch} {opts.Repository} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-                    return;
+                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {remoteBranch} {opts.Repository} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                    return remoteBranch;
                 }
                 throw;
             }
 
-            Exec("git", $"-c core.longpaths=true checkout --force origin/{s_repositoryName}", cwd: workingFolder);
+            Exec("git", $"checkout --force origin/{s_testName}", cwd: workingFolder);
             Exec("git", $"clean -xdff", cwd: workingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
-            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} submodule sync {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"{s_gitCmdAuth} -c core.longpaths=true submodule update {submoduleUpdateFlags} --init --progress --force {s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-            Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_repositoryName));
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {remoteBranch} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule sync {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_testName));
+            return remoteBranch;
+        }
+
+        private static string GetRemoteDefaultBranch(string repositoryUrl, string workingDirectory)
+        {
+            var remoteInfo = ProcessUtility.Execute("git", $"{s_gitCmdAuth} remote show {repositoryUrl}", workingDirectory, secret: s_gitCmdAuth);
+            var match = Regex.Match(remoteInfo, "^([\\s\\S]*)\\sHEAD branch: (.*)$");
+            if (match.Success)
+            {
+                return match.Groups[2].Value;
+            }
+            throw new InvalidOperationException("Default remote branch not found!");
         }
 
         private static void Clean(string outputPath)
@@ -202,35 +255,66 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Build(string repositoryPath, string outputPath, Options opts, string docfxConfig)
+        private static void RestoreDependency(string repositoryPath, string docfxConfig, string outputPath)
         {
-            var dryRunOption = opts.DryRun ? "--dry-run" : "";
-            var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
             var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
-
             Exec(
                 Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
                 arguments: $"restore {logOption} --verbose --stdin",
                 stdin: docfxConfig,
-                cwd: repositoryPath,
-                allowExitCodes: new int[] { 0 });
-
-            return Exec(
-                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
-                arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
-                stdin: docfxConfig,
                 cwd: repositoryPath);
         }
 
-        private static void Compare(Options opts, string workingFolder, string outputPath, string existingOutputPath, TimeSpan buildTime)
+        private static void Build(RegressionTestResult testResult, string repositoryPath, string outputPath, Options opts, string docfxConfig)
+        {
+            var dryRunOption = opts.DryRun ? "--dry-run" : "";
+            var noDrySyncOption = opts.NoDrySync ? "--no-dry-sync" : "";
+            var logOption = $"--log \"{Path.Combine(outputPath, ".errors.log")}\"";
+            var diagnosticPort = $"docfx-regression-test-{Guid.NewGuid()}.sock";
+            var traceFile = Path.Combine(s_testDataRoot, $".temp/{s_testName}.nettrace");
+
+            RestoreDependency(repositoryPath, docfxConfig, outputPath);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(traceFile) ?? ".");
+            var profiler = opts.Profile
+                ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
+                : null;
+
+            testResult.BuildTime = Exec(
+                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
+                stdin: docfxConfig,
+                cwd: repositoryPath,
+                allowExitCodes: new[] { 0, 1 },
+                env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null);
+
+            if (profiler != null)
+            {
+                profiler.WaitForExit();
+
+                Console.WriteLine($"##vso[artifact.upload artifactname=trace;]{traceFile}");
+
+                var speedScopeFile = Path.Combine(s_testDataRoot, $".temp/{s_testName}.speedscope.json");
+                Process.Start("dotnet-trace", $"convert --format Speedscope \"{traceFile}\"").WaitForExit();
+
+                testResult.HotMethods = string.Join('\n', SpeedScope.FindHotMethods(speedScopeFile).Select(item => $"{item.percentage,3}% | {item.method}"));
+
+                Console.WriteLine();
+                Console.WriteLine("Performance Sampling Result");
+                Console.WriteLine("---------------------------");
+                Console.WriteLine(testResult.HotMethods);
+            }
+        }
+
+        private static void Compare(RegressionTestResult testResult, Options opts, string workingFolder, string outputPath, string existingOutputPath)
         {
             // For temporary normalize: use 'NormalizeJsonFiles' for output files
             Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: opts.ErrorLevel);
 
-            if (buildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
+            if (testResult.BuildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
             {
-                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
-                Console.WriteLine($"Test failed, build timeout. Repo: {s_repositoryName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
             }
 
             if (s_isPullRequest)
@@ -242,18 +326,22 @@ namespace Microsoft.Docs.Build
                 var process = Process.Start(new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = $"--no-pager -c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
+                    Arguments = $"--no-pager -c core.longpaths=true -c core.autocrlf=input -c core.safecrlf=false diff --no-index --ignore-all-space --ignore-blank-lines --ignore-cr-at-eol --exit-code \"{existingOutputPath}\" \"{outputPath}\"",
                     WorkingDirectory = TestDiskRoot, // starting `git diff` from root makes it faster
                     RedirectStandardOutput = true,
-                });
+                }) ?? throw new InvalidOperationException();
 
-                var diffFile = Path.Combine(s_testDataRoot, $".temp/{s_repositoryName}.patch");
+                var diffFile = Path.Combine(s_testDataRoot, $".temp/{s_testName}.patch");
 
-                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
+                Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
                 var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
                 process.WaitForExit();
 
-                s_testResult = (process.ExitCode == 0, buildTime, opts.Timeout, diff, totalLines);
+                testResult.Succeeded = process.ExitCode == 0;
+                testResult.Timeout = opts.Timeout;
+                testResult.Diff = diff;
+                testResult.MoreLines = totalLines;
+
                 watch.Stop();
                 Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
 
@@ -262,25 +350,25 @@ namespace Microsoft.Docs.Build
                     return;
                 }
 
-                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}", diffFile);
+                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
                 Console.WriteLine($"##vso[task.complete result=Failed]Test failed, see the logs under /Summary/Build artifacts for details");
             }
             else
             {
-                Exec("git", "-c core.autocrlf=input -c core.safecrlf=false -c core.longpaths=true add -A", cwd: workingFolder);
-                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_repositoryName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
+                Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: workingFolder);
+                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_testName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
             }
         }
 
-        private static void PushChanges(string workingFolder)
+        private static void PushChanges(RegressionTestResult testResult, string workingFolder)
         {
             if (s_isPullRequest)
             {
-                SendPullRequestComments().GetAwaiter().GetResult();
+                SendPullRequestComments(testResult);
             }
             else
             {
-                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_repositoryName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                Exec("git", $"{s_gitCmdAuth} push origin HEAD:{s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             }
         }
 
@@ -289,32 +377,51 @@ namespace Microsoft.Docs.Build
             string arguments = "",
             string? stdin = null,
             string? cwd = null,
+            Dictionary<string, string>? env = null,
             bool ignoreError = false,
             bool redirectStandardError = false,
             int[]? allowExitCodes = null,
             params string[] secrets)
         {
             var stopwatch = Stopwatch.StartNew();
-            var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrEmpty(secret) ? arg : arg.Replace(secret, "***"));
-            allowExitCodes ??= new int[] { 0, 1 };
+            var sanitizedArguments = secrets.Aggregate(arguments, (arg, secret) => string.IsNullOrWhiteSpace(secret) ? arg : arg.Replace(secret, "***"));
+            allowExitCodes ??= new int[] { 0 };
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine($"{fileName} {sanitizedArguments}");
             Console.ResetColor();
-            var process = Process.Start(new ProcessStartInfo
+
+            if (fileName == "git")
+            {
+                arguments = $"-c core.longpaths=true {arguments}";
+            }
+
+            var psi = new ProcessStartInfo
             {
                 FileName = fileName,
                 Arguments = arguments,
-                WorkingDirectory = cwd,
+                WorkingDirectory = cwd ?? ".",
                 UseShellExecute = false,
                 RedirectStandardError = redirectStandardError,
                 RedirectStandardInput = !string.IsNullOrEmpty(stdin),
-            });
+            };
+
+            if (env != null)
+            {
+                foreach (var (key, value) in env)
+                {
+                    psi.EnvironmentVariables[key] = value;
+                }
+            }
+
+            var process = Process.Start(psi) ?? throw new InvalidOperationException();
+
             if (!string.IsNullOrEmpty(stdin))
             {
                 process.StandardInput.Write(stdin);
                 process.StandardInput.Close();
             }
+
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
@@ -356,8 +463,12 @@ namespace Microsoft.Docs.Build
 
         private static string GetGitCommandLineAuthorization()
         {
-            var azureReposBasicAuth = $"-c http.https://dev.azure.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_azureDevopsToken)}\"";
-            var githubBasicAuth = $"-c http.https://github.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_githubToken)}\"";
+            var azureReposBasicAuth = string.IsNullOrEmpty(s_azureDevopsToken)
+                ? "" : $"-c http.https://dev.azure.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_azureDevopsToken)}\"";
+
+            var githubBasicAuth = string.IsNullOrEmpty(s_githubToken)
+                ? "" : $"-c http.https://github.com.extraheader=\"AUTHORIZATION: basic {BasicAuth(s_githubToken)}\"";
+
             return $"{azureReposBasicAuth} {githubBasicAuth}";
         }
 
@@ -366,40 +477,57 @@ namespace Microsoft.Docs.Build
             return Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{token}"));
         }
 
-        private static Task SendPullRequestComments(string? crashedMessage = null)
+        private static void SendPullRequestComments(RegressionTestResult testResult)
         {
-            var isTimeout = s_testResult.buildTime.TotalSeconds > s_testResult.timeout;
-            if (s_testResult.succeeded && !isTimeout && crashedMessage == null)
+            var isTimeout = testResult.BuildTime.TotalSeconds > testResult.Timeout;
+            if (testResult.Succeeded && !isTimeout && testResult.CrashMessage == null)
             {
-                return Task.CompletedTask;
+                return;
             }
 
-            var statusIcon = crashedMessage != null
-                             ? "🚗🌳💥🤕🚑"
-                             : isTimeout
-                               ? "🧭"
-                               : "⚠";
+            var body = new StringBuilder();
+            body.Append("<details><summary>");
+            body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "🧭" : "⚠");
+            body.Append($"<a href='{s_repository}'>{s_testName}</a>");
+            body.Append($"({testResult.BuildTime}");
 
-            var summary = $"{statusIcon}" +
-                          $"<a href='{s_repository}'>{s_repositoryName}</a>" +
-                          (crashedMessage != null
-                          ? ""
-                          : $"({s_testResult.buildTime}{(isTimeout ? $" | exceed {s_testResult.timeout}s" : "")}" +
-                            $"{(s_testResult.succeeded ? "" : $", {s_testResult.moreLines} more diff")}" +
-                            $")");
-            var body = $"<details><summary>{summary}</summary>\n\n```diff\n{crashedMessage ?? s_testResult.diff}\n```\n\n</details>";
+            if (isTimeout)
+            {
+                body.Append($" | exceed {testResult.Timeout}s");
+            }
+            if (testResult.MoreLines > 0)
+            {
+                body.Append($", {testResult.MoreLines} more diff");
+            }
+
+            body.Append(")</summary>\n\n");
+
+            if (!string.IsNullOrEmpty(testResult.CrashMessage))
+            {
+                body.Append($"```\n{testResult.CrashMessage}\n\n```");
+            }
+
+            if (!string.IsNullOrEmpty(testResult.Diff))
+            {
+                body.Append($"```diff\n{testResult.Diff}\n\n```");
+            }
+
+            if (isTimeout && !string.IsNullOrEmpty(testResult.HotMethods))
+            {
+                body.Append($"```csharp\n{testResult.HotMethods}\n\n```");
+            }
+
+            body.Append("\n\n</details>");
 
             if (int.TryParse(Environment.GetEnvironmentVariable("PULL_REQUEST_NUMBER") ?? "", out var prNumber))
             {
-                return SendGitHubPullRequestComments(prNumber, body);
+                SendGitHubPullRequestComments(prNumber, body.ToString()).GetAwaiter().GetResult();
             }
-
-            return Task.CompletedTask;
         }
 
         private static async Task SendGitHubPullRequestComments(int prNumber, string body)
         {
-            using var http = new HttpClient();
+            using var http = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
             http.DefaultRequestHeaders.Add("User-Agent", "DocFX");
             http.DefaultRequestHeaders.Add("Authorization", $"bearer {s_githubToken}");
 
@@ -410,5 +538,11 @@ namespace Microsoft.Docs.Build
 
             response.EnsureSuccessStatusCode();
         }
+
+        private static TimeSpan Retry(Func<TimeSpan> action, int retryCount = 5)
+            => Policy
+            .Handle<Exception>()
+            .WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .Execute(action);
     }
 }

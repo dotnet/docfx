@@ -11,6 +11,70 @@ Build and test this project by running `build.ps1` on Windows, or by running `bu
 
 You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) with [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp) to develop the project.
 
+## Local Debug Tutorial for Docfx v3
+
+> **For Microsoft Internal Users:**
+>
+> Make sure you have the permissions to run this repo locally. Contact [docfxvnext@microsoft.com](docfxvnext@microsoft.com) to add read permission, please.
+
+### Step 1: Clone Repo
+Clone the repo and check out to v3 branch.
+
+```shell
+git clone https://github.com/dotnet/docfx
+git checkout v3
+```
+### Step 2: Open the Repo with Visual Studio
+
+Open `docfx.sln` with Visual Studio. Add `Debug arguments` for `docfx` project to specify the repo you want to debug, build arguments for example: `build "C:\workspace\test-repo"`
+
+```shell
+build "your repo on local disk"
+```
+
+> **Note:**
+>
+> Currently, docfx v3 supports 2 environment variables, that is, `DocsEnvironment.Prod`(**default**) and `DocsEnvironment.PPE`. Please config a proper environment variable before building.
+
+### Step 3: Debug
+
+Now you can set breakpoints and debug with your specified repo.
+
+### More Build Options:
+
+|option|Description|
+|---|---|
+|o\|output|Output directory in which to place built artifacts.|
+|output-type|Specify the output type.|
+|dry-run|Do not produce build artifact and only produce validation result.|
+|no-dry-sync|Do not run dry sync for learn validation.|
+|no-restore|Do not restore dependencies before build.|
+|no-cache|Do not use cache dependencies in build, always fetch latest dependencies.|
+|template-base-path|The base path used for referencing the template resource file when applying liquid.|
+
+There are some common scenarios for reference. And you can combine these options in need.
+
+- Build a static Html website.
+    ```shell
+    docfx build {docset-path}
+    ```
+- Faster way to see validation results without producing build outputs.
+    ```shell
+    docfx build --dry-run {docset-path}
+    ```
+- Debug [https://docs.microsoft.com](https://docs.microsoft.com) internal publishing build output format:
+    ```shell
+    docfx build --output-type pagejson {docset-path}
+    ```
+- See verbose console output.
+    ```shell
+    docfx build -v {docset-path}
+    ```
+- Update all dependencies (dependent repositories, validation rules, etc.) to the latest version.
+    ```shell
+    docfx restore {docset-path}
+    ```
+
 ## Release Process
 
 We continuously deploy `v3` branch to [Production Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-prod/nuget/v3/index.json). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.

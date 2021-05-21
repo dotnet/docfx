@@ -1,37 +1,180 @@
 {
-  "docsetUnique": [ "title", "description" ],
+  "docsetUnique": [
+    "title",
+    "description"
+  ],
   "properties": {
-    "author": { "type": [ "string", "null" ] },
-    "ms.author": {
-      "type": [ "string", "null" ],
-      "microsoftAlias": { "allowedDLs": [ "amlstudiodocs", "archiveddocs", "betafred", "dotnetcontent", "ncldev", "o365devx", "pnp", "tdsp", "wcfsrvt", "wdg-dev-content", "windows-driver-content", "windowsdriverdev", "windowssdkdev", "xamadodi" ] }
+    "author": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
-    "ms.prod": { "type": [ "string", "null" ] },
-    "ms.service": { "type": [ "string", "null" ] },
-    "ms.technology": { "type": [ "string", "null" ] },
-    "ms.subservice": { "type": [ "string", "null" ] },
-    "title": { "type": [ "string", "null" ] },
-    "ms.topic": { "type": [ "string", "null" ] },
-    "product": { "type": [ "array", "null" ] },
+    "ms.author": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "microsoftAlias": {
+        "allowedDLs": [
+          "amlstudiodocs",
+          "apimpm",
+          "archiveddocs",
+          "azfuncdf",
+          "betafred",
+          "dotnetcontent",
+          "hisdocs",
+          "ncldev"
+        ]
+      }
+    },
+    "ms.prod": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.service": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.technology": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.subservice": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.topic": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "archived",
+        "article",
+        "best-practice",
+        "callback",
+        "checklist",
+        "class",
+        "conceptual"
+      ]
+    },
+    "product": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "azure",
+          "azue-speech-translation",
+          "azure-active-directory",
+          "azure-active-directory-b2c",
+          "azure-active-directory-domain",
+          "azure-advisor",
+          "azure-analysis-services",
+          "azure-anomaly-detector",
+          "azure-api-apps",
+          "azure-api-fhir",
+          "azure-api-management",
+          "dotnet",
+          "aspnet",
+          "aspnet-core",
+          "dotnet-core",
+          "dotnet-standard",
+          "ef-core",
+          "mlnet",
+          "xamarin",
+          "dynamics",
+          "dynamics-365",
+          "customer-voice",
+          "dynamics-business-central",
+          "dynamics-commerce",
+          "dynamics-cust-insights",
+          "dynamics-customer-engagement",
+          "dynamics-customer-service",
+          "dynamics-cust-svc-insights",
+          "dynamics-field-service",
+          "expression",
+          "expression-studio",
+          "m365",
+          "m365-ems",
+          "m365-ems-cloud-app-security",
+          "m365-information-protection",
+          "m365-security-center",
+          "m365-security-score",
+          "mem",
+          "mem-configuration-manager",
+          "mem-intune"
+        ]
+      }
+    },
     "ms.date": {
-      "type": [ "string", "null" ],
+      "type": [
+        "string",
+        "null"
+      ],
       "dateFormat": "M/d/yyyy",
       "relativeMaxDate": "5.00:00:00"
     },
-    "ms.component": { "replacedBy": "ms.subservice" },
+    "ms.component": {
+      "replacedBy": "ms.subservice"
+    },
     "description": {
-      "type": [ "string", "null" ],
+      "type": [
+        "string",
+        "null"
+      ],
       "minLength": 2,
       "maxLength": 10
     }
   },
-  "strictRequired": [ "author", "ms.author", "title", "ms.topic", "product", "ms.date" ],
+  "strictRequired": [
+    "author",
+    "ms.author",
+    "title",
+    "ms.topic",
+    "product",
+    "ms.date"
+  ],
   "dependencies": {
-    "ms.technology": [ "ms.prod" ],
-    "ms.subservice": [ "ms.service" ]
+    "ms.technology": [
+      "ms.prod"
+    ],
+    "ms.subservice": [
+      "ms.service"
+    ]
   },
-  "either": [ [ "ms.prod", "ms.service" ] ],
-  "precludes": [ [ "ms.prod", "ms.service" ] ],
+  "either": [
+    [
+      "ms.prod",
+      "ms.service"
+    ]
+  ],
+  "precludes": [
+    [
+      "ms.prod",
+      "ms.service"
+    ]
+  ],
   "enumDependencies": {
     "ms.prod[0]": {
       ".net": {
@@ -39,15 +182,7 @@
           "": null,
           "csharp-interactive": null,
           "devlang-csharp": null,
-          "devlang-fsharp": null,
-          "devlang-visual-basic": null,
-          "dotnet-ado": null,
-          "dotnet-ncl": null,
-          "dotnet-standard": null,
-          "dotnet-wcf": null,
-          "dotnet-webforms": null,
-          "dotnet-winforms": null,
-          "dotnet-wpf": null
+          "devlang-fsharp": null
         }
       },
       ".net-core": {
@@ -57,16 +192,7 @@
           "devlang-csharp": null,
           "devlang-fsharp": null,
           "devlang-javascript": null,
-          "devlang-python": null,
-          "devlang-visual-basic": null,
-          "dotnet-asp5": null,
-          "dotnet-cli": null,
-          "dotnet-coreclr": null,
-          "dotnet-corefx": null,
-          "dotnet-docker": null,
-          "dotnet-linux": null,
-          "dotnet-osx": null,
-          "dotnet-roslyn": null
+          "devlang-python": null
         }
       },
       ".net-core-technologies": {
@@ -78,12 +204,7 @@
           "devlang-javascript": null,
           "devlang-python": null,
           "devlang-visual-basic": null,
-          "dotnet-asp5": null,
-          "dotnet-coreclr": null,
-          "dotnet-corefx": null,
-          "dotnet-linux": null,
-          "dotnet-osx": null,
-          "dotnet-roslyn": null
+          "dotnet-asp5": null
         }
       },
       ".net-framework": {
@@ -92,2281 +213,35 @@
           "devlang-cpp": null,
           "devlang-csharp": null,
           "devlang-fsharp": null,
-          "devlang-javascript": null,
-          "devlang-python": null,
-          "devlang-visual-basic": null,
-          "dotnet-ado": null,
-          "dotnet-bcl": null,
-          "dotnet-clr": null,
-          "dotnet-docker": null,
-          "dotnet-ef": null,
-          "dotnet-mvc": null,
-          "dotnet-ncl": null,
-          "dotnet-signalr": null,
-          "dotnet-silverlight": null,
-          "dotnet-wcf": null,
-          "dotnet-webapi": null,
-          "dotnet-webforms": null,
-          "dotnet-webpages": null,
-          "dotnet-winforms": null,
-          "dotnet-wpf": null
-        }
-      },
-      ".net-framework-4.6": {
-        "ms.technology[0]": {
-          "": null,
-          "devlang-cpp": null,
-          "devlang-csharp": null,
-          "devlang-fsharp": null,
-          "devlang-javascript": null,
-          "devlang-python": null,
-          "devlang-visual-basic": null,
-          "dotnet-ado": null,
-          "dotnet-bcl": null,
-          "dotnet-clr": null,
-          "dotnet-ef": null,
-          "dotnet-mvc": null,
-          "dotnet-silverlight": null,
-          "dotnet-webforms": null,
-          "dotnet-winforms": null,
-          "dotnet-wpf": null
-        }
-      },
-      ".net-framework-oob": {
-        "ms.technology[0]": {
-          "": null,
-          "devlang-cpp": null,
-          "devlang-csharp": null,
-          "devlang-fsharp": null,
-          "devlang-javascript": null,
-          "devlang-python": null,
-          "devlang-visual-basic": null,
-          "dotnet-ado": null,
-          "dotnet-bcl": null,
-          "dotnet-clr": null,
-          "dotnet-ef": null,
-          "dotnet-mvc": null,
-          "dotnet-silverlight": null,
-          "dotnet-webforms": null,
-          "dotnet-winforms": null,
-          "dotnet-wpf": null
-        }
-      },
-      "access": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "connectors": null,
-          "custom-web-app": null,
-          "data-visualizations": null,
-          "desktop-database": null,
-          "fast-search": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "adaptive-cards": { "ms.technology[0]": { "": null } },
-      "advanced-threat-analytics": { "ms.technology[0]": { "": null } },
-      "analysis-services": { "ms.technology[0]": { "": null } },
-      "analytics-platform-system": { "ms.technology[0]": { "mpp-data-warehouse": null } },
-      "asp.net": { "ms.technology[0]": { "": null } },
-      "asp.net-4.0": { "ms.technology[0]": { "": null } },
-      "asp.net-4.5.1": { "ms.technology[0]": { "": null } },
-      "asp.net-5.0": { "ms.technology[0]": { "": null } },
-      "asp.net-mvc-3.0": { "ms.technology[0]": { "": null } },
-      "asp.net-mvc-5.0": { "ms.technology[0]": { "": null } },
-      "aspnet-core": {
-        "ms.technology[0]": {
-          "aspnetcore": null,
-          "aspnetcore-azure": null,
-          "aspnetcore-blazor": null,
-          "aspnetcore-clientside": null,
-          "aspnetcore-data": null,
-          "aspnetcore-fundamentals": null,
-          "aspnetcore-getstarted": null,
-          "aspnetcore-hostdeploy": null,
-          "aspnetcore-migration": null,
-          "aspnetcore-mobile": null,
-          "aspnetcore-mvc": null,
-          "aspnetcore-performance": null,
-          "aspnetcore-razorpages": null,
-          "aspnetcore-releasenotes": null,
-          "aspnetcore-security": null,
-          "aspnetcore-signalr": null,
-          "aspnetcore-test": null,
-          "aspnetcore-tutorials": null,
-          "aspnetcore-webapi": null
-        }
-      },
-      "aspnet-core-api": { "ms.technology[0]": { "": null } },
-      "aspnet-framework": {
-        "ms.technology[0]": {
-          "": null,
-          "aspnet-ajax": null,
-          "aspnet-aspnet": null,
-          "aspnet-identity": null,
-          "aspnet-mobile": null,
-          "aspnet-mvc": null,
-          "aspnet-signalr": null,
-          "aspnet-spa": null,
-          "aspnet-visualstudio": null,
-          "aspnet-webapi": null,
-          "aspnet-webforms": null,
-          "aspnet-webhooks": null,
-          "aspnet-webpages": null,
-          "aspnet-whitepapers": null
-        }
-      },
-      "azure": {
-        "ms.technology[0]": {
-          "": null,
-          "azure-cli": null,
-          "azure-sdk-go": null
-        }
-      },
-      "azure-dotnet": { "ms.technology[0]": { "": null } },
-      "azure-java": { "ms.technology[0]": { "": null } },
-      "azure-nodejs": { "ms.technology[0]": { "": null } },
-      "azure-python": { "ms.technology[0]": { "": null } },
-      "azure-sphere": { "ms.technology[0]": { "": null } },
-      "bing-ads": {
-        "ms.technology[0]": {
-          "bing-ads-api": null,
-          "bing-ads-hotel-ads": null,
-          "bing-ads-scripts": null,
-          "bing-ads-sdk": null,
-          "bing-ads-shopping-content": null
-        }
-      },
-      "biztalk-server": { "ms.technology[0]": { "": null } },
-      "biztalk-server-2013": { "ms.technology[0]": { "": null } },
-      "bookings": { "ms.technology[0]": { "microsoft-graph": null } },
-      "bot-framework": {
-        "ms.technology[0]": {
-          "": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null
-        }
-      },
-      "business-platform": {
-        "ms.technology[0]": {
-          "content-pack": null,
-          "data-visualizations": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "tabs": null
-        }
-      },
-      "cntk": { "ms.technology[0]": { "": null } },
-      "collaborate": { "ms.technology[0]": { "": null } },
-      "communications-server": { "ms.technology[0]": { "": null } },
-      "communications-server-2003": { "ms.technology[0]": { "": null } },
-      "communications-server-2005": { "ms.technology[0]": { "": null } },
-      "communications-server-2007": { "ms.technology[0]": { "": null } },
-      "communications-server-2007-r2": { "ms.technology[0]": { "": null } },
-      "communicator": { "ms.technology[0]": { "": null } },
-      "community-toolkit": { "ms.technology[0]": { "": null } },
-      "configuration-manager": {
-        "ms.technology[0]": {
-          "": null,
-          "configmgr-app": null,
-          "configmgr-client": null,
-          "configmgr-compliance": null,
-          "configmgr-hybrid": null,
-          "configmgr-osd": null,
-          "configmgr-other": null,
-          "configmgr-protect": null,
-          "configmgr-sdk": null,
-          "configmgr-sum": null
-        }
-      },
-      "configuration-manager-2012": { "ms.technology[0]": { "": null } },
-      "configuration-manager-2012-r2": { "ms.technology[0]": { "": null } },
-      "configuration-manager-2012-sp1": { "ms.technology[0]": { "": null } },
-      "connected-devices": { "ms.technology[0]": { "": null } },
-      "console": { "ms.technology[0]": { "": null } },
-      "cortana": {
-        "ms.technology[0]": {
-          "": null,
-          "skills": null
-        }
-      },
-      "cpp-dev15": { "ms.technology[0]": { "devlang-csharp": null } },
-      "crm-2011": { "ms.technology[0]": { "": null } },
-      "crm-2013": { "ms.technology[0]": { "": null } },
-      "crm-2015": { "ms.technology[0]": { "": null } },
-      "crm-2016": { "ms.technology[0]": { "": null } },
-      "cyclecloud": { "ms.technology[0]": { "": null } },
-      "data-connect": { "ms.technology[0]": { "microsoft-graph": null } },
-      "deep-zoom-composer": { "ms.technology[0]": { "": null } },
-      "delve": { "ms.technology[0]": { "": null } },
-      "deployment-manager": { "ms.technology[0]": { "": null } },
-      "desktop": {
-        "ms.technology[0]": {
-          "": null,
-          "compatibility-cookbook": null,
-          "sdk-api-reference": null
-        }
-      },
-      "devops": {
-        "ms.technology[0]": {
-          "": null,
-          "devops-accounts": null,
-          "devops-agile": null,
-          "devops-analytics": null,
-          "devops-artifacts": null,
-          "devops-billing": null,
-          "devops-cicd": null,
-          "devops-code-git": null,
-          "devops-code-tfvc": null,
-          "devops-collab": null,
-          "devops-ecosystem": null,
-          "devops-learn": null,
-          "devops-marketplace": null,
-          "devops-new-user": null,
-          "devops-projects": null,
-          "devops-ref": null,
-          "devops-security": null,
-          "devops-settings": null,
-          "devops-test": null,
-          "devops-whitepapers": null
-        }
-      },
-      "devops-server": {
-        "ms.technology[0]": {
-          "": null,
-          "tfs-admin": null,
-          "tfs-migration-guide": null
-        }
-      },
-      "dotnet": {
-        "ms.technology[0]": {
-          "": null,
-          "dotnet-data": null,
-          "dotnet-ebooks": null,
-          "dotnet-security": null,
-          "dotnet-standard": null
-        }
-      },
-      "dotnet-api": {
-        "ms.technology[0]": {
-          "": null,
-          "accessibility": null,
-          "dbling.util": null,
-          "microsoft.activities": null,
-          "microsoft.build": null,
-          "microsoft.csharp": null,
-          "microsoft.jscript": null,
-          "microsoft.sqlserver": null,
-          "microsoft.visualbasic": null,
-          "microsoft.visualc": null,
-          "microsoft.win32": null,
-          "microsoft.windows": null,
-          "mono": null,
-          "system": null,
-          "system.activities": null,
-          "system.addin": null,
-          "system.buffers": null,
-          "system.codedom": null,
-          "system.collections": null,
-          "system.componentmodel": null,
-          "system.composition": null,
-          "system.configuration": null,
-          "system.data": null,
-          "system.deployment": null,
-          "system.device": null,
-          "system.diagnostics": null,
-          "system.directoryservices": null,
-          "system.drawing": null,
-          "system.dynamic": null,
-          "system.enterpriseservices": null,
-          "system.globalization": null,
-          "system.identitymodel": null,
-          "system.io": null,
-          "system.json": null,
-          "system.linq": null,
-          "system.management": null,
-          "system.media": null,
-          "system.messaging": null,
-          "system.net": null,
-          "system.numerics": null,
-          "system.printing": null,
-          "system.reflection": null,
-          "system.resources": null,
-          "system.runtime": null,
-          "system.security": null,
-          "system.servicemodel": null,
-          "system.serviceprocess": null,
-          "system.speech": null,
-          "system.text": null,
-          "system.threading": null,
-          "system.timers": null,
-          "system.transactions": null,
-          "system.web": null,
-          "system.windows": null,
-          "system.workflow": null,
-          "system.xaml": null,
-          "system.xml": null,
-          "uiautomationclientsideproviders": null,
-          "xamlgeneratednamespace": null
-        }
-      },
-      "dotnet-archive": {
-        "ms.technology[0]": {
-          "": null,
-          "netframework-1.1": null,
-          "netframework-2.0": null,
-          "netframework-3.0": null,
-          "netframework-3.5": null,
-          "netframework-4.0": null,
-          "reactive-extensions": null,
-          "silverlight": null
-        }
-      },
-      "dotnet-core": {
-        "ms.technology[0]": {
-          "": null,
-          "dotnet-cli": null,
-          "dotnet-docker": null
-        }
-      },
-      "dotnet-csharp": {
-        "ms.technology[0]": {
-          "": null,
-          "csharp-diagnostics": null,
-          "csharp-roslyn": null,
-          "csharp-spec": null
-        }
-      },
-      "dotnet-framework": {
-        "ms.technology[0]": {
-          "": null,
-          "dotnet-appcompat": null,
-          "dotnet-data": null,
-          "dotnet-docker": null,
-          "dotnet-install": null,
-          "dotnet-networking": null,
-          "dotnet-security": null,
-          "dotnet-wcf": null,
-          "dotnet-wf": null,
-          "dotnet-winforms": null,
-          "dotnet-wpf": null
-        }
-      },
-      "dotnet-fsharp": { "ms.technology[0]": { "": null } },
-      "dotnet-ml": { "ms.technology[0]": { "": null } },
-      "dotnet-ml-api": { "ms.technology[0]": { "": null } },
-      "dotnet-roslyn-api": {
-        "ms.technology[0]": {
-          "": null,
-          "microsoft.codeanalysis": null
-        }
-      },
-      "dotnet-visualbasic": {
-        "ms.technology[0]": {
-          "": null,
-          "vb-diagnostics": null,
-          "vb-spec": null
-        }
-      },
-      "dynamics-365": { "ms.technology[0]": { "microsoft-graph": null } },
-      "dynamics-365-business-central": { "ms.technology[0]": { "microsoft-graph": null } },
-      "dynamicsax2009": { "ms.technology[0]": { "": null } },
-      "dynamicsax-2012": { "ms.technology[0]": { "": null } },
-      "dynamics-ax-2012": { "ms.technology[0]": { "": null } },
-      "dynamicscrm-2011": { "ms.technology[0]": { "": null } },
-      "dynamicscrm-2013": { "ms.technology[0]": { "": null } },
-      "dynamicscrm-2015": { "ms.technology[0]": { "": null } },
-      "dynamicscrm-2016": { "ms.technology[0]": { "": null } },
-      "dynamicscrm4": { "ms.technology[0]": { "": null } },
-      "dynamicsgp": { "ms.technology[0]": { "": null } },
-      "dynamics-gp": { "ms.technology[0]": { "": null } },
-      "dynamicsnav2009": { "ms.technology[0]": { "": null } },
-      "dynamicsnav2009R2": { "ms.technology[0]": { "": null } },
-      "dynamicsnav2013": { "ms.technology[0]": { "": null } },
-      "dynamicsnav2013R2": { "ms.technology[0]": { "": null } },
-      "dynamicsnav2015": { "ms.technology[0]": { "": null } },
-      "dynamicsnav2016": { "ms.technology[0]": { "": null } },
-      "dynamics-nav-2016": { "ms.technology[0]": { "": null } },
-      "dynamics-nav-2017": { "ms.technology[0]": { "": null } },
-      "dynamics-nav-2018": { "ms.technology[0]": { "": null } },
-      "edge": { "ms.technology[0]": { "microsoft-edge": null } },
-      "education": { "ms.technology[0]": { "microsoft-graph": null } },
-      "ef-core-api": { "ms.technology[0]": { "": null } },
-      "enterprise-search": { "ms.technology[0]": { "": null } },
-      "entity-framework": {
-        "ms.technology[0]": {
-          "": null,
-          "entity-framework-6": null,
-          "entity-framework-core": null
-        }
-      },
-      "entity-framework-core": { "ms.technology[0]": { "aspnet": null } },
-      "excel": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "excel-xll": null,
-          "fast-search": null,
-          "microsoft-graph": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "exchange": {
-        "ms.technology[0]": {
-          "": null,
-          "backup-restore": null,
-          "ews": null,
-          "management": null,
-          "transport-agents": null
-        }
-      },
-      "exchange-2000": { "ms.technology[0]": { "": null } },
-      "exchange-2003": { "ms.technology[0]": { "": null } },
-      "exchange-2007": { "ms.technology[0]": { "": null } },
-      "exchange-2010": { "ms.technology[0]": { "": null } },
-      "exchange-server-2003": { "ms.technology[0]": { "": null } },
-      "exchange-server-2007": { "ms.technology[0]": { "": null } },
-      "exchange-server-2010": { "ms.technology[0]": { "": null } },
-      "exchange-server-2013": {
-        "ms.technology[0]": {
-          "": null,
-          "server-general": null
-        }
-      },
-      "exchange-server-2016": { "ms.technology[0]": { "": null } },
-      "exchange-server-it-pro": { "ms.technology[0]": { "": null } },
-      "expression-studio-2": { "ms.technology[0]": { "": null } },
-      "expression-studio-3": { "ms.technology[0]": { "": null } },
-      "expression-studio-4": { "ms.technology[0]": { "": null } },
-      "flow": { "ms.technology[0]": { "": null } },
-      "forms-server-2007": { "ms.technology[0]": { "": null } },
-      "gaming": { "ms.technology[0]": { "": null } },
-      "groove-server-2007": { "ms.technology[0]": { "": null } },
-      "groove-server-2010": { "ms.technology[0]": { "": null } },
-      "groups": { "ms.technology[0]": { "microsoft-graph": null } },
-      "healthvault": { "ms.technology[0]": { "": null } },
-      "hololens": { "ms.technology[0]": { "windows": null } },
-      "host-integration-server": { "ms.technology[0]": { "": null } },
-      "hpcpack": { "ms.technology[0]": { "": null } },
-      "hpc-server-2012-R2-and-2012": { "ms.technology[0]": { "": null } },
-      "identity-ata": { "ms.technology[0]": { "": null } },
-      "identity-cas": { "ms.technology[0]": { "": null } },
-      "identity-manager-2015": { "ms.technology[0]": { "": null } },
-      "ie11": { "ms.technology[0]": { "internet-explorer": null } },
-      "iis": {
-        "ms.technology[0]": {
-          "": null,
-          "iis": null,
-          "iis-administration": null,
-          "iis-appfx": null,
-          "iis-config": null,
-          "iis-develop": null,
-          "iis-extensions": null,
-          "iis-hosting": null,
-          "iis-install": null,
-          "iis-manage": null,
-          "iis-media": null,
-          "iis-publish": null,
-          "iis-troubleshoot": null
-        }
-      },
-      "infer-dotnet": { "ms.technology[0]": { "": null } },
-      "infopath": {
-        "ms.technology[0]": {
-          "": null,
-          "dev-overview": null,
-          "external-automation": null,
-          "form-templates": null
-        }
-      },
-      "insights": { "ms.technology[0]": { "microsoft-graph": null } },
-      "intelligent-asset-mgr": { "ms.technology[0]": { "": null } },
-      "internet-explorer": { "ms.technology[0]": { "": null } },
-      "internet-explorer-10": { "ms.technology[0]": { "": null } },
-      "internet-explorer-7": { "ms.technology[0]": { "": null } },
-      "internet-explorer-8": { "ms.technology[0]": { "": null } },
-      "internet-explorer-9": { "ms.technology[0]": { "": null } },
-      "intune": { "ms.technology[0]": { "microsoft-graph": null } },
-      "javascript": { "ms.technology[0]": { "": null } },
-      "kaizala": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "learning-aspnetcore": { "ms.technology[0]": { "": null } },
-      "learning-azure": { "ms.technology[0]": { "": null } },
-      "learning-d365-customer-service": { "ms.technology[0]": { "": null } },
-      "learning-d365-field-service": { "ms.technology[0]": { "": null } },
-      "learning-flow": { "ms.technology[0]": { "": null } },
-      "learning-powerapps": { "ms.technology[0]": { "": null } },
-      "learning-power-bi": { "ms.technology[0]": { "": null } },
-      "legal": {
-        "ms.technology[0]": {
-          "": null,
-          "microsoft-edge": null,
-          "uwp": null,
-          "windows": null,
-          "xbox": null
-        }
-      },
-      "live-meeting": { "ms.technology[0]": { "": null } },
-      "lync": {
-        "ms.technology[0]": {
-          "dev-overview": null,
-          "schema": null,
-          "sdk": null,
-          "sdn": null
-        }
-      },
-      "lync-2010": { "ms.technology[0]": { "": null } },
-      "lync-2013": { "ms.technology[0]": { "": null } },
-      "lync-server-2010": { "ms.technology[0]": { "": null } },
-      "lync-server-2013": {
-        "ms.technology[0]": {
-          "": null,
-          "server-general": null
-        }
-      },
-      "machine-learning": { "ms.technology[0]": { "": null } },
-      "microsoft-365-business": { "ms.technology[0]": { "": null } },
-      "microsoft-365-enterprise": { "ms.technology[0]": { "": null } },
-      "microsoft-edge": {
-        "ms.technology[0]": {
-          "": null,
-          "chakra": null,
-          "devtools": null,
-          "edgehtml": null,
-          "extensions": null,
-          "pwa": null,
-          "webview": null,
-          "windows-integration": null
-        }
-      },
-      "microsoft-esp": { "ms.technology[0]": { "": null } },
-      "microsoft-forms": { "ms.technology[0]": { "": null } },
-      "microsoft-hyper-v-server-2008-R2": { "ms.technology[0]": { "": null } },
-      "microsoft-hyper-v-server-2012-R2-and-hyper-v-server-2012": { "ms.technology[0]": { "": null } },
-      "microsoft-identity-manager": { "ms.technology[0]": { "": null } },
-      "microsoft-identity-platform": {
-        "ms.technology[0]": {
-          "": null,
-          "microsoft-graph": null
-        }
-      },
-      "microsoft-iot-central": { "ms.technology[0]": { "": null } },
-      "microsoft-r": {
-        "ms.technology[0]": {
-          "deployr": null,
-          "r-client": null,
-          "r-server": null
-        }
-      },
-      "microsoft-robotics": { "ms.technology[0]": { "": null } },
-      "microsoft-teams": { "ms.technology[0]": { "microsoft-graph": null } },
-      "mim": { "ms.technology[0]": { "": null } },
-      "mixed-reality": {
-        "ms.technology[0]": {
-          "": null,
-          "enthusiast-guide": null,
-          "mr-dev": null
-        }
-      },
-      "mlserver": { "ms.technology[0]": { "": null } },
-      "mse": { "ms.technology[0]": { "": null } },
-      "msix": { "ms.technology[0]": { "": null } },
-      "msteams": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "Mya": { "ms.technology[0]": { "": null } },
-      "nimbusml": { "ms.technology[0]": { "": null } },
-      "non-product-specific": {
-        "ms.technology[0]": {
-          "": null,
-          "actionable-messages": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "connectors": null,
-          "microsoft-graph": null,
-          "oauth-2.0": null,
-          "VBA": null
-        }
-      },
-      "nuget": { "ms.technology[0]": { "": null } },
-      "office": {
-        "ms.technology[0]": {
-          "dev-overview": null,
-          "integration": null,
-          "o365-connectors": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "office-add-ins": null,
-          "office-ui-fabric": null,
-          "open-xml": null,
-          "telemetry": null,
-          "vba": null
-        }
-      },
-      "office 365": {
-        "ms.technology[0]": {
-          "": null,
-          "fabric": null
-        }
-      },
-      "office-2000": { "ms.technology[0]": { "": null } },
-      "office-2007": { "ms.technology[0]": { "": null } },
-      "office-2010": { "ms.technology[0]": { "": null } },
-      "office-2013": { "ms.technology[0]": { "": null } },
-      "office365": {
-        "ms.technology[0]": {
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "office-365": {
-        "ms.technology[0]": {
-          "": null,
-          "microsoft-graph": null
-        }
-      },
-      "office-for-mac-2011": { "ms.technology[0]": { "": null } },
-      "office-online-server": { "ms.technology[0]": { "": null } },
-      "office-online-server-powershell": { "ms.technology[0]": { "": null } },
-      "office-perpetual-itpro": { "ms.technology[0]": { "": null } },
-      "office-talk-2003": { "ms.technology[0]": { "": null } },
-      "office-talk-2007": { "ms.technology[0]": { "": null } },
-      "office-talk-2010": { "ms.technology[0]": { "": null } },
-      "office-vba": { "ms.technology[0]": { "": null } },
-      "office-web-app-server": {
-        "ms.technology[0]": {
-          "": null,
-          "server-general": null
-        }
-      },
-      "office-xp": { "ms.technology[0]": { "": null } },
-      "onedrive": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "one-drive": { "ms.technology[0]": { "microsoft-graph": null } },
-      "onedrive-live": { "ms.technology[0]": { "": null } },
-      "onenote": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "dev-overview": null,
-          "fast-search": null,
-          "microsoft-graph": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oath-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "tabs": null,
-          "vba": null,
-          "webhooks": null
-        }
-      },
-      "openspecs-exchange": { "ms.technology[0]": { "": null } },
-      "openspecs-ie": { "ms.technology[0]": { "": null } },
-      "openspecs-office": { "ms.technology[0]": { "": null } },
-      "openspecs-sql": { "ms.technology[0]": { "": null } },
-      "openspecs-windows": { "ms.technology[0]": { "": null } },
-      "outlook": {
-        "ms.technology[0]": {
-          "": null,
-          "actionable-messages": null,
-          "add-ins": null,
-          "auxiliary": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "dev-overview": null,
-          "fast-search": null,
-          "mapi": null,
-          "microsoft-graph": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-connectors": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-add-ins": null,
-          "office-ui-fabric": null,
-          "pia": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "social-connector": null,
-          "tabs": null,
-          "vba": null,
-          "weather": null
-        }
-      },
-      "outlook-2000": { "ms.technology[0]": { "": null } },
-      "outlook-2003": { "ms.technology[0]": { "": null } },
-      "outlook-2007": { "ms.technology[0]": { "": null } },
-      "outlook-2010": { "ms.technology[0]": { "": null } },
-      "partner-center": {
-        "ms.technology[0]": {
-          ".net-apis": null,
-          "partner-center-sdk": null
-        }
-      },
-      "performance-point-server-2007": { "ms.technology[0]": { "": null } },
-      "planner": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "microsoft-graph": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "msgraph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "playfab": { "ms.technology[0]": { "": null } },
-      "playready": { "ms.technology[0]": { "drm": null } },
-      "plumbago": { "ms.technology[0]": { "uwp": null } },
-      "power-apps": { "ms.technology[0]": { "microsoft-graph": null } },
-      "powerbi": {
-        "ms.technology[0]": {
-          "": null,
-          "actionable-messages": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "powerpoint": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "dev-overview": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "powerquery": { "ms.technology[0]": { "": null } },
-      "powershell": {
-        "ms.technology[0]": {
-          "": null,
-          "azure-powershell": null,
-          "developer": null,
-          "dsc": null,
-          "gallery": null,
-          "jea": null,
-          "powershell": null,
-          "powershell-cmdlets": null,
-          "powershell-conceptual": null,
-          "powershell-developer": null,
-          "powershell-dsc": null,
-          "powershell-gallery": null,
-          "powershell-jea": null,
-          "powershell-wmf": null
-        }
-      },
-      "powershell-1.0": { "ms.technology[0]": { "": null } },
-      "project": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "dev-overview": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "project-rome": { "ms.technology[0]": { "microsoft-graph": null } },
-      "project-server": { "ms.technology[0]": { "vba": null } },
-      "project-server-2007": { "ms.technology[0]": { "": null } },
-      "project-server-2010": { "ms.technology[0]": { "": null } },
-      "project-server-2013": { "ms.technology[0]": { "": null } },
-      "project-server-2016": { "ms.technology[0]": { "": null } },
-      "project-server-itpro": { "ms.technology[0]": { "": null } },
-      "publisher": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "tabs": null,
-          "vba": null,
-          "webhooks": null
-        }
-      },
-      "quantum": { "ms.technology[0]": { "devlang-qsharp": null } },
-      "reporting-services": {
-        "ms.technology[0]": {
-          "": null,
-          "application-integration": null,
-          "custom-assemblies": null,
-          "custom-report-items": null,
-          "developer": null,
-          "extensions": null,
-          "install-windows": null,
-          "mobile-reports": null,
-          "report-builder": null,
-          "report-data": null,
-          "report-design": null,
-          "reporting-services": null,
-          "reports": null,
-          "report-server": null,
-          "report-server-sharepoint": null,
-          "report-server-web-service": null,
-          "report-server-web-service-net-framework-exception-handling": null,
-          "report-server-web-service-net-framework-soap-headers": null,
-          "security": null,
-          "subscriptions": null,
-          "tools": null,
-          "troubleshooting": null,
-          "wmi-provider-library-reference": null
-        }
-      },
-      "reports": { "ms.technology[0]": { "microsoft-graph": null } },
-      "r-server": { "ms.technology[0]": { "r-services": null } },
-      "sap-gateway": { "ms.technology[0]": { "": null } },
-      "searchserver": { "ms.technology[0]": { "": null } },
-      "search-server-2008": { "ms.technology[0]": { "": null } },
-      "search-server-2010": { "ms.technology[0]": { "": null } },
-      "security": { "ms.technology[0]": { "microsoft-graph": null } },
-      "seller-center": { "ms.technology[0]": { "": null } },
-      "sharepoint": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "microsoft-graph": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-add-ins": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "sharepoint-2003": { "ms.technology[0]": { "": null } },
-      "sharepoint-2010": { "ms.technology[0]": { "": null } },
-      "sharepoint-2016-powershell": { "ms.technology[0]": { "": null } },
-      "sharepoint-portal-server-2001": { "ms.technology[0]": { "": null } },
-      "sharepoint-server-2007": { "ms.technology[0]": { "": null } },
-      "sharepoint-server-2010": { "ms.technology[0]": { "": null } },
-      "sharepoint-server-2013": { "ms.technology[0]": { "": null } },
-      "sharepoint-server-itpro": { "ms.technology[0]": { "": null } },
-      "sharepoint-services-3.0": { "ms.technology[0]": { "": null } },
-      "sharepoint-team-services-1.1": { "ms.technology[0]": { "": null } },
-      "skype": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sdk": null,
-          "sdn": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "uri-scheme": null,
-          "vba": null,
-          "web-api": null
-        }
-      },
-      "skype-2010": { "ms.technology[0]": { "": null } },
-      "skype-for-busines-itpro": { "ms.technology[0]": { "": null } },
-      "skype-for-business": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "skype-for-business-itpro": { "ms.technology[0]": { "": null } },
-      "skype-for-business-server": { "ms.technology[0]": { "": null } },
-      "spec-explorer": { "ms.technology[0]": { "": null } },
-      "sql": {
-        "ms.technology[0]": {
-          "": null,
-          "analysis-services": null,
-          "azure-data-studio": null,
-          "backup-restore": null,
-          "big-data-cluster": null,
-          "clr": null,
-          "configuration": null,
-          "connectivity": null,
-          "data-movement": null,
-          "data-quality-services": null,
-          "data-warehouse": null,
-          "dea": null,
-          "dma": null,
-          "filestream": null,
-          "high-availability": null,
-          "in-memory-oltp": null,
-          "install": null,
-          "integration-services": null,
-          "linux": null,
-          "machine-learning": null,
-          "master-data-services": null,
-          "native-client": null,
-          "performance": null,
-          "performance-monitor": null,
-          "polybase": null,
-          "profiler": null,
-          "release-landing": null,
-          "replication": null,
-          "samples": null,
-          "scripting": null,
-          "search": null,
-          "security": null,
-          "ssdt": null,
-          "ssma": null,
-          "ssms": null,
-          "stored-procedures": null,
-          "supportability": null,
-          "system-objects": null,
-          "table-view-index": null,
-          "tools-other": null,
-          "t-sql": null,
-          "wmi": null,
-          "xevents": null,
-          "xml": null
-        }
-      },
-      "sql-linux": {
-        "ms.technology[0]": {
-          "": null,
-          "database-engine": null
-        }
-      },
-      "sql-non-specified": {
-        "ms.technology[0]": {
-          "": null,
-          "analysis-services": null,
-          "database-engine": null,
-          "database-engine-imoltp": null,
-          "database-engine-polybase": null,
-          "dbe-backup-restore": null,
-          "dbe-blob": null,
-          "dbe-bulk-import-export": null,
-          "dbe-checkpoints": null,
-          "dbe-cross-instance": null,
-          "dbe-databases": null,
-          "dbe-data-compression": null,
-          "dbe-data-tier-apps": null,
-          "dbe-ddl": null,
-          "dbe-dml": null,
-          "dbe-high-availability": null,
-          "dbe-indexes": null,
-          "dbe-json": null,
-          "dbe-notifications": null,
-          "dbe-ole": null,
-          "dbe-partition": null,
-          "dbe-plan-guides": null,
-          "dbe-query-tuning": null,
-          "dbe-search": null,
-          "dbe-security": null,
-          "dbe-sequence": null,
-          "dbe-spatial": null,
-          "dbe-statistics": null,
-          "dbe-stretch": null,
-          "dbe-synonyms": null,
-          "dbe-tables": null,
-          "dbe-transaction-log": null,
-          "dbe-udf": null,
-          "dbe-views": null,
-          "dbe-xml": null,
-          "docset-sql-devref": null,
-          "drivers": null,
-          "integration-services": null,
-          "master-data-services": null,
-          "replication": null,
-          "reporting-services-native": null,
-          "sql-dma": null,
-          "sql-ssdt": null,
-          "sql-ssma": null,
-          "sql-ssms": null,
-          "tools-ssdt": null,
-          "tools-ssms": null
-        }
-      },
-      "sql-protocol": { "ms.technology[0]": { "": null } },
-      "sql-server-2005": { "ms.technology[0]": { "": null } },
-      "sql-server-2008": { "ms.technology[0]": { "": null } },
-      "sql-server-2008-r2": { "ms.technology[0]": { "": null } },
-      "sql-server-2012": { "ms.technology[0]": { "": null } },
-      "sql-server-2014": {
-        "ms.technology[0]": {
-          "": null,
-          "analysis-services": null,
-          "backup-restore": null,
-          "clr": null,
-          "configuration": null,
-          "connectivity": null,
-          "database-engine": null,
-          "database-engine-imoltp": null,
-          "database-engine-polybase": null,
-          "data-movement": null,
-          "data-quality-services": null,
-          "dbe-backup-restore": null,
-          "dbe-blob": null,
-          "dbe-bulk-import-export": null,
-          "dbe-checkpoints": null,
-          "dbe-cross-instance": null,
-          "dbe-databases": null,
-          "dbe-data-compression": null,
-          "dbe-data-tier-apps": null,
-          "dbe-ddl": null,
-          "dbe-dml": null,
-          "dbe-high-availability": null,
-          "dbe-indexes": null,
-          "dbe-json": null,
-          "dbe-notifications": null,
-          "dbe-ole": null,
-          "dbe-partition": null,
-          "dbe-plan-guides": null,
-          "dbe-query-tuning": null,
-          "dbe-search": null,
-          "dbe-security": null,
-          "dbe-sequence": null,
-          "dbe-spatial": null,
-          "dbe-statistics": null,
-          "dbe-stretch": null,
-          "dbe-synonyms": null,
-          "dbe-tables": null,
-          "dbe-transaction-log": null,
-          "dbe-udf": null,
-          "dbe-views": null,
-          "dbe-xml": null,
-          "docset-sql-devref": null,
-          "filestream": null,
-          "high-availability": null,
-          "in-memory-oltp": null,
-          "install": null,
-          "integration-services": null,
-          "master-data-services": null,
-          "native-client": null,
-          "performance": null,
-          "performance-monitor": null,
-          "profiler": null,
-          "release-landing": null,
-          "replication": null,
-          "reporting-services-native": null,
-          "scripting": null,
-          "search": null,
-          "security": null,
-          "sql-search": null,
-          "sql-ssdt": null,
-          "sql-ssma": null,
-          "sql-ssms": null,
-          "ssms": null,
-          "stored-procedures": null,
-          "supportability": null,
-          "system-objects": null,
-          "table-view-index": null,
-          "tools-other": null,
-          "t-sql": null,
-          "wmi": null,
-          "xevents": null,
-          "xml": null
-        }
-      },
-      "sql-server-2016": {
-        "ms.technology[0]": {
-          "": null,
-          "analysis-services": null,
-          "database-engine": null,
-          "database-engine-imoltp": null,
-          "database-engine-polybase": null,
-          "dbe-backup-restore": null,
-          "dbe-blob": null,
-          "dbe-bulk-import-export": null,
-          "dbe-checkpoints": null,
-          "dbe-cross-instance": null,
-          "dbe-databases": null,
-          "dbe-data-compression": null,
-          "dbe-data-tier-apps": null,
-          "dbe-ddl": null,
-          "dbe-dml": null,
-          "dbe-high-availability": null,
-          "dbe-indexes": null,
-          "dbe-json": null,
-          "dbe-notifications": null,
-          "dbe-ole": null,
-          "dbe-partition": null,
-          "dbe-plan-guides": null,
-          "dbe-query-tuning": null,
-          "dbe-search": null,
-          "dbe-security": null,
-          "dbe-sequence": null,
-          "dbe-spatial": null,
-          "dbe-statistics": null,
-          "dbe-stretch": null,
-          "dbe-synonyms": null,
-          "dbe-tables": null,
-          "dbe-transaction-log": null,
-          "dbe-udf": null,
-          "dbe-views": null,
-          "dbe-xml": null,
-          "docset-sql-devref": null,
-          "integration-services": null,
-          "master-data-services": null,
-          "replication": null,
-          "reporting-services-native": null,
-          "r-services": null,
-          "sql-ssdt": null,
-          "sql-ssma": null,
-          "sql-ssms": null,
-          "xevents": null
-        }
-      },
-      "sql-server-2017": {
-        "ms.technology[0]": {
-          "": null,
-          "analysis-services": null,
-          "database-engine": null,
-          "database-engine-imoltp": null,
-          "database-engine-polybase": null,
-          "dbe-backup-restore": null,
-          "dbe-blob": null,
-          "dbe-bulk-import-export": null,
-          "dbe-checkpoints": null,
-          "dbe-cross-instance": null,
-          "dbe-databases": null,
-          "dbe-data-compression": null,
-          "dbe-data-tier-apps": null,
-          "dbe-ddl": null,
-          "dbe-dml": null,
-          "dbe-high-availability": null,
-          "dbe-indexes": null,
-          "dbe-json": null,
-          "dbe-notifications": null,
-          "dbe-ole": null,
-          "dbe-partition": null,
-          "dbe-plan-guides": null,
-          "dbe-query-tuning": null,
-          "dbe-search": null,
-          "dbe-security": null,
-          "dbe-sequence": null,
-          "dbe-spatial": null,
-          "dbe-statistics": null,
-          "dbe-stretch": null,
-          "dbe-synonyms": null,
-          "dbe-tables": null,
-          "dbe-transaction-log": null,
-          "dbe-udf": null,
-          "dbe-views": null,
-          "dbe-xml": null,
-          "docset-sql-devref": null,
-          "integration-services": null,
-          "machine-learning-services": null,
-          "master-data-services": null,
-          "replication": null,
-          "reporting-services-native": null,
-          "xevents": null
-        }
-      },
-      "sql-vnext": {
-        "ms.technology[0]": {
-          "": null,
-          "analysis-services": null,
-          "database-engine": null,
-          "database-engine-imoltp": null,
-          "database-engine-polybase": null,
-          "dbe-backup-restore": null,
-          "dbe-blob": null,
-          "dbe-bulk-import-export": null,
-          "dbe-checkpoints": null,
-          "dbe-cross-instance": null,
-          "dbe-databases": null,
-          "dbe-data-compression": null,
-          "dbe-data-tier-apps": null,
-          "dbe-ddl": null,
-          "dbe-dml": null,
-          "dbe-high-availability": null,
-          "dbe-indexes": null,
-          "dbe-json": null,
-          "dbe-notifications": null,
-          "dbe-ole": null,
-          "dbe-partition": null,
-          "dbe-plan-guides": null,
-          "dbe-query-tuning": null,
-          "dbe-search": null,
-          "dbe-security": null,
-          "dbe-sequence": null,
-          "dbe-spatial": null,
-          "dbe-statistics": null,
-          "dbe-stretch": null,
-          "dbe-synonyms": null,
-          "dbe-tables": null,
-          "dbe-transaction-log": null,
-          "dbe-udf": null,
-          "dbe-views": null,
-          "dbe-xml": null,
-          "docset-sql-devref": null,
-          "integration-services": null,
-          "master-data-services": null,
-          "replication": null,
-          "reporting-services-native": null,
-          "r-services": null,
-          "xevents": null
-        }
-      },
-      "surface": { "ms.technology[0]": { "windows": null } },
-      "surface-hub": { "ms.technology[0]": { "windows": null } },
-      "sway": {
-        "ms.technology[0]": {
-          "": null,
-          "uri-scheme": null
-        }
-      },
-      "system-center": {
-        "ms.technology[0]": {
-          "": null,
-          "data-protection-manager": null,
-          "operations-manager": null,
-          "orchestrator": null,
-          "service-management-automation": null,
-          "service-manager": null,
-          "service-provider-foundation": null,
-          "virtual-machine-manager": null
-        }
-      },
-      "system-center-2012": {
-        "ms.technology[0]": {
-          "app-controller": null,
-          "data-protection-manager": null,
-          "operations-manager": null,
-          "orchestrator": null,
-          "service-management-automation-(sma)": null,
-          "service-manager": null,
-          "service-provider-foundation": null,
-          "virtual-machine-manager": null
-        }
-      },
-      "system-center-2012-r2": {
-        "ms.technology[0]": {
-          "app-controller": null,
-          "data-protection-manager": null,
-          "operations-manager": null,
-          "orchestrator": null,
-          "service-management-automation-(sma)": null,
-          "service-manager": null,
-          "service-provider-foundation": null,
-          "virtual-machine-manager": null
-        }
-      },
-      "system-center-2012R2": {
-        "ms.technology[0]": {
-          "": null,
-          "data-protection-manager": null,
-          "operations-manager": null,
-          "orchestrator": null,
-          "service-management-automation": null,
-          "service-manager": null,
-          "service-provider-foundation": null,
-          "virtual-machine-manager": null
-        }
-      },
-      "system-center-2012-sp1": {
-        "ms.technology[0]": {
-          "app-controller": null,
-          "data-protection-manager": null,
-          "operations-manager": null,
-          "orchestrator": null,
-          "service-management-automation-(sma)": null,
-          "service-manager": null,
-          "service-provider-foundation": null,
-          "virtual-machine-manager": null
-        }
-      },
-      "system-center-threshold": {
-        "ms.technology[0]": {
-          "": null,
-          "data-protection-manager": null,
-          "operations-manager": null,
-          "orchestrator": null,
-          "service-management-automation-(sma)": null,
-          "service-manager": null,
-          "service-provider-foundation": null,
-          "techgroup-networking": null,
-          "virtual-machine-manager": null
-        }
-      },
-      "teams": { "ms.technology[0]": { "": null } },
-      "typography": { "ms.technology[0]": { "": null } },
-      "usd1.0": { "ms.technology[0]": { "": null } },
-      "usd2.0": { "ms.technology[0]": { "": null } },
-      "users": { "ms.technology[0]": { "microsoft-graph": null } },
-      "uwp": {
-        "ms.technology[0]": {
-          "app-types": null,
-          "audio-video-and-camera": null,
-          "communication": null,
-          "data-and-files": null,
-          "deployment": null,
-          "design": null,
-          "develop": null,
-          "games": null,
-          "get-started": null,
-          "people-and-places": null,
-          "peripherals-sensors-and-power": null,
-          "platform": null,
-          "porting-apps": null,
-          "processes-and-threading": null,
-          "publish": null,
-          "uwp-conceptual-doc": null,
-          "whats-new": null,
-          "winrt-reference": null
-        }
-      },
-      "virtualization": { "ms.technology[0]": { "": null } },
-      "visio": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "file-format": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "shapesheet": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "visual-basic-6": { "ms.technology[0]": { "": null } },
-      "visual-cpp": {
-        "ms.technology[0]": {
-          "": null,
-          "cpp-amp": null,
-          "cpp-analysis": null,
-          "cpp-atl": null,
-          "cpp-azure": null,
-          "cpp-c-language": null,
-          "cpp-cli": null,
-          "cpp-concrt": null,
-          "cpp-cx": null,
-          "cpp-data": null,
-          "cpp-diagnostics": null,
-          "cpp-games": null,
-          "cpp-ide": null,
-          "cpp-language": null,
-          "cpp-linux": null,
-          "cpp-masm": null,
-          "cpp-mfc": null,
-          "cpp-mobile": null,
-          "cpp-parallel": null,
-          "cpp-standard-libraries": null,
-          "cpp-tools": null,
-          "cpp-ucrt": null,
-          "cpp-uwp": null,
-          "cpp-windows": null,
-          "cpp-winrt": null
-        }
-      },
-      "visual-cpp-dev15": {
-        "ms.technology[0]": {
-          "cpp-games": null,
-          "cpp-ide": null,
-          "cpp-language": null,
-          "cpp-linux": null,
-          "cpp-mobile": null,
-          "cpp-parallel": null,
-          "cpp-standard-libraries": null,
-          "cpp-tools": null,
-          "cpp-uwp": null,
-          "cpp-windows": null
-        }
-      },
-      "visual-studio": { "ms.technology[0]": { "vsto-add-ins": null } },
-      "visual-studio.net-2003": { "ms.technology[0]": { "": null } },
-      "visual-studio-2005": { "ms.technology[0]": { "": null } },
-      "visual-studio-2008": { "ms.technology[0]": { "": null } },
-      "visual-studio-2010": { "ms.technology[0]": { "": null } },
-      "visual-studio-2012": { "ms.technology[0]": { "": null } },
-      "visual-studio-2013": { "ms.technology[0]": { "": null } },
-      "visual-studio-6.0": { "ms.technology[0]": { "": null } },
-      "visual-studio-dev14": {
-        "ms.technology[0]": {
-          "": null,
-          "cordova": null,
-          "devlang-cpp": null,
-          "devlang-csharp": null,
-          "devlang-fsharp": null,
-          "devlang-javascript": null,
-          "devlang-python": null,
-          "devlang-visual-basic": null,
-          "lightswitch": null,
-          "msbuild": null,
-          "office-development": null,
-          "sharepoint-development": null,
-          "tgt-pltfrm-aspnet": null,
-          "tgt-pltfrm-azure": null,
-          "tgt-pltfrm-cross-plat": null,
-          "tgt-pltfrm-desktop": null,
-          "tgt-pltfrm-nodejs": null,
-          "unity": null,
-          "visual-studio-sdk": null,
-          "vs-acquisition": null,
-          "vs-ai-tools": null,
-          "vs-aspnet": null,
-          "vs-azure": null,
-          "vs-cordova": null,
-          "vs-cpp": null,
-          "vs-data-tools": null,
-          "vs-desktop": null,
-          "vs-devops-test": null,
-          "vs-help-viewer": null,
-          "vs-ide-code-analysis": null,
-          "vs-ide-compile": null,
-          "vs-ide-debug": null,
-          "vs-ide-deployment": null,
-          "vs-ide-designers": null,
-          "vs-ide-dotnet": null,
-          "vs-ide-general": null,
-          "vs-ide-install": null,
-          "vs-ide-mobile": null,
-          "vs-ide-modeling": null,
-          "vs-ide-sdk": null,
-          "vs-ide-test": null,
-          "vs-javascript": null,
-          "vs-lightswitch": null,
-          "vs-nodejs": null,
-          "vs-python": null,
-          "vs-rtvs": null,
-          "vs-unity-tools": null,
-          "vs-uwp": null,
-          "vs-workflow-designer": null,
-          "vs-xml-tools": null,
-          "xamarin-android": null,
-          "xamarin-ios": null
-        }
-      },
-      "visual-studio-dev15": {
-        "ms.technology[0]": {
-          "": null,
-          "msbuild": null,
-          "office-development": null,
-          "sharepoint-development": null,
-          "vs-acquisition": null,
-          "vs-ai-tools": null,
-          "vs-azure": null,
-          "vs-cordova": null,
-          "vs-data-tools": null,
-          "vs-devops-test": null,
-          "vs-help-viewer": null,
-          "vs-ide-code-analysis": null,
-          "vs-ide-compile": null,
-          "vs-ide-debug": null,
-          "vs-ide-deployment": null,
-          "vs-ide-designers": null,
-          "vs-ide-general": null,
-          "vs-ide-mobile": null,
-          "vs-ide-modeling": null,
-          "vs-ide-sdk": null,
-          "vs-ide-test": null,
-          "vs-installation": null,
-          "vs-javascript": null,
-          "vs-python": null,
-          "vs-rtvs": null,
-          "vs-unity-tools": null,
-          "vs-workflow-designer": null,
-          "vs-xml-tools": null
-        }
-      },
-      "visual-studio-dev16": {
-        "ms.technology[0]": {
-          "": null,
-          "msbuild": null,
-          "office-development": null,
-          "sharepoint-development": null,
-          "vs-ai-tools": null,
-          "vs-azure": null,
-          "vs-cordova": null,
-          "vs-data-tools": null,
-          "vs-help-viewer": null,
-          "vs-ide-code-analysis": null,
-          "vs-ide-compile": null,
-          "vs-ide-debug": null,
-          "vs-ide-deployment": null,
-          "vs-ide-designers": null,
-          "vs-ide-general": null,
-          "vs-ide-mobile": null,
-          "vs-ide-modeling": null,
-          "vs-ide-sdk": null,
-          "vs-ide-test": null,
-          "vs-installation": null,
-          "vs-javascript": null,
-          "vs-lightswitch": null,
-          "vs-python": null,
-          "vs-rtvs": null,
-          "vs-unity-tools": null,
-          "vs-workflow-designer": null,
-          "vs-xml-tools": null
-        }
-      },
-      "visual-studio-family": {
-        "ms.technology[0]": {
-          "": null,
-          "intellicode": null,
-          "live-share": null,
-          "vs-release-notes": null,
-          "vs-subscriptions": null
-        }
-      },
-      "visual-studio-mac": {
-        "ms.technology[0]": {
-          "": null,
-          "devlang-csharp": null,
-          "general-release-notes": null,
-          "general-visualstudio.com": null,
-          "tgt-pltfrm-cross-plat": null,
-          "vs-ide-compile": null,
-          "vs-ide-debug": null,
-          "vs-ide-general": null,
-          "vs-ide-install": null,
-          "vs-ide-sdk": null
-        }
-      },
-      "visual-studio-tfs-2013": { "ms.technology[0]": { "": null } },
-      "visual-studio-tfs-dev14": {
-        "ms.technology[0]": {
-          "": null,
-          "devlang-cpp": null,
-          "devlang-csharp": null,
-          "devlang-fsharp": null,
-          "devlang-javascript": null,
-          "devlang-python": null,
-          "devlang-visual-basic": null,
-          "tgt-pltfrm-aspnet": null,
-          "tgt-pltfrm-azure": null,
-          "tgt-pltfrm-cross-plat": null,
-          "tgt-pltfrm-desktop": null,
-          "tgt-pltfrm-nodejs": null,
-          "vs-devops-admin": null,
-          "vs-devops-autotest": null,
-          "vs-devops-build": null,
-          "vs-devops-codesharing": null,
-          "vs-devops-git": null,
-          "vs-devops-integrate": null,
-          "vs-devops-loadtest": null,
-          "vs-devops-manualtest": null,
-          "vs-devops-marketplace": null,
-          "vs-devops-onprem": null,
-          "vs-devops-overview": null,
-          "vs-devops-release": null,
-          "vs-devops-reporting": null,
-          "vs-devops-search": null,
-          "vs-devops-techdebt": null,
-          "vs-devops-test": null,
-          "vs-devops-versioncontrol": null,
-          "vs-devops-wit": null,
-          "vs-ide-compile": null,
-          "vs-ide-debug": null,
-          "vs-ide-deployment": null,
-          "vs-ide-general": null,
-          "vs-ide-install": null,
-          "vs-ide-sdk": null
-        }
-      },
-      "visual-studio-windows": {
-        "ms.technology[0]": {
-          "": null,
-          "msbuild": null,
-          "office-development": null,
-          "sharepoint-development": null,
-          "vd-ide-deployment": null,
-          "vs-ai-tools": null,
-          "vs-azure": null,
-          "vs-data-tools": null,
-          "vs-help-viewer": null,
-          "vs-ide-code-analysis": null,
-          "vs-ide-compile": null,
-          "vs-ide-debug": null,
-          "vs-ide-designers": null,
-          "vs-ide-general": null,
-          "vs-ide-mobile": null,
-          "vs-ide-modeling": null,
-          "vs-ide-sdk": null,
-          "vs-ide-test": null,
-          "vs-installation": null,
-          "vs-javascript": null,
-          "vs-python": null,
-          "vs-rtvs": null,
-          "vs-unity-tools": null,
-          "vs-workflow-designer": null,
-          "vs-xml-tools": null
-        }
-      },
-      "vs-2012": { "ms.technology[0]": { "": null } },
-      "vs-code": { "ms.technology[0]": { "": null } },
-      "vs-data": { "ms.technology[0]": { "": null } },
-      "vs-devops-alm": {
-        "ms.technology[0]": {
-          "collaborate": null,
-          "vs-devops-admin": null,
-          "vs-devops-agile": null,
-          "vs-devops-agile-wit": null,
-          "vs-devops-articles": null,
-          "vs-devops-build": null,
-          "vs-devops-extensions-api": null,
-          "vs-devops-git": null,
-          "vs-devops-insights": null,
-          "vs-devops-integrate": null,
-          "vs-devops-integrate-ide": null,
-          "vs-devops-legacy": null,
-          "vs-devops-marketplace": null,
-          "vs-devops-overview": null,
-          "vs-devops-package": null,
-          "vs-devops-release": null,
-          "vs-devops-reporting": null,
-          "vs-devops-search": null,
-          "vs-devops-setup": null,
-          "vs-devops-techdebt": null,
-          "vs-devops-test-continuous": null,
-          "vs-devops-test-manual": null,
-          "vs-devops-test-performance": null,
-          "vs-devops-test-tools": null,
-          "vs-devops-tfs": null,
-          "vs-devops-tfsonprem": null,
-          "vs-devops-tfvc": null,
-          "vs-devops-wit": null
-        }
-      },
-      "VSscripting": { "ms.technology[0]": { "": null } },
-      "vsta-2013": { "ms.technology[0]": { "": null } },
-      "vsta-2015": { "ms.technology[0]": { "": null } },
-      "w10": { "ms.technology[0]": { "windows": null } },
-      "web-apps-server": { "ms.technology[0]": { "": null } },
-      "windows": {
-        "ms.technology[0]": {
-          "desktop": null,
-          "hub": null,
-          "uwp": null,
-          "windows": null,
-          "windows-sdk": null,
-          "winrt-reference": null
-        }
-      },
-      "windows- 8.1-and-8": { "ms.technology[0]": { "": null } },
-      "windows phone": { "ms.technology[0]": { "": null } },
-      "windows-10-hyperv": { "ms.technology[0]": { "": null } },
-      "windows-2000-server": { "ms.technology[0]": { "": null } },
-      "windows-7": { "ms.technology[0]": { "": null } },
-      "windows-8.1-and-8": { "ms.technology[0]": { "": null } },
-      "windows-accessibility-tools": { "ms.technology[0]": { "accessibility-insights": null } },
-      "windows-azure-pack-for-windows-server": { "ms.technology[0]": { "": null } },
-      "windows-client-threshold": { "ms.technology[0]": { "": null } },
-      "windows-compute-cluster": { "ms.technology[0]": { "": null } },
-      "windows-compute-cluster-pack": { "ms.technology[0]": { "": null } },
-      "windows-compute-cluster-server-2003": { "ms.technology[0]": { "": null } },
-      "windows-containers": { "ms.technology[0]": { "": null } },
-      "windows-desktop": { "ms.technology[0]": { "": null } },
-      "windows-dev-apps": { "ms.technology[0]": { "": null } },
-      "windows-embedded": { "ms.technology[0]": { "": null } },
-      "windows-essentials-business-server-2008": { "ms.technology[0]": { "": null } },
-      "windows-essentials-server-2008": { "ms.technology[0]": { "": null } },
-      "windows-hardware": {
-        "ms.technology[0]": {
-          "": null,
-          "windows-devices": null,
-          "windows-oem": null
-        }
-      },
-      "windows-home-server": { "ms.technology[0]": { "": null } },
-      "windows-hpc-server-2008": { "ms.technology[0]": { "": null } },
-      "windows-hpc-server-2008R2": { "ms.technology[0]": { "": null } },
-      "windows-hpc-server-2008-R2-and-2008": { "ms.technology[0]": { "": null } },
-      "windows-hpc-server-2012-R2-and-2012": { "ms.technology[0]": { "": null } },
-      "windows-internet-explorer": { "ms.technology[0]": { "": null } },
-      "windows-iot": { "ms.technology[0]": { "iot": null } },
-      "windows-kinect": { "ms.technology[0]": { "": null } },
-      "windows-multipoint-server": { "ms.technology[0]": { "": null } },
-      "windows-phone": { "ms.technology[0]": { "": null } },
-      "windows-powershell-1.0": { "ms.technology[0]": { "": null } },
-      "windows-protocol": { "ms.technology[0]": { "": null } },
-      "windows-rights-management-services-rms": { "ms.technology[0]": { "": null } },
-      "windows-script-interfaces": { "ms.technology[0]": { "": null } },
-      "windows-server-2000": { "ms.technology[0]": { "": null } },
-      "windows-server-2003": { "ms.technology[0]": { "": null } },
-      "windows-server-2003-R2-and2003": { "ms.technology[0]": { "": null } },
-      "windows-server-2008": { "ms.technology[0]": { "": null } },
-      "windows-server-2008-R2": { "ms.technology[0]": { "": null } },
-      "windows-server-2008-R2-and-2008": { "ms.technology[0]": { "": null } },
-      "windows-server-2012": {
-        "ms.technology[0]": {
-          "": null,
-          "active-directory-domain-services": null,
-          "active-directory-federation-services": null,
-          "server-general": null,
-          "techgroup-compute": null,
-          "techgroup-identity": null,
-          "techgroup-management-and-automation": null,
-          "techgroup-networking": null,
-          "techgroup-security": null,
-          "techgroup-storage": null
-        }
-      },
-      "windows-server-2012-essentials": {
-        "ms.technology[0]": {
-          "": null,
-          "active-directory-domain-services": null,
-          "active-directory-federation-services": null,
-          "techgroup-compute": null,
-          "techgroup-identity": null,
-          "techgroup-management-and-automation": null,
-          "techgroup-networking": null,
-          "techgroup-security": null,
-          "techgroup-storage": null
-        }
-      },
-      "windows-server-2012-r2": {
-        "ms.technology[0]": {
-          "": null,
-          "active-directory-domain-services": null,
-          "active-directory-federation-services": null,
-          "hyper-v": null,
-          "server-general": null,
-          "techgroup-compute": null,
-          "techgroup-identity": null,
-          "techgroup-management-and-automation": null,
-          "techgroup-networking": null,
-          "techgroup-security": null,
-          "techgroup-storage": null
-        }
-      },
-      "windows-server-2012-R2-and2012": { "ms.technology[0]": { "": null } },
-      "windows-server-2012-R2-and-2012": { "ms.technology[0]": { "": null } },
-      "windows-server-2012-r2-essentials": {
-        "ms.technology[0]": {
-          "": null,
-          "active-directory-domain-services": null,
-          "active-directory-federation-services": null,
-          "techgroup-compute": null,
-          "techgroup-identity": null,
-          "techgroup-management-and-automation": null,
-          "techgroup-networking": null,
-          "techgroup-security": null,
-          "techgroup-storage": null
-        }
-      },
-      "windows-server-dev": {
-        "ms.technology[0]": {
-          "": null,
-          "active-directory-application-mode": null,
-          "active-directory-domain-services": null,
-          "active-directory-lightweight-directory-services": null,
-          "active-directory-rights-management": null,
-          "active-directory-schema": null,
-          "asp.net": null,
-          "boot-event-collector": null,
-          "cimwin32": null,
-          "compute-cluster-pack": null,
-          "data-deduplication": null,
-          "dhcp-server": null,
-          "distributed-file-system-namespace": null,
-          "distributed-file-system-replication": null,
-          "distributed-transaction-coordinator": null,
-          "dns-client": null,
-          "dns-server": null,
-          "dotnet-ado": null,
-          "dynamic-access-control": null,
-          "event-tracing": null,
-          "failover-cluster-aware-patching": null,
-          "failover-cluster-hyperv": null,
-          "failover-clustering": null,
-          "failover-cluster-management": null,
-          "failover-cluster-storage-qos": null,
-          "file-server-resource-manager": null,
-          "gateway-health-monitor": null,
-          "group-policy": null,
-          "host-guardian-service": null,
-          "intelligent-platform-management-interface": null,
-          "internet-protocol-address-management": null,
-          "iscsi-target": null,
-          "microsoft-management-console": null,
-          "microsoft-message-queuing": null,
-          "network-file-system-(nfs)": null,
-          "network-load-balancing": null,
-          "network-policy-and-access-services": null,
-          "offline-files": null,
-          "remote-access": null,
-          "remote-desktop-services": null,
-          "remote-differential-compression": null,
-          "server-message-block-(smb)": null,
-          "shielded-vm-provisioning": null,
-          "software-inventory-logging": null,
-          "storage-replica": null,
-          "system-insights": null,
-          "user-access-logging": null,
-          "web-app-proxy": null,
-          "windows-distributed-file-system-(dfs)": null,
-          "windows-event-collector": null,
-          "windows-management-instrumentation": null,
-          "windows-remote-management": null,
-          "windows-server-backup": null,
-          "work-folders": null
-        }
-      },
-      "windows-server-essentials": { "ms.technology[0]": { "": null } },
-      "windows-server-essentials-sbs": { "ms.technology[0]": { "": null } },
-      "windows-server-foundation": { "ms.technology[0]": { "": null } },
-      "windows-server-storage-solutions": { "ms.technology[0]": { "": null } },
-      "windows-server-threshold": {
-        "ms.technology[0]": {
-          "": null,
-          "active-directory-domain-services": null,
-          "active-directory-federation-services": null,
-          "compute-containers": null,
-          "compute-hyper-v": null,
-          "hyper-v": null,
-          "identity-adds": null,
-          "identity-adfs": null,
-          "manage": null,
-          "manage-group-policy": null,
-          "manage-rsat": null,
-          "manage-server-manager": null,
-          "manage-wsus": null,
-          "multipoint-services": null,
-          "networking": null,
-          "networking-bc": null,
-          "networking-da": null,
-          "networking-dhcp": null,
-          "networking-dns": null,
-          "networking-hv-switch": null,
-          "networking-ipam": null,
-          "networking-nict": null,
-          "networking-nlb": null,
-          "networking-qos": null,
-          "networking-ras": null,
-          "networking-sdn": null,
-          "remote-desktop-services": null,
-          "security": null,
-          "security-credentials-guard": null,
-          "security-device-guard": null,
-          "security-guarded-fabric": null,
-          "security-remote-credentials-guard": null,
-          "security-shielded-VMs": null,
-          "security-windows-defender": null,
-          "server-core": null,
-          "server-desktop": null,
-          "server-general": null,
-          "server-migration": null,
-          "server-nano": null,
-          "server-sbec": null,
-          "storage": null,
-          "storage-deduplication": null,
-          "storage-dfsn": null,
-          "storage-dfsr": null,
-          "storage-failover-clustering": null,
-          "storage-file-systems": null,
-          "storage-fsrm": null,
-          "storage-health-service": null,
-          "storage-iscsi": null,
-          "storage-nfs": null,
-          "storage-qos": null,
-          "storage-replica": null,
-          "storage-sds": null,
-          "storage-smb": null,
-          "storage-spaces": null,
-          "storage-user-state-tech": null,
-          "storage-work-folders": null,
-          "techgroup-compute": null,
-          "techgroup-identity": null,
-          "techgroup-management-and-automation": null,
-          "techgroup-networking": null,
-          "techgroup-security": null,
-          "techgroup-storage": null
-        }
-      },
-      "windows-server-update-services": { "ms.technology[0]": { "": null } },
-      "windows-silverlight": { "ms.technology[0]": { "": null } },
-      "windows-subsystem-for-linux": { "ms.technology[0]": { "": null } },
-      "windows-sysinternals": { "ms.technology[0]": { "system-utilities": null } },
-      "windows-vista": { "ms.technology[0]": { "": null } },
-      "windows-xna": { "ms.technology[0]": { "": null } },
-      "windows-xp": { "ms.technology[0]": { "": null } },
-      "word": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-controls": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
-        }
-      },
-      "wpa": { "ms.technology[0]": { "": null } },
-      "xamarin": {
-        "ms.technology[0]": {
-          "": null,
-          "xamarin-android": null,
-          "xamarin-crossplatform": null,
-          "xamarin-essentials": null,
-          "xamarin-forms": null,
-          "xamarin-ios": null,
-          "xamarin-mac": null,
-          "xamarin-skiasharp": null,
-          "xamarin-tools": null
-        }
-      },
-      "xboxlive": { "ms.technology[0]": { "": null } },
-      "yammer": {
-        "ms.technology[0]": {
-          "": null,
-          "add-ins": null,
-          "azure-ad": null,
-          "bf-azure-service": null,
-          "bf-bot-builder": null,
-          "connectors": null,
-          "content-pack": null,
-          "data-visualizations": null,
-          "fast-search": null,
-          "module-extensions": null,
-          "ms-bot-framework": null,
-          "ms-graph": null,
-          "ms-graph-webhooks": null,
-          "o365-reporting-web-services": null,
-          "o365-service-communications": null,
-          "oauth-2.0": null,
-          "office-ui-fabric": null,
-          "sharepoint-framework": null,
-          "sharepoint-webhooks": null,
-          "tabs": null,
-          "vba": null
+          "devlang-javascript": null
         }
       }
     },
     "ms.service[0]": {
-      "3d-data-preparation": { "ms.subservice[0]": { "": null } },
+      "3d-data-preparation": {
+        "ms.subservice[0]": {
+          "": null
+        }
+      },
       "active-directory": {
         "ms.subservice[0]": {
           "": null,
           "app-mgmt": null,
+          "app-provisioning": null,
           "authentication": null,
-          "B2B": null,
-          "B2C": null,
-          "compliance": null,
-          "conditional-access": null,
-          "develop": null,
-          "devices": null,
-          "domain-services": null,
-          "fundamentals": null,
-          "hybrid": null,
-          "identity-protection": null,
-          "msi": null,
-          "pim": null,
-          "report-monitor": null,
-          "saas-app-tutorial": null,
-          "seo-update-jan": null,
-          "user-help": null,
-          "users-groups-roles": null
+          "azuread-dev": null
         }
       },
-      "active-directory-b2c": { "ms.subservice[0]": { "": null } },
-      "active-directory-ds": { "ms.subservice[0]": { "": null } },
-      "ad-health-connect": { "ms.subservice[0]": { "": null } },
-      "advisor": { "ms.subservice[0]": { "": null } },
-      "alerts": { "ms.subservice[0]": { "": null } },
-      "analysis-services": { "ms.subservice[0]": { "": null } },
-      "ansible": { "ms.subservice[0]": { "": null } },
-      "api-management": { "ms.subservice[0]": { "": null } },
-      "application-gateway": { "ms.subservice[0]": { "": null } },
-      "application-insights": { "ms.subservice[0]": { "": null } },
-      "app-service": {
-        "ms.subservice[0]": {
-          "": null,
-          "app-service-environment": null,
-          "app-service-govcloud": null,
-          "app-service-linux": null,
-          "app-service-stack": null,
-          "app-service-webjobs": null,
-          "app-service-webjobs-sdk": null,
-          "app-service-windows": null
-        }
-      },
-      "app-service-api": { "ms.subservice[0]": { "": null } },
-      "app-service-mobile": { "ms.subservice[0]": { "": null } },
-      "app-service-web": { "ms.subservice[0]": { "": null } },
       "architecture-center": {
         "ms.subservice[0]": {
           "": null,
-          "cloud-design-principles": null,
+          "asc-for-iot": null,
+          "attestation": null,
           "cloud-fundamentals": null,
           "enterprise-cloud-adoption": null,
-          "example-scenarios": null,
-          "reference-architectures": null
+          "example-scenario": null
         }
       },
-      "asc-for-iot": { "ms.subservice[0]": { "asc-for-iot": null } },
       "automation": {
         "ms.subservice[0]": {
           "": null,
@@ -2376,661 +251,6 @@
           "shared-capabilities": null,
           "update-management": null
         }
-      },
-      "avere-vfxt": { "ms.subservice[0]": { "": null } },
-      "az-devops-project": { "ms.subservice[0]": { "": null } },
-      "azure": { "ms.subservice[0]": { "": null } },
-      "azure-advanced-threat-protection": { "ms.subservice[0]": { "": null } },
-      "azure-analysis-services": { "ms.subservice[0]": { "": null } },
-      "azure-app-configuration": { "ms.subservice[0]": { "": null } },
-      "azure-asm": { "ms.subservice[0]": { "": null } },
-      "azure-australia": { "ms.subservice[0]": { "": null } },
-      "azure-blockchain": { "ms.subservice[0]": { "": null } },
-      "azure-cdn": {
-        "ms.subservice[0]": {
-          "": null,
-          "azure-cdn-akamai": null,
-          "azure-cdn-microsoft": null,
-          "azure-cdn-verizon": null
-        }
-      },
-      "azure-cli": { "ms.subservice[0]": { "": null } },
-      "azure-databricks": { "ms.subservice[0]": { "": null } },
-      "azure-dev-spaces": { "ms.subservice[0]": { "": null } },
-      "azure-functions": {
-        "ms.subservice[0]": {
-          "": null,
-          "azure-functions-linux": null,
-          "azure-functions-proxies": null,
-          "azure-functions-windows": null
-        }
-      },
-      "azure-government": { "ms.subservice[0]": { "": null } },
-      "azure-java": { "ms.subservice[0]": { "": null } },
-      "azure-maps": { "ms.subservice[0]": { "": null } },
-      "azure-migrate": {
-        "ms.subservice[0]": {
-          "": null,
-          "azure-migrate": null
-        }
-      },
-      "azure-monitor": {
-        "ms.subservice[0]": {
-          "": null,
-          "alerts": null,
-          "application-insights": null,
-          "autoscale": null,
-          "diagnostic-extension": null,
-          "insights": null,
-          "logs": null,
-          "metrics": null,
-          "monitor-common": null
-        }
-      },
-      "azure-netapp-files": { "ms.subservice[0]": { "": null } },
-      "azure-notebooks": { "ms.subservice[0]": { "": null } },
-      "azure-policy": { "ms.subservice[0]": { "": null } },
-      "azure-portal": { "ms.subservice[0]": { "": null } },
-      "azure-powershell": { "ms.subservice[0]": { "": null } },
-      "azure-resource-manager": { "ms.subservice[0]": { "": null } },
-      "azure-sentinel": { "ms.subservice[0]": { "azure-sentinel": null } },
-      "azure-spatial-anchors": { "ms.subservice[0]": { "": null } },
-      "azure-stack": { "ms.subservice[0]": { "": null } },
-      "azure-supportability": { "ms.subservice[0]": { "": null } },
-      "backup": { "ms.subservice[0]": { "": null } },
-      "bastion": { "ms.subservice[0]": { "": null } },
-      "batch": { "ms.subservice[0]": { "": null } },
-      "batch-ai": { "ms.subservice[0]": { "": null } },
-      "best-practice": { "ms.subservice[0]": { "": null } },
-      "big-compute": { "ms.subservice[0]": { "": null } },
-      "billing": { "ms.subservice[0]": { "": null } },
-      "bing-ads": { "ms.subservice[0]": { "": null } },
-      "bing-ads-ad-insight-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-bulk-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-campaign-management-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-customer-billing-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-customer-management-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-hotel-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-reporting-service": { "ms.subservice[0]": { "": null } },
-      "bing-ads-scripts": { "ms.subservice[0]": { "": null } },
-      "bing-ads-sdk": { "ms.subservice[0]": { "": null } },
-      "bing-ads-shopping-content": { "ms.subservice[0]": { "": null } },
-      "bing-webmaster": { "ms.subservice[0]": { "bing-webmaster-api": null } },
-      "biztalk-services": { "ms.subservice[0]": { "": null } },
-      "blueprints": { "ms.subservice[0]": { "": null } },
-      "bot-framework": { "ms.subservice[0]": { "": null } },
-      "bot-service": { "ms.subservice[0]": { "": null } },
-      "business-applications": { "ms.subservice[0]": { "": null } },
-      "cache": { "ms.subservice[0]": { "": null } },
-      "chef": { "ms.subservice[0]": { "": null } },
-      "china": { "ms.subservice[0]": { "": null } },
-      "cloud-app-security": { "ms.subservice[0]": { "": null } },
-      "cloud-services": { "ms.subservice[0]": { "": null } },
-      "cognitive-services": {
-        "ms.subservice[0]": {
-          "": null,
-          "academic-knowledge": null,
-          "acoustics": null,
-          "anomaly-detector": null,
-          "answer-search": null,
-          "bing-autosuggest": null,
-          "bing-custom-search": null,
-          "bing-entity-search": null,
-          "bing-image-search": null,
-          "bing-local-business": null,
-          "bing-news-search": null,
-          "bing-speech": null,
-          "bing-spell-check": null,
-          "bing-video-search": null,
-          "bing-visual-search": null,
-          "bing-web-search": null,
-          "computer-vision": null,
-          "content-moderator": null,
-          "conversation-learner": null,
-          "custom-decision-service": null,
-          "custom-speech": null,
-          "custom-translator": null,
-          "custom-vision": null,
-          "emotion-api": null,
-          "entity-linking-intelligence": null,
-          "event-tracking": null,
-          "face-api": null,
-          "forms-recognizer": null,
-          "forms-understanding": null,
-          "immersive-reader": null,
-          "ink-analysis": null,
-          "ink-recognizer": null,
-          "knowledge-exploration": null,
-          "language-understanding": null,
-          "linguistic-analysis": null,
-          "local-insights": null,
-          "personality-chat": null,
-          "personalization-service": null,
-          "personalizer": null,
-          "qna-maker": null,
-          "recommendations": null,
-          "speaker-recognition": null,
-          "speech-service": null,
-          "text-analytics": null,
-          "translator-speech": null,
-          "translator-text": null,
-          "url-preview": null,
-          "video-indexer": null,
-          "web-language-model": null
-        }
-      },
-      "common-data-model": { "ms.subservice[0]": { "": null } },
-      "commondataservice": { "ms.subservice[0]": { "": null } },
-      "connectors": { "ms.subservice[0]": { "": null } },
-      "consumer": { "ms.subservice[0]": { "consumer": null } },
-      "container-instances": { "ms.subservice[0]": { "": null } },
-      "container-registry": { "ms.subservice[0]": { "": null } },
-      "container-service": { "ms.subservice[0]": { "": null } },
-      "cortana-analytics": { "ms.subservice[0]": { "": null } },
-      "cosmos-db": {
-        "ms.subservice[0]": {
-          "": null,
-          "cosmosdb-cassandra": null,
-          "cosmosdb-graph": null,
-          "cosmosdb-mongo": null,
-          "cosmosdb-sql": null,
-          "cosmosdb-table": null
-        }
-      },
-      "cost-management": { "ms.subservice[0]": { "": null } },
-      "crm-online": { "ms.subservice[0]": { "": null } },
-      "csp": { "ms.subservice[0]": { "": null } },
-      "customer-insights": { "ms.subservice[0]": { "": null } },
-      "cyclecloud": { "ms.subservice[0]": { "": null } },
-      "databox": {
-        "ms.subservice[0]": {
-          "": null,
-          "disk": null,
-          "edge": null,
-          "gateway": null,
-          "heavy": null,
-          "pod": null
-        }
-      },
-      "data-catalog": { "ms.subservice[0]": { "": null } },
-      "data-explorer": { "ms.subservice[0]": { "": null } },
-      "data-factory": {
-        "ms.subservice[0]": {
-          "": null,
-          "connectivity": null,
-          "design": null,
-          "manage": null,
-          "scripts": null
-        }
-      },
-      "data-lake-analytics": { "ms.subservice[0]": { "": null } },
-      "data-lake-store": { "ms.subservice[0]": { "": null } },
-      "data-share": { "ms.subservice[0]": { "": null } },
-      "data-transfers": { "ms.subservice[0]": { "": null } },
-      "ddos-protection": { "ms.subservice[0]": { "": null } },
-      "dedicated-hsm": { "ms.subservice[0]": { "": null } },
-      "devtest-lab": { "ms.subservice[0]": { "": null } },
-      "digital-twins": { "ms.subservice[0]": { "": null } },
-      "dms": {
-        "ms.subservice[0]": {
-          "": null,
-          "connectivity": null
-        }
-      },
-      "dns": { "ms.subservice[0]": { "": null } },
-      "documentdb": { "ms.subservice[0]": { "": null } },
-      "dynamics365-accountant": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-ai": { "ms.subservice[0]": { "": null } },
-      "dynamics365-business-central": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-cross-app": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-customerservice": { "ms.subservice[0]": { "": null } },
-      "dynamics365-financials": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-marketing": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-retail": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-sales": { "ms.subservice[0]": { "": null } },
-      "dynamics-365-talent": { "ms.subservice[0]": { "": null } },
-      "dynamics-ax-applications": { "ms.subservice[0]": { "": null } },
-      "dynamics-ax-platform": { "ms.subservice[0]": { "": null } },
-      "dynamics-lifecycle-services": { "ms.subservice[0]": { "": null } },
-      "dynamics-nav-2018": { "ms.subservice[0]": { "": null } },
-      "enterprise-graph": { "ms.subservice[0]": { "": null } },
-      "event-grid": { "ms.subservice[0]": { "": null } },
-      "event-hubs": { "ms.subservice[0]": { "": null } },
-      "exchange-online": { "ms.subservice[0]": { "": null } },
-      "exchange-powershell": { "ms.subservice[0]": { "": null } },
-      "expressroute": { "ms.subservice[0]": { "": null } },
-      "firewall": {
-        "ms.subservice[0]": {
-          "": null,
-          "networking": null
-        }
-      },
-      "flow": { "ms.subservice[0]": { "": null } },
-      "forms-pro": { "ms.subservice[0]": { "": null } },
-      "fraud-protection": { "ms.subservice[0]": { "": null } },
-      "frontdoor": { "ms.subservice[0]": { "": null } },
-      "gamification": { "ms.subservice[0]": { "": null } },
-      "genomics": { "ms.subservice[0]": { "": null } },
-      "germany": { "ms.subservice[0]": { "": null } },
-      "globalization": { "ms.subservice[0]": { "": null } },
-      "governance": { "ms.subservice[0]": { "": null } },
-      "groove-music": { "ms.subservice[0]": { "": null } },
-      "guidance": { "ms.subservice[0]": { "": null } },
-      "hdinsight": { "ms.subservice[0]": { "": null } },
-      "healthbot": { "ms.subservice[0]": { "": null } },
-      "healthcare-apis": { "ms.subservice[0]": { "fhir": null } },
-      "hotel-ads": { "ms.subservice[0]": { "": null } },
-      "hotel-ads-hint-message": { "ms.subservice[0]": { "": null } },
-      "hotel-ads-hotel-feed": { "ms.subservice[0]": { "": null } },
-      "hotel-ads-pos-feed": { "ms.subservice[0]": { "": null } },
-      "hotel-ads-query-control-message": { "ms.subservice[0]": { "": null } },
-      "hotel-ads-query-message": { "ms.subservice[0]": { "": null } },
-      "hotel-ads-transaction-message": { "ms.subservice[0]": { "": null } },
-      "industrial-iot": { "ms.subservice[0]": { "": null } },
-      "industry": { "ms.subservice[0]": { "": null } },
-      "information-protection": { "ms.subservice[0]": { "": null } },
-      "intelligent-systems": { "ms.subservice[0]": { "": null } },
-      "invoicing": { "ms.subservice[0]": { "": null } },
-      "iot-accelerators": { "ms.subservice[0]": { "": null } },
-      "iot-central": { "ms.subservice[0]": { "": null } },
-      "iot-dps": { "ms.subservice[0]": { "": null } },
-      "iot-edge": { "ms.subservice[0]": { "": null } },
-      "iot-fundamentals": { "ms.subservice[0]": { "": null } },
-      "iot-hub": { "ms.subservice[0]": { "": null } },
-      "iot-suite": { "ms.subservice[0]": { "": null } },
-      "jenkins": { "ms.subservice[0]": { "": null } },
-      "kaizala": { "ms.subservice[0]": { "": null } },
-      "key-vault": { "ms.subservice[0]": { "": null } },
-      "kusto": { "ms.subservice[0]": { "": null } },
-      "lab-service": { "ms.subservice[0]": { "": null } },
-      "lab-services": {
-        "ms.subservice[0]": {
-          "": null,
-          "classroom-labs": null,
-          "custom-labs": null,
-          "trial-labs": null
-        }
-      },
-      "linux-vms": { "ms.subservice[0]": { "": null } },
-      "load-balancer": { "ms.subservice[0]": { "": null } },
-      "location-based-services": { "ms.subservice[0]": { "": null } },
-      "log-analytics": { "ms.subservice[0]": { "": null } },
-      "logic-apps": { "ms.subservice[0]": { "": null } },
-      "m365-md": { "ms.subservice[0]": { "": null } },
-      "machine-learning": {
-        "ms.subservice[0]": {
-          "": null,
-          "core": null,
-          "data-prep": null,
-          "data-science-vm": null,
-          "studio": null,
-          "team-data-science-process": null
-        }
-      },
-      "managed-applications": { "ms.subservice[0]": { "": null } },
-      "mariadb": { "ms.subservice[0]": { "": null } },
-      "marketplace": { "ms.subservice[0]": { "": null } },
-      "mdm": { "ms.subservice[0]": { "": null } },
-      "media-services": {
-        "ms.subservice[0]": {
-          "": null,
-          "rest-v2": null,
-          "rest-v3": null,
-          "video-indexer": null
-        }
-      },
-      "microsoft-academic-services": { "ms.subservice[0]": { "": null } },
-      "microsoft-intune": {
-        "ms.subservice[0]": {
-          "": null,
-          "education": null
-        }
-      },
-      "mobile-center": { "ms.subservice[0]": { "": null } },
-      "mobile-engagement": { "ms.subservice[0]": { "": null } },
-      "mobile-services": { "ms.subservice[0]": { "": null } },
-      "mse": { "ms.subservice[0]": { "": null } },
-      "mssearch": { "ms.subservice[0]": { "": null } },
-      "msteams": { "ms.subservice[0]": { "": null } },
-      "multi-factor-authentication": { "ms.subservice[0]": { "": null } },
-      "multiple": { "ms.subservice[0]": { "": null } },
-      "mysql": { "ms.subservice[0]": { "": null } },
-      "mysql-database": { "ms.subservice[0]": { "": null } },
-      "mysql-database-mc": { "ms.subservice[0]": { "": null } },
-      "network-watcher": { "ms.subservice[0]": { "": null } },
-      "notification-hubs": { "ms.subservice[0]": { "": null } },
-      "o365-administration": { "ms.subservice[0]": { "": null } },
-      "o365-proplus-itpro": { "ms.subservice[0]": { "": null } },
-      "O365-seccomp": { "ms.subservice[0]": { "": null } },
-      "o365-solutions": { "ms.subservice[0]": { "": null } },
-      "odata": { "ms.subservice[0]": { "": null } },
-      "one-drive": { "ms.subservice[0]": { "": null } },
-      "open-datasets": { "ms.subservice[0]": { "": null } },
-      "partner-dashboard": { "ms.subservice[0]": { "": null } },
-      "postgresql": {
-        "ms.subservice[0]": {
-          "": null,
-          "hyperscale-citus": null
-        }
-      },
-      "postgresql-database": { "ms.subservice[0]": { "": null } },
-      "powerapps": {
-        "ms.subservice[0]": {
-          "": null,
-          "canvas": null,
-          "cds": null,
-          "model": null,
-          "pa-admin": null,
-          "pa-dev": null,
-          "pa-user": null
-        }
-      },
-      "powerbi": {
-        "ms.subservice[0]": {
-          "": null,
-          "powerbi": null,
-          "powerbi-admin": null,
-          "powerbi-consumer": null,
-          "powerbi-custom-visuals": null,
-          "powerbi-desktop": null,
-          "powerbi-developer": null,
-          "powerbi-gateways": null,
-          "powerbi-mobile": null,
-          "powerbi-report-server": null,
-          "powerbi-service": null,
-          "powerbi-template-apps": null,
-          "report-builder": null
-        }
-      },
-      "power-bi-embedded": { "ms.subservice[0]": { "": null } },
-      "power-platform": { "ms.subservice[0]": { "": null } },
-      "powerquery": { "ms.subservice[0]": { "": null } },
-      "product-insights": { "ms.subservice[0]": { "": null } },
-      "project-madeira": { "ms.subservice[0]": { "": null } },
-      "project-online": { "ms.subservice[0]": { "": null } },
-      "redis-cache": { "ms.subservice[0]": { "": null } },
-      "remoteapp": { "ms.subservice[0]": { "": null } },
-      "resource-graph": { "ms.subservice[0]": { "": null } },
-      "resource-health": { "ms.subservice[0]": { "": null } },
-      "rights-management": { "ms.subservice[0]": { "": null } },
-      "role-based-access-control": { "ms.subservice[0]": { "": null } },
-      "scheduler": { "ms.subservice[0]": { "": null } },
-      "school-data-sync": { "ms.subservice[0]": { "": null } },
-      "search": { "ms.subservice[0]": { "": null } },
-      "security": { "ms.subservice[0]": { "": null } },
-      "security-center": { "ms.subservice[0]": { "": null } },
-      "server-management": { "ms.subservice[0]": { "": null } },
-      "service-bus": { "ms.subservice[0]": { "": null } },
-      "service-bus-messaging": { "ms.subservice[0]": { "": null } },
-      "service-bus-relay": { "ms.subservice[0]": { "": null } },
-      "service-fabric": { "ms.subservice[0]": { "": null } },
-      "service-fabric-mesh": { "ms.subservice[0]": { "": null } },
-      "service-health": { "ms.subservice[0]": { "": null } },
-      "sharepoint-online": { "ms.subservice[0]": { "": null } },
-      "sharepoint-powershell": { "ms.subservice[0]": { "": null } },
-      "signalr": { "ms.subservice[0]": { "": null } },
-      "site-recovery": {
-        "ms.subservice[0]": {
-          "": null,
-          "site-recovery": null
-        }
-      },
-      "skype-for-business-online": { "ms.subservice[0]": { "": null } },
-      "skypeforbusiness-powershell": { "ms.subservice[0]": { "": null } },
-      "sql-database": {
-        "ms.subservice[0]": {
-          "": null,
-          "backup-restore": null,
-          "data-movement": null,
-          "development": null,
-          "elastic-pools": null,
-          "high-availability": null,
-          "machine-learning": null,
-          "managed-instance": null,
-          "migration": null,
-          "monitor": null,
-          "operations": null,
-          "performance": null,
-          "scale-out": null,
-          "scenario": null,
-          "security": null,
-          "service": null,
-          "single-database": null
-        }
-      },
-      "sql-data-warehouse": {
-        "ms.subservice[0]": {
-          "": null,
-          "consume": null,
-          "design": null,
-          "development": null,
-          "implement": null,
-          "integration": null,
-          "load-data": null,
-          "manage": null,
-          "performance": null,
-          "query": null,
-          "security": null,
-          "supportability": null,
-          "workload-management": null
-        }
-      },
-      "sql-server-stretch-database": {
-        "ms.subservice[0]": {
-          "": null,
-          "security": null,
-          "stretchDB": null
-        }
-      },
-      "sql-vms": { "ms.subservice[0]": { "": null } },
-      "staffhub-powershell": { "ms.subservice[0]": { "": null } },
-      "storage": {
-        "ms.subservice[0]": {
-          "": null,
-          "blobs": null,
-          "common": null,
-          "data-lake-storage-gen2": null,
-          "files": null,
-          "queues": null,
-          "tables": null
-        }
-      },
-      "storsimple": { "ms.subservice[0]": { "": null } },
-      "stream": { "ms.subservice[0]": { "": null } },
-      "stream-analytics": { "ms.subservice[0]": { "": null } },
-      "teams-powershell": { "ms.subservice[0]": { "": null } },
-      "terraform": { "ms.subservice[0]": { "": null } },
-      "time-series-insights": { "ms.subservice[0]": { "": null } },
-      "traffic-manager": { "ms.subservice[0]": { "": null } },
-      "virtual-desktop": { "ms.subservice[0]": { "": null } },
-      "virtual-machines": { "ms.subservice[0]": { "": null } },
-      "virtual-machine-scale-sets": { "ms.subservice[0]": { "": null } },
-      "virtual-machines-linux": {
-        "ms.subservice[0]": {
-          "": null,
-          "disks": null
-        }
-      },
-      "virtual-machines-sql": {
-        "ms.subservice[0]": {
-          "": null,
-          "resource-manager": null,
-          "service-management": null,
-          "sql-vm": null
-        }
-      },
-      "virtual-machines-windows": {
-        "ms.subservice[0]": {
-          "": null,
-          "disks": null
-        }
-      },
-      "virtual-network": { "ms.subservice[0]": { "": null } },
-      "virtual-wan": { "ms.subservice[0]": { "": null } },
-      "visual-studio-online": { "ms.subservice[0]": { "": null } },
-      "vpn-gateway": { "ms.subservice[0]": { "": null } },
-      "vs-appcenter": { "ms.subservice[0]": { "": null } },
-      "web-app-container": { "ms.subservice[0]": { "": null } },
-      "websites": { "ms.subservice[0]": { "": null } },
-      "web-sites": { "ms.subservice[0]": { "": null } },
-      "windows-vms": { "ms.subservice[0]": { "": null } },
-      "yammer": { "ms.subservice[0]": { "": null } }
-    },
-    "ms.topic[0]": {
-      "archived": null,
-      "article": null,
-      "best-practice": null,
-      "callback": null,
-      "checklist": null,
-      "class": null,
-      "conceptual": null,
-      "contributor-guide": null,
-      "design-pattern": null,
-      "enum": null,
-      "enumeration": null,
-      "error-reference": null,
-      "example-scenario": null,
-      "function": null,
-      "guide": null,
-      "hub-page": null,
-      "include": null,
-      "interactive-tutorial": null,
-      "interface": null,
-      "ioctl": null,
-      "landing-page": null,
-      "language-reference": null,
-      "macro": null,
-      "managed-reference": null,
-      "method": null,
-      "overview": null,
-      "portal": null,
-      "quickstart": null,
-      "reference": null,
-      "reference-architecture": null,
-      "retired": null,
-      "sample": null,
-      "struct": null,
-      "structure": null,
-      "troubleshooting": null,
-      "tutorial": null
-    },
-    "product[0]": {
-      "azure": {
-        "product[1]": {
-          "azure-active-directory": null,
-          "azure-advisor": null,
-          "azure-bot-service": null,
-          "azure-cdn": null,
-          "azure-clis": null,
-          "azure-cloud-shell": null,
-          "azure-cognitive-services": null,
-          "azure-container-instances": null,
-          "azure-container-registry": null,
-          "azure-cosmos-db": null,
-          "azure-cost-management": null,
-          "azure-databricks": null,
-          "azure-data-catalog": null,
-          "azure-data-science-vm": null,
-          "azure-digital-twins": null,
-          "azure-event-grid": null,
-          "azure-event-hubs": null,
-          "azure-functions": null,
-          "azure-hdinsight": null,
-          "azure-iot-central": null,
-          "azure-iot-edge": null,
-          "azure-iot-hub": null,
-          "azure-key-vault": null,
-          "azure-language-understanding": null,
-          "azure-machine-learning-service": null,
-          "azure-machine-learning-studio": null,
-          "azure-maps": null,
-          "azure-monitor": null,
-          "azure-portal": null,
-          "azure-redis-cache": null,
-          "azure-resource-manager": null,
-          "azure-sdks": null,
-          "azure-service-bus": null,
-          "azure-sql-database": null,
-          "azure-sql-data-warehouse": null,
-          "azure-storage": null,
-          "azure-stream-analytics": null,
-          "azure-virtual-machines": null
-        }
-      },
-      "dotnet": {
-        "product[1]": {
-          "aspnet": null,
-          "aspnet-core": null,
-          "dotnet-core": null
-        }
-      },
-      "dynamics": {
-        "product[1]": {
-          "dynamics-ai-customer-service": null,
-          "dynamics-ai-market-insights": null,
-          "dynamics-ai-sales": null,
-          "dynamics-business-central": null,
-          "dynamics-customer-engagement": null,
-          "dynamics-customer-service": null,
-          "dynamics-field-service": null,
-          "dynamics-finance-operations": null,
-          "dynamics-layout": null,
-          "dynamics-marketing": null,
-          "dynamics-operations": null,
-          "dynamics-project-service": null,
-          "dynamics-remote-assist": null,
-          "dynamics-retail": null,
-          "dynamics-sales": null,
-          "dynamics-talent": null
-        }
-      },
-      "m365": { "product[1]": { "m365-ems": null } },
-      "office": {
-        "product[1]": {
-          "office-365": null,
-          "office-access": null,
-          "office-adaptive-cards": null,
-          "office-add-ins": null,
-          "office-excel": null,
-          "office-kaizala": null,
-          "office-ms-graph": null,
-          "office-onedrive": null,
-          "office-onenote": null,
-          "office-outlook": null,
-          "office-planner": null,
-          "office-powerpoint": null,
-          "office-project": null,
-          "office-publisher": null,
-          "office-skype-business": null,
-          "office-sp-framework": null,
-          "office-teams": null,
-          "office-ui-fabric": null,
-          "office-visio": null,
-          "office-word": null,
-          "office-yammer": null
-        }
-      },
-      "power-platform": {
-        "product[1]": {
-          "common-data-service": null,
-          "flow": null,
-          "powerapps": null,
-          "power-bi": null
-        }
-      },
-      "skype": { "product[1]": {} },
-      "sql-server": { "product[1]": {} },
-      "vs": {
-        "product[1]": {
-          "vs-code": null,
-          "xamarin": null
-        }
-      },
-      "windows": {
-        "product[1]": {
-          "windows-uwp": null,
-          "windows-wpf": null
-        }
       }
     }
   },
@@ -3039,199 +259,300 @@
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "author-missing",
         "additionalMessage": "Add a valid GitHub ID.",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.author": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-author-missing",
         "additionalMessage": "Add a valid Microsoft alias.",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "ms-alias-invalid": {
         "severity": "suggestion",
         "code": "ms-author-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.prod": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-either-attribute": {
         "severity": "suggestion",
         "code": "ms-prod-or-service-missing",
         "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "precluded-attributes": {
         "severity": "suggestion",
         "code": "ms-prod-and-service",
         "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
         "code": "ms-prod-technology-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
         "code": "ms-prod-technology-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.service": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
         "code": "ms-service-subservice-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
         "code": "ms-service-subservice-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.technology": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-paired-attribute": {
         "severity": "suggestion",
         "code": "ms-prod-technology-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.subservice": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-paired-attribute": {
         "severity": "suggestion",
         "code": "ms-service-subservice-invalid",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "title": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "tags": [ "SEO" ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "title-missing",
         "additionalMessage": "Add a title string to show in search engine results.",
-        "contentTypes": [ "conceptual" ]
+        "contentTypes": [
+          "conceptual"
+        ],
+        "tags": [ "SEO" ]
       },
       "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-title-within-docset",
         "additionalMessage": "Title must be unique within a docset.",
-        "contentTypes": [ "conceptual", "include", "landingpage", "hubpage" ]
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ],
+        "tags": [ "SEO" ]
       }
     },
     "ms.topic": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-topic-missing",
         "additionalMessage": "Add a valid value to indicate the article type.",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
         "code": "ms-topic-invalid",
-        "contentTypes": [ "conceptual" ]
+        "contentTypes": [
+          "conceptual"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
         "code": "ms-topic-invalid",
-        "contentTypes": [ "conceptual" ]
+        "contentTypes": [
+          "conceptual"
+        ]
       }
     },
     "product": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "Learn.Module", "Learn.LearningPath" ]
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "page-type",
-        "contentTypes": [ "Learn.Module", "Learn.LearningPath" ]
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
       },
       "invalid-paired-attribute": {
         "severity": "suggestion",
         "code": "page-type",
-        "contentTypes": [ "Learn.Module", "Learn.LearningPath" ]
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
       },
       "invalid-value": {
         "severity": "suggestion",
         "code": "page-type",
-        "contentTypes": [ "Learn.Module", "Learn.LearningPath" ]
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
       }
     },
     "ms.date": {
       "unexpected-type": {
         "severity": "suggestion",
         "code": "multiple-values",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "missing-attribute": {
         "severity": "suggestion",
         "code": "ms-date-missing",
         "additionalMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "date-format-invalid": {
         "severity": "suggestion",
         "code": "ms-date-invalid",
         "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
         "pullRequestOnly": true,
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "date-out-of-range": {
         "severity": "suggestion",
         "code": "ms-date-invalid",
         "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
         "pullRequestOnly": true,
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "ms.component": {
       "attribute-deprecated": {
         "severity": "suggestion",
         "code": "deprecated-attribute",
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       }
     },
     "description": {
@@ -3239,20 +560,30 @@
         "severity": "suggestion",
         "code": "multiple-values",
         "pullRequestOnly": true,
-        "contentTypes": [ "conceptual", "include" ]
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
       },
       "duplicate-attribute": {
         "severity": "suggestion",
         "code": "duplicate-description-within-docset",
         "additionalMessage": "Description must be unique within a docset.",
         "pullRequestOnly": false,
-        "contentTypes": [ "conceptual", "include", "landingpage", "hubpage" ]
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ]
       },
       "string-length-invalid": {
         "severity": "suggestion",
         "code": "description-bad-length",
         "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces.",
-        "contentTypes": [ "conceptual" ]
+        "contentTypes": [
+          "conceptual"
+        ]
       }
     }
   }

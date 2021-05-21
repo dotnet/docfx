@@ -208,7 +208,8 @@
         ],
         "multipleValues": false,
         "severity": "SUGGESTION",
-        "code": "multiple-values"
+        "code": "multiple-values",
+        "tags": [ "SEO" ]
       },
       {
         "type": "Required",
@@ -217,7 +218,8 @@
         ],
         "severity": "SUGGESTION",
         "code": "title-missing",
-        "additionalErrorMessage": "Add a title string to show in search engine results."
+        "additionalErrorMessage": "Add a title string to show in search engine results.",
+        "tags": [ "SEO" ]
       },
       {
         "type": "Uniqueness",
@@ -229,7 +231,8 @@
         ],
         "severity": "SUGGESTION",
         "code": "duplicate-title-within-docset",
-        "additionalErrorMessage": "Title must be unique within a docset."
+        "additionalErrorMessage": "Title must be unique within a docset.",
+        "tags": [ "SEO" ]
       }
     ]
   },

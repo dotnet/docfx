@@ -15,7 +15,7 @@ namespace Microsoft.Docs.Build
 {
     internal class OpsPreProcessor
     {
-        private static readonly object s_lock = new object();
+        private static readonly object s_lock = new();
 
         private readonly Config _config;
         private readonly BuildOptions _buildOptions;
@@ -30,17 +30,17 @@ namespace Microsoft.Docs.Build
             _repositoryProvider = repositoryProvider;
         }
 
-        public void Run()
+        public bool Run()
         {
-            PreProcessMonoDocXml();
-            PreProcessMAML();
+            return PreProcessMonoDocXml() & PreProcessMAML();
         }
 
-        private void PreProcessMonoDocXml()
+        private bool PreProcessMonoDocXml()
         {
+            var result = true;
             if (_config.Monodoc is null)
             {
-                return;
+                return result;
             }
 
             using (Progress.Start("Preprocessing monodoc XML files"))
@@ -67,7 +67,7 @@ namespace Microsoft.Docs.Build
                             ? null
                             : Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, ".fallback", monodocConfig.OutputYamlFolder));
                         var (repository, _) = _repositoryProvider.GetRepository(new PathString(xmlDirectory));
-                        ECMA2YamlConverter.Run(
+                        result &= ECMA2YamlConverter.Run(
                             xmlDirectory,
                             outputDirectory: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monodocConfig.OutputYamlFolder)),
                             fallbackXmlDirectory: fallbackXmlPath,
@@ -81,13 +81,15 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+            return result;
         }
 
-        private void PreProcessMAML()
+        private bool PreProcessMAML()
         {
+            var result = true;
             if (_config.MAMLMonikerPath is null)
             {
-                return;
+                return result;
             }
 
             using (Progress.Start("Preprocessing MAML markdown files"))
@@ -98,7 +100,7 @@ namespace Microsoft.Docs.Build
                     {
                         var monikerMappingPath = _config.MAMLMonikerPath[index];
 
-                        MAML2YamlConverter.Run(
+                        result &= MAML2YamlConverter.Run(
                             docsetPath: _buildOptions.DocsetPath,
                             monikerMappingPath: Path.GetFullPath(Path.Combine(_buildOptions.DocsetPath, monikerMappingPath)),
                             logWriter: LogError,
@@ -106,6 +108,7 @@ namespace Microsoft.Docs.Build
                     }
                 }
             }
+            return result;
         }
 
         private void LogError(ECMALogItem item)
@@ -115,7 +118,7 @@ namespace Microsoft.Docs.Build
                 var file = item.File is null
                     ? null
                     : item.File.StartsWith("_repo.en-us/") || item.File.StartsWith("_repo.en-us\\")
-                        ? FilePath.Fallback(new PathString(item.File.Substring("_repo.en-us/".Length)))
+                        ? FilePath.Fallback(new PathString(item.File["_repo.en-us/".Length..]))
                         : FilePath.Content(new PathString(item.File));
 
                 var source = file is null ? null : new SourceInfo(file, item.Line ?? 0, 0);

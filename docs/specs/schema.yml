@@ -355,6 +355,7 @@ outputs:
     {"message_severity":"error","code":"unexpected-type","message":"Expected type 'Object' but got 'Array'.","file":"a.yml","line":1,"column":1}
 ---
 # Validate bookmark against content HTML after applying template for SDP 
+noSingleFile: true
 inputs:
   docfx.yml: |
     outputType: pageJson
@@ -398,19 +399,14 @@ outputs:
   c.mta.json:
   c.raw.page.json:
 ---
-# metadata need to be transformed for SDP
+# Transform metadata in SDP yaml
 inputs:
-  docfx.yml: |
-    fileMetadata:
-      href:
-        c.yml: b.md
+  docfx.yml:
   a.yml: |
     #YamlMime:TestData
     metadata:
       href: b.md
   b.md:
-  c.yml: |
-    #YamlMime: TestData
   _themes/ContentTemplate/schemas/TestData.schema.json: |
     {
       "properties": {
@@ -424,12 +420,11 @@ inputs:
   _themes/ContentTemplate/TestData.html.tmpl:
 outputs:
   a.json: |
-    {"metadata": {"href": "b"}}
-  b.json:
-  c.json: |
-    {"metadata": {"href": "b"}}
+    {"metadata": {"href": "b"}, "schema": "TestData"}
+  b.json: |
+    {"conceptual": "", "schema": "Conceptual"}
 ---
-# metadata need to be transformed for SDP
+# Skip javascript on schema validation failure
 inputs:
   docfx.yml: |
     outputType: html
@@ -510,7 +505,7 @@ outputs:
     }
   docs/b.json:
 ---
-# Disable content fallback for loc page of ModuleUnit
+# Disable markdown fallback for loc page
 locale: zh-cn
 repos:
   https://docs.com/page-fallback#master:
@@ -522,19 +517,51 @@ repos:
     - files:
         docfx.yml:
         unit.yml: |
-          ### YamlMime:ModuleUnit
+          ### YamlMime:TestData
           content: '[!include[](includes/b.md)]'
-        _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
           {
             "contentFallback": false,
             "properties": { 
               "content": {"type":"string","contentType": "markdown"}
               }
           }
-        _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
+        _themes/ContentTemplate/TestData.html.primary.tmpl:
 outputs:
   .errors.log: |
     { "message_severity":"error","code":"include-not-found","message":"Invalid include link: 'includes/b.md'.","file":"unit.yml"}
+---
+# Disable markdown fallback for loc page, but enable for files except markdown
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        docfx.yml:
+        includes/codes/a.cs: |
+          Console.WriteLine("Hello, world!");
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml: |
+          exclude: includes/b.md
+        includes/b.md: |
+          # demo code
+          [!code-demo[](codes/a.cs)]
+        unit.yml: |
+          ### YamlMime:TestData
+          content: '[!include[](includes/b.md)]'
+        _themes/ContentTemplate/schemas/TestData.schema.json: |
+          {
+            "contentFallback": false,
+            "properties": { 
+              "content": {"type":"string","contentType": "markdown"}
+              }
+          }
+        _themes/ContentTemplate/TestData.html.primary.tmpl:
+outputs:
+  unit.json: |
+    {
+      "content": "<h1 id=\"demo-code\">demo code</h1>\n<pre><code class=\"lang-demo\">Console.WriteLine(&quot;Hello, world!&quot;);\n</code></pre>"
+    }
 ---
 # Report approximate line number for markdown contents inside YAML
 inputs:
@@ -612,8 +639,9 @@ inputs:
   _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
 outputs:
   .errors.log: | 
-   { "message_severity":"error","code":"array-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml", "line":5,"column":3}
-   { "message_severity":"error","code":"array-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml", "line":15,"column":3}
+    {"message_severity":"error","code":"array-max-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml","line":15}
+    {"message_severity":"error","code":"array-min-check-invalid","message":"The array must have least 1 matched item(s).","file":"unit.yml","line":5}
+
 ---
 # export schemaType to xrefmap.json
 inputs:
@@ -828,3 +856,143 @@ outputs:
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_e'. Expected type 'b_type' but got 'e_type'.","file":"docs/a.yml","line":3}
+---
+# Report file path for empty YAML files
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestPage
+  _themes/ContentTemplate/schemas/TestPage.schema.json: |
+    { "required": ["authors"] }
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'authors'.","file":"a.yml","line":0,"column":0}
+---
+# Schema based transform supports oneOf
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    oneOf:
+    - _markdown_
+    - inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "oneOf": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string", "maxlength": 10, "contentType": "markdown" },
+              { "type": "string", "minlength": 11, "contentType": "inlineMarkdown" },
+            ]
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "oneOf": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+---
+# Schema based transform supports anyOf
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    anyOf:
+    - _markdown_
+    - inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "anyOf": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "type": "string", "maxlength": 10, "contentType": "markdown" },
+              { "type": "string", "minlength": 11, "contentType": "inlineMarkdown" },
+            ]
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "anyOf": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+---
+# Schema based transform supports if-then-else
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    ifThenElse:
+    - _markdown_
+    - inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "ifThenElse": {
+          "type": "array",
+          "items": {
+            "if": { "type": "string", "maxlength": 10 },
+            "then": { "contentType": "markdown" },
+            "else": { "contentType": "inlineMarkdown" }
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "ifThenElse": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+---
+# Schema based transform on nested xref property
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    uid: a
+    foo:
+      bar:
+        _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "xrefProperties": ["foo"],
+      "properties": {
+        "uid": {
+          "contentType": "uid"
+        },
+        "foo": {
+          "properties": {
+            "bar": { "type": "string", "contentType": "markdown" }
+          }
+        }
+      }
+    }
+outputs:
+  a.json: |
+    { "uid": "a", "foo": { "bar": "<p><em>markdown</em></p>" } }
+  .xrefmap.json: |
+    { "references": [{ "uid": "a", "foo": { "bar": "<p><em>markdown</em></p>" } }] }
+---
+# JSON schemas $ref supports local file or HTTP
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestSchema
+    foo: _markdown_
+    bar: inline _markdown_
+  _themes/ContentTemplate/schemas/TestSchema.schema.json: |
+    {
+      "properties": {
+        "foo": { "$ref": "foo.json" },
+        "bar": { "$ref": "https://raw.githubusercontent.com/docascode/docfx-test-dependencies/schema/schema.json#/baz" }
+      }
+    }
+  _themes/ContentTemplate/schemas/foo.json: |
+    { "contentType": "markdown" }
+outputs:
+  a.json: |
+    {
+      "foo": "<p><em>markdown</em></p>",
+      "bar": "inline <em>markdown</em>"
+    }

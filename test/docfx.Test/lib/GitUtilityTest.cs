@@ -53,6 +53,14 @@ namespace Microsoft.Docs.Build
             gitCommitProvider.Save();
         }
 
+        [Theory]
+        [InlineData("https://xxxxx@dev.azure.com/test-repo.git", "https://dev.azure.com/test-repo")]
+        [InlineData("git@github.com/test-repo.git", "git@github.com/test-repo.git")]
+        public static void NormalizeGitUrlTest(string url, string expected)
+        {
+            Assert.Equal(expected, GitUtility.NormalizeGitUrl(url));
+        }
+
         private static string Exec(string name, string args, string cwd)
         {
             var p = Process.Start(new ProcessStartInfo { FileName = name, Arguments = args, WorkingDirectory = cwd, RedirectStandardOutput = true });

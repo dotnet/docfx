@@ -1,0 +1,321 @@
+---
+# Support building a subset of files
+buildFiles:
+- a.md
+inputs:
+  docfx.yml:
+  a.md: https://a.com
+  b.md: https://b.com
+outputs:
+  a.json: |
+    { "conceptual": "<p><a href='https://a.com'>https://a.com</a></p>" }
+  .publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+  .links.json: |
+    { "links": [{ "target_url": "https://a.com" }] }
+---
+# Support building a subset of files for multiple docsets
+buildFiles:
+- a/a.md
+- b/b.md
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a.md:
+  a/b.md:
+  b/docfx.yml:
+  b/a.md:
+  b/b.md:
+outputs:
+  a/a.json:
+  b/b.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+  b/.publish.json: |
+    { "files": [{ "source_path": "b.md" }] }
+---
+# Support glob pattern
+buildFiles:
+- a/a/*.md
+- b/b/*.md
+- c/a/a.md
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a/a.md:
+  a/b/b.md:
+  b/docfx.yml:
+  b/a/a.md:
+  b/b/b.md:
+  c/docfx.yml:
+  c/a/a.md:
+  c/b/b.md:
+outputs:
+  a/a/a.json:
+  b/b/b.json:
+  c/a/a.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a/a.md" }] }
+  b/.publish.json: |
+    { "files": [{ "source_path": "b/b.md" }] }
+  c/.publish.json: |
+    { "files": [{ "source_path": "a/a.md" }] }
+---
+# Support glob pattern when build the whole repository
+buildFiles:
+- ./**
+inputs:
+  docsets.yml:
+  a/docfx.yml:
+  a/a.md:
+outputs:
+  a/a.json:
+  a/.publish.json: |
+    { "files": [{ "source_path": "a.md" }] }
+---
+# Ignore include files and invalid files
+buildFiles:
+- a.md
+- c/b.md
+inputs:
+  docfx.yml: |
+    files: c/**
+  a.md:
+  c/a.md:
+outputs:
+  .publish.json: |
+    { "files": undefined }
+---
+# Building a simple markdown file in dry run mode does not touch xrefmap or tocmap
+dryRunOnly: true
+buildFiles:
+- a.md
+inputs:
+  docfx.yml: |
+    xref: xref.json
+  a.md: simple markdown
+  b.md: |
+    ---
+    uid: b
+    ---
+    this [!include[](b.md)] should cause circular reference
+  xref.json: |
+    { apparently a syntax error
+  TOC.md: |
+    # [circular reference](TOC.md)
+outputs:
+---
+# Get canonical version for document without versioning does not touch url map
+dryRunOnly: true
+buildFiles:
+- a.md
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "canonicalVersionOnly" : true,
+            "contentType": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.md: 'a'
+  b.png.md:
+  b.png:
+outputs:
+---
+# Isolate bookmark validation state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      a.md: "[](b.md#anchor-missing)"
+      b.md: "## anchor"
+  - expectDiagnostics: 
+      a.md: [{ "code": "bookmark-not-found" }]
+  - editFiles:
+      a.md: "[](b.md#anchor)"
+  - expectDiagnostics: 
+      a.md: []
+  - editFiles:
+      b.md: "## anchor-1"
+  - expectDiagnostics: 
+      a.md: [{ "code": "bookmark-not-found" }]
+---
+# Isolate metadata state between builds
+languageServer:
+  - openFiles:
+      docfx.yml: |
+        globalMetadata:
+          title: {}
+      a.md:
+  - expectDiagnostics:
+      docfx.yml: [{ "code": "violate-schema" }]
+  - editFiles:
+      docfx.yml:
+      a.md: |
+        ---
+        title: {}
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "violate-schema" }]
+---
+# Isolate xref state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      a.md: |
+        ---
+        uid: a
+        ---
+      b.md: '<xref:a>'
+  - expectDiagnostics:
+      b.md: []
+  - editFiles:
+      a.md: |
+        ---
+        uid: a-changed
+        ---
+  - expectDiagnostics:
+      b.md: [{ "code": "xref-not-found" }]
+  - editFiles:
+      b.md: '<xref:a-changed>'
+  - expectDiagnostics:
+      b.md: []
+---
+# Isolate YAML state between builds
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "xref": { "contentType": "xref" },
+        "markdown": { "contentType": "markdown" }
+      },
+      "required": ["markdown"]
+    }
+languageServer:
+  - openFiles:
+      a.yml: |
+        #YamlMime:TestData
+        uid: a
+        xref: b
+        markdown: md1
+      b.yml: |
+        #YamlMime:TestData
+        uid: b
+        xref: a
+        markdown: md2
+  - expectDiagnostics:
+      a.yml: []
+      b.yml: []
+  - editFiles:
+      a.yml: |
+        #YamlMime:TestData
+        uid: a-changed
+        xref: b-changed
+      b.yml: |
+        #YamlMime:TestData
+        markdown: '[!include[](a.md)]'
+  - expectDiagnostics:
+      a.yml: [{ "code": "missing-attribute" }, { "code": "xref-not-found" }]
+      b.yml: [{ "code": "include-not-found" }]
+---
+# Isolate TOC state between builds
+languageServer:
+  - openFiles:
+      docfx.yml:
+      TOC.yml: |
+        items:
+        - href: b.md
+      a.md:
+  - expectDiagnostics:
+      TOC.yml: [{ "code": "file-not-found" }, { "code": "missing-attribute" }]
+  - editFiles:
+      TOC.yml: |
+        items:
+        - href: a.md
+          name: a
+  - expectDiagnostics:
+      TOC.yml: []
+---
+# Isolate metadata validation state between builds
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { "docsetUnique": ["title"] }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: a
+        ---
+      b.md: |
+        ---
+        title: a
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-attribute" }]
+      b.md: [{ "code": "duplicate-attribute" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: []
+      b.md: []
+---
+# Isolate unique validation state between builds
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "message": "Title '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+languageServer:
+  - openFiles:
+      a.md: |
+        ---
+        title: title 1
+        ---
+      b.md: |
+        ---
+        title: title 1
+        ---
+      c.md: |
+        ---
+        title: title 1
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-titles" }]
+      b.md: [{ "code": "duplicate-titles" }]
+      c.md: [{ "code": "duplicate-titles" }]
+  - editFiles:
+      b.md: |
+        ---
+        title: b
+        ---
+  - expectDiagnostics:
+      a.md: [{ "code": "duplicate-titles" , "message": "Title 'title 1' is duplicated with other articles: 'a.md(2,8), c.md(2,8)'" }]
+      b.md: []
+      c.md: [{ "code": "duplicate-titles" , "message": "Title 'title 1' is duplicated with other articles: 'a.md(2,8), c.md(2,8)'" }]

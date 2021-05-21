@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,52 +11,54 @@ namespace Microsoft.Docs.Build
 {
     internal static class Restore
     {
-        public static bool Run(string workingDirectory, CommandLineOptions options)
+        public static bool Run(CommandLineOptions options)
         {
-            var stopwatch = Stopwatch.StartNew();
+            var operation = Telemetry.StartOperation("restore");
             using var errors = new ErrorWriter(options.Log);
 
-            var docsets = ConfigLoader.FindDocsets(errors, workingDirectory, options);
+            var package = new LocalPackage(options.WorkingDirectory);
+            var repository = Repository.Create(package.BasePath);
+            Telemetry.SetRepository(repository?.Url, repository?.Branch);
+
+            var docsets = ConfigLoader.FindDocsets(errors, package, options, repository);
             if (docsets.Length == 0)
             {
-                errors.Add(Errors.Config.ConfigNotFound(workingDirectory));
+                errors.Add(Errors.Config.ConfigNotFound(options.WorkingDirectory));
                 return errors.HasError;
             }
 
             Parallel.ForEach(docsets, docset =>
             {
-                RestoreDocset(errors, workingDirectory, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
+                RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
             });
 
-            Telemetry.TrackOperationTime("restore", stopwatch.Elapsed);
-            Log.Important($"Restore done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
+            operation.Complete();
             errors.PrintSummary();
             return errors.HasError;
         }
 
         public static void RestoreDocset(
-            ErrorBuilder errors, string workingDirectory, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+            ErrorBuilder errors, Repository? repository, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
         {
-            using var disposables = new DisposableCollector();
-            errors = errors.WithDocsetPath(workingDirectory, docsetPath);
+            var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
             try
             {
                 // load configuration from current entry or fallback repository
                 var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
-                    errors, disposables, docsetPath, outputPath, options, fetchOptions);
+                    errorLog, repository, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath)));
 
-                if (errors.HasError)
+                if (errorLog.HasError)
                 {
                     return;
                 }
 
-                errors = new ErrorLog(errors, config);
-                RestoreDocset(errors, config, buildOptions, packageResolver, fileResolver);
+                errorLog.Config = config;
+                RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
             }
             catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
             {
-                errors.AddRange(dex);
+                errorLog.AddRange(dex);
             }
         }
 
@@ -71,17 +73,21 @@ namespace Microsoft.Docs.Build
 
         private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)
         {
-            ParallelUtility.ForEach(errors, config.GetFileReferences(), fileResolver.Download);
+            using var scope = Progress.Start("Restoring files");
+            ParallelUtility.ForEach(scope, errors, config.GetFileReferences(), fileResolver.Download);
         }
 
         private static void RestorePackages(ErrorBuilder errors, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
         {
-            ParallelUtility.ForEach(
-                errors,
-                GetPackages(config).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags));
-
-            LocalizationUtility.EnsureLocalizationContributionBranch(config, buildOptions.Repository);
+            using (var scope = Progress.Start("Restoring packages"))
+            {
+                ParallelUtility.ForEach(
+                    scope,
+                    errors,
+                    GetPackages(config).Distinct(),
+                    item => packageResolver.DownloadPackage(item.package, item.flags));
+            }
+            LocalizationUtility.EnsureLocalizationContributionBranch(config.Secrets, buildOptions.Repository);
         }
 
         private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config)
@@ -93,7 +99,7 @@ namespace Microsoft.Docs.Build
 
             if (config.Template.Type == PackageType.Git)
             {
-                yield return (config.Template, PackageFetchOptions.DepthOne);
+                yield return (config.Template, PackageFetchOptions.DepthOne | PackageFetchOptions.IgnoreBranchFallbackError);
             }
         }
     }

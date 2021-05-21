@@ -6,11 +6,19 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Web;
+using Quickenshtein;
 
 namespace Microsoft.Docs.Build
 {
     internal static class StringUtility
     {
+        public static string Html(FormattableString htmlFormat)
+        {
+            var encodedArgs = Array.ConvertAll(htmlFormat.GetArguments(), arg => arg?.ToString() is string str ? HttpUtility.HtmlEncode(str) : null);
+            return string.Format(htmlFormat.Format, encodedArgs);
+        }
+
         public static string ToCamelCase(char wordSeparator, string value)
         {
             var sb = new StringBuilder();
@@ -32,7 +40,7 @@ namespace Microsoft.Docs.Build
         {
             return value.Length == 0
                         ? value
-                        : value.First().ToString().ToUpperInvariant() + value.Substring(1).ToLowerInvariant();
+                        : value.First().ToString().ToUpperInvariant() + value[1..].ToLowerInvariant();
         }
 
         public static string Join<T>(IEnumerable<T> source, int take = 5)
@@ -58,7 +66,7 @@ namespace Microsoft.Docs.Build
         {
             bestMatch = candidates != null ?
                     (from candidate in candidates
-                     let levenshteinDistance = Levenshtein.GetLevenshteinDistance(candidate, target)
+                     let levenshteinDistance = Levenshtein.GetDistance(candidate, target)
                      where levenshteinDistance <= threshold
                      orderby levenshteinDistance, candidate
                      select candidate).FirstOrDefault()

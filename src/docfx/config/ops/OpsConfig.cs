@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using ECMA2Yaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -11,27 +12,33 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class OpsConfig
     {
-        public OpsDocsetConfig[] DocsetsToPublish { get; private set; } = Array.Empty<OpsDocsetConfig>();
+        public OpsDocsetConfig[] DocsetsToPublish { get; init; } = Array.Empty<OpsDocsetConfig>();
 
-        public OpsDependencyConfig[] DependentRepositories { get; private set; } = Array.Empty<OpsDependencyConfig>();
+        public HashSet<PathString> RedirectionFiles { get; init; } = new HashSet<PathString>();
 
-        public string? GitRepositoryBranchOpenToPublicContributors { get; private set; }
+        public OpsDependencyConfig[] DependentRepositories { get; init; } = Array.Empty<OpsDependencyConfig>();
 
-        public string? GitRepositoryUrlOpenToPublicContributors { get; private set; }
+        public string? GitRepositoryBranchOpenToPublicContributors { get; init; }
 
-        public bool NeedGeneratePdfUrlTemplate { get; private set; }
+        public string? GitRepositoryUrlOpenToPublicContributors { get; init; }
 
-        public string? XrefEndpoint { get; private set; }
+        public bool NeedGeneratePdfUrlTemplate { get; init; }
+
+        public string? XrefEndpoint { get; init; }
 
         [JsonProperty(nameof(JoinTOCPlugin))]
-        public OpsJoinTocConfig[]? JoinTOCPlugin { get; private set; }
+        public OpsJoinTocConfig[]? JoinTOCPlugin { get; init; }
+
+        [JsonProperty(nameof(SplitTOC))]
+        [JsonConverter(typeof(OneOrManyConverter))]
+        public PathString[] SplitTOC { get; init; } = Array.Empty<PathString>();
 
         [JsonProperty(nameof(ECMA2Yaml))]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; private set; }
+        public ECMA2YamlRepoConfig[]? ECMA2Yaml { get; init; }
 
         [JsonProperty("monikerPath")]
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[]? MonikerPath { get; set; }
+        public string[]? MonikerPath { get; init; }
     }
 }

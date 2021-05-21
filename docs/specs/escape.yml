@@ -62,6 +62,8 @@ outputs:
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
     }
   a++.png:
+  .errors.log: |
+    { "message_severity":"warning", "code":"file-not-found", "file":"links.md", "line":5 }
 ---
 # Handle encoding for html links
 inputs:
@@ -94,7 +96,8 @@ outputs:
   a&b.json:
   a&amp;b.json:
   a++.png:
-  .publish.json:
+  .errors.log: |
+    { "message_severity":"warning", "code":"file-not-found", "file":"html-links.md", "line":5 }
 ---
 # Don't handle encoding for includes at the moment
 inputs:
@@ -169,3 +172,15 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a&'.","file":"html-xref.md","line":6,"column":9}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a%26b'.","file":"b.json","line":3,"column":17}
+---
+# encode the dispaly contents from "xref"
+inputs: 
+  docfx.yml:
+  a.md: |
+    the <xref href="ServiceFuture&lt;String&gt;" data-throw-if-not-resolved="False"/> object
+    <xref href="Observable%3CVoid%3E?alt=Observable%3CVoid%3E&text=Observable%3CVoid%3E" data-throw-if-not-resolved="False"/>
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>the <span class=\"xref\">ServiceFuture&lt;String&gt;</span> object\n<span class=\"xref\">Observable&lt;Void&gt;</span></p>\n",
+    }

@@ -13,7 +13,8 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "SUGGESTION"
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -57,7 +58,8 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "WARNING"
+            "severity": "WARNING",
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -101,7 +103,8 @@ inputs:
             "type": "ImageAltTextEqualsFilename",
             "message": "AltText {0} is the same as the image file name.",
             "code": "altText-equal-filename",
-            "severity": "ERROR"
+            "severity": "ERROR",
+            "contentTypes": ["conceptual"]
           }
         ]
       }
@@ -150,8 +153,92 @@ outputs:
   pig4.jpg:
   a.json:
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"end_line":1,"column":2,"end_column":5}
-    {"message_severity":"info","code":"disallowed-html","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"end_line":2,"column":2,"end_column":5}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"end_line":1,"column":2,"end_column":5}
+    {"message_severity":"info","code":"disallowed-html-tag","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":2,"end_line":2,"column":2,"end_column":5}
     {"message_severity":"info","code":"exceed-max-file-errors","message":"Info count exceed '2'. Build will continue but newer logs in 'a.md' will be ignored.","file":"a.md","line":0,"end_line":0,"column":0,"end_column":0}
 
 ---
+# override by buildRules - system error
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    buildValidationRules: build.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "FileNotFound",
+            "message": "Invalid file link: '{0}'. Pls Check.",
+            "code": "new-file-not-found",
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  a.md: |
+    ![pig3](pig3.jpg)
+    
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"new-file-not-found","message":"Invalid file link: 'pig3.jpg'. Pls Check.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+---
+# override by buildRules - rule disabled
+noDryRun: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    buildValidationRules: build.json
+  rules.json: |
+    {
+      "images": {
+        "rules": [
+          {
+            "type": "ImageAltTextEqualsFilename",
+            "message": "AltText {0} is the same as the image file name.",
+            "code": "altText-equal-filename",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  build.json: |
+    {
+      "system": {
+        "rules": [
+          {
+            "type": "FileNotFound",
+            "message": "Invalid file link: '{0}'. Pls Check. Just for demo since can't disable ERROR level rule",
+            "code": "new-file-not-found",
+            "disabled": true,
+            "severity": "SUGGESTION"
+          }
+        ]
+      }
+    }
+  a.md: |
+    ![pig3](pig3.jpg)
+    
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
+   

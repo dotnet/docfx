@@ -31,35 +31,24 @@ namespace Microsoft.Docs.Build
 
         public bool EnableSideBySide { get; }
 
-        public BuildOptions(string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config)
+        public BuildOptions(
+            string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config, Package package)
         {
             Repository = repository;
-            DocsetPath = new PathString(Path.GetFullPath(docsetPath));
+            DocsetPath = package.GetFullFilePath(new PathString(docsetPath));
             if (fallbackDocsetPath != null)
             {
-                FallbackDocsetPath = new PathString(Path.GetFullPath(fallbackDocsetPath));
+                FallbackDocsetPath = package.GetFullFilePath(new PathString(fallbackDocsetPath));
             }
-            OutputPath = new PathString(Path.GetFullPath(outputPath ?? Path.Combine(docsetPath, config.OutputPath)));
+            OutputPath = package.GetFullFilePath(new PathString(outputPath ?? Path.Combine(docsetPath, config.OutputPath)));
             Locale = (LocalizationUtility.GetLocale(repository) ?? config.DefaultLocale).ToLowerInvariant();
-            Culture = CreateCultureInfo(Locale);
+            Culture = LocalizationUtility.CreateCultureInfo(Locale);
 
             if (repository != null && !string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
             {
                 EnableSideBySide =
                     LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
                     contributionBranch != repository.Branch;
-            }
-        }
-
-        private static CultureInfo CreateCultureInfo(string locale)
-        {
-            try
-            {
-                return new CultureInfo(locale);
-            }
-            catch (CultureNotFoundException)
-            {
-                throw Errors.Config.LocaleInvalid(locale).ToException();
             }
         }
     }

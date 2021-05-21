@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -13,18 +15,23 @@ namespace Microsoft.Docs.Build
 {
     internal static class UrlUtility
     {
-        private static readonly Regex s_gitHubUrlRegex =
-           new Regex(
-               @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-               RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_gitHubUrlRegex = new(
+            @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex s_azureReposUrlRegex =
-            new Regex(
-                @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
-                @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_azureReposUrlRegex = new(
+            @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
+            @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly char[] s_queryFragmentLeadingChars = new char[] { '#', '?' };
+        private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
+
+        public static string SanitizeUrl(string? url)
+        {
+            // For azure blob url, url without sas token should identify if the content has changed
+            // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
+            return Regex.Replace(url ?? "", @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
+        }
 
         /// <summary>
         /// Split href to path, fragment and query
@@ -40,11 +47,11 @@ namespace Microsoft.Docs.Build
             var fragmentIndex = url.IndexOf('#');
             if (fragmentIndex >= 0)
             {
-                fragment = url.Substring(fragmentIndex);
+                fragment = url[fragmentIndex..];
                 var queryIndex = url.IndexOf('?', 0, fragmentIndex);
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex, fragmentIndex - queryIndex);
+                    query = url[queryIndex..fragmentIndex];
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -57,7 +64,7 @@ namespace Microsoft.Docs.Build
                 var queryIndex = url.IndexOf('?');
                 if (queryIndex >= 0)
                 {
-                    query = url.Substring(queryIndex);
+                    query = url[queryIndex..];
                     path = url.Substring(0, queryIndex);
                 }
                 else
@@ -80,16 +87,19 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
         /// </summary>
-        public static string MergeUrl(string targetUrl, string? sourceQuery = null, string? sourceFragment = null)
+        public static string MergeUrl(string targetUrl, string? sourceQuery, string? sourceFragment = null)
         {
             var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
 
             var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
-            var sourceQueryParameters = HttpUtility.ParseQueryString(sourceQuery);
 
-            foreach (var key in sourceQueryParameters.AllKeys)
+            var sourceQueryParameters = sourceQuery is null ? null : HttpUtility.ParseQueryString(sourceQuery);
+            if (sourceQueryParameters != null)
             {
-                targetQueryParameters[key] = sourceQueryParameters[key];
+                foreach (var key in sourceQueryParameters.AllKeys)
+                {
+                    targetQueryParameters[key] = sourceQueryParameters[key];
+                }
             }
 
             var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : "";
@@ -180,46 +190,23 @@ namespace Microsoft.Docs.Build
                 return LinkType.RelativePath;
             }
 
-            var ch = link[0];
-
-            if (ch == '/' || ch == '\\')
+            if (Uri.TryCreate(link, UriKind.Absolute, out var uri))
             {
-                if (link.Length > 1 && (link[1] == '/' || link[1] == '\\'))
+                if (string.IsNullOrEmpty(uri.DnsSafeHost) && uri.Scheme == Uri.UriSchemeFile)
                 {
-                    return LinkType.External;
+                    return (uri.AbsolutePath.StartsWith('/') || uri.AbsolutePath.StartsWith('\\'))
+                        ? LinkType.AbsolutePath
+                        : LinkType.WindowsAbsolutePath;
                 }
-                return LinkType.AbsolutePath;
-            }
-
-            // If it is a windows rooted path like C:
-            if (link.Length > 2 && link[1] == ':')
-            {
-                return LinkType.WindowsAbsolutePath;
-            }
-
-            if (Uri.TryCreate(link, UriKind.Absolute, out _))
-            {
                 return LinkType.External;
             }
 
-            if (ch == '#')
+            return link[0] switch
             {
-                return LinkType.SelfBookmark;
-            }
-
-            // Uri.TryCreate does not handle some common errors like http:docs.com, so specialize them here
-            if (char.IsLetter(ch))
-            {
-                var colonIndex = link.IndexOf(':');
-                if (colonIndex > 0
-                    && link.IndexOfAny(s_queryFragmentLeadingChars) is var queryOrFragmentIndex
-                    && (queryOrFragmentIndex < 0 || colonIndex < queryOrFragmentIndex))
-                {
-                    return LinkType.External;
-                }
-            }
-
-            return LinkType.RelativePath;
+                '/' or '\\' => LinkType.AbsolutePath,
+                '#' => LinkType.SelfBookmark,
+                _ => LinkType.RelativePath,
+            };
         }
 
         public static bool IsHttp(string str)
@@ -227,6 +214,59 @@ namespace Microsoft.Docs.Build
             return !string.IsNullOrEmpty(str)
                 && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+        /// <summary>
+        /// Converts an URL to a human readable short name for directory or file
+        /// </summary>
+        public static string UrlToShortName(string url)
+        {
+            url = SanitizeUrl(url);
+
+            var hash = HashUtility.GetSha256HashShort(url);
+
+            // Trim https://
+            var index = url.IndexOf(':');
+            if (index > 0)
+            {
+                url = url[index..];
+            }
+
+            url = url.TrimStart('/', '\\', '.', ':').Trim();
+
+            var result = new StringBuilder();
+
+            // Take the surrounding 4 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
+            var segments = url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries);
+            for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
+            {
+                if (segmentIndex == 4 && segments.Length > 8)
+                {
+                    segmentIndex += segments.Length - 9;
+                    continue;
+                }
+
+                var segment = segments[segmentIndex];
+                for (var charIndex = 0; charIndex < segment.Length; charIndex++)
+                {
+                    var ch = segment[charIndex];
+                    if (charIndex == 8 && segment.Length > 16)
+                    {
+                        result.Append("..");
+                        charIndex += segment.Length - 17;
+                        continue;
+                    }
+                    if (!s_invalidPathChars.Contains(ch))
+                    {
+                        result.Append(ch);
+                    }
+                }
+
+                result.Append('+');
+            }
+
+            result.Append(hash);
+            return result.ToString();
         }
 
         public static bool TryParseGitHubUrl(
@@ -304,7 +344,7 @@ namespace Microsoft.Docs.Build
 
             var firstSegment = path.Substring(0, slashIndex);
             return LocalizationUtility.IsValidLocale(firstSegment)
-                ? $"{path.Substring(firstSegment.Length)}"
+                ? $"{path[firstSegment.Length..]}"
                 : $"/{path}";
         }
 

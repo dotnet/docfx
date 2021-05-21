@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 using System.Web;
 
 namespace Microsoft.Docs.Build
@@ -15,16 +14,15 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly DocumentProvider _documentProvider;
         private readonly ErrorBuilder _errorLog;
-        private readonly Lazy<ExternalXrefMap> _externalXrefMap;
-        private readonly Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
-
         private readonly DependencyMapBuilder _dependencyMapBuilder;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly Repository? _repository;
         private readonly string _xrefHostName;
-        private readonly Lazy<JsonSchemaTransformer> _jsonSchemaTransformer;
+        private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
+        private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
-        private int _internalXrefMapValidated;
+        private readonly Watch<ExternalXrefMap> _externalXrefMap;
+        private readonly Watch<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
         public XrefResolver(
             Config config,
@@ -33,37 +31,27 @@ namespace Microsoft.Docs.Build
             DependencyMapBuilder dependencyMapBuilder,
             FileLinkMapBuilder fileLinkMapBuilder,
             ErrorBuilder errorLog,
-            TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
-            Input input,
             BuildScope buildScope,
-            Lazy<JsonSchemaTransformer> jsonSchemaTransformer)
+            RepositoryProvider repositoryProvider,
+            Input input,
+            Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
             _errorLog = errorLog;
             _repository = repository;
             _documentProvider = documentProvider;
-            _internalXrefMap = new Lazy<IReadOnlyDictionary<string, InternalXrefSpec[]>>(
-                    () => new InternalXrefMapBuilder(
-                                errorLog,
-                                templateEngine,
-                                documentProvider,
-                                metadataProvider,
-                                monikerProvider,
-                                input,
-                                buildScope,
-                                jsonSchemaTransformer.Value).Build());
-
-            _externalXrefMap = new Lazy<ExternalXrefMap>(
-                () => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
-
             _jsonSchemaTransformer = jsonSchemaTransformer;
-
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+            _internalXrefMapBuilder = new(
+                config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, repositoryProvider, input, jsonSchemaTransformer);
+
+            _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
+            _internalXrefMap = new(BuildInternalXrefMap);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
@@ -113,7 +101,7 @@ namespace Microsoft.Docs.Build
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
             resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-            return (null, resolvedHref, display, xrefSpec?.DeclaringFile);
+            return (null, resolvedHref, display, xrefSpec.DeclaringFile);
         }
 
         public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
@@ -145,7 +133,7 @@ namespace Microsoft.Docs.Build
             return (error, xrefSpec, href);
         }
 
-        public XrefMapModel ToXrefMapModel(bool isLocalizedBuild)
+        public XrefMapModel ToXrefMapModel()
         {
             var repositoryBranch = _repository?.Branch;
             var basePath = _config.BasePath.ValueWithLeadingSlash;
@@ -153,27 +141,24 @@ namespace Microsoft.Docs.Build
             var references = Array.Empty<ExternalXrefSpec>();
             var externalXrefs = Array.Empty<ExternalXref>();
 
-            if (!isLocalizedBuild)
-            {
-                references = EnsureInternalXrefMap().Values
-                    .Select(xrefs =>
-                    {
-                        var xref = xrefs.First();
+            references = _internalXrefMap.Value.Values
+                .Select(xrefs =>
+                {
+                    var xref = xrefs.First();
 
-                        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                        // output xref map with URL appending "?branch=master" for master branch
-                        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
-                            ? $"?branch={repositoryBranch}" : "";
+                    // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+                    // output xref map with URL appending "?branch=master" for master branch
+                    var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live"
+                    ? $"?branch={repositoryBranch}" : "";
 
-                        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+                    var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
 
-                        return xref.ToExternalXrefSpec(href);
-                    })
-                    .OrderBy(xref => xref.Uid)
-                    .ToArray();
+                    return xref.ToExternalXrefSpec(href);
+                })
+                .OrderBy(xref => xref.Uid)
+                .ToArray();
 
-                externalXrefs = _jsonSchemaTransformer.Value.GetValidateExternalXrefs();
-            }
+            externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
             var model =
                 new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
@@ -196,56 +181,42 @@ namespace Microsoft.Docs.Build
             return model;
         }
 
-        private void ValidateInternalXrefProperties()
+        private IReadOnlyDictionary<string, InternalXrefSpec[]> BuildInternalXrefMap()
         {
-            foreach (var xrefs in _internalXrefMap.Value.Values)
+            var result = _internalXrefMapBuilder.Build();
+            ValidateUidGlobalUnique(result);
+            ValidateExternalXref(result);
+            return result;
+        }
+
+        private void ValidateUidGlobalUnique(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap)
+        {
+            var globalXrefSpecs = internalXrefMap.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First());
+
+            foreach (var xrefSpec in globalXrefSpecs)
             {
-                if (xrefs.Length == 1)
+                if (_externalXrefMap.Value.TryGetValue(xrefSpec.Uid, out var spec))
                 {
-                    continue;
-                }
-
-                var uid = xrefs.First().Uid;
-
-                // validate xref properties
-                // uid conflicts with different values of the same xref property
-                // log an warning and take the first one order by the declaring file
-                var xrefProperties = xrefs.SelectMany(x => x.XrefProperties.Keys).Distinct();
-                foreach (var xrefProperty in xrefProperties)
-                {
-                    var conflictingNames = xrefs.Select(x => x.GetXrefPropertyValueAsString(xrefProperty)).Distinct();
-                    if (conflictingNames.Count() > 1)
-                    {
-                        _errorLog.Add(Errors.Xref.XrefPropertyConflict(uid, xrefProperty, conflictingNames));
-                    }
+                    _errorLog.Add(
+                        Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath) with
+                        { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
 
-        private void ValidateUIDGlobalUnique()
+        private void ValidateExternalXref(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap)
         {
-            var globalUids = _internalXrefMap.Value.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First().Uid);
-
-            foreach (var uid in globalUids)
-            {
-                if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid.Value, out var spec))
-                {
-                    _errorLog.Add(Errors.Xref.DuplicateUidGlobal(uid, spec!.RepositoryUrl));
-                }
-            }
-        }
-
-        private void ValidateExternalXref()
-        {
-            var localXrefGroups = _externalXrefMap.Value.GetExternalXref()
+            var localXrefGroups = _externalXrefMap.Value.GetExternalXrefs()
                 .Where(xref => string.Equals(xref.DocsetName, _config.Name, StringComparison.OrdinalIgnoreCase))
                 .GroupBy(xref => xref.Uid);
 
             foreach (var xrefGroup in localXrefGroups)
             {
-                if (!_internalXrefMap.Value.ContainsKey(xrefGroup.Key))
+                if (!internalXrefMap.ContainsKey(xrefGroup.Key))
                 {
-                    _errorLog.Add(Errors.Xref.UidNotFound(xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct()));
+                    _errorLog.Add(Errors.Xref.UidNotFound(
+                        xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType) with
+                    { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -256,22 +227,20 @@ namespace Microsoft.Docs.Build
             if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
                         && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring("https://review.docs.microsoft.com".Length);
+                return url["https://review.docs.microsoft.com".Length..];
             }
 
             if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
             {
-                return url.Substring($"https://{hostName}".Length);
+                return url[$"https://{hostName}".Length..];
             }
 
             return url;
         }
 
         private (Error?, IXrefSpec?, string? href) Resolve(
-            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+            SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
         {
-            var a = uid.Value;
-
             var (xrefSpec, href) = ResolveInternalXrefSpec(uid, referencingFile, inclusionRoot, monikers);
             if (xrefSpec is null)
             {
@@ -288,7 +257,7 @@ namespace Microsoft.Docs.Build
 
         private (IXrefSpec? xrefSpec, string? href) ResolveExternalXrefSpec(string uid)
         {
-            if (_externalXrefMap.Value.ExternalXrefMapTryGetValue(uid, out var spec))
+            if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
             {
                 var href = RemoveSharingHost(spec!.Href, _config.HostName);
                 return (spec, href);
@@ -296,37 +265,23 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private IReadOnlyDictionary<string, InternalXrefSpec[]> EnsureInternalXrefMap()
-        {
-            if (Interlocked.Exchange(ref _internalXrefMapValidated, 1) == 0)
-            {
-                ValidateInternalXrefProperties();
-                ValidateUIDGlobalUnique();
-                ValidateExternalXref();
-            }
-
-            return _internalXrefMap.Value;
-        }
-
         private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
-            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
+            string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
         {
-            if (EnsureInternalXrefMap().TryGetValue(uid, out var specs))
+            if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
             {
-                var spec = default(InternalXrefSpec);
-                if (specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers)
-                {
-                    spec = specs[0];
-                }
-                else
-                {
-                    spec = specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
-                }
+                var spec = specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers
+                    ? specs[0]
+                    : specs.FirstOrDefault(s => s.Monikers.Intersects(monikers.Value)) ?? specs[0];
 
                 var dependencyType = GetDependencyType(referencingFile, spec);
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
-                var href = UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
+                // Output absolute URL starting from Architecture and TSType
+                var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
+                    ? spec.Href
+                    : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
+
                 return (spec, href);
             }
             return default;

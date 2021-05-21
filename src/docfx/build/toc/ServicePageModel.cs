@@ -8,30 +8,16 @@ namespace Microsoft.Docs.Build
 {
     internal class ServicePageModel
     {
-        public SourceInfo<string?> Name { get; private set; }
+        public SourceInfo<string?> Name { get; init; }
 
-        public SourceInfo<string?> FullName { get; private set; }
+        public SourceInfo<string?> FullName { get; init; }
 
-        public List<ServicePageItem> Children { get; private set; } = new List<ServicePageItem>();
+        public List<ServicePageItem>? Children { get; init; }
 
-        public List<string?>? Langs { get; private set; } = new List<string?>();
+        public List<string?>? Langs { get; init; }
 
-        public LandingPageType? PageType { get; private set; }
+        public LandingPageType? PageType { get; init; }
 
         public JObject Metadata { get; set; } = new JObject();
-
-        public ServicePageModel(
-            SourceInfo<string?> name,
-            SourceInfo<string?> fullName,
-            List<ServicePageItem> children,
-            List<string?>? langs,
-            LandingPageType? pageType)
-        {
-            Name = name;
-            FullName = fullName;
-            Children = children;
-            Langs = langs;
-            PageType = pageType;
-        }
     }
 }

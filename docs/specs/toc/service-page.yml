@@ -100,11 +100,6 @@ outputs:
   a/api/toc.json:
   a/results/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "App Service", "href": "../api/doc"}], "langs": ["csharp"], "pageType": "root"}
-  a/results/appservice.json: |
-    {
-      "name": "App Service", "fullName": "App Service", "children": [{"name": "Client","href": "../api/doc"},{"name": "Other"}],
-      "langs": ["csharp"], "pageType": "service"
-    }
   a/results/appservice/client/client.json: |
     {"name":"Client","fullName":"Client","langs":["csharp"],"pageType":"service"}
 ---
@@ -154,8 +149,8 @@ repos:
 outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
-    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../test/doc"}], "pageType": "root"}
+  a/api/bot/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": "../../test/doc"}], "pageType": "root"}
 ---
 # item-href in service-page linking to a splitted toc
 # Service Page href fix: TopLevelTOC and ReferenceTOC in different directory hierarchy
@@ -206,7 +201,7 @@ outputs:
   a/test/doc.json:
   a/api/bot/toc.json:
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
 ---
 # make overview page for service pages
@@ -264,7 +259,7 @@ outputs:
         {
           "name": "API Reference",
           "items": [
-            { "name": "Overview", "href": "../../docs-ref-toc/" },
+            { "name": "Overview", "href": "./" },
             {
               "name": "API Test",
               "items": [
@@ -277,7 +272,7 @@ outputs:
       ]
     }
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
 ---
 # service-page: when childHref is empty, set it to null
@@ -324,7 +319,7 @@ repos:
           - 'MS.ServicePage*'
 outputs:
   a/api/bot/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "href": undefined}], "pageType": "root"}
 ---
 # remove uid when href exists
@@ -383,7 +378,7 @@ outputs:
         {
           "name": "API Reference",
           "items": [
-            { "name": "Overview", "href": "../../docs-ref-toc/", "uid": undefined},
+            { "name": "Overview", "href": "./", "uid": undefined},
             {
               "name": "API Test",
               "items": [
@@ -396,5 +391,477 @@ outputs:
       ]
     }
   a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
-  a/docs-ref-toc/index.json: |
+  a/api/bot/index.json: |
     {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "API Test"}], "pageType": "root"}
+---
+# use first SubTocUid for service-page when href and uid are both empty
+repos:
+  https://github.com/ops/service-page-use-subtocuid:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/doc.md: |
+        ---
+        name: a
+        uid: test
+        ---
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+          items:
+          - name: MS.test
+            uid: test
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          children:
+          - '*'
+outputs:
+  a/test/doc.json:
+  a/api/bot/toc.json:
+  a/api/bot/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage.xxx", "uid": "test"}], "pageType": "root"}
+---
+# do not generate service-page if the docfx.json doesn't include these files
+repos:
+  https://github.com/ops/service-page-docfx-filter:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+             "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+             "OutputFolder": "a/results"}],
+        }
+      a/docfx.json: |
+        {
+          "build": {
+            "content": [
+              {
+                "files": ["**/*"],
+                "src": ".",
+                "exclude": ["**/results/**"]
+              }
+            ]
+          }
+        }
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/doc.md: |
+        ---
+        name: a
+        uid: test
+        ---
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+          items:
+          - name: MS.test
+            uid: test
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          children:
+          - '*'
+outputs:
+  a/test/doc.json:
+  a/api/bot/toc.json:
+---
+# item-href in service-page linking to a splitted toc (relative folder)
+repos:
+  https://github.com/ops/service-page-splitted-toc_:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/doc.md: |
+        ---
+        title: a-content
+        uid: a
+        ---
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage2.xxx
+          uid: a
+          items:
+          - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          children:
+          - 'MS.ServicePage*'
+outputs:
+  a/test/doc.json:
+  a/api/bot/toc.json:
+  a/api/bot/_splitted/ms.servicepage2.xxx/toc.json:
+  a/api/bot/index.json: |
+    {"name": "API Reference", "fullName": "API Reference", "children": [{"name": "MS.ServicePage2.xxx"}], "pageType": "root"}
+---
+# do not generate service pages when a md file is specified
+repos:
+  https://github.com/ops/service-page-fix-publish-url-conflict:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/test"
+              }]
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/Client.md: |
+        # hello world
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client
+            href: ~/test/Client.md
+            landingPageType: Service
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/test/client.json: |
+    {"title": "hello world"}
+  a/api/bot/toc.json:
+  a/test/index.json:
+---
+# Split toc metadata when no conceptual toc in JoinTocPlugin
+repos:
+  https://github.com/ops/split-toc-metadata:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "ReferenceTOCUrl": "/a/b/toc"}],
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": { 
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage2.xxx
+          items:
+          - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+outputs:
+  a/api/bot/toc.json:
+  a/api/bot/_splitted/ms.servicepage2.xxx/toc.json: |
+    {"metadata": {"universal_ref_toc": "/a/b/toc"}}
+---
+# output path conflicts for generated service pages
+repos:
+  https://github.com/ops/service-page-output-path-conflict2:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/test"
+              }]
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test/index.md: |
+        # hello world
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client2
+            href: ~/test/index.md
+            landingPageType: Service
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/test/index.json:
+  a/api/bot/toc.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'test/index.json': 'test/index.md', 'test/index.yml [generated]'."}
+---
+# publish url conflicts for generated service pages
+repos:
+  https://github.com/ops/service-page-fix-publish-url-conflicts:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{  "build_source_folder": "a"}],
+          "JoinTOCPlugin": [
+            {"ReferenceTOC": "a/api/bot/TOC.yml",
+              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
+              "OutputFolder": "a/test"
+            }
+          ]
+        }
+      a/docfx.yml: |
+        monikerRange:
+          'test1/**' : '>= v-0.1 <= v-0.2'
+          'test/**' : '>= v-0.2 <= v-0.3'
+        routes:
+          test1/: docs/
+          test/: docs/
+        monikerDefinition: monikerDefinition.json
+      a/monikerDefinition.json: |
+        {
+          "monikers": [
+            { "moniker_name": "v-0.1", "product_name": ".NET Core" },
+            { "moniker_name": "v-0.2", "product_name": ".NET Core" },
+            { "moniker_name": "v-0.3", "product_name": ".NET Core" },
+          ]
+        }
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/test1/index.md: |
+        # hello world
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client2
+            href: ~/test1/index.md
+            landingPageType: Service
+            children:
+            - 'MS.ServicePage*'
+outputs:
+  a/cfcd556ac4916a1bf6fe758453d01e39/docs/index.json: |
+    {"title": "hello world"}
+  a/api/bot/toc.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('v-0.2') publish to the same url '/docs/': 'test/index.yml [generated]<'v-0.2', 'v-0.3'>', 'test1/index.md<'v-0.1', 'v-0.2'>'."}
+  a/.publish.json: |
+    {
+      "files": [
+        {
+          "url": "/api/bot/toc.json",
+          "path": "api/bot/toc.json",
+          "source_path": "api/bot/TOC.yml"
+        },
+        {
+          "url": "/docs/",
+          "path": "cfcd556ac4916a1bf6fe758453d01e39/docs/index.json",
+          "source_path": "test1/index.md",
+          "config_moniker_range": ">= v-0.1 <= v-0.2",
+          "moniker_group": "cfcd556ac4916a1bf6fe758453d01e39",
+          "_path": "docs/index.json",
+          "monikers": ["v-0.1", "v-0.2"]
+        }
+      ]
+    }
+---
+# joinTocPlugin in docset folder
+repos:
+  https://github.com/ops/service-page-output-path-conflict2:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            {
+              "build_source_folder": "a",
+              "JoinTOCPlugin": [
+                {
+                  "ReferenceTOC": "api/bot/TOC.yml",
+                  "TopLevelTOC": "docs-ref-toc/top_level_toc.yml",
+                  "OutputFolder": "result"
+                }
+              ]
+            }
+          ]
+        }
+      a/docfx.yml:
+      a/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      a/api/bot/TOC.yml: |
+        items:
+        - name: MS.ServicePage.xxx
+      a/docs-ref-toc/top_level_toc.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: Client
+            landingPageType: Service
+            children:
+            - '**'
+outputs:
+  a/api/bot/toc.json:
+  a/result/index.json:
+  a/result/client.json:

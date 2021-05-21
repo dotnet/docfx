@@ -16,7 +16,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildScope _buildScope;
         private readonly BuildOptions _buildOptions;
-        private readonly TemplateEngine _templateEngine;
+        private readonly JsonSchemaProvider _jsonSchemaProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly MetadataProvider _metadataProvider;
 
@@ -24,10 +24,10 @@ namespace Microsoft.Docs.Build
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
         private readonly (PathString src, PathString dest)[] _routes;
 
-        private readonly ConcurrentDictionary<FilePath, Document> _documents = new ConcurrentDictionary<FilePath, Document>();
+        private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new();
 
         // mime -> page type. TODO get from docs-ui schema
-        private static readonly Dictionary<string, string> s_pageTypeMapping = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_pageTypeMapping = new()
         {
             { "NetType", "dotnet" },
             { "NetNamespace", "dotnet" },
@@ -47,7 +47,7 @@ namespace Microsoft.Docs.Build
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
-            TemplateEngine templateEngine,
+            JsonSchemaProvider jsonSchemaProvider,
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider)
         {
@@ -56,7 +56,7 @@ namespace Microsoft.Docs.Build
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
-            _templateEngine = templateEngine;
+            _jsonSchemaProvider = jsonSchemaProvider;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
 
@@ -66,75 +66,19 @@ namespace Microsoft.Docs.Build
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
         }
 
-        public SourceInfo<string?> GetMime(FilePath path)
-        {
-            return GetDocument(path).Mime;
-        }
+        public SourceInfo<string?> GetMime(FilePath path) => GetDocument(path).Mime;
 
-        public ContentType GetContentType(FilePath path)
-        {
-            return GetDocument(path).ContentType;
-        }
+        public ContentType GetContentType(FilePath path) => GetDocument(path).ContentType;
 
-        public string GetOutputPath(FilePath path)
-        {
-            var file = GetDocument(path);
-            var outputPath = file.SitePath;
+        public string GetOutputPath(FilePath path) => GetDocument(path).OutputPath;
 
-            switch (file.ContentType)
-            {
-                case ContentType.Page:
-                case ContentType.Redirection:
-                    var fileExtension = _config.OutputType switch
-                    {
-                        OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
-                        OutputType.Json => ".json",
-                        OutputType.PageJson => file.RenderType == RenderType.Content ? ".raw.page.json" : ".json",
-                        _ => throw new NotSupportedException(),
-                    };
-                    outputPath = Path.ChangeExtension(outputPath, fileExtension);
-                    break;
+        public string GetSiteUrl(FilePath path) => GetDocument(path).SiteUrl;
 
-                case ContentType.TableOfContents:
-                    var tocExtension = _config.OutputType switch
-                    {
-                        OutputType.Html => file.RenderType == RenderType.Content ? ".html" : ".json",
-                        OutputType.Json => ".json",
-                        OutputType.PageJson => ".json",
-                        _ => throw new NotSupportedException(),
-                    };
-                    outputPath = Path.ChangeExtension(outputPath, tocExtension);
-                    break;
-            }
+        public string GetSitePath(FilePath path) => GetDocument(path).SitePath;
 
-            if (_config.UrlType == UrlType.Docs)
-            {
-                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
-                outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
-            }
+        public string GetCanonicalUrl(FilePath path) => GetDocument(path).CanonicalUrl;
 
-            return UrlUtility.Combine(_config.BasePath, outputPath);
-        }
-
-        public string GetSiteUrl(FilePath path)
-        {
-            return GetDocument(path).SiteUrl;
-        }
-
-        public string GetSitePath(FilePath path)
-        {
-            return GetDocument(path).SitePath;
-        }
-
-        public string GetCanonicalUrl(FilePath path)
-        {
-            return GetDocument(path).CanonicalUrl;
-        }
-
-        public RenderType GetRenderType(FilePath path)
-        {
-            return GetDocument(path).RenderType;
-        }
+        public RenderType GetRenderType(FilePath path) => GetDocument(path).RenderType;
 
         [Obsolete("To workaround a docs pdf build image fallback issue. Use GetSiteUrl instead.")]
         public string GetDocsSiteUrl(FilePath path)
@@ -162,7 +106,7 @@ namespace Microsoft.Docs.Build
                 ContentType.Page
                     => s_pageTypeMapping.TryGetValue(mime, out var type) ? type : mime.ToLowerInvariant(),
                 ContentType.Redirection => "redirection",
-                ContentType.TableOfContents => "toc",
+                ContentType.Toc => "toc",
                 _ => null,
             };
         }
@@ -190,7 +134,7 @@ namespace Microsoft.Docs.Build
             }
 
             // if source is redirection or migrated from markdown, change it to *.md
-            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsMigratedFromMarkdown(file.Mime))
+            if (file.ContentType == ContentType.Redirection || JsonSchemaProvider.IsMigratedFromMarkdown(file.Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
@@ -207,7 +151,7 @@ namespace Microsoft.Docs.Build
 
         private Document GetDocument(FilePath path)
         {
-            return _documents.GetOrAdd(path, GetDocumentCore);
+            return _documents.GetOrAdd(path, key => new(() => GetDocumentCore(key))).Value;
         }
 
         private bool TryGetDocumentIdConfig(PathString path, out DocumentIdConfig result, out PathString remainingPath)
@@ -229,26 +173,23 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
-            var renderType = _templateEngine.GetRenderType(contentType, mime);
+            var renderType = _jsonSchemaProvider.GetRenderType(contentType, mime);
             var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
             var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, renderType);
+            var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
-            return new Document(sitePath, siteUrl, canonicalUrl, contentType, mime, renderType);
+            return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
         }
 
         private string FilePathToSitePath(FilePath filePath, ContentType contentType, UrlType urlType, RenderType renderType)
         {
             var sitePath = ApplyRoutes(filePath.Path).Value;
-            if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.TableOfContents)
+            if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.Toc)
             {
-                if (contentType == ContentType.Page && renderType == RenderType.Component)
-                {
-                    sitePath = Path.ChangeExtension(sitePath, ".json");
-                }
-                else
-                {
-                    sitePath = urlType switch
+                sitePath = contentType == ContentType.Page && renderType == RenderType.Component
+                    ? Path.ChangeExtension(sitePath, ".json")
+                    : urlType switch
                     {
                         UrlType.Docs => Path.ChangeExtension(sitePath, ".json"),
                         UrlType.Pretty => Path.GetFileNameWithoutExtension(sitePath).Equals("index", PathUtility.PathComparison)
@@ -257,7 +198,6 @@ namespace Microsoft.Docs.Build
                         UrlType.Ugly => Path.ChangeExtension(sitePath, ".html"),
                         _ => throw new NotSupportedException(),
                     };
-                }
             }
 
             if (urlType != UrlType.Docs)
@@ -283,7 +223,7 @@ namespace Microsoft.Docs.Build
             var url = path.Replace('\\', '/');
 
             if (contentType == ContentType.Redirection
-                || contentType == ContentType.TableOfContents
+                || contentType == ContentType.Toc
                 || (contentType == ContentType.Page && renderType == RenderType.Content))
             {
                 if (urlType != UrlType.Ugly)
@@ -294,7 +234,7 @@ namespace Microsoft.Docs.Build
                         return i >= 0 ? url.Substring(0, i + 1) : "./";
                     }
                 }
-                if (urlType == UrlType.Docs && contentType != ContentType.TableOfContents)
+                if (urlType == UrlType.Docs && contentType != ContentType.Toc)
                 {
                     var i = url.LastIndexOf('.');
                     return i >= 0 ? url.Substring(0, i) : url;
@@ -311,17 +251,10 @@ namespace Microsoft.Docs.Build
         {
             if (isExperimental)
             {
-                sitePath = ReplaceLast(sitePath, ".experimental", "");
                 siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, renderType);
             }
 
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
-
-            static string ReplaceLast(string source, string find, string replace)
-            {
-                var i = source.LastIndexOf(find);
-                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
-            }
         }
 
         private PathString ApplyRoutes(PathString path)
@@ -341,6 +274,45 @@ namespace Microsoft.Docs.Build
                 }
             }
             return path;
+        }
+
+        private string GetOutputPath(FilePath path, string sitePath, ContentType contentType, RenderType renderType)
+        {
+            var outputPath = sitePath;
+
+            switch (contentType)
+            {
+                case ContentType.Page:
+                case ContentType.Redirection:
+                    var fileExtension = _config.OutputType switch
+                    {
+                        OutputType.Html => renderType == RenderType.Content ? ".html" : ".json",
+                        OutputType.Json => ".json",
+                        OutputType.PageJson => renderType == RenderType.Content ? ".raw.page.json" : ".json",
+                        _ => throw new NotSupportedException(),
+                    };
+                    outputPath = Path.ChangeExtension(outputPath, fileExtension);
+                    break;
+
+                case ContentType.Toc:
+                    var tocExtension = _config.OutputType switch
+                    {
+                        OutputType.Html => renderType == RenderType.Content ? ".html" : ".json",
+                        OutputType.Json => ".json",
+                        OutputType.PageJson => ".json",
+                        _ => throw new NotSupportedException(),
+                    };
+                    outputPath = Path.ChangeExtension(outputPath, tocExtension);
+                    break;
+            }
+
+            if (_config.UrlType == UrlType.Docs)
+            {
+                var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
+                outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);
+            }
+
+            return UrlUtility.Combine(_config.BasePath, outputPath);
         }
     }
 }

@@ -47,164 +47,228 @@ indent_size = 2
 # Dotnet diagnostic settings
 [*.cs]
 
+# Default severity for all analyzer diagnostics
+dotnet_analyzer_diagnostic.severity = warning
+
 # "do not compare an object's exact type to the abstract class" is a valid assert, but very noisy right now
-dotnet_diagnostic.xunit2018.severity = none
+dotnet_diagnostic.xUnit2018.severity = none
+
+# xUnit1004: Test methods should not be skipped
+dotnet_diagnostic.xUnit1004.severity = none
 
 # Avoid magic numbers
 dotnet_diagnostic.men010.severity = none
 
 # Use a single return
-dotnet_diagnostic.mem007.severity = none
+dotnet_diagnostic.men007.severity = none
+
+# Suppress Microsoft.VisualStudio.Threading warnings due to transitive dependency by OmniSharp.Extensions.LanguageServer
+dotnet_diagnostic.VSTHRD002.severity = none
+dotnet_diagnostic.VSTHRD011.severity = none
+dotnet_diagnostic.VSTHRD100.severity = none
+dotnet_diagnostic.VSTHRD111.severity = none
+dotnet_diagnostic.VSTHRD200.severity = none
+
+# CA1001: Types that own disposable fields should be disposable
+dotnet_diagnostic.CA1001.severity = none
 
 # CA1031: Do not catch general exception types
-dotnet_diagnostic.ca1031.severity = none
+dotnet_diagnostic.CA1031.severity = none
 
 # CA1064: Implement standard exception constructors
-dotnet_diagnostic.ca1032.severity = none
+dotnet_diagnostic.CA1032.severity = none
 
 # CA1051: Do not declare visible instance fields
-dotnet_diagnostic.ca1051.severity = none
+dotnet_diagnostic.CA1051.severity = none
 
 # CA1054: URI-like parameters should not be strings
-dotnet_diagnostic.ca1054.severity = none
+dotnet_diagnostic.CA1054.severity = none
 
 # CA1055: URI-like return values should not be strings
-dotnet_diagnostic.ca1055.severity = none
+dotnet_diagnostic.CA1055.severity = none
 
 # CA1056: URI properties should not be strings
-dotnet_diagnostic.ca1056.severity = none
+dotnet_diagnostic.CA1056.severity = none
 
 # CA1060: Move pinvokes to native methods class
-dotnet_diagnostic.ca1060.severity = none
+dotnet_diagnostic.CA1060.severity = none
 
 # CA1062: CA1062: Validate arguments of public methods
-dotnet_diagnostic.ca1062.severity = none
+dotnet_diagnostic.CA1062.severity = none
 
 # CA1064: Make exception public
-dotnet_diagnostic.ca1064.severity = none
+dotnet_diagnostic.CA1064.severity = none
 
 # CA1305: Specify IFormatProvider
-dotnet_diagnostic.ca1305.severity = none
+dotnet_diagnostic.CA1305.severity = none
 
 # CA1308: Specify StringComparison
-dotnet_diagnostic.ca1307.severity = none
+dotnet_diagnostic.CA1307.severity = none
 
 # CA1308: Normalize strings to uppercase
-dotnet_diagnostic.ca1308.severity = none
+dotnet_diagnostic.CA1308.severity = none
 
 # CA1303: Do not pass literals as localized parameters
-dotnet_diagnostic.ca1303.severity = none
+dotnet_diagnostic.CA1303.severity = none
+
+# CA1310: Specify StringComparison for correctness
+dotnet_diagnostic.CA1310.severity = none
+
+# CA1508: Avoid dead conditional code
+dotnet_diagnostic.CA1508.severity = none
 
 # CA1724: Type names should not match namespaces
-dotnet_diagnostic.ca1724.severity = none
+dotnet_diagnostic.CA1724.severity = none
 
 # CA1806DoNotIgnoreMethodResults
-dotnet_diagnostic.ca1806.severity = none
+dotnet_diagnostic.CA1806.severity = none
+
+# CA1801: Review unused parameters
+dotnet_diagnostic.CA1801.severity = none
 
 # CA1812: Avoid uninstantiated internal classes
-dotnet_diagnostic.ca1812.severity = none
+dotnet_diagnostic.CA1812.severity = none
 
 # CA1815: should override Equals
-dotnet_diagnostic.ca1815.severity = none
+dotnet_diagnostic.CA1815.severity = none
 
 # CA1819: C# Properties should not return arrays
-dotnet_diagnostic.ca1819.severity = none
+dotnet_diagnostic.CA1819.severity = none
 
 # CA2007DoNotDirectlyAwaitATaskAnalyzer
-dotnet_diagnostic.ca2007.severity = none
+dotnet_diagnostic.CA2007.severity = none
 
 # CA2101SpecifyMarshalingForPInvokeStringArguments
-dotnet_diagnostic.ca2101.severity = none
+dotnet_diagnostic.CA2101.severity = none
 
 # CA2227: Collection properties should be read only
-dotnet_diagnostic.ca2227.severity = none
+dotnet_diagnostic.CA2227.severity = none
 
 # CA5350:Do Not Use Weak Cryptographic Algorithms
-dotnet_diagnostic.ca5350.severity = none
+dotnet_diagnostic.CA5350.severity = none
 
 # CA5351:Do Not Use Broken Cryptographic Algorithms
-dotnet_diagnostic.ca5351.severity = none
+dotnet_diagnostic.CA5351.severity = none
+
+# CA5394: Do not use insecure randomness
+dotnet_diagnostic.CA5394.severity = none
+
+# CA5395: Do not use insecure randomness
+dotnet_diagnostic.CA5395.severity = none
 
 # SA0001XmlCommentAnalysisDisabled
-dotnet_diagnostic.sa0001.severity = none
+dotnet_diagnostic.SA0001.severity = none
 
 # SA1101PrefixLocalCallsWithThis
-dotnet_diagnostic.sa1101.severity = none
+dotnet_diagnostic.SA1101.severity = none
 
 # SA1122UseStringEmptyForEmptyStrings
-dotnet_diagnostic.sa1122.severity = none
+dotnet_diagnostic.SA1122.severity = none
 
 # SA1127GenericTypeConstraintsMustBeOnOwnLine
-dotnet_diagnostic.sa1127.severity = none
+dotnet_diagnostic.SA1127.severity = none
 
 # SA1201ElementsMustAppearInTheCorrectOrder: A constructor should not follow a property
-dotnet_diagnostic.sa1201.severity = none
+dotnet_diagnostic.SA1201.severity = none
 
 # SA1204StaticElementsMustAppearBeforeInstanceElements: A static element is positioned beneath an instance element of the same type.
-dotnet_diagnostic.sa1204.severity = none
+dotnet_diagnostic.SA1204.severity = none
 
 # SA1308VariableNamesMustNotBePrefixed
-dotnet_diagnostic.sa1308.severity = none
+dotnet_diagnostic.SA1308.severity = none
 
 # SA1309FieldNamesMustNotBeginWithUnderscore
-dotnet_diagnostic.sa1309.severity = none
+dotnet_diagnostic.SA1309.severity = none
 
 # SA1311StaticReadonlyFieldsMustBeginWithUpperCaseLetter
-dotnet_diagnostic.sa1311.severity = none
+dotnet_diagnostic.SA1311.severity = none
 
 # SA1316TupleElementNamesShouldUseCorrectCasing
-dotnet_diagnostic.sa1316.severity = none
+dotnet_diagnostic.SA1316.severity = none
 
 # SA1405DebugAssertMustProvideMessageText
-dotnet_diagnostic.sa1405.severity = none
+dotnet_diagnostic.SA1405.severity = none
 
 # SA1414TupleTypesInSignaturesShouldHaveElementNames
-dotnet_diagnostic.sa1414.severity = none
+dotnet_diagnostic.SA1414.severity = none
 
 # SA1502ElementMustNotBeOnSingleLine
-dotnet_diagnostic.sa1502.severity = none
+dotnet_diagnostic.SA1502.severity = none
 
 # SA1513ClosingBraceMustBeFollowedByBlankLine
-dotnet_diagnostic.sa1513.severity = none
+dotnet_diagnostic.SA1513.severity = none
 
 # SA1600ElementsMustBeDocumented
-dotnet_diagnostic.sa1600.severity = none
+dotnet_diagnostic.SA1600.severity = none
 
 # SA1602EnumerationItemsMustBeDocumented
-dotnet_diagnostic.sa1602.severity = none
+dotnet_diagnostic.SA1602.severity = none
 
 # SA1611ElementParametersMustBeDocumented
-dotnet_diagnostic.sa1611.severity = none
+dotnet_diagnostic.SA1611.severity = none
 
 # SA1615ElementReturnValueMustBeDocumented
-dotnet_diagnostic.sa1615.severity = none
+dotnet_diagnostic.SA1615.severity = none
 
 # SA1618GenericTypeParametersMustBeDocumented
-dotnet_diagnostic.sa1618.severity = none
+dotnet_diagnostic.SA1618.severity = none
 
 # SA1615PropertySummaryDocumentationMustMatchAccessors
-dotnet_diagnostic.sa1623.severity = none
+dotnet_diagnostic.SA1623.severity = none
 
 # SA1629DocumentationTextMustEndWithAPeriod
-dotnet_diagnostic.sa1629.severity = none
+dotnet_diagnostic.SA1629.severity = none
 
 # SA1642ConstructorSummaryDocumentationMustBeginWithStandardText
-dotnet_diagnostic.sa1642.severity = none
+dotnet_diagnostic.SA1642.severity = none
 
 # SA1652EnableXMLDocumentOutput
-dotnet_diagnostic.sa1652.severity = none
+dotnet_diagnostic.SA1652.severity = none
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = default
+
+# IDE0078: Use pattern matching
+dotnet_diagnostic.IDE0078.severity = default
+
+# IDE0072: Add missing cases
+dotnet_diagnostic.IDE0072.severity = default
+
+# IDE0010: Add missing cases
+dotnet_diagnostic.IDE0010.severity = default
+
+# IDE0046: Convert to conditional expression
+dotnet_diagnostic.IDE0046.severity = default
+
+# IDE0050: Convert to tuple
+dotnet_diagnostic.IDE0050.severity = default
+
+# IDE0017: Simplify object initialization
+dotnet_diagnostic.IDE0017.severity = default
+
+# IDE0077: Avoid legacy format target in 'SuppressMessageAttribute'
+dotnet_diagnostic.IDE0077.severity = default
+
+# IDE0032: Use auto property
+dotnet_diagnostic.IDE0032.severity = default
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = default
+
+# IDE0061: Use block body for local functions
+dotnet_diagnostic.IDE0061.severity = default
 
 # Test specific diagnostic settings
 [test/**.cs]
 
 # CA1707 - Remove the underscores from member name
-dotnet_diagnostic.ca1707.severity = none
+dotnet_diagnostic.CA1707.severity = none
 
 # SA1117ParametersMustBeOnSameLineOrSeparateLines
-dotnet_diagnostic.sa1117.severity = none
+dotnet_diagnostic.SA1117.severity = none
 
 # SA1118ParameterMustNotSpanMultipleLines
-dotnet_diagnostic.sa1118.severity = none
+dotnet_diagnostic.SA1118.severity = none
 
 # Dotnet code style settings:
 [*.cs]
@@ -307,8 +371,6 @@ dotnet_naming_symbols.all_members.applicable_kinds = *
 
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-# CSharp code style settings:
-[*.cs]
 # Newline settings
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true

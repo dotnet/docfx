@@ -14,16 +14,25 @@ namespace Microsoft.Docs.Build
 
         public PublicTemplatePackage(string baseUrl, FileResolver fileResolver)
         {
-            _baseUrl = new Uri($"{baseUrl.TrimEnd('/')}/");
+            _baseUrl = new($"{baseUrl.TrimEnd('/')}/");
             _fileResolver = fileResolver;
         }
+
+        public override PathString BasePath => throw new NotSupportedException();
 
         public override bool Exists(PathString path)
         {
             return _fileResolver.TryResolveFilePath(GetPath(path), out _);
         }
 
-        public override IEnumerable<PathString> GetFiles() => throw new NotSupportedException();
+        public override IEnumerable<PathString> GetFiles(PathString directory = default, string[]? allowedFileNames = null)
+            => throw new NotSupportedException();
+
+        public override PathString GetFullFilePath(PathString path) => throw new NotSupportedException();
+
+        public override DateTime? TryGetLastWriteTimeUtc(PathString path) => throw new NotSupportedException();
+
+        public override byte[] ReadBytes(PathString path) => _fileResolver.ReadBytes(GetPath(path));
 
         public override Stream ReadStream(PathString path) => _fileResolver.ReadStream(GetPath(path));
 

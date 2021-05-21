@@ -17,12 +17,13 @@ namespace Microsoft.Docs.Build
     {
         private readonly Package _package;
         private readonly PackageFileSystem _fileSystem;
+        private readonly string? _templateBasePath;
         private readonly IReadOnlyDictionary<string, string> _localizedStrings;
 
-        private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new ConcurrentDictionary<PathString, Lazy<Template?>>();
+        private readonly ConcurrentDictionary<PathString, Lazy<Template?>> _templates = new();
 
         [ThreadStatic]
-        private static Package? t_package;
+        private static Package? s_package;
 
         static LiquidTemplate()
         {
@@ -31,24 +32,28 @@ namespace Microsoft.Docs.Build
             Template.RegisterTag<LocalizeTag>("loc");
         }
 
-        public LiquidTemplate(Package package, JObject? global = null)
+        public LiquidTemplate(Package package, string? templateBasePath = null, JObject? global = null)
         {
             _package = package;
-            _fileSystem = new PackageFileSystem(LoadTemplate);
-            _localizedStrings = global is null
-                ? new Dictionary<string, string>()
-                : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
+            _fileSystem = new(LoadTemplate);
+            _templateBasePath = templateBasePath;
+            _localizedStrings = global is null ? new() : global.Properties().ToDictionary(p => p.Name, p => p.Value.ToString());
         }
 
-        public string Render(string templateName, SourceInfo<string?> mime, JObject model)
+        public string Render(ErrorBuilder errors, string templateName, SourceInfo<string?> mime, JObject model)
         {
-            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"))
-                ?? throw Errors.Template.LiquidNotFound(mime).ToException(isError: false);
+            var template = LoadTemplate(new PathString($"{templateName}.html.liquid"));
+            if (template is null)
+            {
+                errors.Add(Errors.Template.LiquidNotFound(mime));
+                return "";
+            }
 
             var registers = new Hash
             {
                 ["file_system"] = _fileSystem,
                 ["localized_strings"] = _localizedStrings,
+                ["template_base_path"] = _templateBasePath,
             };
 
             var environments = new List<Hash>
@@ -64,24 +69,32 @@ namespace Microsoft.Docs.Build
                     registers: registers,
                     errorsOutputMode: ErrorsOutputMode.Rethrow,
                     maxIterations: 0,
-                    timeout: 0,
-                    formatProvider: CultureInfo.InvariantCulture),
+                    formatProvider: CultureInfo.InvariantCulture,
+                    cancellationToken: default),
             };
 
             try
             {
-                t_package = _package;
+                s_package = _package;
                 return template.Render(parameters);
             }
             finally
             {
-                t_package = default;
+                s_package = default;
             }
         }
 
-        public static string? GetThemeRelativePath(string resourcePath)
+        public static string? GetThemeRelativePath(DotLiquid.Context context, string resourcePath)
         {
-            return t_package?.TryGetPhysicalPath(new PathString(resourcePath));
+            var templateBasePath = (string?)context.Registers["template_base_path"];
+            if (string.IsNullOrEmpty(templateBasePath))
+            {
+                return s_package?.TryGetFullFilePath(new PathString(resourcePath));
+            }
+            else
+            {
+                return new PathString(templateBasePath).Concat(new PathString(resourcePath));
+            }
         }
 
         private Template? LoadTemplate(PathString path)

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -13,7 +12,8 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ContributionProvider _contributionProvider;
-        private readonly ConcurrentHashSet<FileLinkItem> _links = new ConcurrentHashSet<FileLinkItem>();
+
+        private readonly Scoped<ConcurrentHashSet<FileLinkItem>> _links = new();
 
         public FileLinkMapBuilder(
             ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
@@ -35,19 +35,25 @@ namespace Microsoft.Docs.Build
 
             var monikers = _monikerProvider.GetFileLevelMonikers(_errors, inclusionRoot);
             var sourceGitUrl = _contributionProvider.GetGitUrl(referencingFile).originalContentGitUrl;
+            var item = new FileLinkItem
+            {
+                InclusionRoot = inclusionRoot,
+                SourceUrl = sourceUrl,
+                SourceMonikerGroup = monikers.MonikerGroup,
+                TargetUrl = targetUrl,
+                SourceGitUrl = sourceGitUrl,
+                SourceLine = source is null ? 1 : source.Line,
+            };
 
-            _links.TryAdd(new FileLinkItem(inclusionRoot, sourceUrl, monikers.MonikerGroup, targetUrl, sourceGitUrl, source is null ? 1 : source.Line));
+            Watcher.Write(() => _links.Value.TryAdd(item));
         }
 
-        public object Build(HashSet<FilePath> publishFiles)
+        public object Build(PublishModel publishModel)
         {
-            return new
-            {
-                Links = _links
-                        .Where(x => publishFiles.Contains(x.InclusionRoot) && !_errors.FileHasError(x.InclusionRoot))
-                        .OrderBy(x => x)
-                        .ToArray(),
-            };
+            var publishFiles = publishModel.Files.Where(item => !item.HasError && item.SourceFile != null).Select(item => item.SourceFile).ToHashSet();
+            var links = _links.Value.Where(x => publishFiles.Contains(x.InclusionRoot)).OrderBy(x => x).ToArray();
+
+            return new { links };
         }
     }
 }

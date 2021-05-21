@@ -1,14 +1,16 @@
 ---
 # note token text can be replaced by template
+noDryRun: true
+noCache: true
 repos:
   https://docs.com/markdown-note:
   - files:
       docfx.yml: |
-        template: https://docs.com/template/token
+        template: https://docs.com/template/token#main
       docs/a.md: |
         >[!NOTE]
         >note
-  https://docs.com/template/token:
+  https://docs.com/template/token#master:
   - files:
       ContentTemplate/token.json: |
         { "note": "<p>my note</p>" }
@@ -25,6 +27,9 @@ repos:
       docs/a.md: |
         >[!NOTE]
         >note
+  https://docs.com/markdown-note:
+  - files:
+      docfx.yml:
   https://docs.com/template/token:
   - files:
       ContentTemplate/token.json: |
@@ -37,7 +42,8 @@ outputs:
 ---
 # Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestObject
     prop: value
@@ -68,7 +74,8 @@ outputs:
 ---
 # Run data-transform if provided, by default return {"content": "serialized json"}
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestData
     prop: value
@@ -85,7 +92,8 @@ outputs:
 ---
 # Run data-transform if provided, and return raw object if content property is not serialized json object
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    outputType: pageJson
   a.yml: |
     #YamlMime:TestData
     prop: value
@@ -171,6 +179,11 @@ inputs:
 outputs:
   a.json: |
     {"markdown":"<h1 id=\"h1\">h1</h1><div></div>"}
+  .errors.log: |
+    {"code": "disallowed-html-tag", "message": "*script*", "line": 3 }
+    {"code": "disallowed-html-tag", "message": "*link*", "line": 4 }
+    {"code": "disallowed-html-attribute","message": "*style*", "line": 5 }
+    {"code": "disallowed-html-tag", "message": "*style*", "line": 6 }
 ---
 # Loc build uses localized template with naming convention
 locale: zh-cn
@@ -315,6 +328,21 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-list-partial.yml","line":4,"end_line":4,"column":5,"end_column":14}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-partial-template-unresolve.yml","line":2,"end_line":2,"column":12,"end_column":21}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'unresolve'.","file":"uid-unresolve.yml","line":2,"end_line":2,"column":6,"end_column":15}
+---
+# Mustache template file missing should not crash
+inputs: 
+  docfx.yml: |
+    outputType: html
+    urlType: pretty
+  index.yml: |
+    ### YamlMime:TestPage
+    title: Microsoft Genomics documentation
+  _themes/ContentTemplate/schemas/TestPage.schema.json: '{}'
+outputs: 
+  index.html: ""
+  .errors.log: |
+    {"message_severity":"warning","code":"liquid-not-found","file":"index.yml","line":1,"column":1}
+    {"message_severity":"warning","code":"mustache-not-found","message":"Mustache template is not found at 'TestPage.html.tmpl'.","line":0,"column":0}
 ---
 # Leave xref-properties empty if not explicitly defined by author,
 # to avoid unintentional inheritance from parent context
@@ -501,3 +529,21 @@ outputs:
   a.mta.json:
   a.raw.page.json: |
     { "content": "<span>Edm.Int32</span><span>Missing</span>" }
+---
+# Output schema for data type
+inputs:
+  docfx.yml:
+  a.yml: |
+    #YamlMime:TestData
+    prop: value
+  _themes/ContentTemplate/TestData.json.js: |
+    exports.transform = function (model) {
+      return {
+        result: model.prop + " has run js data transform",
+        content: "raw string"
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
+outputs:
+  a.json: |
+    {"prop":"value","schema":"TestData"}

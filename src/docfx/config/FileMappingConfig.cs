@@ -12,32 +12,32 @@ namespace Microsoft.Docs.Build
         /// Gets the file glob patterns included by the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Files { get; private set; } = Config.DefaultInclude;
+        public string[] Files { get; init; } = Config.DefaultInclude;
 
         /// <summary>
         /// Gets the file glob patterns excluded from the group.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Exclude { get; private set; } = Array.Empty<string>();
+        public string[] Exclude { get; init; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets the root folder.
         /// </summary>
-        public PathString Src { get; private set; }
+        public PathString Src { get; init; }
 
         /// <summary>
         /// Gets the destination folder if copy/transform is used.
         /// </summary>
-        public PathString Dest { get; private set; }
+        public PathString Dest { get; init; }
 
         /// <summary>
         /// Gets the group name for v2 backward compact
         /// </summary>
-        public string? Group { get; private set; }
+        public string? Group { get; init; }
 
         /// <summary>
         /// Gets the version name for v2 backward compact
         /// </summary>
-        public SourceInfo<string?> Version { get; private set; }
+        public SourceInfo<string?> Version { get; init; }
     }
 }

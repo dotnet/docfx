@@ -23,12 +23,13 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/xxx-yyy/a' />", "<a href='/zh-cn/xxx-yyy/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
-        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='external' />")]
+        [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
         public void HtmlAddLinkType(string input, string output)
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.AddLinkType(ref token, "zh-cn"));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+                    HtmlUtility.AddLinkType(ErrorBuilder.Null, new("a.md"), ref token, "zh-cn", new()));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -56,7 +57,7 @@ namespace Microsoft.Docs.Build
         {
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.StripTags(ref reader, ref token));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -90,10 +91,10 @@ namespace Microsoft.Docs.Build
         [InlineData("<xref uid='hello'>", "a", "b", "<a href='a'>b</a>")]
         [InlineData("<xref href='hello'>x</xref>", "a", "b", "<a href='a'>b</a>")]
         [InlineData("<xref href='hello' uid='hello'>", "a", "b", "<a href='a'>b</a>")]
-        [InlineData(@"<xref href='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
-        [InlineData(@"<xref uid='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&")]
-        [InlineData(@"<xref href='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&")]
-        [InlineData(@"<xref uid='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&")]
+        [InlineData(@"<xref href='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&amp;")]
+        [InlineData(@"<xref uid='hello' data-raw-html='@higher&amp;' data-raw-source='@lower'>", "", "", @"@higher&amp;")]
+        [InlineData(@"<xref href='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&amp;")]
+        [InlineData(@"<xref uid='hello' data-raw-source='@lower&amp;'>", "", "", @"@lower&amp;")]
         [InlineData(@"<xref href='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         [InlineData(@"<xref uid='a&amp;b' data-raw-source='@lower&amp;'>", "c&d", "", @"<a href='c&amp;d'></a>")]
         public void TransformXrefs(string input, string xref, string display, string output)

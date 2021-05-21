@@ -14,7 +14,7 @@ inputs:
             "message": "Markdown TOC files are deprecated. Convert to a YAML TOC.",
             "code": "toc-deprecated",
             "severity": "SUGGESTION",
-            "exclusions": ["includes", "landingpage", "hubpage", "conceptual"]
+            "contentTypes": ["toc"]
           }
         ]
       }
@@ -45,10 +45,7 @@ inputs:
             "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a TOC.",
             "code": "toc-entry-duplicated",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "landingpage",
-              "hubpage",
-            ]
+            "contentTypes": ["toc"]
           }
         ]
       }
@@ -86,10 +83,7 @@ inputs:
             "message": "External link: {0}. TOC and breadcrumb links can’t be to pages outside of Docs.",
             "code": "toc-breadcrumb-link-external",
             "severity": "SUGGESTION",
-            "exclusions": [
-              "landingpage",
-              "hubpage",
-            ]
+            "contentTypes": ["toc"]
           }
         ]
       }
@@ -107,6 +101,8 @@ outputs:
   bread/toc.json:
 ---
 #TOC validation - toc-missing
+noSingleFile: true
+noDryRun: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -121,12 +117,7 @@ inputs:
             "message": "Article is not referenced from a table of contents. Every article must be in a TOC.",
             "code": "toc-missing",
             "severity": "suggestion",
-            "exclusions": [
-              "landingpage",
-              "hubpage",
-              "includes",
-              "toc"
-            ]
+            "contentTypes": ["conceptual", "toc"]
           }
         ]
       }
@@ -156,10 +147,7 @@ inputs:
           "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a TOC.",
           "code": "toc-entry-duplicated",
           "severity": "SUGGESTION",
-          "exclusions": [
-            "landingpage",
-            "hubpage",
-          ]
+          "contentTypes": ["toc"]
         }
       ]
     }

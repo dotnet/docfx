@@ -17,45 +17,42 @@ namespace Microsoft.Docs.Build
     internal class FileResolver
     {
         // NOTE: This line assumes each build runs in a new process
-        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls
-                          = new ConcurrentDictionary<(string, string), Lazy<string>>();
-
-        private static readonly HttpClient s_httpClient = new HttpClient(new HttpClientHandler()
+        private static readonly ConcurrentDictionary<(string downloadsRoot, string), Lazy<string>> s_urls = new();
+        private static readonly HttpClient s_httpClient = new(new HttpClientHandler
         {
+            CheckCertificateRevocationList = true,
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
         });
 
-        private readonly string _docsetPath;
         private readonly Lazy<string?>? _fallbackDocsetPath;
-        private readonly Action<HttpRequestMessage>? _credentialProvider;
+        private readonly CredentialHandler _credentialHandler;
         private readonly OpsConfigAdapter? _opsConfigAdapter;
         private readonly FetchOptions _fetchOptions;
+        private readonly Package _package;
 
         public FileResolver(
-            string docsetPath,
+            Package package,
             Lazy<string?>? fallbackDocsetPath = null,
-            Action<HttpRequestMessage>? credentialProvider = null,
+            CredentialHandler? credentialHandler = null,
             OpsConfigAdapter? opsConfigAdapter = null,
             FetchOptions fetchOptions = default)
         {
-            _docsetPath = docsetPath;
+            _package = package;
             _fallbackDocsetPath = fallbackDocsetPath;
             _opsConfigAdapter = opsConfigAdapter;
             _fetchOptions = fetchOptions;
-            _credentialProvider = credentialProvider;
+            _credentialHandler = credentialHandler ?? new();
         }
 
-        public bool TryReadString(SourceInfo<string> file, out string? content)
+        public string? TryReadString(SourceInfo<string> file)
         {
             try
             {
-                content = ReadString(file);
-                return true;
+                return ReadString(file);
             }
             catch (DocfxException)
             {
-                content = null;
-                return false;
+                return null;
             }
         }
 
@@ -63,6 +60,20 @@ namespace Microsoft.Docs.Build
         {
             using var reader = new StreamReader(ReadStream(file));
             return reader.ReadToEnd();
+        }
+
+        public byte[] ReadBytes(SourceInfo<string> file)
+        {
+            if (UrlUtility.IsHttp(file))
+            {
+                var content = TestQuirks.HttpProxy?.Invoke(file);
+                if (content != null)
+                {
+                    return Encoding.ASCII.GetBytes(content);
+                }
+                return File.ReadAllBytes(ResolveFilePath(file));
+            }
+            return _package.ReadBytes(new PathString(ResolveFilePath(file)));
         }
 
         public Stream ReadStream(SourceInfo<string> file)
@@ -75,8 +86,9 @@ namespace Microsoft.Docs.Build
                     var byteArray = Encoding.ASCII.GetBytes(content);
                     return new MemoryStream(byteArray);
                 }
+                return File.OpenRead(ResolveFilePath(file));
             }
-            return File.OpenRead(ResolveFilePath(file));
+            return _package.ReadStream(new PathString(ResolveFilePath(file)));
         }
 
         public bool TryResolveFilePath(SourceInfo<string> file, out string? result)
@@ -86,7 +98,7 @@ namespace Microsoft.Docs.Build
                 result = ResolveFilePath(file);
                 return true;
             }
-            catch (DocfxException ex) when (ex.Error.Code == "file-not-found" || ex.Error.Code == "download-failed")
+            catch (DocfxException ex) when (ex.Error.Code == "file-not-found" || ex.Error.Code == "toc-not-found" || ex.Error.Code == "download-failed")
             {
                 result = default;
                 return false;
@@ -102,14 +114,18 @@ namespace Microsoft.Docs.Build
 
             if (!UrlUtility.IsHttp(file))
             {
-                var localFilePath = Path.Combine(_docsetPath, file);
-                if (File.Exists(localFilePath))
+                var localFilePath = _package.TryGetFullFilePath(new PathString(file));
+                if (localFilePath != null)
                 {
                     return localFilePath;
                 }
-                else if (_fallbackDocsetPath?.Value != null && File.Exists(localFilePath = Path.Combine(_fallbackDocsetPath.Value, file)))
+                else if (_fallbackDocsetPath?.Value != null)
                 {
-                    return localFilePath;
+                    localFilePath = _package.TryGetFullFilePath(new PathString(Path.Combine(_fallbackDocsetPath.Value, file)));
+                    if (localFilePath != null)
+                    {
+                        return localFilePath;
+                    }
                 }
 
                 throw Errors.Link.FileNotFound(file).ToException();
@@ -156,7 +172,7 @@ namespace Microsoft.Docs.Build
             var etagContent = File.Exists(etagPath) ? File.ReadAllText(etagPath) : null;
             if (!string.IsNullOrEmpty(etagContent))
             {
-                existingEtag = EntityTagHeaderValue.Parse(File.ReadAllText(etagPath));
+                existingEtag = EntityTagHeaderValue.Parse(etagContent);
             }
 
             var (tempFile, etag) = DownloadToTempFile(url, existingEtag).GetAwaiter().GetResult();
@@ -168,7 +184,7 @@ namespace Microsoft.Docs.Build
 
             using (InterProcessMutex.Create(filePath))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)));
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(filePath)) ?? ".");
 
                 File.Move(tempFile, filePath, overwrite: true);
 
@@ -180,14 +196,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static string GetRestorePathFromUrl(string url)
+        private static PathString GetRestorePathFromUrl(string url)
         {
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url)));
+            return new PathString(Path.Combine(AppData.GetFileDownloadPath(url)));
         }
 
-        private static string GetRestoreEtagPath(string url)
+        private static PathString GetRestoreEtagPath(string url)
         {
-            return PathUtility.NormalizeFile(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag"));
+            return new PathString(Path.Combine(AppData.GetFileDownloadPath(url) + ".etag"));
         }
 
         private async Task<(string? filename, EntityTagHeaderValue? etag)> DownloadToTempFile(
@@ -195,12 +211,12 @@ namespace Microsoft.Docs.Build
         {
             try
             {
-                using (PerfScope.Start($"Downloading '{url}'"))
+                using (PerfScope.Start($"Downloading '{UrlUtility.SanitizeUrl(url)}'"))
                 using (var response = await HttpPolicyExtensions
                     .HandleTransientHttpError()
                     .Or<OperationCanceledException>()
                     .Or<IOException>()
-                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{i}] Retrying '{url}'"))
+                    .RetryAsync(3, onRetry: (_, i) => Log.Write($"[{nameof(FileResolver)}] Retry '{UrlUtility.SanitizeUrl(url)}'"))
                     .ExecuteAsync(() => GetAsync(url, existingEtag)))
                 {
                     if (response.StatusCode == HttpStatusCode.NotModified)
@@ -219,32 +235,37 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
-                throw Errors.System.DownloadFailed(url).ToException(ex);
+                throw Errors.System.DownloadFailed(UrlUtility.SanitizeUrl(url)).ToException(ex);
             }
         }
 
         private async Task<HttpResponseMessage> GetAsync(string url, EntityTagHeaderValue? etag = null)
         {
-            // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
-            // "The request message was already sent. Cannot send the same request message multiple times."
-            using var message = new HttpRequestMessage(HttpMethod.Get, url);
-            if (etag != null)
-            {
-                message.Headers.IfNoneMatch.Add(etag);
-            }
-
-            _credentialProvider?.Invoke(message);
-
-            if (_opsConfigAdapter != null)
-            {
-                var response = await _opsConfigAdapter.InterceptHttpRequest(message);
-                if (response != null)
+            return await _credentialHandler.SendRequest(
+                () =>
                 {
-                    return response;
-                }
-            }
+                    // Create new instance of HttpRequestMessage to avoid System.InvalidOperationException:
+                    // "The request message was already sent. Cannot send the same request message multiple times."
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    if (etag != null)
+                    {
+                        request.Headers.IfNoneMatch.Add(etag);
+                    }
+                    return request;
+                },
+                async request =>
+                {
+                    if (_opsConfigAdapter != null)
+                    {
+                        var response = await _opsConfigAdapter.InterceptHttpRequest(request);
+                        if (response != null)
+                        {
+                            return response;
+                        }
+                    }
 
-            return await s_httpClient.SendAsync(message);
+                    return await s_httpClient.SendAsync(request);
+                });
         }
     }
 }

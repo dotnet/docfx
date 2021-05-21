@@ -11,32 +11,35 @@ namespace Microsoft.Docs.Build
 {
     internal class InternalXrefMapBuilder
     {
+        private readonly Config _config;
         private readonly ErrorBuilder _errors;
-        private readonly TemplateEngine _templateEngine;
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
-        private readonly Input _input;
         private readonly BuildScope _buildScope;
-        private readonly JsonSchemaTransformer _jsonSchemaTransformer;
+        private readonly RepositoryProvider _repositoryProvider;
+        private readonly Input _input;
+        private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
         public InternalXrefMapBuilder(
+            Config config,
             ErrorBuilder errors,
-            TemplateEngine templateEngine,
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
-            Input input,
             BuildScope buildScope,
-            JsonSchemaTransformer jsonSchemaTransformer)
+            RepositoryProvider repositoryProvider,
+            Input input,
+            Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
+            _config = config;
             _errors = errors;
-            _templateEngine = templateEngine;
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
-            _input = input;
             _buildScope = buildScope;
+            _repositoryProvider = repositoryProvider;
+            _input = input;
             _jsonSchemaTransformer = jsonSchemaTransformer;
         }
 
@@ -44,12 +47,9 @@ namespace Microsoft.Docs.Build
         {
             var builder = new ListBuilder<InternalXrefSpec>();
 
-            using (Progress.Start("Building Xref map"))
+            using (var scope = Progress.Start("Building xref map"))
             {
-                ParallelUtility.ForEach(
-                    _errors,
-                    _buildScope.GetFiles(ContentType.Page),
-                    file => Load(_errors, builder, file));
+                ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Page), file => Load(_errors, builder, file));
             }
 
             var xrefmap =
@@ -70,29 +70,19 @@ namespace Microsoft.Docs.Build
             switch (file.Format)
             {
                 case FileFormat.Markdown:
+                    var fileMetadata = _metadataProvider.GetMetadata(errors, file);
+                    var spec = LoadMarkdown(errors, fileMetadata, file);
+                    if (spec != null)
                     {
-                        var fileMetadata = _metadataProvider.GetMetadata(errors, file);
-                        var spec = LoadMarkdown(errors, fileMetadata, file);
-                        if (spec != null)
-                        {
-                            xrefs.Add(spec);
-                        }
-                        break;
+                        xrefs.Add(spec);
                     }
+                    break;
+
                 case FileFormat.Yaml:
-                    {
-                        var token = _input.ReadYaml(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
-                        xrefs.AddRange(specs);
-                        break;
-                    }
                 case FileFormat.Json:
-                    {
-                        var token = _input.ReadJson(errors, file);
-                        var specs = LoadSchemaDocument(errors, token, file);
-                        xrefs.AddRange(specs);
-                        break;
-                    }
+                    var specs = _jsonSchemaTransformer().LoadXrefSpecs(errors, file);
+                    xrefs.AddRange(specs);
+                    break;
             }
         }
 
@@ -109,13 +99,6 @@ namespace Microsoft.Docs.Build
             xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
             return xref;
-        }
-
-        private IReadOnlyList<InternalXrefSpec> LoadSchemaDocument(ErrorBuilder errors, JToken token, FilePath file)
-        {
-            var schema = _templateEngine.GetSchema(_documentProvider.GetMime(file));
-
-            return _jsonSchemaTransformer.LoadXrefSpecs(errors, schema, file, token);
         }
 
         private InternalXrefSpec[] AggregateXrefSpecs(string uid, InternalXrefSpec[] specsWithSameUid)
@@ -146,7 +129,8 @@ namespace Microsoft.Docs.Build
                     foreach (var spec in specsWithSameMonikerList)
                     {
                         duplicateSpecs.Add(spec);
-                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource));
+                        _errors.Add(Errors.Xref.DuplicateUid(spec.Uid, duplicateSource, spec.PropertyPath) with
+                        { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning, });
                     }
                 }
             }
@@ -159,12 +143,28 @@ namespace Microsoft.Docs.Build
                 _errors.Add(Errors.Versioning.MonikerOverlapping(uid, specsWithSameUid.Select(spec => spec.DeclaringFile).ToList(), overlappingMonikers));
             }
 
-            return specsWithSameUid
+            var specs = specsWithSameUid
                    .OrderByDescending(spec => spec.Monikers.HasMonikers
                         ? spec.Monikers.Select(moniker => _monikerProvider.GetMonikerOrder(moniker)).Max()
-                        : int.MaxValue)
-                   .ThenBy(spec => spec.DeclaringFile)
-                   .ToArray();
+                        : int.MaxValue);
+
+            // TODO: clean up after new loc pipeline
+            specs = _config.IsLearn
+                ? specs.ThenByDescending(spec => GetUpdateTime(spec.DeclaringFile))
+                : specs.ThenBy(spec => spec.DeclaringFile);
+            return specs.ToArray();
+        }
+
+        private DateTime GetUpdateTime(FilePath file)
+        {
+            var fullPath = _input.TryGetOriginalPhysicalPath(file);
+            if (fullPath is null)
+            {
+                return default;
+            }
+
+            var commits = _repositoryProvider.GetCommitHistory(fullPath.Value).commits;
+            return commits.FirstOrDefault()?.Time.UtcDateTime ?? default;
         }
 
         private static bool CheckOverlappingMonikers(InternalXrefSpec[] specsWithSameUid, out HashSet<string> overlappingMonikers)

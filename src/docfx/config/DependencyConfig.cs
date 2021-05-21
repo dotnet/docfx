@@ -5,24 +5,20 @@ using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
-    internal class DependencyConfig : PackagePath
+    internal record DependencyConfig : PackagePath
     {
         /// <summary>
         /// Indicate the dependency repository may be added to <see cref="BuildScope"/> and treated as inScope.
         /// </summary>
-        public bool IncludeInBuild { get; private set; }
+        public bool IncludeInBuild { get; init; }
 
         [JsonIgnore]
         public PackageFetchOptions PackageFetchOptions => IncludeInBuild ? PackageFetchOptions.None : PackageFetchOptions.DepthOne;
 
         public DependencyConfig()
-            : base()
-        {
-        }
+            : base() { }
 
         public DependencyConfig(string url)
-            : base(url)
-        {
-        }
+            : base(url) { }
     }
 }

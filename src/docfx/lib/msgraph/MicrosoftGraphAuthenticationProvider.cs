@@ -4,6 +4,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Graph;
@@ -13,19 +14,24 @@ namespace Microsoft.Docs.Build
 {
     internal class MicrosoftGraphAuthenticationProvider : IAuthenticationProvider, IDisposable
     {
-        private static readonly string[] scopes = { "https://graph.microsoft.com/.default" };
+        private static readonly string[] s_scopes = { "https://graph.microsoft.com/.default" };
 
+        private readonly X509Certificate2 _clientCertificate;
         private readonly IConfidentialClientApplication _cca;
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         private AuthenticationResult? _authenticationResult;
 
-        public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientSecret)
+        public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientCertificate)
         {
+            _clientCertificate = new X509Certificate2(
+                Convert.FromBase64String(clientCertificate),
+                password: "",
+                X509KeyStorageFlags.EphemeralKeySet);
             _cca = ConfidentialClientApplicationBuilder.Create(clientId)
-                .WithClientSecret(clientSecret)
+                .WithCertificate(_clientCertificate)
                 .WithAuthority(new Uri($"https://login.microsoftonline.com/{tenantId}/v2.0"))
-                .WithRedirectUri("http://www.microsoft.com")
+                .WithRedirectUri("https://www.microsoft.com")
                 .Build();
         }
 
@@ -37,6 +43,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
+            _clientCertificate.Dispose();
             _semaphore.Dispose();
         }
 
@@ -47,7 +54,7 @@ namespace Microsoft.Docs.Build
                 await _semaphore.WaitAsync();
                 if (_authenticationResult == null || _authenticationResult.ExpiresOn.UtcDateTime < DateTime.UtcNow.AddMinutes(-1))
                 {
-                    _authenticationResult = await _cca.AcquireTokenForClient(scopes).ExecuteAsync();
+                    _authenticationResult = await _cca.AcquireTokenForClient(s_scopes).ExecuteAsync();
                 }
                 return _authenticationResult.AccessToken;
             }

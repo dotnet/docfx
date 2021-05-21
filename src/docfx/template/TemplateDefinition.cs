@@ -15,6 +15,6 @@ namespace Microsoft.Docs.Build
         /// Gets the file glob patterns to copy as static assets.
         /// </summary>
         [JsonConverter(typeof(OneOrManyConverter))]
-        public string[] Assets { get; private set; } = Array.Empty<string>();
+        public string[] Assets { get; init; } = Array.Empty<string>();
     }
 }

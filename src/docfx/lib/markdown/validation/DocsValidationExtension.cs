@@ -5,11 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Markdig;
+using Markdig.Extensions.Tables;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.Docs.MarkdigExtensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -26,16 +28,15 @@ namespace Microsoft.Docs.Build
             return builder.Use(document =>
             {
                 var currentFile = ((SourceInfo)InclusionContext.File).File;
-                if (currentFile.Format != FileFormat.Markdown)
-                {
-                    return;
-                }
 
                 var documentNodes = new List<ContentNode>();
-                var codeBlockNodes = new List<(bool isInclude, CodeBlockItem codeBlockItem)>();
+                var codeBlockNodes = new List<(bool isInclude, CodeBlockNode codeBlockItem)>();
+                var tableNodes = new List<TableNode>();
 
                 var canonicalVersion = getCanonicalVersion();
                 var fileLevelMoniker = getFileLevelMonikers();
+
+                var zonePivotUsages = new List<SourceInfo<string>>();
 
                 document.Visit(node =>
                 {
@@ -46,6 +47,9 @@ namespace Microsoft.Docs.Build
                         {
                             return true;
                         }
+
+                        // Build zones for validation
+                        BuildZonePivotUsages(tripleColon, zonePivotUsages);
                     }
 
                     var isCanonicalVersion = IsCanonicalVersion(canonicalVersion, fileLevelMoniker, node.GetZoneLevelMonikers());
@@ -54,14 +58,22 @@ namespace Microsoft.Docs.Build
 
                     BuildCodeBlockNodes(node, codeBlockNodes, isCanonicalVersion);
 
+                    BuildTableNodes(node, tableNodes, isCanonicalVersion);
+
                     return false;
                 });
 
                 contentValidator.ValidateHeadings(currentFile, documentNodes);
+                contentValidator.ValidateZonePivots(currentFile, zonePivotUsages);
 
                 foreach (var (_, codeBlockItem) in codeBlockNodes)
                 {
                     contentValidator.ValidateCodeBlock(currentFile, codeBlockItem);
+                }
+
+                foreach (var tableItem in tableNodes)
+                {
+                    contentValidator.ValidateTable(currentFile, tableItem);
                 }
             });
         }
@@ -77,20 +89,22 @@ namespace Microsoft.Docs.Build
             switch (node)
             {
                 case HeadingBlock headingBlock:
-                    var headingNode = CreateValidationNode<Heading>(isCanonicalVersion, headingBlock);
-
-                    headingNode.Level = headingBlock.Level;
-                    headingNode.Content = GetHeadingContent(headingBlock); // used for reporting
-                    headingNode.HeadingChar = headingBlock.HeaderChar;
-                    headingNode.RenderedPlainText = markdownEngine.ToPlainText(headingBlock); // used for validation
-                    headingNode.IsVisible = MarkdigUtility.IsVisible(headingBlock);
-
+                    var headingNode = CreateValidationNode<HeadingNode>(isCanonicalVersion, headingBlock) with
+                    {
+                        Level = headingBlock.Level,
+                        Content = GetHeadingContent(headingBlock), // used for reporting
+                        HeadingChar = headingBlock.HeaderChar,
+                        RenderedPlainText = markdownEngine.ToPlainText(headingBlock), // used for validation
+                        IsVisible = MarkdigUtility.IsVisible(headingBlock),
+                    };
                     documentNode = headingNode;
                     break;
 
                 case LeafBlock leafBlock:
-                    var contentNode = CreateValidationNode<ContentNode>(isCanonicalVersion, leafBlock);
-                    contentNode.IsVisible = MarkdigUtility.IsVisible(leafBlock);
+                    var contentNode = CreateValidationNode<ContentNode>(isCanonicalVersion, leafBlock) with
+                    {
+                        IsVisible = MarkdigUtility.IsVisible(leafBlock),
+                    };
                     documentNode = contentNode;
                     break;
             }
@@ -103,29 +117,32 @@ namespace Microsoft.Docs.Build
 
         private static void BuildCodeBlockNodes(
             MarkdownObject node,
-            List<(bool IsInclude, CodeBlockItem codeBlockItem)> codeBlockItemList,
+            List<(bool IsInclude, CodeBlockNode codeBlockItem)> codeBlockItemList,
             bool isCanonicalVersion)
         {
-            CodeBlockItem? codeBlockItem = null;
+            CodeBlockNode? codeBlockItem = null;
 
             switch (node)
             {
                 case FencedCodeBlock fencedCodeBlock:
-                    codeBlockItem = CreateValidationNode<CodeBlockItem>(isCanonicalVersion, node);
-
-                    codeBlockItem.Type = CodeBlockTypeEnum.FencedCodeBlock;
-                    codeBlockItem.Info = fencedCodeBlock.Info;
-                    codeBlockItem.Arguments = fencedCodeBlock.Arguments;
-                    codeBlockItem.IsOpen = fencedCodeBlock.IsOpen;
-                    codeBlockItem.LineCount = GetFencedCodeBlockNetLineCount(fencedCodeBlock);
+                    codeBlockItem = CreateValidationNode<CodeBlockNode>(isCanonicalVersion, node) with
+                    {
+                        Type = CodeBlockTypeEnum.FencedCodeBlock,
+                        Info = fencedCodeBlock.Info,
+                        Arguments = fencedCodeBlock.Arguments,
+                        IsOpen = fencedCodeBlock.IsOpen,
+                        LineCount = GetFencedCodeBlockNetLineCount(fencedCodeBlock),
+                    };
                     break;
 
-                case YamlFrontMatterBlock _:
+                case YamlFrontMatterBlock:
                     break;
 
                 case CodeBlock codeBlock:
-                    codeBlockItem = CreateValidationNode<CodeBlockItem>(isCanonicalVersion, codeBlock);
-                    codeBlockItem.Type = CodeBlockTypeEnum.CodeBlock;
+                    codeBlockItem = CreateValidationNode<CodeBlockNode>(isCanonicalVersion, codeBlock) with
+                    {
+                        Type = CodeBlockTypeEnum.CodeBlock,
+                    };
                     break;
 
                 default:
@@ -135,6 +152,14 @@ namespace Microsoft.Docs.Build
             if (codeBlockItem != null)
             {
                 codeBlockItemList.Add((node.IsInclude(), codeBlockItem));
+            }
+        }
+
+        private static void BuildZonePivotUsages(TripleColonBlock tripleColon, List<SourceInfo<string>> usages)
+        {
+            if (tripleColon.Extension is ZoneExtension && tripleColon.Attributes.TryGetValue("pivot", out var pivotId))
+            {
+                usages.AddRange(pivotId.Split(",").Select(p => new SourceInfo<string>(p.Trim(), tripleColon.GetSourceInfo())));
             }
         }
 
@@ -175,7 +200,9 @@ namespace Microsoft.Docs.Build
                 ParentSourceInfoList = markdownNode.GetInclusionStack(),
                 Zone = markdownNode.GetZone(),
                 Monikers = markdownNode.GetZoneLevelMonikers().ToList(),
+                ZonePivots = markdownNode.GetZonePivots(),
                 SourceInfo = markdownNode.GetSourceInfo(),
+                TabbedConceptualHeader = markdownNode.GetTabId(),
             };
         }
 
@@ -213,6 +240,167 @@ namespace Microsoft.Docs.Build
 
                 return content.ToString();
             }
+        }
+
+        private static void BuildTableNodes(MarkdownObject node, List<TableNode> tableNodes, bool isCanonicalVersion)
+        {
+            TableNode? tableNode = null;
+            switch (node)
+            {
+                case Table table:
+                    var parsedNode = TryParseTable(table);
+                    tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with
+                    {
+                        RowHeaders = parsedNode.RowHeaders,
+                        ColumnHeaders = parsedNode.ColumnHeaders,
+                        IsSuccessParsed = parsedNode.IsSuccessParsed,
+                    };
+                    break;
+                case ParagraphBlock paragraphBlock:
+                    if (TryDetectTable(paragraphBlock))
+                    {
+                        tableNode = CreateValidationNode<TableNode>(isCanonicalVersion, node) with { IsSuccessParsed = false };
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (tableNode != null)
+            {
+                tableNodes.Add(tableNode);
+            }
+        }
+
+        private static TableNode TryParseTable(Table table)
+        {
+            var columnHeaders = new List<TableCellNode>();
+            var rowHeaders = new List<TableCellNode>();
+            var columnHeaderRow = (TableRow)table.First();
+            foreach (TableCell cell in columnHeaderRow)
+            {
+                columnHeaders.Add(ParseCell(cell));
+            }
+            foreach (TableRow row in table)
+            {
+                rowHeaders.Add(ParseCell((TableCell)row.First()));
+            }
+            return new TableNode
+            {
+                ColumnHeaders = columnHeaders.ToArray(),
+                RowHeaders = rowHeaders.ToArray(),
+                IsSuccessParsed = true,
+            };
+        }
+
+        private static TableCellNode ParseCell(TableCell cell)
+        {
+            var block = cell.LastChild;
+            var isVisible = MarkdigUtility.IsVisible(block);
+            var isEmphasis = false;
+            MarkdigUtility.Visit(block, node =>
+            {
+                var innerEmphasis = false;
+                if (node is ParagraphBlock paragraphBlock)
+                {
+                    innerEmphasis = paragraphBlock.Inline.FindDescendants<EmphasisInline>().Where(x => x.DelimiterCount >= 2).Any();
+                }
+                return isEmphasis = isEmphasis || innerEmphasis;
+            });
+            var cellNode = new TableCellNode
+            {
+                IsVisible = isVisible,
+                IsEmphasis = isEmphasis,
+            };
+            return cellNode;
+        }
+
+        private static bool TryDetectTable(ParagraphBlock paragraph)
+        {
+            if (!paragraph.Inline.FindDescendants<LineBreakInline>().Any())
+            {
+                return false;
+            }
+
+            var tableDelimiterExistLine = 0;
+            var tableHeaderExist = false;
+
+            var inlines = new List<Inline>();
+            var lineFinish = false;
+            var child = paragraph.Inline.LastChild;
+            var stack = new Stack<Inline>();
+            while (child != null)
+            {
+                stack.Push(child);
+                child = child.PreviousSibling;
+            }
+            var pipeDelimiterCount = new List<int>();
+            while (stack.Count > 0)
+            {
+                child = stack.Pop();
+                switch (child)
+                {
+                    case ContainerInline containerInline:
+                        if (containerInline is PipeTableDelimiterInline)
+                        {
+                            inlines.Add(containerInline);
+                        }
+                        child = containerInline.LastChild;
+                        while (child != null)
+                        {
+                            stack.Push(child);
+                            child = child.PreviousSibling;
+                        }
+                        break;
+                    case LineBreakInline:
+                        lineFinish = true;
+                        break;
+                    default:
+                        inlines.Add(child);
+                        break;
+                }
+                if (lineFinish || stack.Count == 0)
+                {
+                    var totalText = new StringBuilder();
+                    foreach (var line in inlines)
+                    {
+                        switch (line)
+                        {
+                            case PipeTableDelimiterInline:
+                                totalText.Append('|');
+                                break;
+                            case LiteralInline literalInline:
+                                var text = literalInline.Content.Text.Substring(literalInline.Content.Start, literalInline.Content.Length);
+                                totalText.Append(text);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    var regex = new Regex(@"^[|:-]*$");
+                    var lineText = totalText.ToString();
+                    tableHeaderExist = tableHeaderExist || regex.IsMatch(lineText);
+                    if (lineText.Contains("|"))
+                    {
+                        pipeDelimiterCount.Add(lineText.Count(x => x == '|'));
+                        tableDelimiterExistLine++;
+                    }
+                    else
+                    {
+                        pipeDelimiterCount.Add(0);
+                    }
+                    if (tableDelimiterExistLine >= 2 && tableHeaderExist)
+                    {
+                       return true;
+                    }
+                    inlines.Clear();
+                    lineFinish = false;
+                }
+            }
+            if (tableDelimiterExistLine >= 2 && pipeDelimiterCount.TrueForAll(x => x >= 2))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

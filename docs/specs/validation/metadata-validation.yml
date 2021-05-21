@@ -122,7 +122,7 @@ inputs:
           {
             "type": "H1Missing",
             "message": "H1 is required. Use a single hash (#) followed by a space to create your top-level heading.",
-            "exclusions": [],
+            "contentTypes": ["conceptual"],
             "severity": "WARNING",
             "code": "h1-missing"
           }
@@ -142,6 +142,7 @@ outputs:
     }
 ---
 # Json schema docset unique: the attribute value must be unique within docset
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -189,6 +190,7 @@ outputs:
   b.json:
 ---
 # Json schema docset unique: global metadata and file metadata
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -211,6 +213,7 @@ outputs:
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'abc' is duplicated in 'a.md(2,14)', 'docfx.yml(3,16)'.","file":"docfx.yml","line":3,"column":16}
 ---
 # Json schema docset unique: monikers set on file-level
+noSingleFile: true
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
@@ -243,9 +246,9 @@ inputs:
     ---
     Moniker: netcore-3.1
 outputs:
-  e277e62e/docs/v1/a.json:
-  e277e62e/docs/v1/b.json:
-  8cec59bf/docs/v2/a.json:
+  21903d6cbe60219e3923dd4fa60a8a63/docs/v1/a.json:
+  21903d6cbe60219e3923dd4fa60a8a63/docs/v1/b.json:
+  67f101dfae3415437d2d432ac1c314ee/docs/v2/a.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)'.","file":"docs/v1/b.md","line":2,"end_line":2,"column":14,"end_column":15}
     {"message_severity":"suggestion","code":"duplicate-attribute","message":"Attribute 'description' with value 'a' is duplicated in 'docs/v1/a.md(2,14)', 'docs/v1/b.md(2,14)'.","file":"docs/v1/a.md","line":2,"end_line":2,"column":14,"end_column":15}
@@ -375,4 +378,163 @@ outputs:
   docs/toc.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"title-bad-length","message":"String 'title' is too short: 1 characters. Length should be >= 2.","file":"docs/a.yml","line":5,"column":10}
+---
+# Json schema product taxonomy
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { 
+      "required": ["products"],
+      "properties": { 
+        "products": {
+            "type": [
+                "array",
+                "null"
+            ],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "azure",
+                    "azure-active-directory",
+                    "azure-active-directory-b2c",
+                  ]
+            }
+        }
+      },
+      "rules": {
+          "products": {
+            "missing-attribute": {
+                "severity": "suggestion",
+                "code": "products-missing",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            },
+            "invalid-paired-attribute": {
+                "severity": "suggestion",
+                "code": "products-invalid",
+                "additionalMessage": "Ensure all products values specified are valid per the Product taxonomy.",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            },
+            "invalid-value": {
+                "severity": "suggestion",
+                "code": "products-invalid",
+                "additionalMessage": "Ensure all products values specified are valid per the Product taxonomy.",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            },
+            "unexpected-type": {
+                "severity": "suggestion",
+                "code": "multiple-values",
+                "pullRequestOnly": false,
+                "contentTypes": [
+                    "conceptual"
+                ]
+            }
+        }
+      }
+    }
+  a.md: |
+    ---
+    products: 
+      - a
+      - azure
+    ---
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","code":"products-invalid","message":"Invalid value for 'products': 'a'. Ensure all products values specified are valid per the Product taxonomy.","file":"a.md","line":3,"column":5}
+---
+# ignore error if markdown is noindex and rule has SEO tag
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    { 
+      "properties":
+      { 
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 2,
+          "maxLength": 10
+        }
+      },
+      "rules": {
+          "description": {
+            "string-length-invalid": {
+                "severity": "warning",
+                "code": "length-invalid", 
+                "contentTypes": [
+                    "conceptual"
+                ],
+                "tags": [ "SEO"]
+            }
+          }
+      }
+    }
+  a.md: |
+    ---
+    description: a
+    robots: noindex
+    ---
+  b.md: |
+    ---
+    description: a long description
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"length-invalid","message":"String 'description' is too long: 18 characters. Length should be <= 10.","file":"b.md","line":2,"column":14}
+---
+# Json schema docset unique - rule is SEO and one markdonw is noindex
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"],
+      "rules": {
+        "description": {
+          "duplicate-attribute": {
+            "severity": "suggestion",
+            "code": "duplicate-description-within-docset",
+            "additionalMessage": "Description must be unique within a docset.",
+            "pullRequestOnly": false,
+            "contentTypes": [
+              "conceptual",
+              "include",
+              "landingpage",
+              "hubpage"
+            ],
+            "tags": [ "SEO"]
+          }
+        }
+      }
+    }
+  a.md: |
+    ---
+    title: title1
+    description: description1
+    robots: noindex
+    ---
+  b.md: |
+    ---
+    description: description1
+    title: title2
+    ---
+outputs:
+  a.json:
+  b.json:
 ---

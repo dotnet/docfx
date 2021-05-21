@@ -55,11 +55,13 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
+      "github_contributors": ["charlie", "bob", "alice"],
       "updated_at": "2018-10-30 12:00 AM"
     }
 ---
 # Specify invalid author in YAML header should log warning
 noDryRun: true
+usePhysicalInput: true
 inputs:
   docs/index.md: |
     ---
@@ -116,7 +118,8 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" },
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
-      }
+      },
+      "github_contributors": ["bob", "alice"]
     }
 ---
 # Author is case-insensitive
@@ -162,7 +165,8 @@ outputs:
         "author": 
           { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" },
         "contributors": undefined
-      }
+      },
+      "github_contributors": ["charlie", "bob", "alice"]
     }
 ---
 # Author can be excluded if it is not specified in YAML header
@@ -213,7 +217,8 @@ outputs:
       {
         "author": 
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
-      }
+      },
+      "github_contributors": ["bob", "alice"]
     }
 ---
 # Author can NOT be excluded if explicitly specified in YAML header, it's case insensitive
@@ -261,6 +266,7 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
+      "github_contributors": ["charlie", "bob", "alice"]
     }
 ---
 # Author CAN be excluded if implicitly extracted from commit history using contributors_to_exclude global metadata
@@ -425,7 +431,7 @@ outputs:
 ---
 # Show (original) content git (branch/commit) url for azure repos
 repos:
-  https://docascode:token@dev.azure.com/docascode/project/_git/a.git:
+  https://docascode@dev.azure.com/docascode/project/_git/a.git:
     - files:
         docs/index.md:
 inputs:
@@ -463,7 +469,8 @@ repos:
           Osmond creates this
 inputs:
   docfx.yml: |
-    githubToken: {DOCS_GITHUB_TOKEN}
+    secrets:
+      githubToken: {DOCS_GITHUB_TOKEN}
     editRepositoryUrl: https://github.com/is/github-repo
 cache:
   github-users.json: |
@@ -485,7 +492,8 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" }
         ]
       },
-      "updated_at": "2018-10-30 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM",
+      "github_contributors": ["charlie", "bob"]
     }
 ---
 # Get contributors by commit email only
@@ -532,7 +540,8 @@ outputs:
           { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": "2" }
         ]
       },
-      "updated_at": "2018-10-30 12:00 AM"
+      "updated_at": "2018-10-30 12:00 AM",
+      "github_contributors": ["charlie", "bob"]
     }
 ---
 # Do not resolve contributors if repo and editRepositoryUrl are not GitHub repository
@@ -640,8 +649,8 @@ repos:
 state:
   history/build_history_95ac9e0f-677b-d6a6-13b5-a7a3118624ab_cd6b8f09-2146-73d3-cade-4e832627b4f6.json: |
     { "commits":[
-          {"sha":"408f26a8f70f25c8cd0067e2421f560f46f56d96","built_at":"2020-02-12T00:00:00Z"},
-          {"sha":"821cee8a13e124826fe160d619fb9f4d09e9f884","built_at":"2020-02-11T00:00:00Z"},
+          {"sha":"62f395b3259c14e5b081a2b327da21b84bd2464d","built_at":"2020-02-12T00:00:00Z"},
+          {"sha":"42364b93484c710e471827b81bb375e1e1dd8eb7","built_at":"2020-02-11T00:00:00Z"},
           {"sha":"cd13c15380474902b64f8dd114c2c3969d218580","built_at":"2020-02-10T00:00:00Z"}
       ]
     }
@@ -665,10 +674,11 @@ outputs:
           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" }
         ]
       },
+      "github_contributors": ["charlie", "bob", "alice"],
       "content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
       "original_content_git_url_template": "https://github.com/testowner/crr-content/blob/test/b.md",
-      "gitcommit": "https://github.com/testowner/crr-content/blob/408f26a8f70f25c8cd0067e2421f560f46f56d96/b.md",
+      "gitcommit": "https://github.com/testowner/crr-content/blob/62f395b3259c14e5b081a2b327da21b84bd2464d/b.md",
       "updated_at": "2020-02-12 12:00 AM"
     }
   .links.json: |

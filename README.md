@@ -12,7 +12,7 @@ Our current focus is conceptual document parity with https://docs.microsoft.com,
 - Install [.NET Core](https://www.microsoft.com/net/download)
 - Install latest `docfx` pre release using:
 ```powershell
-dotnet tool install -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-public-packages/nuget/v3/index.json
+dotnet tool update -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-public-packages/nuget/v3/index.json
 ```
 - Create a directory with a `docfx.yml` config file, markdown files and other contents. See examples in our [specification](https://github.com/dotnet/docfx/tree/v3/docs/specs).
 - Run `docfx restore` to restore the dependencies of your docset.
@@ -20,9 +20,7 @@ dotnet tool install -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs
 
 ## Binary Builds
 
-- [win-x64](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip) ([checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-win7-x64-latest.zip.sha256))
-- [osx-x64](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.zip) ([checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-osx-x64-latest.sha256))
-- [linux-x64](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip) ([checksum](https://opsbuildk8sprod.blob.core.windows.net/docfx-bin/docfx-linux-x64-latest.zip.sha256))
+[Release page](https://github.com/dotnet/docfx/releases)
 
 ## Contributing
 

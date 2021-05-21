@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     {
         public static void ConvertToLegacyModel(
             string docsetPath,
-            Context context,
+            LegacyContext context,
             Dictionary<FilePath, PublishItem> fileManifests,
             DependencyMap dependencyMap)
         {

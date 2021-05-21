@@ -39,7 +39,7 @@ namespace Microsoft.Docs.Build
             foreach (var file in files)
             {
                 var filePath = Path.GetFullPath(Path.Combine(path, file.Key));
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? ".");
                 if (file.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                 {
                     CreateZipFile(file, filePath);
@@ -49,6 +49,33 @@ namespace Microsoft.Docs.Build
                     File.WriteAllText(filePath, ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? "");
                 }
             }
+        }
+
+        public static Package CreateInputDirectoryPackage(
+            string docsetPath,
+            DocfxTestSpec spec,
+            IEnumerable<KeyValuePair<string, string>> variables = null)
+        {
+            Directory.CreateDirectory(docsetPath);
+            var usePhysicalInput = spec.UsePhysicalInput
+                || spec.Repos.Count != 0
+                || spec.Inputs.Any(entry => entry.Key.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.EndsWith("rules.json", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.EndsWith("allowlist.json", StringComparison.OrdinalIgnoreCase)
+                    || entry.Key.StartsWith("_themes", StringComparison.OrdinalIgnoreCase));
+
+            if (usePhysicalInput)
+            {
+                return new LocalPackage(docsetPath);
+            }
+
+            var memoryPackage = new MemoryPackage(docsetPath);
+            foreach (var file in spec.Inputs)
+            {
+                memoryPackage.AddOrUpdate(new PathString(file.Key), ApplyVariables(file.Value, variables)?.Replace("\r", "") ?? string.Empty);
+            }
+
+            return memoryPackage;
         }
 
         public static void CreateGitRepository(
@@ -72,10 +99,10 @@ namespace Microsoft.Docs.Build
             }
 
             var lastCommit = default(Commit);
+            var commitIndex = 0;
 
             foreach (var commit in commits.Reverse())
             {
-                var commitIndex = 0;
                 var tree = new TreeDefinition();
 
                 foreach (var file in commit.Files)
@@ -113,7 +140,7 @@ namespace Microsoft.Docs.Build
         {
             var before = GetFileLastWriteTimes(path);
 
-            return new Disposable(() =>
+            return new DelegatingDisposable(() =>
             {
                 if (!skipInputCheck)
                 {
@@ -129,6 +156,36 @@ namespace Microsoft.Docs.Build
                     .Where(file => !file.FullName.Contains(".git"))
                     .ToDictionary(file => file.FullName, file => file.LastWriteTimeUtc);
             }
+        }
+
+        public static JToken ApplyVariables(JToken value, IEnumerable<KeyValuePair<string, string>> variables)
+        {
+            if (variables != null && value != null)
+            {
+                if (value is JValue && value.Type == JTokenType.String)
+                {
+                    return ApplyVariables((string)value, variables);
+                }
+                else if (value is JArray array)
+                {
+                    var newArray = new JArray();
+                    foreach (var item in array)
+                    {
+                        newArray.Add(ApplyVariables(item, variables));
+                    }
+                    return newArray;
+                }
+                else if (value is JObject obj)
+                {
+                    var newObj = new JObject();
+                    foreach (var (key, val) in obj)
+                    {
+                        newObj[key] = ApplyVariables(val, variables);
+                    }
+                    return newObj;
+                }
+            }
+            return value;
         }
 
         private static string ApplyVariables(string value, IEnumerable<KeyValuePair<string, string>> variables)
@@ -165,15 +222,6 @@ namespace Microsoft.Docs.Build
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 memoryStream.CopyTo(fileStream);
             }
-        }
-
-        private class Disposable : IDisposable
-        {
-            private readonly Action _dispose;
-
-            public Disposable(Action dispose) => _dispose = dispose;
-
-            public void Dispose() => _dispose();
         }
     }
 }

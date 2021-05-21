@@ -10,21 +10,21 @@ namespace Microsoft.Docs.Build
 {
     internal struct InterProcessMutex : IDisposable
     {
-        private static readonly AsyncLocal<ImmutableStack<string>> t_mutexRecursionStack = new AsyncLocal<ImmutableStack<string>>();
+        private static readonly AsyncLocal<ImmutableStack<string>> s_mutexRecursionStack = new();
 
         private Mutex _mutex;
 
         public static InterProcessMutex Create(string mutexName)
         {
             // avoid nested mutex with same mutex name
-            var stack = t_mutexRecursionStack.Value ??= ImmutableStack<string>.Empty;
+            var stack = s_mutexRecursionStack.Value ??= ImmutableStack<string>.Empty;
             if (stack.Contains(mutexName))
             {
-                throw new ApplicationException($"Nested mutex detected, mutex name: {mutexName}");
+                throw new InvalidOperationException($"Nested mutex detected, mutex name: {mutexName}");
             }
-            t_mutexRecursionStack.Value = stack.Push(mutexName);
+            s_mutexRecursionStack.Value = stack.Push(mutexName);
 
-            var mutex = new Mutex(initiallyOwned: false, $"Global\\ipm-{HashUtility.GetMd5Hash(mutexName)}");
+            var mutex = new Mutex(initiallyOwned: false, $"Global\\ipm-{HashUtility.GetSha256Hash(mutexName)}");
 
             try
             {
@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
 
         public void Dispose()
         {
-            t_mutexRecursionStack.Value = t_mutexRecursionStack.Value!.Pop();
+            s_mutexRecursionStack.Value = s_mutexRecursionStack.Value!.Pop();
             _mutex.ReleaseMutex();
             _mutex.Dispose();
         }
