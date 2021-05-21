@@ -158,8 +158,8 @@ namespace Microsoft.Docs.Build
             try
             {
                 return fetchFullRules
-                        ? await FetchBuild("/route/validationmgt" + urlPath, environment: environment, middleware: ValidationMeddleware)
-                        : await Fetch(PublicValidationApi(environment) + urlPath, middleware: ValidationMeddleware);
+                        ? await FetchBuild("/route/validationmgt" + urlPath, environment: environment, middleware: ValidationMiddleware)
+                        : await Fetch(PublicValidationApi(environment) + urlPath, middleware: ValidationMiddleware);
             }
             catch (Exception ex)
             {
@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
                 return "{}";
             }
 
-            async Task<HttpResponseMessage> ValidationMeddleware(HttpRequestMessage request, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
+            async Task<HttpResponseMessage> ValidationMiddleware(HttpRequestMessage request, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
             {
                 request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
                 request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
