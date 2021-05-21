@@ -158,7 +158,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 return fetchFullRules
-                        ? await FetchBuild("/route/validationmg" + urlPath, environment: environment, middleware: ValidationMeddleware)
+                        ? await FetchBuild("/route/validationmgt" + urlPath, environment: environment, middleware: ValidationMeddleware)
                         : await Fetch(PublicValidationApi(environment) + urlPath, middleware: ValidationMeddleware);
             }
             catch (Exception ex)
