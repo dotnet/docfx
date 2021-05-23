@@ -1575,3 +1575,34 @@ outputs:
         }
       }
     }
+---
+# Validate notebook key could not be coexisting with sandbox, tasks
+inputs:
+  docfx.yml:
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "anyOf": [ 
+          { 
+            "not": {"required": ["notebook"]}
+          },
+          {
+            "not": {"required": ["notebook", "tasks"]},
+            "required": ["sandbox"],
+            "properties": {
+              "sandbox": {"enum": [true]}
+            }
+          }
+        ]
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://www.contos.com/
+    sandbox: true
+    tasks: quiz_b
+outputs:
+  a.json:
+  .errors.log: 
