@@ -336,7 +336,7 @@ namespace Microsoft.Docs.Build
             /// The redirected file is not removed from the source repo.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RedirectedFileNotRemoved(List<string> pathList)
+            public static Error RedirectedFileNotRemoved(IEnumerable<string> pathList)
                 => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{string.Join(", ", pathList)}' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
 
             /// <summary>

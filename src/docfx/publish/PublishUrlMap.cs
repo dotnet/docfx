@@ -135,10 +135,9 @@ namespace Microsoft.Docs.Build
             var redirections = conflicts.Where(x => x.SourcePath.Origin == FileOrigin.Redirection).OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer);
             var nonRedirections = conflicts.Where(x => x.SourcePath.Origin != FileOrigin.Redirection)
                 .OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer)
-                .Select(x => x.SourcePath.Path.Value).ToList();
+                .Select(x => x.SourcePath.Path.Value);
             var redirection = redirections.FirstOrDefault();
-            var redirectionCount = redirections?.Count() ?? 0;
-            var nonRedirectionCount = conflicts.Count() - redirectionCount;
+            var redirectionCount = redirections.Count();
 
             if (redirectionCount == 0)
             {
@@ -152,7 +151,7 @@ namespace Microsoft.Docs.Build
             }
             else
             {
-                if (nonRedirectionCount > 0)
+                if (conflicts.Count() > redirectionCount)
                 {
                     _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(nonRedirections));
                 }
