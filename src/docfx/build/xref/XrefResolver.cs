@@ -168,19 +168,10 @@ namespace Microsoft.Docs.Build
 
             externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
-            var model =
-                new XrefMapModel
-                {
-                    References = references,
-                    ExternalXrefs = externalXrefs,
-                    RepositoryUrl = _repository?.Url,
-                    DocsetName = _config.Name.Value,
-                    MonikerGroups = monikerGroups,
-                };
-
+            XrefProperties? properties = null;
             if (_config.UrlType == UrlType.Docs)
             {
-                var properties = new XrefProperties();
+                properties = new XrefProperties();
                 properties.Tags.Add(basePath);
                 if (repositoryBranch == "live")
                 {
@@ -190,8 +181,18 @@ namespace Microsoft.Docs.Build
                 {
                     properties.Tags.Add("internal");
                 }
-                model.Properties = properties;
             }
+
+            var model =
+                new XrefMapModel
+                {
+                    References = references,
+                    ExternalXrefs = externalXrefs,
+                    RepositoryUrl = _repository?.Url,
+                    DocsetName = _config.Name.Value,
+                    MonikerGroups = monikerGroups,
+                    Properties = properties,
+                };
 
             return model;
         }

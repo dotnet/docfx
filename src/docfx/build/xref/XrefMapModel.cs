@@ -11,15 +11,15 @@ namespace Microsoft.Docs.Build
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     internal class XrefMapModel
     {
-        public ExternalXrefSpec[] References { get; set; } = Array.Empty<ExternalXrefSpec>();
+        public ExternalXrefSpec[] References { get; init; } = Array.Empty<ExternalXrefSpec>();
 
-        public ExternalXref[] ExternalXrefs { get; set; } = Array.Empty<ExternalXref>();
+        public ExternalXref[] ExternalXrefs { get; init; } = Array.Empty<ExternalXref>();
 
-        public XrefProperties? Properties { get; set; }
+        public XrefProperties? Properties { get; init; }
 
-        public string? RepositoryUrl { get; set; }
+        public string? RepositoryUrl { get; init; }
 
-        public string? DocsetName { get; set; }
+        public string? DocsetName { get; init; }
 
         public IReadOnlyDictionary<string, MonikerList>? MonikerGroups { get; init; }
     }
