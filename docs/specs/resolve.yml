@@ -305,6 +305,19 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"redirected-file-not-removed"}
 ---
+# Warning if output-path of 2 existing items conflict
+noSingleFile: true
+inputs:
+  docfx.yml:
+  docs/redirect.yml: |
+    # YamlMime:test
+  docs/redirect.md:
+  _themes/ContentTemplate/schemas/test.schema.json:
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md', 'docs/redirect.yml'."}
+  docs/redirect.json:
+---
 # Warning if output-path of a redirection item conflicts with existing file
 inputs:
   docfx.yml:
@@ -314,7 +327,7 @@ inputs:
   docs/redirect.md:
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"redirected-file-not-removed","message":"Redirected file 'docs/redirect.yml' or 'docs/redirect.md' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo."}
+    {"message_severity":"warning","code":"redirected-file-not-removed","message":"Redirected file 'docs/redirect.md' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo."}
 ---
 # Warning if output-path of 2 redirection items conflict
 inputs:
@@ -328,6 +341,7 @@ outputs:
     {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md [redirection]', 'docs/redirect.yml [redirection]'."}
 ---
 # Warning if output-path of 2 redirection items conflict with 2 existing files
+noSingleFile: true
 inputs:
   docfx.yml:
   redirections.yml: |
@@ -335,10 +349,13 @@ inputs:
       docs/redirect.yml: /absolute/path
       docs/redirect.md: /absolute/path
   docs/redirect.md:
+  docs/redirect.yml: |
+    # YamlMime:test
+  _themes/ContentTemplate/schemas/test.schema.json:
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"redirected-file-not-removed","message":"Redirected file 'docs/redirect.yml' or 'docs/redirect.md' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo."}
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md [redirection]', 'docs/redirect.md', 'docs/redirect.yml [redirection]'."}
+    {"message_severity":"warning","code":"redirected-file-not-removed","message":"Redirected file 'docs/redirect.md, docs/redirect.yml' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo."}
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/redirect.json': 'docs/redirect.md [redirection]', 'docs/redirect.md', 'docs/redirect.yml [redirection]', 'docs/redirect.yml'."}
 ---
 # Show warning if link to a page outside build scope
 inputs:

@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -134,28 +133,33 @@ namespace Microsoft.Docs.Build
 
             // redirection file is preferred than source file
             var redirections = conflicts.Where(x => x.SourcePath.Origin == FileOrigin.Redirection).OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer);
+            var nonRedirections = conflicts.Where(x => x.SourcePath.Origin != FileOrigin.Redirection)
+                .OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer)
+                .Select(x => x.SourcePath.Path.Value).ToList();
             var redirection = redirections.FirstOrDefault();
-            var redirectionCount = redirections.Count();
+            var redirectionCount = redirections?.Count() ?? 0;
             var nonRedirectionCount = conflicts.Count() - redirectionCount;
-            if (redirectionCount == 1)
+
+            if (redirectionCount == 0)
             {
-                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(Path.ChangeExtension(redirection!.SourcePath.Path, "")));
+                _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+                return conflicts.OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
+            }
+            else if (redirectionCount == 1)
+            {
+                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(nonRedirections));
                 return redirection!;
             }
-            else if (redirectionCount > 1)
+            else
             {
                 if (nonRedirectionCount > 0)
                 {
-                    _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(Path.ChangeExtension(redirection!.SourcePath.Path, "")));
+                    _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(nonRedirections));
                 }
 
                 _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
                 return redirection!;
             }
-
-            // otherwise, prefer the one based on FilePath
-            _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
-            return conflicts.OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
         }
 
         private PublishUrlMapItem ResolvePublishUrlConflicts(IGrouping<PublishUrlMapItem, PublishUrlMapItem> conflicts)
