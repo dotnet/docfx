@@ -336,8 +336,8 @@ namespace Microsoft.Docs.Build
             /// The redirected file is not removed from the source repo.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
-            public static Error RedirectedFileNotRemoved(FilePath path)
-                => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{path}' is still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
+            public static Error RedirectedFileNotRemoved(string path)
+                => new Error(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{path}yml' or '{path}md' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
 
             /// <summary>
             /// A redirection file registered in .openpublishing.publish.json is not found in the repo.

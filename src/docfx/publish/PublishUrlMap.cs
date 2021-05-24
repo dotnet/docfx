@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -132,11 +133,24 @@ namespace Microsoft.Docs.Build
             }
 
             // redirection file is preferred than source file
-            var redirection = conflicts.FirstOrDefault(x => x.SourcePath.Origin == FileOrigin.Redirection);
-            if (redirection != null)
+            var redirections = conflicts.Where(x => x.SourcePath.Origin == FileOrigin.Redirection).OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer);
+            var redirection = redirections.FirstOrDefault();
+            var redirectionCount = redirections.Count();
+            var nonRedirectionCount = conflicts.Count() - redirectionCount;
+            if (redirectionCount == 1)
             {
-                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(redirection.SourcePath));
-                return redirection;
+                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(Path.ChangeExtension(redirection!.SourcePath.Path, "")));
+                return redirection!;
+            }
+            else if (redirectionCount > 1)
+            {
+                if (nonRedirectionCount > 0)
+                {
+                    _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(Path.ChangeExtension(redirection!.SourcePath.Path, "")));
+                }
+
+                _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+                return redirection!;
             }
 
             // otherwise, prefer the one based on FilePath
