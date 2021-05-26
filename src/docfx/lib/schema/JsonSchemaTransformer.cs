@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlReaderWriter;
-using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -24,7 +23,6 @@ namespace Microsoft.Docs.Build
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
         private readonly JsonSchemaProvider _jsonSchemaProvider;
-        private readonly ContentValidator _contentValidator;
         private readonly Input _input;
 
         private readonly MemoryCache<FilePath, Watch<(JToken, JsonSchema, JsonSchemaMap, int)>> _schemaDocumentsCache = new();
@@ -42,7 +40,6 @@ namespace Microsoft.Docs.Build
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
             JsonSchemaProvider jsonSchemaProvider,
-            ContentValidator contentValidator,
             Input input)
         {
             _documentProvider = documentProvider;
@@ -52,7 +49,6 @@ namespace Microsoft.Docs.Build
             _errors = errors;
             _monikerProvider = monikerProvider;
             _jsonSchemaProvider = jsonSchemaProvider;
-            _contentValidator = contentValidator;
             _input = input;
         }
 
@@ -417,9 +413,8 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    ValidateLink(file, new HyperLinkNode { HyperLinkType = HyperLinkType.Default, UrlLink = stringValue, SourceInfo = sourceInfo });
-
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
+                    var (error, link, _) =
+                        _linkResolver.ResolveLink(content, file, file, new LinkInfo { MarkdownObject = null, Href = new(stringValue, sourceInfo) });
                     errors.AddIfNotNull(error);
                     return link;
 
@@ -487,11 +482,6 @@ namespace Microsoft.Docs.Build
             }
 
             return value;
-        }
-
-        private void ValidateLink(FilePath file, HyperLinkNode node)
-        {
-            _contentValidator.ValidateLink(file, node);
         }
     }
 }

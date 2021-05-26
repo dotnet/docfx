@@ -16,7 +16,6 @@ using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.Docs.MarkdigExtensions;
-using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -323,50 +322,10 @@ namespace Microsoft.Docs.Build
 
         private string GetLink(LinkInfo link)
         {
-            ValidateLink(link);
-
             var status = s_status.Value!.Peek();
-            var (error, result, _) = _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath());
+            var (error, result, _) = _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath(), link);
             status.Errors.AddIfNotNull(error);
             return result;
-        }
-
-        private void ValidateLink(LinkInfo link)
-        {
-            if (link.MarkdownObject is null)
-            {
-                return;
-            }
-
-            LinkNode node = link.IsImage
-                ? new ImageLinkNode
-                {
-                    ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
-                    AltText = link.AltText,
-                    IsInline = link.MarkdownObject.IsInlineImage(link.HtmlSourceIndex),
-                }
-                : new HyperLinkNode
-                {
-                    IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
-                    HyperLinkType = link.MarkdownObject switch
-                    {
-                        AutolinkInline => HyperLinkType.AutoLink,
-                        HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
-                        _ => HyperLinkType.Default,
-                    },
-                };
-
-            node = node with
-            {
-                UrlLink = link.Href,
-                SourceInfo = link.Href.Source,
-                ParentSourceInfoList = link.MarkdownObject.GetInclusionStack(),
-                Monikers = link.MarkdownObject.GetZoneLevelMonikers(),
-                ZonePivots = link.MarkdownObject.GetZonePivots(),
-                TabbedConceptualHeader = link.MarkdownObject.GetTabId(),
-            };
-
-            _contentValidator.ValidateLink(GetRootFilePath(), node);
         }
 
         private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
