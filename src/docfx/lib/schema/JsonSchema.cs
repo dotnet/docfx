@@ -325,11 +325,6 @@ namespace Microsoft.Docs.Build
         public MicrosoftAliasSchema? MicrosoftAlias { get; init; }
 
         /// <summary>
-        /// Properties that are used to validate Jupyter Notebook link
-        /// </summary>
-        public string? Notebook { get; init; }
-
-        /// <summary>
         /// Properties' value must be unique within the docset
         /// </summary>
         public HashSet<string> DocsetUnique { get; init; } = new HashSet<string>();
