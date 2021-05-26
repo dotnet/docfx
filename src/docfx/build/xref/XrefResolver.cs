@@ -158,14 +158,20 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid)
                 .ToArray();
 
+            var monikerGroups = new Dictionary<string, MonikerList>(
+                from item in references
+                let monikerGroup = item.MonikerGroup
+                where !string.IsNullOrEmpty(monikerGroup)
+                orderby monikerGroup
+                group item by monikerGroup into g
+                select new KeyValuePair<string, MonikerList>(g.Key, g.First().Monikers));
+
             externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
-            var model =
-                new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
-
+            XrefProperties? properties = null;
             if (_config.UrlType == UrlType.Docs)
             {
-                var properties = new XrefProperties();
+                properties = new XrefProperties();
                 properties.Tags.Add(basePath);
                 if (repositoryBranch == "live")
                 {
@@ -175,8 +181,18 @@ namespace Microsoft.Docs.Build
                 {
                     properties.Tags.Add("internal");
                 }
-                model.Properties = properties;
             }
+
+            var model =
+                new XrefMapModel
+                {
+                    References = references,
+                    ExternalXrefs = externalXrefs,
+                    RepositoryUrl = _repository?.Url,
+                    DocsetName = _config.Name.Value,
+                    MonikerGroups = monikerGroups,
+                    Properties = properties,
+                };
 
             return model;
         }
