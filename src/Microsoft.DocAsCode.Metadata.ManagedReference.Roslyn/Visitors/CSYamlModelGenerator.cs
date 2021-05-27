@@ -368,7 +368,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.TokenList(
                     GetTypeModifiers(symbol)
                 ),
-                GetTypeSyntax(symbol.DelegateInvokeMethod.ReturnType),
+                GetTypeSyntax(symbol.DelegateInvokeMethod.ReturnType, symbol.DelegateInvokeMethod.ReturnNullableAnnotation),
                 SyntaxFactory.Identifier(symbol.Name),
                 GetTypeParameters(symbol),
                 SyntaxFactory.ParameterList(
@@ -394,7 +394,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
-                GetTypeSyntax(symbol.ReturnType),
+                GetTypeSyntax(symbol.ReturnType, symbol.ReturnNullableAnnotation),
                 eii,
                 SyntaxFactory.Identifier(
                     GetMemberName(symbol, filterVisitor)
@@ -428,7 +428,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetMemberModifiers(symbol)
                     ),
                     operatorToken.Value,
-                    GetTypeSyntax(symbol.ReturnType),
+                    GetTypeSyntax(symbol.ReturnType, symbol.ReturnNullableAnnotation),
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
                             from p in symbol.Parameters
@@ -446,7 +446,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxFactory.TokenList(
                         GetMemberModifiers(symbol)
                     ),
-                    GetTypeSyntax(symbol.ReturnType),
+                    GetTypeSyntax(symbol.ReturnType, symbol.ReturnNullableAnnotation),
                     operatorToken.Value,
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
@@ -495,7 +495,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetMemberModifiers(symbol)
                     ),
                     SyntaxFactory.VariableDeclaration(
-                        GetTypeSyntax(symbol.Type),
+                        GetTypeSyntax(symbol.Type, symbol.NullableAnnotation),
                         SyntaxFactory.SingletonSeparatedList(
                             SyntaxFactory.VariableDeclarator(
                                 SyntaxFactory.Identifier(symbol.Name),
@@ -520,7 +520,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
                     SyntaxFactory.Token(SyntaxKind.EventKeyword),
-                    GetTypeSyntax(symbol.Type),
+                    GetTypeSyntax(symbol.Type, symbol.NullableAnnotation),
                     eii,
                     SyntaxFactory.Identifier(GetMemberName(symbol, filterVisitor)),
                     SyntaxFactory.AccessorList()
@@ -541,7 +541,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result = SyntaxFactory.IndexerDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
-                    GetTypeSyntax(symbol.Type),
+                    GetTypeSyntax(symbol.Type, symbol.NullableAnnotation),
                     eii,
                     SyntaxFactory.BracketedParameterList(
                         SyntaxFactory.SeparatedList(
@@ -556,7 +556,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result = SyntaxFactory.PropertyDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
-                    GetTypeSyntax(symbol.Type),
+                    GetTypeSyntax(symbol.Type, symbol.NullableAnnotation),
                     eii,
                     SyntaxFactory.Identifier(GetMemberName(symbol, filterVisitor)),
                     SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol, filterVisitor))))
@@ -638,7 +638,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string GetMemberName(IMethodSymbol symbol, IFilterVisitor filterVisitor)
         {
-            string name = symbol.Name;
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
                 return symbol.Name;
@@ -656,7 +655,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string GetMemberName(IEventSymbol symbol, IFilterVisitor filterVisitor)
         {
-            string name = symbol.Name;
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
                 return symbol.Name;
@@ -674,7 +672,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string GetMemberName(IPropertySymbol symbol, IFilterVisitor filterVisitor)
         {
-            string name = symbol.Name;
             if (symbol.ExplicitInterfaceImplementations.Length == 0)
             {
                 return symbol.Name;
@@ -746,7 +743,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return SyntaxFactory.Parameter(
                 GetAttributes(p, filterVisitor, true),
                 SyntaxFactory.TokenList(GetParameterModifiers(p, isThisParameter)),
-                GetTypeSyntax(p.Type),
+                GetTypeSyntax(p.Type, p.NullableAnnotation),
                 SyntaxFactory.Identifier(p.Name),
                 GetDefaultValueClause(p));
         }
@@ -819,12 +816,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     return GetLiteralExpression(null, constant.Type);
                 }
+
+                // todo: I have no idea if this is correct
+                var effectiveNullableAnnotation = constant.IsNull ? NullableAnnotation.Annotated : NullableAnnotation.NotAnnotated;
+
                 var items = (from value in constant.Values
                              select GetLiteralExpression(value)).ToList();
                 if (items.TrueForAll(x => x != null))
                 {
                     return SyntaxFactory.ArrayCreationExpression(
-                        (ArrayTypeSyntax)GetTypeSyntax(constant.Type),
+                        (ArrayTypeSyntax)GetTypeSyntax(constant.Type, effectiveNullableAnnotation),
                         SyntaxFactory.InitializerExpression(
                             SyntaxKind.ArrayInitializerExpression,
                             SyntaxFactory.SeparatedList(
@@ -832,7 +833,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                 select GetLiteralExpression(value))));
                 }
                 return SyntaxFactory.ArrayCreationExpression(
-                    (ArrayTypeSyntax)GetTypeSyntax(constant.Type));
+                    (ArrayTypeSyntax)GetTypeSyntax(constant.Type, effectiveNullableAnnotation));
             }
 
             var expr = GetLiteralExpression(constant.Value, constant.Type);
@@ -874,7 +875,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (type.IsValueType)
                 {
-                    return SyntaxFactory.DefaultExpression(GetTypeSyntax(type));
+                    return SyntaxFactory.DefaultExpression(GetTypeSyntax(type, NullableAnnotation.NotAnnotated));   // todo: not sure about this
                 }
                 return SyntaxFactory.LiteralExpression(
                     SyntaxKind.NullLiteralExpression,
@@ -888,7 +889,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (type.TypeKind == TypeKind.Enum)
             {
                 var namedType = (INamedTypeSymbol)type;
-                var enumType = GetTypeSyntax(namedType);
+                var enumType = GetTypeSyntax(namedType, NullableAnnotation.NotAnnotated);   // enums can have nullable annotations
                 var isFlags = namedType.GetAttributes().Any(attr => attr.AttributeClass.GetDocumentationCommentId() == "T:System.FlagsAttribute");
 
                 var pairs = from member in namedType.GetMembers().OfType<IFieldSymbol>()
@@ -922,10 +923,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         value,
                         namedType.EnumUnderlyingType));
             }
-            if (value is ITypeSymbol)
+            if (value is ITypeSymbol typeSymbol)
             {
                 return SyntaxFactory.TypeOfExpression(
-                    GetTypeSyntax((ITypeSymbol)value));
+                    GetTypeSyntax(typeSymbol, NullableAnnotation.None));    // todo: not sure what this is supposed to be
             }
             Debug.Fail("Unknown default value!");
             return null;
@@ -1115,7 +1116,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ConstraintTypes.Length; i++)
                 {
-                    yield return SyntaxFactory.TypeConstraint(GetTypeSyntax(symbol.ConstraintTypes[i]));
+                    yield return SyntaxFactory.TypeConstraint(GetTypeSyntax(symbol.ConstraintTypes[i], symbol.ConstraintNullableAnnotations[i]));
                 }
             }
             if (symbol.HasConstructorConstraint)
@@ -1142,7 +1143,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return SyntaxFactory.BaseList(
                 SyntaxFactory.SeparatedList<BaseTypeSyntax>(
                     from t in baseTypeList
-                    select SyntaxFactory.SimpleBaseType(GetTypeSyntax(t))));
+                    select SyntaxFactory.SimpleBaseType(GetTypeSyntax(t, NullableAnnotation.NotAnnotated))));   // can't extend a nullable base class
         }
 
         private BaseListSyntax GetEnumBaseTypeList(INamedTypeSymbol symbol)
@@ -1155,7 +1156,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return SyntaxFactory.BaseList(
                 SyntaxFactory.SingletonSeparatedList<BaseTypeSyntax>(
                     SyntaxFactory.SimpleBaseType(
-                        GetTypeSyntax(underlyingType))));
+                        GetTypeSyntax(underlyingType, NullableAnnotation.NotAnnotated))));  // enum base types can't have a nullable annotation
         }
 
         private static TypeParameterListSyntax GetTypeParameters(INamedTypeSymbol symbol)
@@ -1504,9 +1505,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return BracesRegex.Replace(text, string.Empty);
         }
 
-        private static TypeSyntax GetTypeSyntax(ITypeSymbol type)
+        private static TypeSyntax GetTypeSyntax(ITypeSymbol type, NullableAnnotation nullableAnnotation)
         {
-            var name = NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter).GetName(type);
+            var name = NameVisitorCreator.GetCSharp(NameOptions.UseAlias | NameOptions.WithGenericParameter | NameOptions.WithNullableAnnotations).GetName(type);
+
+            if (nullableAnnotation == NullableAnnotation.Annotated)
+            {
+                name += "?";
+            }
+
             return SyntaxFactory.ParseTypeName(name);
         }
 
