@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlReaderWriter;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -413,8 +414,14 @@ namespace Microsoft.Docs.Build
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) =
-                        _linkResolver.ResolveLink(content, file, file, new LinkInfo { MarkdownObject = null, Href = new(stringValue, sourceInfo) });
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
+                        {
+                            HyperLinkType = HyperLinkType.Default,
+                            IsVisible = false,
+                            UrlLink = stringValue,
+                            SourceInfo = sourceInfo,
+                        });
+
                     errors.AddIfNotNull(error);
                     return link;
 

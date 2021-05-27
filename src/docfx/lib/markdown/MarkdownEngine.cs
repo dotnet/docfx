@@ -16,6 +16,7 @@ using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Microsoft.Docs.MarkdigExtensions;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -285,6 +286,42 @@ namespace Microsoft.Docs.Build
             return s_status.Value!.Peek().Conceptual;
         }
 
+        private static LinkNode? TransformLinkInfo(LinkInfo link)
+        {
+            if (link.MarkdownObject is null)
+            {
+                return null;
+            }
+
+            LinkNode node = link.IsImage
+            ? new ImageLinkNode
+            {
+                ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
+                AltText = link.AltText,
+                IsInline = link.MarkdownObject.IsInlineImage(link.HtmlSourceIndex),
+            }
+            : new HyperLinkNode
+            {
+                IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
+                HyperLinkType = link.MarkdownObject switch
+                {
+                    AutolinkInline => HyperLinkType.AutoLink,
+                    HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
+                    _ => HyperLinkType.Default,
+                },
+            };
+
+            return node with
+            {
+                UrlLink = link.Href,
+                SourceInfo = link.Href.Source,
+                ParentSourceInfoList = link.MarkdownObject.GetInclusionStack(),
+                Monikers = link.MarkdownObject.GetZoneLevelMonikers(),
+                ZonePivots = link.MarkdownObject.GetZonePivots(),
+                TabbedConceptualHeader = link.MarkdownObject.GetTabId(),
+            };
+        }
+
         private (string? content, object? file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
         {
             var status = s_status.Value!.Peek();
@@ -323,7 +360,7 @@ namespace Microsoft.Docs.Build
         private string GetLink(LinkInfo link)
         {
             var status = s_status.Value!.Peek();
-            var (error, result, _) = _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath(), link);
+            var (error, result, _) = _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath(), TransformLinkInfo(link));
             status.Errors.AddIfNotNull(error);
             return result;
         }

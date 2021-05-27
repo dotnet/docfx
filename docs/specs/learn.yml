@@ -1576,7 +1576,7 @@ outputs:
       }
     }
 ---
-# Validate secure link for notebook url
+# Validate secure link for jupyter notebook url
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -1617,3 +1617,51 @@ outputs:
   a.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://raw.githubusercontent.com/test.ipynb' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":54}
+---
+# Validate jupyter notebook key against sandbox and tasks
+inputs:
+  docfx.yml: 
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "dependencies": {
+        "notebook": {
+          "required": ["sandbox"],
+          "precludes": [["notebook", "tasks"]]
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://raw.githubusercontent.com/test.ipynb
+    tasks: task_a
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'sandbox'.","file":"a.yml","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"error","code":"precluded-attributes","message": "Only one of the following attributes can exist: 'notebook', 'tasks'.","file":"a.yml","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Validate sandbox value set to true when jupyter notebook is present
+inputs:
+  docfx.yml: 
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "dependencies": {
+        "notebook": {
+          "properties": { "sandbox": { "enum": [true] } },
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://raw.githubusercontent.com/test.ipynb
+    sandbox: false
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"invalid-value","message":"Invalid value for 'sandbox': 'False'.","file":"a.yml","line":3,"end_line":3,"column":10,"end_column":15}

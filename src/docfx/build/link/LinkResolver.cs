@@ -81,7 +81,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string link, FilePath? file) ResolveLink(
-            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkInfo? linkInfo = null)
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkNode? linkNode = null)
         {
             if (href.Value.StartsWith("xref:"))
             {
@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
                 href,
                 referencingFile,
                 inclusionRoot,
-                linkInfo);
+                linkNode);
 
             inclusionRoot ??= referencingFile;
             if (!isCrossReference)
@@ -127,7 +127,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources.Value;
 
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
-            SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot, LinkInfo? linkInfo)
+            SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot, LinkNode? linkNode)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
             var (error, file, query, fragment, linkType) = TryResolveFile(inclusionRoot, hrefRelativeTo, decodedHref);
@@ -137,7 +137,7 @@ namespace Microsoft.Docs.Build
                 return (error, "", fragment, linkType, null, false);
             }
 
-            ValidateLink(inclusionRoot, linkInfo);
+            ValidateLink(inclusionRoot, linkNode);
             if (linkType == LinkType.External)
             {
                 var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
@@ -328,53 +328,11 @@ namespace Microsoft.Docs.Build
             return default;
         }
 
-        private void ValidateLink(FilePath file, LinkInfo? link)
+        private void ValidateLink(FilePath file, LinkNode? node)
         {
-            if (link is null)
+            if (node is null)
             {
                 return;
-            }
-
-            LinkNode? node;
-            if (link.MarkdownObject is null)
-            {
-                node = new HyperLinkNode
-                {
-                    HyperLinkType = HyperLinkType.Default,
-                    IsVisible = false,
-                    UrlLink = link.Href.Value,
-                    SourceInfo = link.Href.Source,
-                };
-            }
-            else
-            {
-                node = link.IsImage
-               ? new ImageLinkNode
-               {
-                   ImageLinkType = Enum.TryParse(link.ImageType, true, out ImageLinkType type) ? type : ImageLinkType.Default,
-                   AltText = link.AltText,
-                   IsInline = link.MarkdownObject.IsInlineImage(link.HtmlSourceIndex),
-               }
-               : new HyperLinkNode
-               {
-                   IsVisible = MarkdigUtility.IsVisible(link.MarkdownObject),
-                   HyperLinkType = link.MarkdownObject switch
-                   {
-                       AutolinkInline => HyperLinkType.AutoLink,
-                       HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
-                       _ => HyperLinkType.Default,
-                   },
-               };
-
-                node = node with
-                {
-                    UrlLink = link.Href,
-                    SourceInfo = link.Href.Source,
-                    ParentSourceInfoList = link.MarkdownObject.GetInclusionStack(),
-                    Monikers = link.MarkdownObject.GetZoneLevelMonikers(),
-                    ZonePivots = link.MarkdownObject.GetZonePivots(),
-                    TabbedConceptualHeader = link.MarkdownObject.GetTabId(),
-                };
             }
 
             _contentValidator.ValidateLink(file, node);
