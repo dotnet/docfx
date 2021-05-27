@@ -5,9 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Microsoft.Docs.MarkdigExtensions;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
