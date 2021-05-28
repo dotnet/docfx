@@ -14,12 +14,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
         /// </summary>
-        public static readonly JsonSchema TrueSchema = new JsonSchema();
+        public static readonly JsonSchema TrueSchema = new();
 
         /// <summary>
         /// `false` is a valid boolean JSON schema. A `false` JSON schema is deserialized into this instance.
         /// </summary>
-        public static readonly JsonSchema FalseSchema = new JsonSchema();
+        public static readonly JsonSchema FalseSchema = new();
 
         /// <summary>
         /// Gets the JsonSchemaResolver to resolve $ref.

@@ -13,7 +13,7 @@ namespace Microsoft.Docs.Build
     public class Watch<T>
     {
         private readonly Func<T> _valueFactory;
-        private readonly object _syncLock = new object();
+        private readonly object _syncLock = new();
 
         private T? _value;
         private int _changeCount;
