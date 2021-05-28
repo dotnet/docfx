@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,7 +29,11 @@ namespace Microsoft.Docs.Build
         private static readonly string? s_microsoftGraphClientCertificate = Environment.GetEnvironmentVariable("MICROSOFT_GRAPH_CLIENT_CERTIFICATE");
         private static readonly string s_gitCmdAuth = GetGitCommandLineAuthorization();
         private static readonly bool s_isPullRequest = s_buildReason == null || s_buildReason == "PullRequest";
-        private static readonly string s_commitString = typeof(Docfx).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? throw new InvalidOperationException();
+        private static readonly string s_docfxVersion =
+            Exec(
+                Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
+                arguments: "--version",
+                redirectStandardOutput: true).stdout;
 
         private static string s_testName = "";
         private static string s_repository = "";
@@ -195,7 +198,7 @@ namespace Microsoft.Docs.Build
                 Exec("git", $"init", cwd: workingFolder);
                 Exec("git", $"remote add origin {TestDataRepositoryUrl}", cwd: workingFolder);
 
-                Retry(() => Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth));
+                Retry(() => Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth).time);
             }
 
             var remoteBranch = string.IsNullOrEmpty(opts.Branch)
@@ -209,7 +212,7 @@ namespace Microsoft.Docs.Build
                             $"{s_gitCmdAuth} fetch origin --progress --prune {s_testName}",
                             cwd: workingFolder,
                             secrets: s_gitCmdAuth,
-                            redirectStandardError: true));
+                            redirectStandardError: true).time);
             }
             catch (Exception ex)
             {
@@ -237,7 +240,12 @@ namespace Microsoft.Docs.Build
 
         private static string GetRemoteDefaultBranch(string repositoryUrl, string workingDirectory)
         {
-            var remoteInfo = ProcessUtility.Execute("git", $"{s_gitCmdAuth} remote show {repositoryUrl}", workingDirectory, secret: s_gitCmdAuth);
+            var remoteInfo = Exec(
+                "git",
+                arguments: $"{s_gitCmdAuth} remote show {repositoryUrl}",
+                cwd: workingDirectory,
+                redirectStandardOutput: true,
+                secrets: s_gitCmdAuth).stdout;
             var match = Regex.Match(remoteInfo, "^([\\s\\S]*)\\sHEAD branch: (.*)$");
             if (match.Success)
             {
@@ -286,7 +294,7 @@ namespace Microsoft.Docs.Build
                 stdin: docfxConfig,
                 cwd: repositoryPath,
                 allowExitCodes: new[] { 0, 1 },
-                env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null);
+                env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null).time;
 
             if (profiler != null)
             {
@@ -356,7 +364,7 @@ namespace Microsoft.Docs.Build
             else
             {
                 Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: workingFolder);
-                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_testName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
+                Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_testName}: {s_docfxVersion}\"", cwd: workingFolder, ignoreError: true);
             }
         }
 
@@ -372,13 +380,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static TimeSpan Exec(
+        private static (string stdout, TimeSpan time) Exec(
             string fileName,
             string arguments = "",
             string? stdin = null,
             string? cwd = null,
             Dictionary<string, string>? env = null,
             bool ignoreError = false,
+            bool redirectStandardOutput = false,
             bool redirectStandardError = false,
             int[]? allowExitCodes = null,
             params string[] secrets)
@@ -402,6 +411,7 @@ namespace Microsoft.Docs.Build
                 Arguments = arguments,
                 WorkingDirectory = cwd ?? ".",
                 UseShellExecute = false,
+                RedirectStandardOutput = redirectStandardOutput,
                 RedirectStandardError = redirectStandardError,
                 RedirectStandardInput = !string.IsNullOrEmpty(stdin),
             };
@@ -422,6 +432,7 @@ namespace Microsoft.Docs.Build
                 process.StandardInput.Close();
             }
 
+            var stdout = (redirectStandardOutput ? process.StandardOutput.ReadToEnd() : string.Empty).TrimEnd();
             var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
             process.WaitForExit();
 
@@ -433,7 +444,7 @@ namespace Microsoft.Docs.Build
 
             stopwatch.Stop();
             Console.WriteLine($"'{fileName} {sanitizedArguments}' done in '{stopwatch.Elapsed}'");
-            return stopwatch.Elapsed;
+            return (stdout, stopwatch.Elapsed);
         }
 
         private static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)

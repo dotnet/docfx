@@ -66,7 +66,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public override PathString GetFullFilePath(PathString path) => new PathString(_directory.Concat(path));
+        public override PathString GetFullFilePath(PathString path) => new(_directory.Concat(path));
 
         public override DateTime? TryGetLastWriteTimeUtc(PathString path)
         {

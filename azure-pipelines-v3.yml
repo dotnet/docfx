@@ -33,11 +33,19 @@ jobs:
 
   # dotnet test
   - task: DotNetCoreCLI@2
+    displayName: dotnet build
+    condition: and(succeeded(), ne(variables['warm-up'], 'true'))
+    inputs:
+      command: build
+      arguments: -warnAsError -c Release
+
+  # dotnet test
+  - task: DotNetCoreCLI@2
     displayName: dotnet test
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       command: test
-      arguments:  -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      arguments: -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
@@ -90,6 +98,7 @@ jobs:
       inputs:
         packageType: sdk
         version: $(dotnetVersion)
+        performMultiLevelLookup: true
 
     - download: current
       displayName: Download RegressionTest binary

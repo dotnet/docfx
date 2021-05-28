@@ -302,7 +302,7 @@ namespace Microsoft.Docs.Build
                 var innerEmphasis = false;
                 if (node is ParagraphBlock paragraphBlock)
                 {
-                    innerEmphasis = paragraphBlock.Inline.FindDescendants<EmphasisInline>().Where(x => x.DelimiterCount >= 2).Any();
+                    innerEmphasis = paragraphBlock.Inline.FindDescendants<EmphasisInline>().Any(x => x.DelimiterCount >= 2);
                 }
                 return isEmphasis = isEmphasis || innerEmphasis;
             });

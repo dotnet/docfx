@@ -11,8 +11,8 @@ namespace Microsoft.Docs.MarkdigExtensions
 {
     public class ZoneExtension : ITripleColonExtensionInfo
     {
-        private static readonly Regex s_pivotRegex = new Regex(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
-        private static readonly Regex s_pivotReplaceCommasRegex = new Regex(@"\s*,\s*");
+        private static readonly Regex s_pivotRegex = new(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
+        private static readonly Regex s_pivotReplaceCommasRegex = new(@"\s*,\s*");
 
         public string Name => "zone";
 
@@ -87,7 +87,7 @@ namespace Microsoft.Docs.MarkdigExtensions
         {
             while (container != null)
             {
-                if (container is TripleColonBlock && ((TripleColonBlock)container).Extension.Name == this.Name)
+                if (container is TripleColonBlock && ((TripleColonBlock)container).Extension.Name == Name)
                 {
                     logError("Zones cannot be nested.");
                     return false;
