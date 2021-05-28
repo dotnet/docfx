@@ -1576,7 +1576,8 @@ outputs:
       }
     }
 ---
-# Validate secure link for jupyter notebook url
+# Validate if jupyter notebook points to insecure link
+noSingleFile: true
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -1588,7 +1589,7 @@ inputs:
             "type": "SecureLinks",
             "message": "Link '{0}' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.",
             "code": "insecure-link",
-            "severity": "SUGGESTION",
+            "severity": "WARNING",
             "contentTypes": ["moduleunit"],
             "domains": [
               "microsoft.com",
@@ -1616,9 +1617,10 @@ inputs:
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://raw.githubusercontent.com/test.ipynb' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":54}
+    {"message_severity":"warning","code":"insecure-link","message":"Link 'http://raw.githubusercontent.com/test.ipynb' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":54}
 ---
-# Validate jupyter notebook key against sandbox and tasks
+# Validate if jupyter notebook key missing paired attribute sandbox, or notebook and tasks coexist
+noSingleFile: true
 inputs:
   docfx.yml: 
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
@@ -1643,7 +1645,8 @@ outputs:
     {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'sandbox'.","file":"a.yml","line":2,"end_line":2,"column":1,"end_column":1}
     {"message_severity":"error","code":"precluded-attributes","message": "Only one of the following attributes can exist: 'notebook', 'tasks'.","file":"a.yml","line":2,"end_line":2,"column":1,"end_column":1}
 ---
-# Validate sandbox value set to true when jupyter notebook is present
+# Validate if sandbox value set to true when jupyter notebook is present
+noSingleFile: true
 inputs:
   docfx.yml: 
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
