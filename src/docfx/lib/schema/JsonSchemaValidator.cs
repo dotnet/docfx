@@ -334,7 +334,7 @@ namespace Microsoft.Docs.Build
 
             if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
             {
-                var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
+                var unicodeLength = str.Count(c => !char.IsLowSurrogate(c));
                 if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
                 {
                     errors.Add(Errors.JsonSchema.StringLengthInvalid(
