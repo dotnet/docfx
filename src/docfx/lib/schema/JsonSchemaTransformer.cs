@@ -417,7 +417,7 @@ namespace Microsoft.Docs.Build
                     var (error, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
                         {
                             HyperLinkType = HyperLinkType.Default,
-                            IsVisible = false,
+                            IsVisible = true,  // trun around to skip 'link-text-missing' validation
                             UrlLink = stringValue,
                             SourceInfo = sourceInfo,
                         });
