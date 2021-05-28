@@ -37,7 +37,7 @@ jobs:
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       command: build
-      arguments:  -warnAsError -c Release
+      arguments: -warnAsError -c Release
 
   # dotnet test
   - task: DotNetCoreCLI@2
@@ -45,7 +45,7 @@ jobs:
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       command: test
-      arguments:  -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      arguments: -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
       publishTestResults: true
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
