@@ -234,7 +234,7 @@ namespace Microsoft.Docs.Build
                 case JavaScriptValueType.Number:
                     var intNumber = value.ToInt32();
                     var doubleNumber = value.ToDouble();
-                    return intNumber == doubleNumber ? (JValue)intNumber : (JValue)doubleNumber;
+                    return intNumber == doubleNumber ? intNumber : (JValue)doubleNumber;
 
                 case JavaScriptValueType.Array:
                     var arr = new JArray();

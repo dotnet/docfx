@@ -64,7 +64,7 @@ namespace Microsoft.Docs.MarkdigExtensions
             get
             {
                 var markupStack = s_stack.Value;
-                return markupStack.Count > 0 ? (IEnumerable<object>)markupStack.Peek().dependencies : Array.Empty<object>();
+                return markupStack.Count > 0 ? markupStack.Peek().dependencies : Array.Empty<object>();
             }
         }
 

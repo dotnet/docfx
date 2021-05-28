@@ -12,8 +12,8 @@ namespace Microsoft.Docs.MarkdigExtensions
 {
     public class HeadingIdRewriter : IMarkdownObjectRewriter
     {
-        private static readonly Regex s_openARegex = new Regex(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$", RegexOptions.Compiled);
-        private static readonly Regex s_closeARegex = new Regex(@"^\<\/a\>$", RegexOptions.Compiled);
+        private static readonly Regex s_openARegex = new(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$", RegexOptions.Compiled);
+        private static readonly Regex s_closeARegex = new(@"^\<\/a\>$", RegexOptions.Compiled);
 
         public void PostProcess(IMarkdownObject markdownObject)
         {

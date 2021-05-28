@@ -97,7 +97,7 @@ namespace Microsoft.Docs.Build
         {
             private readonly GitCommitCache _parent;
             private readonly Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)> _commits
-                       = new Dictionary<(long commit, long blob), (long[] commitHistory, int lruOrder)>();
+                       = new();
 
             private int _nextLruOrder;
 
