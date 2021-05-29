@@ -563,11 +563,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .NormalizeWhitespace()
                     .ToString();
             }
+
+            if (result.Contains("\r\n"))
+            {
+                result = Regex.Replace(result, @"\s*\{\[", "\r\n{\r\n    [");
+                result = Regex.Replace(result, @";\s*\[", ";\r\n    [");
+                result = Regex.Replace(result, @";\s*}", ";\r\n}");
+            }
+
             result = Regex.Replace(result, @"\s*\{\s*get;\s*set;\s*}\s*$", " { get; set; }");
             result = Regex.Replace(result, @"\s*\{\s*get;\s*}\s*$", " { get; }");
             result = Regex.Replace(result, @"\s*\{\s*set;\s*}\s*$", " { set; }");
             result = Regex.Replace(result, @"\s*\{\s*get;\s*protected set;\s*}\s*$", " { get; protected set; }");
             result = Regex.Replace(result, @"\s*\{\s*protected get;\s*set;\s*}\s*$", " { protected get; set; }");
+
             return result;
         }
 
