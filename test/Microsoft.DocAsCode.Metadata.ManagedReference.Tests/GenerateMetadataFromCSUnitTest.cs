@@ -3037,5 +3037,302 @@ namespace Test1
                 Assert.Equal(@"public void Test(IntPtr a, UIntPtr b, nint c, nuint d, nint e = -1, nuint f = 1U)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
         }
+
+        [Fact]
+        [Trait("Related", "FunctionPointer")]
+        public void TestGenerateMetadataWithImplicitManagedFunctionPointer()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public delegate*<void> a;
+        public delegate*<int, void> b;
+        public delegate*<ref int, void> c;
+        public delegate*<out int, void> d;
+        public delegate*<in int, void> e;
+        public delegate*<int* , void> f;
+        public delegate*<ref readonly int> g;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var fnptr = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<void> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<int, void> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<ref int, void> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<out int, void> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[4];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<in int, void> e", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[5];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<int*, void> f", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[6];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<ref readonly int> g", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "FunctionPointer")]
+        public void TestGenerateMetadataWithExplicitManagedFunctionPointer()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public delegate* managed<void> a;
+        public delegate* managed<int, void> b;
+        public delegate* managed<ref int, void> c;
+        public delegate* managed<out int, void> d;
+        public delegate* managed<in int, void> e;
+        public delegate* managed<int* , void> f;
+        public delegate* managed<ref readonly int> g;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var fnptr = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<void> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<int, void> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<ref int, void> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<out int, void> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[4];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<in int, void> e", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[5];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<int*, void> f", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[6];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<ref readonly int> g", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "FunctionPointer")]
+        public void TestGenerateMetadataWithUnmanagedFunctionPointer()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public delegate* unmanaged<void> a;
+        public delegate* unmanaged<int, void> b;
+        public delegate* unmanaged<ref int, void> c;
+        public delegate* unmanaged<out int, void> d;
+        public delegate* unmanaged<in int, void> e;
+        public delegate* unmanaged<int* , void> f;
+        public delegate* unmanaged<ref readonly int> g;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var fnptr = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<void> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<int, void> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<ref int, void> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<out int, void> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[4];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<in int, void> e", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[5];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<int*, void> f", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[6];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged<ref readonly int> g", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "FunctionPointer")]
+        public void TestGenerateMetadataWithSingleCallConvFunctionPointer()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public delegate* unmanaged[Stdcall]<void> a;
+        public delegate* unmanaged[Stdcall]<int, void> b;
+        public delegate* unmanaged[Stdcall]<ref int, void> c;
+        public delegate* unmanaged[Stdcall]<out int, void> d;
+        public delegate* unmanaged[Stdcall]<in int, void> e;
+        public delegate* unmanaged[Stdcall]<int* , void> f;
+        public delegate* unmanaged[Stdcall]<ref readonly int> g;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var fnptr = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<void> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<int, void> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<ref int, void> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<out int, void> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[4];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<in int, void> e", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[5];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<int*, void> f", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[6];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall]<ref readonly int> g", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "FunctionPointer")]
+        public void TestGenerateMetadataWithMultiCallConvFunctionPointer()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public delegate* unmanaged[Stdcall, Thiscall]<void> a;
+        public delegate* unmanaged[Stdcall, Thiscall]<int, void> b;
+        public delegate* unmanaged[Stdcall, Thiscall]<ref int, void> c;
+        public delegate* unmanaged[Stdcall, Thiscall]<out int, void> d;
+        public delegate* unmanaged[Stdcall, Thiscall]<in int, void> e;
+        public delegate* unmanaged[Stdcall, Thiscall]<int* , void> f;
+        public delegate* unmanaged[Stdcall, Thiscall]<ref readonly int> g;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var fnptr = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<void> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<int, void> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<ref int, void> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<out int, void> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[4];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<in int, void> e", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[5];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<int*, void> f", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[6];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate* unmanaged[Stdcall, Thiscall]<ref readonly int> g", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
+
+        [Fact]
+        [Trait("Related", "FunctionPointer")]
+        public void TestGenerateMetadataWithNestedFunctionPointer()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public delegate*<delegate*<void>> a;
+        public delegate*<delegate* unmanaged<void>> b;
+        public delegate*<delegate* unmanaged[Stdcall]<void>> c;
+        public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void>> d;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var fnptr = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<delegate*<void>> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<delegate* unmanaged<void>> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall]<void>> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+
+                fnptr = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(fnptr);
+                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void>> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
     }
 }

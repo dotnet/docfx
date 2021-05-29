@@ -262,33 +262,57 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected override string GetSyntaxContent(MemberType typeKind, ISymbol symbol, SymbolVisitorAdapter adapter)
         {
+            string result;
+
             switch (typeKind)
             {
                 case MemberType.Class:
-                    return GetClassSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetClassSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Enum:
-                    return GetEnumSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetEnumSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Interface:
-                    return GetInterfaceSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetInterfaceSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Struct:
-                    return GetStructSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetStructSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Delegate:
-                    return GetDelegateSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetDelegateSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Method:
-                    return GetMethodSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    result = GetMethodSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Operator:
-                    return GetOperatorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    result = GetOperatorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Constructor:
-                    return GetConstructorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    result = GetConstructorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Field:
-                    return GetFieldSyntax((IFieldSymbol)symbol, adapter.FilterVisitor);
+                    result = GetFieldSyntax((IFieldSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Event:
-                    return GetEventSyntax((IEventSymbol)symbol, adapter.FilterVisitor);
+                    result = GetEventSyntax((IEventSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Property:
-                    return GetPropertySyntax((IPropertySymbol)symbol, adapter.FilterVisitor);
+                    result = GetPropertySyntax((IPropertySymbol)symbol, adapter.FilterVisitor);
+                    break;
                 default:
                     return null;
             }
+
+            if ((result != null) && result.Contains("delegate *"))
+            {
+                // This is the expected formatting, but isn't handled in the whitespace normalizer until C# 10
+                result = Regex.Replace(result, @"delegate\s*\*", "delegate*");
+                result = Regex.Replace(result, @"\*unmanaged", "* unmanaged");
+                result = Regex.Replace(result, @"unmanaged\s+<", "unmanaged<");
+                result = Regex.Replace(result, @"(_|\w)\s*\*(,|>)", "$1*$2");
+                result = Regex.Replace(result, @">(_|\w)", "> $1");
+            }
+            return result;
         }
 
         protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
