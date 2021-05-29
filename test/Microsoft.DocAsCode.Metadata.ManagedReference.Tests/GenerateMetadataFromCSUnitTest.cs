@@ -3010,5 +3010,32 @@ namespace Test1
             Assert.True(result.Success, string.Join(",", result.Diagnostics.Select(s => s.GetMessage())));
             return Assembly.LoadFile(Path.GetFullPath(assemblyName));
         }
+
+        [Fact]
+        [Trait("Related", "NativeInteger")]
+        public void TestGenerateMetadataWithMethodUsingNativeInteger()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public void Test(
+            IntPtr a, UIntPtr b,
+            nint c, nuint d,
+            nint e = -1, nuint f = 1)
+        {
+        }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var method = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(method);
+                Assert.Equal(@"public void Test(IntPtr a, UIntPtr b, nint c, nuint d, nint e = -1, nuint f = 1U)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+            }
+        }
     }
 }

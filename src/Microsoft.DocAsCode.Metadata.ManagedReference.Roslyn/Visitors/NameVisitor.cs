@@ -482,6 +482,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case SpecialType.System_String:
                     Append("string");
                     return true;
+                case SpecialType.System_IntPtr:
+                    if (symbol.IsNativeIntegerType)
+                    {
+                        Append("nint");
+                        return true;
+                    }
+                    goto default;
+                case SpecialType.System_UIntPtr:
+                    if (symbol.IsNativeIntegerType)
+                    {
+                        Append("nuint");
+                        return true;
+                    }
+                    goto default;
                 default:
                     if (symbol.IsGenericType && !symbol.IsDefinition && symbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
                     {
