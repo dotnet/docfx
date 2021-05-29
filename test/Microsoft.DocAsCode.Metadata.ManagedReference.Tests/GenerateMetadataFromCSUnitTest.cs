@@ -2830,6 +2830,8 @@ namespace Test1
     public class Foo
     {
         public int Bar((string prefix, string uri) @namespace) => 1;
+
+        public (int x, int y) M() => (1, 2);
     }
 }
 ";
@@ -2840,10 +2842,13 @@ namespace Test1
             var foo = ns.Items[0];
             Assert.NotNull(foo);
             Assert.Equal("Test1.Foo", foo.Name);
-            Assert.Single(foo.Items);
+            Assert.Equal(2, foo.Items.Count);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
             Assert.Equal("public int Bar((string prefix, string uri) namespace)", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+            var m = foo.Items[1];
+            Assert.Equal("Test1.Foo.M", m.Name);
+            Assert.Equal("public (int x, int y) M()", m.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
