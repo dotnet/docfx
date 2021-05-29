@@ -60,6 +60,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     modifiers.Add("sealed");
                 }
             }
+            if (symbol.TypeKind == TypeKind.Struct)
+            {
+                if (symbol.IsRefLikeType)
+                {
+                    modifiers.Add("ref");
+                }
+                if (symbol.IsReadOnly)
+                {
+                    modifiers.Add("readonly");
+                }
+            }
             switch (symbol.TypeKind)
             {
                 case TypeKind.Module:
@@ -100,6 +111,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("static");
                 }
+                if (symbol.IsExtern)
+                {
+                    modifiers.Add("extern");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
@@ -118,6 +133,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 else if (symbol.IsSealed)
                 {
                     modifiers.Add("sealed");
+                }
+                if (symbol.IsReadOnly)
+                {
+                    modifiers.Add("readonly");
+                }
+                if (symbol.IsAsync)
+                {
+                    modifiers.Add("async");
                 }
             }
             item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
@@ -158,6 +181,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var modifiers = new List<string>();
             var propertyVisiblity = GetVisiblity(symbol.DeclaredAccessibility);
+            var isPropertyReadonly = IsPropertyReadonly(symbol);
             if (symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
                 if (propertyVisiblity != null)
@@ -187,35 +211,41 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("sealed");
                 }
+                if (isPropertyReadonly)
+                {
+                    modifiers.Add("readonly");
+                }
             }
             if (symbol.GetMethod != null)
             {
                 var getMethodVisiblity = GetVisiblity(symbol.GetMethod.DeclaredAccessibility);
+                var readonlyModifier = symbol.GetMethod.IsReadOnly && !isPropertyReadonly ? "readonly " : "";
                 if (propertyVisiblity != null && getMethodVisiblity == null)
                 {
                 }
                 else if (getMethodVisiblity != propertyVisiblity)
                 {
-                    modifiers.Add($"{getMethodVisiblity} get");
+                    modifiers.Add($"{getMethodVisiblity} {readonlyModifier}get");
                 }
                 else
                 {
-                    modifiers.Add("get");
+                    modifiers.Add($"{readonlyModifier}get");
                 }
             }
             if (symbol.SetMethod != null)
             {
                 var setMethodVisiblity = GetVisiblity(symbol.SetMethod.DeclaredAccessibility);
+                var readonlyModifier = symbol.SetMethod.IsReadOnly && !isPropertyReadonly ? "readonly " : "";
                 if (propertyVisiblity != null && setMethodVisiblity == null)
                 {
                 }
                 else if (setMethodVisiblity != propertyVisiblity)
                 {
-                    modifiers.Add($"{setMethodVisiblity} set");
+                    modifiers.Add($"{setMethodVisiblity} {readonlyModifier}set");
                 }
                 else
                 {
-                    modifiers.Add("set");
+                    modifiers.Add($"{readonlyModifier}set");
                 }
             }
             item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
@@ -1371,22 +1401,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static bool IsPropertyReadonly(IPropertySymbol property)
         {
-            bool isGetterAndSetterReadonly;
+            if (property.ContainingType.TypeKind != TypeKind.Struct)
+            {
+                return false;
+            }
+
+            if (property.IsReadOnly)
+            {
+                return true;
+            }
 
             if (property.GetMethod is null)
             {
-                isGetterAndSetterReadonly = property.SetMethod.IsReadOnly;
+                return property.SetMethod.IsReadOnly;
             }
-            else if (property.SetMethod is null)
+            
+            if (property.SetMethod is null)
             {
-                isGetterAndSetterReadonly = property.GetMethod.IsReadOnly;
+                return property.GetMethod.IsReadOnly;
             }
-            else
-            {
-                isGetterAndSetterReadonly = property.GetMethod.IsReadOnly && property.SetMethod.IsReadOnly;
-            }
-
-            return isGetterAndSetterReadonly || property.IsReadOnly;
+            
+            return property.GetMethod.IsReadOnly && property.SetMethod.IsReadOnly;
         }
 
         private static IEnumerable<SyntaxToken> GetMemberModifiers(IPropertySymbol symbol)

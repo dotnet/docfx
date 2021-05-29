@@ -3451,7 +3451,7 @@ namespace Test1
                 Assert.Equal("Test1.S.M()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.M", method.Name);
                 Assert.Equal("public readonly void M()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "readonly" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[1];
@@ -3461,7 +3461,7 @@ namespace Test1
                 Assert.Equal("Test1.S.P1", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P1", property.Name);
                 Assert.Equal(@"public readonly int P1 { get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "readonly", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[2];
@@ -3471,7 +3471,7 @@ namespace Test1
                 Assert.Equal("Test1.S.P2", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P2", property.Name);
                 Assert.Equal(@"public readonly int P2 { get; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get" }, property.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "readonly", "get" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[3];
@@ -3481,7 +3481,7 @@ namespace Test1
                 Assert.Equal("Test1.S.P3", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P3", property.Name);
                 Assert.Equal(@"public readonly int P3 { set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "readonly", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[4];
@@ -3491,7 +3491,7 @@ namespace Test1
                 Assert.Equal("Test1.S.P4", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P4", property.Name);
                 Assert.Equal(@"public int P4 { readonly get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "readonly get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[5];
@@ -3501,7 +3501,7 @@ namespace Test1
                 Assert.Equal("Test1.S.P5", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P5", property.Name);
                 Assert.Equal(@"public int P5 { get; readonly set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "get", "readonly set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -3528,7 +3528,7 @@ namespace Test1
                 Assert.Equal("Test1.S", type.Name);
                 Assert.Equal("public readonly struct S", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Implements);
-                Assert.Equal(new[] { "public", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "readonly", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -3555,7 +3555,7 @@ namespace Test1
                 Assert.Equal("Test1.S", type.Name);
                 Assert.Equal("public ref struct S", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Implements);
-                Assert.Equal(new[] { "public", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "ref", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
     }
