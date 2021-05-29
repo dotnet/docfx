@@ -3417,5 +3417,92 @@ namespace Test1
                 Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void>> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
             }
         }
+
+        [Trait("Related", "ReadonlyMember")]
+        [Fact]
+        public void TestGenerateMetadataWithReadonlyMember()
+        {
+            string code = @"
+namespace Test1
+{
+    public struct S
+    {
+        public readonly void M() {}
+
+        public readonly int P1 { get => throw null; set => throw null; }
+    
+        public readonly int P2 { get => throw null; }
+    
+        public readonly int P3 { set => throw null; }
+    
+        public int P4 { readonly get => throw null; set => throw null; }
+
+        public int P5 { get => throw null; readonly set => throw null; }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var method = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(method);
+                Assert.Equal("M()", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S.M()", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.M()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.M", method.Name);
+                Assert.Equal("public readonly void M()", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
+            }
+            {
+                var property = output.Items[0].Items[0].Items[1];
+                Assert.NotNull(property);
+                Assert.Equal("P1", property.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S.P1", property.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P1", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P1", property.Name);
+                Assert.Equal(@"public readonly int P1 { get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+            }
+            {
+                var property = output.Items[0].Items[0].Items[2];
+                Assert.NotNull(property);
+                Assert.Equal("P2", property.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S.P2", property.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P2", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P2", property.Name);
+                Assert.Equal(@"public readonly int P2 { get; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "get" }, property.Modifiers[SyntaxLanguage.CSharp]);
+            }
+            {
+                var property = output.Items[0].Items[0].Items[3];
+                Assert.NotNull(property);
+                Assert.Equal("P3", property.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S.P3", property.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P3", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P3", property.Name);
+                Assert.Equal(@"public readonly int P3 { set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+            }
+            {
+                var property = output.Items[0].Items[0].Items[4];
+                Assert.NotNull(property);
+                Assert.Equal("P4", property.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S.P4", property.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P4", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P4", property.Name);
+                Assert.Equal(@"public int P4 { readonly get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+            }
+            {
+                var property = output.Items[0].Items[0].Items[5];
+                Assert.NotNull(property);
+                Assert.Equal("P5", property.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S.P5", property.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P5", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S.P5", property.Name);
+                Assert.Equal(@"public int P5 { get; readonly set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
+            }
+        }
     }
 }

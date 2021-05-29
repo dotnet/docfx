@@ -1309,6 +1309,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
             }
+            if (symbol.IsReadOnly)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
+            }
         }
 
         private static IEnumerable<SyntaxToken> GetMemberModifiers(IEventSymbol symbol)
@@ -1353,6 +1357,26 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
+        private static bool IsPropertyReadonly(IPropertySymbol property)
+        {
+            bool isGetterAndSetterReadonly;
+
+            if (property.GetMethod is null)
+            {
+                isGetterAndSetterReadonly = property.SetMethod.IsReadOnly;
+            }
+            else if (property.SetMethod is null)
+            {
+                isGetterAndSetterReadonly = property.GetMethod.IsReadOnly;
+            }
+            else
+            {
+                isGetterAndSetterReadonly = property.GetMethod.IsReadOnly && property.SetMethod.IsReadOnly;
+            }
+
+            return isGetterAndSetterReadonly || property.IsReadOnly;
+        }
+
         private static IEnumerable<SyntaxToken> GetMemberModifiers(IPropertySymbol symbol)
         {
             if (symbol.ContainingType.TypeKind != TypeKind.Interface)
@@ -1392,6 +1416,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (symbol.IsSealed)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
+            }
+            if (IsPropertyReadonly(symbol))
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
             }
         }
 
@@ -1475,12 +1503,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static IEnumerable<AccessorDeclarationSyntax> GetPropertyAccessors(IPropertySymbol propertySymbol, IFilterVisitor filterVisitor)
         {
-            var getAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.GetMethod, SyntaxKind.GetAccessorDeclaration, SyntaxKind.GetKeyword, filterVisitor);
+            var isPropertyReadonly = IsPropertyReadonly(propertySymbol);
+
+            var getAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.GetMethod, SyntaxKind.GetAccessorDeclaration, SyntaxKind.GetKeyword, filterVisitor, isPropertyReadonly);
             if (getAccessor != null)
             {
                 yield return getAccessor;
             }
-            var setAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.SetMethod, SyntaxKind.SetAccessorDeclaration, SyntaxKind.SetKeyword, filterVisitor);
+
+            var setAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.SetMethod, SyntaxKind.SetAccessorDeclaration, SyntaxKind.SetKeyword, filterVisitor, isPropertyReadonly);
             if (setAccessor != null)
             {
                 yield return setAccessor;
@@ -1489,12 +1520,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static AccessorDeclarationSyntax GetPropertyAccessorCore(
             IPropertySymbol propertySymbol, IMethodSymbol methodSymbol,
-            SyntaxKind kind, SyntaxKind keyword, IFilterVisitor filterVisitor)
+            SyntaxKind kind, SyntaxKind keyword, IFilterVisitor filterVisitor, bool isPropertyReadonly)
         {
             if (methodSymbol == null)
             {
                 return null;
             }
+
+            var modifiers = new SyntaxTokenList();
+
+            if (methodSymbol.IsReadOnly && !isPropertyReadonly)
+            {
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword));
+            }
+
             switch (methodSymbol.DeclaredAccessibility)
             {
                 case Accessibility.Protected:
@@ -1504,7 +1543,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
                             GetAttributes(methodSymbol, filterVisitor),
-                            new SyntaxTokenList(),
+                            modifiers,
                             SyntaxFactory.Token(keyword),
                             (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1514,7 +1553,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         return SyntaxFactory.AccessorDeclaration(
                             kind,
                             GetAttributes(methodSymbol, filterVisitor),
-                            SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
+                            modifiers.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
                             SyntaxFactory.Token(keyword),
                             (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1522,7 +1561,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case Accessibility.Public:
                     return SyntaxFactory.AccessorDeclaration(kind,
                         GetAttributes(methodSymbol, filterVisitor),
-                        new SyntaxTokenList(),
+                        modifiers,
                         SyntaxFactory.Token(keyword),
                         (BlockSyntax)null,
                         SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1531,7 +1570,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
                             GetAttributes(methodSymbol, filterVisitor),
-                            new SyntaxTokenList(),
+                            modifiers,
                             SyntaxFactory.Token(keyword),
                             (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
